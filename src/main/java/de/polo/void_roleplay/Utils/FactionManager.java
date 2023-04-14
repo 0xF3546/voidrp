@@ -1,0 +1,168 @@
+package de.polo.void_roleplay.Utils;
+
+import de.polo.void_roleplay.MySQl.MySQL;
+import de.polo.void_roleplay.DataStorage.FactionData;
+import de.polo.void_roleplay.DataStorage.FactionGradeData;
+import de.polo.void_roleplay.DataStorage.PlayerData;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
+
+public class FactionManager {
+    public static Map<String, FactionData> factionDataMap = new HashMap<>();
+    public static Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
+
+    public static Object[][] faction_grades;
+    public static void loadFactions() throws SQLException {
+        Statement statement = MySQL.getStatement();
+        ResultSet locs = statement.executeQuery("SELECT * FROM factions");
+        while (locs.next()) {
+            FactionData factionData = new FactionData();
+            factionData.setId(locs.getInt(1));
+            factionData.setName(locs.getString(2));
+            factionData.setFullname(locs.getString(3));
+            factionData.setPrimaryColor(locs.getString(4));
+            factionData.setSecondaryColor(locs.getString(5));
+            factionData.setBank(locs.getInt(6));
+            factionDataMap.put(locs.getString(2), factionData);
+        }
+
+        ResultSet grades = statement.executeQuery("SELECT * FROM faction_grades");
+        while (grades.next()) {
+            FactionGradeData factionGradeData = new FactionGradeData();
+            factionGradeData.setId(grades.getInt(1));
+            factionGradeData.setFaction(grades.getString(2));
+            factionGradeData.setGrade(grades.getInt(3));
+            factionGradeData.setName(grades.getString(4));
+            factionGradeData.setPayday(grades.getInt(5));
+            factionGradeDataMap.put(grades.getString(2) + "_" + grades.getInt(3), factionGradeData);}
+    }
+
+    public static String faction(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        return playerData.getFaction();
+    }
+
+    public static Integer faction_grade(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        return playerData.getFactionGrade();
+    }
+    public static void setPlayerInFrak(Player player, String frak, Integer rang) throws SQLException {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        playerData.setFaction(frak);
+        playerData.setFactionGrade(rang);
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        statement.executeUpdate("UPDATE `players` SET `faction` = '" + frak + "', `faction_grade` = " + rang + " WHERE `uuid` = '" + uuid + "'");
+    }
+
+    public static void removePlayerFromFrak(Player player) throws SQLException {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        playerData.setFaction(null);
+        playerData.setFactionGrade(0);
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0 WHERE `uuid` = '" + uuid + "'");
+    }
+
+    public static void removeOfflinePlayerFromFrak(String playername) throws SQLException {
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
+        if (result != null) {
+            statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0 WHERE `player_name` = '" + playername + "'");
+        }
+    }
+
+    public static String faction_offlinePlayer(String playername) throws SQLException {
+        Statement statement = MySQL.getStatement();
+        String returnval = null;
+        assert statement != null;
+        ResultSet result = statement.executeQuery("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'");
+        if (result != null) {
+            if (result.next()) {
+                returnval = result.getString(13);
+            }
+        }
+        return returnval;
+    }
+
+    public static Integer faction_grade_offlinePlayer(String playername) throws SQLException {
+        Statement statement = MySQL.getStatement();
+        int returnval = -1;
+        assert statement != null;
+        ResultSet result = statement.executeQuery("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'");
+        if (result != null) {
+            if (result.next()) {
+                returnval = result.getInt(14);
+            }
+        }
+        return returnval;
+    }
+
+    public static String getFactionPrimaryColor(String faction) {
+        FactionData factionData = factionDataMap.get(faction);
+        return factionData.getPrimaryColor();
+    }
+
+    public static String getFactionSecondaryColor(String faction) {
+        FactionData factionData = factionDataMap.get(faction);
+        return factionData.getSecondaryColor();
+    }
+
+    public static String getFactionFullname(String faction) {
+        FactionData factionData = factionDataMap.get(faction);
+        return factionData.getFullname();
+    }
+
+    public static String getPlayerFactionRankName(Player p) {
+        FactionGradeData factionGradeData = factionGradeDataMap.get(faction(p) + "_" + faction_grade(p));
+        return factionGradeData.getName();
+    }
+    public static Integer getPaydayFromFaction(String faction, Integer rank) {
+        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
+        return factionGradeData.getPayday();
+    }
+    public static boolean isPlayerInGoodFaction(Player player) {
+        return faction(player) == "FBI" || faction(player) == "Polizei" || faction(player) == "Medics";
+    }
+
+    public static Integer factionBank(String faction) {
+        FactionData factionData = factionDataMap.get(faction);
+        return factionData.getBank();
+    }
+
+    public static boolean addFactionMoney(String faction, Integer amount, String reason) throws SQLException {
+        FactionData factionData = factionDataMap.get(faction);
+        factionData.setBank(factionData.getBank() + amount);
+        Statement statement = MySQL.getStatement();
+        statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`) VALUES ('einzahlung', '" + faction + "', " + amount + ", '" + reason + "')");
+        return true;
+    }
+    public static boolean removeFactionMoney(String faction, Integer amount, String reason) throws SQLException {
+        boolean returnval = false;
+        FactionData factionData = factionDataMap.get(faction);
+        if (factionData.getBank() >= amount) {
+            factionData.setBank(factionData.getBank() - amount);
+            Statement statement = MySQL.getStatement();
+            statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`) VALUES ('auszahlung', '" + faction + "', " + amount + ", '" + reason + "')");
+            returnval = true;
+        }
+        return returnval;
+    }
+    public static void sendMessageToFaction(String faction, String message) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (Objects.equals(faction(player), faction)) {
+                player.sendMessage("§" + getFactionPrimaryColor(faction) + faction + "§8 » §7 " + message);
+            }
+        }
+    }
+}

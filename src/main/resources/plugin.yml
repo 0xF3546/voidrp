@@ -1,0 +1,68 @@
+name: Void_Roleplay
+version: '${project.version}'
+main: de.polo.void_roleplay.Main
+api-version: 1.16
+authors: [ Polo66 ]
+description: Void Roleplay
+depend: [Votifier]
+
+commands:
+  aduty:
+    aliases: ad
+  setgroup:
+  geldbeutel:
+    aliases: gb
+  personalausweis:
+    aliases: perso
+  teamchat:
+    aliases: tc
+  leadfrak:
+  fraktionschat:
+    aliases: f
+  uninvite:
+  setloc:
+  bank:
+  setfraktion:
+    aliases: setfrak
+  adminuninvite:
+    aliases: auninvite
+  assistentchat:
+    aliases: ac
+  support:
+  cancelsupport:
+  acceptsupport:
+    aliases: asupport
+  closesupport:
+    aliases: csupport
+  target-ip:
+    aliases: tip
+  tpto:
+  adminrevive:
+    aliases: arevive
+  registeratm:
+  playerinfo:
+    aliases: pi
+  me:
+  broadcast:
+    aliases: bc
+  gov:
+  tickets:
+  team:
+  shop:
+  invite:
+  annehmen:
+  ablehnen:
+  rent:
+  holzfäller:
+  apfelsammler:
+  minenarbeiter:
+  arrest:
+  tp:
+  tphere:
+  speed:
+  bossmenu:
+  kick:
+  ooc:
+  plugins:
+    aliases: pl
+  adminmenu:

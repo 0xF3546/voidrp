@@ -1,0 +1,406 @@
+package de.polo.void_roleplay.Utils;
+
+import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.MySQl.MySQL;
+import de.polo.void_roleplay.PlayerUtils.PayDayUtil;
+import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.PlayerUtils.Scoreboard;
+import org.bukkit.*;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+public class PlayerManager {
+
+    public static Map<String, PlayerData> playerDataMap = new HashMap<>();
+    public static HashMap<String, Boolean> onPlayer = new HashMap<String, Boolean>();
+    public static HashMap<String, Integer> payday = new HashMap<>();
+    public static HashMap<String, Boolean> playerMovement = new HashMap<>();
+    public static HashMap<String, Integer> player_rent = new HashMap<String, Integer>();
+    public static boolean isCreated(String uuid) {
+
+        try {
+            Statement statement = MySQL.getStatement();
+            assert statement != null;
+            ResultSet result = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            if (result.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            Statement statement = MySQL.getStatement();
+            ResultSet result = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+            Date date = new Date();
+            String newDate = formatter.format(date);
+            statement.execute("INSERT INTO `players` (`uuid`, `firstjoin`) VALUES ('" + uuid + "', '" + newDate + "')");
+            Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+            assert player != null;
+            loadPlayer(player);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+    public static void updatePlayer(String uuid, String name) {
+        try {
+            Statement statement = MySQL.getStatement();
+            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "' WHERE uuid = '"+ uuid + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Serializable playerRang(Player player) {
+        String uuid = player.getUniqueId().toString();
+        try {
+            Statement statement = MySQL.getStatement();
+            assert statement != null;
+            ResultSet result = statement.executeQuery("SELECT `player_rank` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            if (result.next()) {
+                return result.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean loadPlayer(Player player) {
+        String uuid = player.getUniqueId().toString();
+        boolean returnval = false;
+        try {
+            Statement statement = MySQL.getStatement();
+            assert statement != null;
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            if (name.next()) {
+                PlayerData playerData = new PlayerData();
+                playerData.setFirstname(name.getString(1));
+                playerData.setLastname(name.getString(2));
+                playerData.setBargeld(name.getInt(3));
+                playerData.setBank(name.getInt(4));
+                playerData.setVisum(name.getInt(5));
+                playerData.setPermlevel(name.getInt(8));
+                playerData.setRang(name.getString(10));
+                playerData.setAduty(false);
+                playerData.setLevel(name.getInt(11));
+                playerData.setExp(name.getInt(12));
+                playerData.setNeeded_exp(name.getInt(13));
+                playerData.setScoreboard(new Scoreboard(player));
+
+                updatePlayer(player.getUniqueId().toString(), player.getName());
+                payday.put(player.getUniqueId().toString(), -1);
+                if (name.getInt(8) >= 60) {
+                    onPlayer.put(player.getUniqueId().toString(), true);
+                    player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
+                    player.getPlayer().setPlayerListName("§8[§7Team§8]§7 " + player.getName());
+                    player.getPlayer().setCustomName("§8[§7Team§8]§7 " + player.getName());
+                    player.setCustomNameVisible(true);
+                } else {
+                    onPlayer.put(player.getUniqueId().toString(), false);
+                    player.setDisplayName("§7" + player.getName());
+                    player.getPlayer().setPlayerListName("§7" + player.getName());
+                    player.getPlayer().setCustomName("§7" + player.getName());
+                    player.setCustomNameVisible(true);
+                }
+
+                player_rent.put(player.getUniqueId().toString(), name.getInt(8));
+                player.setLevel(name.getInt(5));
+                if (name.getString(6) != null) {
+                    playerData.setFaction(name.getString(6));
+                    playerData.setFactionGrade(name.getInt(7));
+                    switch (name.getString(6)) {
+                        case "FBI":
+                            playerData.setVariable("titel_staat", "Agent");
+                        case "Polizei":
+                            playerData.setVariable("titel_staat", "Officer");
+                        case "Medic":
+                            playerData.setVariable("titel_staat", "Arzt");
+                        default:
+                    }
+                }
+                player.setMaxHealth(30 + ((name.getInt(5) / 5) * 2));
+
+
+                ResultSet jail = statement.executeQuery("SELECT `hafteinheiten`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+                if (jail.next()) {
+                    playerData.setHafteinheiten(jail.getInt(1));
+                    playerData.setVariable("jail_reason", jail.getString(2));
+                    playerData.setJailed(true);
+                }
+                playerDataMap.put(uuid, playerData);
+                returnval = true;
+            }
+        } catch (SQLException e) {
+            returnval = false;
+            e.printStackTrace();
+        }
+        return returnval;
+    }
+
+    public static void savePlayer(Player player) throws SQLException {
+        String uuid = player.getUniqueId().toString();
+        Statement statement = MySQL.getStatement();
+        PlayerData playerData = playerDataMap.get(uuid);
+        if (playerData != null) {
+            assert statement != null;
+            onPlayer.remove(uuid);
+            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + " WHERE `uuid` = '" + uuid + "'");
+            if (playerData.isJailed()) {
+                statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten` = '" + playerData.getHafteinheiten() + "' WHERE `uuid` = '" + uuid + "'");
+            }
+            playerDataMap.remove(uuid);
+        } else {
+            System.out.println("Spieler " + player.getName() + "'s playerData konnte nicht gefunden werden.");
+        }
+    }
+
+    public static Serializable createCpAccount(String uuid, String email, String password) {
+        try {
+            Statement statement = MySQL.getStatement();
+            assert statement != null;
+            String query = "UPDATE `players` SET `email` = '" + email + "', `password` = '" + password + "' WHERE `uuid` = '" + uuid + "'";
+            PreparedStatement preparedStatement = MySQL.connection.prepareStatement(query);
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, uuid);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static void add1MinutePlaytime(Player player) {
+        try {
+            String uuid = player.getUniqueId().toString();
+            PlayerData playerData = playerDataMap.get(uuid);
+            Statement statement = MySQL.getStatement();
+            assert statement != null;
+            if (playerData.isJailed()) {
+                playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
+                if (playerData.getHafteinheiten() <= 0) {
+                    StaatUtil.unarrestPlayer(player);
+                    playerData.setHafteinheiten(0);
+                    playerData.setJailed(false);
+                }
+            }
+            ResultSet result = statement.executeQuery("SELECT `playtime_hours`, `playtime_minutes`, `current_hours`, `needed_hours`, `visum` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            if (result.next()) {
+                int hours = result.getInt(1) + 1;
+                int minutes =  result.getInt(2);
+                int newMinutes = result.getInt(2) + 1;
+                int current_hours = result.getInt(3);
+                int needed_hours = result.getInt(4);
+                int visum = result.getInt(5) + 1;
+                payday.replace(uuid, minutes);
+                float value = (float) (needed_hours / player.getExpToLevel());
+                player.setTotalExperience((int) (value * current_hours));
+                if (minutes >= 60) {
+                    if (current_hours >= needed_hours) {
+                        needed_hours = needed_hours + 4;
+                        PayDayUtil.givePayDay(player);
+                        statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
+                        player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
+                        player.setLevel(visum);
+                        playerData.setVisum(visum);
+                        player.setMaxHealth(30 + (visum / 5) * 2);
+                    } else {
+                        PayDayUtil.givePayDay(player);
+                        current_hours = current_hours + 1;
+                        statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
+                    }
+                } else {
+                    statement.executeUpdate("UPDATE `players` SET `playtime_minutes` = " + newMinutes + " WHERE `uuid` = '" + uuid + "'");
+                    if (newMinutes == 56) {
+                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
+                    } else if (newMinutes == 58) {
+                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
+                    } else if (newMinutes == 60) {
+                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void addMoney(Player player, int amount) throws SQLException {
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        playerData.setBargeld(playerData.getBargeld() + amount);
+        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + uuid + "'");
+        if (result.next()) {
+            int res =  result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + uuid + "'");
+        }
+    }
+
+    public static void removeMoney(Player player, int amount, String reason) throws SQLException {
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        playerData.setBargeld(playerData.getBargeld() - amount);
+        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + uuid + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + uuid + "'");
+        }
+    }
+
+    public static void addBankMoney(Player player, int amount) throws SQLException {
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        playerData.setBank(playerData.getBank() + amount);
+        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + uuid + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + uuid + "'");
+        }
+    }
+    public static void removeBankMoney(Player player, int amount, String reason) throws SQLException {
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        playerData.setBank(playerData.getBank() - amount);
+        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + uuid + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + uuid + "'");
+        }
+    }
+
+
+    public static void updatePlayerTeam(String uuid, String rank) {
+        try {
+            int permlevel = 0;
+            switch (rank.toLowerCase()) {
+                case "administrator":
+                    permlevel = 100;
+                case "moderator":
+                    permlevel = 80;
+                case "supporter":
+                    permlevel = 70;
+                case "assistent":
+                    permlevel = 50;
+                default:
+                    permlevel = 0;
+            }
+            Statement statement = MySQL.getStatement();
+            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rank + "', `player_permlevel` = " + permlevel + " WHERE uuid = '"+ uuid + "'");
+            PlayerData playerData = playerDataMap.get(uuid);
+            playerData.setRang(rank);
+            playerData.setPermlevel(permlevel);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static int money(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        return playerData.getBargeld();
+    }
+
+    public static int bank(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        return playerData.getBank();
+    }
+
+    public static String firstname(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        return playerData.getFirstname();
+    }
+
+    public static String lastname(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        return playerData.getLastname();
+    }
+
+    public static int visum(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        return playerData.getVisum();
+    }
+
+    public static int paydayDuration(Player player) {
+        String uuid = player.getUniqueId().toString();
+        return payday.get(uuid);
+    }
+
+    public static void setPlayerMove(Player player, Boolean state) {
+        if (state) {
+            if (playerMovement.get(player.getUniqueId().toString()) != null) {
+                playerMovement.put(player.getUniqueId().toString(), true);
+            }
+        } else {
+            playerMovement.remove(player.getUniqueId().toString());
+        }
+    }
+
+    public static boolean canPlayerMove(Player player) {
+        return playerMovement.get(player.getUniqueId().toString());
+    }
+
+    public static boolean isTeam(Player player) {
+        return onPlayer.get(player.getUniqueId().toString()) != null;
+    }
+    public static Integer perms(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        return playerData.getPermlevel();
+    }
+    public static String rang(Player player) {
+        String uuid = player.getUniqueId().toString();
+        PlayerData playerData = playerDataMap.get(uuid);
+        return playerData.getRang();
+    }
+
+    public static void startTimeTracker() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    add1MinutePlaytime(player);
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 20*2, 20*60);
+    }
+
+    public static void kickPlayer(Player player, String reason) {
+        player.kickPlayer("§8• §6§lVoid Roleplay §8•\n\n§cDu wurdest vom Server geworfen.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoid Roleplay §8•");
+    }
+
+    public static void addExp(Player player, Integer exp) {
+        String characters = "a0b1c2d3e4569";
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        playerData.setExp(playerData.getExp() + exp);
+        player.sendMessage("§6Level §8» §" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+    }
+
+    public static void removeExp(Player player, Integer exp) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        playerData.setExp(playerData.getExp() - exp);
+        player.sendMessage("§6Level §8» §c-+" + exp + " EXP");
+    }
+
+}

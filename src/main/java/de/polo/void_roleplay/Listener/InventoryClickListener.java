@@ -1,0 +1,141 @@
+package de.polo.void_roleplay.Listener;
+
+import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.DataStorage.FactionData;
+import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.PlayerUtils.Shop;
+import de.polo.void_roleplay.Utils.*;
+import de.polo.void_roleplay.commands.adminmenuCommand;
+import de.polo.void_roleplay.commands.openBossMenuCommand;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+
+import java.sql.SQLException;
+import java.util.Objects;
+import java.util.UUID;
+
+public class InventoryClickListener implements Listener {
+
+    @EventHandler
+    public void onClick(InventoryClickEvent event) throws SQLException {
+        if (event.getCurrentItem() == null) return;
+        Player player = (Player) event.getWhoClicked();
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+            for (int i = 0; i < LocationManager.shops.length; i++) {
+                int f = i + 1;
+                if (event.getView().getTitle().equalsIgnoreCase("§8» §c" + LocationManager.getShopNameById(f))) {
+                    event.setCancelled(true);
+                    for (Object[] row : Shop.shop_items) {
+                        if (event.getCurrentItem().getType() == Material.valueOf((String) row[2]) && event.getCurrentItem().getType() != null) {
+                            if (PlayerManager.money(player) >= (int) row[4]) {
+                                try {
+                                    if (Objects.equals(row[5].toString(), "weapon")) {
+                                        String weapon = row[3].toString().replace("&", "").replace("6", "");
+                                        Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType());
+                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
+                                    } else if (Objects.equals(row[5].toString(), "ammo")) {
+                                        String ammo = row[3].toString().replace("&", "").replace("6", "");
+                                        Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
+                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
+                                    } else {
+                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
+                                        player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
+                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                    }
+                                } catch (SQLException e) {
+                                    player.sendMessage(Main.error + "Fehler. Bitte kontaktiere die Entwicklung.");
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Du hast leider nicht genug Bargeld.");
+                            }
+                        }
+                        i++;
+                    }
+                }
+            }
+            if (Objects.equals(playerData.getVariable("current_inventory"), "bossmenu_" + playerData.getFaction())) {
+                event.setCancelled(true);
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case NETHER_WART:
+                        openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
+                        break;
+                    case GOLD_NUGGET:
+                        openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
+                        break;
+                    case PLAYER_HEAD:
+                        openBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
+                        break;
+                }
+            }
+            if (playerData.getVariable("current_inventory").contains("edit_factionplayer_")) {
+                event.setCancelled(true);
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case NETHER_WART:
+                        openBossMenuCommand.openBossMenu(player, 1);
+                        break;
+                    case REDSTONE:
+                        UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
+                        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+                        player.performCommand("uninvite " + offlinePlayer.getName());
+                        break;
+                }
+            }
+                if (Objects.equals(playerData.getVariable("current_inventory"), "adminmenu")) {
+                    event.setCancelled(true);
+                    switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                        case NETHER_WART:
+                            if (playerData.getVariable("offlinePLayers") == "nein")
+                                adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, false);
+                            else
+                                adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, true);
+                            break;
+                        case GOLD_NUGGET:
+                            if (playerData.getVariable("offlinePLayers") == "nein")
+                                adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, false);
+                            else
+                                adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, true);
+                            break;
+                        case PLAYER_HEAD:
+                            adminmenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
+                            break;
+                        case DIAMOND:
+                            if (playerData.getVariable("offlinePLayers") == "nein") {
+                                adminmenuCommand.openAdminMenu(player, 1, true);
+                            } else {
+                                adminmenuCommand.openAdminMenu(player, 1, false);
+                            }
+                            break;
+                    }
+                }
+                if (playerData.getVariable("current_inventory").contains("edit_player_")) {
+                    event.setCancelled(true);
+                    UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_player_", ""));
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+                    switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                        case NETHER_WART:
+                            if (playerData.getVariable("offlinePLayers") == "nein") adminmenuCommand.openAdminMenu(player, 1, false);
+                            else adminmenuCommand.openAdminMenu(player, 1, true);
+                            break;
+                        case REDSTONE:
+                            if (!offlinePlayer.isOnline()) return;
+                            PlayerManager.kickPlayer((Player) offlinePlayer, "[System] Kick durch Administrationsoberfläche");
+                            break;
+                        case EMERALD_BLOCK:
+                            player.performCommand("tphere " + offlinePlayer.getName());
+                            break;
+                        case DIAMOND_BLOCK:
+                            player.performCommand("tp " + offlinePlayer.getName());
+                            break;
+                    }
+                }
+    }
+}
