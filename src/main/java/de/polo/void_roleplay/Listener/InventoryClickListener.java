@@ -137,5 +137,14 @@ public class InventoryClickListener implements Listener {
                             break;
                     }
                 }
+                if (Objects.equals(playerData.getVariable("current_inventory"), "faction_invite")) {
+                    event.setCancelled(true);
+                    switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                        case EMERALD:
+                            player.performCommand("annehmen");
+                        case REDSTONE:
+                            player.performCommand("ablehnen");
+                    }
+                }
     }
 }

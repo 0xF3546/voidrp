@@ -51,10 +51,10 @@ public class PlayerManager {
         }
         return false;
     }
-    public static void updatePlayer(String uuid, String name) {
+    public static void updatePlayer(String uuid, String name, String adress) {
         try {
             Statement statement = MySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "' WHERE uuid = '"+ uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adress + "' WHERE uuid = '"+ uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -97,7 +97,7 @@ public class PlayerManager {
                 playerData.setNeeded_exp(name.getInt(13));
                 playerData.setScoreboard(new Scoreboard(player));
 
-                updatePlayer(player.getUniqueId().toString(), player.getName());
+                updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 payday.put(player.getUniqueId().toString(), -1);
                 if (name.getInt(8) >= 60) {
                     onPlayer.put(player.getUniqueId().toString(), true);
