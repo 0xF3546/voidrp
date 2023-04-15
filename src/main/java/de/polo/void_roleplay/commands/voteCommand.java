@@ -16,7 +16,7 @@ public class voteCommand implements CommandExecutor {
         player.spigot().sendMessage(mcservereu);
 
         TextComponent mcserverlist = new TextComponent("§2Vote §8» §7minecraft-serverlist.net");
-        mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.minecraft-serverlist.net/vote/57619" + player.getName()));
+        mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.minecraft-serverlist.net/vote/57619/" + player.getName()));
         player.spigot().sendMessage(mcserverlist);
         return false;
     }
