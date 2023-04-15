@@ -16,6 +16,9 @@ public class PlayerData {
     private int faction_grade;
     private HashMap<String, String> variables = new HashMap<>();
     private HashMap<String, Integer> integer_variables = new HashMap<>();
+    private HashMap<String, Integer> skillLevel = new HashMap<>();
+    private HashMap<String, Integer> skillExp = new HashMap<>();
+    private HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
     private boolean canInteract = true;
     private boolean isJailed;
     private int hafteinheiten = 0;
@@ -177,5 +180,41 @@ public class PlayerData {
 
     public void setScoreboard(Scoreboard scoreboard) {
         this.scoreboard = scoreboard;
+    }
+
+    public Integer getSkillLevel(String type) {
+        return skillLevel.get(type);
+    }
+
+    public void setSkillLevel(String type, Integer skillLevel) {
+        if (this.skillLevel.get(type) != null) {
+            this.skillLevel.replace(type, skillLevel);
+        } else {
+            this.skillLevel.put(type, skillLevel);
+        }
+    }
+
+    public Integer getSkillExp(String type) {
+        return skillExp.get(type);
+    }
+
+    public void setSkillExp(String type, Integer skillLevel) {
+        if (this.skillExp.get(type) != null) {
+            this.skillExp.replace(type, skillLevel);
+        } else {
+            this.skillExp.put(type, skillLevel);
+        }
+    }
+
+    public Integer getSkillNeeded_Exp(String type) {
+        return skillNeeded_Exp.get(type);
+    }
+
+    public void setSkillNeeded_Exp(String type, Integer skillLevel) {
+        if (this.skillNeeded_Exp.get(type) != null) {
+            this.skillNeeded_Exp.replace(type, skillLevel);
+        } else {
+            this.skillNeeded_Exp.put(type, skillLevel);
+        }
     }
 }
