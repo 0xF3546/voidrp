@@ -115,6 +115,7 @@ public final class Main extends JavaPlugin {
         getCommand("ooc").setExecutor(new oocCommand());
         getCommand("plugins").setExecutor(new pluginCommand());
         getCommand("adminmenu").setExecutor(new adminmenuCommand());
+        getCommand("vote").setExecutor(new voteCommand());
     }
 
 
