@@ -137,7 +137,7 @@ public class PlayerManager {
                     playerData.setVariable("jail_reason", jail.getString(2));
                     playerData.setJailed(true);
                 }
-                ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` WHERE `uuid` = '" + uuid + "'");
+                ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` FROM `player_skills` WHERE `uuid` = '" + uuid + "'");
                 if (skills.next()) {
                     playerData.setSkillLevel("miner", skills.getInt(1));
                     playerData.setSkillExp("miner", skills.getInt(2));
