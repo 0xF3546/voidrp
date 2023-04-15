@@ -1,13 +1,18 @@
 package de.polo.void_roleplay.commands;
 
+import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.FactionManager;
+import de.polo.void_roleplay.Utils.ItemManager;
+import de.polo.void_roleplay.Utils.PlayerManager;
 import de.polo.void_roleplay.Utils.VertragUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -16,18 +21,28 @@ public class inviteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        Player targetplayer = Bukkit.getPlayer(args[0]);
-        assert targetplayer != null;
         String playerfac = FactionManager.faction(player);
         if (FactionManager.faction_grade(player) >= 7) {
-            if (args.length > 0) {
-                System.out.println(FactionManager.faction(targetplayer));
+            if (args.length >= 1) {
+                Player targetplayer = Bukkit.getPlayer(args[0]);
+                assert targetplayer != null;
                 if (Objects.equals(FactionManager.faction(targetplayer), "Zivilist") || FactionManager.faction(targetplayer) == null) {
                     try {
                         if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
                             player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
-                            targetplayer.sendMessage("§6" + player.getName() + "§7 hat dich in die §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§7 eingeladen.");
-                            VertragUtil.sendInfoMessage(targetplayer);
+                            Inventory inv = Bukkit.createInventory(targetplayer, 9, "§8» §7" + player.getName() + " hat dich in §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§7 eingeladen.");
+                            inv.setItem(2, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnnehmen", null));
+                            inv.setItem(6, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAblehnen", null));
+                            for (int i = 0; i < 9; i++) {
+                                if (inv.getItem(i) == null) {
+                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                                }
+                            }
+                            targetplayer.openInventory(inv);
+                            PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                            tplayerData.setVariable("current_inventory", "faction_invite");
+                            /*targetplayer.sendMessage("§6" + player.getName() + "§7 hat dich in die §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§7 eingeladen.");
+                            VertragUtil.sendInfoMessage(targetplayer);*/
                         } else {
                             player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
                         }
