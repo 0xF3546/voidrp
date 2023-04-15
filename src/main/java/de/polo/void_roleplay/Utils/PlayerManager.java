@@ -400,7 +400,7 @@ public class PlayerManager {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setExp(playerData.getExp() + exp);
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
-            player.sendMessage("§6Level §8» §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " ➡ §2" + playerData.getLevel() + 1);
+            player.sendMessage("§6Level §8» §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
             playerData.setLevel(playerData.getLevel() + 1);
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);

@@ -127,8 +127,11 @@ public class Weapons implements Listener {
                 }
             } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
+                NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
                 ItemMeta meta = event.getItem().getItemMeta();
+                assert meta != null;
                 meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 0);
+                meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
                 event.getItem().setItemMeta(meta);
             }
         }
