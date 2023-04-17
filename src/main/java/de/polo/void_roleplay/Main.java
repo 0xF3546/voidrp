@@ -118,6 +118,7 @@ public final class Main extends JavaPlugin {
         getCommand("vote").setExecutor(new voteCommand());
         getCommand("setrankname").setExecutor(new setranknameCommand());
         getCommand("setrankpayday").setExecutor(new setrankpaydayCommand());
+        getCommand("cp").setExecutor(new cpCommand());
     }
 
 

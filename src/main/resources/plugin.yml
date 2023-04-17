@@ -70,3 +70,5 @@ commands:
   vote:
   setrankname:
   setrankpayday:
+  cp:
+    aliases: controlpanel
