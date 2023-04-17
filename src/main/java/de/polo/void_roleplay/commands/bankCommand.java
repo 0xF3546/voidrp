@@ -2,6 +2,7 @@ package de.polo.void_roleplay.commands;
 
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.BankingUtils;
+import de.polo.void_roleplay.Utils.FactionManager;
 import de.polo.void_roleplay.Utils.LocationManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Bukkit;
@@ -58,6 +59,44 @@ public class bankCommand implements CommandExecutor {
                                 }
                             } else {
                                 player.sendMessage(syntax_error);
+                            }
+                        } else {
+                            player.sendMessage(syntax_error);
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    player.sendMessage(Main.error + "Die Bankautomaten können nicht mit Negativen Zahlen umgehen...");
+                }
+            } else {
+                player.sendMessage(syntax_error);
+            }
+        } else if(FactionManager.faction(player) != null && LocationManager.getDistanceBetweenCoords(player, FactionManager.faction(player) + "_" + "bank") <= 5) {
+            String faction = FactionManager.faction(player);
+            if (args.length == 0) {
+                player.sendMessage(syntax_error);
+            } else if (args.length >= 2) {
+                int amount = Integer.parseInt(args[1]);
+                if (amount >= 1) {
+                    try {
+                        if (args[0].equalsIgnoreCase("info")) {
+                            BankingUtils.sendKontoauszug(player);
+                        } else if (args[0].equalsIgnoreCase("einzahlen")) {
+                            if (PlayerManager.money(player) >= amount) {
+                                PlayerManager.removeMoney(player, amount, "Bankauszahlung");
+                                FactionManager.addFactionMoney(faction, amount, "Bankeinzahlung " + player.getName());
+                                player.sendMessage(Main.bank_prefix + "Du hast §c" + amount + "§7$ auf dein Fraktionskonto eingezahlt.");
+                                BankingUtils.sendKontoauszug(player);
+                            }
+                        } else if (args[0].equalsIgnoreCase("abbuchen")) {
+                            if (FactionManager.faction_grade(player) >= 6) {
+                                if (FactionManager.factionBank(faction) >= amount) {
+                                    FactionManager.removeFactionMoney(faction, amount, "Abbuchung durch " + player.getName());
+                                    PlayerManager.addMoney(player, amount);
+                                    player.sendMessage(Main.bank_prefix + "Du hast §c" + amount + "§7$ von deinem Fraktionskonto abgebucht.");
+                                    BankingUtils.sendKontoauszug(player);
+                                }
                             }
                         } else {
                             player.sendMessage(syntax_error);
