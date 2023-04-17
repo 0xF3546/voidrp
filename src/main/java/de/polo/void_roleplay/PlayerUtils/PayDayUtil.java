@@ -13,7 +13,7 @@ public class PayDayUtil {
         double plus = 0;
         double zinsen = Math.round(PlayerManager.bank(player) * 0.01);
         double steuern = Math.round(PlayerManager.bank(player) * 0.0035);
-        int visumbonus = PlayerManager.visum(player) * 30;
+        int visumbonus = PlayerManager.visum(player) * 10;
         int frakpayday = 0;
         plus = plus + zinsen - steuern + visumbonus;
         player.sendMessage("");
