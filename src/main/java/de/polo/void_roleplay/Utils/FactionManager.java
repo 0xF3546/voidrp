@@ -165,4 +165,27 @@ public class FactionManager {
             }
         }
     }
+    public static boolean changeRankPayDay(String faction, int rank, int payday) throws SQLException {
+        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
+        if (factionGradeData != null) {
+            factionGradeData.setPayday(payday);
+            Statement statement = MySQL.getStatement();
+            statement.executeUpdate("UPDATE `faction_grades` SET `payday` = " + payday + " WHERE `faction` = '" + faction + "' AND `grade` = " + rank);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean changeRankName(String faction, int rank, String name) throws SQLException {
+        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
+        if (factionGradeData != null) {
+            factionGradeData.setName(name);
+            Statement statement = MySQL.getStatement();
+            statement.executeUpdate("UPDATE `faction_grades` SET `name` = '" + name + "' WHERE `faction` = '" + faction + "' AND `grade` = " + rank);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
