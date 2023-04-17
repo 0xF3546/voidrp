@@ -68,3 +68,5 @@ commands:
   adminmenu:
     aliases: amenu
   vote:
+  setrankname:
+  setrankpayday:
