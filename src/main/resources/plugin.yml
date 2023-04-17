@@ -66,4 +66,5 @@ commands:
   plugins:
     aliases: pl
   adminmenu:
+    aliases: amenu
   vote:

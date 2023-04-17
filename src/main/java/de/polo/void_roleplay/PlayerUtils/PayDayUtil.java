@@ -11,8 +11,8 @@ import java.sql.SQLException;
 public class PayDayUtil {
     public static void givePayDay(Player player) throws SQLException {
         double plus = 0;
-        double zinsen = Math.round(PlayerManager.bank(player) * 0.05);
-        double steuern = Math.round(PlayerManager.bank(player) * 0.015);
+        double zinsen = Math.round(PlayerManager.bank(player) * 0.01);
+        double steuern = Math.round(PlayerManager.bank(player) * 0.0035);
         int visumbonus = PlayerManager.visum(player) * 30;
         int frakpayday = 0;
         plus = plus + zinsen - steuern + visumbonus;
