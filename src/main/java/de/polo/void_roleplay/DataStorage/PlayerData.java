@@ -29,6 +29,7 @@ public class PlayerData {
     private Scoreboard scoreboard;
     private boolean isDead;
     private int deathTime;
+    private int number;
 
     public PlayerData() {
     }
@@ -234,5 +235,13 @@ public class PlayerData {
 
     public void setDeathTime(int deathTime) {
         this.deathTime = deathTime;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }
