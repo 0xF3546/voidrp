@@ -1,7 +1,9 @@
 package de.polo.void_roleplay.Utils;
 
 import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
+import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -60,10 +62,19 @@ public class PhoneUtils {
         statement.executeQuery("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId().toString() + "', '" + targetplayer.getName() + "', " + playerData.getNumber() + ", '" + targetplayer.getUniqueId().toString() + "')");
     }
 
-    public static void callNumber(Player player, int number) {
+    public static void callNumber(Player player, int number) throws SQLException {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
-                //todo spieler in pre-connection setzen und message senden
+                if (VertragUtil.setVertrag(player, players, "phonecall", String.valueOf(playerData.getNumber()))) {
+                    ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
+                    ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
+                    player.sendMessage("§6Handy §8»§e Du rufst §l" + number + "§e an.");
+                    players.sendMessage("§6Handy §8»§eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
+                    playerData.setVariable("calling", "Ja");
+                } else {
+                    player.sendMessage(Main.error + "Dein Handy konnte keine Verbindung aufbauen. §o(Systemfehler)");
+                }
             }
         }
     }
