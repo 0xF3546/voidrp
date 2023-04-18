@@ -1,6 +1,7 @@
 package de.polo.void_roleplay.Listener;
 
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.Utils.PhoneUtils;
 import de.polo.void_roleplay.Utils.SupportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,6 +24,13 @@ public class chatListener implements Listener {
                 }
             }
         } else {
+            if (PhoneUtils.isInConnection(player)) {
+                for (Player players : Bukkit.getOnlinePlayers()) {
+                    if (PhoneUtils.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
+                        players.sendMessage("§6Handy§8 »§e " + player.getName() + "§8:§7 " + event.getMessage());
+                    }
+                }
+            }
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (player.getLocation().distance(players.getLocation()) <= 3) {
                     players.sendMessage(player.getDisplayName() + "§8:§f " + event.getMessage());
