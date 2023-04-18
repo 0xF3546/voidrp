@@ -27,6 +27,8 @@ public class PlayerData {
     private int exp;
     private int needed_exp;
     private Scoreboard scoreboard;
+    private boolean isDead;
+    private int deathTime;
 
     public PlayerData() {
     }
@@ -216,5 +218,21 @@ public class PlayerData {
         } else {
             this.skillNeeded_Exp.put(type, skillLevel);
         }
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
+    public int getDeathTime() {
+        return deathTime;
+    }
+
+    public void setDeathTime(int deathTime) {
+        this.deathTime = deathTime;
     }
 }

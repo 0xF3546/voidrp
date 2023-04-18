@@ -68,6 +68,8 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new itemDropListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerPickUpArrowListener(), this);
         getServer().getPluginManager().registerEvents(new playerVoteListener(), this);
+        getServer().getPluginManager().registerEvents(new respawnListener(), this);
+        getServer().getPluginManager().registerEvents(new playerMoveListener(), this);
     }
 
     private void registerCommands(){

@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.PlayerUtils;
 
+import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.Utils.LocationManager;
@@ -28,8 +29,11 @@ public class DeathUtil {
         player.damage(10000);
     }
     public static void RevivePlayer(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setCanInteract(false);
+        playerData.setDead(false);
         deathPlayer.remove(player.getUniqueId().toString());
-        PlayerManager.setPlayerMove(player, true);
+        if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         try {

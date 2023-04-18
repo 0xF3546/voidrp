@@ -81,7 +81,7 @@ public class PlayerManager {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                 PlayerData playerData = new PlayerData();
                 playerData.setFirstname(name.getString(1));
@@ -96,6 +96,8 @@ public class PlayerManager {
                 playerData.setExp(name.getInt(12));
                 playerData.setNeeded_exp(name.getInt(13));
                 playerData.setScoreboard(new Scoreboard(player));
+                playerData.setDead(name.getBoolean(14));
+                if (name.getBoolean(14))  playerData.setDeathTime(name.getInt(15));
 
                 updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 payday.put(player.getUniqueId().toString(), -1);
@@ -363,7 +365,7 @@ public class PlayerManager {
     }
 
     public static boolean canPlayerMove(Player player) {
-        return playerMovement.get(player.getUniqueId().toString());
+        return playerMovement.get(player.getUniqueId().toString()) != null;
     }
 
     public static boolean isTeam(Player player) {
