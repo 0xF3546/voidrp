@@ -72,3 +72,4 @@ commands:
   setrankpayday:
   cp:
     aliases: controlpanel
+  sms:

@@ -121,6 +121,7 @@ public final class Main extends JavaPlugin {
         getCommand("setrankname").setExecutor(new setranknameCommand());
         getCommand("setrankpayday").setExecutor(new setrankpaydayCommand());
         getCommand("cp").setExecutor(new cpCommand());
+        getCommand("sms").setExecutor(new smsCommand());
     }
 
 

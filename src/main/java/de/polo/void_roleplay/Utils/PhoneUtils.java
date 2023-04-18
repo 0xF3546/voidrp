@@ -3,16 +3,20 @@ package de.polo.void_roleplay.Utils;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
 public class PhoneUtils {
-    public static HashMap<String, Boolean> phoneCallIsCreated = new HashMap<String, Boolean>();
-    public static HashMap<String, String> phoneCallConnection = new HashMap<String, String>();
-    public static HashMap<String, Boolean> isInCallConnection = new HashMap<String, Boolean>();
+    public static HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
+    public static HashMap<String, String> phoneCallConnection = new HashMap<>();
+    public static HashMap<String, Boolean> isInCallConnection = new HashMap<>();
+    public static String error_nophone = "§6Handy §8 » §cDu hast kein Handy dabei.";
 
     public static boolean inPhoneCall(Player player) {
         return phoneCallIsCreated.get(player.getUniqueId().toString()) != null;
@@ -63,12 +67,33 @@ public class PhoneUtils {
         }
     }
 
+    public static void sendSMS(Player player, int number, StringBuilder message) {
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
+                players.sendMessage("§6SMS §8» §e" + player.getName() + "&8: &7" + message);
+                player.sendMessage("§6SMS §8» §e" + player.getName() + "&8: &7" + message);
+            }
+        }
+    }
+
     public static void acceptCall(Player player) {
         //todo connection erstellen und messages senden
     }
 
     public static void denyCall(Player player) {
         //todo pre-connection löschen und messages senden
+    }
+
+    public static boolean hasPhone(Player player) {
+        Inventory inv = player.getInventory();
+        Material phone = Material.IRON_NUGGET;
+        boolean returnval = false;
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && item.getType() == phone) {
+                returnval = true;
+            }
+        }
+        return returnval;
     }
 
 }
