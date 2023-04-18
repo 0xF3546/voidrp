@@ -4,6 +4,7 @@ import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +22,7 @@ public class PhoneUtils {
     public static boolean inPhoneCall(Player player) {
         return phoneCallIsCreated.get(player.getUniqueId().toString()) != null;
     }
-    public static void createTicket(Player player, String reason) {
+    public static void createPhoneConnection(Player player, String reason) {
         phoneCallIsCreated.put(player.getUniqueId().toString(), true);
     }
 
@@ -70,8 +71,10 @@ public class PhoneUtils {
     public static void sendSMS(Player player, int number, StringBuilder message) {
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
-                players.sendMessage("§6SMS §8» §e" + player.getName() + "&8: &7" + message);
-                player.sendMessage("§6SMS §8» §e" + player.getName() + "&8: &7" + message);
+                players.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
+                player.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
+                player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
+                players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
             }
         }
     }

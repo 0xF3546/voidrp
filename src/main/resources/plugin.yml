@@ -73,3 +73,4 @@ commands:
   cp:
     aliases: controlpanel
   sms:
+  call:
