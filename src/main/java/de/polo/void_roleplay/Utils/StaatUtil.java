@@ -56,8 +56,11 @@ public class StaatUtil {
     }
 
     public static void unarrestPlayer(Player player) throws SQLException {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setJailed(false);
+        playerData.setHafteinheiten(0);
         Statement statement = MySQL.getStatement();
-        LocationManager.useLocation(player, "Gefängnis_out");
+        LocationManager.useLocation(player, "gefaengnis_out");
         player.sendMessage("§cGefängnis §8» §7Du wurdest entlassen.");
         statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
     }

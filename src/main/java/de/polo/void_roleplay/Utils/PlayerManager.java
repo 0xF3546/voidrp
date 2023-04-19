@@ -158,7 +158,7 @@ public class PlayerManager {
             onPlayer.remove(uuid);
             statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + " WHERE `uuid` = '" + uuid + "'");
             if (playerData.isJailed()) {
-                statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten` = '" + playerData.getHafteinheiten() + "' WHERE `uuid` = '" + uuid + "'");
+                statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = '" + playerData.getHafteinheiten() + "' WHERE `uuid` = '" + uuid + "'");
             }
             playerDataMap.remove(uuid);
         } else {
@@ -192,8 +192,6 @@ public class PlayerManager {
                 playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
                 if (playerData.getHafteinheiten() <= 0) {
                     StaatUtil.unarrestPlayer(player);
-                    playerData.setHafteinheiten(0);
-                    playerData.setJailed(false);
                 }
             }
             ResultSet result = statement.executeQuery("SELECT `playtime_hours`, `playtime_minutes`, `current_hours`, `needed_hours`, `visum` FROM `players` WHERE `uuid` = '" + uuid + "'");

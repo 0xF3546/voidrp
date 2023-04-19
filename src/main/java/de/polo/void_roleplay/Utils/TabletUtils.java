@@ -125,6 +125,10 @@ public class TabletUtils implements Listener {
                 inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null));
                 inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten", null));
                 inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen", null));
+                PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                if (targetplayerData.isJailed()) {
+                    inv.setItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen", null));
+                }
                 inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
                 for (int i = 0; i < 27; i++) {
                     if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));

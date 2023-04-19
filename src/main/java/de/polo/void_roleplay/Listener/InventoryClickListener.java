@@ -199,6 +199,21 @@ public class InventoryClickListener implements Listener {
                             case REDSTONE:
                                 TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page"));
                                 break;
+                            case BARRIER:
+                                if (playerData.getFactionGrade() >= 5) {
+                                    Player targetlpayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
+                                    StaatUtil.unarrestPlayer(targetlpayer);
+                                    for (Player players : Bukkit.getOnlinePlayers()) {
+                                        PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                                        if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
+                                            players.sendMessage("§cGefängnis §8» §6" + FactionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
+                                        }
+                                    }
+                                    player.closeInventory();
+                                } else {
+                                    player.sendMessage(Main.error_nopermission);
+                                }
+                                break;
                         }
                     } else if (Objects.equals(playerData.getVariable("current_app"), "aktenlist")) {
                         switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {

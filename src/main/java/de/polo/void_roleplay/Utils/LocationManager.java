@@ -71,7 +71,6 @@ public class LocationManager {
     }
 
     public static void useLocation(Player p, String name){
-        System.out.println(name);
         LocationData locationData = locationDataMap.get(" " + name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
         p.teleport(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
