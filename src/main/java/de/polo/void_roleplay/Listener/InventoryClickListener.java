@@ -169,6 +169,9 @@ public class InventoryClickListener implements Listener {
                                 TabletUtils.openAktenList(player, 1);
                                 playerData.setVariable("current_akte", null);
                                 break;
+                            case REDSTONE:
+                                TabletUtils.openTablet(player);
+                                break;
                         }
                     } else if (Objects.equals(playerData.getVariable("current_app"), "playeraktenlist")) {
                         switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
@@ -181,6 +184,9 @@ public class InventoryClickListener implements Listener {
                             case PLAYER_HEAD:
                                 TabletUtils.editPlayerAkte(player, event.getCurrentItem());
                                 break;
+                            case REDSTONE:
+                                TabletUtils.openApp(player, "aktenapp");
+                                break;
                         }
                     } else if (Objects.equals(playerData.getVariable("current_app"), "edit_akte")) {
                         switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
@@ -189,6 +195,9 @@ public class InventoryClickListener implements Listener {
                                 break;
                             case GREEN_DYE:
                                 TabletUtils.openAktenList(player, 1);
+                                break;
+                            case REDSTONE:
+                                TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page"));
                                 break;
                         }
                     } else if (Objects.equals(playerData.getVariable("current_app"), "aktenlist")) {

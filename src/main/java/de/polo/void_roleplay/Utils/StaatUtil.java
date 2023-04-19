@@ -35,7 +35,7 @@ public class StaatUtil {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                 if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                    players.sendMessage("§cGefängnis §8» §7 " + arresterData.getVariable("titel_staat") + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
+                    players.sendMessage("§cGefängnis §8» §7 " + FactionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
                 }
             }
             if (geldstrafe > 0) {
@@ -69,7 +69,7 @@ public class StaatUtil {
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                players.sendMessage("§9Zentrale §8» §7 " + playerData.getVariable("titel_staat") + " " + player.getName() + " hat " + player.getName() + " eine Akte hinzugefügt.");
+                players.sendMessage("§9Zentrale §8» §7 " + FactionManager.getTitle(player) + " " + player.getName() + " hat " + player.getName() + " eine Akte hinzugefügt.");
             }
         }
     }
@@ -81,7 +81,7 @@ public class StaatUtil {
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                players.sendMessage("§9Zentrale §8» §7 " + playerData.getVariable("titel_staat") + " " + player.getName() + " hat " + player.getName() + " eine Akte entfernt.");
+                players.sendMessage("§9Zentrale §8» §7 " + FactionManager.getTitle(player) + " " + player.getName() + " hat " + player.getName() + " eine Akte entfernt.");
             }
         }
         return true;

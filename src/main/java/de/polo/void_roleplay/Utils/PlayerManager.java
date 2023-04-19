@@ -121,15 +121,6 @@ public class PlayerManager {
                 if (name.getString(6) != null) {
                     playerData.setFaction(name.getString(6));
                     playerData.setFactionGrade(name.getInt(7));
-                    switch (name.getString(6)) {
-                        case "FBI":
-                            playerData.setVariable("titel_staat", "Agent");
-                        case "Polizei":
-                            playerData.setVariable("titel_staat", "Officer");
-                        case "Medic":
-                            playerData.setVariable("titel_staat", "Arzt");
-                        default:
-                    }
                 }
                 player.setMaxHealth(30 + ((name.getInt(5) / 5) * 2));
 

@@ -188,4 +188,16 @@ public class FactionManager {
             return false;
         }
     }
+    public static String getTitle(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        switch (playerData.getFaction()) {
+            case "FBI":
+                return "Agent";
+            case "Polizei":
+                return "Officer";
+            case "Medic":
+                return "Arzt";
+        }
+        return null;
+    }
 }
