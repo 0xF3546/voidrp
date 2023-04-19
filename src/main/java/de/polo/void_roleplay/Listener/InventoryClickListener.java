@@ -152,11 +152,40 @@ public class InventoryClickListener implements Listener {
                         switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                             case PLAYER_HEAD:
                                 TabletUtils.openApp(player, "fraktionsapp");
+                                break;
                             case BLUE_DYE:
                                 TabletUtils.openApp(player, "aktenapp");
+                                break;
                         }
                     } else {
-                        //todo apps initalisieren
+                        switch (playerData.getVariable("current_app")) {
+                            case "aktenapp":
+                                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                                    case DIAMOND:
+                                        TabletUtils.openPlayerAktenList(player, 1);
+                                        break;
+                                    case PAPER:
+                                        player.sendMessage(Main.error + "App ist in Entwicklung");
+                                        break;
+                                }
+                            case "playeraktenlist":
+                                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                                    case NETHER_WART:
+                                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
+                                        break;
+                                    case GOLD_NUGGET:
+                                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
+                                        break;
+                                    case PLAYER_HEAD:
+                                        TabletUtils.editPlayerAkte(player, event.getCurrentItem());
+                                        break;
+                                }
+                            case "edit_akte":
+                                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                                    case PAPER:
+                                    case DIAMOND:
+                                }
+                        }
                     }
                 }
     }
