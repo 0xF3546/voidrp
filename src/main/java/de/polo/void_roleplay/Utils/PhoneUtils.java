@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class PhoneUtils {
     public static HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
@@ -66,12 +67,17 @@ public class PhoneUtils {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
-                if (VertragUtil.setVertrag(player, players, "phonecall", String.valueOf(playerData.getNumber()))) {
-                    ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
-                    ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
-                    player.sendMessage("§6Handy §8»§e Du rufst §l" + number + "§e an.");
-                    players.sendMessage("§6Handy §8»§eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
-                    playerData.setVariable("calling", "Ja");
+                if (VertragUtil.setVertrag(player, players, "phonecall", players.getUniqueId().toString())) {
+                    if (PhoneUtils.hasPhone(players)) {
+                        ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
+                        ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
+                        player.sendMessage("§6Handy §8»§e Du rufst §l" + number + "§e an.");
+                        players.sendMessage("§6Handy §8»§eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
+                        playerData.setVariable("calling", "Ja");
+                        VertragUtil.sendInfoMessage(players);
+                    } else {
+                        player.sendMessage(Main.error + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
+                    }
                 } else {
                     player.sendMessage(Main.error + "Dein Handy konnte keine Verbindung aufbauen. §o(Systemfehler)");
                 }
@@ -82,20 +88,61 @@ public class PhoneUtils {
     public static void sendSMS(Player player, int number, StringBuilder message) {
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
-                players.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
-                player.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
-                player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
-                players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
+                if (PhoneUtils.hasPhone(players)) {
+                    players.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
+                    player.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
+                    player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
+                    players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
+                } else {
+                    player.sendMessage(Main.error + "§6Handy §8» §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen.");
+                }
             }
         }
     }
 
-    public static void acceptCall(Player player) {
-        //todo connection erstellen und messages senden
+    public static void acceptCall(Player player, String targetuuid) {
+        if (PhoneUtils.hasPhone(player)) {
+            Player targetplayer = Bukkit.getPlayer(targetuuid);
+            if (PhoneUtils.hasPhone(targetplayer)) {
+                targetplayer.sendMessage("§6Handy §8 » §7" + player.getName() + " hat dein Anruf angenommen");
+                targetplayer.sendMessage("§6Handy §8 » §7Du hast den Anruf von " + player.getName() + " angenommen");
+                isInCallConnection.put(targetuuid, true);
+                isInCallConnection.put(player.getUniqueId().toString(), true);
+                phoneCallConnection.put(player.getUniqueId().toString(), targetuuid);
+                phoneCallConnection.put(targetuuid, player.getUniqueId().toString());
+            }
+        } else {
+            player.sendMessage(PhoneUtils.error_nophone);
+        }
     }
 
-    public static void denyCall(Player player) {
-        //todo pre-connection löschen und messages senden
+    public static void denyCall(Player player, String targetuuid) {
+        if (PhoneUtils.hasPhone(player)) {
+            Player targetplayer = Bukkit.getPlayer(targetuuid);
+            if (PhoneUtils.hasPhone(targetplayer)) {
+                targetplayer.sendMessage("§6Handy §8 » §7" + player.getName() + " hat dein Anruf abgelehnt");
+                targetplayer.sendMessage("§6Handy §8 » §7Du hast den Anruf von " + player.getName() + " abgelehnt");
+            }
+        } else {
+            player.sendMessage(PhoneUtils.error_nophone);
+        }
+    }
+
+    public static void closeCall(Player player) {
+        if (isInCallConnection.get(player.getUniqueId().toString())) {
+            for (Player player1 : Bukkit.getOnlinePlayers()) {
+                if (Objects.equals(phoneCallConnection.get(player1.getUniqueId().toString()), player.getUniqueId().toString())) {
+                    isInCallConnection.remove(player1.getUniqueId().toString());
+                    isInCallConnection.remove(player.getUniqueId().toString());
+                    phoneCallConnection.remove(player1.getUniqueId().toString());
+                    phoneCallConnection.remove(player.getUniqueId().toString());
+                    player.sendMessage("§6Handy §8 »§7 Du hast aufgelegt.");
+                    player1.sendMessage("§6Handy §8 »§7 " + player.getName() + " hat aufgelegt.");
+                }
+            }
+        } else {
+            player.sendMessage("§6Handy §8 »§7 Du bist in keinem Anruf.");
+        }
     }
 
     public static boolean hasPhone(Player player) {

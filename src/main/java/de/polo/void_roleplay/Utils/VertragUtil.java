@@ -57,7 +57,10 @@ public class VertragUtil {
                     String[] args = curr.split("_");
                     Integer haus = Integer.valueOf(args[0]);
                     Integer preis = Integer.valueOf(args[1]);
+                case "phonecall":
+                    PhoneUtils.acceptCall(player, curr);
             }
+            deleteVertrag(player);
         } else {
             player.sendMessage(Main.error + "Dir wird nichts angeboten.");
         }
@@ -68,7 +71,10 @@ public class VertragUtil {
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.sendMessageToFaction(curr, player.getName() + "wurde eingeladen und ist §cnicht§7 beigetreten.");
+                case "phonecall":
+                    PhoneUtils.denyCall(player, curr);
             }
+            deleteVertrag(player);
         } else {
             player.sendMessage(Main.error + "Dir wird nichts angeboten.");
         }
