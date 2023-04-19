@@ -123,6 +123,7 @@ public final class Main extends JavaPlugin {
         getCommand("cp").setExecutor(new cpCommand());
         getCommand("sms").setExecutor(new smsCommand());
         getCommand("call").setExecutor(new callCommand());
+        getCommand("auflegen").setExecutor(new auflegenCommand());
     }
 
 
