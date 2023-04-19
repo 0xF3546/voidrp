@@ -35,30 +35,33 @@ public class InventoryClickListener implements Listener {
                 if (event.getView().getTitle().equalsIgnoreCase("§8» §c" + LocationManager.getShopNameById(f))) {
                     event.setCancelled(true);
                     for (Object[] row : Shop.shop_items) {
-                        if (event.getCurrentItem().getType() == Material.valueOf((String) row[2]) && event.getCurrentItem().getType() != null) {
-                            if (PlayerManager.money(player) >= (int) row[4]) {
-                                try {
-                                    if (Objects.equals(row[5].toString(), "weapon")) {
-                                        String weapon = row[3].toString().replace("&", "").replace("6", "");
-                                        Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType());
-                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
-                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
-                                    } else if (Objects.equals(row[5].toString(), "ammo")) {
-                                        String ammo = row[3].toString().replace("&", "").replace("6", "");
-                                        Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
-                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
-                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
-                                    } else {
-                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
-                                        player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
-                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                        int shop = LocationManager.isNearShop(player);
+                        if ((int) row[1] == shop) {
+                            if (event.getCurrentItem().getType() == Material.valueOf((String) row[2]) && event.getCurrentItem().getType() != null) {
+                                if (PlayerManager.money(player) >= (int) row[4]) {
+                                    try {
+                                        if (Objects.equals(row[5].toString(), "weapon")) {
+                                            String weapon = row[3].toString().replace("&", "").replace("6", "");
+                                            Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType());
+                                            player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                            PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
+                                        } else if (Objects.equals(row[5].toString(), "ammo")) {
+                                            String ammo = row[3].toString().replace("&", "").replace("6", "");
+                                            Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
+                                            player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                            PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
+                                        } else {
+                                            PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
+                                            player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
+                                            player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        }
+                                    } catch (SQLException e) {
+                                        player.sendMessage(Main.error + "Fehler. Bitte kontaktiere die Entwicklung.");
+                                        throw new RuntimeException(e);
                                     }
-                                } catch (SQLException e) {
-                                    player.sendMessage(Main.error + "Fehler. Bitte kontaktiere die Entwicklung.");
-                                    throw new RuntimeException(e);
+                                } else {
+                                    player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Du hast leider nicht genug Bargeld.");
                                 }
-                            } else {
-                                player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Du hast leider nicht genug Bargeld.");
                             }
                         }
                         i++;
