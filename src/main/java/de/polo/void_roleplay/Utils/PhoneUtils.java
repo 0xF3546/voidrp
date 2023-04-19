@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 public class PhoneUtils {
     public static HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
@@ -73,7 +74,7 @@ public class PhoneUtils {
                         ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
                         player.sendMessage("§6Handy §8»§e Du rufst §l" + number + "§e an.");
                         players.sendMessage("§6Handy §8»§eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
-                        playerData.setVariable("calling", "Ja");
+                        playerData.setVariable("calling", players.getUniqueId().toString());
                         VertragUtil.sendInfoMessage(players);
                     } else {
                         player.sendMessage(Main.error + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
@@ -102,7 +103,8 @@ public class PhoneUtils {
 
     public static void acceptCall(Player player, String targetuuid) {
         if (PhoneUtils.hasPhone(player)) {
-            Player targetplayer = Bukkit.getPlayer(targetuuid);
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
+            assert targetplayer != null;
             if (PhoneUtils.hasPhone(targetplayer)) {
                 targetplayer.sendMessage("§6Handy §8 » §7" + player.getName() + " hat dein Anruf angenommen");
                 targetplayer.sendMessage("§6Handy §8 » §7Du hast den Anruf von " + player.getName() + " angenommen");
@@ -118,7 +120,8 @@ public class PhoneUtils {
 
     public static void denyCall(Player player, String targetuuid) {
         if (PhoneUtils.hasPhone(player)) {
-            Player targetplayer = Bukkit.getPlayer(targetuuid);
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
+            assert targetplayer != null;
             if (PhoneUtils.hasPhone(targetplayer)) {
                 targetplayer.sendMessage("§6Handy §8 » §7" + player.getName() + " hat dein Anruf abgelehnt");
                 targetplayer.sendMessage("§6Handy §8 » §7Du hast den Anruf von " + player.getName() + " abgelehnt");
@@ -129,7 +132,8 @@ public class PhoneUtils {
     }
 
     public static void closeCall(Player player) {
-        if (isInCallConnection.get(player.getUniqueId().toString())) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (isInCallConnection.get(player.getUniqueId().toString()) != null) {
             for (Player player1 : Bukkit.getOnlinePlayers()) {
                 if (Objects.equals(phoneCallConnection.get(player1.getUniqueId().toString()), player.getUniqueId().toString())) {
                     isInCallConnection.remove(player1.getUniqueId().toString());
@@ -138,6 +142,15 @@ public class PhoneUtils {
                     phoneCallConnection.remove(player.getUniqueId().toString());
                     player.sendMessage("§6Handy §8 »§7 Du hast aufgelegt.");
                     player1.sendMessage("§6Handy §8 »§7 " + player.getName() + " hat aufgelegt.");
+                }
+            }
+        } else if (playerData.getVariable("calling") != null) {
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                if (playerData.getVariable("calling").equals(players.getUniqueId().toString())) {
+                    VertragUtil.deleteVertrag(player);
+                    VertragUtil.deleteVertrag(players);
+                    player.sendMessage("§6Handy §8 »§7 Du hast aufgelegt.");
+                    players.sendMessage("§6Handy §8 »§7§l " + playerData.getNumber() + "§7 hat aufgelegt.");
                 }
             }
         } else {
