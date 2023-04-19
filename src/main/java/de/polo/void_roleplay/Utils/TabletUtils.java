@@ -113,7 +113,7 @@ public class TabletUtils implements Listener {
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §c" + targetplayer.getName());
                 inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null));
                 inv.setItem(10, ItemManager.createItem(Material.PAPER, 1, 0, "§9Offene Akten", null));
-                inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§9Akte hinzufügen", null));
+                inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen", null));
                 for (int i = 0; i < 27; i++) {
                     if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
                 }
@@ -122,5 +122,29 @@ public class TabletUtils implements Listener {
             player.closeInventory();
             player.sendMessage(Main.error + "Spieler konnte nicht geladen werden.");
         }
+    }
+
+    public static void openAktenList(Player player, int page) throws SQLException {
+        if (page <= 0) return;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        playerData.setVariable("current_app", "aktenlist");
+        playerData.setIntVariable("current_page", page);
+        Statement statement = MySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten`");
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
+        int i = 0;
+        while (result.next()) {
+            if (i == 26 && i == 18) {
+                i++;
+            } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
+                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3) + "\n\n§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
+                i++;
+            }
+            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        }
+        result.close();
+        player.openInventory(inv);
     }
 }

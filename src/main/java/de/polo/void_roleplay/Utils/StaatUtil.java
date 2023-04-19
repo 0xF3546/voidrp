@@ -69,7 +69,7 @@ public class StaatUtil {
 
     public static boolean removeAkteFromPlayer(Player player, int id) throws SQLException {
         Statement statement = MySQL.getStatement();
-        statement.executeQuery("DELETE * FROM `player_akten` WHERE `id` = " + id + "");
+        statement.executeQuery("DELETE * FROM `player_akten` WHERE `id` = " + id);
         return true;
     }
 }

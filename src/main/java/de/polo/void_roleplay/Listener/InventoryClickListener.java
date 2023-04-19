@@ -157,36 +157,49 @@ public class InventoryClickListener implements Listener {
                                 TabletUtils.openApp(player, "aktenapp");
                                 break;
                         }
-                    } else {
-                        switch (playerData.getVariable("current_app")) {
-                            case "aktenapp":
-                                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                                    case DIAMOND:
-                                        TabletUtils.openPlayerAktenList(player, 1);
-                                        break;
-                                    case PAPER:
-                                        player.sendMessage(Main.error + "App ist in Entwicklung");
-                                        break;
+                    } else if (Objects.equals(playerData.getVariable("current_app"), "aktenapp")) {
+                        switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                            case DIAMOND:
+                                TabletUtils.openPlayerAktenList(player, 1);
+                                break;
+                            case PAPER:
+                                TabletUtils.openAktenList(player, 1);
+                                break;
+                        }
+                    } else if (Objects.equals(playerData.getVariable("current_app"), "playeraktenlist")) {
+                        switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                            case NETHER_WART:
+                                TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
+                                break;
+                            case GOLD_NUGGET:
+                                TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
+                                break;
+                            case PLAYER_HEAD:
+                                TabletUtils.editPlayerAkte(player, event.getCurrentItem());
+                                break;
+                        }
+                    } else if (Objects.equals(playerData.getVariable("current_app"), "edit_akte")) {
+                        switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                            case PAPER:
+                            case GREEN_DYE:
+                                TabletUtils.openAktenList(player, 1);
+                                break;
+                        }
+                    } else if (Objects.equals(playerData.getVariable("current_app"), "aktenlist")) {
+                        switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                            case NETHER_WART:
+                                TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") - 1);
+                                break;
+                            case GOLD_NUGGET:
+                                TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") + 1);
+                                break;
+                            case PAPER:
+                                if (playerData.getVariable("current_akte") != null) {
+
                                 }
-                            case "playeraktenlist":
-                                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                                    case NETHER_WART:
-                                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
-                                        break;
-                                    case GOLD_NUGGET:
-                                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
-                                        break;
-                                    case PLAYER_HEAD:
-                                        TabletUtils.editPlayerAkte(player, event.getCurrentItem());
-                                        break;
-                                }
-                            case "edit_akte":
-                                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                                    case PAPER:
-                                    case DIAMOND:
-                                }
+                                break;
                         }
                     }
+                    }
                 }
-    }
 }
