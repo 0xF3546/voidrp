@@ -24,6 +24,7 @@ import javax.naming.Name;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -141,7 +142,7 @@ public class TabletUtils implements Listener {
             if (i == 26 && i == 18) {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
-                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3) + "\n\n§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
+                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "Lädt..."));
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 NamespacedKey akte = new NamespacedKey(Main.plugin, "akte");
                 NamespacedKey hafteinheiten = new NamespacedKey(Main.plugin, "hafteinheiten");
@@ -150,6 +151,7 @@ public class TabletUtils implements Listener {
                 meta.getPersistentDataContainer().set(akte, PersistentDataType.STRING, result.getString(2));
                 meta.getPersistentDataContainer().set(hafteinheiten, PersistentDataType.INTEGER, result.getInt(3));
                 meta.getPersistentDataContainer().set(geldstrafe, PersistentDataType.INTEGER, result.getInt(4));
+                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
                 Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
             }
@@ -173,10 +175,11 @@ public class TabletUtils implements Listener {
             if (i == 26 && i == 18) {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
-                inv.setItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), "§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3) + "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
+                inv.setItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), "Lädt..."));
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 NamespacedKey id = new NamespacedKey(Main.plugin, "id");
                 assert meta != null;
+                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
                 meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
                 Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;

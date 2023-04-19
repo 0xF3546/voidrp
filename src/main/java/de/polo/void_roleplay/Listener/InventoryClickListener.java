@@ -211,7 +211,7 @@ public class InventoryClickListener implements Listener {
                                     int newGeldstrafe = meta.getPersistentDataContainer().get(geldstrafe, PersistentDataType.INTEGER);
                                     StaatUtil.addAkteToPlayer(player, targetplayer, newHafteinheiten, newAkte, newGeldstrafe);
                                     player.sendMessage("§9Zentrale §8» §7Akte wurde für " + targetplayer.getName() + " hinzugefügt.");
-                                    player.sendMessage("§9Zentrale §8» §7Akte: " + newAkte + " §8-§7 Hafteinheiten: " + newHafteinheiten + "§8 - §7Geldstrafe: " + newGeldstrafe + "§.");
+                                    player.sendMessage("§9Zentrale §8» §7Akte: " + newAkte + " §8-§7 Hafteinheiten: " + newHafteinheiten + "§8 - §7Geldstrafe: " + newGeldstrafe + "$.");
                                 }
                                 break;
                         }
