@@ -28,7 +28,7 @@ public class arrestCommand implements CommandExecutor {
                     if (targetplayer.isOnline()) {
                         try {
                             if (StaatUtil.arrestPlayer(targetplayer, player)) {
-                                player.sendMessage(factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
+                                player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
                             } else {
                                 player.sendMessage(Main.error + targetplayer.getName() + " hat keine offene Akte mit Hafteinheiten.");
                             }

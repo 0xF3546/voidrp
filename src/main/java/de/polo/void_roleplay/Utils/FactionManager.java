@@ -145,6 +145,7 @@ public class FactionManager {
         factionData.setBank(factionData.getBank() + amount);
         Statement statement = MySQL.getStatement();
         statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`) VALUES ('einzahlung', '" + faction + "', " + amount + ", '" + reason + "')");
+        statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
         return true;
     }
     public static boolean removeFactionMoney(String faction, Integer amount, String reason) throws SQLException {
@@ -154,6 +155,7 @@ public class FactionManager {
             factionData.setBank(factionData.getBank() - amount);
             Statement statement = MySQL.getStatement();
             statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`) VALUES ('auszahlung', '" + faction + "', " + amount + ", '" + reason + "')");
+            statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
             returnval = true;
         }
         return returnval;

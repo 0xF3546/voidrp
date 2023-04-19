@@ -72,20 +72,14 @@ public class LocationManager {
 
     public static void useLocation(Player p, String name){
         System.out.println(name);
-        LocationData locationData = locationDataMap.get(name.toLowerCase());
+        LocationData locationData = locationDataMap.get(" " + name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
-        p.teleport(new Location(welt, locationData.getX(), locationData.getY() + 1, locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
+        p.teleport(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
     }
 
     public static double getDistanceBetweenCoords(Player player, String name) {
         LocationData locationData = locationDataMap.get(" " + name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
-        System.out.println(welt);
-        System.out.println(locationData.getX());
-        System.out.println(locationData.getY());
-        System.out.println(locationData.getZ());
-        System.out.println(locationData.getYaw());
-        System.out.println(locationData.getPitch());
         return player.getLocation().distance(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
     }
 

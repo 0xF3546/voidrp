@@ -20,7 +20,7 @@ public class tptoCommand implements CommandExecutor {
                 for (String arg : args) {
                     message.append(" ").append(arg);
                 }
-                LocationManager.useLocation(player, String.valueOf(message));
+                LocationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
                 player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + message + "§7 teleportiert.");
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /tpto [Punkt]");

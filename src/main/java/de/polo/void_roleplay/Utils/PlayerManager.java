@@ -100,6 +100,8 @@ public class PlayerManager {
                 if (name.getBoolean(14))  playerData.setDeathTime(name.getInt(15));
                 if (name.getInt(16) != 0) playerData.setNumber(name.getInt(16));
 
+                playerData.setCanInteract(true);
+
                 updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 payday.put(player.getUniqueId().toString(), -1);
                 if (name.getInt(8) >= 60) {

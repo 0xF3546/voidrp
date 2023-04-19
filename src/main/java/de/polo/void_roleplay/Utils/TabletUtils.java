@@ -146,7 +146,7 @@ public class TabletUtils implements Listener {
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
         int i = 0;
         while (result.next()) {
-            if (i == 26 && i == 18) {
+            if (i == 26 && i == 18 && i == 22) {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
                 inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "Lädt..."));
@@ -164,6 +164,7 @@ public class TabletUtils implements Listener {
             }
             inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
             inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
         }
         result.close();
         player.openInventory(inv);
@@ -179,7 +180,7 @@ public class TabletUtils implements Listener {
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
         int i = 0;
         while (result.next()) {
-            if (i == 26 && i == 18) {
+            if (i == 26 && i == 18 && i == 22) {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
                 inv.setItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), "Lädt..."));
@@ -191,9 +192,10 @@ public class TabletUtils implements Listener {
                 Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
             }
-            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
         }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
         result.close();
         player.openInventory(inv);
     }

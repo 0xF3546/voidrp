@@ -223,6 +223,9 @@ public class InventoryClickListener implements Listener {
                                     player.sendMessage("§9Zentrale §8» §7Akte: " + newAkte + " §8-§7 Hafteinheiten: " + newHafteinheiten + "§8 - §7Geldstrafe: " + newGeldstrafe + "$.");
                                 }
                                 break;
+                            case REDSTONE:
+                                TabletUtils.openApp(player, "aktenapp");
+                                break;
                         }
                     } else if (Objects.equals(playerData.getVariable("current_app"), "player_aktenlist")) {
                         switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
@@ -243,6 +246,9 @@ public class InventoryClickListener implements Listener {
                                     event.getCurrentItem().setType(Material.BLACK_STAINED_GLASS_PANE);
                                     player.sendMessage("§9Zentrale §8» §7Akte von " + targetplayer.getName() + " entfernt.");
                                 }
+                                break;
+                            case REDSTONE:
+                                TabletUtils.openAktenList(player, 1);
                                 break;
                         }
                     }

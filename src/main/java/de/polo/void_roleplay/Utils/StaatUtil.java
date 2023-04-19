@@ -16,22 +16,22 @@ public class StaatUtil {
         ResultSet result = statement.executeQuery("SELECT `hafteinheiten`, `akte`, `geldstrafe` FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
         int hafteinheiten = 0;
         int geldstrafe = 0;
-        StringBuilder reason = null;
+        StringBuilder reason = new StringBuilder();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         PlayerData arresterData = PlayerManager.playerDataMap.get(arrester.getUniqueId().toString());
         while (result.next()) {
-            hafteinheiten = hafteinheiten + result.getInt(1);
+            hafteinheiten += result.getInt(1);
             assert false;
-            reason.append(", ").append(result.getString(2));
-            geldstrafe = geldstrafe + result.getInt(3);
+            reason.append(result.getString(2)).append(", ");
+            geldstrafe += result.getInt(3);
         }
         if (hafteinheiten > 0) {
-            LocationManager.useLocation(player, "Gefängnis");
+            LocationManager.useLocation(player, "gefaengnis");
             player.sendMessage("§cGefängnis §8» §7Du wurdest für §6" + hafteinheiten + " Hafteinheiten§7 inhaftiert.");
             player.sendMessage("§cGefängnis §8» §7Tatvorwürfe§8:§7 " + reason + ".");
             playerData.setJailed(true);
             playerData.setHafteinheiten(hafteinheiten);
-            FactionManager.addFactionMoney(arresterData.getFaction(), 75, "Inhaftierung von " + player.getName() + " durch" + arrester.getName());
+            FactionManager.addFactionMoney(arresterData.getFaction(), 75, "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                 if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
@@ -47,8 +47,8 @@ public class StaatUtil {
                     player.sendMessage("§cGefängnis §8» §7Strafzahlung§8:§7 " + geldstrafe + "$.");
                 }
             }
-            statement.executeQuery("DELETE FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
-            statement.executeQuery("INSERT INTO `Jail` (`uuid`, `hafteinheiten`, `reason`, `hafteinheiten_verbleibend`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + reason + "', " + hafteinheiten + ")");
+            statement.execute("DELETE FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+            statement.execute("INSERT INTO `Jail` (`uuid`, `hafteinheiten`, `reason`, `hafteinheiten_verbleibend`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + reason + "', " + hafteinheiten + ")");
             return true;
         } else {
             return false;
@@ -59,7 +59,7 @@ public class StaatUtil {
         Statement statement = MySQL.getStatement();
         LocationManager.useLocation(player, "Gefängnis_out");
         player.sendMessage("§cGefängnis §8» §7Du wurdest entlassen.");
-        statement.executeQuery("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
     }
 
     public static void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) throws SQLException {
