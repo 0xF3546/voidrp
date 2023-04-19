@@ -9,11 +9,14 @@ import de.polo.void_roleplay.commands.adminmenuCommand;
 import de.polo.void_roleplay.commands.openBossMenuCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -164,6 +167,7 @@ public class InventoryClickListener implements Listener {
                                 break;
                             case PAPER:
                                 TabletUtils.openAktenList(player, 1);
+                                playerData.setVariable("current_akte", null);
                                 break;
                         }
                     } else if (Objects.equals(playerData.getVariable("current_app"), "playeraktenlist")) {
@@ -195,7 +199,36 @@ public class InventoryClickListener implements Listener {
                                 break;
                             case PAPER:
                                 if (playerData.getVariable("current_akte") != null) {
-
+                                    ItemMeta meta = event.getCurrentItem().getItemMeta();
+                                    NamespacedKey akte = new NamespacedKey(Main.plugin, "akte");
+                                    NamespacedKey hafteinheiten = new NamespacedKey(Main.plugin, "hafteinheiten");
+                                    NamespacedKey geldstrafe = new NamespacedKey(Main.plugin, "geldstrafe");
+                                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
+                                    String newAkte = meta.getPersistentDataContainer().get(akte, PersistentDataType.STRING);
+                                    int newHafteinheiten = meta.getPersistentDataContainer().get(hafteinheiten, PersistentDataType.INTEGER);
+                                    int newGeldstrafe = meta.getPersistentDataContainer().get(geldstrafe, PersistentDataType.INTEGER);
+                                    StaatUtil.addAkteToPlayer(player, targetplayer, newHafteinheiten, newAkte, newGeldstrafe);
+                                    player.sendMessage("akte hinzugefügt: hafteinheiten: " + newHafteinheiten + " akte: " + newAkte + " geldstrafe: " + newGeldstrafe);
+                                }
+                                break;
+                        }
+                    } else if (Objects.equals(playerData.getVariable("current_app"), "player_aktenlist")) {
+                        switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                            case NETHER_WART:
+                                TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
+                                break;
+                            case GOLD_NUGGET:
+                                TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
+                                break;
+                            case PAPER:
+                                if (playerData.getVariable("current_akte") != null) {
+                                    ItemMeta meta = event.getCurrentItem().getItemMeta();
+                                    NamespacedKey id = new NamespacedKey(Main.plugin, "id");
+                                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
+                                    assert meta != null;
+                                    int newId = meta.getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
+                                    StaatUtil.removeAkteFromPlayer(player, newId);
+                                    event.getCurrentItem().setType(Material.BLACK_STAINED_GLASS_PANE);
                                 }
                                 break;
                         }

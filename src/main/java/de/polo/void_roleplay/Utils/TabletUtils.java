@@ -7,6 +7,7 @@ import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.commands.openBossMenuCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,8 +16,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
+import javax.naming.Name;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -127,7 +131,6 @@ public class TabletUtils implements Listener {
     public static void openAktenList(Player player, int page) throws SQLException {
         if (page <= 0) return;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
         playerData.setVariable("current_app", "aktenlist");
         playerData.setIntVariable("current_page", page);
         Statement statement = MySQL.getStatement();
@@ -139,6 +142,43 @@ public class TabletUtils implements Listener {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
                 inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3) + "\n\n§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
+                ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
+                NamespacedKey akte = new NamespacedKey(Main.plugin, "akte");
+                NamespacedKey hafteinheiten = new NamespacedKey(Main.plugin, "hafteinheiten");
+                NamespacedKey geldstrafe = new NamespacedKey(Main.plugin, "geldstrafe");
+                assert meta != null;
+                meta.getPersistentDataContainer().set(akte, PersistentDataType.STRING, result.getString(2));
+                meta.getPersistentDataContainer().set(hafteinheiten, PersistentDataType.INTEGER, result.getInt(3));
+                meta.getPersistentDataContainer().set(geldstrafe, PersistentDataType.INTEGER, result.getInt(4));
+                Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                i++;
+            }
+            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        }
+        result.close();
+        player.openInventory(inv);
+    }
+
+    public static void openPlayerAkte(Player player, int page) throws SQLException {
+        if (page <= 0) return;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setVariable("current_app", "player_aktenlist");
+        playerData.setIntVariable("current_page", page);
+        Statement statement = MySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch` FROM `akten` WHERE `uuid` = '" + playerData.getVariable("current_akte") + "'");
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
+        int i = 0;
+        while (result.next()) {
+            if (i == 26 && i == 18) {
+                i++;
+            } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
+                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3) + "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
+                ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
+                NamespacedKey id = new NamespacedKey(Main.plugin, "id");
+                assert meta != null;
+                meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
+                Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
             }
             inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));

@@ -64,12 +64,12 @@ public class StaatUtil {
 
     public static void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) throws SQLException {
         Statement statement = MySQL.getStatement();
-        statement.executeQuery("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
+        statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
     }
 
     public static boolean removeAkteFromPlayer(Player player, int id) throws SQLException {
         Statement statement = MySQL.getStatement();
-        statement.executeQuery("DELETE * FROM `player_akten` WHERE `id` = " + id);
+        statement.execute("DELETE * FROM `player_akten` WHERE `id` = " + id);
         return true;
     }
 }
