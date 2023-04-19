@@ -185,8 +185,8 @@ public class InventoryClickListener implements Listener {
                     } else if (Objects.equals(playerData.getVariable("current_app"), "edit_akte")) {
                         switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                             case BOOK:
-                                Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
-                                TabletUtils.openPlayerAkte(targetplayer, 1);
+                                TabletUtils.openPlayerAkte(player, 1);
+                                break;
                             case GREEN_DYE:
                                 TabletUtils.openAktenList(player, 1);
                                 break;

@@ -47,7 +47,7 @@ public class StaatUtil {
                     player.sendMessage("§cGefängnis §8» §7Strafzahlung§8:§7 " + geldstrafe + "$.");
                 }
             }
-            statement.executeQuery("DELETE * FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+            statement.executeQuery("DELETE FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
             statement.executeQuery("INSERT INTO `Jail` (`uuid`, `hafteinheiten`, `reason`, `hafteinheiten_verbleibend`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + reason + "', " + hafteinheiten + ")");
             return true;
         } else {
@@ -59,7 +59,7 @@ public class StaatUtil {
         Statement statement = MySQL.getStatement();
         LocationManager.useLocation(player, "Gefängnis_out");
         player.sendMessage("§cGefängnis §8» §7Du wurdest entlassen.");
-        statement.executeQuery("DELETE * FROM `Jail` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        statement.executeQuery("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
     }
 
     public static void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) throws SQLException {
@@ -69,7 +69,7 @@ public class StaatUtil {
 
     public static boolean removeAkteFromPlayer(Player player, int id) throws SQLException {
         Statement statement = MySQL.getStatement();
-        statement.execute("DELETE * FROM `player_akten` WHERE `id` = " + id);
+        statement.execute("DELETE FROM `player_akten` WHERE `id` = " + id);
         return true;
     }
 }
