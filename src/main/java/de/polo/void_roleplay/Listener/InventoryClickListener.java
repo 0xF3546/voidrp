@@ -184,7 +184,9 @@ public class InventoryClickListener implements Listener {
                         }
                     } else if (Objects.equals(playerData.getVariable("current_app"), "edit_akte")) {
                         switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                            case PAPER:
+                            case BOOK:
+                                Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
+                                TabletUtils.openPlayerAkte(targetplayer, 1);
                             case GREEN_DYE:
                                 TabletUtils.openAktenList(player, 1);
                                 break;
@@ -220,7 +222,7 @@ public class InventoryClickListener implements Listener {
                             case GOLD_NUGGET:
                                 TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
                                 break;
-                            case PAPER:
+                            case WRITTEN_BOOK:
                                 if (playerData.getVariable("current_akte") != null) {
                                     ItemMeta meta = event.getCurrentItem().getItemMeta();
                                     NamespacedKey id = new NamespacedKey(Main.plugin, "id");

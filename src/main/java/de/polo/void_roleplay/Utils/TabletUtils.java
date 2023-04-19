@@ -116,7 +116,7 @@ public class TabletUtils implements Listener {
             playerData.setVariable("current_akte", targetplayer.getUniqueId().toString());
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §c" + targetplayer.getName());
                 inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null));
-                inv.setItem(10, ItemManager.createItem(Material.PAPER, 1, 0, "§9Offene Akten", null));
+                inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten", null));
                 inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen", null));
                 for (int i = 0; i < 27; i++) {
                     if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
@@ -166,14 +166,14 @@ public class TabletUtils implements Listener {
         playerData.setVariable("current_app", "player_aktenlist");
         playerData.setIntVariable("current_page", page);
         Statement statement = MySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch` FROM `akten` WHERE `uuid` = '" + playerData.getVariable("current_akte") + "'");
+        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch` FROM `player_akten` WHERE `uuid` = '" + playerData.getVariable("current_akte") + "'");
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
         int i = 0;
         while (result.next()) {
             if (i == 26 && i == 18) {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
-                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3) + "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
+                inv.setItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), "§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3) + "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 NamespacedKey id = new NamespacedKey(Main.plugin, "id");
                 assert meta != null;
