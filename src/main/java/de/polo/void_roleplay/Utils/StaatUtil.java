@@ -65,11 +65,25 @@ public class StaatUtil {
     public static void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) throws SQLException {
         Statement statement = MySQL.getStatement();
         statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+            if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
+                players.sendMessage("§9Zentrale §8» §7 " + playerData.getVariable("titel_staat") + " " + player.getName() + " hat " + player.getName() + " eine Akte hinzugefügt.");
+            }
+        }
     }
 
     public static boolean removeAkteFromPlayer(Player player, int id) throws SQLException {
         Statement statement = MySQL.getStatement();
         statement.execute("DELETE FROM `player_akten` WHERE `id` = " + id);
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+            if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
+                players.sendMessage("§9Zentrale §8» §7 " + playerData.getVariable("titel_staat") + " " + player.getName() + " hat " + player.getName() + " eine Akte entfernt.");
+            }
+        }
         return true;
     }
 }

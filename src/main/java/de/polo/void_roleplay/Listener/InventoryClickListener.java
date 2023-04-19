@@ -210,7 +210,8 @@ public class InventoryClickListener implements Listener {
                                     int newHafteinheiten = meta.getPersistentDataContainer().get(hafteinheiten, PersistentDataType.INTEGER);
                                     int newGeldstrafe = meta.getPersistentDataContainer().get(geldstrafe, PersistentDataType.INTEGER);
                                     StaatUtil.addAkteToPlayer(player, targetplayer, newHafteinheiten, newAkte, newGeldstrafe);
-                                    player.sendMessage("akte hinzugefügt: hafteinheiten: " + newHafteinheiten + " akte: " + newAkte + " geldstrafe: " + newGeldstrafe);
+                                    player.sendMessage("§9Zentrale §8» §7Akte wurde für " + targetplayer.getName() + " hinzugefügt.");
+                                    player.sendMessage("§9Zentrale §8» §7Akte: " + newAkte + " §8-§7 Hafteinheiten: " + newHafteinheiten + "§8 - §7Geldstrafe: " + newGeldstrafe + "§.");
                                 }
                                 break;
                         }
@@ -231,6 +232,7 @@ public class InventoryClickListener implements Listener {
                                     int newId = meta.getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
                                     StaatUtil.removeAkteFromPlayer(player, newId);
                                     event.getCurrentItem().setType(Material.BLACK_STAINED_GLASS_PANE);
+                                    player.sendMessage("§9Zentrale §8» §7Akte von " + targetplayer.getName() + " entfernt.");
                                 }
                                 break;
                         }
