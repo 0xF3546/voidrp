@@ -70,6 +70,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new playerVoteListener(), this);
         getServer().getPluginManager().registerEvents(new respawnListener(), this);
         getServer().getPluginManager().registerEvents(new playerMoveListener(), this);
+        getServer().getPluginManager().registerEvents(new TabletUtils(), this);
     }
 
     private void registerCommands(){

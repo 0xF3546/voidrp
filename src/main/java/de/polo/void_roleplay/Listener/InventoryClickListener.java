@@ -146,5 +146,18 @@ public class InventoryClickListener implements Listener {
                             player.performCommand("ablehnen");
                     }
                 }
+                if (Objects.equals(playerData.getVariable("current_inventory"), "tablet")) {
+                    event.setCancelled(true);
+                    if (playerData.getVariable("current_app") == null) {
+                        switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                            case PLAYER_HEAD:
+                                TabletUtils.openApp(player, "fraktionsapp");
+                            case BLUE_DYE:
+                                TabletUtils.openApp(player, "aktenapp");
+                        }
+                    } else {
+                        //todo apps initalisieren
+                    }
+                }
     }
 }
