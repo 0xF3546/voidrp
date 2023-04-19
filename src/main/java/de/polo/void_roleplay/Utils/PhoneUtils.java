@@ -76,6 +76,7 @@ public class PhoneUtils {
                         players.sendMessage("§6Handy §8»§eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
                         playerData.setVariable("calling", players.getUniqueId().toString());
                         VertragUtil.sendInfoMessage(players);
+                        players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
                     } else {
                         player.sendMessage(Main.error + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
                     }
@@ -102,16 +103,19 @@ public class PhoneUtils {
     }
 
     public static void acceptCall(Player player, String targetuuid) {
+        player.stopSound(Sound.MUSIC_CREATIVE);
         if (PhoneUtils.hasPhone(player)) {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
             if (PhoneUtils.hasPhone(targetplayer)) {
-                targetplayer.sendMessage("§6Handy §8 » §7" + player.getName() + " hat dein Anruf angenommen");
-                targetplayer.sendMessage("§6Handy §8 » §7Du hast den Anruf von " + player.getName() + " angenommen");
+                targetplayer.sendMessage("§6Handy §8» §7" + player.getName() + " hat dein Anruf angenommen");
+                targetplayer.sendMessage("§6Handy §8» §7Du hast den Anruf von " + player.getName() + " angenommen");
                 isInCallConnection.put(targetuuid, true);
                 isInCallConnection.put(player.getUniqueId().toString(), true);
                 phoneCallConnection.put(player.getUniqueId().toString(), targetuuid);
                 phoneCallConnection.put(targetuuid, player.getUniqueId().toString());
+                player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
+                targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
             }
         } else {
             player.sendMessage(PhoneUtils.error_nophone);
@@ -119,12 +123,15 @@ public class PhoneUtils {
     }
 
     public static void denyCall(Player player, String targetuuid) {
+        player.stopSound(Sound.MUSIC_CREATIVE);
         if (PhoneUtils.hasPhone(player)) {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
             if (PhoneUtils.hasPhone(targetplayer)) {
-                targetplayer.sendMessage("§6Handy §8 » §7" + player.getName() + " hat dein Anruf abgelehnt");
-                targetplayer.sendMessage("§6Handy §8 » §7Du hast den Anruf von " + player.getName() + " abgelehnt");
+                targetplayer.sendMessage("§6Handy §8» §7" + player.getName() + " hat dein Anruf abgelehnt");
+                player.sendMessage("§6Handy §8» §7Du hast den Anruf von " + player.getName() + " abgelehnt");
+                player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
+                targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
             }
         } else {
             player.sendMessage(PhoneUtils.error_nophone);
@@ -132,6 +139,7 @@ public class PhoneUtils {
     }
 
     public static void closeCall(Player player) {
+        player.stopSound(Sound.MUSIC_CREATIVE);
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (isInCallConnection.get(player.getUniqueId().toString()) != null) {
             for (Player player1 : Bukkit.getOnlinePlayers()) {
@@ -140,8 +148,10 @@ public class PhoneUtils {
                     isInCallConnection.remove(player.getUniqueId().toString());
                     phoneCallConnection.remove(player1.getUniqueId().toString());
                     phoneCallConnection.remove(player.getUniqueId().toString());
-                    player.sendMessage("§6Handy §8 »§7 Du hast aufgelegt.");
-                    player1.sendMessage("§6Handy §8 »§7 " + player.getName() + " hat aufgelegt.");
+                    player.sendMessage("§6Handy §8»§7 Du hast aufgelegt.");
+                    player1.sendMessage("§6Handy §8»§7 " + player.getName() + " hat aufgelegt.");
+                    player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
+                    player1.playSound(player1.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
                 }
             }
         } else if (playerData.getVariable("calling") != null) {
@@ -149,12 +159,12 @@ public class PhoneUtils {
                 if (playerData.getVariable("calling").equals(players.getUniqueId().toString())) {
                     VertragUtil.deleteVertrag(player);
                     VertragUtil.deleteVertrag(players);
-                    player.sendMessage("§6Handy §8 »§7 Du hast aufgelegt.");
-                    players.sendMessage("§6Handy §8 »§7§l " + playerData.getNumber() + "§7 hat aufgelegt.");
+                    player.sendMessage("§6Handy §8»§7 Du hast aufgelegt.");
+                    players.sendMessage("§6Handy §8»§7§l " + playerData.getNumber() + "§7 hat aufgelegt.");
                 }
             }
         } else {
-            player.sendMessage("§6Handy §8 »§7 Du bist in keinem Anruf.");
+            player.sendMessage("§6Handy §8»§7 Du bist in keinem Anruf.");
         }
     }
 
