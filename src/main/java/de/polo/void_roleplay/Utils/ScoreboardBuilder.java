@@ -40,6 +40,7 @@ public abstract class ScoreboardBuilder {
     public abstract void createScoreboard();
     public abstract void createAdminScoreboard();
     public abstract void createMineScoreboard();
+    public abstract void createLebensmittelLieferantenScoreboard();
 
     public abstract void update();
 

@@ -17,6 +17,7 @@ public class Scoreboard extends ScoreboardBuilder {
     private boolean isScore = false;
     private boolean isAdminScore = false;
     private boolean isMineScore = false;
+    private boolean isLebensmittelLieferantScore = false;
     private final String uuid;
     private final Player player;
 
@@ -62,6 +63,16 @@ public class Scoreboard extends ScoreboardBuilder {
         setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.IRON_ORE), 0);
         isScore = true;
         isMineScore = true;
+    }
+
+    public void createLebensmittelLieferantenScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setScore("§6Snacks§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("snacks"), 2);
+        setScore("§6Getränke§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("drinks"), 0);
+        isScore = true;
+        isLebensmittelLieferantScore = true;
     }
 
     public void killScoreboard() {

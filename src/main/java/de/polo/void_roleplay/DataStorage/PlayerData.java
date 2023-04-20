@@ -142,7 +142,7 @@ public class PlayerData {
         isAduty = aduty;
     }
 
-    public void setIntVariable(String variable, int value) {
+    public void setIntVariable(String variable, Integer value) {
         if (this.integer_variables.get(variable) != null) {
             this.integer_variables.replace(variable, value);
         } else {

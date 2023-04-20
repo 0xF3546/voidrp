@@ -72,7 +72,7 @@ public class StaatUtil {
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                players.sendMessage("§9Zentrale §8» §7 " + FactionManager.getTitle(player) + " " + player.getName() + " hat " + player.getName() + " eine Akte hinzugefügt.");
+                players.sendMessage("§9Zentrale §8» §7 " + FactionManager.getTitle(vergeber) + " " + vergeber.getName() + " hat " + player.getName() + " eine Akte hinzugefügt.");
             }
         }
     }

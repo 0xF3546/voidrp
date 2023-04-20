@@ -4,10 +4,7 @@ import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import de.polo.void_roleplay.Utils.SupportManager;
-import de.polo.void_roleplay.commands.aduty;
-import de.polo.void_roleplay.commands.apfelplantageCommand;
-import de.polo.void_roleplay.commands.lumberjackCommand;
-import de.polo.void_roleplay.commands.mineCommand;
+import de.polo.void_roleplay.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,10 +25,16 @@ public class QuitListener implements Listener {
                 switch (playerData.getVariable("job")) {
                     case "lumberjack":
                         lumberjackCommand.quitJob(player);
+                        break;
                     case "apfelsammler":
                         apfelplantageCommand.quitJob(player);
+                        break;
                     case "mine":
                         mineCommand.quitJob(player);
+                        break;
+                    case "lieferant":
+                        lebensmittellieferantCommand.quitJob(player);
+                        break;
                 }
             }
             PlayerManager.savePlayer(player);

@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.PlayerUtils;
 
+import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.FactionManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 
 public class PayDayUtil {
     public static void givePayDay(Player player) throws SQLException {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         double plus = 0;
         double zinsen = Math.round(PlayerManager.bank(player) * 0.01);
         double steuern = Math.round(PlayerManager.bank(player) * 0.0035);
@@ -26,10 +28,10 @@ public class PayDayUtil {
         player.sendMessage(" ");
         player.sendMessage("§8 ➥ §2Sozialbonus§8:§7 " + visumbonus + "$");
         player.sendMessage(" ");
-        if (FactionManager.faction(player) != "Zivilist" && FactionManager.faction(player) != null) {
-            frakpayday = FactionManager.getPaydayFromFaction(FactionManager.faction(player), FactionManager.faction_grade(player));
-            if (FactionManager.removeFactionMoney(FactionManager.faction(player), frakpayday, "Gehalt " + player.getName())) {
-                player.sendMessage("§8 ➥ §" + FactionManager.getFactionPrimaryColor(FactionManager.faction(player)) + "Gehalt [" + FactionManager.faction(player) + "]§8: §7" + frakpayday + "$");
+        if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
+            frakpayday = FactionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());
+            if (FactionManager.removeFactionMoney(playerData.getFaction(), frakpayday, "Gehalt " + player.getName())) {
+                player.sendMessage("§8 ➥ §" + FactionManager.getFactionPrimaryColor(playerData.getFaction()) + "Gehalt [" + playerData.getFaction() + "]§8: §7" + frakpayday + "$");
                 player.sendMessage(" ");
                 plus += frakpayday;
             }
