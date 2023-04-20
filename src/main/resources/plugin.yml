@@ -77,3 +77,5 @@ commands:
   auflegen:
     aliases: endcall
   jailtime:
+  drop:
+  lebensmittellieferant:
