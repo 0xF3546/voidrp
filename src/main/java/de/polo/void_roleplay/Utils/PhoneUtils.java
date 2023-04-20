@@ -72,8 +72,8 @@ public class PhoneUtils {
                     if (PhoneUtils.hasPhone(players)) {
                         ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
                         ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
-                        player.sendMessage("§6Handy §8»§e Du rufst §l" + number + "§e an.");
-                        players.sendMessage("§6Handy §8»§eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
+                        player.sendMessage("§6Handy §8» §eDu rufst §l" + number + "§e an.");
+                        players.sendMessage("§6Handy §8» §eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
                         playerData.setVariable("calling", players.getUniqueId().toString());
                         VertragUtil.sendInfoMessage(players);
                         players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
