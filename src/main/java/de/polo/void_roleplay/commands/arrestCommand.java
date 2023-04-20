@@ -26,15 +26,19 @@ public class arrestCommand implements CommandExecutor {
                 if (args.length > 0) {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
                     if (targetplayer.isOnline()) {
-                        try {
-                            if (StaatUtil.arrestPlayer(targetplayer, player)) {
-                                player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
-                                PlayerManager.addExp(player, Main.random(15, 44));
-                            } else {
-                                player.sendMessage(Main.error + targetplayer.getName() + " hat keine offene Akte mit Hafteinheiten.");
+                        if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
+                            try {
+                                if (StaatUtil.arrestPlayer(targetplayer, player)) {
+                                    player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
+                                    PlayerManager.addExp(player, Main.random(15, 44));
+                                } else {
+                                    player.sendMessage(Main.error + targetplayer.getName() + " hat keine offene Akte mit Hafteinheiten.");
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
                             }
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                        } else {
+                            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
                         }
                     } else {
                         player.sendMessage(Main.error + "§c" + args[0] + " ist nicht online.");

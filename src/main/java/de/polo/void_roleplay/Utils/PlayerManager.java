@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.Utils;
 
+import de.polo.void_roleplay.DataStorage.WeaponData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.PayDayUtil;
@@ -38,11 +39,11 @@ public class PlayerManager {
         }
         try {
             Statement statement = MySQL.getStatement();
-            ResultSet result = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `uuid` = '" + uuid + "'");
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
             Date date = new Date();
             String newDate = formatter.format(date);
             statement.execute("INSERT INTO `players` (`uuid`, `firstjoin`) VALUES ('" + uuid + "', '" + newDate + "')");
+            statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
             Player player = Bukkit.getPlayer(UUID.fromString(uuid));
             assert player != null;
             loadPlayer(player);
@@ -127,7 +128,7 @@ public class PlayerManager {
                 player.setMaxHealth(30 + ((name.getInt(5) / 5) * 2));
 
 
-                ResultSet jail = statement.executeQuery("SELECT `hafteinheiten`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+                ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
                 if (jail.next()) {
                     playerData.setHafteinheiten(jail.getInt(1));
                     playerData.setVariable("jail_reason", jail.getString(2));
@@ -138,6 +139,10 @@ public class PlayerManager {
                     playerData.setSkillLevel("miner", skills.getInt(1));
                     playerData.setSkillExp("miner", skills.getInt(2));
                     playerData.setSkillNeeded_Exp("miner", skills.getInt(3));
+                }
+                ResultSet ammo = statement.executeQuery("SELECT * FROM `player_ammo` WHERE `uuid` = '" + uuid + "'");
+                if (ammo.next()) {
+                    //for (int i = 0; i < Weapons.weaponDataMap.size(); i++) playerData.getIntVariable("ammo_" + ammo.getRow(), ammo.getInt(i));
                 }
                 playerDataMap.put(uuid, playerData);
                 returnval = true;
@@ -158,7 +163,7 @@ public class PlayerManager {
             onPlayer.remove(uuid);
             statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + " WHERE `uuid` = '" + uuid + "'");
             if (playerData.isJailed()) {
-                statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = '" + playerData.getHafteinheiten() + "' WHERE `uuid` = '" + uuid + "'");
+                statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
             }
             playerDataMap.remove(uuid);
         } else {

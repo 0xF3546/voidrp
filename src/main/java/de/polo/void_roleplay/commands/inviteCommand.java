@@ -26,31 +26,35 @@ public class inviteCommand implements CommandExecutor {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
                 assert targetplayer != null;
-                if (Objects.equals(FactionManager.faction(targetplayer), "Zivilist") || FactionManager.faction(targetplayer) == null) {
-                    try {
-                        if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
-                            player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
-                            Inventory inv = Bukkit.createInventory(targetplayer, 9, "§8» §7" + player.getName() + " hat dich in §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§7 eingeladen.");
-                            inv.setItem(2, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnnehmen", null));
-                            inv.setItem(6, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAblehnen", null));
-                            for (int i = 0; i < 9; i++) {
-                                if (inv.getItem(i) == null) {
-                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
+                    if (Objects.equals(FactionManager.faction(targetplayer), "Zivilist") || FactionManager.faction(targetplayer) == null) {
+                        try {
+                            if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
+                                player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
+                                Inventory inv = Bukkit.createInventory(targetplayer, 9, "§8» §7" + player.getName() + " hat dich in §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§7 eingeladen.");
+                                inv.setItem(2, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnnehmen", null));
+                                inv.setItem(6, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAblehnen", null));
+                                for (int i = 0; i < 9; i++) {
+                                    if (inv.getItem(i) == null) {
+                                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                                    }
                                 }
-                            }
-                            targetplayer.openInventory(inv);
-                            PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
-                            tplayerData.setVariable("current_inventory", "faction_invite");
+                                targetplayer.openInventory(inv);
+                                PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                                tplayerData.setVariable("current_inventory", "faction_invite");
                             /*targetplayer.sendMessage("§6" + player.getName() + "§7 hat dich in die §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§7 eingeladen.");
                             VertragUtil.sendInfoMessage(targetplayer);*/
-                        } else {
-                            player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+                            } else {
+                                player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+                            }
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
                         }
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                    } else {
+                        player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §c" + targetplayer.getName() + "§7 ist bereits in einer Fraktion.");
                     }
                 } else {
-                    player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §c" + targetplayer.getName() + "§7 ist bereits in einer Fraktion.");
+                    player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
                 }
             } else {
                 player.sendMessage(Main.error + "Syntax-Fehler: /invite [Spieler]");

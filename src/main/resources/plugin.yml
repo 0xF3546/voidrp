@@ -76,3 +76,4 @@ commands:
   call:
   auflegen:
     aliases: endcall
+  jailtime:

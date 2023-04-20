@@ -125,6 +125,7 @@ public final class Main extends JavaPlugin {
         getCommand("sms").setExecutor(new smsCommand());
         getCommand("call").setExecutor(new callCommand());
         getCommand("auflegen").setExecutor(new auflegenCommand());
+        getCommand("jailtime").setExecutor(new jailtimeCommand());
     }
 
 

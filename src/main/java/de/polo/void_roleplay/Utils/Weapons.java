@@ -28,7 +28,7 @@ public class Weapons implements Listener {
     public static Map<Material, WeaponData> weaponDataMap = new HashMap<>();
     public static void loadWeapons() throws SQLException {
         Statement statement = MySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `material`, `name`, `maxAmmo`, `reloadDuration`, `damage`, `weaponSound`, `velocity`, `shootDuration` FROM `weapons`");
+        ResultSet result = statement.executeQuery("SELECT `id`, `material`, `name`, `maxAmmo`, `reloadDuration`, `damage`, `weaponSound`, `velocity`, `shootDuration`, `type` FROM `weapons`");
         while (result.next()) {
             WeaponData weaponData = new WeaponData();
             weaponData.setId(result.getInt(1));
@@ -40,6 +40,7 @@ public class Weapons implements Listener {
             weaponData.setWeaponSound(Sound.valueOf(result.getString(7)));
             weaponData.setArrowVelocity(result.getFloat(8));
             weaponData.setShootDuration(result.getFloat(9));
+            weaponData.setType(result.getString(10));
             weaponDataMap.put(Material.valueOf(result.getString(2)), weaponData);
         }
     }

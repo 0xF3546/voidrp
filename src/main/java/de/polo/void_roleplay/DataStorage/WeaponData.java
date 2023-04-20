@@ -13,6 +13,7 @@ public class WeaponData {
     private Sound weaponSound;
     private float arrowVelocity;
     private float shootDuration;
+    private String type;
 
     public float getReloadDuration() {
         return reloadDuration;
@@ -84,5 +85,13 @@ public class WeaponData {
 
     public void setShootDuration(float shootDuration) {
         this.shootDuration = shootDuration;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
