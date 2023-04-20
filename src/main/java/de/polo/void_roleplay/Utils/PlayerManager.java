@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -82,71 +83,71 @@ public class PlayerManager {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isBanned` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
-                PlayerData playerData = new PlayerData();
-                playerData.setFirstname(name.getString(1));
-                playerData.setLastname(name.getString(2));
-                playerData.setBargeld(name.getInt(3));
-                playerData.setBank(name.getInt(4));
-                playerData.setVisum(name.getInt(5));
-                playerData.setPermlevel(name.getInt(8));
-                playerData.setRang(name.getString(10));
-                playerData.setAduty(false);
-                playerData.setLevel(name.getInt(11));
-                playerData.setExp(name.getInt(12));
-                playerData.setNeeded_exp(name.getInt(13));
-                playerData.setScoreboard(new Scoreboard(player));
-                playerData.setDead(name.getBoolean(14));
-                if (name.getBoolean(14))  playerData.setDeathTime(name.getInt(15));
-                if (name.getInt(16) != 0) playerData.setNumber(name.getInt(16));
+                    PlayerData playerData = new PlayerData();
+                    playerData.setFirstname(name.getString(1));
+                    playerData.setLastname(name.getString(2));
+                    playerData.setBargeld(name.getInt(3));
+                    playerData.setBank(name.getInt(4));
+                    playerData.setVisum(name.getInt(5));
+                    playerData.setPermlevel(name.getInt(8));
+                    playerData.setRang(name.getString(10));
+                    playerData.setAduty(false);
+                    playerData.setLevel(name.getInt(11));
+                    playerData.setExp(name.getInt(12));
+                    playerData.setNeeded_exp(name.getInt(13));
+                    playerData.setScoreboard(new Scoreboard(player));
+                    playerData.setDead(name.getBoolean(14));
+                    if (name.getBoolean(14)) playerData.setDeathTime(name.getInt(15));
+                    if (name.getInt(16) != 0) playerData.setNumber(name.getInt(16));
 
-                playerData.setCanInteract(true);
-                playerData.setFlightmode(false);
+                    playerData.setCanInteract(true);
+                    playerData.setFlightmode(false);
 
-                updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
-                payday.put(player.getUniqueId().toString(), -1);
-                if (name.getInt(8) >= 60) {
-                    onPlayer.put(player.getUniqueId().toString(), true);
-                    player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
-                    player.getPlayer().setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-                    player.getPlayer().setCustomName("§8[§7Team§8]§7 " + player.getName());
-                    player.setCustomNameVisible(true);
-                } else {
-                    onPlayer.put(player.getUniqueId().toString(), false);
-                    player.setDisplayName("§7" + player.getName());
-                    player.getPlayer().setPlayerListName("§7" + player.getName());
-                    player.getPlayer().setCustomName("§7" + player.getName());
-                    player.setCustomNameVisible(true);
-                }
+                    updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
+                    payday.put(player.getUniqueId().toString(), -1);
+                    if (name.getInt(8) >= 60) {
+                        onPlayer.put(player.getUniqueId().toString(), true);
+                        player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
+                        player.getPlayer().setPlayerListName("§8[§7Team§8]§7 " + player.getName());
+                        player.getPlayer().setCustomName("§8[§7Team§8]§7 " + player.getName());
+                        player.setCustomNameVisible(true);
+                    } else {
+                        onPlayer.put(player.getUniqueId().toString(), false);
+                        player.setDisplayName("§7" + player.getName());
+                        player.getPlayer().setPlayerListName("§7" + player.getName());
+                        player.getPlayer().setCustomName("§7" + player.getName());
+                        player.setCustomNameVisible(true);
+                    }
 
-                player_rent.put(player.getUniqueId().toString(), name.getInt(8));
-                player.setLevel(name.getInt(5));
-                if (name.getString(6) != null) {
-                    playerData.setFaction(name.getString(6));
-                    playerData.setFactionGrade(name.getInt(7));
-                }
-                player.setMaxHealth(30 + ((name.getInt(5) / 5) * 2));
+                    player_rent.put(player.getUniqueId().toString(), name.getInt(8));
+                    player.setLevel(name.getInt(5));
+                    if (name.getString(6) != null) {
+                        playerData.setFaction(name.getString(6));
+                        playerData.setFactionGrade(name.getInt(7));
+                    }
+                    player.setMaxHealth(30 + ((name.getInt(5) / 5) * 2));
 
 
-                ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
-                if (jail.next()) {
-                    playerData.setHafteinheiten(jail.getInt(1));
-                    playerData.setVariable("jail_reason", jail.getString(2));
-                    playerData.setJailed(true);
-                }
-                ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` FROM `player_skills` WHERE `uuid` = '" + uuid + "'");
-                if (skills.next()) {
-                    playerData.setSkillLevel("miner", skills.getInt(1));
-                    playerData.setSkillExp("miner", skills.getInt(2));
-                    playerData.setSkillNeeded_Exp("miner", skills.getInt(3));
-                }
-                ResultSet ammo = statement.executeQuery("SELECT * FROM `player_ammo` WHERE `uuid` = '" + uuid + "'");
-                if (ammo.next()) {
-                    //for (int i = 0; i < Weapons.weaponDataMap.size(); i++) playerData.getIntVariable("ammo_" + ammo.getRow(), ammo.getInt(i));
-                }
-                playerDataMap.put(uuid, playerData);
-                returnval = true;
+                    ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+                    if (jail.next()) {
+                        playerData.setHafteinheiten(jail.getInt(1));
+                        playerData.setVariable("jail_reason", jail.getString(2));
+                        playerData.setJailed(true);
+                    }
+                    ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` FROM `player_skills` WHERE `uuid` = '" + uuid + "'");
+                    if (skills.next()) {
+                        playerData.setSkillLevel("miner", skills.getInt(1));
+                        playerData.setSkillExp("miner", skills.getInt(2));
+                        playerData.setSkillNeeded_Exp("miner", skills.getInt(3));
+                    }
+                    ResultSet ammo = statement.executeQuery("SELECT * FROM `player_ammo` WHERE `uuid` = '" + uuid + "'");
+                    if (ammo.next()) {
+                        //for (int i = 0; i < Weapons.weaponDataMap.size(); i++) playerData.getIntVariable("ammo_" + ammo.getRow(), ammo.getInt(i));
+                    }
+                    playerDataMap.put(uuid, playerData);
+                    returnval = true;
             }
         } catch (SQLException e) {
             returnval = false;

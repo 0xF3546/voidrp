@@ -79,3 +79,5 @@ commands:
   jailtime:
   drop:
   lebensmittellieferant:
+  ban:
+  unban:

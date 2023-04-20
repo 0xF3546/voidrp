@@ -18,6 +18,7 @@ public class QuitListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         Player player = (Player) event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (playerData == null) return;
         event.setQuitMessage("");
         aduty.send_message("§c" + player.getName() + "§7 hat den Server verlassen.");
         try {

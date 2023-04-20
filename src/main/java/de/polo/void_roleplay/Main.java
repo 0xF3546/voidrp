@@ -129,6 +129,8 @@ public final class Main extends JavaPlugin {
         getCommand("jailtime").setExecutor(new jailtimeCommand());
         getCommand("drop").setExecutor(new dropCommand());
         getCommand("lebensmittellieferant").setExecutor(new lebensmittellieferantCommand());
+        getCommand("ban").setExecutor(new banCommand());
+        getCommand("unban").setExecutor(new unbanCommand());
     }
 
 

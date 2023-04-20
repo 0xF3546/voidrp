@@ -4,13 +4,19 @@ import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
+import java.util.UUID;
 
 public class unbanCommand implements CommandExecutor {
     @Override
@@ -23,15 +29,20 @@ public class unbanCommand implements CommandExecutor {
                 try {
                     Statement statement = MySQL.getStatement();
                     if (args[0].equalsIgnoreCase("uuid")) {
-                        statement.execute("DELETE FROM `player_bans` WHERE `uuid` = '" + args[1] + "'");
-                        statement.executeUpdate("UPDATE `players` SET `isBanned` = false WHERE `uuid` = '" + args[1] +"'");
-                        aduty.send_message(player.getName() + " hat Spieler mit UUID §l" + args[1] + "§7 entbannt.");
-                        player.sendMessage(Main.admin_prefix + "Du hast einen Spieler entbannt.");
+                        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[1]));
+                        Bukkit.getBanList(BanList.Type.NAME).pardon(Objects.requireNonNull(offlinePlayer.getName()));
+                        aduty.send_message(player.getName() + " hat  §l" + offlinePlayer.getName() + "§7 entbannt.");
+                        player.sendMessage(Main.admin_prefix + "Du hast §l" + offlinePlayer.getName() + "§7 entbannt.");
                     } else if (args[0].equalsIgnoreCase("name")) {
-                        statement.execute("DELETE FROM `player_bans` WHERE `name` = '" + args[1] + "'");
-                        statement.executeUpdate("UPDATE `players` SET `isBanned` = false WHERE `player_name` = '" + args[1] +"'");
-                        aduty.send_message(player.getName() + " hat Spieler mit Name §l" + args[1] + "§7 entbannt.");
-                        player.sendMessage(Main.admin_prefix + "Du hast einen Spieler entbannt.");
+                        ResultSet res = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `player_name` = '" + args[1] + "'");
+                        if (res.next()) {
+                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(res.getString(1)));
+                            Bukkit.getBanList(BanList.Type.NAME).pardon(Objects.requireNonNull(offlinePlayer.getName()));
+                            aduty.send_message(player.getName() + " hat  §l" + offlinePlayer.getName() + "§7 entbannt.");
+                            player.sendMessage(Main.admin_prefix + "Du hast §l" + offlinePlayer.getName() + "§7 entbannt.");
+                        } else {
+                            player.sendMessage(Main.admin_error + "Spieler konnte nicht gefunden werden.");
+                        }
                     } else {
                         player.sendMessage(syntax_error);
                     }
