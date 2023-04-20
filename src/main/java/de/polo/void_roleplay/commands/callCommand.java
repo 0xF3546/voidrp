@@ -19,27 +19,36 @@ public class callCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (PhoneUtils.hasPhone(player)) {
-            if (args.length >= 1) {
-                if (!Objects.equals(playerData.getVariable("calling"), "Ja")) {
-                    for (Player players : Bukkit.getOnlinePlayers()) {
-                        if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == Integer.parseInt(args[0])) {
-                            if (PhoneUtils.getConnection(players) == null) {
-                                try {
-                                    PhoneUtils.callNumber(player, PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber());
-                                } catch (SQLException e) {
-                                    player.sendMessage(Main.error + "Ein Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
-                                    throw new RuntimeException(e);
+            if (!playerData.isFlightmode()) {
+                if (args.length >= 1) {
+                    if (!Objects.equals(playerData.getVariable("calling"), "Ja")) {
+                        for (Player players : Bukkit.getOnlinePlayers()) {
+                            PlayerData targetplayerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                            if (targetplayerData.getNumber() == Integer.parseInt(args[0])) {
+                                if (PhoneUtils.getConnection(players) == null) {
+                                    if (!targetplayerData.isFlightmode()) {
+                                        try {
+                                            PhoneUtils.callNumber(player, targetplayerData.getNumber());
+                                        } catch (SQLException e) {
+                                            player.sendMessage(Main.error + "Ein Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
+                                            throw new RuntimeException(e);
+                                        }
+                                    } else {
+                                        player.sendMessage(Main.error + players.getName() + " ist nicht erreichbar.");
+                                    }
+                                } else {
+                                    player.sendMessage(Main.error + players.getName() + " ist bereits in einem Gespräch.");
                                 }
-                            } else {
-                                player.sendMessage(Main.error + players.getName() + " ist bereits in einem Gespräch.");
                             }
                         }
+                    } else {
+                        player.sendMessage(Main.error + "Du rufst bereits jemanden an.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Du rufst bereits jemanden an.");
+                    player.sendMessage(Main.error + "Syntax-Fehler: /call [Nummer]");
                 }
             } else {
-                player.sendMessage(Main.error + "Syntax-Fehler: /call [Nummer]");
+                player.sendMessage(PhoneUtils.error_flightmode);
             }
         } else {
             player.sendMessage(PhoneUtils.error_nophone);

@@ -8,6 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,11 +21,39 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PhoneUtils {
+public class PhoneUtils implements Listener {
     public static HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
     public static HashMap<String, String> phoneCallConnection = new HashMap<>();
     public static HashMap<String, Boolean> isInCallConnection = new HashMap<>();
     public static String error_nophone = "§6Handy §8 » §cDu hast kein Handy dabei.";
+    public static String error_flightmode = "§6Handy §8 » §cDu bist im Flugmodus.";
+
+    @EventHandler
+    public void onPhoneUse(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType() == Material.IRON_NUGGET && (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR)) {
+            openPhone(player);
+        }
+    }
+
+    public static void openPhone(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        Inventory inv = Bukkit.createInventory(player, 9, "§8» §eHandy");
+        if (playerData.isFlightmode()) {
+            inv.setItem(0, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten", null));
+        } else {
+            inv.setItem(0, ItemManager.createItem(Material.RED_STAINED_GLASS_PANE, 1, 0, "§cFlugmodus einschalten", null));
+        }
+        for (int i = 0; i < 9; i++) {
+            if (inv.getItem(i) == null) {
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            }
+        }
+        playerData.setVariable("current_inventory", "handy");
+        playerData.setVariable("current_app", null);
+        player.openInventory(inv);
+    }
 
     public static boolean inPhoneCall(Player player) {
         return phoneCallIsCreated.get(player.getUniqueId().toString()) != null;

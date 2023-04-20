@@ -30,6 +30,7 @@ public class PlayerData {
     private boolean isDead;
     private int deathTime;
     private int number;
+    private boolean isFlightmode;
 
     public PlayerData() {
     }
@@ -243,5 +244,13 @@ public class PlayerData {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public boolean isFlightmode() {
+        return isFlightmode;
+    }
+
+    public void setFlightmode(boolean flightmode) {
+        isFlightmode = flightmode;
     }
 }

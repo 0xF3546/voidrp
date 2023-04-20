@@ -71,6 +71,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new respawnListener(), this);
         getServer().getPluginManager().registerEvents(new playerMoveListener(), this);
         getServer().getPluginManager().registerEvents(new TabletUtils(), this);
+        getServer().getPluginManager().registerEvents(new PhoneUtils(), this);
     }
 
     private void registerCommands(){

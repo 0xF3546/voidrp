@@ -271,5 +271,26 @@ public class InventoryClickListener implements Listener {
                         }
                     }
                     }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "handy")) {
+            event.setCancelled(true);
+            if (playerData.getVariable("current_app") == null) {
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case RED_STAINED_GLASS_PANE:
+                        event.getCurrentItem().setType(Material.GREEN_STAINED_GLASS_PANE);
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        meta.setDisplayName("§a§lGeändert!");
+                        event.getCurrentItem().setItemMeta(meta);
+                        playerData.setFlightmode(true);
+                        break;
+                    case GREEN_STAINED_GLASS_PANE:
+                        event.getCurrentItem().setType(Material.RED_STAINED_GLASS_PANE);
+                        ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
+                        itemMeta.setDisplayName("§a§lGeändert!");
+                        event.getCurrentItem().setItemMeta(itemMeta);
+                        playerData.setFlightmode(false);
+                        break;
+                }
+            }
+        }
                 }
 }
