@@ -31,6 +31,7 @@ public class  JoinEvent implements Listener {
                 DeathUtil.killPlayer(player);
             }
             aduty.send_message("§c" + player.getName() + "§7 hat den Server betreten.");
+            player.sendMessage("§6Wilkommen zurück, " + player.getName() + "!");
         } else {
             player.sendMessage(" ");
             player.sendMessage("§cMetro §8»§7 Herzlich Wilkommen auf Void Roleplay - Roleplay mit Stil, " + player.getName() + ".");
@@ -38,6 +39,7 @@ public class  JoinEvent implements Listener {
             LocationManager.useLocation(player, "Spawn");
             player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
+            aduty.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.");
         }
     }
 }
