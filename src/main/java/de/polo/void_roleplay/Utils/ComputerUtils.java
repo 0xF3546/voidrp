@@ -18,7 +18,7 @@ public class ComputerUtils implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && Objects.requireNonNull(event.getClickedBlock()).getType() == Material.END_STONE_BRICK_STAIRS) {
-            if (playerData.getFaction() == "FBI" || playerData.getFaction() == "Polizei" || playerData.getFaction() == "Medic" || playerData.getFaction() == "News") {
+            if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei") || Objects.equals(playerData.getFaction(), "Medic") || Objects.equals(playerData.getFaction(), "News")) {
                 openComputer(player);
             }
         }
@@ -27,10 +27,10 @@ public class ComputerUtils implements Listener {
     public static void openComputer(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eComputer");
-        if (playerData.isAduty()) {
-            inv.setItem(3, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cAus Dienst gehen", null));
+        if (playerData.isDuty()) {
+            inv.setItem(10, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cAus Dienst gehen", null));
         } else {
-            inv.setItem(3, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§aIn Dienst gehen", null));
+            inv.setItem(10, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§aIn Dienst gehen", null));
         }
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {

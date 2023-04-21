@@ -73,6 +73,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TabletUtils(), this);
         getServer().getPluginManager().registerEvents(new PhoneUtils(), this);
         getServer().getPluginManager().registerEvents(new playerLoginListener(), this);
+        getServer().getPluginManager().registerEvents(new ComputerUtils(), this);
     }
 
     private void registerCommands(){

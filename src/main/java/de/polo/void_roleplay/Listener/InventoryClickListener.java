@@ -302,6 +302,7 @@ public class InventoryClickListener implements Listener {
                         meta.setDisplayName("§c§lDienst verlassen!");
                         event.getCurrentItem().setItemMeta(meta);
                         FactionManager.setDuty(player, false);
+                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst verlassen.");
                         break;
                     case GREEN_DYE:
                         event.getCurrentItem().setType(Material.RED_DYE);
@@ -309,6 +310,7 @@ public class InventoryClickListener implements Listener {
                         itemMeta.setDisplayName("§a§lDienst betreten!");
                         event.getCurrentItem().setItemMeta(itemMeta);
                         FactionManager.setDuty(player, true);
+                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst betreten.");
                         break;
                 }
             }
