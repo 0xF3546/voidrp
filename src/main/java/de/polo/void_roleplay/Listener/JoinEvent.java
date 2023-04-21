@@ -30,6 +30,7 @@ public class  JoinEvent implements Listener {
             if (DeathUtil.isDead(player)) {
                 DeathUtil.killPlayer(player);
             }
+            Vehicles.spawnPlayerVehicles(player);
             aduty.send_message("§c" + player.getName() + "§7 hat den Server betreten.");
             player.sendMessage("§6Wilkommen zurück, " + player.getName() + "!");
         } else {

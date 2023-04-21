@@ -4,6 +4,7 @@ import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import de.polo.void_roleplay.Utils.SupportManager;
+import de.polo.void_roleplay.Utils.Vehicles;
 import de.polo.void_roleplay.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,6 +22,11 @@ public class QuitListener implements Listener {
         if (playerData == null) return;
         event.setQuitMessage("");
         aduty.send_message("§c" + player.getName() + "§7 hat den Server verlassen.");
+        try {
+            Vehicles.deleteVehicleByUUID(player.getUniqueId().toString());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         try {
             if (playerData.getVariable("job") != null) {
                 switch (playerData.getVariable("job")) {

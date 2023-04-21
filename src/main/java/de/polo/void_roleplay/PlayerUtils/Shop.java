@@ -22,6 +22,7 @@ public class Shop {
             row[3] = locs.getString(4);
             row[4] = locs.getInt(5);
             row[5] = locs.getString(6);
+            row[6] = locs.getString(7);
             resultList.add(row);
         }
         shop_items = new Object[resultList.size()][];

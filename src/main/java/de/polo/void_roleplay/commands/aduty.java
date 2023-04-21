@@ -20,9 +20,6 @@ public class aduty implements CommandExecutor {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (PlayerManager.onPlayer.get(player.getUniqueId().toString())) {
             if (playerData.isAduty()) {
-                if (playerData.isDuty()) {
-                    FactionManager.setDuty(player, true);
-                }
                 playerData.setAduty(false);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 (player).setFlying(false);
@@ -30,6 +27,9 @@ public class aduty implements CommandExecutor {
                 player.getPlayer().setPlayerListName("§8[§7Team§8]§7 " + player.getName());
                 player.getPlayer().setDisplayName("§8[§7Team§8]§7 " + player.getName());
                 playerData.getScoreboard().killScoreboard();
+                if (playerData.isDuty()) {
+                    FactionManager.setDuty(player, true);
+                }
             } else {
                 playerData.setAduty(true);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");

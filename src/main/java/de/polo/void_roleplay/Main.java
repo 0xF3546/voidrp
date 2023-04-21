@@ -41,6 +41,8 @@ public final class Main extends JavaPlugin {
         plugin = Bukkit.getPluginManager().getPlugin("Void_Roleplay");
         try {
             Weapons.loadWeapons();
+            Vehicles.loadVehicles();
+            Vehicles.loadPlayerVehicles();
             PlayerManager.startTimeTracker();
             LocationManager.loadLocations();
             FactionManager.loadFactions();

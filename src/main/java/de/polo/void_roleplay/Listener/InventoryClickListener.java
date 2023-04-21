@@ -50,6 +50,8 @@ public class InventoryClickListener implements Listener {
                                             Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
                                             player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
                                             PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
+                                        } else if (Objects.equals(row[5].toString(), "car")) {
+                                            Vehicles.giveVehicle(player, row[6].toString());
                                         } else {
                                             PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
                                             player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
