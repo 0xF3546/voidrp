@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,17 +28,54 @@ public class setblockvalueCommand implements CommandExecutor {
                 player.sendMessage(Main.gamedesign_prefix + "Nur AIR gefunden.");
             } else {
                 if (block.getType().isSolid()) {
-                    if (args.length >= 1) {
-                        if (!(block.getState() instanceof TileState)) return false;
-                        NamespacedKey value = new NamespacedKey(Main.plugin, "value");
-                        BlockData data = block.getBlockData();
-                        TileState state = (TileState) block.getState();
+                    if (args.length >= 2) {
+                        if (args[0].equalsIgnoreCase("int")) {
+                            NamespacedKey value = new NamespacedKey(Main.plugin, "value");
+                            if (!(block.getState() instanceof TileState)) {
+                                player.sendMessage(Main.gamedesign_prefix + "Fehler. TileState nicht gefunden.");
+                                BlockState state = block.getState();
+                                if (state.getType().name().endsWith("_DOOR")) {
+                                    Door door = (Door) block.getBlockData();
+                                    PersistentDataContainer container = state.getChunk().getPersistentDataContainer();
+                                    container.set(value, PersistentDataType.INTEGER, Integer.valueOf(args[1]));
+                                    player.sendMessage(Main.gamedesign_prefix + "Door gesettet.");
+                                } else {
+                                    player.sendMessage(Main.gamedesign_prefix + "Door konnte leider nicht gesettet werden.");
+                                }
+                                return false;
+                            }
+                            BlockData data = block.getBlockData();
+                            TileState state = (TileState) block.getState();
                             PersistentDataContainer container = state.getPersistentDataContainer();
                             container.set(value, PersistentDataType.INTEGER, Integer.valueOf(args[1]));
                             block.setBlockData(data, true);
-                            player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType() + " gesetzt.");
+                            player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType().name() + " gesetzt.");
+                        } else if (args[0].equalsIgnoreCase("string")) {
+                            NamespacedKey value = new NamespacedKey(Main.plugin, "value");
+                            if (!(block.getState() instanceof TileState)) {
+                                player.sendMessage(Main.gamedesign_prefix + "Fehler. TileState nicht gefunden.");
+                                BlockState state = block.getState();
+                                if (state.getType().name().endsWith("_DOOR")) {
+                                    Door door = (Door) block.getBlockData();
+                                    PersistentDataContainer container = state.getBlock().getChunk().getPersistentDataContainer();
+                                    container.set(value, PersistentDataType.STRING, args[1]);
+                                    player.sendMessage(Main.gamedesign_prefix + "Door gesettet.");
+                                } else {
+                                    player.sendMessage(Main.gamedesign_prefix + "Door konnte leider nicht gesettet werden.");
+                                }
+                                return false;
+                            }
+                            BlockData data = block.getBlockData();
+                            TileState state = (TileState) block.getState();
+                            PersistentDataContainer container = state.getBlock().getChunk().getPersistentDataContainer();
+                            container.set(value, PersistentDataType.STRING, args[1]);
+                            block.setBlockData(data, true);
+                            player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType().name() + " gesetzt.");
+                        } else {
+                            player.sendMessage(Main.gamedesign_prefix + "Syntax-Fehler: /setblockvalue [string/int] [Wert]");
+                        }
                     } else {
-                        player.sendMessage(Main.gamedesign_prefix + "Syntax-Fehler: /setblockvalue [Wert]");
+                        player.sendMessage(Main.gamedesign_prefix + "Syntax-Fehler: /setblockvalue [string/int] [Wert]");
                     }
                 } else {
                     player.sendMessage(Main.gamedesign_prefix + "Block ist nicht solide.");
