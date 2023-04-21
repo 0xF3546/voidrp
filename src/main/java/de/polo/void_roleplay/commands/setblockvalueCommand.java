@@ -48,7 +48,7 @@ public class setblockvalueCommand implements CommandExecutor {
                             }
                             BlockData data = block.getBlockData();
                             TileState state = (TileState) block.getState();
-                            PersistentDataContainer container = state.getPersistentDataContainer();
+                            PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                             container.set(value, PersistentDataType.INTEGER, Integer.valueOf(args[1]));
                             block.setBlockData(data, true);
                             player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType().name() + " gesetzt.");
@@ -71,7 +71,7 @@ public class setblockvalueCommand implements CommandExecutor {
                             }
                             BlockData data = block.getBlockData();
                             TileState state = (TileState) block.getState();
-                            PersistentDataContainer container = state.getBlock().getChunk().getPersistentDataContainer();
+                            PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                             container.set(value, PersistentDataType.STRING, args[1]);
                             block.setBlockData(data, true);
                             player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType().name() + " gesetzt.");

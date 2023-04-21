@@ -292,5 +292,26 @@ public class InventoryClickListener implements Listener {
                 }
             }
         }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "computer")) {
+            event.setCancelled(true);
+            if (playerData.getVariable("current_app") == null) {
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case RED_DYE:
+                        event.getCurrentItem().setType(Material.GREEN_DYE);
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        meta.setDisplayName("§c§lDienst verlassen!");
+                        event.getCurrentItem().setItemMeta(meta);
+                        FactionManager.setDuty(player, false);
+                        break;
+                    case GREEN_DYE:
+                        event.getCurrentItem().setType(Material.RED_DYE);
+                        ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
+                        itemMeta.setDisplayName("§a§lDienst betreten!");
+                        event.getCurrentItem().setItemMeta(itemMeta);
+                        FactionManager.setDuty(player, true);
+                        break;
+                }
+            }
+        }
                 }
 }

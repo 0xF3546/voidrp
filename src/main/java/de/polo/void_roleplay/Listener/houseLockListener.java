@@ -29,9 +29,10 @@ public class houseLockListener implements Listener {
                 NamespacedKey value = new NamespacedKey(Main.plugin, "value");
                 PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-                System.out.println(container.get(value, PersistentDataType.STRING));
-                if (!Objects.requireNonNull(container.get(value, PersistentDataType.STRING)).contains(playerData.getFaction())) {
-                    event.setCancelled(true);
+                if (!playerData.isAduty()) {
+                    if (!Objects.requireNonNull(container.get(value, PersistentDataType.STRING)).contains(playerData.getFaction())) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }

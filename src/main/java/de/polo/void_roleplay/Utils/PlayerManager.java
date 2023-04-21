@@ -83,7 +83,7 @@ public class PlayerManager {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isBanned` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setFirstname(name.getString(1));
@@ -101,6 +101,7 @@ public class PlayerManager {
                     playerData.setDead(name.getBoolean(14));
                     if (name.getBoolean(14)) playerData.setDeathTime(name.getInt(15));
                     if (name.getInt(16) != 0) playerData.setNumber(name.getInt(16));
+                    playerData.setDuty(name.getBoolean(17));
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);
@@ -110,14 +111,14 @@ public class PlayerManager {
                     if (name.getInt(8) >= 60) {
                         onPlayer.put(player.getUniqueId().toString(), true);
                         player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
-                        player.getPlayer().setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-                        player.getPlayer().setCustomName("§8[§7Team§8]§7 " + player.getName());
+                        player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
+                        player.setCustomName("§8[§7Team§8]§7 " + player.getName());
                         player.setCustomNameVisible(true);
                     } else {
                         onPlayer.put(player.getUniqueId().toString(), false);
                         player.setDisplayName("§7" + player.getName());
-                        player.getPlayer().setPlayerListName("§7" + player.getName());
-                        player.getPlayer().setCustomName("§7" + player.getName());
+                        player.setPlayerListName("§7" + player.getName());
+                        player.setCustomName("§7" + player.getName());
                         player.setCustomNameVisible(true);
                     }
 

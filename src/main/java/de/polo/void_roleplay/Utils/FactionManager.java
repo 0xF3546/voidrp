@@ -68,9 +68,21 @@ public class FactionManager {
         PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
         playerData.setFaction(null);
         playerData.setFactionGrade(0);
+        playerData.setDuty(false);
+        if (playerData.getPermlevel() >= 60) {
+            player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
+            player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
+            player.setCustomName("§8[§7Team§8]§7 " + player.getName());
+            player.setCustomNameVisible(true);
+        } else {
+            player.setDisplayName("§7" + player.getName());
+            player.setPlayerListName("§7" + player.getName());
+            player.setCustomName("§7" + player.getName());
+            player.setCustomNameVisible(true);
+        }
         Statement statement = MySQL.getStatement();
         assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0 WHERE `uuid` = '" + uuid + "'");
+        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
     }
 
     public static void removeOfflinePlayerFromFrak(String playername) throws SQLException {
@@ -78,7 +90,7 @@ public class FactionManager {
         assert statement != null;
         ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
         if (result != null) {
-            statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0 WHERE `player_name` = '" + playername + "'");
+            statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `player_name` = '" + playername + "'");
         }
     }
 
@@ -201,5 +213,37 @@ public class FactionManager {
                 return "Arzt";
         }
         return null;
+    }
+
+    public static void setDuty(Player player, boolean state) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        if (state) {
+            if (playerData.getPermlevel() >= 60) {
+                player.setDisplayName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
+                player.setPlayerListName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
+                player.setCustomName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
+                player.setCustomNameVisible(true);
+            } else {
+                player.setDisplayName("§" + factionData.getPrimaryColor() + player.getName());
+                player.setPlayerListName("§" + factionData.getPrimaryColor() + player.getName());
+                player.setCustomName("§" + factionData.getPrimaryColor() + player.getName());
+                player.setCustomNameVisible(true);
+            }
+            playerData.setDuty(true);
+        } else {
+            if (playerData.getPermlevel() >= 60) {
+                player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
+                player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
+                player.setCustomName("§8[§7Team§8]§7 " + player.getName());
+                player.setCustomNameVisible(true);
+            } else {
+                player.setDisplayName("§7" + player.getName());
+                player.setPlayerListName("§7" + player.getName());
+                player.setCustomName("§7" + player.getName());
+                player.setCustomNameVisible(true);
+            }
+            playerData.setDuty(false);
+        }
     }
 }

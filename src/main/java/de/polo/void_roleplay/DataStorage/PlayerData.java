@@ -31,6 +31,7 @@ public class PlayerData {
     private int deathTime;
     private int number;
     private boolean isFlightmode;
+    private boolean isDuty;
 
     public PlayerData() {
     }
@@ -252,5 +253,13 @@ public class PlayerData {
 
     public void setFlightmode(boolean flightmode) {
         isFlightmode = flightmode;
+    }
+
+    public boolean isDuty() {
+        return isDuty;
+    }
+
+    public void setDuty(boolean duty) {
+        isDuty = duty;
     }
 }

@@ -1,8 +1,10 @@
 package de.polo.void_roleplay.commands;
 
+import de.polo.void_roleplay.DataStorage.FactionData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.Scoreboard;
+import de.polo.void_roleplay.Utils.FactionManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,6 +20,9 @@ public class aduty implements CommandExecutor {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (PlayerManager.onPlayer.get(player.getUniqueId().toString())) {
             if (playerData.isAduty()) {
+                if (playerData.isDuty()) {
+                    FactionManager.setDuty(player, true);
+                }
                 playerData.setAduty(false);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 (player).setFlying(false);
