@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.commands;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.PlayerManager;
@@ -36,9 +37,10 @@ public class setblockvalueCommand implements CommandExecutor {
                                 BlockState state = block.getState();
                                 if (state.getType().name().endsWith("_DOOR")) {
                                     Door door = (Door) block.getBlockData();
-                                    PersistentDataContainer container = state.getChunk().getPersistentDataContainer();
+                                    PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                                     container.set(value, PersistentDataType.INTEGER, Integer.valueOf(args[1]));
                                     player.sendMessage(Main.gamedesign_prefix + "Door gesettet.");
+                                    state.update();
                                 } else {
                                     player.sendMessage(Main.gamedesign_prefix + "Door konnte leider nicht gesettet werden.");
                                 }
@@ -50,6 +52,7 @@ public class setblockvalueCommand implements CommandExecutor {
                             container.set(value, PersistentDataType.INTEGER, Integer.valueOf(args[1]));
                             block.setBlockData(data, true);
                             player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType().name() + " gesetzt.");
+                            state.update();
                         } else if (args[0].equalsIgnoreCase("string")) {
                             NamespacedKey value = new NamespacedKey(Main.plugin, "value");
                             if (!(block.getState() instanceof TileState)) {
@@ -57,9 +60,10 @@ public class setblockvalueCommand implements CommandExecutor {
                                 BlockState state = block.getState();
                                 if (state.getType().name().endsWith("_DOOR")) {
                                     Door door = (Door) block.getBlockData();
-                                    PersistentDataContainer container = state.getBlock().getChunk().getPersistentDataContainer();
+                                    PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                                     container.set(value, PersistentDataType.STRING, args[1]);
                                     player.sendMessage(Main.gamedesign_prefix + "Door gesettet.");
+                                    state.update();
                                 } else {
                                     player.sendMessage(Main.gamedesign_prefix + "Door konnte leider nicht gesettet werden.");
                                 }
@@ -71,6 +75,7 @@ public class setblockvalueCommand implements CommandExecutor {
                             container.set(value, PersistentDataType.STRING, args[1]);
                             block.setBlockData(data, true);
                             player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType().name() + " gesetzt.");
+                            state.update();
                         } else {
                             player.sendMessage(Main.gamedesign_prefix + "Syntax-Fehler: /setblockvalue [string/int] [Wert]");
                         }

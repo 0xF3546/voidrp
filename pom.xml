@@ -70,6 +70,10 @@
             <id>bintray-nuvotifier-repo</id>
             <url>https://dl.bintray.com/nuvotifier/maven/</url>
         </repository>
+        <repository>
+            <id>jeff-media-public</id>
+            <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -83,6 +87,12 @@
             <groupId>com.github.NuVotifier</groupId>
             <artifactId>nuvotifier</artifactId>
             <version>2.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jeff_media</groupId>
+            <artifactId>CustomBlockData</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
