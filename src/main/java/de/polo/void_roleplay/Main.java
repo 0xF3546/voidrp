@@ -132,6 +132,7 @@ public final class Main extends JavaPlugin {
         getCommand("lebensmittellieferant").setExecutor(new lebensmittellieferantCommand());
         getCommand("ban").setExecutor(new banCommand());
         getCommand("unban").setExecutor(new unbanCommand());
+        getCommand("setblockvalue").setExecutor(new setblockvalueCommand());
     }
 
 

@@ -19,7 +19,7 @@ public class DamageListener implements Listener {
                 event.setCancelled(true);
             } else {
                 ItemStack chestplate = player.getInventory().getArmorContents()[2];
-                if (event.getCause() != EntityDamageEvent.DamageCause.FALL && event.getCause() != EntityDamageEvent.DamageCause.DROWNING)
+                if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
                 {
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
                         event.setDamage(event.getDamage() / 2);
