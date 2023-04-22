@@ -1,5 +1,7 @@
 package de.polo.void_roleplay.Listener;
 
+import de.polo.void_roleplay.DataStorage.GasStationData;
+import de.polo.void_roleplay.DataStorage.VehicleData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.FactionData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
@@ -11,14 +13,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -324,6 +331,73 @@ public class InventoryClickListener implements Listener {
                 Vehicles.toggleVehicleState(id, player);
                 player.closeInventory();
                 playerData.setVariable("current_inventory", null);
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "gasstation")) {
+            event.setCancelled(true);
+            Integer station = LocationManager.isPlayerGasStation(player);
+            GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
+            if (playerData.getVariable("current_app") != "fill_options") {
+                if (event.getCurrentItem().getType() == Material.MINECART) {
+                    String type = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
+                    int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                    VehicleData vehicleData = Vehicles.vehicleDataMap.get(type);
+                    Entity vehicle = null;
+                    for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
+                        if (entity.getType() == EntityType.MINECART) {
+                            if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER) == id) {
+                                vehicle = entity;
+                            }
+                        }
+                    }
+                    if (vehicle != null) {
+                        if (event.isLeftClick()) {
+                            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6Tankstelle");
+                            inv.setItem(10, ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5-10 Liter", null));
+                            inv.setItem(11, ItemManager.createItem(Material.MAGENTA_DYE, 1, 0, "§d-1 Liter", null));
+                            inv.setItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§a+1 Liter", null));
+                            inv.setItem(16, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+10 Liter", null));
+                            inv.setItem(13, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "§7 ➥ §e" + Math.floor(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT)) +  " Liter"));
+                            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", "§7 ➥ §7Kosten: 0$ "));
+                            playerData.setIntVariable("start_fuel", (int) Math.floor(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT)));
+                            playerData.setIntVariable("current_fuel", (int) Math.floor(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT)));
+                            playerData.setVariable("current_app", "fill_options");
+                            player.openInventory(inv);
+                        } else if (event.isRightClick()) {
+                            int price = (int) (vehicleData.getMaxFuel() - vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT)) * gasStationData.getLiterprice();
+                            if (playerData.getBargeld() >= price) {
+                                Vehicles.fillVehicle((Vehicle) vehicle, null);
+                                PlayerManager.removeMoney(player, price, "Tankrechnung " + type);
+                                player.sendMessage(Main.prefix + "Du hast dein §6" + type + "§7 betankt. §c-" + price + "$");
+                                player.closeInventory();
+                                playerData.setVariable("current_inventory", null);
+                            } else {
+                                player.sendMessage(Main.error + "Du hast nicht genug Geld dabei (§a " + price + "$§7).");
+                            }
+                        }
+                    }
+                }
+            } else {
+                switch (event.getCurrentItem().getType()) {
+                    case PURPLE_DYE:
+                        playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") - 10);
+                        break;
+                    case MAGENTA_DYE:
+                        playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") - 1);
+                        break;
+                    case LIME_DYE:
+                        playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") + 1);
+                        break;
+                    case GREEN_DYE:
+                        playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") + 10);
+                        break;
+                }
+                ItemMeta meta = event.getInventory().getItem(13).getItemMeta();
+                meta.setLore(Collections.singletonList("§7 ➥ §e" + playerData.getIntVariable("current_fuel") + " Liter"));
+                event.getInventory().getItem(13).setItemMeta(meta);
+                ItemMeta nextMeta = event.getInventory().getItem(26).getItemMeta();
+                meta.setLore(Collections.singletonList("§7 ➥ Kosten: " + ((playerData.getIntVariable("current_fuel") - playerData.getIntVariable("start_fuel")) * 2) + "$"));
+                event.getInventory().getItem(26).setItemMeta(nextMeta);
             }
         }
     }

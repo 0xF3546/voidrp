@@ -83,6 +83,8 @@ commands:
   unban:
   setblockvalue:
   car:
-    aliases: vehicle, auto
+    aliases: [vehicle, auto]
   getveh:
     aliases: getvehicle
+  gotoveh:
+    aliases: gotovehicle

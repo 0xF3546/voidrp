@@ -139,6 +139,7 @@ public final class Main extends JavaPlugin {
         getCommand("setblockvalue").setExecutor(new setblockvalueCommand());
         getCommand("car").setExecutor(new Vehicles());
         getCommand("getveh").setExecutor(new getvehCommand());
+        getCommand("gotoveh").setExecutor(new gotovehCommand());
     }
 
 

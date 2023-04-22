@@ -13,7 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
-public class getvehCommand implements CommandExecutor {
+public class gotovehCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -24,15 +24,15 @@ public class getvehCommand implements CommandExecutor {
                     for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
                         if (entity.getType() == EntityType.MINECART) {
                             if (Integer.parseInt(args[0]) == (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER))) {
-                                entity.teleport(player.getLocation());
-                                player.sendMessage(Main.admin_prefix + "Du hast das Fahrzeug mit der ID §l" + args[0] + "§7 zu dir teleportiert.");
+                                player.teleport(entity.getLocation());
+                                player.sendMessage(Main.admin_prefix + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");
                             }
                         }
                     }
+                } else {
+                    player.sendMessage(Main.admin_error + "Syntax-Fehler: /gotovehicle [ID]");
+                }
             } else {
-                player.sendMessage(Main.admin_error + "Syntax-Fehler: /getvehicle [ID]");
-            }
-        } else {
                 player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
             }
         } else {
