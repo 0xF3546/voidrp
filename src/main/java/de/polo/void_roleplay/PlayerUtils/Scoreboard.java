@@ -3,11 +3,10 @@ package de.polo.void_roleplay.PlayerUtils;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.*;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Server;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.security.cert.TrustAnchor;
@@ -18,8 +17,10 @@ public class Scoreboard extends ScoreboardBuilder {
     private boolean isAdminScore = false;
     private boolean isMineScore = false;
     private boolean isLebensmittelLieferantScore = false;
+    private boolean isCarScore = false;
     private final String uuid;
     private final Player player;
+    private Vehicle vehicle;
 
     public Scoreboard(Player p) {
         super(p, "§6§lVoid Roleplay");
@@ -75,6 +76,20 @@ public class Scoreboard extends ScoreboardBuilder {
         isLebensmittelLieferantScore = true;
     }
 
+    public void createCarScoreboard(Vehicle minecart) {
+        isCarScore = true;
+        isScore = true;
+        String type = minecart.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
+        setDisplayName("§6" + type);
+        setScore("§eKM/H§8:", 5);
+        setScore("§8 ➥ §7Lädt...", 4);
+        setScore("§eKM§8:", 3);
+        setScore("§8 ➥ §7Lädt...", 2);
+        setScore("§eTank§8:", 1);
+        setScore("§8 ➥ §7Lädt...", 0);
+        vehicle = minecart;
+    }
+
     public void killScoreboard() {
         for (int i = 0; i < 15; i++) {
             removeScore(i);
@@ -82,6 +97,8 @@ public class Scoreboard extends ScoreboardBuilder {
         isScore = false;
         isAdminScore = false;
         isMineScore = false;
+        isCarScore = false;
+        isLebensmittelLieferantScore = false;
     }
 
     @Override
@@ -106,6 +123,12 @@ public class Scoreboard extends ScoreboardBuilder {
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.LAPIS_ORE), 4);
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.REDSTONE_ORE), 2);
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.IRON_ORE), 0);
+                } else if (isCarScore) {
+                    int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
+                    float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                    setScore("§8 ➥ §7" + vehicle.getVelocity().getY(), 4);
+                    setScore("§8 ➥ §7" + km, 2);
+                    setScore("§8 ➥ §7" + fuel + "l", 0);
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20, 30);

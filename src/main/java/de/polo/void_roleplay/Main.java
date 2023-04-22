@@ -76,6 +76,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PhoneUtils(), this);
         getServer().getPluginManager().registerEvents(new playerLoginListener(), this);
         getServer().getPluginManager().registerEvents(new ComputerUtils(), this);
+        getServer().getPluginManager().registerEvents(new Vehicles(), this);
     }
 
     private void registerCommands(){
@@ -136,6 +137,7 @@ public final class Main extends JavaPlugin {
         getCommand("ban").setExecutor(new banCommand());
         getCommand("unban").setExecutor(new unbanCommand());
         getCommand("setblockvalue").setExecutor(new setblockvalueCommand());
+        getCommand("car").setExecutor(new Vehicles());
     }
 
 

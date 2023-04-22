@@ -15,7 +15,7 @@ public class Shop {
         ResultSet locs = statement.executeQuery("SELECT * FROM shop_items");
         List<Object[]> resultList = new ArrayList<>();
         while (locs.next()) {
-            Object[] row = new Object[6];
+            Object[] row = new Object[7];
             row[0] = locs.getInt(1);
             row[1] = locs.getInt(2);
             row[2] = locs.getString(3);

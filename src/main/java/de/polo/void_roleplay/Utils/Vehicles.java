@@ -8,11 +8,19 @@ import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Minecart;
-import org.bukkit.entity.Player;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Vehicles {
+public class Vehicles implements Listener, CommandExecutor {
     public static Map<String, VehicleData> vehicleDataMap = new HashMap<>();
     public static Map<Integer, PlayerVehicleData> playerVehicleDataMap = new HashMap<Integer, PlayerVehicleData>();
     public static HashMap<String, Integer> vehicleIDByUUid = new HashMap<>();
@@ -103,13 +111,18 @@ public class Vehicles {
         NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
         minecart.getPersistentDataContainer().set(key_id, PersistentDataType.INTEGER, playerVehicleData.getId());
         NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
-        minecart.getPersistentDataContainer().set(key_id, PersistentDataType.STRING, playerVehicleData.getUuid());
+        minecart.getPersistentDataContainer().set(key_uuid, PersistentDataType.STRING, playerVehicleData.getUuid());
         NamespacedKey key_km = new NamespacedKey(Main.plugin, "km");
         minecart.getPersistentDataContainer().set(key_km, PersistentDataType.INTEGER, playerVehicleData.getKm());
         NamespacedKey key_fuel = new NamespacedKey(Main.plugin, "fuel");
         minecart.getPersistentDataContainer().set(key_fuel, PersistentDataType.FLOAT, playerVehicleData.getFuel());
         NamespacedKey key_lock = new NamespacedKey(Main.plugin, "lock");
         minecart.getPersistentDataContainer().set(key_lock, PersistentDataType.INTEGER, 1);
+        NamespacedKey key_type = new NamespacedKey(Main.plugin, "type");
+        minecart.getPersistentDataContainer().set(key_type, PersistentDataType.STRING, playerVehicleData.getType());
+
+        VehicleData vehicleData = vehicleDataMap.get(playerVehicleData.getType());
+        minecart.setMaxSpeed(vehicleData.getMaxspeed());
     }
 
     public static void deleteVehicleById(Integer id) throws SQLException {
@@ -136,10 +149,60 @@ public class Vehicles {
                     int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
                     int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
-                    statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + km + ", `fuel` = " + fuel + ", `x` = " + entity.getLocation().getX() + ", `y` = " + entity.getLocation().getY() + ", `z` = " + entity.getLocation().getZ() + ", `welt` = " + entity.getLocation().getWorld().toString() + ", `yaw` = " + entity.getLocation().getYaw() + ", `pitch` = " + entity.getLocation().getPitch() + " WHERE `id` = " + id);
+                    statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + km + ", `fuel` = " + fuel + ", `x` = " + entity.getLocation().getX() + ", `y` = " + entity.getLocation().getY() + ", `z` = " + entity.getLocation().getZ() + ", `welt` = '" + entity.getWorld().getName() + "', `yaw` = " + entity.getLocation().getYaw() + ", `pitch` = " + entity.getLocation().getPitch() + " WHERE `id` = " + id);
                     entity.remove();
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onVehicleEnter(VehicleEnterEvent event) {
+        if (event.getVehicle().getType().equals(EntityType.MINECART)) {
+            Vehicle vehicle = event.getVehicle();
+            Player player = (Player) event.getEntered();
+            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            playerData.getScoreboard().createCarScoreboard(event.getVehicle());
+
+        }
+    }
+    @EventHandler
+    public void onVehicleExit(VehicleExitEvent event) {
+        if (event.getVehicle().getType().equals(EntityType.MINECART)) {
+            Vehicle vehicle = event.getVehicle();
+            Player player = (Player) event.getExited();
+            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            playerData.getScoreboard().killScoreboard();
+        }
+    }
+    @EventHandler
+    public void onVehicleMove(VehicleMoveEvent event) {
+        if (event.getVehicle().getType().equals(EntityType.MINECART)) {
+            Vehicle vehicle = event.getVehicle();
+            if (event.getVehicle().getPassengers().get(0) != null) {
+                Player player = (Player) event.getVehicle().getPassengers().get(0);
+                VehicleData vehicleData = vehicleDataMap.get(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING));
+                double newAcc = vehicle.getVelocity().getZ() + vehicleData.getAcceleration();
+                Vector speed = new Vector();
+                player.getVehicle().setVelocity(player.getLocation().getDirection().setY(0).normalize().multiply(vehicle.getVelocity().length() * vehicleData.getAcceleration()));
+                System.out.println(vehicle.getVelocity().length() * vehicleData.getAcceleration());
+            }
+        }
+    }
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
+        if (args.length >= 1) {
+            if (args[0].equalsIgnoreCase("start")) {
+                Minecart minecart = (Minecart) player.getVehicle();
+                if (minecart != null & minecart.isValid()) {
+                    minecart.setVelocity(player.getFacing().getDirection().setY(0).multiply(1 + minecart.getVelocity().length() * 2));
+                    player.sendMessage(Main.prefix + "Du hast dein Auto gestartet.");
+                }
+            }
+        } else {
+            player.sendMessage(Main.error + "Syntax-Fehler: /car [start/stop]");
+        }
+        return false;
     }
 }

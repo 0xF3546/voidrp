@@ -82,3 +82,5 @@ commands:
   ban:
   unban:
   setblockvalue:
+  car:
+    aliases: vehicle, auto

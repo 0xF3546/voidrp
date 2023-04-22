@@ -1,7 +1,9 @@
 package de.polo.void_roleplay.Utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -41,6 +43,7 @@ public abstract class ScoreboardBuilder {
     public abstract void createAdminScoreboard();
     public abstract void createMineScoreboard();
     public abstract void createLebensmittelLieferantenScoreboard();
+    public abstract void createCarScoreboard(Vehicle vehicle);
 
     public abstract void update();
 

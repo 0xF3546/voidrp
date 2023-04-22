@@ -22,6 +22,9 @@ public class QuitListener implements Listener {
         if (playerData == null) return;
         event.setQuitMessage("");
         aduty.send_message("§c" + player.getName() + "§7 hat den Server verlassen.");
+        if (player.getVehicle() != null) {
+            player.getVehicle().eject();
+        }
         try {
             Vehicles.deleteVehicleByUUID(player.getUniqueId().toString());
         } catch (SQLException e) {
