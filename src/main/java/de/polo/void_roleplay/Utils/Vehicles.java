@@ -7,6 +7,7 @@ import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,11 +18,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import javax.naming.Name;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -156,13 +160,37 @@ public class Vehicles implements Listener, CommandExecutor {
         }
     }
 
+    public static void toggleVehicleState(Integer id, Player player) {
+        for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
+            if (entity.getType() == EntityType.MINECART) {
+                NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
+                if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
+                    int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
+                    if (lock == 1) {
+                        entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 0);
+                        player.sendMessage(Main.prefix + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §aaufgeschlossen§7!");
+                    } else {
+                        entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 1);
+                        player.sendMessage(Main.prefix + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §czugeschlossen§7!");
+                    }
+                }
+            }
+        }
+    }
+
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event) {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
+            NamespacedKey key_lock = new NamespacedKey(Main.plugin, "lock");
             Vehicle vehicle = event.getVehicle();
             Player player = (Player) event.getEntered();
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-            playerData.getScoreboard().createCarScoreboard(event.getVehicle());
+            if (vehicle.getPersistentDataContainer().get(key_lock, PersistentDataType.INTEGER) == 0) {
+                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                playerData.getScoreboard().createCarScoreboard(event.getVehicle());
+            } else {
+                event.setCancelled(true);
+                player.sendMessage(Main.error + "Das Fahrzeug ist zugeschlossen.");
+            }
 
         }
     }
@@ -192,6 +220,7 @@ public class Vehicles implements Listener, CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("start")) {
                 Minecart minecart = (Minecart) player.getVehicle();
@@ -200,8 +229,35 @@ public class Vehicles implements Listener, CommandExecutor {
                     player.sendMessage(Main.prefix + "Du hast dein Auto gestartet.");
                 }
             }
+            if (args[0].equalsIgnoreCase("lock")) {
+                Inventory inv = Bukkit.createInventory(player, 9, "§8 » §cSchlüssel");
+                int i = 0;
+                for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
+                    if (entity.getType() == EntityType.MINECART) {
+                        NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
+                        if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
+                            String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
+                            int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                            int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
+                            float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                            int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
+                            if (lock == 0) {
+                                inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "§7 ➥ §cZuschließen"));
+                            } else {
+                                inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "§7 ➥ §aAufschließen"));
+                            }
+                            ItemMeta meta = inv.getItem(i).getItemMeta();
+                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
+                            inv.getItem(i).setItemMeta(meta);
+                            i++;
+                        }
+                    }
+                }
+                playerData.setVariable("current_inventory", "carlock");
+                player.openInventory(inv);
+            }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /car [start/stop]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /car [start/stop/lock]");
         }
         return false;
     }

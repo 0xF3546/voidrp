@@ -317,5 +317,14 @@ public class InventoryClickListener implements Listener {
                 }
             }
         }
-                }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "carlock")) {
+            event.setCancelled(true);
+            if (event.getCurrentItem().getType() == Material.MINECART) {
+                int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                Vehicles.toggleVehicleState(id, player);
+                player.closeInventory();
+                playerData.setVariable("current_inventory", null);
+            }
+        }
+    }
 }
