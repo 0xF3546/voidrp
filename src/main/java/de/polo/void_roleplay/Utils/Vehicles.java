@@ -180,7 +180,7 @@ public class Vehicles implements Listener, CommandExecutor {
         float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
         VehicleData vehicleData = vehicleDataMap.get(type);
         if (newFuel != null) {
-
+            vehicle.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT, fuel + newFuel);
         } else {
             vehicle.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT, (float) vehicleData.getMaxFuel());
         }
