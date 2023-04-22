@@ -84,3 +84,5 @@ commands:
   setblockvalue:
   car:
     aliases: vehicle, auto
+  getveh:
+    aliases: getvehicle

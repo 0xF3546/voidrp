@@ -5,10 +5,7 @@ import de.polo.void_roleplay.DataStorage.PlayerVehicleData;
 import de.polo.void_roleplay.DataStorage.VehicleData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -165,6 +162,7 @@ public class Vehicles implements Listener, CommandExecutor {
             if (entity.getType() == EntityType.MINECART) {
                 NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
+                    player.playSound(entity.getLocation(), Sound.UI_BUTTON_CLICK, 1, 0);
                     int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
                     if (lock == 1) {
                         entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 0);
