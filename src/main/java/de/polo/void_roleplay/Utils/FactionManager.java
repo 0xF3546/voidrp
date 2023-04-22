@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.Utils;
 
+import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.DataStorage.FactionData;
 import de.polo.void_roleplay.DataStorage.FactionGradeData;
@@ -218,32 +219,40 @@ public class FactionManager {
     public static void setDuty(Player player, boolean state) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-        if (state) {
-            if (playerData.getPermlevel() >= 60) {
-                player.setDisplayName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
-                player.setPlayerListName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
-                player.setCustomName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
-                player.setCustomNameVisible(true);
+        try {
+            Statement statement = MySQL.getStatement();
+            if (state) {
+                statement.executeUpdate("UPDATE `players` SET `isDuty` = true WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                if (playerData.getPermlevel() >= 60) {
+                    player.setDisplayName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
+                    player.setPlayerListName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
+                    player.setCustomName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
+                    player.setCustomNameVisible(true);
+                } else {
+                    player.setDisplayName("§" + factionData.getPrimaryColor() + player.getName());
+                    player.setPlayerListName("§" + factionData.getPrimaryColor() + player.getName());
+                    player.setCustomName("§" + factionData.getPrimaryColor() + player.getName());
+                    player.setCustomNameVisible(true);
+                }
+                playerData.setDuty(true);
             } else {
-                player.setDisplayName("§" + factionData.getPrimaryColor() + player.getName());
-                player.setPlayerListName("§" + factionData.getPrimaryColor() + player.getName());
-                player.setCustomName("§" + factionData.getPrimaryColor() + player.getName());
-                player.setCustomNameVisible(true);
+                statement.executeUpdate("UPDATE `players` SET `isDuty` = false WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                if (playerData.getPermlevel() >= 60) {
+                    player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
+                    player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
+                    player.setCustomName("§8[§7Team§8]§7 " + player.getName());
+                    player.setCustomNameVisible(true);
+                } else {
+                    player.setDisplayName("§7" + player.getName());
+                    player.setPlayerListName("§7" + player.getName());
+                    player.setCustomName("§7" + player.getName());
+                    player.setCustomNameVisible(true);
+                }
+                playerData.setDuty(false);
             }
-            playerData.setDuty(true);
-        } else {
-            if (playerData.getPermlevel() >= 60) {
-                player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
-                player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-                player.setCustomName("§8[§7Team§8]§7 " + player.getName());
-                player.setCustomNameVisible(true);
-            } else {
-                player.setDisplayName("§7" + player.getName());
-                player.setPlayerListName("§7" + player.getName());
-                player.setCustomName("§7" + player.getName());
-                player.setCustomNameVisible(true);
-            }
-            playerData.setDuty(false);
+        } catch (SQLException e) {
+            player.sendMessage(Main.error + "Fehler.");
+            throw new RuntimeException(e);
         }
     }
 }

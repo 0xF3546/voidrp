@@ -18,15 +18,19 @@ public class getvehCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getPermlevel() >= 60) {
-            if (args.length >= 1) {
-                for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
-                    if (Integer.parseInt(args[0]) == (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER))) {
-                        entity.teleport(player.getLocation());
-                        player.sendMessage(Main.admin_prefix + "Du hast das Fahrzeug mit der ID §l" + args[0] + "§7 zu dir teleportiert.");
+            if (playerData.isAduty()) {
+                if (args.length >= 1) {
+                    for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
+                        if (Integer.parseInt(args[0]) == (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER))) {
+                            entity.teleport(player.getLocation());
+                            player.sendMessage(Main.admin_prefix + "Du hast das Fahrzeug mit der ID §l" + args[0] + "§7 zu dir teleportiert.");
+                        }
                     }
-                }
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /getvehicle [ID]");
+            }
+        } else {
+                player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
             }
         } else {
             player.sendMessage(Main.error_nopermission);

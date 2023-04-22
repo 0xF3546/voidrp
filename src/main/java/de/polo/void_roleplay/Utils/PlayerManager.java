@@ -122,6 +122,10 @@ public class PlayerManager {
                         player.setCustomNameVisible(true);
                     }
 
+                    if (name.getBoolean(17)) {
+                        FactionManager.setDuty(player, true);
+                    }
+
                     player_rent.put(player.getUniqueId().toString(), name.getInt(8));
                     player.setLevel(name.getInt(5));
                     if (name.getString(6) != null) {
