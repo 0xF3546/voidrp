@@ -140,6 +140,8 @@ public final class Main extends JavaPlugin {
         getCommand("car").setExecutor(new Vehicles());
         getCommand("getveh").setExecutor(new getvehCommand());
         getCommand("gotoveh").setExecutor(new gotovehCommand());
+        getCommand("navi").setExecutor(new Navigation());
+        getCommand("einreise").setExecutor(new einreiseCommand());
     }
 
 

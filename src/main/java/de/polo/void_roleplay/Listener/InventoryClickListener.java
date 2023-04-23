@@ -5,6 +5,7 @@ import de.polo.void_roleplay.DataStorage.VehicleData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.FactionData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.adminmenuCommand;
@@ -25,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
@@ -434,6 +436,66 @@ public class InventoryClickListener implements Listener {
                 ItemMeta nextMeta = event.getInventory().getItem(26).getItemMeta();
                 nextMeta.setLore(Collections.singletonList("§7 ➥ Kosten: " + (playerData.getIntVariable("plusfuel") * gasStationData.getLiterprice()) + "$"));
                 event.getInventory().getItem(26).setItemMeta(nextMeta);
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "einreise")) {
+            event.setCancelled(true);
+            switch (event.getSlot()) {
+                case 1:
+                    playerData.setVariable("chatblock", "firstname");
+                    player.sendMessage(Main.prefix + "Gib nun deinen §6Vornamen§7 in den §6Chat§7 ein!");
+                    player.closeInventory();
+                    break;
+                case 2:
+                    playerData.setVariable("chatblock", "lastname");
+                    player.sendMessage(Main.prefix + "Gib nun deinen §6Nachnamen§7 in den §6Chat§7 ein!");
+                    player.closeInventory();
+                    break;
+                case 4:
+                    if (event.getClick().isLeftClick()) {
+                        playerData.setVariable("einreise_gender", "Maennlich");
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        meta.setDisplayName("§eMännlich");
+                        event.getCurrentItem().setItemMeta(meta);
+                    } else if(event.getClick().isRightClick()) {
+                        playerData.setVariable("einreise_gender", "Weiblich");
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        meta.setDisplayName("§eWeiblich");
+                        event.getCurrentItem().setItemMeta(meta);
+                    }
+                    break;
+
+                case 5:
+                    playerData.setVariable("chatblock", "dob");
+                    player.sendMessage(Main.prefix + "Gib nun deinen §6Geburtstag§7 in den §6Chat§7 ein!");
+                    player.closeInventory();
+                    break;
+                case 8:
+                    if (playerData.getVariable("einreise_firstname") != null) {
+                        if (playerData.getVariable("einreise_lastname") != null) {
+                            if (playerData.getVariable("einreise_gender") != null) {
+                                if (playerData.getVariable("einreise_dob") != null) {
+                                    player.closeInventory();
+                                    playerData.setFirstname(playerData.getVariable("einreise_firstname"));
+                                    playerData.setLastname(playerData.getVariable("einreise_lastname"));
+                                    playerData.setBirthday(playerData.getVariable("einreise_dob"));
+                                    playerData.setGender(playerData.getVariable("einreise_gender"));
+                                    Statement statement = MySQL.getStatement();
+                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "'");
+                                    player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
+                                    PlayerManager.addExp(player, Main.random(100, 200));
+                                } else {
+                                    player.sendMessage(Main.error + "Bitte gib deinen Geburtstag noch an!");
+                                }
+                            } else {
+                                player.sendMessage(Main.error + "Bitte gib dein Geschlecht noch an!");
+                            }
+                        } else {
+                            player.sendMessage(Main.error + "Bitte gib deinen Nachnamen noch an!");
+                        }
+                    } else {
+                        player.sendMessage(Main.error + "Bitte gib deinen Vornamen noch an!");
+                    }
             }
         }
     }

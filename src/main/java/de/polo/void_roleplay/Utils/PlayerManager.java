@@ -83,7 +83,7 @@ public class PlayerManager {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setFirstname(name.getString(1));
@@ -102,6 +102,8 @@ public class PlayerManager {
                     if (name.getBoolean(14)) playerData.setDeathTime(name.getInt(15));
                     if (name.getInt(16) != 0) playerData.setNumber(name.getInt(16));
                     playerData.setDuty(name.getBoolean(17));
+                    playerData.setGender(name.getString(18));
+                    playerData.setBirthday(name.getString(19));
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);

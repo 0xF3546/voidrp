@@ -32,6 +32,8 @@ public class PlayerData {
     private int number;
     private boolean isFlightmode;
     private boolean isDuty;
+    private String gender;
+    private String birthday;
 
     public PlayerData() {
     }
@@ -261,5 +263,21 @@ public class PlayerData {
 
     public void setDuty(boolean duty) {
         isDuty = duty;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

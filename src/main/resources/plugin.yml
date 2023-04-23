@@ -88,3 +88,6 @@ commands:
     aliases: getvehicle
   gotoveh:
     aliases: gotovehicle
+  navi:
+    aliases: [navigation, nav, route]
+  einreise:

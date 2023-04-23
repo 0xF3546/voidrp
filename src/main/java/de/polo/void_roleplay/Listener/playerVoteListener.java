@@ -14,6 +14,7 @@ public class playerVoteListener implements Listener {
         public void onVote(final VotifierEvent event) {
             Vote vote = event.getVote();
             Player player = Bukkit.getPlayer(vote.getUsername());
+            System.out.println(event.getVote().getUsername() + " hat gevotet.");
             assert player != null;
             if(player.isOnline()) {
                 Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + player.toString() + ChatColor.DARK_GREEN + " has voted for the server!");
