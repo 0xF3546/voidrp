@@ -227,10 +227,9 @@ public class Vehicles implements Listener, CommandExecutor {
     }
     @EventHandler
     public void onGasStationInteract(PlayerInteractEvent event) {
-        if (event.getClickedBlock().getType() == null) return;
         if (event.getClickedBlock().getType() == Material.LEVER) {
             Integer station = LocationManager.isPlayerGasStation(event.getPlayer());
-            if (station != null) {
+            if (station != 0) {
                 event.setCancelled(true);
                 GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
                 Player player = event.getPlayer();
