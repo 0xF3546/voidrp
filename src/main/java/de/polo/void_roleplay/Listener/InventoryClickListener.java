@@ -520,7 +520,7 @@ public class InventoryClickListener implements Listener {
                         player.openInventory(inv);
                     } else {
                         player.sendMessage("§8[§6Navi§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
-                        LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
+                        LocationData locationData = LocationManager.locationDataMap.get(" " + naviData.getLocation());
                         Navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                         player.closeInventory();
                     }
