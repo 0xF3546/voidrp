@@ -2,11 +2,13 @@ package de.polo.void_roleplay.Utils;
 
 import de.polo.void_roleplay.DataStorage.GasStationData;
 import de.polo.void_roleplay.DataStorage.LocationData;
+import de.polo.void_roleplay.DataStorage.NaviData;
 import de.polo.void_roleplay.DataStorage.PlayerVehicleData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -20,6 +22,7 @@ import java.util.*;
 public class LocationManager {
     public static Map<String, LocationData> locationDataMap = new HashMap<String, LocationData>();
     public static Map<Integer, GasStationData> gasStationDataMap = new HashMap<>();
+    public static Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
     public static Object[][] gasstations;
     public static void loadLocations() throws SQLException {
@@ -73,6 +76,18 @@ public class LocationManager {
             gasStationData.setLiterprice(gas.getInt(11));
             gasStationData.setLiter(gas.getInt(12));
             gasStationDataMap.put(gas.getInt(1), gasStationData);
+        }
+
+        ResultSet navi = statement.executeQuery("SELECT * FROM navi");
+        while (navi.next()) {
+            NaviData naviData = new NaviData();
+            naviData.setId(navi.getInt(1));
+            naviData.setisGroup(navi.getBoolean(2));
+            naviData.setGroup(navi.getString(3));
+            naviData.setName(navi.getString(4));
+            if (navi.getString(5) != null) naviData.setLocation(navi.getString(5));
+            naviData.setItem(Material.valueOf(navi.getString(6)));
+            naviDataMap.put(navi.getInt(1), naviData);
         }
 
     }

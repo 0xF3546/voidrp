@@ -1,10 +1,8 @@
 package de.polo.void_roleplay.Listener;
 
-import de.polo.void_roleplay.DataStorage.GasStationData;
-import de.polo.void_roleplay.DataStorage.VehicleData;
+import com.sun.tools.javac.file.Locations;
+import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
-import de.polo.void_roleplay.DataStorage.FactionData;
-import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.Utils.*;
@@ -500,6 +498,33 @@ public class InventoryClickListener implements Listener {
                     } else {
                         player.sendMessage(Main.error + "Bitte gib deinen Vornamen noch an!");
                     }
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "navi")) {
+            event.setCancelled(true);
+            int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+            for (NaviData naviData : LocationManager.naviDataMap.values()) {
+                if (naviData.getId() == id) {
+                    if (naviData.isGroup()) {
+                        Inventory inv = Bukkit.createInventory(player, 27, "§8 » " + naviData.getName().replace("&", "§"));
+                        int i = 0;
+                        for (NaviData newNavi : LocationManager.naviDataMap.values()) {
+                            if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
+                                inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), null));
+                                ItemMeta meta = inv.getItem(i).getItemMeta();
+                                meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, newNavi.getId());
+                                inv.getItem(i).setItemMeta(meta);
+                                i++;
+                            }
+                        }
+                        player.openInventory(inv);
+                    } else {
+                        player.sendMessage("§8[§6Navi§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
+                        LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
+                        Navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                        player.closeInventory();
+                    }
+                }
             }
         }
     }

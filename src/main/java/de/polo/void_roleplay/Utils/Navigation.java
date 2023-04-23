@@ -2,16 +2,17 @@ package de.polo.void_roleplay.Utils;
 
 import de.polo.void_roleplay.DataStorage.GasStationData;
 import de.polo.void_roleplay.DataStorage.LocationData;
+import de.polo.void_roleplay.DataStorage.NaviData;
+import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -28,6 +29,18 @@ public class Navigation implements CommandExecutor {
             }
         } else {
             Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6Navi");
+            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            int i = 0;
+            for (NaviData naviData : LocationManager.naviDataMap.values()) {
+                if (naviData.isGroup()) {
+                    inv.setItem(i, ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null));
+                    ItemMeta meta = inv.getItem(i).getItemMeta();
+                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, naviData.getId());
+                    inv.getItem(i).setItemMeta(meta);
+                    i++;
+                }
+            }
+            playerData.setVariable("current_inventory", "navi");
             player.openInventory(inv);
         }
         return false;
@@ -53,7 +66,7 @@ public class Navigation implements CommandExecutor {
                 player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                 if (player.getLocation().distance(targetLocation) <= 5) {
                     this.cancel();
-                    player.sendMessage("&8[§6Navi§8]§7 Du hast dein Ziel erreicht.");
+                    player.sendMessage("§8[§6Navi§8]§7 Du hast dein Ziel erreicht.");
                 }
             }
         }.runTaskTimer(Main.getInstance(), 0L, 1L);
@@ -62,7 +75,7 @@ public class Navigation implements CommandExecutor {
     public static void createNavi(Player player, String nav) {
         for (LocationData locationData : LocationManager.locationDataMap.values()) {
             if (locationData.getName().equalsIgnoreCase(" " + nav)) {
-                player.sendMessage("&8[§6Navi§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
+                player.sendMessage("§8[§6Navi§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
                 final double length = 5.0;
                 final double increment = 0.5;
                 final Location targetLocation = new Location(Bukkit.getWorld(locationData.getWelt()), locationData.getX(), locationData.getY(), locationData.getZ());
@@ -82,7 +95,7 @@ public class Navigation implements CommandExecutor {
                         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                         if (player.getLocation().distance(targetLocation) <= 5) {
                             this.cancel();
-                            player.sendMessage("&8[§6Navi§8]§7 Du hast dein Ziel erreicht.");
+                            player.sendMessage("§8[§6Navi§8]§7 Du hast dein Ziel erreicht.");
                         }
                     }
                 }.runTaskTimer(Main.getInstance(), 0L, 1L);
