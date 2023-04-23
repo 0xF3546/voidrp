@@ -14,18 +14,18 @@ import java.util.Random;
 
 public final class Main extends JavaPlugin {
     public static Plugin plugin = null;
-    public static String prefix = "§cVoid§8 » §7";
+    public static String prefix = "§8[§6Void§8] §7";
     public static String debug_prefix = "§8[§7§lDEBUG§8] §cVoid§8 » §7";
-    public static String admin_prefix = "§cAdmin§8 » §7";
-    public static String error_cantinteract = "§cFehler§8 » §7Du kannst gerade nicht interagieren.";
-    public static String PayDay_prefix = "§3PayDay§8 » §7";
-    public static String faction_prefix = "§9Fraktion§8 » §7";
-    public static String support_prefix = "§3Support§8 » §7";
-    public static String gamedesign_prefix = "§9Gamedesign§8 » §7";
-    public static String bank_prefix = "§3Bank§8 » §7";
+    public static String admin_prefix = "§8[§cAdmin§8] §7";
+    public static String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
+    public static String PayDay_prefix = "§8[§aPayDay§8] §7";
+    public static String faction_prefix = "§8[§9Fraktion§8] §7";
+    public static String support_prefix = "§8[§3Support§8] §7";
+    public static String gamedesign_prefix = "§8[§9Gamedesign§8] §7";
+    public static String bank_prefix = "§8[§3Bank§8] §7";
 
-    public static String error_nopermission = "§cFehler§8 » §7Für den ausgeführten Befehl hast du keine Rechte.";
-    public static String error = "§cFehler§8 » §7";
+    public static String error_nopermission = "§8[§cFehler§8] §7Für den ausgeführten Befehl hast du keine Rechte.";
+    public static String error = "§8[§cFehler§8] §7";
     public static String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static String admin_info = "§8[§9§lINFO§8] §cAdmin§8 » §7";
 
