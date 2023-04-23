@@ -51,35 +51,35 @@ public class banCommand implements CommandExecutor {
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + uuid + "', '" + args[1] + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + uuid + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("d")) {
                                 calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(args[2].replace("d", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + uuid + "', '" + args[1] + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + uuid + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("m")) {
                                 calendar.add(Calendar.MONTH, Integer.parseInt(args[2].replace("m", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + uuid + "', '" + args[1] + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + uuid + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("s")) {
                                 calendar.add(Calendar.SECOND, Integer.parseInt(args[2].replace("s", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + uuid + "', '" + args[1] + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + uuid + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("y")) {
                                 calendar.add(Calendar.YEAR, Integer.parseInt(args[2].replace("y", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + uuid + "', '" + args[1] + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + uuid + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + args[1] + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             }
                         }
@@ -109,35 +109,35 @@ public class banCommand implements CommandExecutor {
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + args[1] + "', '" + playername + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + args[1] + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("d")) {
                                 calendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(args[2].replace("d", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + args[1] + "', '" + playername + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + args[1] + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("m")) {
                                 calendar.add(Calendar.MONTH, Integer.parseInt(args[2].replace("m", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + args[1] + "', '" + playername + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + args[1] + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("s")) {
                                 calendar.add(Calendar.SECOND, Integer.parseInt(args[2].replace("s", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + args[1] + "', '" + playername + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + args[1] + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             } else if (args[2].contains("y")) {
                                 calendar.add(Calendar.YEAR, Integer.parseInt(args[2].replace("y", "")));
                                 Date newDate = calendar.getTime();
                                 statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `gebannt`) VALUES ('" + args[1] + "', '" + playername + "', '" + banreason + "', '" + new Date() +"')");
                                 statement.executeUpdate("UPDATE `players` SET `isBanned` = true WHERE `uuid` = '" + args[1] + "'");
-                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund: " + banreason);
+                                Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + playername + " gebannt. Grund:" + banreason);
                                 Bukkit.getBanList(BanList.Type.NAME).addBan(offlinePlayer.getName(), "§8• §6§lVoid Roleplay §8•\n\n§cDu bist vom Server gebannt.\nGrund§8:§7 " + banreason + "\n§cBan läuft ab§8:§7 " + newDate + "\n\n§cEntbannung unter\n§6www.voidroleplay.de/forum/\n\n§8• §6§lVoid Roleplay §8•", newDate, null);
                             }
                         }

@@ -94,6 +94,7 @@ public class Weapons implements Listener {
                             arrow.setVelocity(arrow.getVelocity().multiply(weaponData.getArrowVelocity()));
                             arrow.setShooter(shooter);
                             arrow.setDamage(weaponData.getDamage());
+                            arrow.setGravity(false);
                         }
                         Location location = player.getLocation();
                         for (Player nearbyPlayer : Bukkit.getOnlinePlayers()) {

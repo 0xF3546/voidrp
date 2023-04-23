@@ -184,14 +184,7 @@ public class LocationManager {
                 return gasStationData.getId();
             }
         }
-        int distshop = 0;
-        for (Object[] row : gasstations) {
-            World welt = Bukkit.getWorld(row[5].toString());
-            if (player.getLocation().distance(new Location(welt, (int) row[2], (int) row[3], (int) row[4], (float) row[6], (float) row[7])) < 15) {
-                distshop = (int) row[0];
-            }
-        }
-        return distshop;
+        return 0;
     }
 
 }

@@ -159,8 +159,12 @@ public class InventoryClickListener implements Listener {
                     switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                         case EMERALD:
                             player.performCommand("annehmen");
+                            player.closeInventory();
+                            break;
                         case REDSTONE:
                             player.performCommand("ablehnen");
+                            player.closeInventory();
+                            break;
                     }
                 }
                 if (Objects.equals(playerData.getVariable("current_inventory"), "tablet")) {
@@ -481,7 +485,7 @@ public class InventoryClickListener implements Listener {
                                     playerData.setBirthday(playerData.getVariable("einreise_dob"));
                                     playerData.setGender(playerData.getVariable("einreise_gender"));
                                     Statement statement = MySQL.getStatement();
-                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "'");
+                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                                     PlayerManager.addExp(player, Main.random(100, 200));
                                 } else {

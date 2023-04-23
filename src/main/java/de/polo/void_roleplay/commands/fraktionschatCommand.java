@@ -26,7 +26,7 @@ public class fraktionschatCommand implements CommandExecutor {
                 FactionData factionData = FactionManager.factionDataMap.get(playerfac);
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (Objects.equals(FactionManager.faction(players), playerfac)) {
-                        players.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + FactionManager.getFactionFullname(playerfac) + "§8 » §" + FactionManager.getFactionSecondaryColor(playerfac) + "[" + FactionManager.faction_grade(player) + "] " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + "§8:§7 " + msg);
+                        players.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + FactionManager.getFactionFullname(playerfac) + "§8]§"+FactionManager.getFactionPrimaryColor(playerfac)+" " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + "§8:§" + FactionManager.getFactionSecondaryColor(playerfac) +" " + msg);
                     }
                 }
             } else {
