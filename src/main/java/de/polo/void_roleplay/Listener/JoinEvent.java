@@ -35,7 +35,7 @@ public class  JoinEvent implements Listener {
             player.sendMessage("§6Wilkommen zurück, " + player.getName() + "!");
         } else {
             player.sendMessage(" ");
-            player.sendMessage("§cMetro §8»§7 Herzlich Wilkommen auf Void Roleplay - Roleplay mit Stil, " + player.getName() + ".");
+            player.sendMessage("§6Void Roleplay §8»§7 Herzlich Wilkommen auf Void Roleplay - Roleplay mit Stil, " + player.getName() + ".");
             player.sendMessage(" ");
             LocationManager.useLocation(player, "Spawn");
             player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);

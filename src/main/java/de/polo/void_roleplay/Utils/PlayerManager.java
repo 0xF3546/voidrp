@@ -407,13 +407,13 @@ public class PlayerManager {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setExp(playerData.getExp() + exp);
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
-            player.sendMessage("§6Level §8» §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
+            player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
             playerData.setLevel(playerData.getLevel() + 1);
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0);
         } else {
-            player.sendMessage("§6Level §8» §" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            player.sendMessage("§8[§6Level§8] §" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
         }
     }
@@ -421,7 +421,7 @@ public class PlayerManager {
     public static void removeExp(Player player, Integer exp) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setExp(playerData.getExp() - exp);
-        player.sendMessage("§6Level §8» §c-+" + exp + " EXP");
+        player.sendMessage("§8[§6Level§8] §c-+" + exp + " EXP");
     }
 
 }

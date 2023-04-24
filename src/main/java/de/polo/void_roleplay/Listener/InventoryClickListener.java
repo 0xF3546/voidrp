@@ -106,26 +106,38 @@ public class InventoryClickListener implements Listener {
                     case DIAMOND:
                         UUID uuid1 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
                         OfflinePlayer offlinePlayer1 = Bukkit.getOfflinePlayer(uuid1);
+                        FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
+                        Statement statement = MySQL.getStatement();
+                        ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
+                        if (res.next()) {
+                            if (res.getInt(1) < 8 && res.getInt(1) > 0) {
+                                statement.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res.getInt(1) + 1) + " WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
+                            } else {
+                                return;
+                            }
+                        }
                         if (offlinePlayer1.isOnline()) {
                             PlayerData offlinePlayerData = PlayerManager.playerDataMap.get(offlinePlayer1.getUniqueId().toString());
                             offlinePlayerData.setFactionGrade(offlinePlayerData.getFactionGrade() + 1);
                         }
-                        FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
-                        Statement statement = MySQL.getStatement();
-                        ResultSet res = statement.executeQuery("SELECT `factopn_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
-                        statement.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res.getInt(1) + 1) + " WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
                         break;
                     case GLOWSTONE_DUST:
                         UUID uuid2 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
                         OfflinePlayer offlinePlayer2 = Bukkit.getOfflinePlayer(uuid2);
+                        Statement statement1 = MySQL.getStatement();
+                        ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
+                        if (res1.next()) {
+                            if (res1.getInt(1) < 8 && res1.getInt(1) > 0) {
+                                statement1.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res1.getInt(1) - 1) + " WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
+                            } else {
+                                return;
+                            }
+                        }
+                        FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer2.getName() + "§7 wurde von §c" + player.getName() + " degradiert.");
                         if (offlinePlayer2.isOnline()) {
                             PlayerData offlinePlayerData = PlayerManager.playerDataMap.get(offlinePlayer2.getUniqueId().toString());
                             offlinePlayerData.setFactionGrade(offlinePlayerData.getFactionGrade() - 1);
                         }
-                        FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer2.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
-                        Statement statement1 = MySQL.getStatement();
-                        ResultSet res1 = statement1.executeQuery("SELECT `factopn_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
-                        statement1.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res1.getInt(1) - 1) + " WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
                         break;
                 }
             }

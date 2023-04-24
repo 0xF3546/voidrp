@@ -30,7 +30,7 @@ public class Navigation implements CommandExecutor {
                     createNavi(player, args[0]);
                 }
             } else {
-                Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6Navi");
+                Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6GPS");
                 int i = 0;
                 for (NaviData naviData : LocationManager.naviDataMap.values()) {
                     if (naviData.isGroup()) {
@@ -46,7 +46,7 @@ public class Navigation implements CommandExecutor {
             }
         } else {
             playerData.setVariable("navi", null);
-            player.sendMessage("§8[§6Navi§8]§e Du hast deine Route gelöscht.");
+            player.sendMessage("§8[§6GPS§8]§e Du hast deine Route gelöscht.");
         }
         return false;
     }
@@ -73,7 +73,7 @@ public class Navigation implements CommandExecutor {
                     player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     if (player.getLocation().distance(targetLocation) <= 5) {
                         this.cancel();
-                        player.sendMessage("§8[§6Navi§8]§7 Du hast dein Ziel erreicht.");
+                        player.sendMessage("§8[§6GPS§8]§7 Du hast dein Ziel erreicht.");
                     }
                 } else {
                     this.cancel();
@@ -86,7 +86,7 @@ public class Navigation implements CommandExecutor {
         for (LocationData locationData : LocationManager.locationDataMap.values()) {
             if (locationData.getName().equalsIgnoreCase(" " + nav)) {
                 PlayerManager.playerDataMap.get(player.getUniqueId().toString()).setVariable("navi", "ja");
-                player.sendMessage("§8[§6Navi§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
+                player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
                 final double length = 5.0;
                 final double increment = 0.5;
                 final Location targetLocation = new Location(Bukkit.getWorld(locationData.getWelt()), locationData.getX(), locationData.getY(), locationData.getZ());
@@ -107,7 +107,7 @@ public class Navigation implements CommandExecutor {
                             player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
-                                player.sendMessage("§8[§6Navi§8]§7 Du hast dein Ziel erreicht.");
+                                player.sendMessage("§8[§6GPS§8]§7 Du hast dein Ziel erreicht.");
                             }
                         } else {
                             this.cancel();
