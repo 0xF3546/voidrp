@@ -21,7 +21,7 @@ public class teamchatCommand implements CommandExecutor {
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (PlayerManager.onPlayer.get(players.getUniqueId().toString())) {
-                        players.sendMessage(Main.admin_prefix + "[" + PlayerManager.rang(player) + "] " + player.getName() + "§8:§7 " + msg);
+                        players.sendMessage(Main.admin_prefix +  PlayerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);
                     }
                 }
             } else {

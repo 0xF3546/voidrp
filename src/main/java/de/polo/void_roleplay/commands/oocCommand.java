@@ -16,7 +16,7 @@ public class oocCommand implements CommandExecutor {
         }
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 5) {
-                players.sendMessage("§cOOC§8 » §c" + player.getName() + "§8: §7" + message);
+                players.sendMessage("§8[§cOOC§8] §c" + player.getName() + "§8: §7" + message);
             }
         }
      return false;

@@ -30,7 +30,7 @@ public class inviteCommand implements CommandExecutor {
                     if (Objects.equals(FactionManager.faction(targetplayer), "Zivilist") || FactionManager.faction(targetplayer) == null) {
                         try {
                             if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
-                                player.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8 » §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
+                                player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
                                 Inventory inv = Bukkit.createInventory(targetplayer, 9, "§8» §7" + player.getName() + " hat dich in §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§7 eingeladen.");
                                 inv.setItem(2, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnnehmen", null));
                                 inv.setItem(6, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAblehnen", null));

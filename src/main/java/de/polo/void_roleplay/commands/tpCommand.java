@@ -20,7 +20,7 @@ public class tpCommand implements CommandExecutor {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
                     if (targetplayer.isOnline()) {
                         player.teleport(targetplayer.getLocation());
-                        player.sendMessage(Main.admin_prefix + " Du hast dich zu §c" + targetplayer.getName() + "§7 teleportiert.");
+                        player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + targetplayer.getName() + "§7 teleportiert.");
                     } else {
                         player.sendMessage(Main.admin_error + args[0] + " ist nicht online.");
                     }

@@ -20,7 +20,7 @@ public class tphereCommand implements CommandExecutor {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
                     if (targetplayer.isOnline()) {
                         targetplayer.teleport(player.getLocation());
-                        player.sendMessage(Main.admin_prefix + " Du hast §c" + targetplayer.getName() + "§7 zu dir teleportiert.");
+                        player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 zu dir teleportiert.");
                         targetplayer.sendMessage(Main.prefix + "§c" + playerData.getRang() + " " + player.getName() + "§7 hat dich zu sich teleportiert.");
                     } else {
                         player.sendMessage(Main.admin_error + args[0] + " ist nicht online.");

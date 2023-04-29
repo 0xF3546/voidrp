@@ -25,8 +25,8 @@ public class PhoneUtils implements Listener {
     public static HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
     public static HashMap<String, String> phoneCallConnection = new HashMap<>();
     public static HashMap<String, Boolean> isInCallConnection = new HashMap<>();
-    public static String error_nophone = "§6Handy §8 » §cDu hast kein Handy dabei.";
-    public static String error_flightmode = "§6Handy §8 » §cDu bist im Flugmodus.";
+    public static String error_nophone = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
+    public static String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
 
     @EventHandler
     public void onPhoneUse(PlayerInteractEvent event) {
@@ -104,8 +104,8 @@ public class PhoneUtils implements Listener {
                     if (PhoneUtils.hasPhone(players)) {
                         ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
                         ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
-                        player.sendMessage("§6Handy §8» §eDu rufst §l" + number + "§e an.");
-                        players.sendMessage("§6Handy §8» §eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
+                        player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + number + "§e an.");
+                        players.sendMessage("§8[§6Handy§8] §eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
                         playerData.setVariable("calling", players.getUniqueId().toString());
                         VertragUtil.sendInfoMessage(players);
                         players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
@@ -123,12 +123,12 @@ public class PhoneUtils implements Listener {
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
                 if (PhoneUtils.hasPhone(players)) {
-                    players.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
-                    player.sendMessage("§6SMS §8» §e" + player.getName() + "§8: §7" + message);
+                    players.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
+                    player.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
                     player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
                     players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
                 } else {
-                    player.sendMessage(Main.error + "§6Handy §8» §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen.");
+                    player.sendMessage(Main.error + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen.");
                 }
             }
         }
@@ -140,8 +140,8 @@ public class PhoneUtils implements Listener {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
             if (PhoneUtils.hasPhone(targetplayer)) {
-                targetplayer.sendMessage("§6Handy §8» §7" + player.getName() + " hat dein Anruf angenommen");
-                targetplayer.sendMessage("§6Handy §8» §7Du hast den Anruf von " + player.getName() + " angenommen");
+                targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf angenommen");
+                targetplayer.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + player.getName() + " angenommen");
                 isInCallConnection.put(targetuuid, true);
                 isInCallConnection.put(player.getUniqueId().toString(), true);
                 phoneCallConnection.put(player.getUniqueId().toString(), targetuuid);
@@ -160,8 +160,8 @@ public class PhoneUtils implements Listener {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
             if (PhoneUtils.hasPhone(targetplayer)) {
-                targetplayer.sendMessage("§6Handy §8» §7" + player.getName() + " hat dein Anruf abgelehnt");
-                player.sendMessage("§6Handy §8» §7Du hast den Anruf von " + player.getName() + " abgelehnt");
+                targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf abgelehnt");
+                player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + player.getName() + " abgelehnt");
                 player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
                 targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
             }
@@ -180,8 +180,8 @@ public class PhoneUtils implements Listener {
                     isInCallConnection.remove(player.getUniqueId().toString());
                     phoneCallConnection.remove(player1.getUniqueId().toString());
                     phoneCallConnection.remove(player.getUniqueId().toString());
-                    player.sendMessage("§6Handy §8»§7 Du hast aufgelegt.");
-                    player1.sendMessage("§6Handy §8»§7 " + player.getName() + " hat aufgelegt.");
+                    player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
+                    player1.sendMessage("§8[§6Handy§8] " + player.getName() + " hat aufgelegt.");
                     player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
                     player1.playSound(player1.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
                 }
@@ -191,12 +191,12 @@ public class PhoneUtils implements Listener {
                 if (playerData.getVariable("calling").equals(players.getUniqueId().toString())) {
                     VertragUtil.deleteVertrag(player);
                     VertragUtil.deleteVertrag(players);
-                    player.sendMessage("§6Handy §8»§7 Du hast aufgelegt.");
-                    players.sendMessage("§6Handy §8»§7§l " + playerData.getNumber() + "§7 hat aufgelegt.");
+                    player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
+                    players.sendMessage("§8[§6Handy§8]§7§l " + playerData.getNumber() + "§7 hat aufgelegt.");
                 }
             }
         } else {
-            player.sendMessage("§6Handy §8»§7 Du bist in keinem Anruf.");
+            player.sendMessage("§8[§6Handy§8]§7 Du bist in keinem Anruf.");
         }
     }
 

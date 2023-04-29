@@ -259,7 +259,7 @@ public class InventoryClickListener implements Listener {
                                     for (Player players : Bukkit.getOnlinePlayers()) {
                                         PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                                         if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                                            players.sendMessage("§cGefängnis §8» §6" + FactionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
+                                            players.sendMessage("§8[§cGefängnis§8] §6" + FactionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
                                         }
                                     }
                                     player.closeInventory();
@@ -287,8 +287,8 @@ public class InventoryClickListener implements Listener {
                                     int newHafteinheiten = meta.getPersistentDataContainer().get(hafteinheiten, PersistentDataType.INTEGER);
                                     int newGeldstrafe = meta.getPersistentDataContainer().get(geldstrafe, PersistentDataType.INTEGER);
                                     StaatUtil.addAkteToPlayer(player, targetplayer, newHafteinheiten, newAkte, newGeldstrafe);
-                                    player.sendMessage("§9Zentrale §8» §7Akte wurde für " + targetplayer.getName() + " hinzugefügt.");
-                                    player.sendMessage("§9Zentrale §8» §7Akte: " + newAkte + " §8-§7 Hafteinheiten: " + newHafteinheiten + "§8 - §7Geldstrafe: " + newGeldstrafe + "$.");
+                                    player.sendMessage("§8[§9Zentrale§8] §7Akte wurde für " + targetplayer.getName() + " hinzugefügt.");
+                                    player.sendMessage("§8[§9Zentrale§8] §7Akte: " + newAkte + " §8-§7 Hafteinheiten: " + newHafteinheiten + "§8 - §7Geldstrafe: " + newGeldstrafe + "$.");
                                 }
                                 break;
                             case REDSTONE:
@@ -312,7 +312,7 @@ public class InventoryClickListener implements Listener {
                                     int newId = meta.getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
                                     StaatUtil.removeAkteFromPlayer(player, newId);
                                     event.getCurrentItem().setType(Material.BLACK_STAINED_GLASS_PANE);
-                                    player.sendMessage("§9Zentrale §8» §7Akte von " + targetplayer.getName() + " entfernt.");
+                                    player.sendMessage("§8[§9Zentrale§8] §7Akte von " + targetplayer.getName() + " entfernt.");
                                 }
                                 break;
                             case REDSTONE:

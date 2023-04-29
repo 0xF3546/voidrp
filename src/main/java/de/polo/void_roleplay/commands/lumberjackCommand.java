@@ -14,7 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 public class lumberjackCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        String prefix = "§2Holzfäller §8» §7";
+        String prefix = "§8[§2Holzfäller§8] §7";
         Player player = (Player) sender;
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = PlayerManager.playerDataMap.get(uuid);

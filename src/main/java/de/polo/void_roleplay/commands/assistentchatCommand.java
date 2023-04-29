@@ -21,7 +21,7 @@ public class assistentchatCommand implements CommandExecutor {
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (PlayerManager.onPlayer.get(players.getUniqueId().toString()) || PlayerManager.rang(players).equalsIgnoreCase("Assistent")) {
-                        players.sendMessage(Main.support_prefix + "[" + PlayerManager.rang(player) + "] " + player.getName() + "§8:§7 " + msg);
+                        players.sendMessage(Main.support_prefix + PlayerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);
                     }
                 }
             } else {

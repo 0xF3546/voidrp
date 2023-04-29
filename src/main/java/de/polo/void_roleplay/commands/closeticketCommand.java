@@ -22,8 +22,8 @@ public class closeticketCommand implements CommandExecutor {
             }
             SupportManager.deleteTicketConnection(player, targetplayer);
             assert targetplayer != null;
-            targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + "§7 hat dein Ticket geschlossen!");
-            player.sendMessage(Main.support_prefix + "Du hast das Ticket von §c" + targetplayer.getName() + "§7 geschlossen.");
+            targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
+            player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
         } else {
             player.sendMessage(Main.error_nopermission);
         }

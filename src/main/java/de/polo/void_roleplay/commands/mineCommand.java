@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 public class mineCommand implements CommandExecutor {
     public static Material[] blocks = new Material[]{Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE};
-    public static String prefix ="§7Mine §8» §7";
+    public static String prefix ="§8[§7Mine§8] §7";
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
