@@ -29,17 +29,26 @@ public class bankCommand implements CommandExecutor {
                             BankingUtils.sendKontoauszug(player);
                         } else if (args[0].equalsIgnoreCase("einzahlen")) {
                             if (PlayerManager.money(player) >= amount) {
+                                player.sendMessage("§7     ===§8[§2KONTOAUSZUG§8]§7===");
+                                player.sendMessage(" ");
+                                player.sendMessage("§8 ➜ §3Kontoveränderung§8:§b Auszahlung");
+                                player.sendMessage("§8 ➥ §aAlter Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
                                 PlayerManager.removeMoney(player, amount, "Bankauszahlung");
                                 PlayerManager.addBankMoney(player, amount);
-                                player.sendMessage(Main.bank_prefix + "Du hast §c" + amount + "§7$ auf dein Bankkonto eingezahlt.");
-                                BankingUtils.sendKontoauszug(player);
+                                player.sendMessage("§8§l ➲ §a§l" + amount + " eingezahlt.");
+                                player.sendMessage("§8 ➥ §aNeuer Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
                             }
                         } else if (args[0].equalsIgnoreCase("abbuchen")) {
                             if (PlayerManager.bank(player) >= amount) {
+                                player.sendMessage("§7     ===§8[§2KONTOAUSZUG§8]§7===");
+                                player.sendMessage(" ");
+                                player.sendMessage("§8 ➜ §3Kontoveränderung§8:§b Auszahlung");
+                                player.sendMessage("§8 ➥ §aAlter Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
+                                PlayerManager.removeMoney(player, amount, "Bankauszahlung");
                                 PlayerManager.removeBankMoney(player, amount, "Abbuchung");
                                 PlayerManager.addMoney(player, amount);
-                                player.sendMessage(Main.bank_prefix + "Du hast §c" + amount + "§7$ von deinem Bankkonto abgebucht.");
-                                BankingUtils.sendKontoauszug(player);
+                                player.sendMessage("§8§l ➲ §a§l" + amount + " eingezahlt.");
+                                player.sendMessage("§8 ➥ §aNeuer Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
                             }
                         } else if (args[0].equalsIgnoreCase("überweisen")) {
                             if (args.length >= 3) {
@@ -47,12 +56,16 @@ public class bankCommand implements CommandExecutor {
                                 assert targetplayer != null;
                                 if (targetplayer.isOnline()) {
                                     if (PlayerManager.bank(player) >= amount) {
+                                        player.sendMessage("§7     ===§8[§2KONTOAUSZUG§8]§7===");
+                                        player.sendMessage(" ");
+                                        player.sendMessage("§8 ➜ §3Kontoveränderung§8:§b Auszahlung");
+                                        player.sendMessage("§8 ➥ §aAlter Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
+                                        PlayerManager.removeMoney(player, amount, "Bankauszahlung");
                                         PlayerManager.removeBankMoney(player, amount, "Überweisung " + targetplayer.getName());
                                         PlayerManager.addBankMoney(targetplayer, amount);
-                                        player.sendMessage(Main.bank_prefix + "Du hast §c" + amount + "§7$ auf das Bankkonto von §c" + targetplayer.getName() + "§7 überwiesen.");
                                         targetplayer.sendMessage(Main.bank_prefix + "§c" + player.getName() + "§7 hat dir §c" + amount + "$§7 überwiesen");
-                                        BankingUtils.sendBankChangeReason(player, "Überweisung");
-                                        BankingUtils.sendBankChangeReason(targetplayer, "Überweisung");
+                                        player.sendMessage("§8§l ➲ §a§l" + amount + " überwiesen an " + targetplayer.getName() + ".");
+                                        player.sendMessage("§8 ➥ §aNeuer Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
                                     }
                                 } else {
                                     player.sendMessage(Main.error + "§c" + args[2] + "§7 ist nicht online.");

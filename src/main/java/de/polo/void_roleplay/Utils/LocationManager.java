@@ -158,7 +158,7 @@ public class LocationManager {
                     if (block.getType().toString().contains("SIGN")) {
                         Sign sign = (Sign) block.getState();
                         System.out.println(sign.getLine(1));
-                        if (sign.getLine(0).contains("Bankautomat")) {
+                        if (sign.getLine(1).contains("Bankautomat")) {
                             returnval = true;
                             System.out.println("Atm gefunden");
                         }
@@ -195,7 +195,7 @@ public class LocationManager {
 
     public static Integer isPlayerGasStation(Player player) {
         for (GasStationData gasStationData : gasStationDataMap.values()) {
-            if (player.getLocation().distance(new Location(gasStationData.getWelt(), gasStationData.getX(), gasStationData.getY(), gasStationData.getZ(), gasStationData.getYaw(), gasStationData.getPitch())) < 15) {
+            if (player.getLocation().distance(new Location(gasStationData.getWelt(), gasStationData.getX(), gasStationData.getY(), gasStationData.getZ(), gasStationData.getYaw(), gasStationData.getPitch())) < 25) {
                 return gasStationData.getId();
             }
         }

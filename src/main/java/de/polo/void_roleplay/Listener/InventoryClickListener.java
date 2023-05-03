@@ -5,6 +5,7 @@ import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.Shop;
+import de.polo.void_roleplay.PlayerUtils.rubbellose;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.adminmenuCommand;
 import de.polo.void_roleplay.commands.openBossMenuCommand;
@@ -38,6 +39,34 @@ public class InventoryClickListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
+            event.setCancelled(true);
+            if (event.getCurrentItem().getType() == Material.GRAY_DYE) {
+                int pers = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER);
+                ItemMeta meta = event.getCurrentItem().getItemMeta();
+                if (pers == 1 && playerData.getIntVariable("rubbellose_wins") <= 3) {
+                    meta.setDisplayName("§aGewonnen!");
+                    event.getCurrentItem().setItemMeta(meta);
+                    event.getCurrentItem().setType(Material.LIME_DYE);
+                    playerData.setIntVariable("rubbellose_wins", playerData.getIntVariable("rubbellose_wins" + 1));
+                } else {
+                    meta.setDisplayName("§cVerloren!");
+                    event.getCurrentItem().setItemMeta(meta);
+                    event.getCurrentItem().setType(Material.RED_DYE);
+                }
+                playerData.setIntVariable("rubbellose_gemacht", playerData.getIntVariable("rubbellose_gemacht") + 1);
+                if (playerData.getIntVariable("rubbellose_gemacht") >= 5) {
+                    rubbellose.endGame(player);
+                    player.closeInventory();
+                }
+                if (playerData.getIntVariable("rubbellose_gemacht") == 1) PlayerManager.removeMoney(player, 200, "Rubbellos");
+            } else if (event.getCurrentItem().getType() == Material.STRUCTURE_VOID) {
+                if (playerData.getIntVariable("rubbellose_gemacht") == 0) {
+                    player.closeInventory();
+                    player.sendMessage("§8[§6Rubbellos§8]§c Du hast das Spiel abgebrochen!");
+                }
+            }
+        }
             for (int i = 0; i < LocationManager.shops.length; i++) {
                 int f = i + 1;
                 if (event.getView().getTitle().equalsIgnoreCase("§8» §c" + LocationManager.getShopNameById(f))) {
