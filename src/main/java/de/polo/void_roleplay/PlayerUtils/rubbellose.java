@@ -1,0 +1,70 @@
+package de.polo.void_roleplay.PlayerUtils;
+
+import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.Utils.ItemManager;
+import de.polo.void_roleplay.Utils.PlayerManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.sql.SQLException;
+import java.util.Random;
+
+public class rubbellose {
+    public static void startGame(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        player.closeInventory();
+        Inventory inv = Bukkit.createInventory(player, 54, "§6§lRubbellos");
+        playerData.setIntVariable("rubbellose_gemacht", 0);
+        playerData.setIntVariable("rubbellose_wins", 0);
+        Random random = new Random();
+        int greenBlocksPlaced = 0;
+        for(int i=0; i<54; i++) {
+            if(i%9 == 0 || i%9 == 8 || i<9 || i>44) {
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            }
+        }
+        for (int i=0; i<54; i++) {
+            if (inv.getItem(i) == null) {
+                if (greenBlocksPlaced < 3 && random.nextBoolean()) {
+                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8", null));
+                    ItemMeta meta = inv.getItem(i).getItemMeta();
+                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER, 1);
+                    inv.getItem(i).setItemMeta(meta);
+                } else {
+                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8", null));
+                    ItemMeta meta = inv.getItem(i).getItemMeta();
+                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER, 0);
+                    inv.getItem(i).setItemMeta(meta);
+                }
+            }
+        }
+        inv.setItem(49, ItemManager.createItem(Material.STRUCTURE_VOID, 1, 0, "§c§lAbbrechen", null));
+        player.openInventory(inv);
+    }
+
+    public static void endGame(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        int payout = 0;
+        for (int i = 0; i < playerData.getIntVariable("rubbellose_wins"); i++) {
+            payout = payout + (int) (200 * 0.35);
+        }
+        if (payout > 0) {
+            player.sendMessage("§8[§6Rubbellos§8]§a Du hast " + payout + "$ gewonnen!");
+        } else {
+            player.sendMessage("§8[§6Rubbellos§8]§c Leider verloren!");
+        }
+        player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 0);
+        try {
+            PlayerManager.addMoney(player, payout);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
