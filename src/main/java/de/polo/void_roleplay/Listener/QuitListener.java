@@ -2,6 +2,7 @@ package de.polo.void_roleplay.Listener;
 
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import de.polo.void_roleplay.Utils.SupportManager;
 import de.polo.void_roleplay.Utils.Vehicles;
@@ -58,6 +59,7 @@ public class QuitListener implements Listener {
                     }
                 }
             }
+            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

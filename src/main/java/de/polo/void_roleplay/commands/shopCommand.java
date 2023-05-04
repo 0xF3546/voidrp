@@ -21,7 +21,6 @@ public class shopCommand implements CommandExecutor {
             Inventory inv = Bukkit.createInventory(player, 54, "§8» §c" + LocationManager.getShopNameById(shop));
             int i = 0;
             for (Object[] row : Shop.shop_items) {
-                System.out.println(row[0]);
                 if ((int) row[1] == shop) {
                     inv.setItem(i, ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, (String) row[3].toString().replace("&", "§"), "§8 ➥ §a" + row[4] + "$"));
                     i++;

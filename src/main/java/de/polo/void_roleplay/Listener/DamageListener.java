@@ -16,7 +16,7 @@ public class DamageListener implements Listener {
         if (event.getEntity() instanceof Player) {
             Player player = ((Player) event.getEntity()).getPlayer();
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-            if (playerData.isAduty() || event.getEntity().getType() == EntityType.MINECART) {
+            if (playerData.isAduty() || event.getEntity().getType() == EntityType.MINECART || event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.PAINTING) {
                 event.setCancelled(true);
             } else {
                 ItemStack chestplate = player.getInventory().getArmorContents()[2];

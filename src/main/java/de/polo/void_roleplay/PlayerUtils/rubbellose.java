@@ -52,6 +52,7 @@ public class rubbellose {
     public static void endGame(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         int payout = 0;
+        System.out.println(playerData.getIntVariable("rubbellose_wins"));
         for (int i = 0; i < playerData.getIntVariable("rubbellose_wins"); i++) {
             payout = payout + (int) (200 * 0.35);
         }

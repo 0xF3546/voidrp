@@ -135,13 +135,13 @@ public class LocationManager {
     }
 
     public static String getShopNameById(Integer id) {
-        String returnval = "Error!";
         for (Object[] row : shops) {
             if (row[0] == id) {
-                returnval = (String) row[1];
+                System.out.println((String) row[1]);
+                return (String) row[1];
             }
         }
-        return returnval;
+        return null;
     }
 
     public static boolean nearATM(Player player) {

@@ -14,7 +14,7 @@ public class playerInteractListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getItem().getItemMeta().getDisplayName().contains("Rubbellos")) {
                 rubbellose.startGame(player);
-                player.getInventory().remove(event.getItem());
+                player.getInventory().removeItem(event.getItem());
             }
         }
     }

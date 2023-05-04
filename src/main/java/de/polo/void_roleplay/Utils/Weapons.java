@@ -123,6 +123,12 @@ public class Weapons implements Listener {
                                 }
                             }
                         }.runTaskLater(Main.getInstance(), (long) (weaponData.getShootDuration() * 2));
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                arrow.remove();
+                            }
+                        }.runTaskLater(Main.getInstance(), 20 * 20);
                     } else {
                         reloadWeapon(event.getPlayer(), event.getItem());
                     }

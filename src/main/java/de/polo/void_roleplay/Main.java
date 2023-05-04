@@ -47,6 +47,7 @@ public final class Main extends JavaPlugin {
             LocationManager.loadLocations();
             FactionManager.loadFactions();
             Shop.loadShopItems();
+            StaatUtil.loadJail();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -78,6 +79,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ComputerUtils(), this);
         getServer().getPluginManager().registerEvents(new Vehicles(), this);
         getServer().getPluginManager().registerEvents(new playerInteractListener(), this);
+        getServer().getPluginManager().registerEvents(new playerInteractWithPlayerListener(), this);
     }
 
     private void registerCommands(){

@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.Utils;
 
+import de.polo.void_roleplay.DataStorage.JailData;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import org.bukkit.Bukkit;
@@ -8,9 +9,25 @@ import org.bukkit.entity.Player;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class StaatUtil {
+    public static Map<String, JailData> jailDataMap = new HashMap<>();
+
+    public static void loadJail() throws SQLException {
+        Statement statement = MySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM `Jail`");
+        while (result.next()) {
+            JailData jailData = new JailData();
+            jailData.setId(result.getInt(1));
+            jailData.setUuid(result.getString(2));
+            jailData.setHafteinheiten(result.getInt(3));
+            jailData.setReason(result.getString(4));
+            jailDataMap.put(result.getString(2), jailData);
+        }
+    }
     public static boolean arrestPlayer(Player player, Player arrester) throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT `hafteinheiten`, `akte`, `geldstrafe` FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
@@ -26,6 +43,7 @@ public class StaatUtil {
             geldstrafe += result.getInt(3);
         }
         if (hafteinheiten > 0) {
+            JailData jailData = new JailData();
             LocationManager.useLocation(player, "gefaengnis");
             player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + hafteinheiten + " Hafteinheiten§7 inhaftiert.");
             player.sendMessage("§8[§cGefängnis§8] §7Tatvorwürfe§8:§7 " + reason + ".");
@@ -49,6 +67,10 @@ public class StaatUtil {
             }
             statement.execute("DELETE FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
             statement.execute("INSERT INTO `Jail` (`uuid`, `hafteinheiten`, `reason`, `hafteinheiten_verbleibend`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + reason + "', " + hafteinheiten + ")");
+            jailData.setUuid(player.getUniqueId().toString());
+            jailData.setHafteinheiten(hafteinheiten);
+            jailData.setReason(String.valueOf(reason));
+            jailDataMap.put(player.getUniqueId().toString(), jailData);
             return true;
         } else {
             return false;
@@ -59,6 +81,7 @@ public class StaatUtil {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.setJailed(false);
         playerData.setHafteinheiten(0);
+        jailDataMap.remove(player.getUniqueId().toString());
         Statement statement = MySQL.getStatement();
         LocationManager.useLocation(player, "gefaengnis_out");
         player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
