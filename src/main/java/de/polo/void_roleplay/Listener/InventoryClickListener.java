@@ -243,6 +243,9 @@ public class InventoryClickListener implements Listener {
                     case BLUE_DYE:
                         TabletUtils.openApp(player, "aktenapp");
                         break;
+                    case ORANGE_DYE:
+                        TabletUtils.openApp(player, "gefängnisapp");
+                        break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "aktenapp")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
@@ -348,6 +351,21 @@ public class InventoryClickListener implements Listener {
                         break;
                     case REDSTONE:
                         TabletUtils.openAktenList(player, 1);
+                        break;
+                }
+            } else if (Objects.equals(playerData.getVariable("current_app"), "gefängnisapp")) {
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case PLAYER_HEAD:
+                        TabletUtils.editPlayerAkte(player, event.getCurrentItem());
+                        break;
+                    case REDSTONE:
+                        TabletUtils.openTablet(player);
+                        break;
+                    case NETHER_WART:
+                        TabletUtils.openJailApp(player, playerData.getIntVariable("current_page") - 1);
+                        break;
+                    case GOLD_NUGGET:
+                        TabletUtils.openJailApp(player, playerData.getIntVariable("current_page") + 1);
                         break;
                 }
             }

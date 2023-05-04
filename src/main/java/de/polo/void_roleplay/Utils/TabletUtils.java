@@ -1,6 +1,7 @@
 package de.polo.void_roleplay.Utils;
 
 import de.polo.void_roleplay.DataStorage.FactionData;
+import de.polo.void_roleplay.DataStorage.JailData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
@@ -44,6 +45,7 @@ public class TabletUtils implements Listener {
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eTablet");
         inv.setItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp", null));
         inv.setItem(9, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp", null));
+        inv.setItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp", null));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
                 inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
@@ -65,6 +67,10 @@ public class TabletUtils implements Listener {
             case "aktenapp":
                 openAktenApp(player);
                 playerData.setVariable("current_app", "aktenapp");
+                break;
+            case "gefängnisapp":
+                openJailApp(player, 1);
+                playerData.setVariable("current_app", "gefängnisapp");
                 break;
         }
     }
@@ -107,7 +113,7 @@ public class TabletUtils implements Listener {
             inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
             j++;
         }
-            player.openInventory(inv);
+        player.openInventory(inv);
     }
 
     public static void editPlayerAkte(Player player, ItemStack stack) {
@@ -202,5 +208,34 @@ public class TabletUtils implements Listener {
         inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
         result.close();
         player.openInventory(inv);
+    }
+
+    public static void openJailApp(Player player, int page) {
+        if (page <= 0) return;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        playerData.setVariable("current_inventory", "tablet");
+        playerData.setVariable("current_app", "gefängnisapp");
+        playerData.setIntVariable("current_page", page);
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Gefängnis §8- §6Seite§8:§7 " + page);
+        int i = 0;
+        int j = 0;
+        for (JailData jailData : StaatUtil.jailDataMap.values()) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(jailData.getUuid()));
+            if (offlinePlayer.isOnline()) {
+                if (i == 26 && i == 18 && i == 22) {
+                    i++;
+                } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
+                    inv.setItem(i, ItemManager.createItemHead(jailData.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName(), null));
+                    i++;
+                }
+                inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+                inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+                j++;
+            }
+        }
+        player.openInventory(inv);
+
     }
 }
