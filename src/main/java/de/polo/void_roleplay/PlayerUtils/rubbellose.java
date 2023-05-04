@@ -32,7 +32,7 @@ public class rubbellose {
         }
         for (int i=0; i<54; i++) {
             if (inv.getItem(i) == null) {
-                if (greenBlocksPlaced < 3 && random.nextBoolean()) {
+                if (greenBlocksPlaced < 4 && random.nextBoolean()) {
                     inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8", null));
                     ItemMeta meta = inv.getItem(i).getItemMeta();
                     meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER, 1);
@@ -61,7 +61,8 @@ public class rubbellose {
         } else {
             player.sendMessage("§8[§6Rubbellos§8]§c Leider verloren!");
         }
-        player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 0);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0);
+        PlayerManager.addExp(player, Main.random(1, 3));
         try {
             PlayerManager.addMoney(player, payout);
         } catch (SQLException e) {

@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Door;
@@ -53,6 +54,13 @@ public class setblockvalueCommand implements CommandExecutor {
                             block.setBlockData(data, true);
                             player.sendMessage(Main.gamedesign_prefix + "value " + args[1] + " auf block " + block.getType().name() + " gesetzt.");
                             state.update();
+                            if (state instanceof Sign) {
+                                Sign sign = (Sign) state;
+                                sign.setEditable(false);
+                                sign.setLine(1, "== §6Haus " + args[1] + " §0==");
+                                sign.setLine(2, "§2Zu Verkaufen");
+                                sign.update();
+                            }
                         } else if (args[0].equalsIgnoreCase("string")) {
                             NamespacedKey value = new NamespacedKey(Main.plugin, "value");
                             if (!(block.getState() instanceof TileState)) {

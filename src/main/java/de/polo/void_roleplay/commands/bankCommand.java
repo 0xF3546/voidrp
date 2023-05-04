@@ -50,7 +50,6 @@ public class bankCommand implements CommandExecutor {
                                 player.sendMessage("§8§l ➲ §a§l" + amount + "$ ausgezahlt.");
                                 player.sendMessage(" ");
                                 player.sendMessage("§8 ➥ §aAlter Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
-                                PlayerManager.removeMoney(player, amount, "Bankauszahlung");
                                 PlayerManager.removeBankMoney(player, amount, "Abbuchung");
                                 PlayerManager.addMoney(player, amount);
                                 player.sendMessage("§8 ➥ §aNeuer Kontostand§8:§7 " + PlayerManager.bank(player) + "$");

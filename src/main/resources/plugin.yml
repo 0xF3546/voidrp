@@ -91,3 +91,4 @@ commands:
   navi:
     aliases: [navigation, nav, route]
   einreise:
+  registerhouse:

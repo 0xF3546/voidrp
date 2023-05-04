@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class playerInteractListener implements Listener {
     @EventHandler
@@ -14,7 +15,10 @@ public class playerInteractListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getItem().getItemMeta().getDisplayName().contains("Rubbellos")) {
                 rubbellose.startGame(player);
-                player.getInventory().removeItem(event.getItem());
+                ItemStack itemStack = event.getItem().clone();
+                itemStack.setAmount(1);
+                player.getInventory().removeItem(itemStack);
+
             }
         }
     }

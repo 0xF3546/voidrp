@@ -145,6 +145,7 @@ public final class Main extends JavaPlugin {
         getCommand("gotoveh").setExecutor(new gotovehCommand());
         getCommand("navi").setExecutor(new Navigation());
         getCommand("einreise").setExecutor(new einreiseCommand());
+        getCommand("registerhouse").setExecutor(new registerhouseCommand());
     }
 
 
