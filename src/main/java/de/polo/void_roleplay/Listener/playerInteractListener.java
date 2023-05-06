@@ -13,12 +13,12 @@ public class playerInteractListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (event.getItem() == null) return;
             if (event.getItem().getItemMeta().getDisplayName().contains("Rubbellos")) {
                 rubbellose.startGame(player);
                 ItemStack itemStack = event.getItem().clone();
                 itemStack.setAmount(1);
                 player.getInventory().removeItem(itemStack);
-
             }
         }
     }

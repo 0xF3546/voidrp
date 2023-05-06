@@ -229,12 +229,12 @@ public class TabletUtils implements Listener {
                     inv.setItem(i, ItemManager.createItemHead(jailData.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName(), null));
                     i++;
                 }
-                inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-                inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
                 j++;
             }
         }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
         player.openInventory(inv);
 
     }

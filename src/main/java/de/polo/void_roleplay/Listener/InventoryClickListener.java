@@ -1,6 +1,5 @@
 package de.polo.void_roleplay.Listener;
 
-import com.sun.tools.javac.file.Locations;
 import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;

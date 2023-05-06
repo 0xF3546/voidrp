@@ -36,7 +36,7 @@ public class supportCommand implements CommandExecutor {
                         TextComponent message = new TextComponent(Main.support_prefix);
                         message.addExtra(annehmen);
 
-                        player.spigot().sendMessage(message);
+                        players.spigot().sendMessage(message);
                     }
                 }
             } else {

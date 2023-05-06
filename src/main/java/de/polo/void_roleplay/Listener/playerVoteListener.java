@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 
 public class playerVoteListener implements Listener {
         @EventHandler
-        public void onVote(final VotifierEvent event) {
+        public void onVote(VotifierEvent event) {
             Vote vote = event.getVote();
             Player player = Bukkit.getPlayer(vote.getUsername());
             System.out.println(event.getVote().getUsername() + " hat gevotet.");

@@ -4,11 +4,8 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.PlayerManager;
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,8 +27,13 @@ public class houseLockListener implements Listener {
                 PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                 if (!playerData.isAduty()) {
-                    if (!Objects.requireNonNull(container.get(value, PersistentDataType.STRING)).contains(playerData.getFaction())) {
+                    if (container.get(value, PersistentDataType.INTEGER) != null) {
                         event.setCancelled(true);
+                    } else if (container.get(value, PersistentDataType.STRING) != null) {
+                        String containerString = container.get(value, PersistentDataType.STRING);
+                        if (!containerString.contains(playerData.getFaction())) {
+                            event.setCancelled(true);
+                        }
                     }
                 }
             }
