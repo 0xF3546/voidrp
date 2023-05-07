@@ -92,3 +92,5 @@ commands:
     aliases: [navigation, nav, route]
   einreise:
   registerhouse:
+  reinforcement:
+    aliases: [reinf, r]

@@ -73,7 +73,8 @@ public class Navigation implements CommandExecutor {
                     player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     if (player.getLocation().distance(targetLocation) <= 5) {
                         this.cancel();
-                        player.sendMessage("§8[§6GPS§8]§7 Du hast dein Ziel erreicht.");
+                        player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
+                        PlayerManager.playerDataMap.get(player.getUniqueId().toString()).setVariable("navi", null);
                     }
                 } else {
                     this.cancel();
@@ -107,7 +108,8 @@ public class Navigation implements CommandExecutor {
                             player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
-                                player.sendMessage("§8[§6GPS§8]§7 Du hast dein Ziel erreicht.");
+                                player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
+                                PlayerManager.playerDataMap.get(player.getUniqueId().toString()).setVariable("navi", null);
                             }
                         } else {
                             this.cancel();
