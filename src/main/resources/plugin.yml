@@ -94,3 +94,4 @@ commands:
   registerhouse:
   reinforcement:
     aliases: [reinf, r]
+  buyhouse:

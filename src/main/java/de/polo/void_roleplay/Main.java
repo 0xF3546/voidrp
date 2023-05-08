@@ -48,6 +48,7 @@ public final class Main extends JavaPlugin {
             FactionManager.loadFactions();
             Shop.loadShopItems();
             StaatUtil.loadJail();
+            Housing.loadHousing();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -147,6 +148,7 @@ public final class Main extends JavaPlugin {
         getCommand("einreise").setExecutor(new einreiseCommand());
         getCommand("registerhouse").setExecutor(new registerhouseCommand());
         getCommand("reinforcement").setExecutor(new reinforcementCommand());
+        getCommand("buyhouse").setExecutor(new buyhouseCommand());
     }
 
 

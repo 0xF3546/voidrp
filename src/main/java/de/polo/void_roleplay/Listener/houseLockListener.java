@@ -3,6 +3,7 @@ package de.polo.void_roleplay.Listener;
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.Utils.Housing;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -27,7 +28,9 @@ public class houseLockListener implements Listener {
                 PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                 if (!playerData.isAduty()) {
-                    if (container.get(value, PersistentDataType.INTEGER) != null) {
+                    int number = Objects.requireNonNull(container.get(value, PersistentDataType.INTEGER));
+
+                    if (!Housing.canPlayerInteract(player, number)) {
                         event.setCancelled(true);
                     } else if (container.get(value, PersistentDataType.STRING) != null) {
                         String containerString = container.get(value, PersistentDataType.STRING);

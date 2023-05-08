@@ -38,7 +38,7 @@ public class reinforcementCommand implements CommandExecutor {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§8[§c§lReinforcement§8] §4§lDRINGEND! §8| §c " + player.getName()+ " braucht Unterstützung!");
+                                players.sendMessage("§8[§c§lReinforcement§8] §4§lDRINGEND! §8| §c" + player.getName()+ " braucht Unterstützung!");
                                 TextComponent route = new TextComponent("§8 ➥ §aRoute");
                                 route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
                                 route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
@@ -50,7 +50,7 @@ public class reinforcementCommand implements CommandExecutor {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§8[§c§lReinforcement§8] §eGPS §8| §c " + player.getName()+ " sendet seine GPS-Daten!");
+                                players.sendMessage("§8[§c§lReinforcement§8] §eGPS §8| §c" + player.getName()+ " sendet seine GPS-Daten!");
                                 TextComponent route = new TextComponent("§8 ➥ §aRoute");
                                 route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
                                 route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
