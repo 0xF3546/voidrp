@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.Listener;
 
+import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Material;
@@ -21,12 +22,15 @@ public class playerInteractWithPlayerListener implements Listener {
             System.out.println(targetplayer.getName());
             ItemStack item = player.getInventory().getItemInMainHand();
             if (item.getType() == Material.LEAD) {
-                if (PlayerManager.canPlayerMove(targetplayer)) {
-                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
-                    PlayerManager.setPlayerMove(targetplayer, false);
-                } else {
-                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
-                    PlayerManager.setPlayerMove(targetplayer, true);
+                if (!Main.cooldownManager.isOnCooldown(player, "handschellen")) {
+                    if (!PlayerManager.canPlayerMove(targetplayer)) {
+                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
+                        PlayerManager.setPlayerMove(targetplayer, false);
+                    } else {
+                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
+                        PlayerManager.setPlayerMove(targetplayer, true);
+                    }
+                    Main.cooldownManager.setCooldown(player, "handschellen", 1);
                 }
             }
         }

@@ -5,10 +5,13 @@ import de.polo.void_roleplay.DataStorage.HouseData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.rubbellose;
 import de.polo.void_roleplay.Utils.Housing;
+import de.polo.void_roleplay.Utils.ItemManager;
+import jdk.javadoc.internal.doclint.HtmlTag;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
@@ -21,15 +24,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.awt.*;
-import java.util.Objects;
-
 public class playerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
+                /*if (event.getClickedBlock().getType() == Material.CAULDRON) {
+                    NamespacedKey value = new NamespacedKey(Main.plugin, "value");
+                    PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
+                    if (container.get(value, PersistentDataType.INTEGER) != null) {
+
+                    } else {
+                        player.getInventory().addItem(ItemManager.createItem(Material.POTATO, 1, 0, "§6Gefunden in einem Mülleimer", null));
+
+                    }
+                }*/
                 TileState state = (TileState) event.getClickedBlock().getState();
                 if (state instanceof Sign) {
                     System.out.println("sign geklickt");

@@ -29,6 +29,8 @@ public final class Main extends JavaPlugin {
     public static String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static String admin_info = "§8[§9§lINFO§8] §cAdmin§8 » §7";
 
+    public static CooldownManager cooldownManager = new CooldownManager();
+
     private static Main instance;
     public void onLoad() {
         instance = this;
@@ -152,6 +154,8 @@ public final class Main extends JavaPlugin {
         getCommand("buyhouse").setExecutor(new buyhouseCommand());
         getCommand("mieters").setExecutor(new mietersCommand());
         getCommand("unrent").setExecutor(new unrentCommand());
+        getCommand("frisk").setExecutor(new friskCommand());
+        getCommand("blacklist").setExecutor(new blacklistCommand());
     }
 
 

@@ -1,5 +1,7 @@
 package de.polo.void_roleplay.DataStorage;
 
+import java.util.Map;
+
 public class FactionData {
     private int id;
     private String primaryColor;
@@ -7,6 +9,7 @@ public class FactionData {
     private String fullname;
     private String name;
     private int bank;
+    private boolean hasBlacklist;
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -54,5 +57,13 @@ public class FactionData {
 
     public void setBank(int bank) {
         this.bank = bank;
+    }
+
+    public boolean hasBlacklist() {
+        return hasBlacklist;
+    }
+
+    public void setHasBlacklist(boolean hasBlacklist) {
+        this.hasBlacklist = hasBlacklist;
     }
 }

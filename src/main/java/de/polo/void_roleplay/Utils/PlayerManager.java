@@ -49,6 +49,7 @@ public class PlayerManager {
             Player player = Bukkit.getPlayer(UUID.fromString(uuid));
             assert player != null;
             loadPlayer(player);
+            setPlayerMove(player, true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -362,7 +363,7 @@ public class PlayerManager {
 
     public static void setPlayerMove(Player player, Boolean state) {
         if (state) {
-            if (playerMovement.get(player.getUniqueId().toString()) != null) {
+            if (playerMovement.get(player.getUniqueId().toString()) == null) {
                 playerMovement.put(player.getUniqueId().toString(), true);
                 player.setWalkSpeed(0);
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);

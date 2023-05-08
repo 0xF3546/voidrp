@@ -97,3 +97,7 @@ commands:
   buyhouse:
   mieters:
   unrent:
+  frisk:
+    aliases: [search, durchsuchen]
+  blacklist:
+    aliases: bl

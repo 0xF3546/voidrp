@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.Utils;
 
+import de.polo.void_roleplay.DataStorage.BlacklistData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.DataStorage.FactionData;
@@ -16,6 +17,7 @@ import java.util.*;
 public class FactionManager {
     public static Map<String, FactionData> factionDataMap = new HashMap<>();
     public static Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
+    public static Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadFactions() throws SQLException {
@@ -29,6 +31,7 @@ public class FactionManager {
             factionData.setPrimaryColor(locs.getString(4));
             factionData.setSecondaryColor(locs.getString(5));
             factionData.setBank(locs.getInt(6));
+            factionData.setHasBlacklist(locs.getBoolean(8));
             factionDataMap.put(locs.getString(2), factionData);
         }
 
@@ -40,7 +43,21 @@ public class FactionManager {
             factionGradeData.setGrade(grades.getInt(3));
             factionGradeData.setName(grades.getString(4));
             factionGradeData.setPayday(grades.getInt(5));
-            factionGradeDataMap.put(grades.getString(2) + "_" + grades.getInt(3), factionGradeData);}
+            factionGradeDataMap.put(grades.getString(2) + "_" + grades.getInt(3), factionGradeData);
+        }
+
+        ResultSet blacklist = statement.executeQuery("SELECT * FROM `blacklist`");
+        while (blacklist.next()) {
+            BlacklistData blacklistData = new BlacklistData();
+            blacklistData.setId(blacklist.getInt(1));
+            blacklistData.setUuid(blacklist.getString(2));
+            blacklistData.setFaction(blacklist.getString(3));
+            blacklistData.setReason(blacklist.getString(4));
+            blacklistData.setKills(blacklist.getInt(5));
+            blacklistData.setPrice(blacklist.getInt(6));
+            blacklistData.setDate(blacklist.getString(7));
+            blacklistDataMap.put(blacklist.getInt(1), blacklistData);
+        }
     }
 
     public static String faction(Player player) {
