@@ -5,6 +5,7 @@ import de.polo.void_roleplay.PlayerUtils.Scoreboard;
 import java.util.HashMap;
 
 public class PlayerData {
+    private int id;
     private String firstname;
     private String lastname;
     private int bargeld;
@@ -279,5 +280,13 @@ public class PlayerData {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
