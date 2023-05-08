@@ -193,7 +193,7 @@ public class FactionManager {
     public static void sendMessageToFaction(String faction, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (Objects.equals(faction(player), faction)) {
-                player.sendMessage("§8[§" + getFactionPrimaryColor(faction) + faction + "§8] §7 " + message);
+                player.sendMessage("§8[§" + getFactionPrimaryColor(faction) + faction + "§8]§" + getFactionSecondaryColor(faction) + " " + message);
             }
         }
     }

@@ -37,7 +37,7 @@ public class blacklistCommand implements CommandExecutor {
                     for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
                         if (blacklistData.getFaction().equals(factionData.getName())) {
                             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(blacklistData.getUuid()));
-                            player.sendMessage("§8 ➥ §e" + offlinePlayer.getName() + "§8 | §e" + blacklistData.getPrice() + "$ §8 | §e" + blacklistData.getKills() + "  Tode §8| §e" + blacklistData.getReason());
+                            player.sendMessage("§8 ➥ §e" + offlinePlayer.getName() + "§8 | §e" + blacklistData.getPrice() + "$ §8 | §e" + blacklistData.getKills() + " Tode §8| §e" + blacklistData.getReason() + " §8|§e " + blacklistData.getDate());
                         }
                     }
                 } else {
