@@ -1,6 +1,7 @@
 package de.polo.void_roleplay;
 
 import de.polo.void_roleplay.Listener.*;
+import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
@@ -51,6 +52,7 @@ public final class Main extends JavaPlugin {
             Shop.loadShopItems();
             StaatUtil.loadJail();
             Housing.loadHousing();
+            FFA.loadFFALobbys();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -156,6 +158,7 @@ public final class Main extends JavaPlugin {
         getCommand("unrent").setExecutor(new unrentCommand());
         getCommand("frisk").setExecutor(new friskCommand());
         getCommand("blacklist").setExecutor(new blacklistCommand());
+        getCommand("ffa").setExecutor(new FFA());
     }
 
 

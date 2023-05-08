@@ -101,3 +101,4 @@ commands:
     aliases: [search, durchsuchen]
   blacklist:
     aliases: bl
+  ffa:

@@ -3,6 +3,7 @@ package de.polo.void_roleplay.Listener;
 import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
+import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.PlayerUtils.rubbellose;
 import de.polo.void_roleplay.Utils.*;
@@ -608,6 +609,23 @@ public class InventoryClickListener implements Listener {
                         player.closeInventory();
                     }
                 }
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "ffa_menu")) {
+            event.setCancelled(true);
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case NETHER_WART:
+                    FFA.openFFAMenu(player, playerData.getIntVariable("current_page") - 1);
+                    break;
+                case GOLD_NUGGET:
+                    FFA.openFFAMenu(player, playerData.getIntVariable("current_page") + 1);
+                    break;
+                case LIME_DYE:
+                    ItemMeta meta = event.getCurrentItem().getItemMeta();
+                    int id = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                    FFA.joinLobby(player, id);
+                    player.closeInventory();
+                    break;
             }
         }
     }
