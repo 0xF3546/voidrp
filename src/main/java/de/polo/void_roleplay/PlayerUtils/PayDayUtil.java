@@ -49,6 +49,13 @@ public class PayDayUtil {
                 Statement statement = MySQL.getStatement();
                 statement.executeUpdate("UPDATE `housing` SET `money` = " + houseData.getMoney() + " WHERE `number` = " + houseData.getNumber());
             }
+            if (houseData.getOwner().equals(player.getUniqueId().toString())) {
+                plus += houseData.getMoney();
+                Statement statement = MySQL.getStatement();
+                statement.executeUpdate("UPDATE `housing` SET `money` = 0 WHERE `number` = " + houseData.getNumber());
+                player.sendMessage("§8 ➥ §aEinnahmen Haus " + houseData.getNumber() + "§8: §7" + houseData.getMoney() + "$");
+                houseData.setMoney(0);
+            }
         }
         plus -= rent;
         player.sendMessage(" ");
