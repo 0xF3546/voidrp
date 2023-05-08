@@ -7,6 +7,7 @@ import de.polo.void_roleplay.PlayerUtils.PayDayUtil;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.Scoreboard;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -363,9 +364,13 @@ public class PlayerManager {
         if (state) {
             if (playerMovement.get(player.getUniqueId().toString()) != null) {
                 playerMovement.put(player.getUniqueId().toString(), true);
+                player.setWalkSpeed(0);
+                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
             }
         } else {
             playerMovement.remove(player.getUniqueId().toString());
+            player.setWalkSpeed(0.2F);
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
         }
     }
 

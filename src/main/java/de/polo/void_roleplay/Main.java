@@ -81,6 +81,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Vehicles(), this);
         getServer().getPluginManager().registerEvents(new playerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new playerInteractWithPlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new expPickupListener(), this);
     }
 
     private void registerCommands(){

@@ -21,16 +21,20 @@ public class rentCommand implements CommandExecutor {
             if (!targetplayer.isOnline()) player.sendMessage(Main.error + "Spieler ist nicht online.");
             Integer haus = LocationManager.isPlayerNearOwnHouse(player);
             if (haus != 0) {
-                try {
-                    if (VertragUtil.setVertrag(player, targetplayer, "rental", haus + "_" + args[1])) {
-                        player.sendMessage("§8[§6Haus§8]§e Du hast " + targetplayer.getName() + " einen Mietvertrag ausgestellt.");
-                        targetplayer.sendMessage("§6" + player.getName() + " hat dir einen Mietvertrag für Haus " + haus + " in höhe von " + args[1] + "$/PayDay angeboten.");
-                        VertragUtil.sendInfoMessage(targetplayer);
-                    } else {
-                        player.sendMessage(Main.error + "§7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+                if (player.getLocation().distance(targetplayer.getLocation()) < 5) {
+                    try {
+                        if (VertragUtil.setVertrag(player, targetplayer, "rental", haus + "_" + args[1])) {
+                            player.sendMessage("§8[§6Haus§8]§e Du hast " + targetplayer.getName() + " einen Mietvertrag ausgestellt.");
+                            targetplayer.sendMessage("§6" + player.getName() + " hat dir einen Mietvertrag für Haus " + haus + " in höhe von " + args[1] + "$/PayDay angeboten.");
+                            VertragUtil.sendInfoMessage(targetplayer);
+                        } else {
+                            player.sendMessage(Main.error + "§7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } else {
+                    player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
                 }
             } else {
                 player.sendMessage(Main.error + "Du bist nicht in der nähe deines Hauses.");

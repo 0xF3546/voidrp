@@ -22,27 +22,30 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class playerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            TileState state = (TileState) event.getClickedBlock().getState();
-            if (state instanceof Sign) {
-                System.out.println("sign geklickt");
-                Sign sign = (Sign) event.getClickedBlock().getState();
-                PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
-                for (HouseData houseData : Housing.houseDataMap.values()) {
-                    if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {
-                        System.out.println("sign gefunden");
-                        if (houseData.getOwner() == null) {
-                            System.out.println("owner ist null");
-                            player.sendMessage("§8[§6Haus§8]§e Möchtest du Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ kaufen?");
-                            TextComponent route = new TextComponent("§8 ➥ §aKaufen");
-                            route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/buyhouse " + houseData.getNumber()));
-                            route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oHaus " + houseData.getNumber() + " kaufen")));
-                            player.spigot().sendMessage(route);
+            if (event.getClickedBlock() != null) {
+                TileState state = (TileState) event.getClickedBlock().getState();
+                if (state instanceof Sign) {
+                    System.out.println("sign geklickt");
+                    Sign sign = (Sign) event.getClickedBlock().getState();
+                    PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
+                    for (HouseData houseData : Housing.houseDataMap.values()) {
+                        if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {
+                            System.out.println("sign gefunden");
+                            if (houseData.getOwner() == null) {
+                                System.out.println("owner ist null");
+                                player.sendMessage("§8[§6Haus§8]§e Möchtest du Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ kaufen?");
+                                TextComponent route = new TextComponent("§8 ➥ §aKaufen");
+                                route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/buyhouse " + houseData.getNumber()));
+                                route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oHaus " + houseData.getNumber() + " kaufen")));
+                                player.spigot().sendMessage(route);
+                            }
                         }
                     }
                 }

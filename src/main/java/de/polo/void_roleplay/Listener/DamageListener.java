@@ -16,9 +16,6 @@ public class DamageListener implements Listener {
         if (event.getEntity() instanceof Player) {
             Player player = ((Player) event.getEntity()).getPlayer();
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-            if (playerData.isAduty() || event.getEntity().getType() == EntityType.MINECART || event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.PAINTING) {
-                event.setCancelled(true);
-            } else {
                 ItemStack chestplate = player.getInventory().getArmorContents()[2];
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
                 {
@@ -29,7 +26,9 @@ public class DamageListener implements Listener {
                     }
                 }
                 event.setCancelled(false);
-            }
+        }
+        if ((event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.ITEM_FRAME || event.getEntity().getType() == EntityType.PAINTING || event.getEntity().getType() == EntityType.MINECART) && !PlayerManager.playerDataMap.get(event.getEntity().getUniqueId().toString()).isAduty()) {
+            event.setCancelled(true);
         }
     }
 }
