@@ -4,6 +4,7 @@ import de.polo.void_roleplay.DataStorage.HouseData;
 import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,12 +22,14 @@ public class Housing {
             houseData.setOwner(locs.getString(2));
             houseData.setNumber(locs.getInt(3));
             houseData.setPrice(locs.getInt(4));
-            JSONArray array = new JSONArray(locs.getString(5));
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < array.length(); i++) {
-                list.add(array.getString(i));
+            JSONObject object = new JSONObject(locs.getString(5));
+            HashMap<String, Integer> map = new HashMap<>();
+            for (String key : object.keySet()) {
+                int value = (int) object.get(key);
+                map.put(key, value);
             }
-            houseData.setRenter(list);
+            houseData.setRenter(map);
+            houseData.setMoney(locs.getInt(6));
             houseDataMap.put(locs.getInt(3), houseData);
         }
     }
@@ -43,10 +46,10 @@ public class Housing {
     public static boolean canPlayerInteract(Player player, int number) {
         HouseData houseData = houseDataMap.get(number);
         if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) {
-            for (int i = 0; i < houseData.getRenter().size(); i++) {
-                if (player.getUniqueId().toString().equals(houseData.getRenter().get(i))) {
-                    return true;
-                }
+            System.out.println("spieler ist kein owner");
+            System.out.println(houseData.getRenter().get(player.getUniqueId().toString()));
+            if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
+                return true;
             }
         } else {
             return true;
@@ -57,8 +60,8 @@ public class Housing {
         HouseData houseData = houseDataMap.get(number);
         try {
             Statement statement = MySQL.getStatement();
-            JSONArray array = new JSONArray(houseData.getRenter());
-            statement.executeUpdate("UPDATE `housing` SET `renter` = '" + array + "'");
+            JSONObject object = new JSONObject(houseData.getRenter());
+            statement.executeUpdate("UPDATE `housing` SET `renter` = '" + object + "' WHERE `number` = " + number);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.Utils;
 
+import de.polo.void_roleplay.DataStorage.HouseData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import net.md_5.bungee.api.ChatColor;
@@ -10,15 +11,13 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.chat.hover.content.TextSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class VertragUtil {
     public static HashMap<String, String> vertrag_type = new HashMap<>();
@@ -53,12 +52,21 @@ public class VertragUtil {
                 case "faction_invite":
                     FactionManager.setPlayerInFrak(player, curr, 0);
                     FactionManager.sendMessageToFaction(curr,player.getName() + " ist der Fraktion §abeigetreten§7.");
+                    break;
                 case "rental":
                     String[] args = curr.split("_");
                     Integer haus = Integer.valueOf(args[0]);
                     Integer preis = Integer.valueOf(args[1]);
+                    HouseData houseData = Housing.houseDataMap.get(haus);
+                    houseData.addRenter(player.getUniqueId().toString(), preis);
+                    Housing.updateRenter(haus);
+                    Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
+                    player1.sendMessage("§8[§6Haus§8]§a " + player.getName() + " Mietet nun in Haus " + houseData.getNumber() + " für " + preis + "$.");
+                    player.sendMessage("§8[§6Haus§8]§a Du mietest nun in Haus " + houseData.getNumber() + " für " + preis + "$/PayDay.");
+                    break;
                 case "phonecall":
                     PhoneUtils.acceptCall(player, curr);
+                    break;
             }
             deleteVertrag(player);
         } else {
@@ -71,8 +79,19 @@ public class VertragUtil {
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.sendMessageToFaction(curr, player.getName() + "wurde eingeladen und ist §cnicht§7 beigetreten.");
+                    break;
                 case "phonecall":
                     PhoneUtils.denyCall(player, curr);
+                    break;
+                case "rental":
+                    String[] args = curr.split("_");
+                    Integer haus = Integer.valueOf(args[0]);
+                    Integer preis = Integer.valueOf(args[1]);
+                    HouseData houseData = Housing.houseDataMap.get(haus);
+                    Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
+                    player1.sendMessage("§8[§6Haus§8]§a " + player.getName() + " hat den Mietvertrag für Haus " + houseData.getNumber() + " abgelehnt.");
+                    player.sendMessage("§8[§6Haus§8]§c Du hast den Mietvertrag abgelehnt.");
+                    break;
             }
             deleteVertrag(player);
         } else {

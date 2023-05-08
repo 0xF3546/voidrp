@@ -2,6 +2,7 @@ package de.polo.void_roleplay.DataStorage;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HouseData {
@@ -9,7 +10,8 @@ public class HouseData {
     private String owner;
     private int number;
     private int price;
-    private List<String> renter = new ArrayList<>();
+    private HashMap<String, Integer> renter = new HashMap<>();
+    private int money;
 
     public int getId() {
         return id;
@@ -43,15 +45,23 @@ public class HouseData {
         this.price = price;
     }
 
-    public List<String> getRenter() {
+    public HashMap<String, Integer> getRenter() {
         return renter;
     }
 
-    public void setRenter(List<String> renter) {
-        this.renter = renter;
+    public void setRenter(HashMap<String, Integer> map) {
+        this.renter = map;
     }
 
-    public void addRenter(String uuid) {
-        this.renter.add(uuid);
+    public void addRenter(String uuid, int miete) {
+        this.renter.put(uuid, miete);
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 }

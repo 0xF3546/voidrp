@@ -149,6 +149,8 @@ public final class Main extends JavaPlugin {
         getCommand("registerhouse").setExecutor(new registerhouseCommand());
         getCommand("reinforcement").setExecutor(new reinforcementCommand());
         getCommand("buyhouse").setExecutor(new buyhouseCommand());
+        getCommand("mieters").setExecutor(new mietersCommand());
+        getCommand("unrent").setExecutor(new unrentCommand());
     }
 
 

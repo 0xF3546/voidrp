@@ -16,16 +16,16 @@ public class rentCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (args.length > 0) {
+        if (args.length > 1) {
             Player targetplayer = Bukkit.getPlayer(args[0]);
             if (!targetplayer.isOnline()) player.sendMessage(Main.error + "Spieler ist nicht online.");
             Integer haus = LocationManager.isPlayerNearOwnHouse(player);
             if (haus != 0) {
                 try {
                     if (VertragUtil.setVertrag(player, targetplayer, "rental", haus + "_" + args[1])) {
-                        player.sendMessage("§" + FactionManager.getFactionPrimaryColor(String.valueOf(haus)) + haus + "§8 » §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
-                        targetplayer.sendMessage("§6" + player.getName() + "§7 hat dir einen Mietvertrag für Haus + " + haus + " in höhe von " + args[1] + " angeboten.");
-                        targetplayer.sendMessage("§8 ➥§7 Nutze §8/§6annehmen§7 oder §8/§6ablehnen§7.");
+                        player.sendMessage("§8[§6Haus§8]§e Du hast " + targetplayer.getName() + " einen Mietvertrag ausgestellt.");
+                        targetplayer.sendMessage("§6" + player.getName() + " hat dir einen Mietvertrag für Haus " + haus + " in höhe von " + args[1] + "$/PayDay angeboten.");
+                        VertragUtil.sendInfoMessage(targetplayer);
                     } else {
                         player.sendMessage(Main.error + "§7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
                     }

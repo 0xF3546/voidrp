@@ -1,18 +1,18 @@
 package de.polo.void_roleplay.Utils;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.void_roleplay.DataStorage.GasStationData;
 import de.polo.void_roleplay.DataStorage.LocationData;
 import de.polo.void_roleplay.DataStorage.NaviData;
 import de.polo.void_roleplay.DataStorage.PlayerVehicleData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -182,9 +182,12 @@ public class LocationManager {
                     if (block2.getType().toString().contains("SIGN")) {
                         System.out.println("sign found");
                         Sign sign = (Sign) block2.getState();
-                        if (!sign.getLine(2).contains(player.getName())) {
-                            Integer number = Integer.valueOf(sign.getLine(0).replace("*- Haus", "").replace("-*", ""));
-                            return number;
+                        if (sign.getLine(2).contains(player.getName())) {
+                            NamespacedKey value = new NamespacedKey(Main.plugin, "value");
+                            PersistentDataContainer container = new CustomBlockData(block2, Main.plugin);
+                            if (container.get(value, PersistentDataType.INTEGER) != null) {
+                                return container.get(value, PersistentDataType.INTEGER);
+                            }
                         }
                     }
                 }

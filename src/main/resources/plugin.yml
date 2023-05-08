@@ -95,3 +95,5 @@ commands:
   reinforcement:
     aliases: [reinf, r]
   buyhouse:
+  mieters:
+  unrent:
