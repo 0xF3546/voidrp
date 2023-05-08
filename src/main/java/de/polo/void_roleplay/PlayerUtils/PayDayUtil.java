@@ -1,13 +1,17 @@
 package de.polo.void_roleplay.PlayerUtils;
 
+import de.polo.void_roleplay.DataStorage.HouseData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.Utils.FactionManager;
+import de.polo.void_roleplay.Utils.Housing;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PayDayUtil {
     public static void givePayDay(Player player) throws SQLException {
@@ -36,6 +40,18 @@ public class PayDayUtil {
                 plus += frakpayday;
             }
         }
+        int rent = 0;
+        for (HouseData houseData : Housing.houseDataMap.values()) {
+            if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
+                rent += houseData.getRenter().get(player.getUniqueId().toString());
+                player.sendMessage("§8 ➥ §6Miete Haus " + houseData.getNumber() + "§8:§7 " + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
+                houseData.setMoney(houseData.getMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
+                Statement statement = MySQL.getStatement();
+                statement.executeUpdate("UPDATE `housing` SET `money` = " + houseData.getMoney() + " WHERE `number` = " + houseData.getNumber());
+            }
+        }
+        plus -= rent;
+        player.sendMessage(" ");
         plus = Math.round(plus);
         player.sendMessage("§8 ➥ §cGesamt§8:§7 " + (int) plus + "$");
         player.sendMessage(" ");
