@@ -30,5 +30,8 @@ public class DamageListener implements Listener {
         if ((event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.ITEM_FRAME || event.getEntity().getType() == EntityType.PAINTING || event.getEntity().getType() == EntityType.MINECART) && !PlayerManager.playerDataMap.get(event.getEntity().getUniqueId().toString()).isAduty()) {
             event.setCancelled(true);
         }
+        if (event.getEntity().getType() == EntityType.VILLAGER) {
+            event.setCancelled(true);
+        }
     }
 }
