@@ -32,7 +32,7 @@ public class  JoinEvent implements Listener {
             }
             Vehicles.spawnPlayerVehicles(player);
             aduty.send_message("§c" + player.getName() + "§7 hat den Server betreten.");
-            player.sendMessage("§6Wilkommen zurück, " + player.getName() + "!");
+            player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
         } else {
             player.sendMessage(" ");
             player.sendMessage("§6Void Roleplay §8»§7 Herzlich Wilkommen auf Void Roleplay - Roleplay mit Stil, " + player.getName() + ".");

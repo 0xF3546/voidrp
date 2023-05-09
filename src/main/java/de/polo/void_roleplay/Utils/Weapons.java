@@ -44,7 +44,7 @@ public class Weapons implements Listener {
             weaponDataMap.put(Material.valueOf(result.getString(2)), weaponData);
         }
     }
-    public static void giveWeaponToPlayer(Player player, Material material) {
+    public static void giveWeaponToPlayer(Player player, Material material, String type) {
         WeaponData weaponData = weaponDataMap.get(material);
         ItemStack item = new ItemStack(weaponData.getMaterial());
         ItemMeta meta = item.getItemMeta();
@@ -58,6 +58,10 @@ public class Weapons implements Listener {
 
         NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
         meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 0);
+
+        NamespacedKey typeKey = new NamespacedKey(Main.plugin, "type");
+        meta.getPersistentDataContainer().set(typeKey, PersistentDataType.STRING, type);
+
         meta.setLore(Collections.singletonList("§8➥ §e" + weaponData.getMaxAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);

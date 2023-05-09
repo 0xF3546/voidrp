@@ -80,7 +80,7 @@ public class InventoryClickListener implements Listener {
                                 try {
                                     if (Objects.equals(row[5].toString(), "weapon")) {
                                         String weapon = row[3].toString().replace("&", "").replace("6", "");
-                                        Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType());
+                                        Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType(), "default");
                                         player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
                                     } else if (Objects.equals(row[5].toString(), "ammo")) {
