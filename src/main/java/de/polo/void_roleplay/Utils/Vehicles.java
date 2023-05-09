@@ -227,39 +227,41 @@ public class Vehicles implements Listener, CommandExecutor {
     }
     @EventHandler
     public void onGasStationInteract(PlayerInteractEvent event) {
-        if (event.getClickedBlock().getType() == Material.LEVER) {
-            Integer station = LocationManager.isPlayerGasStation(event.getPlayer());
-            if (station != 0) {
-                event.setCancelled(true);
-                GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
-                Player player = event.getPlayer();
-                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-                Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6Tankstelle");
-                int i = 0;
-                for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
-                    if (entity.getType() == EntityType.MINECART) {
-                        NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
-                        if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
-                            String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-                            int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                            int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
-                            float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
-                            int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
-                            VehicleData vehicleData = vehicleDataMap.get(type);
-                            inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "Lädt..."));
-                            ItemMeta meta = inv.getItem(i).getItemMeta();
-                            int dif = vehicleData.getMaxFuel() - (int) fuel;
-                            meta.setLore(Arrays.asList("§7 ➥ §8[§6Linksklick§8]§7 Tankoptionen", "§7 ➥ §8[§6Rechtsklick§8]§7 Volltanken (§a" + dif * gasStationData.getLiterprice() + "$§7)"));
-                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
-                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING, type);
-                            inv.getItem(i).setItemMeta(meta);
-                            i++;
+        if (event.getClickedBlock() != null) {
+            if (event.getClickedBlock().getType() == Material.LEVER) {
+                Integer station = LocationManager.isPlayerGasStation(event.getPlayer());
+                if (station != 0) {
+                    event.setCancelled(true);
+                    GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
+                    Player player = event.getPlayer();
+                    PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                    Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6Tankstelle");
+                    int i = 0;
+                    for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
+                        if (entity.getType() == EntityType.MINECART) {
+                            NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
+                            if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
+                                String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
+                                int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                                int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
+                                float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                                int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
+                                VehicleData vehicleData = vehicleDataMap.get(type);
+                                inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "Lädt..."));
+                                ItemMeta meta = inv.getItem(i).getItemMeta();
+                                int dif = vehicleData.getMaxFuel() - (int) fuel;
+                                meta.setLore(Arrays.asList("§7 ➥ §8[§6Linksklick§8]§7 Tankoptionen", "§7 ➥ §8[§6Rechtsklick§8]§7 Volltanken (§a" + dif * gasStationData.getLiterprice() + "$§7)"));
+                                meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
+                                meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING, type);
+                                inv.getItem(i).setItemMeta(meta);
+                                i++;
+                            }
                         }
                     }
+                    playerData.setVariable("current_inventory", "gasstation");
+                    playerData.setVariable("current_app", null);
+                    player.openInventory(inv);
                 }
-                playerData.setVariable("current_inventory", "gasstation");
-                playerData.setVariable("current_app", null);
-                player.openInventory(inv);
             }
         }
     }

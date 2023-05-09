@@ -59,12 +59,17 @@ public class FFA implements CommandExecutor {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("join")) {
                 if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("current_lobby") == null) {
-                    openFFAMenu(player, 1);
+                    if (LocationManager.getDistanceBetweenCoords(player, "ffa") < 5) {
+                        openFFAMenu(player, 1);
+                    } else {
+                        player.sendMessage(Main.error + "Du bist nicht in der nähe der FFA-Arena!");
+                    }
                 } else {
                     player.sendMessage(Main.error + "Du bist bereits in einem FFA.");
                 }
             } else if (args[0].equalsIgnoreCase("leave")) {
                 if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("current_lobby") != null) {
+                    player.sendMessage("§8[§6FFA§8]§a Du hast die FFA-Arena verlassen.");
                     leaveFFA(player);
                 } else {
                     player.sendMessage(Main.error + "Du bist nicht in FFA.");
@@ -114,6 +119,7 @@ public class FFA implements CommandExecutor {
             playerData.setVariable("current_lobby", lobbyData.getName());
             lobbyData.setPlayers(lobbyData.getPlayers() + 1);
             player.sendMessage("§8[§6FFA§8]§e Du betrittst: " + lobbyData.getDisplayname().replace("&", "§"));
+            player.sendMessage("§8 ➥ §7Nutze §8/§effa leave §7um die Arena zu verlassen.");
             Weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "FFA");
             useSpawn(player, id);
         } else {
@@ -125,21 +131,23 @@ public class FFA implements CommandExecutor {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         FFALobbyData lobbyData = FFAlobbyDataMap.get(playerData.getIntVariable("current_lobby"));
         lobbyData.setPlayers(lobbyData.getPlayers() - 1);
+        LocationManager.useLocation(player, "ffa");
+        playerData.setIntVariable("current_lobby", null);
+        playerData.setVariable("current_lobby", null);
         for (ItemStack item : player.getInventory().getContents()) {
             for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
-                if (item.getType() == weaponData.getMaterial()) {
-                    ItemMeta meta = item.getItemMeta();
-                    if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
-                        if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "FFA") {
-                            player.getInventory().remove(item);
+                if (weaponData.getMaterial() != null && item != null) {
+                    if (item.getType() == weaponData.getMaterial()) {
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
+                            if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "FFA") {
+                                player.getInventory().remove(item);
+                            }
                         }
                     }
                 }
             }
         }
-        LocationManager.useLocation(player, "ffa");
-        playerData.setIntVariable("current_lobby", null);
-        playerData.setVariable("current_lobby", null);
     }
 
     public static void useSpawn(Player player, int ffa) {

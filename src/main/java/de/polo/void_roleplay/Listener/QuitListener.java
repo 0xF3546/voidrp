@@ -3,6 +3,7 @@ package de.polo.void_roleplay.Listener;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.ChatUtils;
+import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import de.polo.void_roleplay.Utils.SupportManager;
 import de.polo.void_roleplay.Utils.Vehicles;
@@ -23,6 +24,9 @@ public class QuitListener implements Listener {
         if (playerData == null) return;
         event.setQuitMessage("");
         aduty.send_message("§c" + player.getName() + "§7 hat den Server verlassen.");
+        if (playerData.getVariable("current_lobby") != null) {
+            FFA.leaveFFA(player);
+        }
         if (player.getVehicle() != null) {
             player.getVehicle().eject();
         }
