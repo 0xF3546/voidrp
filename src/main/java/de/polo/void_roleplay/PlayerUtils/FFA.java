@@ -58,7 +58,11 @@ public class FFA implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("join")) {
-                openFFAMenu(player, 1);
+                if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("current_lobby") == null) {
+                    openFFAMenu(player, 1);
+                } else {
+                    player.sendMessage(Main.error + "Du bist bereits in einem FFA.");
+                }
             } else if (args[0].equalsIgnoreCase("leave")) {
                 if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("current_lobby") != null) {
                     leaveFFA(player);
@@ -104,6 +108,7 @@ public class FFA implements CommandExecutor {
     public static void joinLobby(Player player, int id) {
         FFALobbyData lobbyData = FFAlobbyDataMap.get(id);
         if (lobbyData.getPlayers() < lobbyData.getMaxPlayer()) {
+            player.closeInventory();
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             playerData.setIntVariable("current_lobby", id);
             playerData.setVariable("current_lobby", lobbyData.getName());
@@ -139,7 +144,6 @@ public class FFA implements CommandExecutor {
 
     public static void useSpawn(Player player, int ffa) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        //FFASpawnPoints spawnPoints = FFAspawnpointDataMap.get(playerData.getVariable("current_lobby"));
         List<FFASpawnPoints> keysWithIdOne = new ArrayList<>();
         for (FFASpawnPoints spawnPoints : FFAspawnpointDataMap.values()) {
             if (spawnPoints.getLobby_type().equals(playerData.getVariable("current_lobby"))) {

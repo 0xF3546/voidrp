@@ -159,6 +159,7 @@ public final class Main extends JavaPlugin {
         getCommand("frisk").setExecutor(new friskCommand());
         getCommand("blacklist").setExecutor(new blacklistCommand());
         getCommand("ffa").setExecutor(new FFA());
+        getCommand("npc").setExecutor(new NPC());
     }
 
 

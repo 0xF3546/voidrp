@@ -4,13 +4,16 @@ import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 public class playerInteractWithPlayerListener implements Listener {
     @EventHandler
@@ -36,6 +39,12 @@ public class playerInteractWithPlayerListener implements Listener {
         }
         if ((event.getRightClicked().getType() == EntityType.ARMOR_STAND || event.getRightClicked().getType() == EntityType.ITEM_FRAME || event.getRightClicked().getType() == EntityType.PAINTING) && !PlayerManager.playerDataMap.get(event.getPlayer().getUniqueId().toString()).isAduty()) {
             event.setCancelled(true);
+        }
+        if (event.getRightClicked() instanceof Villager) {
+            Villager villager = (Villager) event.getRightClicked();
+            String command = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
+            assert command != null;
+            event.getPlayer().performCommand(command);
         }
     }
 }

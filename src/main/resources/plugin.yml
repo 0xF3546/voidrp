@@ -102,3 +102,4 @@ commands:
   blacklist:
     aliases: bl
   ffa:
+  npc:

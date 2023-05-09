@@ -125,7 +125,7 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     public static void deleteVehicleById(Integer id) throws SQLException {
-        for (Entity entity : Bukkit.getWorld("ciddy").getEntities()) {
+        for (Entity entity : Bukkit.getWorld("world").getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
                 NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
@@ -140,7 +140,7 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     public static void deleteVehicleByUUID(String uuid) throws SQLException {
-        for (Entity entity : Bukkit.getWorld("ciddy").getEntities()) {
+        for (Entity entity : Bukkit.getWorld("world").getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
                 NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), uuid)) {
