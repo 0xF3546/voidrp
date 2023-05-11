@@ -1,6 +1,7 @@
 package de.polo.void_roleplay.Utils;
 
 import de.polo.void_roleplay.DataStorage.HouseData;
+import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
@@ -65,5 +66,12 @@ public class Housing {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void addHausSlot(Player player) throws SQLException {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setHouseSlot(playerData.getHouseSlot() + 1);
+        Statement statement = MySQL.getStatement();
+        statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
     }
 }

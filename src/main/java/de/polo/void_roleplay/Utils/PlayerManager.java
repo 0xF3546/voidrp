@@ -431,4 +431,37 @@ public class PlayerManager {
         player.sendMessage("§8[§6Level§8] §c-+" + exp + " EXP");
     }
 
+    public static void addEXPBoost(Player player, int hours) throws SQLException {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        playerData.setBoostDuration(playerData.getBoostDuration() + hours);
+        Statement statement = MySQL.getStatement();
+        statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+    }
+
+    public static void redeemRank(Player player, String type, int duration, String duration_type) throws SQLException {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        switch (type) {
+            case "VIP":
+                playerData.setRang("VIP");
+                playerData.setPermlevel(30);
+                playerData.setRankDuration(playerData.getRankDuration() + duration);
+                break;
+            case "Premium":
+                playerData.setRang("Premium");
+                playerData.setPermlevel(20);
+                playerData.setRankDuration(playerData.getRankDuration() + duration);
+                break;
+            case "Gold":
+                playerData.setRang("Gold");
+                playerData.setPermlevel(10);
+                playerData.setRankDuration(playerData.getRankDuration() + duration);
+                break;
+            default:
+                player.sendMessage(Main.error + "§cFehler. Bitte einen Administratoren kontaktieren.");
+                break;
+        }
+        Statement statement = MySQL.getStatement();
+        statement.executeUpdate("UPDATE `players` SET `rankDuration` = " + playerData.getRankDuration() + ", `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+    }
+
 }

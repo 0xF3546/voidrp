@@ -35,6 +35,9 @@ public class PlayerData {
     private boolean isDuty;
     private String gender;
     private String birthday;
+    private int houseSlot;
+    private int rankDuration;
+    private int boostDuration;
 
     public PlayerData() {
     }
@@ -288,5 +291,29 @@ public class PlayerData {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getHouseSlot() {
+        return houseSlot;
+    }
+
+    public void setHouseSlot(int houseSlot) {
+        this.houseSlot = houseSlot;
+    }
+
+    public int getRankDuration() {
+        return rankDuration;
+    }
+
+    public void setRankDuration(int rankDuration) {
+        this.rankDuration = rankDuration;
+    }
+
+    public int getBoostDuration() {
+        return boostDuration;
+    }
+
+    public void setBoostDuration(int boostDuration) {
+        this.boostDuration = boostDuration;
     }
 }

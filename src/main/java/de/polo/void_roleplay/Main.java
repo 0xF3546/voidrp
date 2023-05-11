@@ -160,6 +160,7 @@ public final class Main extends JavaPlugin {
         getCommand("blacklist").setExecutor(new blacklistCommand());
         getCommand("ffa").setExecutor(new FFA());
         getCommand("npc").setExecutor(new NPC());
+        getCommand("redeem").setExecutor(new redeemCommand());
     }
 
 
