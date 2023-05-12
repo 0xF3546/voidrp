@@ -104,3 +104,9 @@ commands:
   ffa:
   npc:
   redeem:
+  link:
+    aliases: forum
+  whistle:
+    aliases: [w, flüstern]
+  shout:
+    aliases: [s, schreien]

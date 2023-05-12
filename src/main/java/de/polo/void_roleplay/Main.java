@@ -10,8 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Random;
+import java.util.logging.Level;
 
 public final class Main extends JavaPlugin {
     public static Plugin plugin = null;
@@ -33,11 +36,16 @@ public final class Main extends JavaPlugin {
     public static CooldownManager cooldownManager = new CooldownManager();
 
     private static Main instance;
+
+
     public void onLoad() {
         instance = this;
     }
     @Override
     public void onEnable() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.kickPlayer("§cDer Server wurde reloaded.");
+        }
         getLogger().info("§cVOID ROLEPLAY STARTED.");
         registerListener();
         registerCommands();
@@ -161,6 +169,9 @@ public final class Main extends JavaPlugin {
         getCommand("ffa").setExecutor(new FFA());
         getCommand("npc").setExecutor(new NPC());
         getCommand("redeem").setExecutor(new redeemCommand());
+        getCommand("link").setExecutor(new linkCommand());
+        getCommand("whistle").setExecutor(new whistleCommand());
+        getCommand("shout").setExecutor(new shoutCommand());
     }
 
 

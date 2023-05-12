@@ -366,7 +366,7 @@ public class PlayerManager {
     }
 
     public static void setPlayerMove(Player player, Boolean state) {
-        if (state) {
+        if (!state) {
             if (playerMovement.get(player.getUniqueId().toString()) == null) {
                 playerMovement.put(player.getUniqueId().toString(), true);
                 player.setWalkSpeed(0);

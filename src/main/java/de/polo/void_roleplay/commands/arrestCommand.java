@@ -22,7 +22,6 @@ public class arrestCommand implements CommandExecutor {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei")) {
             FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-            if (playerData.canInteract()) {
                 if (args.length > 0) {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
                     if (targetplayer.isOnline()) {
@@ -51,9 +50,6 @@ public class arrestCommand implements CommandExecutor {
                 } else {
                     player.sendMessage(Main.error + "Syntax-Fehler: /arrest [Spieler]");
                 }
-            } else {
-                player.sendMessage(Main.error_cantinteract);
-            }
         } else {
             player.sendMessage(Main.error_nopermission);
         }

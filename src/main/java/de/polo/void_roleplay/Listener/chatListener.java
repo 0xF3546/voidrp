@@ -35,11 +35,11 @@ public class chatListener implements Listener {
                     }
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (player.getLocation().distance(players.getLocation()) <= 3) {
-                        players.sendMessage("§7" + player.getName() + " sagt§8:§f " + event.getMessage());
-                    } else if (player.getLocation().distance(players.getLocation()) <= 6) {
+                    if (player.getLocation().distance(players.getLocation()) <= 5) {
+                        players.sendMessage("§f" + player.getName() + " sagt§8:§f " + event.getMessage());
+                    } else if (player.getLocation().distance(players.getLocation()) <= 9) {
                         players.sendMessage("§7" + player.getName() + " sagt§8:§7 " + event.getMessage());
-                    } else if (player.getLocation().distance(players.getLocation()) <= 12) {
+                    } else if (player.getLocation().distance(players.getLocation()) <= 16) {
                         players.sendMessage("§8" + player.getName() + " sagt§8:§8 " + event.getMessage());
                     }
                 }
