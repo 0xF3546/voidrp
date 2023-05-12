@@ -1,6 +1,7 @@
 package de.polo.void_roleplay.DataStorage;
 
 import de.polo.void_roleplay.PlayerUtils.Scoreboard;
+import org.bukkit.Location;
 
 import java.util.HashMap;
 
@@ -38,6 +39,8 @@ public class PlayerData {
     private int houseSlot;
     private int rankDuration;
     private int boostDuration;
+    private Location deathLocation;
+    private String secondaryTeam;
 
     public PlayerData() {
     }
@@ -315,5 +318,21 @@ public class PlayerData {
 
     public void setBoostDuration(int boostDuration) {
         this.boostDuration = boostDuration;
+    }
+
+    public Location getDeathLocation() {
+        return deathLocation;
+    }
+
+    public void setDeathLocation(Location deathLocation) {
+        this.deathLocation = deathLocation;
+    }
+
+    public String getSecondaryTeam() {
+        return secondaryTeam;
+    }
+
+    public void setSecondaryTeam(String secondaryTeam) {
+        this.secondaryTeam = secondaryTeam;
     }
 }

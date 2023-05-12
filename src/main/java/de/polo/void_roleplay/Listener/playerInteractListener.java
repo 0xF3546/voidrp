@@ -30,16 +30,6 @@ public class playerInteractListener implements Listener {
         Player player = event.getPlayer();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
-                /*if (event.getClickedBlock().getType() == Material.CAULDRON) {
-                    NamespacedKey value = new NamespacedKey(Main.plugin, "value");
-                    PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
-                    if (container.get(value, PersistentDataType.INTEGER) != null) {
-
-                    } else {
-                        player.getInventory().addItem(ItemManager.createItem(Material.POTATO, 1, 0, "§6Gefunden in einem Mülleimer", null));
-
-                    }
-                }*/
                 TileState state = (TileState) event.getClickedBlock().getState();
                 if (state instanceof Sign) {
                     System.out.println("sign geklickt");
@@ -49,7 +39,6 @@ public class playerInteractListener implements Listener {
                         if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {
                             System.out.println("sign gefunden");
                             if (houseData.getOwner() == null) {
-                                System.out.println("owner ist null");
                                 player.sendMessage("§8[§6Haus§8]§e Möchtest du Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ kaufen?");
                                 TextComponent route = new TextComponent("§8 ➥ §aKaufen");
                                 route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/buyhouse " + houseData.getNumber()));

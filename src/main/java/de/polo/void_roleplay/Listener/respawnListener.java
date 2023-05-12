@@ -1,9 +1,7 @@
 package de.polo.void_roleplay.Listener;
 
 import de.polo.void_roleplay.DataStorage.PlayerData;
-import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.PlayerManager;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,9 +13,11 @@ public class respawnListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.isDead()) {
-            //player.teleport(loc);
-            player.sleep(player.getLocation(), true);
-            player.sendMessage(Main.debug_prefix + "respawned");
+            if (playerData.getVariable("current_lobby") != null) {
+                event.setRespawnLocation(playerData.getDeathLocation());
+                player.sleep(player.getLocation(), true);
+                player.sendTitle("§cDu bist gestorben.", null, 1, 6, 1);
+            }
         }
     }
 }

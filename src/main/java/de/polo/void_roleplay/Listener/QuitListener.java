@@ -5,9 +5,11 @@ import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import de.polo.void_roleplay.Utils.ServerManager;
 import de.polo.void_roleplay.Utils.SupportManager;
 import de.polo.void_roleplay.Utils.Vehicles;
 import de.polo.void_roleplay.commands.*;
+import de.polo.void_roleplay.discord.discord;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +26,7 @@ public class QuitListener implements Listener {
         if (playerData == null) return;
         event.setQuitMessage("");
         aduty.send_message("§c" + player.getName() + "§7 hat den Server verlassen.");
+        ServerManager.updateTablist();
         if (playerData.getVariable("current_lobby") != null) {
             FFA.leaveFFA(player);
         }

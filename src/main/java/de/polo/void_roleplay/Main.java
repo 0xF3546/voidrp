@@ -5,6 +5,13 @@ import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
+import de.polo.void_roleplay.discord.ReadyListener;
+import de.polo.void_roleplay.discord.discord;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -17,6 +24,8 @@ import java.util.Random;
 import java.util.logging.Level;
 
 public final class Main extends JavaPlugin {
+    public boolean isOnline = false;
+
     public static Plugin plugin = null;
     public static String prefix = "§8[§6Void§8] §7";
     public static String debug_prefix = "§8[§7§lDEBUG§8] §cVoid§8 » §7";
@@ -41,8 +50,10 @@ public final class Main extends JavaPlugin {
     public void onLoad() {
         instance = this;
     }
+
     @Override
     public void onEnable() {
+        isOnline = true;
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
         }
@@ -66,7 +77,7 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    private void registerListener(){
+    private void registerListener() {
 
         getServer().getPluginManager().registerEvents(new JoinEvent(), this);
         getServer().getPluginManager().registerEvents(new QuitListener(), this);
@@ -96,7 +107,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new expPickupListener(), this);
     }
 
-    private void registerCommands(){
+    private void registerCommands() {
         getCommand("aduty").setExecutor(new aduty());
         getCommand("setgroup").setExecutor(new setteamCommand());
         getCommand("geldbeutel").setExecutor(new geldbeutelCommand());
@@ -172,11 +183,16 @@ public final class Main extends JavaPlugin {
         getCommand("link").setExecutor(new linkCommand());
         getCommand("whistle").setExecutor(new whistleCommand());
         getCommand("shout").setExecutor(new shoutCommand());
+        getCommand("setsecondaryteam").setExecutor(new setsecondaryteamCommand());
+        getCommand("bauteamchat").setExecutor(new bauteamChat());
+        getCommand("eventteamchat").setExecutor(new eventteamChat());
+        getCommand("prteamchat").setExecutor(new prteamChat());
     }
 
 
     @Override
     public void onDisable() {
+        isOnline = false;
         try {
             ServerManager.savePlayers();
         } catch (SQLException e) {
@@ -189,6 +205,7 @@ public final class Main extends JavaPlugin {
         int randomNumber = min + (int) (Math.random() * ((max - min) + 1));
         return randomNumber;
     }
+
     public static char getRandomChar(String characters) {
         Random random = new Random();
         int index = random.nextInt(characters.length());

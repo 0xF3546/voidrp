@@ -6,6 +6,7 @@ import de.polo.void_roleplay.PlayerUtils.DeathUtil;
 import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import de.polo.void_roleplay.commands.aduty;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class deathListener implements Listener {
             if (playerData.getVariable("current_lobby") != null) {
                 FFA.useSpawn(player, playerData.getIntVariable("current_lobby"));
             } else {
-                playerData.setVariable("death_loc", String.valueOf(player.getLocation()));
+                playerData.setDeathLocation(player.getLocation());
                 DeathUtil.startDeathTimer(player);
                 player.sendMessage(Main.debug_prefix + " Du bist gestorben.");
                 aduty.send_message("§c" + player.getName() + "§7 starb.");

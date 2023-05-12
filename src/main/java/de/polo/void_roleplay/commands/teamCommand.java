@@ -13,7 +13,7 @@ public class teamCommand implements CommandExecutor {
         Player player = (Player) sender;
         player.sendMessage("§6§lTeamübersicht§8:");
         for (Player players : Bukkit.getOnlinePlayers()) {
-            if (PlayerManager.isTeam(players)) {
+            if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getPermlevel() >= 50) {
                 player.sendMessage("§8 ➥ §e" + PlayerManager.rang(players) + " " + players.getName());
             }
         }

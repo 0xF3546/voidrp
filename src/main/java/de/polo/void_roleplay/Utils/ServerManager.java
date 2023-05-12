@@ -19,4 +19,11 @@ public class ServerManager {
             PlayerManager.savePlayer(player);
         }
     }
+
+    public static void updateTablist() {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.setPlayerListHeader("§6§lVoid Roleplay §8- §cV1.0");
+            p.setPlayerListFooter("§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8«");
+        }
+    }
 }

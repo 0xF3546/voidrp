@@ -110,3 +110,9 @@ commands:
     aliases: [w, flüstern]
   shout:
     aliases: [s, schreien]
+  prteamchat:
+    aliases: pr
+  eventteamchat:
+    aliases: et
+  bauteamchat:
+    aliases: bt
