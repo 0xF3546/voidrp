@@ -37,6 +37,7 @@ public class playerinfoCommand implements CommandExecutor {
                 } else {
                     player.sendMessage("§8 ➥ §6Gefängnis§8: §7Ja");
                 }
+                player.sendMessage("§8 ➥ §6Hausslots§8: §7" + targetplayerdata.getHouseSlot());
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /playerinfo [Spieler]");
             }

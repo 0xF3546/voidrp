@@ -70,6 +70,7 @@ public class Housing {
 
     public static void addHausSlot(Player player) throws SQLException {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        System.out.println("hausslot hinzugefügt");
         playerData.setHouseSlot(playerData.getHouseSlot() + 1);
         Statement statement = MySQL.getStatement();
         statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");

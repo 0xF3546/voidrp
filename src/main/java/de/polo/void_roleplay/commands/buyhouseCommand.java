@@ -49,14 +49,24 @@ public class buyhouseCommand implements CommandExecutor {
                                     HouseData houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
                                     if (houseData.getOwner() == null) {
                                         if (playerData.getBargeld() >= houseData.getPrice()) {
+                                            int houes = 0;
+                                            for (HouseData houseData1 : Housing.houseDataMap.values()) {
+                                                if (houseData1.getOwner().equals(player.getUniqueId().toString())) {
+                                                    houes++;
+                                                }
+                                            }
                                             try {
-                                                PlayerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
-                                                Statement statement = MySQL.getStatement();
-                                                statement.executeUpdate("UPDATE `housing` SET `owner` = '" + player.getUniqueId().toString() + "' WHERE `number` = " + houseData.getNumber());
-                                                houseData.setOwner(player.getUniqueId().toString());
-                                                sign.setLine(2, "§0" + player.getName());
-                                                sign.update();
-                                                player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ gekauft!");
+                                                if (playerData.getHouseSlot() > houes) {
+                                                    PlayerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
+                                                    Statement statement = MySQL.getStatement();
+                                                    statement.executeUpdate("UPDATE `housing` SET `owner` = '" + player.getUniqueId().toString() + "' WHERE `number` = " + houseData.getNumber());
+                                                    houseData.setOwner(player.getUniqueId().toString());
+                                                    sign.setLine(2, "§0" + player.getName());
+                                                    sign.update();
+                                                    player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ gekauft!");
+                                                } else {
+                                                    player.sendMessage(Main.error + "Du hast nicht genug Haus-Slots.");
+                                                }
                                             } catch (SQLException e) {
                                                 player.sendMessage(Main.error + "Ein Fehler ist unterlaufen, versuche es später erneut.");
                                                 throw new RuntimeException(e);

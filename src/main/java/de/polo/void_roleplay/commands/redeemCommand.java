@@ -38,19 +38,19 @@ public class redeemCommand implements CommandExecutor {
                         player.sendMessage(Main.prefix + "§bDu hast dein §9" + args[0] + "§b eingelöst");
                         player.sendMessage(Main.prefix + "§eDanke für's Unterstützen von Void Roleplay!");
                         switch (args[0]) {
-                            case "VIP":
+                            case "vip":
                                 PlayerManager.redeemRank(player, "VIP", result.getInt(4), result.getString(5));
                                 break;
-                            case "Premium":
+                            case "premium":
                                 PlayerManager.redeemRank(player, "Premium", result.getInt(4), result.getString(5));
                                 break;
-                            case "Gold":
+                            case "gold":
                                 PlayerManager.redeemRank(player, "Gold", result.getInt(4), result.getString(5));
                                 break;
-                            case "Hausslot":
+                            case "hausslot":
                                 Housing.addHausSlot(player);
                                 break;
-                            case "EXPBooster":
+                            case "expbooster":
                                 PlayerManager.addEXPBoost(player, result.getInt(4));
                                 break;
                         }
