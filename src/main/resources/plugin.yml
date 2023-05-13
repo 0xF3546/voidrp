@@ -116,3 +116,4 @@ commands:
     aliases: et
   bauteamchat:
     aliases: bt
+  setsecondaryteam:

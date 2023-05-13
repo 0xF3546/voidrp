@@ -14,13 +14,13 @@ public class eventteamChat implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (playerData.getSecondaryTeam().equals("Event-Team")) {
+        if (playerData.getSecondaryTeam().equals("Event-Team") || playerData.isAduty()) {
             StringBuilder msg = new StringBuilder(args[0]);
             for (int i = 1; i < args.length; i++) {
                 msg.append(' ').append(args[i]);
             }
             for (Player players : Bukkit.getOnlinePlayers()) {
-                if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getSecondaryTeam().equals("Event-Team")) {
+                if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getSecondaryTeam().equals("Event-Team") || PlayerManager.playerDataMap.get(players.getUniqueId().toString()).isAduty()) {
                     players.sendMessage("§8[§6EventTeam§8]§e " + player.getName() + "§8:§7 " + msg);
                 }
             }

@@ -13,9 +13,10 @@ public class respawnListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.isDead()) {
-            if (playerData.getVariable("current_lobby") != null) {
+            System.out.println("spieler ist tot");
+            System.out.println(playerData.getVariable("current_lobby"));
+            if (playerData.getVariable("current_lobby") == null) {
                 event.setRespawnLocation(playerData.getDeathLocation());
-                player.sleep(player.getLocation(), true);
                 player.sendTitle("§cDu bist gestorben.", null, 1, 6, 1);
             }
         }

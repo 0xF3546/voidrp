@@ -17,8 +17,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 public class deathListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = ((Player) event.getEntity()).getPlayer();
+            Player player = event.getEntity().getPlayer();
             assert player != null;
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             event.setKeepInventory(true);
@@ -32,5 +31,4 @@ public class deathListener implements Listener {
                 playerData.setDead(true);
             }
         }
-    }
 }

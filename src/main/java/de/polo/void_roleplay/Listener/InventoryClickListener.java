@@ -20,6 +20,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -35,7 +36,7 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) throws SQLException {
-        if (event.getCurrentItem() == null) return;
+        if (event.getCurrentItem() == null || !event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST)) return;
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());

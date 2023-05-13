@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.commands;
 
+import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.FactionManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Bukkit;
@@ -13,19 +14,23 @@ public class govCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         String playerfac = FactionManager.faction(player);
-        if (FactionManager.isPlayerInGoodFaction(player) || FactionManager.faction_grade(player) >= 5) {
-            StringBuilder message = new StringBuilder();
-            for (String arg : args) {
-                message.append(" ").append(arg);
-            }
-            if (PlayerManager.perms(player) >= 70) {
-                Bukkit.broadcastMessage(" ");
-                Bukkit.broadcastMessage("§7====§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + "§l" + FactionManager.getFactionFullname(playerfac) + "§8]§7====");
-                Bukkit.broadcastMessage(" ");
-                Bukkit.broadcastMessage("§8➥§" + FactionManager.getFactionSecondaryColor(playerfac) + " " + player.getName() + "§8: §7" + message);
-                Bukkit.broadcastMessage(" ");
-                Bukkit.broadcastMessage("§7====§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + "§l" + FactionManager.getFactionFullname(playerfac) + "§8]§7====");
-                Bukkit.broadcastMessage(" ");
+        if (FactionManager.isPlayerInGoodFaction(player) && FactionManager.faction_grade(player) >= 5) {
+            if (args.length >= 1) {
+                StringBuilder message = new StringBuilder(args[0]);
+                for (int i = 1; i < args.length; i++) {
+                    message.append(" ").append(args[i]);
+                }
+                if (PlayerManager.perms(player) >= 70) {
+                    Bukkit.broadcastMessage(" ");
+                    Bukkit.broadcastMessage("§7§m====§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + "§l" + FactionManager.getFactionFullname(playerfac) + "§8]§7§m====");
+                    Bukkit.broadcastMessage(" ");
+                    Bukkit.broadcastMessage("§8➥§" + FactionManager.getFactionSecondaryColor(playerfac) + " " + player.getName() + "§8: §7" + message);
+                    Bukkit.broadcastMessage(" ");
+                    Bukkit.broadcastMessage("§7§m====§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + "§l" + FactionManager.getFactionFullname(playerfac) + "§8]§7§m====");
+                    Bukkit.broadcastMessage(" ");
+                }
+            } else {
+                player.sendMessage(Main.error + "Syntax-Fehler: /gov [Nachricht]");
             }
         }
         return false;

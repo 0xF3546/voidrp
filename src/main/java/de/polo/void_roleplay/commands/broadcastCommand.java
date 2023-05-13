@@ -11,17 +11,17 @@ public class broadcastCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        StringBuilder message = new StringBuilder();
-        for (String arg : args) {
-            message.append(" ").append(arg);
+        StringBuilder message = new StringBuilder(args[0]);
+        for (int i = 1; i < args.length; i++) {
+            message.append(" ").append(args[i]);
         }
         if (PlayerManager.perms(player) >= 70) {
             Bukkit.broadcastMessage(" ");
-            Bukkit.broadcastMessage("§7====§8[§c§lAnkündigung§8]§7====");
+            Bukkit.broadcastMessage("§7§m====§8[§c§lAnkündigung§8]§7§m====");
             Bukkit.broadcastMessage(" ");
             Bukkit.broadcastMessage("§8➥§c " + player.getName() + "§8: §7" + message);
             Bukkit.broadcastMessage(" ");
-            Bukkit.broadcastMessage("§7====§8[§c§lAnkündigung§8]§7====");
+            Bukkit.broadcastMessage("§7§m====§8[§c§lAnkündigung§8]§7§m====");
             Bukkit.broadcastMessage(" ");
         }
         return false;

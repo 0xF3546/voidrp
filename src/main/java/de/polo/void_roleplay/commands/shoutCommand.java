@@ -18,7 +18,7 @@ public class shoutCommand implements CommandExecutor {
             }
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (player.getLocation().distance(players.getLocation()) <= 28) {
-                    players.sendMessage("§f" + player.getName() + " schreit§8:§f " + message);
+                    players.sendMessage("§f" + player.getName() + " schreit§8:§f " + message + "!");
                 }
             }
         } else {
