@@ -11,6 +11,7 @@ public class FactionData {
     private int bank;
     private boolean hasBlacklist;
     private int teamSpeakID;
+    private int channelGroupID;
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -74,5 +75,13 @@ public class FactionData {
 
     public void setTeamSpeakID(int teamSpeakID) {
         this.teamSpeakID = teamSpeakID;
+    }
+
+    public int getChannelGroupID() {
+        return channelGroupID;
+    }
+
+    public void setChannelGroupID(int channelGroupID) {
+        this.channelGroupID = channelGroupID;
     }
 }

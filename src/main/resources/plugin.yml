@@ -125,3 +125,5 @@ commands:
   cancelservice:
   closeservice:
   tslink:
+  verify:
+  tsunlink:

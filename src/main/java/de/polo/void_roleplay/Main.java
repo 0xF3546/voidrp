@@ -57,6 +57,7 @@ public final class Main extends JavaPlugin {
             Vehicles.loadPlayerVehicles();
             PlayerManager.startTimeTracker();
             ServerManager.startTabUpdateInterval();
+            ServerManager.loadRanks();
             LocationManager.loadLocations();
             FactionManager.loadFactions();
             Shop.loadShopItems();
@@ -188,12 +189,15 @@ public final class Main extends JavaPlugin {
         getCommand("cancelservice").setExecutor(new cancelserviceCommand());
         getCommand("closeservice").setExecutor(new closeserviceCommand());
         getCommand("tslink").setExecutor(new tslinkCommand());
+        getCommand("verify").setExecutor(new TeamSpeak());
+        getCommand("tsunlink").setExecutor(new tsunlinkCommand());
     }
 
 
     @Override
     public void onDisable() {
         isOnline = false;
+        TeamSpeak.getQuery().exit();
         try {
             ServerManager.savePlayers();
         } catch (SQLException e) {
@@ -211,6 +215,20 @@ public final class Main extends JavaPlugin {
         Random random = new Random();
         int index = random.nextInt(characters.length());
         return characters.charAt(index);
+    }
+
+    public static String generateRandomCode(int length) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int randomInt = random.nextInt(75) + 48;
+            if ((randomInt >= 48 && randomInt <= 57) || (randomInt >= 65 && randomInt <= 90) || (randomInt >= 97 && randomInt <= 122)) {
+                sb.append((char) randomInt);
+            } else {
+                i--;
+            }
+        }
+        return sb.toString();
     }
 
     public static Main getInstance() {

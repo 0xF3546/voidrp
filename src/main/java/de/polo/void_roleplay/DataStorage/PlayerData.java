@@ -41,6 +41,7 @@ public class PlayerData {
     private int boostDuration;
     private Location deathLocation;
     private String secondaryTeam;
+    private String teamSpeakUID;
 
     public PlayerData() {
     }
@@ -334,5 +335,13 @@ public class PlayerData {
 
     public void setSecondaryTeam(String secondaryTeam) {
         this.secondaryTeam = secondaryTeam;
+    }
+
+    public String getTeamSpeakUID() {
+        return teamSpeakUID;
+    }
+
+    public void setTeamSpeakUID(String teamSpeakUID) {
+        this.teamSpeakUID = teamSpeakUID;
     }
 }

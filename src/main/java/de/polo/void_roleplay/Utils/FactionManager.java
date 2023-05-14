@@ -32,7 +32,8 @@ public class FactionManager {
             factionData.setSecondaryColor(locs.getString(5));
             factionData.setBank(locs.getInt(6));
             factionData.setTeamSpeakID(locs.getInt(7));
-            factionData.setHasBlacklist(locs.getBoolean(8));
+            factionData.setChannelGroupID(locs.getInt(8));
+            factionData.setHasBlacklist(locs.getBoolean(9));
             factionDataMap.put(locs.getString(2), factionData);
         }
 

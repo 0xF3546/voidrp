@@ -85,7 +85,7 @@ public class PlayerManager {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setFirstname(name.getString(1));
@@ -111,6 +111,7 @@ public class PlayerManager {
                     playerData.setRankDuration(name.getInt(22));
                     playerData.setBoostDuration(name.getInt(23));
                     playerData.setSecondaryTeam(name.getString(24));
+                    playerData.setTeamSpeakUID(name.getString(25));
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);

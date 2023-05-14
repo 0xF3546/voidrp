@@ -1,16 +1,37 @@
 package de.polo.void_roleplay.Utils;
 
-import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServerManager {
     public static boolean canDoJobsBoolean = true;
     public static String error_cantDoJobs = Main.error + "Der Job ist Serverseitig bis nach Restart gesperrt.";
+
+    public static Map<String, RankData> rankDataMap = new HashMap<>();
+
+    public static Object[][] faction_grades;
+    public static void loadRanks() throws SQLException {
+        Statement statement = MySQL.getStatement();
+        ResultSet locs = statement.executeQuery("SELECT * FROM ranks");
+        while (locs.next()) {
+            RankData rankData = new RankData();
+            rankData.setId(locs.getInt(1));
+            rankData.setRang(locs.getString(2));
+            rankData.setPermlevel(locs.getInt(3));
+            rankData.setTeamSpeakID(locs.getInt(4));
+            rankDataMap.put(locs.getString(1), rankData);
+        }
+    }
 
     public static boolean canDoJobs() {
         return canDoJobsBoolean;
