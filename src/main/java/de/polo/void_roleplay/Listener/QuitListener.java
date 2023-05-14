@@ -26,7 +26,7 @@ public class QuitListener implements Listener {
         if (playerData == null) return;
         event.setQuitMessage("");
         aduty.send_message("§c" + player.getName() + "§7 hat den Server verlassen.");
-        ServerManager.updateTablist();
+        ServerManager.updateTablist(null);
         if (playerData.getVariable("current_lobby") != null) {
             FFA.leaveFFA(player);
         }

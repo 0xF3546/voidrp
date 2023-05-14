@@ -66,6 +66,7 @@ public final class Main extends JavaPlugin {
             Vehicles.loadVehicles();
             Vehicles.loadPlayerVehicles();
             PlayerManager.startTimeTracker();
+            ServerManager.startTabUpdateInterval();
             LocationManager.loadLocations();
             FactionManager.loadFactions();
             Shop.loadShopItems();

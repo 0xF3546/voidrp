@@ -24,7 +24,6 @@ public class  JoinEvent implements Listener {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
         event.setJoinMessage("");
-        ServerManager.updateTablist();
         if (PlayerManager.isCreated(String.valueOf(player.getUniqueId()))) {
             PlayerManager.loadPlayer(player);
             if (DeathUtil.isDead(player)) {
@@ -33,6 +32,7 @@ public class  JoinEvent implements Listener {
             aduty.send_message("§c" + player.getName() + "§7 hat den Server betreten.");
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             Vehicles.spawnPlayerVehicles(player);
+            ServerManager.updateTablist(null);
         } else {
             player.sendMessage(" ");
             player.sendMessage("§6Void Roleplay §8»§7 Herzlich Wilkommen auf Void Roleplay - Roleplay mit Stil, " + player.getName() + ".");

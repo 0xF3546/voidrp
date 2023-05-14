@@ -254,8 +254,8 @@ public class InventoryClickListener implements Listener {
                         TabletUtils.openPlayerAktenList(player, 1);
                         break;
                     case PAPER:
-                        TabletUtils.openAktenList(player, 1);
                         playerData.setVariable("current_akte", null);
+                        TabletUtils.openAktenList(player, 1);
                         break;
                     case REDSTONE:
                         TabletUtils.openTablet(player);
