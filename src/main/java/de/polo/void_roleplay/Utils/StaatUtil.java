@@ -1,8 +1,13 @@
 package de.polo.void_roleplay.Utils;
 
 import de.polo.void_roleplay.DataStorage.JailData;
+import de.polo.void_roleplay.DataStorage.ServiceData;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.DataStorage.PlayerData;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,9 +17,11 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public class StaatUtil {
     public static Map<String, JailData> jailDataMap = new HashMap<>();
+    public static Map<String, ServiceData> serviceDataMap = new HashMap<>();
 
     public static void loadJail() throws SQLException {
         Statement statement = MySQL.getStatement();
@@ -111,5 +118,50 @@ public class StaatUtil {
             }
         }
         return true;
+    }
+
+    public static void createService(Player player, int service, String reason) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setIntVariable("service", service);
+        ServiceData serviceData = new ServiceData();
+        serviceData.setLocation(player.getLocation());
+        serviceData.setNumber(service);
+        serviceData.setReason(reason);
+        serviceData.setUuid(player.getUniqueId().toString());
+        serviceDataMap.put(player.getUniqueId().toString(), serviceData);
+        if (service == 110) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (PlayerManager.playerDataMap.get(p.getUniqueId().toString()).getFaction().equals("Polizei")) {
+                    p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
+                    TextComponent message = new TextComponent("§8 ➥ §3Annehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
+                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
+                    message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
+                    p.spigot().sendMessage(message);
+                }
+            }
+        }
+        if (service == 112) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (PlayerManager.playerDataMap.get(p.getUniqueId().toString()).getFaction().equals("Medic")) {
+                    p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
+                    TextComponent message = new TextComponent("§8 ➥ §3Annehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
+                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
+                    message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
+                    p.spigot().sendMessage(message);
+                }
+            }
+        }
+    }
+
+    public static void cancelservice(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        ServiceData serviceData = serviceDataMap.get(player.getUniqueId().toString());
+        playerData.setVariable("service", null);
+        if (serviceData.getAcceptedByUuid() != null) {
+            Player accepter = Bukkit.getPlayer(UUID.fromString(serviceData.getAcceptedByUuid()));
+            assert accepter != null;
+            accepter.sendMessage("§8[§6Notruf§8]§e " + accepter.getName() + " hat seinen Notruf abgebrochen.");
+        }
+        StaatUtil.serviceDataMap.remove(player.getUniqueId().toString());
     }
 }

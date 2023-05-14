@@ -119,3 +119,8 @@ commands:
   setsecondaryteam:
   stats:
   revive:
+  service:
+  acceptservice:
+  services:
+  cancelservice:
+  closeservice:

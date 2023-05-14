@@ -191,6 +191,11 @@ public final class Main extends JavaPlugin {
         getCommand("prteamchat").setExecutor(new prteamChat());
         getCommand("stats").setExecutor(new statsCommand());
         getCommand("revive").setExecutor(new reviveCommand());
+        getCommand("service").setExecutor(new serviceCommand());
+        getCommand("acceptservice").setExecutor(new acceptserviceCommand());
+        getCommand("services").setExecutor(new servicesCommand());
+        getCommand("cancelservice").setExecutor(new cancelserviceCommand());
+        getCommand("closeservice").setExecutor(new closeserviceCommand());
     }
 
 

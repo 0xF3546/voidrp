@@ -1,13 +1,11 @@
 package de.polo.void_roleplay.Listener;
 
+import de.polo.void_roleplay.DataStorage.ServiceData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import de.polo.void_roleplay.PlayerUtils.FFA;
-import de.polo.void_roleplay.Utils.PlayerManager;
-import de.polo.void_roleplay.Utils.ServerManager;
-import de.polo.void_roleplay.Utils.SupportManager;
-import de.polo.void_roleplay.Utils.Vehicles;
+import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
 import de.polo.void_roleplay.discord.discord;
 import org.bukkit.Bukkit;
@@ -65,6 +63,10 @@ public class QuitListener implements Listener {
                         players.sendMessage(Main.support_prefix + "§c" + player.getName() + "§7 ist offline gegangen. Das Ticket wurde geschlossen.");
                     }
                 }
+            }
+            ServiceData serviceData = StaatUtil.serviceDataMap.get(player.getUniqueId().toString());
+            if (serviceData != null) {
+                StaatUtil.cancelservice(player);
             }
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
         } catch (SQLException e) {
