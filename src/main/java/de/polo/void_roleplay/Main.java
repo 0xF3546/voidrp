@@ -106,6 +106,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new playerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new playerInteractWithPlayerListener(), this);
         getServer().getPluginManager().registerEvents(new expPickupListener(), this);
+        getServer().getPluginManager().registerEvents(new itemPickUpListener(), this);
     }
 
     private void registerCommands() {
@@ -188,6 +189,8 @@ public final class Main extends JavaPlugin {
         getCommand("bauteamchat").setExecutor(new bauteamChat());
         getCommand("eventteamchat").setExecutor(new eventteamChat());
         getCommand("prteamchat").setExecutor(new prteamChat());
+        getCommand("stats").setExecutor(new statsCommand());
+        getCommand("revive").setExecutor(new reviveCommand());
     }
 
 

@@ -117,3 +117,5 @@ commands:
   bauteamchat:
     aliases: bt
   setsecondaryteam:
+  stats:
+  revive:

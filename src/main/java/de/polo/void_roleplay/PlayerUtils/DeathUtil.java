@@ -5,7 +5,13 @@ import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.Utils.LocationManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import org.bukkit.Bukkit;
+import org.bukkit.block.Skull;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +20,8 @@ import java.util.HashMap;
 
 public class DeathUtil {
     public static HashMap<String, Boolean> deathPlayer = new HashMap<String, Boolean>();
+    public static HashMap<String, Item> deathSkulls = new HashMap<>();
+    public static HashMap<String, Entity> deathTags = new HashMap<>();
     public static void startDeathTimer(Player player) {
         deathPlayer.put(player.getUniqueId().toString(), true);
         try {
@@ -21,6 +29,22 @@ public class DeathUtil {
             assert statement != null;
             String uuid = player.getUniqueId().toString();
             statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + uuid + "'");
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                        if (!playerData.isDead()) cancel();
+                        playerData.setDeathTime(playerData.getDeathTime() - 1);
+                        player.sendMessage(Main.debug_prefix + "-1 Sekunde Deathtimer");
+                        if (playerData.getDeathTime() <= 0) {
+                            playerData.setDeathTime(1440);
+                            despawnPlayer(player);
+                            cancel();
+                        }
+                    }
+                }
+            }.runTaskTimer(Main.getInstance(), 20, 20);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -45,6 +69,8 @@ public class DeathUtil {
             throw new RuntimeException(e);
         }
         player.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
+        Item skull = deathSkulls.get(player.getUniqueId().toString());
+        skull.remove();
     }
 
     public static void despawnPlayer(Player player) {
@@ -59,6 +85,8 @@ public class DeathUtil {
         }
         LocationManager.useLocation(player, "Krankenhaus");
         player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
+        Item skull = deathSkulls.get(player.getUniqueId().toString());
+        skull.remove();
     }
 
     public static boolean isDead(Player player) throws SQLException {
