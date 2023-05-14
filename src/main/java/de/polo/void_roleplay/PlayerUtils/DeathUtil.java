@@ -21,7 +21,6 @@ import java.util.HashMap;
 public class DeathUtil {
     public static HashMap<String, Boolean> deathPlayer = new HashMap<String, Boolean>();
     public static HashMap<String, Item> deathSkulls = new HashMap<>();
-    public static HashMap<String, Entity> deathTags = new HashMap<>();
     public static void startDeathTimer(Player player) {
         deathPlayer.put(player.getUniqueId().toString(), true);
         try {

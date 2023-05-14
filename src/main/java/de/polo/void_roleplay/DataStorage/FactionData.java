@@ -10,6 +10,7 @@ public class FactionData {
     private String name;
     private int bank;
     private boolean hasBlacklist;
+    private int teamSpeakID;
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -65,5 +66,13 @@ public class FactionData {
 
     public void setHasBlacklist(boolean hasBlacklist) {
         this.hasBlacklist = hasBlacklist;
+    }
+
+    public int getTeamSpeakID() {
+        return teamSpeakID;
+    }
+
+    public void setTeamSpeakID(int teamSpeakID) {
+        this.teamSpeakID = teamSpeakID;
     }
 }

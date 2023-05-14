@@ -5,23 +5,13 @@ import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
-import de.polo.void_roleplay.discord.ReadyListener;
-import de.polo.void_roleplay.discord.discord;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.Random;
-import java.util.logging.Level;
 
 public final class Main extends JavaPlugin {
     public boolean isOnline = false;
@@ -73,6 +63,7 @@ public final class Main extends JavaPlugin {
             StaatUtil.loadJail();
             Housing.loadHousing();
             FFA.loadFFALobbys();
+            TeamSpeak.loadConfig();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -196,6 +187,7 @@ public final class Main extends JavaPlugin {
         getCommand("services").setExecutor(new servicesCommand());
         getCommand("cancelservice").setExecutor(new cancelserviceCommand());
         getCommand("closeservice").setExecutor(new closeserviceCommand());
+        getCommand("tslink").setExecutor(new tslinkCommand());
     }
 
 
