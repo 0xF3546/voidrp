@@ -10,6 +10,7 @@ import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ServerGroup;
 import de.polo.void_roleplay.DataStorage.FactionData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.DataStorage.RankData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import org.bukkit.command.Command;
@@ -39,9 +40,9 @@ public class TeamSpeak implements CommandExecutor {
         System.out.println("Query connection: " + query.isConnected());
 
         api = query.getApi();
-        api.login("gameserver", "W3xFDpal");
+        api.login("tsquery", "xKwmHgQU");
         api.selectVirtualServerById(1);
-        api.setNickname("ts2");
+        api.setNickname("ts0433");
         api.sendChannelMessage("Bot gestartet");
     }
 
@@ -56,7 +57,38 @@ public class TeamSpeak implements CommandExecutor {
     public static void removeClientGroups(Client client) {
         List<ServerGroup> serverGroups = TeamSpeak.getAPI().getServerGroupsByClientId(client.getDatabaseId());
         for (ServerGroup serverGroup : serverGroups) {
-            TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getId());
+            TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
+        }
+        for (FactionData factionData: FactionManager.factionDataMap.values()) {
+            getAPI().setClientChannelGroup(8, factionData.getChannelGroupID(), client.getDatabaseId());
+        }
+    }
+
+    public static void updateClientGroup(Player player, Client client) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        List<ServerGroup> serverGroups = TeamSpeak.getAPI().getServerGroupsByClientId(client.getDatabaseId());
+        for (ServerGroup serverGroup : serverGroups) {
+            TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
+        }
+        for (FactionData factionData: FactionManager.factionDataMap.values()) {
+            getAPI().setClientChannelGroup(8, factionData.getChannelGroupID(), client.getDatabaseId());
+        }
+        getAPI().editClient(client.getId(), ClientProperty.CLIENT_DESCRIPTION, player.getName());
+        if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
+            FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+            RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
+            getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
+            if (playerData.getFactionGrade() >= 7) {
+                getAPI().setClientChannelGroup(9, factionData.getChannelGroupID(), client.getDatabaseId());
+            } else {
+                getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
+            }
+            if (!playerData.getRang().equals("Spieler")) {
+                RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+                getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
+            }
+            getAPI().addClientToServerGroup(factionData.getTeamSpeakID(), client.getDatabaseId());
+            getAPI().sendPrivateMessage(client.getId(), "Deine TeamSpeak-Rechte wurden aktuallisiert.");
         }
     }
 
@@ -74,12 +106,18 @@ public class TeamSpeak implements CommandExecutor {
                 if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
                     FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
                     verifyCodes.remove(args[0]);
+                    RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
+                    getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
                     if (playerData.getFactionGrade() >= 7) {
                         getAPI().setClientChannelGroup(9, factionData.getChannelGroupID(), client.getDatabaseId());
                         getAPI().sendPrivateMessage(client.getId(), "Dir wurden Leaderrechte für " + playerData.getFaction() + " gegeben!");
                     } else {
                         getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
                         getAPI().sendPrivateMessage(client.getId(), "Dir wurden Memberrechte für " + playerData.getFaction() + " gegeben!");
+                    }
+                    if (!playerData.getRang().equals("Spieler")) {
+                        RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+                        getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
                     }
                     getAPI().addClientToServerGroup(factionData.getTeamSpeakID(), client.getDatabaseId());
                 }

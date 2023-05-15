@@ -29,13 +29,13 @@ public class tsunlinkCommand implements CommandExecutor {
                 playerData.setTeamSpeakUID(null);
                 try {
                     Statement statement = MySQL.getStatement();
-                    statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = '" + playerData.getTeamSpeakUID() + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                    statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = " + playerData.getTeamSpeakUID() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 player.sendMessage("§8[§3TeamSpeak§8]§b Du bist nun nicht mehr verifiziert.");
                 TeamSpeak.removeClientGroups(client);
-                TeamSpeak.getAPI().editClient(client.getId(), ClientProperty.CLIENT_DESCRIPTION, null);
+                TeamSpeak.getAPI().editClient(client.getId(), ClientProperty.CLIENT_DESCRIPTION, "Spieler ist nicht verifiziert");
             } else {
                 player.sendMessage(Main.error + "Du bist nicht auf dem TeamSpeak online.");
             }
