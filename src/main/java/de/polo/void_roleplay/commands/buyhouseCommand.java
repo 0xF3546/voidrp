@@ -51,8 +51,10 @@ public class buyhouseCommand implements CommandExecutor {
                                         if (playerData.getBargeld() >= houseData.getPrice()) {
                                             int houes = 0;
                                             for (HouseData houseData1 : Housing.houseDataMap.values()) {
-                                                if (houseData1.getOwner().equals(player.getUniqueId().toString())) {
-                                                    houes++;
+                                                if (houseData1.getOwner() != null) {
+                                                    if (houseData1.getOwner().equals(player.getUniqueId().toString())) {
+                                                        houes++;
+                                                    }
                                                 }
                                             }
                                             try {
