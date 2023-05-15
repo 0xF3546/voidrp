@@ -25,6 +25,7 @@ public class statsCommand implements CommandExecutor {
             player.sendMessage(" §8- §eFraktion§8:§7 Zivilist");
         }
         player.sendMessage(" §8- §eRang§8:§7 " + playerData.getRang());
+        player.sendMessage(" §8- §eNummer§8:§7 " + playerData.getNumber());
         return false;
     }
 }

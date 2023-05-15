@@ -85,7 +85,7 @@ public class PlayerManager {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setFirstname(name.getString(1));
@@ -102,7 +102,7 @@ public class PlayerManager {
                     playerData.setScoreboard(new Scoreboard(player));
                     playerData.setDead(name.getBoolean(14));
                     if (name.getBoolean(14)) playerData.setDeathTime(name.getInt(15));
-                    if (name.getInt(16) != 0) playerData.setNumber(name.getInt(16));
+                    playerData.setNumber(name.getInt(20));
                     playerData.setDuty(name.getBoolean(17));
                     playerData.setGender(name.getString(18));
                     playerData.setBirthday(name.getString(19));
@@ -112,6 +112,7 @@ public class PlayerManager {
                     playerData.setBoostDuration(name.getInt(23));
                     playerData.setSecondaryTeam(name.getString(24));
                     playerData.setTeamSpeakUID(name.getString(25));
+                    playerData.setJob(name.getString(26));
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);
@@ -467,6 +468,28 @@ public class PlayerManager {
         }
         Statement statement = MySQL.getStatement();
         statement.executeUpdate("UPDATE `players` SET `rankDuration` = " + playerData.getRankDuration() + ", `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+    }
+
+    public static void setJob(Player player, String job) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        playerData.setJob(job);
+        try {
+            Statement statement = MySQL.getStatement();
+            statement.executeUpdate("UPDATE `players` SET `job` = '" + job + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void resetJob(Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        playerData.setJob(null);
+        try {
+            Statement statement = MySQL.getStatement();
+            statement.executeUpdate("UPDATE `players` SET `job` = null WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

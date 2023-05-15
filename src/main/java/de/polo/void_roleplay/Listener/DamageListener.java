@@ -19,13 +19,13 @@ public class DamageListener implements Listener {
                 ItemStack chestplate = player.getInventory().getArmorContents()[2];
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)
                 {
+                    event.setCancelled(PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVisum() <= 2);
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
                         event.setDamage(event.getDamage() / 2);
                     } else if (chestplate.getType() == Material.IRON_CHESTPLATE) {
                         event.setDamage(event.getDamage() / 5);
                     }
                 }
-                event.setCancelled(false);
         }
         if ((event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.ITEM_FRAME || event.getEntity().getType() == EntityType.PAINTING || event.getEntity().getType() == EntityType.MINECART) && !PlayerManager.playerDataMap.get(event.getEntity().getUniqueId().toString()).isAduty()) {
             event.setCancelled(true);

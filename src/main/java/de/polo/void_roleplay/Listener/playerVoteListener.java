@@ -3,6 +3,7 @@ import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import de.polo.void_roleplay.commands.aduty;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,12 +15,11 @@ public class playerVoteListener implements Listener {
         public void onVote(VotifierEvent event) {
             Vote vote = event.getVote();
             Player player = Bukkit.getPlayer(vote.getUsername());
-            System.out.println(event.getVote().getUsername() + " hat gevotet.");
             assert player != null;
+            aduty.send_message(vote.getUsername() + " hat über" + vote.getServiceName() + " gevotet.");
             if(player.isOnline()) {
-                Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + player.toString() + ChatColor.DARK_GREEN + " has voted for the server!");
                 player.sendMessage(Main.prefix + "§6§lDanke§7 für deinen Vote!");
-                PlayerManager.addExp(player, Main.random(50, 100));
+                PlayerManager.addExp(player, Main.random(30, 50));
             }
         }
 }

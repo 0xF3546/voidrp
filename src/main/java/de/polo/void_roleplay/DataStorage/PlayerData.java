@@ -42,6 +42,7 @@ public class PlayerData {
     private Location deathLocation;
     private String secondaryTeam;
     private String teamSpeakUID;
+    private String job;
 
     public PlayerData() {
     }
@@ -343,5 +344,13 @@ public class PlayerData {
 
     public void setTeamSpeakUID(String teamSpeakUID) {
         this.teamSpeakUID = teamSpeakUID;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
     }
 }
