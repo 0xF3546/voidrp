@@ -83,6 +83,10 @@ public class TeamSpeak implements CommandExecutor {
             } else {
                 getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
             }
+            if (playerData.getSecondaryTeam() != null) {
+                RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
+                getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
+            }
             if (!playerData.getRang().equals("Spieler")) {
                 RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
                 getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
@@ -114,6 +118,10 @@ public class TeamSpeak implements CommandExecutor {
                     } else {
                         getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
                         getAPI().sendPrivateMessage(client.getId(), "Dir wurden Memberrechte für " + playerData.getFaction() + " gegeben!");
+                    }
+                    if (playerData.getSecondaryTeam() != null) {
+                        RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
+                        getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
                     }
                     if (!playerData.getRang().equals("Spieler")) {
                         RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());

@@ -5,6 +5,7 @@ public class RankData {
     private String rang;
     private int permlevel;
     private int TeamSpeakID;
+    private boolean isSecondary;
 
     public int getId() {
         return id;
@@ -36,5 +37,13 @@ public class RankData {
 
     public void setTeamSpeakID(int teamSpeakID) {
         TeamSpeakID = teamSpeakID;
+    }
+
+    public boolean isSecondary() {
+        return isSecondary;
+    }
+
+    public void setSecondary(boolean secondary) {
+        isSecondary = secondary;
     }
 }

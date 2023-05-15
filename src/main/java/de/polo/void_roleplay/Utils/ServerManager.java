@@ -29,6 +29,7 @@ public class ServerManager {
             rankData.setRang(locs.getString(2));
             rankData.setPermlevel(locs.getInt(3));
             rankData.setTeamSpeakID(locs.getInt(4));
+            rankData.setSecondary(locs.getBoolean(5));
             rankDataMap.put(locs.getString(2), rankData);
         }
     }
