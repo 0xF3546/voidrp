@@ -191,6 +191,7 @@ public final class Main extends JavaPlugin {
         getCommand("tslink").setExecutor(new tslinkCommand());
         getCommand("verify").setExecutor(new TeamSpeak());
         getCommand("tsunlink").setExecutor(new tsunlinkCommand());
+        getCommand("orten").setExecutor(new ortenCommand());
     }
 
 

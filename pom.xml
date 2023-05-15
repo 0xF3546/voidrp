@@ -99,6 +99,7 @@
             <groupId>com.github.NuVotifier</groupId>
             <artifactId>nuvotifier</artifactId>
             <version>2.7.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.jeff_media</groupId>

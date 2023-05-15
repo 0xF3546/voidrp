@@ -35,15 +35,14 @@ public class TeamSpeak implements CommandExecutor {
         System.out.println("Lade TS3 config...");
         final TS3Config config = new TS3Config();
         config.setHost("91.212.121.55");
+        config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
 
         query.connect();
-        System.out.println("Query connection: " + query.isConnected());
 
         api = query.getApi();
         api.login("tsquery", "xKwmHgQU");
         api.selectVirtualServerById(1);
-        api.setNickname("ts0433");
-        api.sendChannelMessage("Bot gestartet");
+        api.setNickname("Verify | Void Roleplay");
     }
 
     public static TS3Api getAPI() {
@@ -83,12 +82,13 @@ public class TeamSpeak implements CommandExecutor {
             } else {
                 getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
             }
-            if (playerData.getSecondaryTeam() != null) {
-                RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
-                getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
-            }
             if (!playerData.getRang().equals("Spieler")) {
                 RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+                getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
+            }
+            if (playerData.getSecondaryTeam() != null) {
+                System.out.println(playerData.getSecondaryTeam());
+                RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
                 getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
             }
             getAPI().addClientToServerGroup(factionData.getTeamSpeakID(), client.getDatabaseId());
