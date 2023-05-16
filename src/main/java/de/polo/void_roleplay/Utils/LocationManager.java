@@ -38,7 +38,8 @@ public class LocationManager {
             locationData.setWelt(locs.getString(6));
             locationData.setYaw(locs.getFloat(7));
             locationData.setPitch(locs.getFloat(8));
-            locationDataMap.put(locs.getString(2), locationData);
+            locationDataMap.put(locs.getString(2).toLowerCase(), locationData);
+            System.out.println(locationData.getName());
         }
 
         ResultSet shop = statement.executeQuery("SELECT * FROM shops");
@@ -99,12 +100,12 @@ public class LocationManager {
             assert statement != null;
             if (name.contains("isShop")) {
                 p.sendMessage(Main.gamedesign_prefix + " Shop regestriert.");
-                statement.executeUpdate("INSERT INTO shops (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isShop", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
+                statement.executeUpdate("INSERT INTO shops (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isShop", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             }  else if (name.contains("isGas")) {
                 p.sendMessage(Main.gamedesign_prefix + " Tankstelle regestriert.");
-                statement.executeUpdate("INSERT INTO gasstations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGas", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
+                statement.executeUpdate("INSERT INTO gasstations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGas", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else {
-                statement.executeUpdate("INSERT INTO locations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
+                statement.executeUpdate("INSERT INTO locations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             }
             } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -112,13 +113,19 @@ public class LocationManager {
     }
 
     public static void useLocation(Player p, String name){
-        LocationData locationData = locationDataMap.get(" " + name.toLowerCase());
+        LocationData locationData = locationDataMap.get(name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
         p.teleport(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
     }
 
-    public static double getDistanceBetweenCoords(Player player, String name) {
+    public static Location getLocation(String name) {
         LocationData locationData = locationDataMap.get(" " + name.toLowerCase());
+        World welt = Bukkit.getWorld(locationData.getWelt());
+        return new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch());
+    }
+
+    public static double getDistanceBetweenCoords(Player player, String name) {
+        LocationData locationData = locationDataMap.get(name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
         return player.getLocation().distance(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
     }
@@ -160,7 +167,6 @@ public class LocationManager {
                         System.out.println(sign.getLine(1));
                         if (sign.getLine(1).contains("Bankautomat")) {
                             returnval = true;
-                            System.out.println("Atm gefunden");
                         }
                     }
                 }

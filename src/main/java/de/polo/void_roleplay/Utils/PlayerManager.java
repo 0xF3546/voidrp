@@ -3,14 +3,23 @@ package de.polo.void_roleplay.Utils;
 import de.polo.void_roleplay.DataStorage.WeaponData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
+import de.polo.void_roleplay.PlayerUtils.DeathUtil;
 import de.polo.void_roleplay.PlayerUtils.PayDayUtil;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.smartcardio.ATR;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +29,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class PlayerManager {
+public class PlayerManager implements Listener {
 
     public static Map<String, PlayerData> playerDataMap = new HashMap<>();
     public static HashMap<String, Boolean> onPlayer = new HashMap<String, Boolean>();
@@ -163,6 +172,7 @@ public class PlayerManager {
                         FactionManager.setDuty(player, true);
                     }
                     returnval = true;
+                    if (playerData.isDead()) DeathUtil.killPlayer(player);
             }
         } catch (SQLException e) {
             returnval = false;
@@ -374,11 +384,14 @@ public class PlayerManager {
                 playerMovement.put(player.getUniqueId().toString(), true);
                 player.setWalkSpeed(0);
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 250));
+                player.setFlying(false);
             }
         } else {
             playerMovement.remove(player.getUniqueId().toString());
             player.setWalkSpeed(0.2F);
             player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+            player.removePotionEffect(PotionEffectType.JUMP);
         }
     }
 
@@ -492,4 +505,11 @@ public class PlayerManager {
         }
     }
 
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (!canPlayerMove(player)) return;
+        player.setFlying(false);
+        //event.setCancelled(true);
+    }
 }

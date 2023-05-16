@@ -4,6 +4,7 @@ import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.FFA;
+import de.polo.void_roleplay.PlayerUtils.Gangwar;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.PlayerUtils.rubbellose;
 import de.polo.void_roleplay.Utils.*;
@@ -595,7 +596,7 @@ public class InventoryClickListener implements Listener {
                         int i = 0;
                         for (NaviData newNavi : LocationManager.naviDataMap.values()) {
                             if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
-                                inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), null));
+                                inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), "§7 ➥ §e" + (int) LocationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m"));
                                 ItemMeta meta = inv.getItem(i).getItemMeta();
                                 meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, newNavi.getId());
                                 inv.getItem(i).setItemMeta(meta);
@@ -625,6 +626,16 @@ public class InventoryClickListener implements Listener {
                     ItemMeta meta = event.getCurrentItem().getItemMeta();
                     int id = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
                     FFA.joinLobby(player, id);
+                    player.closeInventory();
+                    break;
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "gangwar")) {
+            event.setCancelled(true);
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case LIME_DYE:
+                    ItemMeta meta = event.getCurrentItem().getItemMeta();
+                    Gangwar.startGangwar(player, meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "zone"), PersistentDataType.STRING));
                     player.closeInventory();
                     break;
             }

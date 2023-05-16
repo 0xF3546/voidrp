@@ -2,6 +2,7 @@ package de.polo.void_roleplay;
 
 import de.polo.void_roleplay.Listener.*;
 import de.polo.void_roleplay.PlayerUtils.FFA;
+import de.polo.void_roleplay.PlayerUtils.Gangwar;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
@@ -64,6 +65,8 @@ public final class Main extends JavaPlugin {
             StaatUtil.loadJail();
             Housing.loadHousing();
             FFA.loadFFALobbys();
+            Gangwar.loadGangwar();
+
             TeamSpeak.loadConfig();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -99,6 +102,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new playerInteractWithPlayerListener(), this);
         getServer().getPluginManager().registerEvents(new expPickupListener(), this);
         getServer().getPluginManager().registerEvents(new itemPickUpListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerManager(), this);
     }
 
     private void registerCommands() {
@@ -192,6 +196,7 @@ public final class Main extends JavaPlugin {
         getCommand("verify").setExecutor(new TeamSpeak());
         getCommand("tsunlink").setExecutor(new tsunlinkCommand());
         getCommand("orten").setExecutor(new ortenCommand());
+        getCommand("gangwar").setExecutor(new Gangwar());
     }
 
 

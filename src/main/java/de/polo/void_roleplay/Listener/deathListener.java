@@ -31,9 +31,13 @@ public class deathListener implements Listener {
                 FFA.useSpawn(player, playerData.getIntVariable("current_lobby"));
             } else {
                 playerData.setDeathLocation(player.getLocation());
+                if (!playerData.isDead()) {
+                    aduty.send_message("§c" + player.getName() + "§7 starb.");
+                } else {
+                    aduty.send_message("§c" + player.getName() + "§7 starb. (Rejoin)");
+                }
                 DeathUtil.startDeathTimer(player);
-                aduty.send_message("§c" + player.getName() + "§7 starb.");
-                playerData.setDead(true);
+                if (!playerData.isDead()) playerData.setDead(true);
                 ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) skull.getItemMeta();
                 assert meta != null;

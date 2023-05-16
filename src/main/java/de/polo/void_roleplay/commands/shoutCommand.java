@@ -13,8 +13,8 @@ public class shoutCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length >= 1) {
             StringBuilder message = new StringBuilder(args[0]);
-            for (String arg : args) {
-                message.append(" ").append(arg);
+            for (int i = 1; i < args.length; i++) {
+                message.append(" ").append(args[i]);
             }
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (player.getLocation().distance(players.getLocation()) <= 28) {

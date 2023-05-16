@@ -1,5 +1,6 @@
 package de.polo.void_roleplay.Listener;
 
+import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.DeathUtil;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Utils.*;
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import sun.net.www.protocol.mailto.MailToURLConnection;
 
 import java.sql.SQLException;
 
@@ -33,6 +35,11 @@ public class  JoinEvent implements Listener {
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             Vehicles.spawnPlayerVehicles(player);
             ServerManager.updateTablist(null);
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                if (DeathUtil.deathPlayer.get(players.getUniqueId().toString())) {
+                    player.hidePlayer(Main.plugin, players);
+                }
+            }
         } else {
             player.sendMessage(" ");
             player.sendMessage("§6Void Roleplay §8»§7 Herzlich Wilkommen auf Void Roleplay - Roleplay mit Stil, " + player.getName() + ".");

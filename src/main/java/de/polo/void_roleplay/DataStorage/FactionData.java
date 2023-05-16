@@ -12,6 +12,8 @@ public class FactionData {
     private boolean hasBlacklist;
     private int teamSpeakID;
     private int channelGroupID;
+    private String current_gangwar;
+    private boolean doGangwar;
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -83,5 +85,21 @@ public class FactionData {
 
     public void setChannelGroupID(int channelGroupID) {
         this.channelGroupID = channelGroupID;
+    }
+
+    public String getCurrent_gangwar() {
+        return current_gangwar;
+    }
+
+    public void setCurrent_gangwar(String current_gangwar) {
+        this.current_gangwar = current_gangwar;
+    }
+
+    public boolean canDoGangwar() {
+        return doGangwar;
+    }
+
+    public void setDoGangwar(boolean doGangwar) {
+        this.doGangwar = doGangwar;
     }
 }

@@ -22,12 +22,34 @@ public class DeathUtil {
     public static HashMap<String, Boolean> deathPlayer = new HashMap<String, Boolean>();
     public static HashMap<String, Item> deathSkulls = new HashMap<>();
     public static void startDeathTimer(Player player) {
-        deathPlayer.put(player.getUniqueId().toString(), true);
-        try {
-            Statement statement = MySQL.getStatement();
-            assert statement != null;
-            String uuid = player.getUniqueId().toString();
-            statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + uuid + "'");
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (!playerData.isDead()) {
+            deathPlayer.put(player.getUniqueId().toString(), true);
+            try {
+                Statement statement = MySQL.getStatement();
+                assert statement != null;
+                String uuid = player.getUniqueId().toString();
+                statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + uuid + "'");
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                            if (!playerData.isDead()) cancel();
+                            playerData.setDeathTime(playerData.getDeathTime() - 1);
+                            player.sendMessage(Main.debug_prefix + "noch " + playerData.getDeathTime());
+                            if (playerData.getDeathTime() <= 0) {
+                                playerData.setDeathTime(1440);
+                                despawnPlayer(player);
+                                cancel();
+                            }
+                        }
+                    }
+                }.runTaskTimer(Main.getInstance(), 20, 20);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -35,7 +57,7 @@ public class DeathUtil {
                         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                         if (!playerData.isDead()) cancel();
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
-                        player.sendMessage(Main.debug_prefix + "-1 Sekunde Deathtimer");
+                        player.sendMessage(Main.debug_prefix + "> noch " + playerData.getDeathTime());
                         if (playerData.getDeathTime() <= 0) {
                             playerData.setDeathTime(1440);
                             despawnPlayer(player);
@@ -44,12 +66,11 @@ public class DeathUtil {
                     }
                 }
             }.runTaskTimer(Main.getInstance(), 20, 20);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
+
     public static void killPlayer(Player player) {
-        player.damage(10000);
+        player.setHealth(0);
     }
     public static void RevivePlayer(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
@@ -68,8 +89,15 @@ public class DeathUtil {
             throw new RuntimeException(e);
         }
         player.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
-        Item skull = deathSkulls.get(player.getUniqueId().toString());
-        skull.remove();
+        if (deathSkulls.get(player.getUniqueId().toString()) != null) {
+            Item skull = deathSkulls.get(player.getUniqueId().toString());
+            skull.remove();
+            deathSkulls.remove(player.getUniqueId().toString());
+        }
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            players.showPlayer(Main.plugin, player);
+        }
+        PlayerManager.setPlayerMove(player, true);
     }
 
     public static void despawnPlayer(Player player) {
@@ -86,6 +114,11 @@ public class DeathUtil {
         player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
         Item skull = deathSkulls.get(player.getUniqueId().toString());
         skull.remove();
+        deathSkulls.remove(player.getUniqueId().toString());
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            players.showPlayer(Main.plugin, player);
+        }
+        PlayerManager.setPlayerMove(player, true);
     }
 
     public static boolean isDead(Player player) throws SQLException {

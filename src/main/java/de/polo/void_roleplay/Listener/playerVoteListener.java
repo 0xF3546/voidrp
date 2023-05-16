@@ -16,7 +16,7 @@ public class playerVoteListener implements Listener {
             Vote vote = event.getVote();
             Player player = Bukkit.getPlayer(vote.getUsername());
             assert player != null;
-            aduty.send_message(vote.getUsername() + " hat über" + vote.getServiceName() + " gevotet.");
+            aduty.send_message(vote.getUsername() + " hat über " + vote.getServiceName() + " gevotet.");
             if(player.isOnline()) {
                 player.sendMessage(Main.prefix + "§6§lDanke§7 für deinen Vote!");
                 PlayerManager.addExp(player, Main.random(30, 50));

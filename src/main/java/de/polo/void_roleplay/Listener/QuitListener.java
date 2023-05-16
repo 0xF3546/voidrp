@@ -4,11 +4,13 @@ import de.polo.void_roleplay.DataStorage.ServiceData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.ChatUtils;
+import de.polo.void_roleplay.PlayerUtils.DeathUtil;
 import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
 import de.polo.void_roleplay.discord.discord;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -68,6 +70,9 @@ public class QuitListener implements Listener {
             if (serviceData != null) {
                 StaatUtil.cancelservice(player);
             }
+            Item item = DeathUtil.deathSkulls.get(player.getUniqueId().toString());
+            item.remove();
+            DeathUtil.deathSkulls.remove(player.getUniqueId().toString());
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
         } catch (SQLException e) {
             throw new RuntimeException(e);
