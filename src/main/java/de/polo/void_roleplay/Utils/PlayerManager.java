@@ -15,6 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -94,7 +96,7 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setFirstname(name.getString(1));
@@ -122,6 +124,27 @@ public class PlayerManager implements Listener {
                     playerData.setSecondaryTeam(name.getString(24));
                     playerData.setTeamSpeakUID(name.getString(25));
                     playerData.setJob(name.getString(26));
+
+                    if (!name.getBoolean(27)) {
+                        playerData.setVariable("current_inventory", "jugendschutz");
+                        playerData.setVariable("jugendschutz", "muss");
+                        Inventory inv = Bukkit.createInventory(player, 27, "§c§lJugendschutz");
+                        inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", "Lädt..."));
+                        ItemMeta meta = inv.getItem(11).getItemMeta();
+                        meta.setLore(Arrays.asList("§7Void Roleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,"," §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7","§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7","§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das Void Roleplay Team behält sich vor","§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder","§a§l habe die Erlaubnis meiner Eltern"));
+                        inv.getItem(11).setItemMeta(meta);
+                        inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", "Lädt..."));
+                        ItemMeta nmeta = inv.getItem(15).getItemMeta();
+                        nmeta.setLore(Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist","§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7","§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt","§c§l und habe keine Erlaubnis meiner Eltern"));
+                        inv.getItem(15).setItemMeta(nmeta);
+                        for (int i = 0; i < 27; i++) {
+                            if (inv.getItem(i) == null) {
+                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                            }
+                        }
+                        player.openInventory(inv);
+                    }
+                    if (name.getBoolean(28)) playerData.setVariable("tutorial", "muss");
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);

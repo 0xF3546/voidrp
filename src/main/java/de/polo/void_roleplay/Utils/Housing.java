@@ -32,6 +32,8 @@ public class Housing {
             houseData.setOwner(locs.getString(2));
             houseData.setNumber(locs.getInt(3));
             houseData.setPrice(locs.getInt(4));
+            houseData.setTotalMoney(locs.getInt(7));
+
             JSONObject object = new JSONObject(locs.getString(5));
             HashMap<String, Integer> map = new HashMap<>();
             for (String key : object.keySet()) {

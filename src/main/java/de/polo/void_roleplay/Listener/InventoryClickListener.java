@@ -789,5 +789,21 @@ public class InventoryClickListener implements Listener {
                     break;
             }
         }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "jugendschutz")) {
+            event.setCancelled(true);
+            switch (event.getSlot()) {
+                case 11:
+                    playerData.setVariable("jugendschutz", null);
+                    player.closeInventory();
+                    player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
+                    Statement statement = MySQL.getStatement();
+                    statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                    player.closeInventory();
+                    break;
+                case 15:
+                    player.kickPlayer("§cDa du den Jugendschutz nicht aktzeptieren konntest, kannst du auf dem Server §lnicht§c Spielen.\n§cBitte deine Erziehungsberechtigten um Erlabunis oder warte bis du 18 bist.");
+                    break;
+            }
+        }
     }
 }

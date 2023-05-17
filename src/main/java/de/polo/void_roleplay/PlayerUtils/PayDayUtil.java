@@ -46,8 +46,9 @@ public class PayDayUtil {
                 rent += houseData.getRenter().get(player.getUniqueId().toString());
                 player.sendMessage("§8 ➥ §6Miete Haus " + houseData.getNumber() + "§8:§7 " + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
                 houseData.setMoney(houseData.getMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
+                houseData.setTotalMoney(houseData.getTotalMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
                 Statement statement = MySQL.getStatement();
-                statement.executeUpdate("UPDATE `housing` SET `money` = " + houseData.getMoney() + " WHERE `number` = " + houseData.getNumber());
+                statement.executeUpdate("UPDATE `housing` SET `money` = " + houseData.getMoney() + ", `totalMoney` = " + houseData.getTotalMoney() + " WHERE `number` = " + houseData.getNumber());
             }
             if (houseData.getOwner() != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
