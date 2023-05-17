@@ -103,6 +103,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new expPickupListener(), this);
         getServer().getPluginManager().registerEvents(new itemPickUpListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerManager(), this);
+        getServer().getPluginManager().registerEvents(new FFA(), this);
     }
 
     private void registerCommands() {

@@ -29,7 +29,6 @@ public class houseLockListener implements Listener {
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                 if (!playerData.isAduty()) {
                     PersistentDataType<?, ?> type = CustomBlockData.getDataType(container, value);
-                    System.out.println(type);
                     if (type == PersistentDataType.INTEGER) {
                         int number = Objects.requireNonNull(container.get(value, PersistentDataType.INTEGER));
                         if (!Housing.canPlayerInteract(player, number)) {
@@ -37,10 +36,8 @@ public class houseLockListener implements Listener {
                         }
                     }
                     if (type == PersistentDataType.STRING) {
-                        System.out.println("string");
                         String containerString = container.get(value, PersistentDataType.STRING);
                         if (!containerString.contains(playerData.getFaction())) {
-                            System.out.println("fraktion");
                             event.setCancelled(true);
                         }
                     }

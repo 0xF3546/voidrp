@@ -4,6 +4,7 @@ import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.PhoneUtils;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import de.polo.void_roleplay.Utils.SubmitChatEvent;
 import de.polo.void_roleplay.Utils.SupportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,26 +46,29 @@ public class chatListener implements Listener {
                 }
             }
         } else {
-            switch (playerData.getVariable("chatblock")) {
-                case "firstname":
-                    playerData.setVariable("einreise_firstname", event.getMessage());
-                    player.sendMessage(Main.prefix + "Dein Vorname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
-                    playerData.setVariable("chatblock", null);
-                    break;
-                case "lastname":
-                    playerData.setVariable("einreise_lastname", event.getMessage());
-                    player.sendMessage(Main.prefix + "Dein Nachname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
-                    playerData.setVariable("chatblock", null);
-                    break;
-                case "dob":
-                    playerData.setVariable("einreise_dob", event.getMessage());
-                    player.sendMessage(Main.prefix + "Dein Geburtstag lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
-                    playerData.setVariable("chatblock", null);
-                    break;
-                default:
-                    playerData.setVariable("chatblock", null);
-                    break;
-            }
+            Bukkit.getScheduler().runTask(Main.plugin, () -> {
+                Bukkit.getPluginManager().callEvent(new SubmitChatEvent(player, event.getMessage()));
+                switch (playerData.getVariable("chatblock")) {
+                    case "firstname":
+                        playerData.setVariable("einreise_firstname", event.getMessage());
+                        player.sendMessage(Main.prefix + "Dein Vorname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
+                        playerData.setVariable("chatblock", null);
+                        break;
+                    case "lastname":
+                        playerData.setVariable("einreise_lastname", event.getMessage());
+                        player.sendMessage(Main.prefix + "Dein Nachname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
+                        playerData.setVariable("chatblock", null);
+                        break;
+                    case "dob":
+                        playerData.setVariable("einreise_dob", event.getMessage());
+                        player.sendMessage(Main.prefix + "Dein Geburtstag lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
+                        playerData.setVariable("chatblock", null);
+                        break;
+                    default:
+                        playerData.setVariable("chatblock", null);
+                        break;
+                }
+            });
         }
     }
 }
