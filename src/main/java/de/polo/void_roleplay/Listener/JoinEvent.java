@@ -36,6 +36,7 @@ public class  JoinEvent implements Listener {
             Vehicles.spawnPlayerVehicles(player);
             ServerManager.updateTablist(null);
             for (Player players : Bukkit.getOnlinePlayers()) {
+                if (DeathUtil.deathPlayer != null) continue;
                 if (DeathUtil.deathPlayer.get(players.getUniqueId().toString())) {
                     player.hidePlayer(Main.plugin, players);
                 }

@@ -32,12 +32,10 @@ public class playerInteractListener implements Listener {
             if (event.getClickedBlock() != null) {
                 TileState state = (TileState) event.getClickedBlock().getState();
                 if (state instanceof Sign) {
-                    System.out.println("sign geklickt");
                     Sign sign = (Sign) event.getClickedBlock().getState();
                     PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
                     for (HouseData houseData : Housing.houseDataMap.values()) {
                         if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {
-                            System.out.println("sign gefunden");
                             if (houseData.getOwner() == null) {
                                 player.sendMessage("§8[§6Haus§8]§e Möchtest du Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ kaufen?");
                                 TextComponent route = new TextComponent("§8 ➥ §aKaufen");
