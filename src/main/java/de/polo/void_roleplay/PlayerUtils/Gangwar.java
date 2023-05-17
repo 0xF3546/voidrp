@@ -172,7 +172,7 @@ public class Gangwar implements CommandExecutor {
                                 gangwarData.setDefenderPoints(0);
                                 gangwarData.setMinutes(25);
                                 gangwarData.setSeconds(0);
-
+                                gangwarData.startGangwar();
                             } else {
                                 player.sendMessage(Main.error + "Diese Fraktion ist bereits im Gangwar.");
                             }
@@ -191,6 +191,47 @@ public class Gangwar implements CommandExecutor {
         } else {
             player.sendMessage(Main.error + "Gangwar ist nur von 18-22 Uhr verfügbar.");
         }
+    }
+
+    public static void endGangwar(String zone) {
+        GangwarData gangwarData = gangwarDataMap.get(zone);
+        FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
+        FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
+        if (gangwarData.getDefenderPoints() >= gangwarData.getAttackerPoints()) {
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                String playersFaction = PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction();
+                if (playersFaction.equals(defenderData.getName())) {
+                    players.sendMessage("§8[§cGangwar§8]§a Ihr habt das Gebiet §l§n" + gangwarData.getZone() + "§a gegen §l" + attackerData.getName() + "§a verteitigt!");
+                }
+                if (playersFaction.equals(attackerData.getName())) {
+                    players.sendMessage("§8[§cGangwar§8]§c Ihr habt den Angriff des Gebietes §l§n" + gangwarData.getZone() + "§c von §l" + defenderData.getName() + "§c verloren!");
+                }
+            }
+            try {
+                Statement statement = MySQL.getStatement();
+                statement.executeUpdate("UPDATE `gangwar` SET `lastAttack` = NOW() WHERE `zone` = '" + gangwarData.getZone() + "'");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                String playersFaction = PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction();
+                if (playersFaction.equals(defenderData.getName())) {
+                    players.sendMessage("§8[§cGangwar§8]§c Ihr habt die vertetigung des Gebietes §l§n" + gangwarData.getZone() + "§c gegen §l" + attackerData.getName() + "§c verloren!");
+                }
+                if (playersFaction.equals(attackerData.getName())) {
+                    players.sendMessage("§8[§cGangwar§8]§a Ihr habt den Angriff des Gebietes §l§n" + gangwarData.getZone() + "§a von §l" + defenderData.getName() + "§a gewonnen!");
+                }
+            }
+            gangwarData.setOwner(attackerData.getName());
+            try {
+                Statement statement = MySQL.getStatement();
+                statement.executeUpdate("UPDATE `gangwar` SET `lastAttack` = NOW(), `owner` = '" + attackerData.getName() + "' WHERE `zone` = '" + gangwarData.getZone() + "'");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        gangwarData.setLastAttack(new Timestamp(System.currentTimeMillis()));
     }
 
 }

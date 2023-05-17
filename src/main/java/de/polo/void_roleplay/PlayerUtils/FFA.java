@@ -4,10 +4,7 @@ import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.Utils.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -90,23 +87,30 @@ public class FFA implements CommandExecutor {
         playerData.setIntVariable("current_page", page);
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §6FFA-Lobbys §8- §6Seite§8:§7 " + page);
         int i = 0;
+        int j = 0;
         for (FFALobbyData lobbyData : FFAlobbyDataMap.values()) {
-            if (i == 26 && i == 18) {
-                i++;
-            } else if (i >= (25 * (page - 1)) && i <= (25 * page)) {
-                if (lobbyData.getPlayers() < lobbyData.getMaxPlayer()) {
-                    inv.setItem(i, ItemManager.createItem(Material.LIME_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
-                    ItemMeta meta = inv.getItem(i).getItemMeta();
-                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, lobbyData.getId());
-                    inv.getItem(i).setItemMeta(meta);
-                } else {
-                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
+            if (i >= (18 * (page - 1)) && i < (18 * page)) {
+                int rowIndex = i % 9;
+                int slotIndex = rowIndex;
+                j++;
+                if (j > 9) {
+                    slotIndex += 9;
                 }
-                i++;
+
+                if (lobbyData.getPlayers() < lobbyData.getMaxPlayer()) {
+                    inv.setItem(slotIndex, ItemManager.createItem(Material.LIME_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
+                    ItemMeta meta = inv.getItem(slotIndex).getItemMeta();
+                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, lobbyData.getId());
+                    inv.getItem(slotIndex).setItemMeta(meta);
+                } else {
+                    inv.setItem(slotIndex, ItemManager.createItem(Material.GRAY_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
+                }
             }
-            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+            i++;
         }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+        inv.setItem(22, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen", null));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
         player.openInventory(inv);
     }
 
@@ -162,7 +166,16 @@ public class FFA implements CommandExecutor {
         Random random = new Random();
         int randomKeyIndex = random.nextInt(keysWithIdOne.size());
         FFASpawnPoints randomValue = keysWithIdOne.get(randomKeyIndex);
-
         player.teleport(new Location(randomValue.getWelt(), randomValue.getX(), randomValue.getY(), randomValue.getZ()));
+    }
+
+    public static void createLobby(Player player, int players, String password) {
+        FFALobbyData ffaLobbyData = new FFALobbyData();
+        ffaLobbyData.setId(FFAlobbyDataMap.size() + 1);
+        ffaLobbyData.setMaxPlayer(players);
+        ffaLobbyData.setName(player.getUniqueId().toString());
+        ffaLobbyData.setDisplayname("§6" + player.getName() + "'s Lobby");
+        if (password != null) ffaLobbyData.setPassword(password);
+        FFAlobbyDataMap.put(FFAlobbyDataMap.size() + 1, ffaLobbyData);
     }
 }

@@ -1,5 +1,9 @@
 package de.polo.void_roleplay.DataStorage;
 
+import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.PlayerUtils.Gangwar;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import java.sql.Timestamp;
 
 public class GangwarData {
@@ -94,5 +98,23 @@ public class GangwarData {
 
     public void setSeconds(int seconds) {
         this.seconds = seconds;
+    }
+
+    public void startGangwar() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (getSeconds() <= 0) {
+                    setSeconds(60);
+                    setMinutes(getMinutes() - 1);
+                    if (getMinutes() <= 0) {
+                        Gangwar.endGangwar(getZone());
+                        cancel();
+                    }
+                } else {
+                    setSeconds(getSeconds() - 1);
+                }
+            }
+        }.runTaskTimer(Main.plugin, 0, 20);
     }
 }

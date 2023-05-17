@@ -6,6 +6,7 @@ public class FFALobbyData {
     private String displayname;
     private int maxPlayer;
     private int players;
+    private String password;
 
     public int getId() {
         return id;
@@ -45,5 +46,13 @@ public class FFALobbyData {
 
     public void setPlayers(int players) {
         this.players = players;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

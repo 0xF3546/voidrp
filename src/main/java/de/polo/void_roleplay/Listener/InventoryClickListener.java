@@ -628,6 +628,14 @@ public class InventoryClickListener implements Listener {
                     FFA.joinLobby(player, id);
                     player.closeInventory();
                     break;
+                case EMERALD:
+                    if (playerData.getPermlevel() >= 20) {
+                        FFA.createLobby(player, 20, null);
+                    } else {
+                        player.sendMessage(Main.error + "Du brauchst mindestens §ePremium§7 um eine Lobby zu erstellen!");
+                    }
+                    player.closeInventory();
+                    break;
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "gangwar")) {
