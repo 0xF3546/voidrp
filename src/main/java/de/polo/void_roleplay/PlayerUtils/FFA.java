@@ -9,6 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-public class FFA implements CommandExecutor {
+public class FFA implements CommandExecutor, Listener {
     public static Map<Integer, FFALobbyData> FFAlobbyDataMap = new HashMap<>();
     public static Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
 
@@ -177,5 +179,58 @@ public class FFA implements CommandExecutor {
         ffaLobbyData.setDisplayname("§6" + player.getName() + "'s Lobby");
         if (password != null) ffaLobbyData.setPassword(password);
         FFAlobbyDataMap.put(FFAlobbyDataMap.size() + 1, ffaLobbyData);
+        player.closeInventory();
+    }
+
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) {
+        Player player = event.getPlayer();
+        System.out.println(event.getSubmitTo());
+        if (event.getSubmitTo().equalsIgnoreCase("ffa")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            event.getPlayerData().setVariable("ffa_password", event.getMessage());
+            event.end();
+            event.getPlayerData().setVariable("current_inventory", "ffa_createlobby");
+            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §aLobby erstellen");
+            inv.setItem(11, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§eMaximale Spieler", "Lädt..."));
+            ItemMeta imeta = inv.getItem(11).getItemMeta();
+            imeta.setLore(Arrays.asList("§8 ➥ §7[§6Linksklick§8]§e +1 Slot", "§8 ➥ §7[§6Rechtsklick§8]§e -1 Slot"));
+            inv.getItem(11).setItemMeta(imeta);
+            inv.setItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§aLobby", "Lädt..."));
+            ItemMeta itemMeta = inv.getItem(13).getItemMeta();
+            if (event.getPlayerData().getVariable("ffa_password") == null) {
+                itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + event.getPlayerData().getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§c Nicht vorhanden"));
+            } else {
+                itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + event.getPlayerData().getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§a " + event.getPlayerData().getVariable("ffa_password")));
+            }            inv.getItem(13).setItemMeta(itemMeta);
+            inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen", null));
+            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück", null));
+            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen", null));
+            for (int i = 0; i < 27; i++) {
+                if (inv.getItem(i) == null) {
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                }
+            }
+            player.openInventory(inv);
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("ffa_joinpassword")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            FFALobbyData lobbyData = FFAlobbyDataMap.get(event.getPlayerData().getIntVariable("ffa_passwordlobby"));
+            if (lobbyData.getPassword().equalsIgnoreCase(event.getMessage())) {
+                joinLobby(player, event.getPlayerData().getIntVariable("ffa_passwordlobby"));
+                event.getPlayerData().setIntVariable("ffa_passwordlobby", null);
+                event.end();
+            } else {
+                player.sendMessage("§8[§6FFA§8]§c Das Passwort ist falsch.");
+            }
+        }
     }
 }

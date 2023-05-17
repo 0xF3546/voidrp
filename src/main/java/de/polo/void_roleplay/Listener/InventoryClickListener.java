@@ -29,6 +29,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
@@ -625,16 +626,76 @@ public class InventoryClickListener implements Listener {
                 case LIME_DYE:
                     ItemMeta meta = event.getCurrentItem().getItemMeta();
                     int id = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                    FFA.joinLobby(player, id);
+                    if (FFA.FFAlobbyDataMap.get(id).getPassword() != null && !FFA.FFAlobbyDataMap.get(id).getName().equals(player.getUniqueId().toString())) {
+                        playerData.setVariable("chatblock", "ffa_joinpassword");
+                        playerData.setIntVariable("ffa_passwordlobby", id);
+                        player.sendMessage("§8[§6FFA§8]§e Gib das Passwort für die Lobby ein.");
+                    } else {
+                        FFA.joinLobby(player, id);
+                    }
                     player.closeInventory();
                     break;
                 case EMERALD:
                     if (playerData.getPermlevel() >= 20) {
-                        FFA.createLobby(player, 20, null);
+                        System.out.println("lets go");
+                        Inventory inv = Bukkit.createInventory(player, 27, "§8 » §aLobby erstellen");
+                        inv.setItem(11, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§eMaximale Spieler", "Lädt..."));
+                        ItemMeta imeta = inv.getItem(11).getItemMeta();
+                        imeta.setLore(Arrays.asList("§8 ➥ §7[§6Linksklick§8]§e +1 Slot", "§8 ➥ §7[§6Rechtsklick§8]§e -1 Slot"));
+                        inv.getItem(11).setItemMeta(imeta);
+                        inv.setItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§aLobby", "Lädt..."));
+                        ItemMeta itemMeta = inv.getItem(13).getItemMeta();
+                        playerData.setIntVariable("ffa_maxplayer", 10);
+                        itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + playerData.getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§c Nicht vorhanden"));
+                        inv.getItem(13).setItemMeta(itemMeta);
+                        inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen", null));
+                        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück", null));
+                        inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen", null));
+                        for (int i = 0; i < 27; i++) {
+                            if (inv.getItem(i) == null) {
+                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                            }
+                        }
+                        player.openInventory(inv);
+                        Main.cooldownManager.setCooldown(player, "ffa_creator", 2);
+                        playerData.setVariable("current_inventory", "ffa_createlobby");
                     } else {
                         player.sendMessage(Main.error + "Du brauchst mindestens §ePremium§7 um eine Lobby zu erstellen!");
+                        player.closeInventory();
                     }
+                    break;
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "ffa_createlobby")) {
+            event.setCancelled(true);
+            System.out.println("lobby createn");
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case PLAYER_HEAD:
+                    if (event.isLeftClick()) {
+                        playerData.setIntVariable("ffa_maxplayer", playerData.getIntVariable("ffa_maxplayer") + 1);
+                    } else {
+                        if (playerData.getIntVariable("ffa_maxplayer") >= 3) {
+                            playerData.setIntVariable("ffa_maxplayer", playerData.getIntVariable("ffa_maxplayer") - 1);
+                        }
+                    }
+                    ItemMeta itemMeta = event.getInventory().getItem(13).getItemMeta();
+                    if (playerData.getVariable("ffa_password") == null) {
+                        itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + playerData.getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§c Nicht vorhanden"));
+                    } else {
+                        itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + playerData.getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§a " + playerData.getVariable("ffa_password")));
+                    }
+                    event.getInventory().getItem(13).setItemMeta(itemMeta);
+                    break;
+                case CHEST:
+                    playerData.setVariable("chatblock", "ffa");
                     player.closeInventory();
+                    player.sendMessage("§8[§6FFA§8]§7 Gib das Passwort bitte in den Chat ein.");
+                    break;
+                case EMERALD:
+                    if (!Main.cooldownManager.isOnCooldown(player, "ffa_creator")) FFA.createLobby(player, playerData.getIntVariable("ffa_maxplayer"), playerData.getVariable("ffa_password"));
+                    break;
+                case NETHER_WART:
+                    FFA.openFFAMenu(player, 1);
                     break;
             }
         }
