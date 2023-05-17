@@ -179,6 +179,7 @@ public class FFA implements CommandExecutor, Listener {
         ffaLobbyData.setDisplayname("§6" + player.getName() + "'s Lobby");
         if (password != null) ffaLobbyData.setPassword(password);
         FFAlobbyDataMap.put(FFAlobbyDataMap.size() + 1, ffaLobbyData);
+        SoundManager.successSound(player);
         player.closeInventory();
     }
 

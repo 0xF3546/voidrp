@@ -3,10 +3,7 @@ package de.polo.void_roleplay.Listener;
 import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
-import de.polo.void_roleplay.PlayerUtils.FFA;
-import de.polo.void_roleplay.PlayerUtils.Gangwar;
-import de.polo.void_roleplay.PlayerUtils.Shop;
-import de.polo.void_roleplay.PlayerUtils.rubbellose;
+import de.polo.void_roleplay.PlayerUtils.*;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.adminmenuCommand;
 import de.polo.void_roleplay.commands.openBossMenuCommand;
@@ -29,6 +26,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
@@ -513,6 +511,7 @@ public class InventoryClickListener implements Listener {
                             PlayerManager.removeMoney(player, price, "Tankrechnung " + type);
                             Vehicles.fillVehicle((Vehicle) vehicle, playerData.getIntVariable("plusfuel"));
                             player.sendMessage(Main.prefix + "Du hast dein §6" + type + "§7 betankt. §c-" + price + "$");
+                            SoundManager.successSound(player);
                             player.closeInventory();
                         } else {
                             player.sendMessage(Main.error + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
@@ -593,6 +592,7 @@ public class InventoryClickListener implements Listener {
             for (NaviData naviData : LocationManager.naviDataMap.values()) {
                 if (naviData.getId() == id) {
                     if (naviData.isGroup()) {
+                        SoundManager.clickSound(player);
                         Inventory inv = Bukkit.createInventory(player, 27, "§8 » " + naviData.getName().replace("&", "§"));
                         int i = 0;
                         for (NaviData newNavi : LocationManager.naviDataMap.values()) {
@@ -619,9 +619,11 @@ public class InventoryClickListener implements Listener {
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
                     FFA.openFFAMenu(player, playerData.getIntVariable("current_page") - 1);
+                    SoundManager.clickSound(player);
                     break;
                 case GOLD_NUGGET:
                     FFA.openFFAMenu(player, playerData.getIntVariable("current_page") + 1);
+                    SoundManager.clickSound(player);
                     break;
                 case LIME_DYE:
                     ItemMeta meta = event.getCurrentItem().getItemMeta();
@@ -685,17 +687,20 @@ public class InventoryClickListener implements Listener {
                         itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + playerData.getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§a " + playerData.getVariable("ffa_password")));
                     }
                     event.getInventory().getItem(13).setItemMeta(itemMeta);
+                    SoundManager.clickSound(player);
                     break;
                 case CHEST:
                     playerData.setVariable("chatblock", "ffa");
                     player.closeInventory();
                     player.sendMessage("§8[§6FFA§8]§7 Gib das Passwort bitte in den Chat ein.");
+                    SoundManager.clickSound(player);
                     break;
                 case EMERALD:
                     if (!Main.cooldownManager.isOnCooldown(player, "ffa_creator")) FFA.createLobby(player, playerData.getIntVariable("ffa_maxplayer"), playerData.getVariable("ffa_password"));
                     break;
                 case NETHER_WART:
                     FFA.openFFAMenu(player, 1);
+                    SoundManager.clickSound(player);
                     break;
             }
         }
@@ -706,6 +711,81 @@ public class InventoryClickListener implements Listener {
                     ItemMeta meta = event.getCurrentItem().getItemMeta();
                     Gangwar.startGangwar(player, meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "zone"), PersistentDataType.STRING));
                     player.closeInventory();
+                    break;
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "atm")) {
+            event.setCancelled(true);
+            switch (event.getSlot()) {
+                case 11:
+                    playerData.setVariable("chatblock", "atm_auszahlen");
+                    player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
+                    player.closeInventory();
+                    break;
+                case 15:
+                    playerData.setVariable("chatblock", "atm_einzahlen");
+                    player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
+                    player.closeInventory();
+                    break;
+                case 29:
+                    player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBank() + "$ ausgezahlt.");
+                    PlayerManager.addMoney(player, playerData.getBank());
+                    PlayerManager.removeBankMoney(player, playerData.getBank(), "Bankauszahlung");
+                    player.closeInventory();
+                    break;
+                case 33:
+                    player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBargeld() + "$ eingezahlt.");
+                    PlayerManager.addBankMoney(player, playerData.getBargeld());
+                    PlayerManager.removeMoney(player, playerData.getBargeld(), "Bankeinzahlung");
+                    player.closeInventory();
+                    break;
+                case 31:
+                    playerData.setVariable("chatblock", "atm_transfer_player");
+                    player.closeInventory();
+                    player.sendMessage("§8[§aATM§8]§7 Gib den Spieler an, an wen das Geld überwiesen werden soll.");
+                    break;
+                case 44:
+                    if (playerData.getFaction() != null && playerData.getFaction() != "Zivilist") {
+                        BankingUtils.openFactionBankMenu(player);
+                        Main.cooldownManager.setCooldown(player, "atm", 1);
+                    }
+                    break;
+            }
+        }
+
+        if (Objects.equals(playerData.getVariable("current_inventory"), "atm_frak")) {
+            event.setCancelled(true);
+            switch (event.getSlot()) {
+                case 15:
+                    playerData.setVariable("chatblock", "atm_frak_einzahlen");
+                    player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
+                    player.closeInventory();
+                    break;
+                case 11:
+                    if (playerData.getFactionGrade() >= 7) {
+                        playerData.setVariable("chatblock", "atm_frak_auszahlen");
+                        player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
+                        player.closeInventory();
+                    }
+                    break;
+                case 29:
+                    if (playerData.getFactionGrade() >= 7) {
+                        player.sendMessage("§8[§aATM§8]§a Du hast " + factionData.getBank() + "$ ausgezahlt.");
+                        FactionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + factionData.getBank() + "$ vom Fraktionskonto ausgezahlt.");
+                        PlayerManager.addMoney(player, factionData.getBank());
+                        FactionManager.removeFactionMoney(factionData.getName(), factionData.getBank(), "Bankauszahlung " + player.getName());
+                        player.closeInventory();
+                    }
+                    break;
+                case 33:
+                    player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBargeld() + "$ eingezahlt.");
+                    FactionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + playerData.getBargeld() + "$ auf das Fraktionskonto eingezahlt.");
+                    FactionManager.addFactionMoney(factionData.getName(), playerData.getBargeld(), "Bankeinzahlung " + player.getName());
+                    PlayerManager.removeMoney(player, playerData.getBargeld(), "Bankeinzahlung auf " + factionData.getName());
+                    player.closeInventory();
+                    break;
+                case 44:
+                    if (!Main.cooldownManager.isOnCooldown(player, "atm")) BankingUtils.openBankMenu(player);
                     break;
             }
         }

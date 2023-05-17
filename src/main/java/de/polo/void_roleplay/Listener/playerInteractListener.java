@@ -3,6 +3,7 @@ package de.polo.void_roleplay.Listener;
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.void_roleplay.DataStorage.HouseData;
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.PlayerUtils.BankingUtils;
 import de.polo.void_roleplay.PlayerUtils.rubbellose;
 import de.polo.void_roleplay.Utils.Housing;
 import de.polo.void_roleplay.Utils.ItemManager;
@@ -33,6 +34,9 @@ public class playerInteractListener implements Listener {
                 TileState state = (TileState) event.getClickedBlock().getState();
                 if (state instanceof Sign) {
                     Sign sign = (Sign) event.getClickedBlock().getState();
+                    if (sign.getLine(1).contains("Bankautomat")) {
+                        BankingUtils.openBankMenu(player);
+                    }
                     PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
                     for (HouseData houseData : Housing.houseDataMap.values()) {
                         if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {

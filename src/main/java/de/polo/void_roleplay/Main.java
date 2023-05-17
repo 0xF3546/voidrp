@@ -1,11 +1,13 @@
 package de.polo.void_roleplay;
 
 import de.polo.void_roleplay.Listener.*;
+import de.polo.void_roleplay.PlayerUtils.BankingUtils;
 import de.polo.void_roleplay.PlayerUtils.FFA;
 import de.polo.void_roleplay.PlayerUtils.Gangwar;
 import de.polo.void_roleplay.PlayerUtils.Shop;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
+import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -104,6 +106,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new itemPickUpListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerManager(), this);
         getServer().getPluginManager().registerEvents(new FFA(), this);
+        getServer().getPluginManager().registerEvents(new BankingUtils(), this);
     }
 
     private void registerCommands() {
@@ -116,7 +119,6 @@ public final class Main extends JavaPlugin {
         getCommand("fraktionschat").setExecutor(new fraktionschatCommand());
         getCommand("uninvite").setExecutor(new uninviteCommand());
         getCommand("setloc").setExecutor(new LocationCommand());
-        getCommand("bank").setExecutor(new bankCommand());
         getCommand("setfraktion").setExecutor(new setfrakCommand());
         getCommand("adminuninvite").setExecutor(new adminuninviteCommand());
         getCommand("assistentchat").setExecutor(new assistentchatCommand());

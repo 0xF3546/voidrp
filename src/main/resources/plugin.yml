@@ -21,7 +21,6 @@ commands:
     aliases: f
   uninvite:
   setloc:
-  bank:
   setfraktion:
     aliases: setfrak
   adminuninvite:
