@@ -56,7 +56,7 @@ public class StaatUtil {
             player.sendMessage("§8[§cGefängnis§8] §7Tatvorwürfe§8:§7 " + reason + ".");
             playerData.setJailed(true);
             playerData.setHafteinheiten(hafteinheiten);
-            FactionManager.addFactionMoney(arresterData.getFaction(), 75, "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
+            FactionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                 if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {

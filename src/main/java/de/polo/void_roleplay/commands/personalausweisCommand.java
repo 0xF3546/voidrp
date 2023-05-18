@@ -2,6 +2,7 @@ package de.polo.void_roleplay.commands;
 
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.PlayerUtils.tutorial;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -47,6 +48,7 @@ public class personalausweisCommand implements CommandExecutor {
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + PlayerManager.visum(player));
+                tutorial.usedAusweis(player);
             }
         } else {
             player.sendMessage(Main.error + "Du besitzt noch keinen Personalausweis.");

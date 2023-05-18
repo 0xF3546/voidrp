@@ -5,7 +5,9 @@ import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import de.polo.void_roleplay.PlayerUtils.DeathUtil;
 import de.polo.void_roleplay.PlayerUtils.progress;
+import de.polo.void_roleplay.Utils.FactionManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import de.polo.void_roleplay.Utils.ServerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -19,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +68,11 @@ public class reviveCommand implements CommandExecutor {
                             DeathUtil.RevivePlayer(targetplayer);
                             targetplayer.teleport(player.getLocation());
                             PlayerManager.addExp(player, Main.random(2, 5));
+                            try {
+                                FactionManager.addFactionMoney("Medic", ServerManager.getPayout("revive"), "Revive durch " + player.getName());
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
                             cancel();
                         }
                     }

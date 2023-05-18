@@ -27,7 +27,7 @@ public class Navigation implements CommandExecutor {
                 if (args.length >= 2) {
                     createNaviByCord(player, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
                 } else {
-                    createNavi(player, args[0]);
+                    createNavi(player, args[0], false);
                 }
             } else {
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6GPS");
@@ -84,11 +84,11 @@ public class Navigation implements CommandExecutor {
         }.runTaskTimer(Main.getInstance(), 0L, 1L);
     }
 
-    public static void createNavi(Player player, String nav) {
+    public static void createNavi(Player player, String nav, boolean silent) {
         for (LocationData locationData : LocationManager.locationDataMap.values()) {
-            if (locationData.getName().equalsIgnoreCase(" " + nav)) {
-                PlayerManager.playerDataMap.get(player.getUniqueId().toString()).setVariable("navi", "ja");
-                player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
+            if (locationData.getName().equalsIgnoreCase(nav)) {
+                PlayerManager.playerDataMap.get(player.getUniqueId().toString()).setVariable("navi", nav);
+                if (!silent) player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
                 final double length = 5.0;
                 final double increment = 0.5;
                 final Location targetLocation = new Location(Bukkit.getWorld(locationData.getWelt()), locationData.getX(), locationData.getY(), locationData.getZ());
@@ -109,8 +109,8 @@ public class Navigation implements CommandExecutor {
                             player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
-                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("navi")));
                                 player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
+                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("navi")));
                                 PlayerManager.playerDataMap.get(player.getUniqueId().toString()).setVariable("navi", null);
                             }
                         } else {

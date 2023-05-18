@@ -15,11 +15,7 @@ public class NaviReachEvent extends Event {
         this.navi = navi;
     }
 
-    public boolean isCancel() {
-        return navi.equalsIgnoreCase("cancel");
-    }
-
-    public String getMessage() {
+    public String getNavi() {
         return navi;
     }
 
@@ -27,18 +23,8 @@ public class NaviReachEvent extends Event {
         return player;
     }
 
-    public void sendCancelMessage() {
-        player.sendMessage("§cVorgang beendet.");
-    }
-
     public PlayerData getPlayerData() {
         return PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-    }
-    public String getSubmitTo() {
-        return PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("chatblock");
-    }
-    public void end() {
-        PlayerManager.playerDataMap.get(player.getUniqueId().toString()).setVariable("chatblock", null);
     }
 
     @Override

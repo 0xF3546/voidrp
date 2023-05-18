@@ -1,10 +1,7 @@
 package de.polo.void_roleplay;
 
 import de.polo.void_roleplay.Listener.*;
-import de.polo.void_roleplay.PlayerUtils.BankingUtils;
-import de.polo.void_roleplay.PlayerUtils.FFA;
-import de.polo.void_roleplay.PlayerUtils.Gangwar;
-import de.polo.void_roleplay.PlayerUtils.Shop;
+import de.polo.void_roleplay.PlayerUtils.*;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.util.Random;
@@ -107,6 +105,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerManager(), this);
         getServer().getPluginManager().registerEvents(new FFA(), this);
         getServer().getPluginManager().registerEvents(new BankingUtils(), this);
+        getServer().getPluginManager().registerEvents(new tutorial(), this);
     }
 
     private void registerCommands() {
@@ -200,6 +199,8 @@ public final class Main extends JavaPlugin {
         getCommand("tsunlink").setExecutor(new tsunlinkCommand());
         getCommand("orten").setExecutor(new ortenCommand());
         getCommand("gangwar").setExecutor(new Gangwar());
+        getCommand("youtube").setExecutor(new youtubeCommand());
+        getCommand("discord").setExecutor(new discordCommand());
     }
 
 
@@ -242,5 +243,13 @@ public final class Main extends JavaPlugin {
 
     public static Main getInstance() {
         return instance;
+    }
+
+    public static void waitSeconds(int seconds, Runnable runnable) {
+        new BukkitRunnable() {
+            public void run() {
+                runnable.run();
+            }
+        }.runTaskLater(getInstance(), seconds * 20L);
     }
 }

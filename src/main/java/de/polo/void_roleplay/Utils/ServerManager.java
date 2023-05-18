@@ -18,6 +18,7 @@ public class ServerManager {
     public static String error_cantDoJobs = Main.error + "Der Job ist Serverseitig bis nach Restart gesperrt.";
 
     public static Map<String, RankData> rankDataMap = new HashMap<>();
+    public static Map<String, PayoutData> payoutDataMap = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {
@@ -31,6 +32,15 @@ public class ServerManager {
             rankData.setTeamSpeakID(locs.getInt(4));
             rankData.setSecondary(locs.getBoolean(5));
             rankDataMap.put(locs.getString(2), rankData);
+        }
+
+        ResultSet res = statement.executeQuery("SELECT * FROM payouts");
+        while (res.next()) {
+            PayoutData payoutData = new PayoutData();
+            payoutData.setId(res.getInt(1));
+            payoutData.setType(res.getString(2));
+            payoutData.setPayout(res.getInt(3));
+            payoutDataMap.put(res.getString(2), payoutData);
         }
     }
 
@@ -67,5 +77,9 @@ public class ServerManager {
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20*2, 20*60);
+    }
+
+    public static int getPayout(String type) {
+        return payoutDataMap.get(type).getPayout();
     }
 }

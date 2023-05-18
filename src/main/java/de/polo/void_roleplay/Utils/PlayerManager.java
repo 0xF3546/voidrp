@@ -7,6 +7,7 @@ import de.polo.void_roleplay.PlayerUtils.DeathUtil;
 import de.polo.void_roleplay.PlayerUtils.PayDayUtil;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.PlayerUtils.Scoreboard;
+import de.polo.void_roleplay.PlayerUtils.tutorial;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -144,7 +145,10 @@ public class PlayerManager implements Listener {
                         }
                         player.openInventory(inv);
                     }
-                    if (name.getBoolean(28)) playerData.setVariable("tutorial", "muss");
+                    if (name.getBoolean(28)) {
+                        playerData.setVariable("tutorial", "muss");
+                        tutorial.start(player);
+                    }
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);

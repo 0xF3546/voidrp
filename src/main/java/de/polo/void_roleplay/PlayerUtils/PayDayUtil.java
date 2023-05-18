@@ -17,7 +17,7 @@ public class PayDayUtil {
     public static void givePayDay(Player player) throws SQLException {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         double plus = 0;
-        double zinsen = Math.round(PlayerManager.bank(player) * 0.01);
+        double zinsen = Math.round(PlayerManager.bank(player) * 0.0075);
         double steuern = Math.round(PlayerManager.bank(player) * 0.0035);
         int visumbonus = PlayerManager.visum(player) * 10;
         int frakpayday = 0;
@@ -59,6 +59,12 @@ public class PayDayUtil {
                     houseData.setMoney(0);
                 }
             }
+        }
+        if (playerData.getBank() >= 300000) {
+            player.sendMessage(" ");
+            double reichensteuer = Math.round(PlayerManager.bank(player) * 0.015);
+            player.sendMessage("§8 ➥ §c§lReichensteuer§8:§c" + (int) reichensteuer);
+            plus -= reichensteuer;
         }
         plus -= rent;
         player.sendMessage(" ");

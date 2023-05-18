@@ -43,6 +43,7 @@ public class InventoryClickListener implements Listener {
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
             if (event.getCurrentItem().getType() == Material.GRAY_DYE) {
+                playerData.setVariable("current_inventory", "rubbellos");
                 int pers = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER);
                 ItemMeta meta = event.getCurrentItem().getItemMeta();
                 System.out.println(playerData.getIntVariable("rubbellose_wins"));
@@ -572,6 +573,7 @@ public class InventoryClickListener implements Listener {
                                     statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                                     PlayerManager.addExp(player, Main.random(100, 200));
+                                    tutorial.createdAusweis(player);
                                 } else {
                                     player.sendMessage(Main.error + "Bitte gib deinen Geburtstag noch an!");
                                 }
