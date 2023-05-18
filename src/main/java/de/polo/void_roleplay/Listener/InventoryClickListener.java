@@ -6,6 +6,7 @@ import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.*;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.adminmenuCommand;
+import de.polo.void_roleplay.commands.farmerCommand;
 import de.polo.void_roleplay.commands.openBossMenuCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -816,6 +817,19 @@ public class InventoryClickListener implements Listener {
                     player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " +  (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
                     player.closeInventory();
                 }
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "farmer")) {
+            event.setCancelled(true);
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case LIME_DYE:
+                    farmerCommand.startJob(player);
+                    player.closeInventory();
+                    break;
+                case YELLOW_DYE:
+                    farmerCommand.quitJob(player);
+                    player.closeInventory();
+                    break;
             }
         }
     }

@@ -1,12 +1,10 @@
 package de.polo.void_roleplay.Utils;
 
-import de.polo.void_roleplay.DataStorage.BlacklistData;
+import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
-import de.polo.void_roleplay.DataStorage.FactionData;
-import de.polo.void_roleplay.DataStorage.FactionGradeData;
-import de.polo.void_roleplay.DataStorage.PlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -82,6 +80,22 @@ public class FactionManager {
         Statement statement = MySQL.getStatement();
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = '" + frak + "', `faction_grade` = " + rang + " WHERE `uuid` = '" + uuid + "'");
+        boolean found = false;
+        for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
+            if (factionPlayerData.getUuid().equals(player.getUniqueId().toString())) {
+                found = true;
+                factionPlayerData.setFaction(frak);
+                factionPlayerData.setFaction_grade(rang);
+            }
+        }
+        if (!found) {
+            FactionPlayerData factionPlayerData = new FactionPlayerData();
+            factionPlayerData.setFaction_grade(rang);
+            factionPlayerData.setUuid(player.getUniqueId().toString());
+            factionPlayerData.setFaction(frak);
+            factionPlayerData.setId(playerData.getId());
+            ServerManager.factionPlayerDataMap.put(player.getUniqueId().toString(), factionPlayerData);
+        }
     }
 
     public static void removePlayerFromFrak(Player player) throws SQLException {
@@ -104,6 +118,7 @@ public class FactionManager {
         Statement statement = MySQL.getStatement();
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
+        ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
     }
 
     public static void removeOfflinePlayerFromFrak(String playername) throws SQLException {
@@ -112,33 +127,30 @@ public class FactionManager {
         ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
         if (result != null) {
             statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `player_name` = '" + playername + "'");
+            ServerManager.factionPlayerDataMap.remove(result.getString(2));
         }
     }
 
     public static String faction_offlinePlayer(String playername) throws SQLException {
-        Statement statement = MySQL.getStatement();
-        String returnval = null;
-        assert statement != null;
-        ResultSet result = statement.executeQuery("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'");
-        if (result != null) {
-            if (result.next()) {
-                returnval = result.getString(13);
+        String val = null;
+        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
+            if (player.getName().equalsIgnoreCase(playername)) {
+                val = dbPlayerData.getFaction();
             }
         }
-        return returnval;
+        return val;
     }
 
     public static Integer faction_grade_offlinePlayer(String playername) throws SQLException {
-        Statement statement = MySQL.getStatement();
-        int returnval = -1;
-        assert statement != null;
-        ResultSet result = statement.executeQuery("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'");
-        if (result != null) {
-            if (result.next()) {
-                returnval = result.getInt(14);
+        int val = 0;
+        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
+            if (player.getName().equalsIgnoreCase(playername)) {
+                val = dbPlayerData.getFaction_grade();
             }
         }
-        return returnval;
+        return val;
     }
 
     public static String getFactionPrimaryColor(String faction) {

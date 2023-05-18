@@ -5,6 +5,7 @@ import de.polo.void_roleplay.DataStorage.HouseData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.BankingUtils;
+import de.polo.void_roleplay.PlayerUtils.ChatUtils;
 import de.polo.void_roleplay.PlayerUtils.rubbellose;
 import de.polo.void_roleplay.Utils.Housing;
 import de.polo.void_roleplay.Utils.ItemManager;
@@ -14,10 +15,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.Player;
@@ -33,6 +31,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.UUID;
 
 public class playerInteractListener implements Listener {
@@ -41,6 +40,19 @@ public class playerInteractListener implements Listener {
         Player player = event.getPlayer();
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
+                if (event.getClickedBlock().getType() == Material.CAULDRON) {
+                    Material[] items = {Material.POTATO, Material.POISONOUS_POTATO, Material.GLASS_BOTTLE};
+                    if (!Main.cooldownManager.isOnCooldown(player, "mülleimer")) {
+                        Main.cooldownManager.setCooldown(player, "mülleimer", 30);
+                        Material random = items[new Random().nextInt(items.length)];
+                        player.getInventory().addItem(new ItemStack(random));
+                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " duchwühlt einen Mülleimer.");
+                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
+                    } else {
+                        String actionBarText = "§7Warte noch " + Main.cooldownManager.getRemainingTime(player, "mülleimer") + " Sekunden!";
+                        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+                    }
+                }
                 TileState state = (TileState) event.getClickedBlock().getState();
                 if (state instanceof Sign) {
                     Sign sign = (Sign) event.getClickedBlock().getState();

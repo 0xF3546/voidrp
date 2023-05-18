@@ -33,14 +33,18 @@ public class mineCommand implements CommandExecutor {
         if (ServerManager.canDoJobs()) {
             if (playerData.canInteract()) {
                 if (playerData.getVariable("job") == null) {
-                    if (LocationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
-                        playerData.setVariable("job", "mine");
-                        player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
-                        player.sendMessage(prefix + "Baue nun Erze ab.");
-                        playerData.getScoreboard().createMineScoreboard();
-                        player.getInventory().addItem(ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§6Spitzhacke", null));
+                    if (!Main.cooldownManager.isOnCooldown(player, "mine")) {
+                        if (LocationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
+                            playerData.setVariable("job", "mine");
+                            player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
+                            player.sendMessage(prefix + "Baue nun Erze ab.");
+                            playerData.getScoreboard().createMineScoreboard();
+                            player.getInventory().addItem(ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§6Spitzhacke", null));
+                        } else {
+                            player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Mine§7!");
+                        }
                     } else {
-                        player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Mine§7!");
+                        player.sendMessage("§8[§7Mine§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.cooldownManager.getRemainingTime(player, "farmer")) + "§7 beginnen.");
                     }
                 } else {
                     if (playerData.getVariable("job").equals("mine")) {
@@ -48,11 +52,7 @@ public class mineCommand implements CommandExecutor {
                             player.sendMessage(prefix + "Du hast den Job Minenarbeiter beendet.");
                             playerData.setVariable("job", null);
                             playerData.getScoreboard().killScoreboard();
-                            try {
-                                quitJob(player);
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
+                            quitJob(player);
                         }
                     } else {
                         player.sendMessage(Main.error + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
@@ -86,7 +86,7 @@ public class mineCommand implements CommandExecutor {
         }
     }
 
-    public static void quitJob(Player player) throws SQLException {
+    public static void quitJob(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.getScoreboard().killScoreboard();
         int iron = ItemManager.getItem(player, Material.IRON_ORE);
@@ -115,7 +115,11 @@ public class mineCommand implements CommandExecutor {
         player.sendMessage(prefix + "Verdienst durch §bDiamanterz§8: §a+" + diamant * 1 + "$");
         verdienst = verdienst + (diamant * 1);
         exp = (int) (exp + diamant * 1.25);
-        PlayerManager.addMoney(player, verdienst);
+        try {
+            PlayerManager.addBankMoney(player, verdienst);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         player.sendMessage(prefix + "Du hast insgesamt §a+" + verdienst + "$§7 verdient.");
         PlayerManager.addExp(player, exp);
         Inventory inv = player.getInventory();
@@ -126,5 +130,6 @@ public class mineCommand implements CommandExecutor {
                 }
             }
         }
+        Main.cooldownManager.setCooldown(player, "mine", 600);
     }
 }

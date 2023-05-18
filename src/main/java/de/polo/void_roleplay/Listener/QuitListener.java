@@ -53,6 +53,9 @@ public class QuitListener implements Listener {
                     case "lieferant":
                         lebensmittellieferantCommand.quitJob(player);
                         break;
+                    case "farmer":
+                        farmerCommand.quitJob(player);
+                        break;
                 }
             }
             PlayerManager.savePlayer(player);

@@ -17,6 +17,7 @@ public class Scoreboard extends ScoreboardBuilder {
     private boolean isAdminScore = false;
     private boolean isMineScore = false;
     private boolean isLebensmittelLieferantScore = false;
+    private boolean isFarmerScore = false;
     private boolean isCarScore = false;
     private final String uuid;
     private final Player player;
@@ -66,6 +67,25 @@ public class Scoreboard extends ScoreboardBuilder {
         isMineScore = true;
     }
 
+    public void createFarmerScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§eFarmer");
+        setScore("§eHeuballen abgebaut§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
+        setScore("§eHeuballen abzubauen§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen_remaining"), 0);
+        isScore = true;
+        isFarmerScore = true;
+    }
+    public void updateFarmerScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§eFarmer");
+        setScore("§eHeuballen abgebaut§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
+        setScore("§eHeuballen abzubauen§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen_remaining"), 0);
+    }
+
     public void createLebensmittelLieferantenScoreboard() {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         setScore("§6Snacks§8:", 3);
@@ -99,6 +119,7 @@ public class Scoreboard extends ScoreboardBuilder {
         isMineScore = false;
         isCarScore = false;
         isLebensmittelLieferantScore = false;
+        isFarmerScore = false;
     }
 
     @Override

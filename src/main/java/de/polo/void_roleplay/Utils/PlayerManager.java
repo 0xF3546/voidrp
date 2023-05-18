@@ -411,9 +411,11 @@ public class PlayerManager implements Listener {
                 playerMovement.put(player.getUniqueId().toString(), true);
                 player.setWalkSpeed(0);
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 4, true, false));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2, true, false));
                 player.setFlying(false);
+                Main.waitSeconds(2, () -> {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0, true, false));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 0, true, false));
+                });
             }
         } else {
             playerMovement.remove(player.getUniqueId().toString());

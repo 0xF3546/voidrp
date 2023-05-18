@@ -23,6 +23,7 @@ public class uninviteCommand implements CommandExecutor {
                 if (targetplayer != null && targetplayer.isOnline()) {
                     if (Objects.equals(FactionManager.faction(player), FactionManager.faction(targetplayer))) {
                         if (FactionManager.faction_grade(player) > FactionManager.faction_grade(targetplayer)) {
+                            if (args.length >= 2) {
                             if (args[1].equalsIgnoreCase("confirm")) {
                                 try {
                                     FactionManager.removePlayerFromFrak(targetplayer);
@@ -36,6 +37,9 @@ public class uninviteCommand implements CommandExecutor {
                                     throw new RuntimeException(e);
                                 }
                             } else {
+                                player.sendMessage(Main.error + "Syntax-Fehler: /uninvite " + args[0] + " confirm");
+                            }
+                            } else {
                                 player.sendMessage(Main.error + "Syntax-Fehler: /uninvite " + targetplayer.getName() + " confirm");
                             }
                         } else {
@@ -48,6 +52,7 @@ public class uninviteCommand implements CommandExecutor {
                     try {
                         if (FactionManager.faction(player).equals(FactionManager.faction_offlinePlayer(args[0]))) {
                             if (FactionManager.faction_grade(player) > FactionManager.faction_grade_offlinePlayer(args[0])) {
+                                if (args.length >= 2) {
                                 if (args[1].equalsIgnoreCase("confirm")) {
                                     for (Player players : Bukkit.getOnlinePlayers()) {
                                         FactionManager.removeOfflinePlayerFromFrak(args[0]);
@@ -55,6 +60,9 @@ public class uninviteCommand implements CommandExecutor {
                                             players.sendMessage("§" + FactionManager.getFactionPrimaryColor(playerfac) + FactionManager.getFactionFullname(playerfac) + "§8 » §c" + args[0] + "§7 wurde von §c" + player.getName() + "§7 aus der Fraktion geworfen.");
                                         }
                                     }
+                                } else {
+                                    player.sendMessage(Main.error + "Syntax-Fehler: /uninvite " + args[0] + " confirm");
+                                }
                                 } else {
                                     player.sendMessage(Main.error + "Syntax-Fehler: /uninvite " + args[0] + " confirm");
                                 }

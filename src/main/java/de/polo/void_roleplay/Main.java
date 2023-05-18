@@ -205,6 +205,7 @@ public final class Main extends JavaPlugin {
         getCommand("discord").setExecutor(new discordCommand());
         getCommand("departmentchat").setExecutor(new departmentChat());
         getCommand("member").setExecutor(new memberCommand());
+        getCommand("farmer").setExecutor(new farmerCommand());
     }
 
 
@@ -255,5 +256,11 @@ public final class Main extends JavaPlugin {
                 runnable.run();
             }
         }.runTaskLater(getInstance(), seconds * 20L);
+    }
+
+    public static String getTime(int seconds) {
+        int minutes = seconds / 60;
+        int sec = seconds % 60;
+        return minutes + " Minuten & " + sec + " Sekunden";
     }
 }

@@ -2,6 +2,7 @@ package de.polo.void_roleplay.Listener;
 
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import de.polo.void_roleplay.commands.farmerCommand;
 import de.polo.void_roleplay.commands.lumberjackCommand;
 import de.polo.void_roleplay.commands.mineCommand;
 import org.bukkit.GameMode;
@@ -20,9 +21,13 @@ public class blockbreakListener implements Listener {
                 switch (playerData.getVariable("job")) {
                     case "lumberjack":
                         lumberjackCommand.blockBroken(player, event.getBlock(), event);
+                        break;
                     case "mine":
                         mineCommand.blockBroken(player, event.getBlock(), event);
-
+                        break;
+                    case "farmer":
+                        farmerCommand.blockBroken(player, event.getBlock(), event);
+                        break;
                 }
             } else {
                 event.setCancelled(true);
