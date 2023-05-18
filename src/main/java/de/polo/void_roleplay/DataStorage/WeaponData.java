@@ -14,6 +14,7 @@ public class WeaponData {
     private float arrowVelocity;
     private float shootDuration;
     private String type;
+    private Material ammoItem;
 
     public float getReloadDuration() {
         return reloadDuration;
@@ -93,5 +94,13 @@ public class WeaponData {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Material getAmmoItem() {
+        return ammoItem;
+    }
+
+    public void setAmmoItem(Material ammoItem) {
+        this.ammoItem = ammoItem;
     }
 }

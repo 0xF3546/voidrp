@@ -132,3 +132,4 @@ commands:
   discord:
   departmentchat:
     aliases: d
+  member:

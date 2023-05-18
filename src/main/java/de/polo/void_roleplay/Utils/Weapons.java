@@ -124,6 +124,16 @@ public class Weapons implements Listener {
                                 if (meta1.getPersistentDataContainer().get(current_ammo, PersistentDataType.INTEGER) >= 1) {
                                     meta1.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
                                     event.getItem().setItemMeta(meta1);
+                                } else {
+                                    NamespacedKey type = new NamespacedKey(Main.plugin, "type");
+                                    if (meta1.getPersistentDataContainer().get(type, PersistentDataType.STRING) == null) {
+                                        if (ItemManager.getItem(player, weaponData.getAmmoItem()) >= 1) {
+                                            reloadWeapon(player, event.getItem());
+                                        } else {
+                                            String actionBarText = "§cDu hast keine Magazine mehr!";
+                                            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+                                        }
+                                    }
                                 }
                             }
                         }.runTaskLater(Main.getInstance(), (long) (weaponData.getShootDuration() * 2));
@@ -159,6 +169,25 @@ public class Weapons implements Listener {
         weapon.setItemMeta(meta);
         String actionBarText = "§7Lade " + weaponData.getName() + "§7 nach!";
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+        NamespacedKey type = new NamespacedKey(Main.plugin, "type");
+        if (meta.getPersistentDataContainer().get(type, PersistentDataType.STRING) == null) {
+            if (ItemManager.getItem(player, weaponData.getAmmoItem()) >= 1) {
+                reload(player, weapon);
+                ItemStack itemStack = new ItemStack(weaponData.getAmmoItem());
+                itemStack.setAmount(1);
+                player.getInventory().removeItem(itemStack);
+            } else {
+                String text = "§cDu hast keine Magazine mehr!";
+                player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(text));
+            }
+        } else {
+            reload(player, weapon);
+        }
+    }
+    public static void reload(Player player, ItemStack weapon) {
+        WeaponData weaponData = weaponDataMap.get(weapon.getType());
+        NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
+        NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
         new BukkitRunnable() {
             @Override
             public void run() {

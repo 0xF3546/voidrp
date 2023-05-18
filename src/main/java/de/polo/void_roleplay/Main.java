@@ -67,6 +67,8 @@ public final class Main extends JavaPlugin {
             FFA.loadFFALobbys();
             Gangwar.loadGangwar();
 
+            ServerManager.loadDBPlayer();
+
             TeamSpeak.loadConfig();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -202,6 +204,7 @@ public final class Main extends JavaPlugin {
         getCommand("youtube").setExecutor(new youtubeCommand());
         getCommand("discord").setExecutor(new discordCommand());
         getCommand("departmentchat").setExecutor(new departmentChat());
+        getCommand("member").setExecutor(new memberCommand());
     }
 
 

@@ -19,6 +19,8 @@ public class ServerManager {
 
     public static Map<String, RankData> rankDataMap = new HashMap<>();
     public static Map<String, PayoutData> payoutDataMap = new HashMap<>();
+    public static Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
+    public static Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {
@@ -41,6 +43,27 @@ public class ServerManager {
             payoutData.setType(res.getString(2));
             payoutData.setPayout(res.getInt(3));
             payoutDataMap.put(res.getString(2), payoutData);
+        }
+    }
+    public static void loadDBPlayer() throws SQLException {
+        Statement statement = MySQL.getStatement();
+        ResultSet locs = statement.executeQuery("SELECT * FROM players");
+        while (locs.next()) {
+            DBPlayerData dbPlayerData = new DBPlayerData();
+            dbPlayerData.setId(locs.getInt(1));
+            dbPlayerData.setUuid(locs.getString(2));
+            dbPlayerData.setPlayer_rank(locs.getString(6));
+            dbPlayerData.setFaction(locs.getString(19));
+            dbPlayerData.setFaction_grade(locs.getInt(20));
+            dbPlayerDataMap.put(locs.getString(2), dbPlayerData);
+            if (locs.getString(19) != null && !locs.getString(19).equals("Zivilist")) {
+                FactionPlayerData factionPlayerData = new FactionPlayerData();
+                factionPlayerData.setId(locs.getInt(1));
+                factionPlayerData.setUuid(locs.getString(2));
+                factionPlayerData.setFaction(locs.getString(19));
+                factionPlayerData.setFaction_grade(locs.getInt(20));
+                factionPlayerDataMap.put(locs.getString(2), factionPlayerData);
+            }
         }
     }
 
