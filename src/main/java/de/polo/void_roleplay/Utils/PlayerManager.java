@@ -411,7 +411,8 @@ public class PlayerManager implements Listener {
                 playerMovement.put(player.getUniqueId().toString(), true);
                 player.setWalkSpeed(0);
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 250));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 4, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2, true, false));
                 player.setFlying(false);
             }
         } else {
@@ -419,6 +420,7 @@ public class PlayerManager implements Listener {
             player.setWalkSpeed(0.2F);
             player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
             player.removePotionEffect(PotionEffectType.JUMP);
+            player.removePotionEffect(PotionEffectType.SLOW);
         }
     }
 
@@ -530,6 +532,11 @@ public class PlayerManager implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean isInStaatsFrak(Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        return playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei");
     }
 
     @EventHandler

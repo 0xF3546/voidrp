@@ -807,5 +807,16 @@ public class InventoryClickListener implements Listener {
                     break;
             }
         }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "haus")) {
+            event.setCancelled(true);
+            if (event.getCurrentItem().getType() == Material.RED_DYE) {
+                if (Housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
+                    HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                    PlayerManager.addMoney(player, (int) (houseData.getPrice() * 0.8));
+                    player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " +  (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
+                    player.closeInventory();
+                }
+            }
+        }
     }
 }

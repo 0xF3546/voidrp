@@ -13,6 +13,8 @@ public class HouseData {
     private HashMap<String, Integer> renter = new HashMap<>();
     private int money;
     private int totalMoney;
+    private int mieterSlots;
+    private int totalSlots;
 
     public int getId() {
         return id;
@@ -72,5 +74,21 @@ public class HouseData {
 
     public void setTotalMoney(int totalMoney) {
         this.totalMoney = totalMoney;
+    }
+
+    public int getTotalSlots() {
+        return totalSlots;
+    }
+
+    public void setTotalSlots(int totalSlots) {
+        this.totalSlots = totalSlots;
+    }
+
+    public int getMieterSlots() {
+        return mieterSlots;
+    }
+
+    public void setMieterSlots(int mieterSlots) {
+        this.mieterSlots = mieterSlots;
     }
 }

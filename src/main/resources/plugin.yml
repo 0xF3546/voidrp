@@ -130,3 +130,5 @@ commands:
   gangwar:
   youtube:
   discord:
+  departmentchat:
+    aliases: d

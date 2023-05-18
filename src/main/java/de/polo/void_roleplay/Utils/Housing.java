@@ -107,6 +107,8 @@ public class Housing {
                                 if (house == Objects.requireNonNull(container.get(value, PersistentDataType.INTEGER))) {
                                     if (houseData.getNumber() == house) {
                                         houseData.setOwner(null);
+                                        sign.setLine(2, "§aZu Verkaufen");
+                                        sign.update();
                                         try {
                                             Statement statement = MySQL.getStatement();
                                             statement.executeUpdate("UPDATE `housing` SET `owner` = null WHERE `number` = " + house);

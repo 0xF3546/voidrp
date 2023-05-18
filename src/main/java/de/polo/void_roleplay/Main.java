@@ -201,6 +201,7 @@ public final class Main extends JavaPlugin {
         getCommand("gangwar").setExecutor(new Gangwar());
         getCommand("youtube").setExecutor(new youtubeCommand());
         getCommand("discord").setExecutor(new discordCommand());
+        getCommand("departmentchat").setExecutor(new departmentChat());
     }
 
 
