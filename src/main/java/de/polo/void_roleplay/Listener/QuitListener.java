@@ -42,7 +42,7 @@ public class QuitListener implements Listener {
             if (playerData.getVariable("job") != null) {
                 switch (playerData.getVariable("job")) {
                     case "lumberjack":
-                        lumberjackCommand.quitJob(player);
+                        lumberjackCommand.quitJob(player, true);
                         break;
                     case "apfelsammler":
                         apfelplantageCommand.quitJob(player);
@@ -55,6 +55,12 @@ public class QuitListener implements Listener {
                         break;
                     case "farmer":
                         farmerCommand.quitJob(player);
+                        break;
+                    case "Postbote":
+                        postboteCommand.quitJob(player, true);
+                        break;
+                    case "Müllmann":
+                        muellmannCommand.quitJob(player, true);
                         break;
                 }
             }

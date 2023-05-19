@@ -85,6 +85,55 @@ public class Scoreboard extends ScoreboardBuilder {
         setScore("§eHeuballen abzubauen§8:", 1);
         setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen_remaining"), 0);
     }
+    public void createPostboteScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §ePostbote §8«");
+        setScore("§ePost verbleibend§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("post"), 0);
+    }
+
+    public void updatePostboteScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §ePostbote §8«");
+        setScore("§ePost verbleibend§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("post"), 0);
+    }
+
+    public void createMuellmannScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §9Müllmann §8«");
+        setScore("§3Müll gesammelt§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("muellkg") + "kg", 2);
+        setScore("§3Häuser verbleibend§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("muell"), 0);
+    }
+
+    public void updateMuellmannScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §9Müllmann §8«");
+        setScore("§3Müll gesammelt§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("muellkg") + "kg", 2);
+        setScore("§3Häuser verbleibend§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("muell"), 0);
+    }
+
+    public void createLumberjackScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §7Holzfäller §8«");
+        setScore("§7Holz gesammelt§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("holzkg") + "kg", 2);
+        setScore("§7Bäume verbleibend§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("holz"), 0);
+    }
+
+    public void updateLumberjackScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §7Holzfäller §8«");
+        setScore("§7Holz gesammelt§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("holzkg") + "kg", 2);
+        setScore("§7Bäume verbleibend§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("holz"), 0);
+    }
 
     public void createLebensmittelLieferantenScoreboard() {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());

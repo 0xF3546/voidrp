@@ -79,7 +79,7 @@ public class farmerCommand implements CommandExecutor {
         int payout = ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen");
         player.sendMessage("§8[§eFarmer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
-        PlayerManager.addExp(player, Main.random(12, 20));
+        if (playerData.getIntVariable("heuballen_remaining") <= 0) PlayerManager.addExp(player, Main.random(12, 20));
         playerData.getScoreboard().killScoreboard();
         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
         try {

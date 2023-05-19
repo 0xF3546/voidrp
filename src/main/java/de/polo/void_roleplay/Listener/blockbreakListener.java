@@ -19,7 +19,7 @@ public class blockbreakListener implements Listener {
         if (!player.getGameMode().equals(GameMode.CREATIVE)) {
             if (playerData.getVariable("job") != null) {
                 switch (playerData.getVariable("job")) {
-                    case "lumberjack":
+                    case "Holzfäller":
                         lumberjackCommand.blockBroken(player, event.getBlock(), event);
                         break;
                     case "mine":

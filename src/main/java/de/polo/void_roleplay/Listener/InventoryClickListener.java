@@ -5,9 +5,7 @@ import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.*;
 import de.polo.void_roleplay.Utils.*;
-import de.polo.void_roleplay.commands.adminmenuCommand;
-import de.polo.void_roleplay.commands.farmerCommand;
-import de.polo.void_roleplay.commands.openBossMenuCommand;
+import de.polo.void_roleplay.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -823,6 +821,14 @@ public class InventoryClickListener implements Listener {
                     player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
                     player.closeInventory();
                     break;
+                case BOOK:
+                    postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    player.closeInventory();
+                    break;
+                case CAULDRON:
+                    muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    player.closeInventory();
+                    break;
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "farmer")) {
@@ -838,6 +844,45 @@ public class InventoryClickListener implements Listener {
                     break;
                 case WHEAT:
                     farmerCommand.startTransport(player);
+                    player.closeInventory();
+                    break;
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "postbote")) {
+            event.setCancelled(true);
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case LIME_DYE:
+                    postboteCommand.startTransport(player);
+                    player.closeInventory();
+                    break;
+                case YELLOW_DYE:
+                    postboteCommand.quitJob(player, false);
+                    player.closeInventory();
+                    break;
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "müllmann")) {
+            event.setCancelled(true);
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case LIME_DYE:
+                    muellmannCommand.startTransport(player);
+                    player.closeInventory();
+                    break;
+                case YELLOW_DYE:
+                    muellmannCommand.quitJob(player, false);
+                    player.closeInventory();
+                    break;
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "holzfäller")) {
+            event.setCancelled(true);
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case LIME_DYE:
+                    lumberjackCommand.startJob(player);
+                    player.closeInventory();
+                    break;
+                case YELLOW_DYE:
+                    lumberjackCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
