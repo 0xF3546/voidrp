@@ -27,6 +27,7 @@ public class playerinfoCommand implements CommandExecutor {
                 player.sendMessage("§8 ➥ §6Visum§8: §7" + PlayerManager.visum(targetplayer));
                 player.sendMessage("§8 ➥ §6Level§8: §7" + targetplayerdata.getLevel() + " (" + targetplayerdata.getExp() + "§8/§7" + targetplayerdata.getNeeded_exp() + ")");
                 player.sendMessage("§8 ➥ §6Bank§8: §7" + PlayerManager.bank(targetplayer) + "$ (" + PlayerManager.paydayDuration(targetplayer) + "/60)");
+                player.sendMessage("§8 ➥ §6Spielzeit§8: §7" + targetplayerdata.getHours() + " Stunden & " + targetplayerdata.getMinutes() + " Minuten");
                 player.sendMessage("§8 ➥ §6Bargeld§8: §7" + PlayerManager.money(targetplayer) + "$");
                 player.sendMessage("§8 ➥ §6Rang§8: §7" + PlayerManager.rang(targetplayer));
                 player.sendMessage("§8 ➥ §6Vorname§8: §7" + PlayerManager.firstname(targetplayer));

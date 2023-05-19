@@ -50,7 +50,7 @@ public class Scoreboard extends ScoreboardBuilder {
     }
     public void createMineScoreboard() {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        setDisplayName("§7§lMinenarbeiter");
+        setDisplayName("§8» §7§lMine §8«");
         setScore("§bDiamanterz§8:", 11);
         setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.DIAMOND_ORE), 10);
         setScore("§aSmaragderz§8:", 9);
@@ -69,7 +69,7 @@ public class Scoreboard extends ScoreboardBuilder {
 
     public void createFarmerScoreboard() {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        setDisplayName("§eFarmer");
+        setDisplayName("§8» §eFarmer §8«");
         setScore("§eHeuballen abgebaut§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
         setScore("§eHeuballen abzubauen§8:", 1);
@@ -79,7 +79,7 @@ public class Scoreboard extends ScoreboardBuilder {
     }
     public void updateFarmerScoreboard() {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        setDisplayName("§eFarmer");
+        setDisplayName("§8» §eFarmer §8«");
         setScore("§eHeuballen abgebaut§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
         setScore("§eHeuballen abzubauen§8:", 1);
@@ -88,12 +88,27 @@ public class Scoreboard extends ScoreboardBuilder {
 
     public void createLebensmittelLieferantenScoreboard() {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("8» §6Lieferant §8«");
         setScore("§6Snacks§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("snacks"), 2);
         setScore("§6Getränke§8:", 1);
         setScore("§8 ➥ §7" + playerData.getIntVariable("drinks"), 0);
         isScore = true;
         isLebensmittelLieferantScore = true;
+    }
+
+    public void createWeizentransportScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §eLieferant §8«");
+        setScore("§eWeizen§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("weizen") + "kg", 0);
+        isScore = true;
+    }
+    public void updateWeizentransportScoreboard() {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        setDisplayName("§8» §eLieferant §8«");
+        setScore("§eWeizen§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("weizen") + "kg", 0);
     }
 
     public void createCarScoreboard(Vehicle minecart) {

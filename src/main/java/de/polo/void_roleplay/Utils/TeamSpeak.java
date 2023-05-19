@@ -42,7 +42,7 @@ public class TeamSpeak implements CommandExecutor {
         api = query.getApi();
         api.login("tsquery", "xKwmHgQU");
         api.selectVirtualServerById(1);
-        api.setNickname("Verify | Void Roleplay");
+        api.setNickname("Void Roleplay");
     }
 
     public static TS3Api getAPI() {

@@ -16,11 +16,14 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,12 +31,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
-public class Gangwar implements CommandExecutor {
+public class Gangwar implements CommandExecutor, TabCompleter {
     public static HashMap<String, GangwarData> gangwarDataMap = new HashMap<>();
 
     public static void loadGangwar() throws SQLException {
@@ -234,4 +234,26 @@ public class Gangwar implements CommandExecutor {
         gangwarData.setLastAttack(new Timestamp(System.currentTimeMillis()));
     }
 
+    @Nullable
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            suggestions.add("info");
+            suggestions.add("attack");
+            suggestions.add("join");
+            suggestions.add("leave");
+
+            return suggestions;
+        }
+        if (args.length == 2) {
+            List<String> suggestions = new ArrayList<>();
+            for (GangwarData gangwarData : gangwarDataMap.values()) {
+                suggestions.add(gangwarData.getZone());
+            }
+
+            return suggestions;
+        }
+        return null;
+    }
 }

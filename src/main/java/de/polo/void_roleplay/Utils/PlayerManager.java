@@ -36,7 +36,6 @@ public class PlayerManager implements Listener {
 
     public static Map<String, PlayerData> playerDataMap = new HashMap<>();
     public static HashMap<String, Boolean> onPlayer = new HashMap<String, Boolean>();
-    public static HashMap<String, Integer> payday = new HashMap<>();
     public static HashMap<String, Boolean> playerMovement = new HashMap<>();
     public static HashMap<String, Integer> player_rent = new HashMap<String, Integer>();
     public static boolean isCreated(String uuid) {
@@ -97,7 +96,7 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setFirstname(name.getString(1));
@@ -150,11 +149,13 @@ public class PlayerManager implements Listener {
                         tutorial.start(player);
                     }
 
+                    playerData.setHours(name.getInt(29));
+                    playerData.setMinutes(name.getInt(30));
+
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);
 
                     updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
-                    payday.put(player.getUniqueId().toString(), -1);
                     if (name.getInt(8) >= 60) {
                         onPlayer.put(player.getUniqueId().toString(), true);
                         player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
@@ -261,7 +262,7 @@ public class PlayerManager implements Listener {
                 int current_hours = result.getInt(3);
                 int needed_hours = result.getInt(4);
                 int visum = result.getInt(5) + 1;
-                payday.replace(uuid, minutes);
+                playerData.setMinutes(newMinutes);
                 float value = (float) (needed_hours / player.getExpToLevel());
                 player.setTotalExperience((int) (value * current_hours));
                 if (minutes >= 60) {
@@ -272,10 +273,12 @@ public class PlayerManager implements Listener {
                         player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                         player.setLevel(visum);
                         playerData.setVisum(visum);
+                        playerData.setHours(playerData.getHours() + 1);
                         player.setMaxHealth(30 + (visum / 5) * 2);
                     } else {
                         PayDayUtil.givePayDay(player);
                         current_hours = current_hours + 1;
+                        playerData.setHours(playerData.getHours() + 1);
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
                     }
                 } else {
@@ -401,8 +404,7 @@ public class PlayerManager implements Listener {
     }
 
     public static int paydayDuration(Player player) {
-        String uuid = player.getUniqueId().toString();
-        return payday.get(uuid);
+        return playerDataMap.get(player.getUniqueId().toString()).getMinutes();
     }
 
     public static void setPlayerMove(Player player, Boolean state) {
@@ -414,7 +416,7 @@ public class PlayerManager implements Listener {
                 player.setFlying(false);
                 Main.waitSeconds(2, () -> {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0, true, false));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 0, true, false));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -12, true, false));
                 });
             }
         } else {
@@ -470,7 +472,7 @@ public class PlayerManager implements Listener {
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0);
         } else {
-            player.sendMessage("§8[§6Level§8] §" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
         }
     }
@@ -478,7 +480,7 @@ public class PlayerManager implements Listener {
     public static void removeExp(Player player, Integer exp) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setExp(playerData.getExp() - exp);
-        player.sendMessage("§8[§6Level§8] §c-+" + exp + " EXP");
+        player.sendMessage("§c-+" + exp + " EXP");
     }
 
     public static void addEXPBoost(Player player, int hours) throws SQLException {

@@ -130,7 +130,6 @@ public final class Main extends JavaPlugin {
         getCommand("target-ip").setExecutor(new targetipCommand());
         getCommand("tpto").setExecutor(new tptoCommand());
         getCommand("adminrevive").setExecutor(new adminReviveCommand());
-        getCommand("registeratm").setExecutor(new ATMLocationCommand());
         getCommand("playerinfo").setExecutor(new playerinfoCommand());
         getCommand("me").setExecutor(new meCommand());
         getCommand("broadcast").setExecutor(new broadcastCommand());
@@ -206,13 +205,20 @@ public final class Main extends JavaPlugin {
         getCommand("departmentchat").setExecutor(new departmentChat());
         getCommand("member").setExecutor(new memberCommand());
         getCommand("farmer").setExecutor(new farmerCommand());
+
+        getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
+        getCommand("blacklist").setTabCompleter(new blacklistCommand());
+        getCommand("gangwar").setTabCompleter(new Gangwar());
+        getCommand("navi").setTabCompleter(new Navigation());
     }
 
 
     @Override
     public void onDisable() {
-        isOnline = false;
+        TeamSpeak.getAPI().logout();
         TeamSpeak.getQuery().exit();
+        System.out.println("disablding void roleplay");
+        isOnline = false;
         try {
             ServerManager.savePlayers();
         } catch (SQLException e) {

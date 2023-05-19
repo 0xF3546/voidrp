@@ -3,10 +3,7 @@ package de.polo.void_roleplay.commands;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.PlayerUtils.SoundManager;
-import de.polo.void_roleplay.Utils.ItemManager;
-import de.polo.void_roleplay.Utils.LocationManager;
-import de.polo.void_roleplay.Utils.PlayerManager;
-import de.polo.void_roleplay.Utils.ServerManager;
+import de.polo.void_roleplay.Utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -35,18 +32,25 @@ public class farmerCommand implements CommandExecutor {
                 playerData.setVariable("current_inventory", "farmer");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eFarmer");
                 if (!Main.cooldownManager.isOnCooldown(player, "farmer") && playerData.getVariable("job") == null) {
-                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aJob starten", null));
+                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aFarmer starten", null));
+                    inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten", null));
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "farmer")) + "§7."));
+                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "farmer")) + "§7."));
+                        inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten", null));
                     } else {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
+                        inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
                     }
                 }
-                if (playerData.getVariable("job") != "farmer") {
+                if (playerData.getVariable("job") != "farmer" && playerData.getVariable("job") != "weizenlieferant") {
                     inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen"));
                 } else {
-                    inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen") + "$"));
+                    if (playerData.getVariable("job") == "farmer") {
+                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen") + "$"));
+                    } else {
+                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Weizenlieferant beenden"));
+                    }
                 }
                 for (int i = 0; i < 27; i++) {
                     if (inv.getItem(i) == null) {
@@ -65,6 +69,12 @@ public class farmerCommand implements CommandExecutor {
 
     public static void quitJob(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (playerData.getVariable("job") == "weizenlieferant") {
+            playerData.setVariable("job", null);
+            player.sendMessage("§8[§eLieferant§8]§7 Du hast den Job beendet.");
+            playerData.getScoreboard().killScoreboard();
+            return;
+        }
         playerData.setVariable("job", null);
         int payout = ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen");
         player.sendMessage("§8[§eFarmer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
@@ -123,4 +133,37 @@ public class farmerCommand implements CommandExecutor {
         }
     }
 
+    public static void startTransport(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setIntVariable("weizen", Main.random(2, 5));
+        playerData.setVariable("job", "weizenlieferant");
+        playerData.getScoreboard().createWeizentransportScoreboard();
+        player.sendMessage("§8[§eLieferant§8]§7 Bringe das Weizen zur Mühle.");
+        player.sendMessage("§8 ➥ §7Nutze §8/§edrop§7 um das Weizen abzugeben.");
+        Navigation.createNavi(player, "muehle", true);
+    }
+
+    public static void dropTransport(Player player) {
+        if (LocationManager.getDistanceBetweenCoords(player, "muehle") < 5) {
+            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            int payout = Main.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));
+            player.sendMessage("§8[§eLieferant§8]§7 Danke für's abliefern. §a+" + payout + "$");
+            SoundManager.successSound(player);
+            PlayerManager.addExp(player, Main.random(1, 3));
+            playerData.setIntVariable("weizen", playerData.getIntVariable("weizen") - 1);
+            playerData.getScoreboard().updateWeizentransportScoreboard();
+            try {
+                PlayerManager.addBankMoney(player, payout);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            if (playerData.getIntVariable("weizen") <= 0) {
+                player.sendMessage("§8[§eLieferant§8]§7 Du hast alles abgegeben. Danke!");
+                playerData.setVariable("job", null);
+                playerData.getScoreboard().killScoreboard();
+            }
+        } else {
+            player.sendMessage(Main.error + "Du bist nicht in der nähe der Mühle.");
+        }
+    }
 }

@@ -810,13 +810,19 @@ public class InventoryClickListener implements Listener {
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "haus")) {
             event.setCancelled(true);
-            if (event.getCurrentItem().getType() == Material.RED_DYE) {
-                if (Housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
-                    HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
-                    PlayerManager.addMoney(player, (int) (houseData.getPrice() * 0.8));
-                    player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " +  (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
+            switch (event.getCurrentItem().getType()) {
+                case RED_DYE:
+                    if (Housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
+                        HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                        PlayerManager.addMoney(player, (int) (houseData.getPrice() * 0.8));
+                        player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " +  (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
+                        player.closeInventory();
+                    }
+                    break;
+                case LIME_DYE:
+                    player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
                     player.closeInventory();
-                }
+                    break;
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "farmer")) {
@@ -828,6 +834,10 @@ public class InventoryClickListener implements Listener {
                     break;
                 case YELLOW_DYE:
                     farmerCommand.quitJob(player);
+                    player.closeInventory();
+                    break;
+                case WHEAT:
+                    farmerCommand.startTransport(player);
                     player.closeInventory();
                     break;
             }

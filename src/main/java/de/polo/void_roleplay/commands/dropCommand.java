@@ -17,6 +17,10 @@ public class dropCommand implements CommandExecutor {
             switch (playerData.getVariable("job")) {
                 case "lieferant":
                     lebensmittellieferantCommand.dropLieferung(player);
+                    break;
+                case "weizenlieferant":
+                    farmerCommand.dropTransport(player);
+                    break;
             }
         } else {
             player.sendMessage(Main.error + "Du hast keinen Job angenommen.");

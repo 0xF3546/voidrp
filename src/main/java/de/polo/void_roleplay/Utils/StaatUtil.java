@@ -129,11 +129,12 @@ public class StaatUtil {
         serviceData.setReason(reason);
         serviceData.setUuid(player.getUniqueId().toString());
         serviceDataMap.put(player.getUniqueId().toString(), serviceData);
+        player.sendMessage("§8[§6Notruf§8]§e Du hast einen Notruf abgesetzt.");
         if (service == 110) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (PlayerManager.playerDataMap.get(p.getUniqueId().toString()).getFaction().equals("Polizei")) {
                     p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
-                    TextComponent message = new TextComponent("§8 ➥ §3Annehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
+                    TextComponent message = new TextComponent("§8 ➥ §bAnnehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
                     message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
                     message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
                     p.spigot().sendMessage(message);
@@ -144,7 +145,7 @@ public class StaatUtil {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (PlayerManager.playerDataMap.get(p.getUniqueId().toString()).getFaction().equals("Medic")) {
                     p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
-                    TextComponent message = new TextComponent("§8 ➥ §3Annehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
+                    TextComponent message = new TextComponent("§8 ➥ §bAnnehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
                     message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
                     message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
                     p.spigot().sendMessage(message);
@@ -157,10 +158,11 @@ public class StaatUtil {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         ServiceData serviceData = serviceDataMap.get(player.getUniqueId().toString());
         playerData.setVariable("service", null);
+        player.sendMessage("§8[§6Notruf§8]§e Du hast deinen Notruf abgebrochen.");
         if (serviceData.getAcceptedByUuid() != null) {
             Player accepter = Bukkit.getPlayer(UUID.fromString(serviceData.getAcceptedByUuid()));
             assert accepter != null;
-            accepter.sendMessage("§8[§6Notruf§8]§e " + accepter.getName() + " hat seinen Notruf abgebrochen.");
+            accepter.sendMessage("§8[§6Notruf§8]§e " + player.getName() + " hat seinen Notruf abgebrochen.");
         }
         StaatUtil.serviceDataMap.remove(player.getUniqueId().toString());
     }

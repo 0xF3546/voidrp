@@ -287,4 +287,12 @@ public class FactionManager {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean isInBündnis(Player player) {
+        return false;
+    }
+
+    public static boolean isInBündnisWith(Player player, String faction) {
+        return false;
+    }
 }

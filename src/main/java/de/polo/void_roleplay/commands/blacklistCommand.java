@@ -12,17 +12,18 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
-public class blacklistCommand implements CommandExecutor {
+public class blacklistCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -137,5 +138,18 @@ public class blacklistCommand implements CommandExecutor {
             player.sendMessage(Main.error_nopermission);
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            suggestions.add("add");
+            suggestions.add("remove");
+
+            return suggestions;
+        }
+        return null;
     }
 }

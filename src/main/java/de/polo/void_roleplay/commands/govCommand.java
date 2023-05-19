@@ -14,7 +14,7 @@ public class govCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         String playerfac = FactionManager.faction(player);
-        if (FactionManager.isPlayerInGoodFaction(player) && FactionManager.faction_grade(player) >= 5) {
+        if (PlayerManager.isInStaatsFrak(player) && FactionManager.faction_grade(player) >= 5) {
             if (args.length >= 1) {
                 StringBuilder message = new StringBuilder(args[0]);
                 for (int i = 1; i < args.length; i++) {

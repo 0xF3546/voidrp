@@ -1,14 +1,12 @@
 package de.polo.void_roleplay.Utils;
 
-import de.polo.void_roleplay.DataStorage.GasStationData;
-import de.polo.void_roleplay.DataStorage.LocationData;
-import de.polo.void_roleplay.DataStorage.NaviData;
-import de.polo.void_roleplay.DataStorage.PlayerData;
+import de.polo.void_roleplay.DataStorage.*;
 import de.polo.void_roleplay.Main;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,8 +14,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class Navigation implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Navigation implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -120,5 +123,21 @@ public class Navigation implements CommandExecutor {
                 }.runTaskTimer(Main.getInstance(), 0L, 1L);
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            for (NaviData naviData : LocationManager.naviDataMap.values()) {
+                if (!naviData.isGroup()) {
+                    suggestions.add(naviData.getName().substring(2));
+                }
+            }
+
+            return suggestions;
+        }
+        return null;
     }
 }
