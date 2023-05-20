@@ -21,6 +21,7 @@ public class ServerManager {
     public static Map<String, PayoutData> payoutDataMap = new HashMap<>();
     public static Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
     public static Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
+    public static Map<String, ContractData> contractDataMap = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {
@@ -64,6 +65,18 @@ public class ServerManager {
                 factionPlayerData.setFaction_grade(locs.getInt(20));
                 factionPlayerDataMap.put(locs.getString(2), factionPlayerData);
             }
+        }
+    }
+    public static void loadContracts() throws SQLException {
+        Statement statement = MySQL.getStatement();
+        ResultSet locs = statement.executeQuery("SELECT * FROM contract");
+        while (locs.next()) {
+            ContractData contractData = new ContractData();
+            contractData.setId(locs.getInt(1));
+            contractData.setUuid(locs.getString(2));
+            contractData.setAmount(locs.getInt(3));
+            contractData.setSetter(locs.getString(4));
+            contractDataMap.put(locs.getString(2), contractData);
         }
     }
 

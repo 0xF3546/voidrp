@@ -85,7 +85,7 @@ public class LocationManager {
             naviData.setId(navi.getInt(1));
             naviData.setisGroup(navi.getBoolean(2));
             naviData.setGroup(navi.getString(3));
-            naviData.setName(navi.getString(4).replace("ae", "ä").replace("ue", "ü"));
+            naviData.setName(navi.getString(4));
             if (navi.getString(5) != null) naviData.setLocation(navi.getString(5));
             naviData.setItem(Material.valueOf(navi.getString(6)));
             naviDataMap.put(navi.getInt(1), naviData);

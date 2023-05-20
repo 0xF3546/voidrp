@@ -136,3 +136,7 @@ commands:
   farmer:
   postbote:
   müllmann:
+  contracts:
+    aliases: kopfgelder
+  contract:
+    aliases: kopfgeld

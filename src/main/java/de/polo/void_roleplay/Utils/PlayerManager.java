@@ -128,6 +128,7 @@ public class PlayerManager implements Listener {
                     if (!name.getBoolean(27)) {
                         playerData.setVariable("current_inventory", "jugendschutz");
                         playerData.setVariable("jugendschutz", "muss");
+                        Main.waitSeconds(1, () -> {
                         Inventory inv = Bukkit.createInventory(player, 27, "§c§lJugendschutz");
                         inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", "Lädt..."));
                         ItemMeta meta = inv.getItem(11).getItemMeta();
@@ -143,6 +144,7 @@ public class PlayerManager implements Listener {
                             }
                         }
                         player.openInventory(inv);
+                        });
                     }
                     if (name.getBoolean(28)) {
                         playerData.setVariable("tutorial", "muss");

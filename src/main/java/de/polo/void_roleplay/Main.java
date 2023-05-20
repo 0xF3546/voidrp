@@ -68,6 +68,7 @@ public final class Main extends JavaPlugin {
             Gangwar.loadGangwar();
 
             ServerManager.loadDBPlayer();
+            ServerManager.loadContracts();
 
             TeamSpeak.loadConfig();
         } catch (SQLException e) {
@@ -207,11 +208,14 @@ public final class Main extends JavaPlugin {
         getCommand("farmer").setExecutor(new farmerCommand());
         getCommand("müllmann").setExecutor(new muellmannCommand());
         getCommand("postbote").setExecutor(new postboteCommand());
+        getCommand("contracts").setExecutor(new contractsCommand());
+        getCommand("contract").setExecutor(new contractCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());
         getCommand("gangwar").setTabCompleter(new Gangwar());
         getCommand("navi").setTabCompleter(new Navigation());
+        getCommand("contracts").setTabCompleter(new contractsCommand());
     }
 
 
