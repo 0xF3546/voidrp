@@ -32,41 +32,45 @@ public class contractCommand implements CommandExecutor {
                 if (targetplayer.isOnline()) {
                     int price = Integer.parseInt(args[1]);
                     if (price >= ServerManager.getPayout("kopfgeld")) {
-                        if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
-                            ContractData contractData = ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString());
-                            contractData.setAmount(contractData.getAmount() + price);
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (FactionManager.faction(players).equals("ICA")) {
-                                    players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
+                        if (playerData.getBargeld() >= price) {
+                            if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
+                                ContractData contractData = ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString());
+                                contractData.setAmount(contractData.getAmount() + price);
+                                for (Player players : Bukkit.getOnlinePlayers()) {
+                                    if (FactionManager.faction(players).equals("ICA")) {
+                                        players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
+                                    }
                                 }
-                            }
-                            player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
-                            try {
-                                PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
-                                Statement statement = MySQL.getStatement();
-                                statement.executeUpdate("UPDATE `contract` SET `amount` = " + contractData.getAmount() + " WHERE `uuid` = '" + targetplayer.getUniqueId().toString() + "'");
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
+                                player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
+                                try {
+                                    PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
+                                    Statement statement = MySQL.getStatement();
+                                    statement.executeUpdate("UPDATE `contract` SET `amount` = " + contractData.getAmount() + " WHERE `uuid` = '" + targetplayer.getUniqueId().toString() + "'");
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                ContractData contractData = new ContractData();
+                                contractData.setAmount(price);
+                                contractData.setUuid(targetplayer.getUniqueId().toString());
+                                contractData.setSetter(player.getUniqueId().toString());
+                                ServerManager.contractDataMap.put(targetplayer.getUniqueId().toString(), contractData);
+                                for (Player players : Bukkit.getOnlinePlayers()) {
+                                    if (FactionManager.faction(players).equals("ICA")) {
+                                        players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
+                                    }
+                                }
+                                player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
+                                try {
+                                    PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
+                                    Statement statement = MySQL.getStatement();
+                                    statement.execute("INSERT INTO `contract` (`uuid`, `amount`, `setter`) VALUES ('" + targetplayer.getUniqueId().toString() + "', " + price + ", '" + player.getUniqueId().toString() + "')");
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         } else {
-                            ContractData contractData = new ContractData();
-                            contractData.setAmount(price);
-                            contractData.setUuid(targetplayer.getUniqueId().toString());
-                            contractData.setSetter(player.getUniqueId().toString());
-                            ServerManager.contractDataMap.put(targetplayer.getUniqueId().toString(), contractData);
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (FactionManager.faction(players).equals("ICA")) {
-                                    players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
-                                }
-                            }
-                            player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
-                            try {
-                                PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
-                                Statement statement = MySQL.getStatement();
-                                statement.execute("INSERT INTO `contract` (`uuid`, `amount`, `setter`) VALUES ('" + targetplayer.getUniqueId().toString() + "', " + price + ", '" + player.getUniqueId().toString() + "')");
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
                         }
                     } else {
                         player.sendMessage(Main.error + "Die Mindestsumme beträgt " + ServerManager.getPayout("kopfgeld") + "$.");

@@ -4,6 +4,8 @@ import de.polo.void_roleplay.DataStorage.ContractData;
 import de.polo.void_roleplay.DataStorage.NaviData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.MySQl.MySQL;
+import de.polo.void_roleplay.Utils.FactionManager;
 import de.polo.void_roleplay.Utils.LocationManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import de.polo.void_roleplay.Utils.ServerManager;
@@ -16,6 +18,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +36,37 @@ public class contractsCommand implements CommandExecutor, TabCompleter {
                     for (ContractData contractData : ServerManager.contractDataMap.values()) {
                         OfflinePlayer offPLayer = Bukkit.getOfflinePlayer(UUID.fromString(contractData.getUuid()));
                         player.sendMessage("§8 ➥ §e" + offPLayer.getName() + "§8 | §e" + contractData.getAmount() + "$");
+                    }
+                }
+                if (args[0].equalsIgnoreCase("remove")) {
+                    if (args.length >= 2) {
+                        Player targetplayer = Bukkit.getPlayer(args[1]);
+                        if (targetplayer.isOnline()) {
+                            if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
+                                if (playerData.getFactionGrade() >= 7) {
+                                    for (Player players : Bukkit.getOnlinePlayers()) {
+                                        if (FactionManager.faction(players).equals("ICA")) {
+                                            players.sendMessage("§8[§cKopfgeld§8]§e " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " §7hat das Kopfgeld von §e" + targetplayer.getName() + " §7gelöscht.");
+                                        }
+                                    }
+                                    ServerManager.contractDataMap.remove(targetplayer.getUniqueId().toString());
+                                    try {
+                                        Statement statement = MySQL.getStatement();
+                                        statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + targetplayer.getUniqueId().toString() + "'");
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                } else {
+                                    player.sendMessage(Main.error_nopermission);
+                                }
+                            } else {
+                                player.sendMessage(Main.error + targetplayer.getName() + " hat kein Kopfgeld.");
+                            }
+                        } else {
+                            player.sendMessage(Main.error + args[1] + " ist nicht online!");
+                        }
+                    } else {
+                        player.sendMessage(Main.error + "Syntax-Fehler: /contracts remove [Spieler]");
                     }
                 }
             } else {
@@ -54,6 +89,7 @@ public class contractsCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
             suggestions.add("all");
+            suggestions.add("remove");
 
             return suggestions;
         }

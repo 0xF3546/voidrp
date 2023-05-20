@@ -1,11 +1,15 @@
 package de.polo.void_roleplay.Listener;
 
+import de.polo.void_roleplay.DataStorage.ContractData;
 import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
+import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.DeathUtil;
 import de.polo.void_roleplay.PlayerUtils.FFA;
+import de.polo.void_roleplay.Utils.FactionManager;
 import de.polo.void_roleplay.Utils.ItemManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
+import de.polo.void_roleplay.Utils.ServerManager;
 import de.polo.void_roleplay.commands.aduty;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,6 +23,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class deathListener implements Listener {
     @EventHandler
@@ -50,6 +57,23 @@ public class deathListener implements Listener {
                 Entity entity = item;
                 entity.setCustomName("§7" + player.getName());
                 entity.setCustomNameVisible(true);
+                if (ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null) {
+                    ContractData contractData = ServerManager.contractDataMap.get(player.getUniqueId().toString());
+                    for (Player players : Bukkit.getOnlinePlayers()) {
+                        if (FactionManager.faction(players).equals("ICA")) {
+                            players.sendMessage("§8[§cKopfgeld§8]§e " + FactionManager.getPlayerFactionRankName(player.getKiller()) + " " + player.getKiller().getName() + " §7hat sich das Kopfgeld von §e" + player.getName() + " §7geholt. §8(§a+" + contractData.getAmount() + "$§8)");
+                        }
+                    }
+                    PlayerManager.addExp(player.getKiller(), Main.random(10, 30));
+                    ServerManager.contractDataMap.remove(player.getUniqueId().toString());
+                    try {
+                        Statement statement = MySQL.getStatement();
+                        statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                        FactionManager.addFactionMoney("ICA", contractData.getAmount(), "Kopfgeld " + player.getName());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 
             }
         }
