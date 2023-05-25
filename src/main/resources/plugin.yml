@@ -140,3 +140,4 @@ commands:
     aliases: kopfgelder
   contract:
     aliases: kopfgeld
+  nachrichten:

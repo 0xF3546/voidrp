@@ -4,6 +4,7 @@ import de.polo.void_roleplay.DataStorage.PlayerData;
 import de.polo.void_roleplay.Main;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,11 +18,9 @@ public class respawnListener implements Listener {
         if (playerData.isDead()) {
             if (playerData.getVariable("current_lobby") == null) {
                 event.setRespawnLocation(playerData.getDeathLocation());
-                player.sendTitle("§cDu bist gestorben.", null, 1, 6, 1);
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    players.hidePlayer(Main.plugin, player);
-                }
-                PlayerManager.setPlayerMove(player, false);
+                player.sendTitle("§cDu bist gestorben.", null, 1, 12, 1);
+                player.setGameMode(GameMode.SPECTATOR);
+                player.setFlySpeed(0);
             }
         }
     }

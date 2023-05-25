@@ -44,8 +44,12 @@ public class reviveCommand implements CommandExecutor {
                     if (item.getItemStack().getType() == Material.PLAYER_HEAD) {
                         double distance = item.getLocation().distance(player.getLocation());
                         if (distance < nearestDistance) {
-                            nearestSkull = item;
-                            nearestDistance = distance;
+                            if (!item.getCustomName().contains("§8")) {
+                                nearestSkull = item;
+                                nearestDistance = distance;
+                            } else {
+                                player.sendMessage(Main.error + "Du kannst diesen Spieler nicht wiederbeleben.");
+                            }
                         }
                     }
                 }

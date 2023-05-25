@@ -35,12 +35,6 @@ public class  JoinEvent implements Listener {
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             Vehicles.spawnPlayerVehicles(player);
             ServerManager.updateTablist(null);
-            for (Player players : Bukkit.getOnlinePlayers()) {
-                if (DeathUtil.deathPlayer != null) continue;
-                if (DeathUtil.deathPlayer.get(players.getUniqueId().toString())) {
-                    player.hidePlayer(Main.plugin, players);
-                }
-            }
         } else {
             player.sendMessage(" ");
             player.sendMessage("§6Void Roleplay §8»§7 Herzlich Wilkommen auf Void Roleplay - Roleplay mit Stil, " + player.getName() + ".");

@@ -109,6 +109,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FFA(), this);
         getServer().getPluginManager().registerEvents(new BankingUtils(), this);
         getServer().getPluginManager().registerEvents(new tutorial(), this);
+        getServer().getPluginManager().registerEvents(new nachrichtenCommand(), this);
     }
 
     private void registerCommands() {
@@ -210,12 +211,14 @@ public final class Main extends JavaPlugin {
         getCommand("postbote").setExecutor(new postboteCommand());
         getCommand("contracts").setExecutor(new contractsCommand());
         getCommand("contract").setExecutor(new contractCommand());
+        getCommand("nachrichten").setExecutor(new nachrichtenCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());
         getCommand("gangwar").setTabCompleter(new Gangwar());
         getCommand("navi").setTabCompleter(new Navigation());
         getCommand("contracts").setTabCompleter(new contractsCommand());
+        getCommand("personalausweis").setTabCompleter(new personalausweisCommand());
     }
 
 

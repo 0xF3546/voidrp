@@ -8,9 +8,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
-public class personalausweisCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class personalausweisCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -54,5 +59,16 @@ public class personalausweisCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Du besitzt noch keinen Personalausweis.");
         }
         return false;
+    }
+    @Nullable
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            suggestions.add("show");
+
+            return suggestions;
+        }
+        return null;
     }
 }

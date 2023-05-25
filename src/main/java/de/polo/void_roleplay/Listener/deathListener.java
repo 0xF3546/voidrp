@@ -55,8 +55,6 @@ public class deathListener implements Listener {
                 Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
                 DeathUtil.deathSkulls.put(player.getUniqueId().toString(), item);
                 Entity entity = item;
-                entity.setCustomName("§7" + player.getName());
-                entity.setCustomNameVisible(true);
                 if (ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null) {
                     ContractData contractData = ServerManager.contractDataMap.get(player.getUniqueId().toString());
                     for (Player players : Bukkit.getOnlinePlayers()) {
@@ -73,6 +71,14 @@ public class deathListener implements Listener {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+                    entity.setCustomName("§8" + player.getName());
+                    entity.setCustomNameVisible(true);
+                    DeathUtil.setHitmanDeath(player);
+                    player.sendMessage("§8[§cKopfgeld§8]§7 Ein Kopfgeldjäger hat dich getötet.");
+                    player.sendMessage("§8 ➥ §bInfo§8:§f Du kannst nun nicht mehr wiederbelebt werden & bist 5 Minuten länger tot.");
+                } else {
+                    entity.setCustomName("§7" + player.getName());
+                    entity.setCustomNameVisible(true);
                 }
 
             }

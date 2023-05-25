@@ -887,5 +887,20 @@ public class InventoryClickListener implements Listener {
                     break;
             }
         }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "news")) {
+            event.setCancelled(true);
+            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                case GREEN_DYE:
+                    playerData.setVariable("chatblock", "werbung");
+                    player.sendMessage("§8[§2Werbung§8]§7 Gib nun deine Nachricht in den Chat ein.");
+                    player.closeInventory();
+                    break;
+                case YELLOW_DYE:
+                    playerData.setVariable("chatblock", "news");
+                    player.sendMessage("§8[§6News§8]§7 Gib nun deine Nachricht in den Chat ein.");
+                    player.closeInventory();
+                    break;
+            }
+        }
     }
 }

@@ -101,9 +101,12 @@ public class LocationManager {
             if (name.contains("isShop")) {
                 p.sendMessage(Main.gamedesign_prefix + " Shop regestriert.");
                 statement.executeUpdate("INSERT INTO shops (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isShop", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
-            }  else if (name.contains("isGas")) {
+            } else if (name.contains("isGas")) {
                 p.sendMessage(Main.gamedesign_prefix + " Tankstelle regestriert.");
                 statement.executeUpdate("INSERT INTO gasstations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGas", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
+            }  else if (name.contains("isFFA")) {
+                p.sendMessage(Main.gamedesign_prefix + " FFA-Spawn regestriert.");
+                statement.executeUpdate("INSERT INTO ffa_spawnpoints (lobby_type, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isFFA", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else {
                 statement.executeUpdate("INSERT INTO locations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             }

@@ -6,6 +6,7 @@ import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.Utils.LocationManager;
 import de.polo.void_roleplay.Utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -27,20 +28,19 @@ public class DeathUtil {
             deathPlayer.put(player.getUniqueId().toString(), true);
             try {
                 Statement statement = MySQL.getStatement();
-                assert statement != null;
-                String uuid = player.getUniqueId().toString();
-                statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + uuid + "'");
+                statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                        for (Player players : Bukkit.getOnlinePlayers()) {
+                            PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                             if (!playerData.isDead()) cancel();
                             playerData.setDeathTime(playerData.getDeathTime() - 1);
-                            player.sendMessage(Main.debug_prefix + "noch " + playerData.getDeathTime());
+                            String actionBarText = "§7Du bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
+                            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                             if (playerData.getDeathTime() <= 0) {
-                                playerData.setDeathTime(1440);
-                                despawnPlayer(player);
+                                playerData.setDeathTime(600);
+                                despawnPlayer(players);
                                 cancel();
                             }
                         }
@@ -53,20 +53,26 @@ public class DeathUtil {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                    for (Player players : Bukkit.getOnlinePlayers()) {
+                        PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                         if (!playerData.isDead()) cancel();
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
-                        player.sendMessage(Main.debug_prefix + "> noch " + playerData.getDeathTime());
+                        String actionBarText = "§7Du bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
+                        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                         if (playerData.getDeathTime() <= 0) {
-                            playerData.setDeathTime(1440);
-                            despawnPlayer(player);
+                            playerData.setDeathTime(600);
+                            despawnPlayer(players);
                             cancel();
                         }
                     }
                 }
             }.runTaskTimer(Main.getInstance(), 20, 20);
         }
+    }
+
+    public static void setHitmanDeath(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setDeathTime(playerData.getDeathTime() + 300);
     }
 
     public static void killPlayer(Player player) {
@@ -80,11 +86,12 @@ public class DeathUtil {
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
+        player.setGameMode(GameMode.SURVIVAL);
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
-            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 1440 WHERE `uuid` = '" + uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 600 WHERE `uuid` = '" + uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -106,7 +113,7 @@ public class DeathUtil {
             Statement statement = MySQL.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
-            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 1440 WHERE `uuid` = '" + uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 600 WHERE `uuid` = '" + uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
