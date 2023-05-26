@@ -146,19 +146,22 @@ public class TabletUtils implements Listener {
         }
     }
 
-    public static void openAktenList(Player player, int page) throws SQLException {
+    public static void openAktenList(Player player, int page, String search) throws SQLException {
         if (page <= 0) return;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.setVariable("current_app", "aktenlist");
         playerData.setIntVariable("current_page", page);
         Statement statement = MySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten`");
+        ResultSet result = null;
+        if (search == null) {
+            result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten`");
+        } else {
+            result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten` WHERE `akte` LIKE '%" + search + "%' ");
+        }
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
         int i = 0;
         while (result.next()) {
-            if (i == 26 && i == 18 && i == 22) {
-                i++;
-            } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
+            if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
                 inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "Lädt..."));
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 NamespacedKey akte = new NamespacedKey(Main.plugin, "akte");
@@ -172,10 +175,11 @@ public class TabletUtils implements Listener {
                 Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
             }
-            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
         }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Akte suchen...", null));
         result.close();
         player.openInventory(inv);
     }
@@ -237,5 +241,18 @@ public class TabletUtils implements Listener {
         inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
         player.openInventory(inv);
 
+    }
+
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) throws SQLException {
+        if (event.getSubmitTo().equals("aktensearch")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            openAktenList(event.getPlayer(), 1, event.getMessage());
+            event.end();
+        }
     }
 }
