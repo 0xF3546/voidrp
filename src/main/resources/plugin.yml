@@ -42,8 +42,8 @@ commands:
   playerinfo:
     aliases: pi
   me:
-  broadcast:
-    aliases: bc
+  announce:
+    aliases: ac
   gov:
   tickets:
   team:
@@ -141,3 +141,6 @@ commands:
   contract:
     aliases: kopfgeld
   nachrichten:
+  businesschat:
+    aliases: bc
+  leadbusiness:

@@ -45,6 +45,8 @@ public class PlayerData {
     private String job;
     private int hours;
     private int minutes;
+    private String business;
+    private int business_grade;
 
     public PlayerData() {
     }
@@ -370,5 +372,21 @@ public class PlayerData {
 
     public void setMinutes(int minutes) {
         this.minutes = minutes;
+    }
+
+    public String getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(String business) {
+        this.business = business;
+    }
+
+    public int getBusiness_grade() {
+        return business_grade;
+    }
+
+    public void setBusiness_grade(int business_grade) {
+        this.business_grade = business_grade;
     }
 }

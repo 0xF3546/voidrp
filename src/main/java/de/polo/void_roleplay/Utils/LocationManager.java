@@ -24,7 +24,6 @@ public class LocationManager {
     public static Map<Integer, GasStationData> gasStationDataMap = new HashMap<>();
     public static Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
-    public static Object[][] gasstations;
     public static void loadLocations() throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM locations");

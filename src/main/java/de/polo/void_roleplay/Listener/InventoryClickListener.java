@@ -255,7 +255,7 @@ public class InventoryClickListener implements Listener {
                         break;
                     case PAPER:
                         playerData.setVariable("current_akte", null);
-                        TabletUtils.openAktenList(player, 1);
+                        TabletUtils.openAktenList(player, 1, null);
                         break;
                     case REDSTONE:
                         TabletUtils.openTablet(player);
@@ -282,7 +282,7 @@ public class InventoryClickListener implements Listener {
                         TabletUtils.openPlayerAkte(player, 1);
                         break;
                     case GREEN_DYE:
-                        TabletUtils.openAktenList(player, 1);
+                        TabletUtils.openAktenList(player, 1, null);
                         break;
                     case REDSTONE:
                         TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page"));
@@ -306,10 +306,10 @@ public class InventoryClickListener implements Listener {
             } else if (Objects.equals(playerData.getVariable("current_app"), "aktenlist")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case NETHER_WART:
-                        TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") - 1);
+                        TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") - 1, null);
                         break;
                     case GOLD_NUGGET:
-                        TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") + 1);
+                        TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") + 1, null);
                         break;
                     case PAPER:
                         if (playerData.getVariable("current_akte") != null) {
@@ -328,6 +328,11 @@ public class InventoryClickListener implements Listener {
                         break;
                     case REDSTONE:
                         TabletUtils.openApp(player, "aktenapp");
+                        break;
+                    case CLOCK:
+                        playerData.setVariable("chatblock", "aktensearch");
+                        player.sendMessage("§8[§9Akte§8]§7 Gib nun die Akte ein.");
+                        player.closeInventory();
                         break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "player_aktenlist")) {
@@ -351,7 +356,7 @@ public class InventoryClickListener implements Listener {
                         }
                         break;
                     case REDSTONE:
-                        TabletUtils.openAktenList(player, 1);
+                        TabletUtils.openAktenList(player, 1, null);
                         break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "gefängnisapp")) {

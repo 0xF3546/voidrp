@@ -32,6 +32,7 @@ public final class Main extends JavaPlugin {
     public static String error = "§8[§cFehler§8] §7";
     public static String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static String admin_info = "§8[§9§lINFO§8] §cAdmin§8 » §7";
+    public static String business_prefix = "§8[§6Business§8]§7 ";
 
     public static CooldownManager cooldownManager = new CooldownManager();
 
@@ -61,6 +62,7 @@ public final class Main extends JavaPlugin {
             ServerManager.loadRanks();
             LocationManager.loadLocations();
             FactionManager.loadFactions();
+            BusinessManager.loadBusinesses();
             Shop.loadShopItems();
             StaatUtil.loadJail();
             Housing.loadHousing();
@@ -134,7 +136,7 @@ public final class Main extends JavaPlugin {
         getCommand("adminrevive").setExecutor(new adminReviveCommand());
         getCommand("playerinfo").setExecutor(new playerinfoCommand());
         getCommand("me").setExecutor(new meCommand());
-        getCommand("broadcast").setExecutor(new broadcastCommand());
+        getCommand("announce").setExecutor(new broadcastCommand());
         getCommand("gov").setExecutor(new govCommand());
         getCommand("tickets").setExecutor(new ticketsCommand());
         getCommand("team").setExecutor(new teamCommand());
@@ -212,6 +214,8 @@ public final class Main extends JavaPlugin {
         getCommand("contracts").setExecutor(new contractsCommand());
         getCommand("contract").setExecutor(new contractCommand());
         getCommand("nachrichten").setExecutor(new nachrichtenCommand());
+        getCommand("businesschat").setExecutor(new businesschatCommand());
+        getCommand("leadbusiness").setExecutor(new leadbusinessCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());
