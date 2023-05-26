@@ -156,7 +156,7 @@ public class TabletUtils implements Listener {
         if (search == null) {
             result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten`");
         } else {
-            result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten` WHERE `akte` LIKE '%" + search + "%' ");
+            result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten` WHERE LOWER(`akte`) LIKE LOWER('%" + search + "%') ");
         }
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
         int i = 0;

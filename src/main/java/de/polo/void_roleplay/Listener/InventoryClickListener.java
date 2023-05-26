@@ -383,6 +383,28 @@ public class InventoryClickListener implements Listener {
                     case RED_STAINED_GLASS_PANE:
                         event.getCurrentItem().setType(Material.GREEN_STAINED_GLASS_PANE);
                         ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        meta.setDisplayName("§aFlugmodus abschalten");
+                        event.getCurrentItem().setItemMeta(meta);
+                        playerData.setFlightmode(true);
+                        break;
+                    case GREEN_STAINED_GLASS_PANE:
+                        event.getCurrentItem().setType(Material.RED_STAINED_GLASS_PANE);
+                        ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
+                        itemMeta.setDisplayName("§cFlugmodus einschalten");
+                        event.getCurrentItem().setItemMeta(itemMeta);
+                        playerData.setFlightmode(false);
+                        break;
+                }
+                switch (event.getSlot()) {
+                    case 10:
+                        PhoneUtils.openContacts(player, 1, null);
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("contacts")) {
+                switch (event.getCurrentItem().getType()) {
+                    case RED_STAINED_GLASS_PANE:
+                        event.getCurrentItem().setType(Material.GREEN_STAINED_GLASS_PANE);
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
                         meta.setDisplayName("§a§lGeändert!");
                         event.getCurrentItem().setItemMeta(meta);
                         playerData.setFlightmode(true);
@@ -393,6 +415,47 @@ public class InventoryClickListener implements Listener {
                         itemMeta.setDisplayName("§a§lGeändert!");
                         event.getCurrentItem().setItemMeta(itemMeta);
                         playerData.setFlightmode(false);
+                        break;
+                    case REDSTONE:
+                        PhoneUtils.openPhone(player);
+                        break;
+                    case NETHER_WART:
+                        PhoneUtils.openContacts(player, playerData.getIntVariable("current_page") - 1, null);
+                        break;
+                    case GOLD_NUGGET:
+                        PhoneUtils.openContacts(player, playerData.getIntVariable("current_page") + 1, null);
+                        break;
+                    case PLAYER_HEAD:
+                        if (!(event.getSlot() == 22)) PhoneUtils.editContact(player, event.getCurrentItem(), false);
+                        break;
+                    case CLOCK:
+                        playerData.setVariable("chatblock", "contactsearch");
+                        player.closeInventory();
+                        player.sendMessage("§8[§6Kontakte§8]§7 Gib nun den Namen des Kontaktes ein.");
+                        break;
+                }
+                switch (event.getSlot()) {
+                    case 22:
+                        playerData.setIntVariable("current_contact_number", 0);
+                        playerData.setVariable("current_contact_name", "&6Name");
+                        PhoneUtils.editContact(player, null, true);
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("edit_contact")) {
+                switch (event.getCurrentItem().getType()) {
+                    case REDSTONE:
+                        PhoneUtils.openContacts(player, 1, null);
+                        break;
+                }
+                switch (event.getSlot()) {
+                    case 15:
+                        player.performCommand("call " + playerData.getIntVariable("current_contact_number"));
+                        player.closeInventory();
+                        break;
+                    case 16:
+                        player.closeInventory();
+                        playerData.setVariable("chatblock", "sendsms");
+                        player.sendMessage("§8[§6SMS§8]§7 Gib nun die SMS ein.");
                         break;
                 }
             }
@@ -594,28 +657,34 @@ public class InventoryClickListener implements Listener {
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "navi")) {
             event.setCancelled(true);
-            int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-            for (NaviData naviData : LocationManager.naviDataMap.values()) {
-                if (naviData.getId() == id) {
-                    if (naviData.isGroup()) {
-                        SoundManager.clickSound(player);
-                        Inventory inv = Bukkit.createInventory(player, 27, "§8 » " + naviData.getName().replace("&", "§"));
-                        int i = 0;
-                        for (NaviData newNavi : LocationManager.naviDataMap.values()) {
-                            if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
-                                inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), "§7 ➥ §e" + (int) LocationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m"));
-                                ItemMeta meta = inv.getItem(i).getItemMeta();
-                                meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, newNavi.getId());
-                                inv.getItem(i).setItemMeta(meta);
-                                i++;
+            if (event.getSlot() == 22) {
+                playerData.setVariable("chatblock", "gpssearch");
+                player.sendMessage("§8[§eGPS§8]§7 Gib nun den gesuchten GPS Punkt ein.");
+                player.closeInventory();
+            } else {
+                int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                for (NaviData naviData : LocationManager.naviDataMap.values()) {
+                    if (naviData.getId() == id) {
+                        if (naviData.isGroup()) {
+                            SoundManager.clickSound(player);
+                            Inventory inv = Bukkit.createInventory(player, 27, "§8 » " + naviData.getName().replace("&", "§"));
+                            int i = 0;
+                            for (NaviData newNavi : LocationManager.naviDataMap.values()) {
+                                if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
+                                    inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), "§7 ➥ §e" + (int) LocationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m"));
+                                    ItemMeta meta = inv.getItem(i).getItemMeta();
+                                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, newNavi.getId());
+                                    inv.getItem(i).setItemMeta(meta);
+                                    i++;
+                                }
                             }
+                            player.openInventory(inv);
+                        } else {
+                            player.sendMessage("§8[§6Navi§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
+                            LocationData locationData = LocationManager.locationDataMap.get(" " + naviData.getLocation());
+                            Navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                            player.closeInventory();
                         }
-                        player.openInventory(inv);
-                    } else {
-                        player.sendMessage("§8[§6Navi§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
-                        LocationData locationData = LocationManager.locationDataMap.get(" " + naviData.getLocation());
-                        Navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
-                        player.closeInventory();
                     }
                 }
             }

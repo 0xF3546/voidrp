@@ -112,6 +112,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BankingUtils(), this);
         getServer().getPluginManager().registerEvents(new tutorial(), this);
         getServer().getPluginManager().registerEvents(new nachrichtenCommand(), this);
+        getServer().getPluginManager().registerEvents(new Navigation(), this);
     }
 
     private void registerCommands() {

@@ -8,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -20,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Navigation implements CommandExecutor, TabCompleter {
+public class Navigation implements CommandExecutor, TabCompleter, Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -33,10 +35,32 @@ public class Navigation implements CommandExecutor, TabCompleter {
                     createNavi(player, args[0], false);
                 }
             } else {
-                Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6GPS");
-                int i = 0;
-                for (NaviData naviData : LocationManager.naviDataMap.values()) {
-                    if (naviData.isGroup()) {
+                openNavi(player, null);
+            }
+        } else {
+            playerData.setVariable("navi", null);
+            player.sendMessage("§8[§6GPS§8]§e Du hast deine Route gelöscht.");
+        }
+        return false;
+    }
+
+    public void openNavi(Player player, String search) {
+        System.out.println("öffne inv");
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6GPS");
+        int i = 0;
+        for (NaviData naviData : LocationManager.naviDataMap.values()) {
+            if (search == null) {
+                if (naviData.isGroup()) {
+                    inv.setItem(i, ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null));
+                    ItemMeta meta = inv.getItem(i).getItemMeta();
+                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, naviData.getId());
+                    inv.getItem(i).setItemMeta(meta);
+                    i++;
+                }
+            } else {
+                if (naviData.getName().toLowerCase().contains(search.toLowerCase())) {
+                    if (!naviData.isGroup()) {
                         inv.setItem(i, ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null));
                         ItemMeta meta = inv.getItem(i).getItemMeta();
                         meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, naviData.getId());
@@ -44,14 +68,11 @@ public class Navigation implements CommandExecutor, TabCompleter {
                         i++;
                     }
                 }
-                playerData.setVariable("current_inventory", "navi");
-                player.openInventory(inv);
             }
-        } else {
-            playerData.setVariable("navi", null);
-            player.sendMessage("§8[§6GPS§8]§e Du hast deine Route gelöscht.");
         }
-        return false;
+        inv.setItem(22, ItemManager.createItem(Material.CLOCK, 1, 0, "§7GPS Punkt suchen...", null));
+        playerData.setVariable("current_inventory", "navi");
+        player.openInventory(inv);
     }
 
     public static void createNaviByCord(Player player, int x, int y, int z) {
@@ -139,5 +160,19 @@ public class Navigation implements CommandExecutor, TabCompleter {
             return suggestions;
         }
         return null;
+    }
+
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo().equals("gpssearch")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            openNavi(event.getPlayer(), event.getMessage());
+            System.out.println("navi öfffnennn");
+            event.end();
+        }
     }
 }
