@@ -107,7 +107,7 @@ public class PhoneUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void editContact(Player player, ItemStack stack, boolean newContact) {
+    public static void editContact(Player player, ItemStack stack, boolean newContact, boolean canSave) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         System.out.println(newContact);
         playerData.setVariable("current_app", "edit_contact");
@@ -123,14 +123,19 @@ public class PhoneUtils implements Listener {
                     Statement statement = MySQL.getStatement();
                     ResultSet result = statement.executeQuery("SELECT * FROM `phone_contacts` WHERE `contact_uuid` = '" + uuid + "' AND `uuid` = '" + player.getUniqueId() + "'");
                     if (result.next()) {
-                        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt§8:§e " + targetplayer.getName());
+                        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt§8:§e " + result.getString(3).replace("&", "§"));
                         inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8", null));
-                        inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§eNummer", "§8 ➥ §7" + result.getInt(4)));
-                        inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + result.getString(3).replace("&", "§")));
                         inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=", 1, 0, "§aAnrufen", null));
                         inv.setItem(16, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachricht schreiben", null));
                         inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
-                        playerData.setIntVariable("current_contact_number", result.getInt(4));
+                        if (!canSave) playerData.setIntVariable("current_contact_number", result.getInt(4));
+                        if (!canSave) playerData.setVariable("current_contact_name", result.getString(3));
+                        inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§eNummer", "§8 ➥ §7" + playerData.getIntVariable("current_contact_number")));
+                        inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").replace("&", "§")));
+                        inv.setItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c§lKontakt löschen", null));
+                        if (canSave) inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
+                        playerData.setIntVariable("current_contact_id", result.getInt(1));
+                        playerData.setVariable("current_contact_uuid", targetplayer.getUniqueId().toString());
                         for (int i = 0; i < 27; i++) {
                             if (inv.getItem(i) == null)
                                 inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
@@ -146,10 +151,12 @@ public class PhoneUtils implements Listener {
             }
         } else {
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt erstellen");
+            playerData.setIntVariable("current_contact_id", 0);
             inv.setItem(4, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§8", null));
             inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§eNummer", "§8 ➥ §7" + playerData.getIntVariable("current_contact_number")));
             inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").replace("&", "§")));
             inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null)
                     inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
@@ -333,6 +340,34 @@ public class PhoneUtils implements Listener {
                 return;
             }
             event.getPlayer().performCommand("sms " + event.getPlayerData().getIntVariable("current_contact_number") + " " + event.getMessage());
+            event.end();
+        }
+        if (event.getSubmitTo().equals("changename")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            event.getPlayerData().setVariable("current_contact_name", event.getMessage());
+            if (event.getPlayerData().getIntVariable("current_contact_id") == 0) {
+                editContact(event.getPlayer(), null, true, true);
+            } else {
+                editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8", null), false, true);
+            }
+            event.end();
+        }
+        if (event.getSubmitTo().equals("changenumber")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            event.getPlayerData().setIntVariable("current_contact_number", Integer.parseInt(event.getMessage()));
+            if (event.getPlayerData().getIntVariable("current_contact_id") == 0) {
+                editContact(event.getPlayer(), null, true, true);
+            } else {
+                editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8", null), false, true);
+            }
             event.end();
         }
     }

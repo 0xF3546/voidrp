@@ -426,7 +426,7 @@ public class InventoryClickListener implements Listener {
                         PhoneUtils.openContacts(player, playerData.getIntVariable("current_page") + 1, null);
                         break;
                     case PLAYER_HEAD:
-                        if (!(event.getSlot() == 22)) PhoneUtils.editContact(player, event.getCurrentItem(), false);
+                        if (!(event.getSlot() == 22)) PhoneUtils.editContact(player, event.getCurrentItem(), false, false);
                         break;
                     case CLOCK:
                         playerData.setVariable("chatblock", "contactsearch");
@@ -438,12 +438,53 @@ public class InventoryClickListener implements Listener {
                     case 22:
                         playerData.setIntVariable("current_contact_number", 0);
                         playerData.setVariable("current_contact_name", "&6Name");
-                        PhoneUtils.editContact(player, null, true);
+                        PhoneUtils.editContact(player, null, true, true);
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("edit_contact")) {
                 switch (event.getCurrentItem().getType()) {
                     case REDSTONE:
+                        PhoneUtils.openContacts(player, 1, null);
+                        break;
+                    case BOOK:
+                        playerData.setVariable("chatblock", "changenumber");
+                        player.sendMessage("§8[§6Kontakte§8]§7 Gib nun die Nummer ein.");
+                        player.closeInventory();
+                        break;
+                    case PAPER:
+                        playerData.setVariable("chatblock", "changename");
+                        player.sendMessage("§8[§6Kontakte§8]§7 Gib nun den Namen ein ein.");
+                        player.sendMessage("§8 ➥ §bInfo§8:§f Nutze \"&\" Zeichen um Farben zu verwenden.");
+                        player.closeInventory();
+                        break;
+                    case EMERALD:
+                        if (!playerData.getVariable("current_contact_name").equals("&6Name") && playerData.getIntVariable("current_contact_number") != 0) {
+                            if (playerData.getIntVariable("current_contact_id") == 0) {
+                                Statement statement = MySQL.getStatement();
+                                String uuid = null;
+                                ResultSet res = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `id` = " + playerData.getIntVariable("current_contact_number"));
+                                if (res.next()) {
+                                    uuid = res.getString(1);
+                                    statement.execute("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId() + "', '" + playerData.getVariable("current_contact_name") + "', " + playerData.getIntVariable("current_contact_number") + ", '" + uuid + "')");
+                                    player.sendMessage("§8[§6Kontakte§8]§a Nummer " + playerData.getIntVariable("current_contact_number") + "§7 unter " + playerData.getVariable("current_contact_name").replace("&", "§") + "§7 eingespeichert.");
+                                    PhoneUtils.openContacts(player, 1, null);
+                                } else {
+                                    player.sendMessage("§8[§6Kontakte§8]§c Nummer konnte nicht gefunden werden.");
+                                }
+                            } else {
+                                Statement statement = MySQL.getStatement();
+                                statement.executeUpdate("UPDATE `phone_contacts` SET `contact_name` = '" + playerData.getVariable("current_contact_name") + "', `contact_number` = " + playerData.getIntVariable("current_contact_number") + " WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
+                                player.sendMessage("§8[§6Kontakte§8]§7 Kontakt " + playerData.getVariable("current_contact_name").replace("&", "§") + "§7 angepasst.");
+                                PhoneUtils.openContacts(player, 1, null);
+                            }
+                        } else {
+                            player.sendMessage("§8[§6Kontakte§8]§7 Gib bitte Namen & Nummer an.");
+                        }
+                        break;
+                    case RED_DYE:
+                        Statement statement = MySQL.getStatement();
+                        statement.execute("DELETE FROM `phone_contacts` WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
+                        player.sendMessage("§8[§6Kontakte§8]§c Kontakt gelöscht.");
                         PhoneUtils.openContacts(player, 1, null);
                         break;
                 }
