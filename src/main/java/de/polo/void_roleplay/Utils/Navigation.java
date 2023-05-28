@@ -85,6 +85,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
 
             @Override
             public void run() {
+                if (!player.isOnline()) this.cancel();
                 if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("navi") != null) {
                     Vector direction = targetLocation.clone().subtract(player.getEyeLocation()).toVector().normalize();
                     Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(progress));
@@ -121,6 +122,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
 
                     @Override
                     public void run() {
+                        if (!player.isOnline()) this.cancel();
                         if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("navi") != null) {
                             Vector direction = targetLocation.clone().subtract(player.getEyeLocation()).toVector().normalize();
                             Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(progress));

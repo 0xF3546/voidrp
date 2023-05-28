@@ -590,6 +590,9 @@ public class InventoryClickListener implements Listener {
                         player.closeInventory();
                         player.performCommand("call " + Integer.parseInt(playerData.getVariable("current_phone_callnumber")));
                         break;
+                    case 45:
+                        PhoneUtils.openPhone(player);
+                        break;
                 }
             }
         }

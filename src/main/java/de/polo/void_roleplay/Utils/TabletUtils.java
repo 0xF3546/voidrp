@@ -217,7 +217,7 @@ public class TabletUtils implements Listener {
     public static void openJailApp(Player player, int page) {
         if (page <= 0) return;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        if (!FactionManager.faction(player).equals("FBI") || !FactionManager.faction(player).equals("Polizei")) return;
         playerData.setVariable("current_inventory", "tablet");
         playerData.setVariable("current_app", "gefängnisapp");
         playerData.setIntVariable("current_page", page);

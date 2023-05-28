@@ -27,7 +27,11 @@ public class memberCommand implements CommandExecutor {
             for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
                 if (factionPlayerData.getFaction().equals(playerData.getFaction())) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(factionPlayerData.getUuid()));
-                    player.sendMessage("§8 ➥ §e" + offlinePlayer.getName() + "§8 | §eRang " + factionPlayerData.getFaction_grade());
+                    if (offlinePlayer.isOnline()) {
+                        player.sendMessage("§8 ➥ §a" + offlinePlayer.getName() + "§8 | §aRang " + factionPlayerData.getFaction_grade());
+                    } else {
+                        player.sendMessage("§8 ➥ §c" + offlinePlayer.getName() + "§8 | §cRang " + factionPlayerData.getFaction_grade());
+                    }
                 }
             }
             player.sendMessage(" ");

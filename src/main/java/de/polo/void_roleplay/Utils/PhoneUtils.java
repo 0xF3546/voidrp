@@ -286,10 +286,10 @@ public class PhoneUtils implements Listener {
         Inventory inv;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (isNew) {
-            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§7 ");
+            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§2 ");
             playerData.setVariable("current_phone_callnumber", "");
         } else {
-            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§7 " + playerData.getVariable("current_phone_callnumber"));
+            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§2 " + playerData.getVariable("current_phone_callnumber"));
         }
         playerData.setVariable("current_app", "phonecall");
         inv.setItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmNmYWZmYThjNmM3ZjYyNjIxNjgyZmU1NjcxMWRjM2I4OTQ0NjVmZGY3YTYyZjQzYjMxYTBkMzQwM2YzNGU3In19fQ==", 1, 0, "§6§l1", null));
@@ -302,6 +302,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(31, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTEwMWQ0YjQ3ZGNjYjc2MTJhYzVlZmRlNWFlMjQ0MWM4MmMzZjBhNjg0MDQxYWVkMzgyNzZkYmRmOTQifX19", 1, 0, "§6§l8", null));
         inv.setItem(32, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE0Njg1NzQ0MWNhYWU2ZTE2YzkyOTZmYjU3MTQ4MmFhNTEzNjI2OGQzOWUzNWI3YWNmYmY1MTM5YTM3ZTAzZCJ9fX0=", 1, 0, "§6§l9", null));
         inv.setItem(40, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJmYTYzYTBhNTQyOGIyNzM0NTNmZmU3ODRkM2U0ODljYmNmNmQxMmI3ODQ1MGEzNTE1NzE2Y2U3MjRmNCJ9fX0=", 1, 0, "§6§l0", null));
+        inv.setItem(45, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
         inv.setItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnrufen", null));
         for (int i = 0; i < 54; i++) {
             if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
