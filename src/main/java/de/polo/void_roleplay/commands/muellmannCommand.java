@@ -101,7 +101,7 @@ public class muellmannCommand implements CommandExecutor {
             quitJob(player, true);
             playerData.getScoreboard().killScoreboard();
             try {
-                PlayerManager.addBankMoney(player, payout);
+                PlayerManager.addBankMoney(player, payout, "Auszahlung Müllmann");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

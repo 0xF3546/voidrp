@@ -116,7 +116,7 @@ public class mineCommand implements CommandExecutor {
         verdienst = verdienst + (diamant * 1);
         exp = (int) (exp + diamant * 1.25);
         try {
-            PlayerManager.addBankMoney(player, verdienst);
+            PlayerManager.addBankMoney(player, verdienst, "Auszahlung Minenarbeiter");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

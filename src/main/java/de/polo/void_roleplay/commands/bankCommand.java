@@ -36,8 +36,8 @@ public class bankCommand implements CommandExecutor {
                                 player.sendMessage("§8§l ➲ §a§l" + amount + "$ eingezahlt.");
                                 player.sendMessage(" ");
                                 player.sendMessage("§8 ➥ §aAlter Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
-                                PlayerManager.removeMoney(player, amount, "Bankauszahlung");
-                                PlayerManager.addBankMoney(player, amount);
+                                PlayerManager.removeMoney(player, amount, "Bankeinzahlung");
+                                PlayerManager.addBankMoney(player, amount, "Bankeinzahlung");
                                 player.sendMessage("§8 ➥ §aNeuer Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
                                 player.sendMessage(" ");
                             }
@@ -70,7 +70,7 @@ public class bankCommand implements CommandExecutor {
                                         player.sendMessage("§8 ➥ §aAlter Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
                                         PlayerManager.removeMoney(player, amount, "Bankauszahlung");
                                         PlayerManager.removeBankMoney(player, amount, "Überweisung " + targetplayer.getName());
-                                        PlayerManager.addBankMoney(targetplayer, amount);
+                                        PlayerManager.addBankMoney(targetplayer, amount, "Überweisung " + player.getName());
                                         targetplayer.sendMessage(Main.bank_prefix + "§c" + player.getName() + "§7 hat dir §c" + amount + "$§7 überwiesen");
                                         player.sendMessage("§8 ➥ §aNeuer Kontostand§8:§7 " + PlayerManager.bank(player) + "$");
                                         player.sendMessage(" ");

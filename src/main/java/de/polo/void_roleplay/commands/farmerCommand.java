@@ -83,7 +83,7 @@ public class farmerCommand implements CommandExecutor {
         playerData.getScoreboard().killScoreboard();
         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
         try {
-            PlayerManager.addBankMoney(player, payout);
+            PlayerManager.addBankMoney(player, payout, "Auszahlung Farmer");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -153,7 +153,7 @@ public class farmerCommand implements CommandExecutor {
             playerData.setIntVariable("weizen", playerData.getIntVariable("weizen") - 1);
             playerData.getScoreboard().updateWeizentransportScoreboard();
             try {
-                PlayerManager.addBankMoney(player, payout);
+                PlayerManager.addBankMoney(player, payout, "Auszahlung Weizentransport");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

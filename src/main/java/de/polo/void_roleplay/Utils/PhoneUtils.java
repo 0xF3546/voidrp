@@ -20,6 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
@@ -44,14 +45,11 @@ public class PhoneUtils implements Listener {
     public static void openPhone(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eHandy");
-        if (playerData.isFlightmode()) {
-            inv.setItem(13, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten", null));
-        } else {
-            inv.setItem(13, ItemManager.createItem(Material.RED_STAINED_GLASS_PANE, 1, 0, "§cFlugmodus einschalten", null));
-        }
         inv.setItem(10, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmViYmJkYmEzNzI5NjNjOWQ2ZDMzMjhjMjliZjEyM2FlMDlkMzBjZTdiYTNhMDU3Y2VkNjA2YzFjODAyOGI3YiJ9fX0=", 1, 0, "§6Kontakte", null));
         inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachrichten", null));
         inv.setItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=", 1, 0, "§aAnrufen", null));
+        inv.setItem(14, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§3Banking", null));
+        inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTRkNDliYWU5NWM3OTBjM2IxZmY1YjJmMDEwNTJhNzE0ZDYxODU0ODFkNWIxYzg1OTMwYjNmOTlkMjMyMTY3NCJ9fX0=", 1, 0, "§7Einstellungen", null));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
                 inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
@@ -59,6 +57,125 @@ public class PhoneUtils implements Listener {
         }
         playerData.setVariable("current_inventory", "handy");
         playerData.setVariable("current_app", null);
+        player.openInventory(inv);
+    }
+
+    public static void openSettings(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §7Einstellungen");
+        if (playerData.isFlightmode()) {
+            inv.setItem(10, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten", null));
+        } else {
+            inv.setItem(10, ItemManager.createItem(Material.RED_STAINED_GLASS_PANE, 1, 0, "§cFlugmodus einschalten", null));
+        }
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        for (int i = 0; i < 27; i++) {
+            if (inv.getItem(i) == null) {
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            }
+        }
+        playerData.setVariable("current_app", "settings");
+        player.openInventory(inv);
+    }
+
+    public static void openBanking(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §3Banking");
+        inv.setItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", "§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$"));
+        inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bTransaktionen", "§8 ➥ §7Alle Transaktionen der Letzten 7 Tage"));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        for (int i = 0; i < 27; i++) {
+            if (inv.getItem(i) == null) {
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            }
+        }
+        playerData.setVariable("current_app", "banking");
+        player.openInventory(inv);
+    }
+
+    public static void openTransactions(Player player, int page, String search) throws SQLException {
+        if (page <= 0) return;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setVariable("current_app", "transactions");
+        playerData.setIntVariable("current_page", page);
+        Statement statement = MySQL.getStatement();
+        ResultSet result = null;
+        if (search == null) {
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
+        } else {
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE LOWER(`reason`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
+        }
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §bTransaktionen §8- §bSeite§8:§7 " + page);
+        int i = 0;
+        int rows = 0;
+        while (result.next()) {
+            rows++;
+            if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
+                if (result.getBoolean(2)) {
+                    inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §aEinzahlung", "Lädt..."));
+                    ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
+                    assert meta != null;
+                    meta.setLore(Arrays.asList("§8 ➥ §7Höhe§8:§a +" + result.getInt(4) + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
+                    Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                } else {
+                    inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §cAuszahlung", "Lädt..."));
+                    ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
+                    assert meta != null;
+                    meta.setLore(Arrays.asList("§8 ➥ §7Höhe§8:§c -" + result.getInt(4) + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
+                    Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                }
+                i++;
+            }
+        }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Transaktion suchen...", null));
+        for (int j = 0; j < 27; j++) {
+            if (inv.getItem(j) == null) {
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8", null));
+            }
+        }
+        result.close();
+        player.openInventory(inv);
+    }
+
+    public static void openMessages(Player player, int page, String search) throws SQLException {
+        if (page <= 0) return;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setVariable("current_app", "messages");
+        playerData.setIntVariable("current_page", page);
+        Statement statement = MySQL.getStatement();
+        ResultSet result = null;
+        if (search == null) {
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `phone_messages` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
+        } else {
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `phone_messages` WHERE LOWER(`message`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
+        }
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §eNachrichten §8- §eSeite§8:§7 " + page);
+        int i = 0;
+        int rows = 0;
+        while (result.next()) {
+            rows++;
+            if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
+                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §e" + result.getInt(6), "Lädt..."));
+                ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
+                assert meta != null;
+                meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
+                Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                i++;
+            }
+        }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Nachricht suchen...", null));
+        for (int j = 0; j < 27; j++) {
+            if (inv.getItem(j) == null) {
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8", null));
+            }
+        }
+        result.close();
         player.openInventory(inv);
     }
 
@@ -80,7 +197,7 @@ public class PhoneUtils implements Listener {
         while (result.next()) {
             rows++;
             if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
-                inv.setItem(i, ItemManager.createItemHead(result.getString(2), 1, 0, "§8» §7" + result.getString(3).replace("&", "§"), "Lädt..."));
+                inv.setItem(i, ItemManager.createItemHead(result.getString(5), 1, 0, "§8» §7" + result.getString(3).replace("&", "§"), "Lädt..."));
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 NamespacedKey id = new NamespacedKey(Main.plugin, "id");
                 NamespacedKey number = new NamespacedKey(Main.plugin, "number");
@@ -165,6 +282,33 @@ public class PhoneUtils implements Listener {
         }
     }
 
+    public static void openCallApp(Player player, boolean isNew) {
+        Inventory inv;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (isNew) {
+            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§7 ");
+            playerData.setVariable("current_phone_callnumber", "");
+        } else {
+            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§7 " + playerData.getVariable("current_phone_callnumber"));
+        }
+        playerData.setVariable("current_app", "phonecall");
+        inv.setItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmNmYWZmYThjNmM3ZjYyNjIxNjgyZmU1NjcxMWRjM2I4OTQ0NjVmZGY3YTYyZjQzYjMxYTBkMzQwM2YzNGU3In19fQ==", 1, 0, "§6§l1", null));
+        inv.setItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQxMGRiNjIzNzM1YzE0NmM3YzQ4N2UzNjkyZDFjNWI1ZTIzYmY2OTFlZjA2NjVjMmU5NTQ5NDc5ZDgyOGYifX19", 1, 0, "§6§l2", null));
+        inv.setItem(14, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWY4ZTdhY2Y3MjQyYWZhNTg2YzNkMDk1Zjg3ZmU5ZGU3YjdjYTI0YzRhMjhhNTYwNDAzNDdjNjU3OTYwZTM2In19fQ==", 1, 0, "§6§l3", null));
+        inv.setItem(21, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ3YzczZDdkMmVmMTQ3MTJhZTU5YzU3ZDY0ZTUxMmE3ZjljNTI3NzQ2YjhiYzQyNDI3MGY5ZTM3YzE4MWM3OCJ9fX0=", 1, 0, "§6§l4", null));
+        inv.setItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzVhZmY5MmRlODkyZDU5MjJhZDc1M2RhZDVhZTM0NzlhYjE1MGFmNGVkMjg0YWJmYTc1Y2E3YTk5NWMxODkzIn19fQ==", 1, 0, "§6§l5", null));
+        inv.setItem(23, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjE2ZDQyM2M3ZmQ2NGM1YzdmNDA4NTQ2ZGE0Yjc4N2U5M2RiZWFjMGU3N2IxOWM0OWI5YWQ0ZmY0MThmMmQxIn19fQ==", 1, 0, "§6§l6", null));
+        inv.setItem(30, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQ4N2U5MTJhOGU5YmZjNDkxMjQzNmFmNTZjNDZjMmU2YTE1YTFkMjJkMWFkMThkNDZhMjI5ZDc2NDhlIn19fQ==", 1, 0, "§6§l7", null));
+        inv.setItem(31, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTEwMWQ0YjQ3ZGNjYjc2MTJhYzVlZmRlNWFlMjQ0MWM4MmMzZjBhNjg0MDQxYWVkMzgyNzZkYmRmOTQifX19", 1, 0, "§6§l8", null));
+        inv.setItem(32, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE0Njg1NzQ0MWNhYWU2ZTE2YzkyOTZmYjU3MTQ4MmFhNTEzNjI2OGQzOWUzNWI3YWNmYmY1MTM5YTM3ZTAzZCJ9fX0=", 1, 0, "§6§l9", null));
+        inv.setItem(40, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJmYTYzYTBhNTQyOGIyNzM0NTNmZmU3ODRkM2U0ODljYmNmNmQxMmI3ODQ1MGEzNTE1NzE2Y2U3MjRmNCJ9fX0=", 1, 0, "§6§l0", null));
+        inv.setItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnrufen", null));
+        for (int i = 0; i < 54; i++) {
+            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+        }
+        player.openInventory(inv);
+    }
+
     public static boolean inPhoneCall(Player player) {
         return phoneCallIsCreated.get(player.getUniqueId().toString()) != null;
     }
@@ -237,6 +381,12 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
                     player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
                     players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
+                    try {
+                        Statement statement = MySQL.getStatement();
+                        statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + player.getUniqueId() + "', '" + players.getUniqueId() + "', '" + message + "', " + number + ");");
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else {
                     player.sendMessage(Main.error + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen.");
                 }
@@ -368,6 +518,24 @@ public class PhoneUtils implements Listener {
             } else {
                 editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8", null), false, true);
             }
+            event.end();
+        }
+        if (event.getSubmitTo().equals("checktransactions")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            openTransactions(event.getPlayer(), 1, event.getMessage());
+            event.end();
+        }
+        if (event.getSubmitTo().equals("checkmessages")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            openMessages(event.getPlayer(), 1, event.getMessage());
             event.end();
         }
     }

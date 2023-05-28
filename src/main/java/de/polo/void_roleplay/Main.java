@@ -1,6 +1,7 @@
 package de.polo.void_roleplay;
 
 import de.polo.void_roleplay.Listener.*;
+import de.polo.void_roleplay.MySQl.MySQL;
 import de.polo.void_roleplay.PlayerUtils.*;
 import de.polo.void_roleplay.Utils.*;
 import de.polo.void_roleplay.commands.*;
@@ -12,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Random;
 
 public final class Main extends JavaPlugin {
@@ -54,6 +56,8 @@ public final class Main extends JavaPlugin {
         registerCommands();
         plugin = Bukkit.getPluginManager().getPlugin("Void_Roleplay");
         try {
+            Statement statement = MySQL.getStatement();
+            statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             Weapons.loadWeapons();
             Vehicles.loadVehicles();
             Vehicles.loadPlayerVehicles();

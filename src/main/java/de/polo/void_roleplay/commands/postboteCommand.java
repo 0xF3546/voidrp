@@ -92,7 +92,7 @@ public class postboteCommand implements CommandExecutor {
             playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
             playerData.getScoreboard().updatePostboteScoreboard();
             try {
-                PlayerManager.addBankMoney(player, payout);
+                PlayerManager.addBankMoney(player, payout, "Auszahlung Postbote");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

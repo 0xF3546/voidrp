@@ -137,7 +137,7 @@ public class lumberjackCommand implements CommandExecutor {
         playerData.getScoreboard().killScoreboard();
         player.closeInventory();
         try {
-            PlayerManager.addBankMoney(player, payout);
+            PlayerManager.addBankMoney(player, payout, "Auszahlung Holzfäller");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

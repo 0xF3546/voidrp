@@ -379,43 +379,25 @@ public class InventoryClickListener implements Listener {
         if (Objects.equals(playerData.getVariable("current_inventory"), "handy")) {
             event.setCancelled(true);
             if (playerData.getVariable("current_app") == null) {
-                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case RED_STAINED_GLASS_PANE:
-                        event.getCurrentItem().setType(Material.GREEN_STAINED_GLASS_PANE);
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        meta.setDisplayName("§aFlugmodus abschalten");
-                        event.getCurrentItem().setItemMeta(meta);
-                        playerData.setFlightmode(true);
-                        break;
-                    case GREEN_STAINED_GLASS_PANE:
-                        event.getCurrentItem().setType(Material.RED_STAINED_GLASS_PANE);
-                        ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
-                        itemMeta.setDisplayName("§cFlugmodus einschalten");
-                        event.getCurrentItem().setItemMeta(itemMeta);
-                        playerData.setFlightmode(false);
-                        break;
-                }
                 switch (event.getSlot()) {
                     case 10:
                         PhoneUtils.openContacts(player, 1, null);
                         break;
+                    case 11:
+                        PhoneUtils.openMessages(player, 1, null);
+                        break;
+                    case 12:
+                        PhoneUtils.openCallApp(player, true);
+                        break;
+                    case 14:
+                        PhoneUtils.openBanking(player);
+                        break;
+                    case 15:
+                        PhoneUtils.openSettings(player);
+                        break;
                 }
             } else if (playerData.getVariable("current_app").equals("contacts")) {
                 switch (event.getCurrentItem().getType()) {
-                    case RED_STAINED_GLASS_PANE:
-                        event.getCurrentItem().setType(Material.GREEN_STAINED_GLASS_PANE);
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        meta.setDisplayName("§a§lGeändert!");
-                        event.getCurrentItem().setItemMeta(meta);
-                        playerData.setFlightmode(true);
-                        break;
-                    case GREEN_STAINED_GLASS_PANE:
-                        event.getCurrentItem().setType(Material.RED_STAINED_GLASS_PANE);
-                        ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
-                        itemMeta.setDisplayName("§a§lGeändert!");
-                        event.getCurrentItem().setItemMeta(itemMeta);
-                        playerData.setFlightmode(false);
-                        break;
                     case REDSTONE:
                         PhoneUtils.openPhone(player);
                         break;
@@ -497,6 +479,116 @@ public class InventoryClickListener implements Listener {
                         player.closeInventory();
                         playerData.setVariable("chatblock", "sendsms");
                         player.sendMessage("§8[§6SMS§8]§7 Gib nun die SMS ein.");
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("settings")) {
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case RED_STAINED_GLASS_PANE:
+                        event.getCurrentItem().setType(Material.GREEN_STAINED_GLASS_PANE);
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        meta.setDisplayName("§aFlugmodus abschalten");
+                        event.getCurrentItem().setItemMeta(meta);
+                        playerData.setFlightmode(true);
+                        break;
+                    case GREEN_STAINED_GLASS_PANE:
+                        event.getCurrentItem().setType(Material.RED_STAINED_GLASS_PANE);
+                        ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
+                        itemMeta.setDisplayName("§cFlugmodus einschalten");
+                        event.getCurrentItem().setItemMeta(itemMeta);
+                        playerData.setFlightmode(false);
+                        break;
+                    case REDSTONE:
+                        PhoneUtils.openPhone(player);
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("banking")) {
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case REDSTONE:
+                        PhoneUtils.openPhone(player);
+                        break;
+                    case DIAMOND:
+                        PhoneUtils.openTransactions(player, 1, null);
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("transactions")) {
+                switch (event.getCurrentItem().getType()) {
+                    case REDSTONE:
+                        PhoneUtils.openBanking(player);
+                        break;
+                    case NETHER_WART:
+                        PhoneUtils.openTransactions(player, playerData.getIntVariable("current_page") - 1, null);
+                        break;
+                    case GOLD_NUGGET:
+                        PhoneUtils.openTransactions(player, playerData.getIntVariable("current_page") + 1, null);
+                        break;
+                    case CLOCK:
+                        player.closeInventory();
+                        playerData.setVariable("chatblock", "checktransactions");
+                        player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("messages")) {
+                switch (event.getCurrentItem().getType()) {
+                    case REDSTONE:
+                        PhoneUtils.openPhone(player);
+                        break;
+                    case NETHER_WART:
+                        PhoneUtils.openMessages(player, playerData.getIntVariable("current_page") - 1, null);
+                        break;
+                    case GOLD_NUGGET:
+                        PhoneUtils.openMessages(player, playerData.getIntVariable("current_page") + 1, null);
+                        break;
+                    case CLOCK:
+                        player.closeInventory();
+                        playerData.setVariable("chatblock", "checkmessages");
+                        player.sendMessage("§8[§6SMS§8]§7 Gib nun die Nachricht an.");
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("phonecall")) {
+                switch (event.getSlot()) {
+                    case 12:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 1);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 13:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 2);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 14:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 3);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 21:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 4);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 22:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 5);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 23:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 6);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 30:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 7);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 31:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 8);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 32:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 9);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 40:
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 0);
+                        PhoneUtils.openCallApp(player, false);
+                        break;
+                    case 53:
+                        player.closeInventory();
+                        player.performCommand("call " + Integer.parseInt(playerData.getVariable("current_phone_callnumber")));
                         break;
                 }
             }
@@ -851,7 +943,7 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 33:
                     player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBargeld() + "$ eingezahlt.");
-                    PlayerManager.addBankMoney(player, playerData.getBargeld());
+                    PlayerManager.addBankMoney(player, playerData.getBargeld(), "Bankeinzahlung");
                     PlayerManager.removeMoney(player, playerData.getBargeld(), "Bankeinzahlung");
                     player.closeInventory();
                     break;

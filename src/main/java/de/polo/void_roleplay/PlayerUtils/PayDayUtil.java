@@ -71,7 +71,7 @@ public class PayDayUtil {
             player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §8(§c+" + (int) plus + "$§8)");
         }
         player.sendMessage(" ");
-        PlayerManager.addBankMoney(player, (int) plus);
+        PlayerManager.addBankMoney(player, (int) plus, "PayDay");
         PlayerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }

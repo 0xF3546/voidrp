@@ -324,7 +324,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void addBankMoney(Player player, int amount) throws SQLException {
+    public static void addBankMoney(Player player, int amount, String reason) throws SQLException {
         Statement statement = MySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
@@ -334,6 +334,7 @@ public class PlayerManager implements Listener {
         if (result.next()) {
             int res = result.getInt(1);
             statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + uuid + "'");
+            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
         }
     }
     public static void removeBankMoney(Player player, int amount, String reason) throws SQLException {
@@ -346,6 +347,7 @@ public class PlayerManager implements Listener {
         if (result.next()) {
             int res = result.getInt(1);
             statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + uuid + "'");
+            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
         }
     }
 

@@ -89,8 +89,8 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (PlayerManager.money(player) >= amount) {
-                    PlayerManager.removeMoney(player, amount, "Bankauszahlung");
-                    PlayerManager.addBankMoney(player, amount);
+                    PlayerManager.removeMoney(player, amount, "Bankeinzahlung");
+                    PlayerManager.addBankMoney(player, amount, "Bankeinzahlung");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ eingezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
@@ -107,7 +107,7 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (PlayerManager.bank(player) >= amount) {
-                    PlayerManager.removeBankMoney(player, amount, "Abbuchung");
+                    PlayerManager.removeBankMoney(player, amount, "Bankauszahlung");
                     PlayerManager.addMoney(player, amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
                 } else {
