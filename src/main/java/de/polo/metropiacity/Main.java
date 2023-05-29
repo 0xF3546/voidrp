@@ -234,7 +234,7 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         TeamSpeak.getAPI().logout();
         TeamSpeak.getQuery().exit();
-        System.out.println("disablding void roleplay");
+        System.out.println("disablding MetroCity Roleplay");
         isOnline = false;
         try {
             ServerManager.savePlayers();

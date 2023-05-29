@@ -35,13 +35,23 @@ public class chatListener implements Listener {
                         }
                     }
                 }
+                String msg = event.getMessage();
+                String type = "sagt";
+                if (msg.charAt(msg.length() - 1) == '?') {
+                    type = "fragt";
+                }
+                if (msg.length() >= 4) {
+                    String firstChar = String.valueOf(msg.charAt(0)).toUpperCase();
+                    String restOfString = msg.substring(1).toLowerCase();
+                    msg = firstChar + restOfString;
+                }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (player.getLocation().distance(players.getLocation()) <= 5) {
-                        players.sendMessage("§f" + player.getName() + " sagt§8:§f " + event.getMessage());
+                        players.sendMessage("§f" + player.getName() + " " + type + "§8:§f " + msg);
                     } else if (player.getLocation().distance(players.getLocation()) <= 9) {
-                        players.sendMessage("§7" + player.getName() + " sagt§8:§7 " + event.getMessage());
+                        players.sendMessage("§7" + player.getName() + " " + type + "§8:§7 " + msg);
                     } else if (player.getLocation().distance(players.getLocation()) <= 16) {
-                        players.sendMessage("§8" + player.getName() + " sagt§8:§8 " + event.getMessage());
+                        players.sendMessage("§8" + player.getName() + " " + type + "§8:§8 " + msg);
                     }
                 }
             }
