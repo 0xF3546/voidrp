@@ -1,6 +1,6 @@
 name: MetropiaCity
 version: '${project.version}'
-main: de.polo.void_roleplay.Main
+main: de.polo.metropiacity.Main
 api-version: 1.16
 authors: [ Polo66 ]
 description: MetropiaCity Roleplay

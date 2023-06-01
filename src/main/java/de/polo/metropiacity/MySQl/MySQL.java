@@ -8,7 +8,7 @@ import java.sql.Statement;
 public class MySQL {
     static String url = "jdbc:mysql://localhost/minecraft?autoReconnect=true&useSSL=false";
     static String user = "gameserver";
-    static String password = "rH4608v4A1hqS32x2Mac!";
+    static String password = "woert8/§\"fg348rt74ghj5asd";
     static int port = 3306;
     private static boolean error;
     public static Connection connection;

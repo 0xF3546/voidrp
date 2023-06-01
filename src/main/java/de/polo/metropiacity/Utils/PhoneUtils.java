@@ -44,8 +44,16 @@ public class PhoneUtils implements Listener {
     public static void openPhone(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eHandy");
+        int unreadMessages = 0;
+        try {
+            Statement statement = MySQL.getStatement();
+            ResultSet result = statement.executeQuery("SELECT COUNT(*) AS unreadCount FROM phone_messages WHERE isRead = false AND uuid = '" + player.getUniqueId() + "'");
+            if (result.next()) unreadMessages = result.getInt("unreadCount");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         inv.setItem(10, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmViYmJkYmEzNzI5NjNjOWQ2ZDMzMjhjMjliZjEyM2FlMDlkMzBjZTdiYTNhMDU3Y2VkNjA2YzFjODAyOGI3YiJ9fX0=", 1, 0, "§6Kontakte", null));
-        inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachrichten", null));
+        inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachrichten", "§8 ➥ §7Du hast §a" + unreadMessages + "§7 ungelesene Nachrichten."));
         inv.setItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=", 1, 0, "§aAnrufen", null));
         inv.setItem(14, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§3Banking", null));
         inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTRkNDliYWU5NWM3OTBjM2IxZmY1YjJmMDEwNTJhNzE0ZDYxODU0ODFkNWIxYzg1OTMwYjNmOTlkMjMyMTY3NCJ9fX0=", 1, 0, "§7Einstellungen", null));
@@ -160,7 +168,20 @@ public class PhoneUtils implements Listener {
                 inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §e" + result.getInt(6), "Lädt..."));
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 assert meta != null;
-                meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
+                NamespacedKey read = new NamespacedKey(Main.plugin, "isRead");
+                NamespacedKey message = new NamespacedKey(Main.plugin, "message");
+                NamespacedKey date = new NamespacedKey(Main.plugin, "date");
+                NamespacedKey id = new NamespacedKey(Main.plugin, "message_id");
+                if (result.getBoolean(7)) {
+                    meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
+                    meta.getPersistentDataContainer().set(read, PersistentDataType.INTEGER, 1);
+                } else {
+                    meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp"), "", "§8» §aAls gelesen markieren"));
+                    meta.getPersistentDataContainer().set(read, PersistentDataType.INTEGER, 0);
+                    meta.getPersistentDataContainer().set(message, PersistentDataType.STRING, result.getString(4));
+                    meta.getPersistentDataContainer().set(date, PersistentDataType.STRING, result.getString("formatted_timestamp"));
+                    meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
+                }
                 Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
             }

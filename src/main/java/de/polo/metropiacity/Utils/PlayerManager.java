@@ -1,5 +1,6 @@
 package de.polo.metropiacity.Utils;
 
+import de.polo.metropiacity.DataStorage.RankData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.DeathUtil;
@@ -347,26 +348,19 @@ public class PlayerManager implements Listener {
     }
 
 
-    public static void updatePlayerTeam(String uuid, String rank) {
+    public static boolean updatePlayerTeam(String uuid, String rank) {
         try {
-            int permlevel = 0;
-            switch (rank.toLowerCase()) {
-                case "administrator":
-                    permlevel = 100;
-                case "moderator":
-                    permlevel = 80;
-                case "supporter":
-                    permlevel = 70;
-                case "assistent":
-                    permlevel = 50;
-                default:
-                    permlevel = 0;
+            for (RankData rankData : ServerManager.rankDataMap.values()) {
+                if (rankData.getRang().equalsIgnoreCase(rank)) {
+                    Statement statement = MySQL.getStatement();
+                    statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rankData.getRang() + "', `player_permlevel` = " + rankData.getPermlevel() + " WHERE uuid = '"+ uuid + "'");
+                    PlayerData playerData = playerDataMap.get(uuid);
+                    playerData.setRang(rankData.getRang());
+                    playerData.setPermlevel(rankData.getPermlevel());
+                    return true;
+                }
             }
-            Statement statement = MySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rank + "', `player_permlevel` = " + permlevel + " WHERE uuid = '"+ uuid + "'");
-            PlayerData playerData = playerDataMap.get(uuid);
-            playerData.setRang(rank);
-            playerData.setPermlevel(permlevel);
+            return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

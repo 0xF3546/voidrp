@@ -542,6 +542,17 @@ public class InventoryClickListener implements Listener {
                         playerData.setVariable("chatblock", "checkmessages");
                         player.sendMessage("§8[§6SMS§8]§7 Gib nun die Nachricht an.");
                         break;
+                    case PAPER:
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        NamespacedKey read = new NamespacedKey(Main.plugin, "isRead");
+                        if (meta.getPersistentDataContainer().get(read, PersistentDataType.INTEGER) == 0) {
+                            meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "message"), PersistentDataType.STRING), "§8 ➥ §7Datum§8:§6 " + meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "date"), PersistentDataType.STRING)));
+                            meta.getPersistentDataContainer().set(read, PersistentDataType.INTEGER, 1);
+                            event.getCurrentItem().setItemMeta(meta);
+                            Statement statement = MySQL.getStatement();
+                            statement.executeUpdate("UPDATE `phone_messages` SET `isRead` = true WHERE `id` = " + meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "message_id"), PersistentDataType.INTEGER));
+                        }
+                        break;
                 }
             } else if (playerData.getVariable("current_app").equals("phonecall")) {
                 switch (event.getSlot()) {

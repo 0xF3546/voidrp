@@ -20,10 +20,12 @@ public class setteamCommand implements CommandExecutor {
                 String uuid = targetplayer.getUniqueId().toString();
                 PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
                 String rank = args[1];
-                PlayerManager.updatePlayerTeam(targetplayer.getUniqueId().toString(), rank);
-                player.sendMessage(Main.admin_prefix + targetplayer.getName() + " ist nun §c" + rank + "§7.");
-                targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
-                playerData.setRang(rank);
+                if (PlayerManager.updatePlayerTeam(targetplayer.getUniqueId().toString(), rank)) {
+                    player.sendMessage(Main.admin_prefix + targetplayer.getName() + " ist nun §c" + rank + "§7.");
+                    targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
+                } else {
+                    player.sendMessage(Main.admin_prefix + "Der Rang \"§c" + rank + "§7\" wurde nicht gefunden.");
+                }
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }

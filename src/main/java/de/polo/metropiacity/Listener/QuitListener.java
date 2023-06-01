@@ -79,7 +79,7 @@ public class QuitListener implements Listener {
                 StaatUtil.cancelservice(player);
             }
             Item item = DeathUtil.deathSkulls.get(player.getUniqueId().toString());
-            item.remove();
+            if (item != null) item.remove();
             DeathUtil.deathSkulls.remove(player.getUniqueId().toString());
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
         } catch (SQLException e) {

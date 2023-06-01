@@ -189,7 +189,7 @@ public class FactionManager {
         FactionData factionData = factionDataMap.get(faction);
         factionData.setBank(factionData.getBank() + amount);
         Statement statement = MySQL.getStatement();
-        statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`) VALUES ('einzahlung', '" + faction + "', " + amount + ", '" + reason + "')");
+        statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('einzahlung', '" + faction + "', " + amount + ", '" + reason + "', true)");
         statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
         return true;
     }
@@ -199,7 +199,7 @@ public class FactionManager {
         if (factionData.getBank() >= amount) {
             factionData.setBank(factionData.getBank() - amount);
             Statement statement = MySQL.getStatement();
-            statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`) VALUES ('auszahlung', '" + faction + "', " + amount + ", '" + reason + "')");
+            statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('auszahlung', '" + faction + "', " + amount + ", '" + reason + "', false)");
             statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
             returnval = true;
         }
