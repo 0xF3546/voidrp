@@ -45,7 +45,11 @@ public class playerinfoCommand implements CommandExecutor {
                             FactionData factionData = FactionManager.factionDataMap.get(targetplayerdata.getFaction());
                             faction = factionData.getFullname();
                         }
-                        player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7" + faction + "§8 |§7" + targetplayer.getPing() + "ms");
+                        if (targetplayerdata.isAduty()) {
+                            player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7Nummer: " + targetplayerdata.getId() + "§8 | §7Fraktion: " + faction + "§8 | §7Ping: " + targetplayer.getPing() + "ms §8 | §7§oAdmindienst");
+                        } else {
+                            player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7Nummer: " + targetplayerdata.getId() + "§8 | §7Fraktion: " + faction + "§8 | §7Ping: " + targetplayer.getPing() + "ms");
+                        }
                     }
                 } else {
                     player.sendMessage(Main.error + "Spieler nicht gefunden.");

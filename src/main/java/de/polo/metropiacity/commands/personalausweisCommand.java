@@ -5,6 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.PlayerUtils.tutorial;
 import de.polo.metropiacity.Utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class personalausweisCommand implements CommandExecutor, TabCompleter {
     @Override
@@ -52,6 +55,25 @@ public class personalausweisCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
                 player.sendMessage(" ");
+                if (!playerData.getRelationShip().isEmpty()) {
+                    for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
+                    {
+                        if (entry.getValue().equalsIgnoreCase("beziehung")) {
+                            OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
+                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Beziehung: " + targetplayer.getName() + ")");
+                        } else if (entry.getValue().equalsIgnoreCase("verlobt")) {
+                            OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
+                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Verlobt: " + targetplayer.getName() + ")");
+                        } else if (entry.getValue().equalsIgnoreCase("verheiratet")) {
+                            OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
+                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Verheiratet (" + targetplayer.getName() + ")");
+                        } else {
+                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
+                        }
+                    }
+                } else {
+                    player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
+                }
                 player.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + PlayerManager.visum(player));
                 tutorial.usedAusweis(player);
             }

@@ -47,6 +47,7 @@ public class PlayerData {
     private int minutes;
     private String business;
     private int business_grade;
+    private HashMap<String, String> relationShip = new HashMap<>();
 
     public PlayerData() {
     }
@@ -388,5 +389,13 @@ public class PlayerData {
 
     public void setBusiness_grade(int business_grade) {
         this.business_grade = business_grade;
+    }
+
+    public HashMap<String, String> getRelationShip() {
+        return relationShip;
+    }
+
+    public void setRelationShip(HashMap<String, String> relationShip) {
+        this.relationShip = relationShip;
     }
 }

@@ -7,6 +7,6 @@ import org.bukkit.event.server.ServerListPingEvent;
 public class serverPingListener implements Listener {
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
-        event.setMotd("§6§lMetropiaCity §8| §ewww.metropiacity.de \n§8➥ §cRoleplay mit Stil. §8 - §bⓘ§a V1.0 bald online!");
+        event.setMotd("§6§lMetropiaCity §8| §edsc.gg/metropiacity \n§8➥ §cRoleplay mit Stil. §8 - §bⓘ§a V1.0 bald online!");
     }
 }

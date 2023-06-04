@@ -1,6 +1,7 @@
 package de.polo.metropiacity.Utils;
 
 import de.polo.metropiacity.DataStorage.HouseData;
+import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -9,6 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -62,6 +64,30 @@ public class VertragUtil {
                 case "phonecall":
                     PhoneUtils.acceptCall(player, curr);
                     break;
+                case "beziehung":
+                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+                    if (targetplayer.isOnline()) {
+                        player.sendMessage("§aDu und " + targetplayer.getName() + " sind jetzt zusammen.");
+                        targetplayer.sendMessage("§aDu und " + player.getName() + " sind jetzt zusammen.");
+                        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                        HashMap<String, String> hmap1 = new HashMap<>();
+                        hmap1.put(player.getUniqueId().toString(), "beziehung");
+                        targetplayerData.setRelationShip(hmap1);
+
+                        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                        HashMap<String, String> hmap2 = new HashMap<>();
+                        hmap2.put(targetplayer.getUniqueId().toString(), "beziehung");
+                        playerData.setRelationShip(hmap2);
+                        Statement statement = MySQL.getStatement();
+                        JSONObject object = new JSONObject(playerData.getRelationShip());
+                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+
+                        JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
+                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "' WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
+                    } else {
+                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                    }
+                    break;
             }
             deleteVertrag(player);
         } else {
@@ -73,7 +99,7 @@ public class VertragUtil {
         if (curr != null) {
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
-                    FactionManager.sendMessageToFaction(curr, player.getName() + "wurde eingeladen und ist §cnicht§7 beigetreten.");
+                    FactionManager.sendMessageToFaction(curr, player.getName() + " wurde eingeladen und ist nicht beigetreten.");
                     break;
                 case "phonecall":
                     PhoneUtils.denyCall(player, curr);
@@ -86,6 +112,15 @@ public class VertragUtil {
                     Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
                     player1.sendMessage("§8[§6Haus§8]§a " + player.getName() + " hat den Mietvertrag für Haus " + houseData.getNumber() + " abgelehnt.");
                     player.sendMessage("§8[§6Haus§8]§c Du hast den Mietvertrag abgelehnt.");
+                    break;
+                case "beziehung":
+                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+                    if (targetplayer.isOnline()) {
+                        player.sendMessage("§cDu hast die Anfrage abgelehnt.");
+                        targetplayer.sendMessage("§c" + player.getName() + " hat die Anfrage abgelehnt.");
+                    } else {
+                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                    }
                     break;
             }
             deleteVertrag(player);

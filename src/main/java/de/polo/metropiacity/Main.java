@@ -220,6 +220,9 @@ public final class Main extends JavaPlugin {
         getCommand("nachrichten").setExecutor(new nachrichtenCommand());
         getCommand("businesschat").setExecutor(new businesschatCommand());
         getCommand("leadbusiness").setExecutor(new leadbusinessCommand());
+        getCommand("fraktionsinfo").setExecutor(new frakinfoCommand());
+        getCommand("beziehung").setExecutor(new beziehungCommand());
+        getCommand("trennen").setExecutor(new trennenCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());
@@ -227,6 +230,7 @@ public final class Main extends JavaPlugin {
         getCommand("navi").setTabCompleter(new Navigation());
         getCommand("contracts").setTabCompleter(new contractsCommand());
         getCommand("personalausweis").setTabCompleter(new personalausweisCommand());
+        getCommand("fraktionsinfo").setTabCompleter(new frakinfoCommand());
     }
 
 

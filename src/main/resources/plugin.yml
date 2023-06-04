@@ -144,3 +144,7 @@ commands:
   businesschat:
     aliases: bc
   leadbusiness:
+  fraktionsinfo:
+    aliases: [finfo, frakinfo]
+  beziehung:
+  trennen:

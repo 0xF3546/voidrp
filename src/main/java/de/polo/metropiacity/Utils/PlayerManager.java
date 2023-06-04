@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -92,7 +93,7 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setFirstname(name.getString(1));
@@ -149,6 +150,14 @@ public class PlayerManager implements Listener {
 
                     playerData.setHours(name.getInt(29));
                     playerData.setMinutes(name.getInt(30));
+
+                    JSONObject object = new JSONObject(name.getString(31));
+                    HashMap<String, String> map = new HashMap<>();
+                    for (String key : object.keySet()) {
+                        String value = (String) object.get(key);
+                        map.put(key, value);
+                    }
+                    playerData.setRelationShip(map);
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);
