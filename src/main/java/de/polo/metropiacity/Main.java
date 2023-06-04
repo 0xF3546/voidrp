@@ -223,6 +223,7 @@ public final class Main extends JavaPlugin {
         getCommand("fraktionsinfo").setExecutor(new frakinfoCommand());
         getCommand("beziehung").setExecutor(new beziehungCommand());
         getCommand("trennen").setExecutor(new trennenCommand());
+        getCommand("antrag").setExecutor(new antragCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());

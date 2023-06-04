@@ -88,6 +88,32 @@ public class VertragUtil {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
+                case "verlobt":
+                    Player targetplayer2 = Bukkit.getPlayer(UUID.fromString(curr));
+                    if (targetplayer2.isOnline()) {
+                        player.sendMessage("§aDu und " + targetplayer2.getName() + " sind jetzt verlobt.");
+                        targetplayer2.sendMessage("§aDu und " + player.getName() + " sind jetzt verlobt.");
+                        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer2.getUniqueId().toString());
+                        HashMap<String, String> hmap1 = new HashMap<>();
+                        hmap1.put(player.getUniqueId().toString(), "verlobt");
+                        targetplayerData.getRelationShip().clear();
+                        targetplayerData.setRelationShip(hmap1);
+
+                        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                        HashMap<String, String> hmap2 = new HashMap<>();
+                        hmap2.put(targetplayer2.getUniqueId().toString(), "verlobt");
+                        playerData.getRelationShip().clear();
+                        playerData.setRelationShip(hmap2);
+                        Statement statement = MySQL.getStatement();
+                        JSONObject object = new JSONObject(playerData.getRelationShip());
+                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+
+                        JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
+                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "' WHERE `uuid` = '" + targetplayer2.getUniqueId() + "'");
+                    } else {
+                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                    }
+                    break;
             }
             deleteVertrag(player);
         } else {
@@ -114,6 +140,7 @@ public class VertragUtil {
                     player.sendMessage("§8[§6Haus§8]§c Du hast den Mietvertrag abgelehnt.");
                     break;
                 case "beziehung":
+                case "verlobt":
                     Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
                     if (targetplayer.isOnline()) {
                         player.sendMessage("§cDu hast die Anfrage abgelehnt.");

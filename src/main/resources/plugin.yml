@@ -148,3 +148,4 @@ commands:
     aliases: [finfo, frakinfo]
   beziehung:
   trennen:
+  antrag:
