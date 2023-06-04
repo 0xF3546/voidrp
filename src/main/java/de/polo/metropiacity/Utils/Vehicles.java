@@ -103,7 +103,7 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     public static void spawnVehicle(Player player, PlayerVehicleData playerVehicleData) {
-        Location location = new Location(playerVehicleData.getWelt(), playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ(), (float) playerVehicleData.getYaw(), (float) playerVehicleData.getPitch());
+        Location location = new Location(playerVehicleData.getWelt(), playerVehicleData.getX(), playerVehicleData.getY() + 1, playerVehicleData.getZ(), (float) playerVehicleData.getYaw(), (float) playerVehicleData.getPitch());
         Minecart minecart = (Minecart) playerVehicleData.getWelt().spawnEntity(location, EntityType.MINECART);
         NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
         minecart.getPersistentDataContainer().set(key_id, PersistentDataType.INTEGER, playerVehicleData.getId());
@@ -195,6 +195,7 @@ public class Vehicles implements Listener, CommandExecutor {
             if (vehicle.getPersistentDataContainer().get(key_lock, PersistentDataType.INTEGER) == 0) {
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                 playerData.getScoreboard().createCarScoreboard(event.getVehicle());
+                playerSpeeds.put(player, 0.0);
             } else {
                 event.setCancelled(true);
                 player.sendMessage(Main.error + "Das Fahrzeug ist zugeschlossen.");
@@ -211,6 +212,8 @@ public class Vehicles implements Listener, CommandExecutor {
             playerData.getScoreboard().killScoreboard();
         }
     }
+    private HashMap<Player, Double> playerSpeeds = new HashMap<>();
+
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
@@ -218,13 +221,30 @@ public class Vehicles implements Listener, CommandExecutor {
             if (event.getVehicle().getPassengers().get(0) != null) {
                 Player player = (Player) event.getVehicle().getPassengers().get(0);
                 VehicleData vehicleData = vehicleDataMap.get(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING));
-                double newAcc = vehicle.getVelocity().getZ() + vehicleData.getAcceleration();
-                Vector speed = new Vector();
-                player.getVehicle().setVelocity(player.getLocation().getDirection().setY(0).normalize().multiply(vehicle.getVelocity().length() * vehicleData.getAcceleration()));
-                System.out.println(vehicle.getVelocity().length() * vehicleData.getAcceleration());
+                double maxSpeed = vehicleData.getMaxspeed();
+                double acceleration = vehicleData.getAcceleration();
+
+                double currentSpeed = playerSpeeds.getOrDefault(player, 0.0);
+
+                if (currentSpeed < maxSpeed) {
+                    currentSpeed += acceleration;
+                    if (currentSpeed > maxSpeed) {
+                        currentSpeed = maxSpeed;
+                    }
+                }
+
+                playerSpeeds.put(player, currentSpeed);
+                double speedMetersPerSecond = currentSpeed * 1000.0 / 36000.0;
+                Vector direction = player.getLocation().getDirection().setY(player.getLocation().getDirection().getY()).normalize();
+                Vector newVelocity = direction.multiply(speedMetersPerSecond);
+                player.getVehicle().setVelocity(newVelocity);
+
             }
         }
     }
+
+
+
     @EventHandler
     public void onGasStationInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null) {

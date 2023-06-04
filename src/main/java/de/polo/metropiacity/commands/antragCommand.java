@@ -5,6 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.VertragUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

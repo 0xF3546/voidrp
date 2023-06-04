@@ -209,7 +209,9 @@ public class Scoreboard extends ScoreboardBuilder {
                 } else if (isCarScore) {
                     int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
-                    setScore("§8 ➥ §7" + vehicle.getVelocity().getY(), 4);
+                    double speedMetersPerSecond = player.getVehicle().getVelocity().length();
+                    double kmh = speedMetersPerSecond * 36;
+                    setScore("§8 ➥ §7" + (int) kmh * 2, 4);
                     setScore("§8 ➥ §7" + km, 2);
                     setScore("§8 ➥ §7" + fuel + "l", 0);
                 }
