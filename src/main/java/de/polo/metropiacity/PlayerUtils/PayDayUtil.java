@@ -28,6 +28,11 @@ public class PayDayUtil {
         player.sendMessage(" ");
         player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
+        if (playerData.getBank() >= 300000) {
+            double reichensteuer = Math.round(PlayerManager.bank(player) * 0.015);
+            player.sendMessage("§8 ➥ §6Reichensteuer§8:§c -" + (int) reichensteuer + "$");
+            plus -= reichensteuer;
+        }
         player.sendMessage("§8 ➥ §6Sozialbonus§8:§a +" + visumbonus + "$");
         player.sendMessage(" ");
         if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
@@ -57,18 +62,13 @@ public class PayDayUtil {
                 }
             }
         }
-        if (playerData.getBank() >= 300000) {
-            double reichensteuer = Math.round(PlayerManager.bank(player) * 0.015);
-            player.sendMessage("§8 ➥ §6Reichensteuer§8:§c" + (int) reichensteuer);
-            plus -= reichensteuer;
-        }
         plus -= rent;
         player.sendMessage(" ");
         plus = Math.round(plus);
         if (plus >= 0) {
             player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §8(§c+" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §8(§c" + (int) plus + "$§8)");
         }
         player.sendMessage(" ");
         PlayerManager.addBankMoney(player, (int) plus, "PayDay");

@@ -239,4 +239,33 @@ public class LocationManager {
         return 0;
     }
 
+    public static String getNearestLocation(Player player) {
+        double distance = 30000;
+        String loc = null;
+        for (NaviData naviData : naviDataMap.values()) {
+            if (!naviData.isGroup()) {
+                double dist = getDistanceBetweenCoords(player, naviData.getLocation());
+                if (dist < distance) {
+                    distance = dist;
+                    loc = naviData.getLocation();
+                }
+            }
+        }
+        return loc;
+    }
+    public static Integer getNearestLocationId(Player player) {
+        double distance = 30000;
+        Integer loc = null;
+        for (NaviData naviData : naviDataMap.values()) {
+            if (!naviData.isGroup()) {
+                double dist = getDistanceBetweenCoords(player, naviData.getLocation());
+                if (dist < distance) {
+                    distance = dist;
+                    loc = naviData.getId();
+                }
+            }
+        }
+        return loc;
+    }
+
 }

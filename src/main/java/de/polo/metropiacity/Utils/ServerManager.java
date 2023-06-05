@@ -94,13 +94,15 @@ public class ServerManager {
         if (player == null) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData = PlayerManager.playerDataMap.get(p.getUniqueId().toString());
+                String loc = LocationManager.naviDataMap.get(LocationManager.getNearestLocationId(p)).getName().substring(2);
                 p.setPlayerListHeader("§6§lMetropiaCity §8- §cV1.0\n\n§6Bargeld§8: §7" + playerData.getBargeld() + "$\n§6Ping§8:§7 " + p.getPing() + "ms\n");
-                p.setPlayerListFooter("\n§6Nachrichten§8:§7 Keine\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8«");
+                p.setPlayerListFooter("\n§6Nächser Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8«");
             }
         } else {
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            String loc = LocationManager.naviDataMap.get(LocationManager.getNearestLocationId(player)).getName().substring(2);
             player.setPlayerListHeader("§6§lMetropiaCity §8- §cV1.0\n\n§6Bargeld§8: §7" + playerData.getBargeld() + "$\n§6Ping§8:§7 " + player.getPing() + "ms\n");
-            player.setPlayerListFooter("\n§6Nachrichten§8:§7 Keine\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8«");
+            player.setPlayerListFooter("\n§6Nächser Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8«");
         }
     }
 

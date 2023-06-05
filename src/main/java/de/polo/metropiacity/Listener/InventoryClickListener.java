@@ -6,10 +6,7 @@ import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.Utils.*;
 import de.polo.metropiacity.commands.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -81,19 +78,22 @@ public class InventoryClickListener implements Listener {
                                     if (Objects.equals(row[5].toString(), "weapon")) {
                                         String weapon = row[3].toString().replace("&", "").replace("6", "");
                                         Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType(), "default");
-                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
                                     } else if (Objects.equals(row[5].toString(), "ammo")) {
                                         String ammo = row[3].toString().replace("&", "").replace("6", "");
                                         Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
-                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
                                     } else if (Objects.equals(row[5].toString(), "car")) {
                                         Vehicles.giveVehicle(player, row[6].toString());
                                     } else {
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
                                         player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
-                                        player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                     }
                                 } catch (SQLException e) {
                                     player.sendMessage(Main.error + "Fehler. Bitte kontaktiere die Entwicklung.");
@@ -843,7 +843,7 @@ public class InventoryClickListener implements Listener {
                             player.openInventory(inv);
                         } else {
                             player.sendMessage("§8[§6Navi§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
-                            LocationData locationData = LocationManager.locationDataMap.get(" " + naviData.getLocation());
+                            LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
                             Navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                             player.closeInventory();
                         }

@@ -5,6 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.LocationManager;
 import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.commands.aduty;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
@@ -33,7 +34,7 @@ public class DeathUtil {
                             PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                             if (!playerData.isDead()) cancel();
                             playerData.setDeathTime(playerData.getDeathTime() - 1);
-                            String actionBarText = "§7Du bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
+                            String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
                             player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                             if (playerData.getDeathTime() <= 0) {
                                 playerData.setDeathTime(600);
@@ -54,7 +55,7 @@ public class DeathUtil {
                         PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                         if (!playerData.isDead()) cancel();
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
-                        String actionBarText = "§7Du bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
+                        String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
                         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                         if (playerData.getDeathTime() <= 0) {
                             playerData.setDeathTime(600);
@@ -80,6 +81,7 @@ public class DeathUtil {
         playerData.setCanInteract(false);
         playerData.setDead(false);
         deathPlayer.remove(player.getUniqueId().toString());
+        aduty.send_message( "§c"+ player.getName() + "§7 wurde wiederbelebt.");
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);

@@ -28,10 +28,14 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getVariable("navi") == null) {
             if (args.length >= 1) {
-                if (args.length >= 2) {
+                if (args.length >= 3) {
                     createNaviByCord(player, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
                 } else {
-                    createNavi(player, args[0], false);
+                    StringBuilder nav = new StringBuilder(args[0]);
+                    for (int i = 1; i < args.length; i++) {
+                        nav.append(" ").append(args[i]);
+                    }
+                    createNavi(player, nav.toString(), false);
                 }
             } else {
                 openNavi(player, null);
