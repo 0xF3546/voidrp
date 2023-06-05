@@ -1,8 +1,6 @@
 package de.polo.metropiacity.Utils;
 
-import de.polo.metropiacity.DataStorage.FactionData;
-import de.polo.metropiacity.DataStorage.JailData;
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.commands.openBossMenuCommand;
@@ -43,6 +41,7 @@ public class TabletUtils implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eTablet");
         inv.setItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp", null));
+        inv.setItem(1, ItemManager.createItem(Material.MINECART, 1, 0, "§6Fahrzeugübersicht", null));
         inv.setItem(9, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp", null));
         inv.setItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp", null));
         for (int i = 0; i < 27; i++) {
@@ -70,6 +69,10 @@ public class TabletUtils implements Listener {
             case "gefängnisapp":
                 openJailApp(player, 1);
                 playerData.setVariable("current_app", "gefängnisapp");
+                break;
+            case "vehiclesapp":
+                openVehiclesApp(player, 1);
+                playerData.setVariable("current_app", "vehiclesapp");
                 break;
         }
     }
@@ -233,6 +236,48 @@ public class TabletUtils implements Listener {
                     i++;
                 }
                 j++;
+            }
+        }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        player.openInventory(inv);
+
+    }
+
+    public static void openVehiclesApp(Player player, int page) {
+        if (page <= 0) return;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setVariable("current_inventory", "tablet");
+        playerData.setVariable("current_app", "vehiclesapp");
+        playerData.setIntVariable("current_page", page);
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Fahrzeuge §8- §6Seite§8:§7 " + page);
+        int i = 0;
+        int j = 0;
+        for (PlayerVehicleData playerVehicleData : Vehicles.playerVehicleDataMap.values()) {
+            if (playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
+                if (i >= (18 * (page - 1)) && i < (18 * page)) {
+                    VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
+                    int rowIndex = i % 9;
+                    int slotIndex = rowIndex;
+                    j++;
+                    if (j > 9) {
+                        slotIndex += 9;
+                    }
+
+                    if (playerVehicleData.isParked()) {
+                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), null));
+                        ItemMeta meta = inv.getItem(i).getItemMeta();
+                        meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §aEingeparkt"));
+                        inv.getItem(i).setItemMeta(meta);
+                    } else {
+                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), null));
+                        ItemMeta meta = inv.getItem(i).getItemMeta();
+                        meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §cAusgeparkt", "", "§8 » §aOrten"));
+                        inv.getItem(i).setItemMeta(meta);
+                    }
+                }
+                i++;
             }
         }
         inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));

@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class Weapons implements Listener {
         NamespacedKey typeKey = new NamespacedKey(Main.plugin, "type");
         meta.getPersistentDataContainer().set(typeKey, PersistentDataType.STRING, type);
 
-        meta.setLore(Collections.singletonList("§8➥ §e" + weaponData.getMaxAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weaponData.getMaxAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
 
@@ -111,7 +112,7 @@ public class Weapons implements Listener {
                         }
                         int newAmmo = curr_ammo - 1;
                         meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, newAmmo);
-                        meta.setLore(Collections.singletonList("§8➥ §e" + newAmmo + "§8/§6" + weaponData.getMaxAmmo()));
+                        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + weaponData.getMaxAmmo()));
                         String actionBarText = "§e" + newAmmo + "§8/§6" + weaponData.getMaxAmmo();
                         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
 

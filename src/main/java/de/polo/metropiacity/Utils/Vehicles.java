@@ -306,7 +306,7 @@ public class Vehicles implements Listener, CommandExecutor {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("start")) {
                 Minecart minecart = (Minecart) player.getVehicle();
-                if (minecart != null & minecart.isValid()) {
+                if (minecart != null && minecart.isValid()) {
                     minecart.setVelocity(player.getFacing().getDirection().setY(0).multiply(1 + minecart.getVelocity().length() * 2));
                     player.sendMessage(Main.prefix + "Du hast dein Auto gestartet.");
                 }
@@ -338,8 +338,27 @@ public class Vehicles implements Listener, CommandExecutor {
                 playerData.setVariable("current_inventory", "carlock");
                 player.openInventory(inv);
             }
+            if (args[0].equalsIgnoreCase("find")) {
+                Inventory inv = Bukkit.createInventory(player, 9, "§8 » §cFahrzeug suchen");
+                int i = 0;
+                for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
+                    if (entity.getType() == EntityType.MINECART) {
+                        NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
+                        if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
+                            String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
+                            int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                            ItemMeta meta = inv.getItem(i).getItemMeta();
+                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
+                            inv.getItem(i).setItemMeta(meta);
+                            i++;
+                        }
+                    }
+                }
+                playerData.setVariable("current_inventory", "findcar");
+                player.openInventory(inv);
+            }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /car [start/stop/lock]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /car [start/stop/lock/find]");
         }
         return false;
     }
