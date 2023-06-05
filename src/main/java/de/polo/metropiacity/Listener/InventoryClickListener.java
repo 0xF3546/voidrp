@@ -382,10 +382,10 @@ public class InventoryClickListener implements Listener {
                     TabletUtils.openTablet(player);
                     break;
                 case NETHER_WART:
-                    TabletUtils.openJailApp(player, playerData.getIntVariable("current_page") - 1);
+                    TabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") - 1);
                     break;
                 case GOLD_NUGGET:
-                    TabletUtils.openJailApp(player, playerData.getIntVariable("current_page") + 1);
+                    TabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") + 1);
                     break;
             }
         }
