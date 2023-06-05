@@ -38,6 +38,25 @@ public class personalausweisCommand implements CommandExecutor, TabCompleter {
                             targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
                             targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
                             targetplayer.sendMessage(" ");
+                            if (!playerData.getRelationShip().isEmpty()) {
+                                for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
+                                {
+                                    if (entry.getValue().equalsIgnoreCase("beziehung")) {
+                                        OfflinePlayer tplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
+                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Beziehung: " + tplayer.getName() + ")");
+                                    } else if (entry.getValue().equalsIgnoreCase("verlobt")) {
+                                        OfflinePlayer tplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
+                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Verlobt: " + tplayer.getName() + ")");
+                                    } else if (entry.getValue().equalsIgnoreCase("verheiratet")) {
+                                        OfflinePlayer tplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
+                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Verheiratet (" + tplayer.getName() + ")");
+                                    } else {
+                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
+                                    }
+                                }
+                            } else {
+                                player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
+                            }
                             targetplayer.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + PlayerManager.visum(player));
                         } else {
                             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in der nähe.");

@@ -1122,5 +1122,54 @@ public class InventoryClickListener implements Listener {
                     break;
             }
         }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "interaktionsmenü")) {
+            event.setCancelled(true);
+            switch (event.getSlot()) {
+
+            }
+        }
+        if (Objects.equals(playerData.getVariable("current_inventory"), "garage")) {
+            event.setCancelled(true);
+            if (playerData.getVariable("current_app").equalsIgnoreCase("parkin")) {
+                switch (event.getCurrentItem().getType()) {
+                    case REDSTONE:
+                        Vehicles.openGarage(player, playerData.getIntVariable("current_garage"), false);
+                        break;
+                    case MINECART:
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        int id = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                        PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
+                        VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
+                        playerVehicleData.setParked(true);
+                        Vehicles.deleteVehicleById(id);
+                        Utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
+                        SoundManager.successSound(player);
+                        Statement statement = MySQL.getStatement();
+                        statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + playerData.getIntVariable("current_garage") + " WHERE id = " + id);
+                        playerVehicleData.setGarage(playerData.getIntVariable("current_garage"));
+                        player.closeInventory();
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equalsIgnoreCase("parkout")) {
+                switch (event.getCurrentItem().getType()) {
+                    case EMERALD:
+                        Vehicles.openGarage(player, playerData.getIntVariable("current_garage"), true);
+                        break;
+                    case MINECART:
+                        ItemMeta meta = event.getCurrentItem().getItemMeta();
+                        int id = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                        PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
+                        VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
+                        playerVehicleData.setParked(false);
+                        Utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a ausgeparkt!");
+                        SoundManager.successSound(player);
+                        Statement statement = MySQL.getStatement();
+                        statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + id);
+                        Vehicles.spawnVehicle(player, playerVehicleData);
+                        player.closeInventory();
+                        break;
+                }
+            }
+        }
     }
 }

@@ -224,6 +224,8 @@ public final class Main extends JavaPlugin {
         getCommand("beziehung").setExecutor(new beziehungCommand());
         getCommand("trennen").setExecutor(new trennenCommand());
         getCommand("antrag").setExecutor(new antragCommand());
+        getCommand("self").setExecutor(new selfCommand());
+        getCommand("garage").setExecutor(new garageCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());

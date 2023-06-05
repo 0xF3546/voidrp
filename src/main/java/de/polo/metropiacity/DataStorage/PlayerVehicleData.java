@@ -15,6 +15,7 @@ public class PlayerVehicleData {
     private World welt;
     private float yaw;
     private float pitch;
+    private int garage;
 
     public int getId() {
         return id;
@@ -110,5 +111,13 @@ public class PlayerVehicleData {
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+    }
+
+    public int getGarage() {
+        return garage;
+    }
+
+    public void setGarage(int garage) {
+        this.garage = garage;
     }
 }

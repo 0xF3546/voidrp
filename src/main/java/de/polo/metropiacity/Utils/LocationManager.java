@@ -1,6 +1,7 @@
 package de.polo.metropiacity.Utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
+import de.polo.metropiacity.DataStorage.GarageData;
 import de.polo.metropiacity.DataStorage.GasStationData;
 import de.polo.metropiacity.DataStorage.LocationData;
 import de.polo.metropiacity.DataStorage.NaviData;
@@ -21,6 +22,7 @@ import java.util.*;
 public class LocationManager {
     public static Map<String, LocationData> locationDataMap = new HashMap<String, LocationData>();
     public static Map<Integer, GasStationData> gasStationDataMap = new HashMap<>();
+    public static Map<Integer, GarageData> garageDataMap = new HashMap<>();
     public static Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
     public static void loadLocations() throws SQLException {
@@ -77,6 +79,20 @@ public class LocationManager {
             gasStationDataMap.put(gas.getInt(1), gasStationData);
         }
 
+        ResultSet garage = statement.executeQuery("SELECT * FROM garage");
+        while (garage.next()) {
+            GarageData garageData = new GarageData();
+            garageData.setId(garage.getInt(1));
+            garageData.setName(garage.getString(2));
+            garageData.setX(garage.getInt(3));
+            garageData.setY(garage.getInt(4));
+            garageData.setZ(garage.getInt(5));
+            garageData.setWelt(Bukkit.getWorld(garage.getString(6)));
+            garageData.setYaw(garage.getFloat(7));
+            garageData.setPitch(garage.getFloat(8));
+            garageDataMap.put(garage.getInt(1), garageData);
+        }
+
         ResultSet navi = statement.executeQuery("SELECT * FROM navi");
         while (navi.next()) {
             NaviData naviData = new NaviData();
@@ -102,6 +118,9 @@ public class LocationManager {
             } else if (name.contains("isGas")) {
                 p.sendMessage(Main.gamedesign_prefix + " Tankstelle regestriert.");
                 statement.executeUpdate("INSERT INTO gasstations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGas", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
+            } else if (name.contains("isGarage")) {
+                p.sendMessage(Main.gamedesign_prefix + " Garage regestriert.");
+                statement.executeUpdate("INSERT INTO garage (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGarage", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             }  else if (name.contains("isFFA")) {
                 p.sendMessage(Main.gamedesign_prefix + " FFA-Spawn regestriert.");
                 statement.executeUpdate("INSERT INTO ffa_spawnpoints (lobby_type, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isFFA", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
@@ -207,6 +226,14 @@ public class LocationManager {
         for (GasStationData gasStationData : gasStationDataMap.values()) {
             if (player.getLocation().distance(new Location(gasStationData.getWelt(), gasStationData.getX(), gasStationData.getY(), gasStationData.getZ(), gasStationData.getYaw(), gasStationData.getPitch())) < 25) {
                 return gasStationData.getId();
+            }
+        }
+        return 0;
+    }
+    public static Integer isPlayerNearGarage(Player player) {
+        for (GarageData garageData : garageDataMap.values()) {
+            if (player.getLocation().distance(new Location(garageData.getWelt(), garageData.getX(), garageData.getY(), garageData.getZ(), garageData.getYaw(), garageData.getPitch())) < 8) {
+                return garageData.getId();
             }
         }
         return 0;

@@ -545,6 +545,20 @@ public class PlayerManager implements Listener {
         return playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei");
     }
 
+    public static void openInterActionMenu(Player player, Player targetplayer) {
+        Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        PlayerData targetplayerData = playerDataMap.get(targetplayer.getUniqueId().toString());
+        playerData.setVariable("current_inventory", "interaktionsmenü");
+        inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
+        for (int i = 0; i < 54; i++) {
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            }
+        }
+        player.openInventory(inv);
+    }
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
