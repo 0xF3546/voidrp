@@ -7,7 +7,7 @@ public class ChatUtils {
     public static void sendMeMessageAtPlayer(Player player, String message) {
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 5) {
-                players.sendMessage("§8➥ §2" + message);
+                players.sendMessage("§8► §a" + message);
             }
         }
     }

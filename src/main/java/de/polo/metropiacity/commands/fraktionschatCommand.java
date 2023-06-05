@@ -30,7 +30,7 @@ public class fraktionschatCommand implements CommandExecutor {
                     }
                 }
             } else {
-                player.sendMessage(Main.admin_error + "Syntax-Error: /teamchat [Nachricht]");
+                player.sendMessage(Main.admin_error + "Syntax-Error: /fraktionschat [Nachricht]");
             }
         } else {
             player.sendMessage(Main.error_nopermission);
