@@ -35,6 +35,7 @@ public class playerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).isDead()) return;
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
                 if (event.getClickedBlock().getType() == Material.CAULDRON) {
