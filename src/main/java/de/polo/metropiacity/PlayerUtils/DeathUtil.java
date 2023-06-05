@@ -95,6 +95,7 @@ public class DeathUtil {
         player.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
         if (deathSkulls.get(player.getUniqueId().toString()) != null) {
             Item skull = deathSkulls.get(player.getUniqueId().toString());
+            player.teleport(skull.getLocation());
             skull.remove();
             deathSkulls.remove(player.getUniqueId().toString());
         }

@@ -1141,7 +1141,19 @@ public class InventoryClickListener implements Listener {
         if (Objects.equals(playerData.getVariable("current_inventory"), "interaktionsmenü")) {
             event.setCancelled(true);
             switch (event.getSlot()) {
-
+                case 20:
+                    playerData.setVariable("chatblock", "givemoney");
+                    player.sendMessage("§8[§6Interaktion§8]§7 Gib nun einen Wert ein.");
+                    player.closeInventory();
+                    break;
+                case 24:
+                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
+                    if (targetplayer ==  null) {
+                        return;
+                    }
+                    player.performCommand("personalausweis show " + targetplayer.getName());
+                    player.closeInventory();
+                    break;
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "garage")) {

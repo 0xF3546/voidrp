@@ -3,11 +3,8 @@ package de.polo.metropiacity.Utils;
 import de.polo.metropiacity.DataStorage.RankData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
-import de.polo.metropiacity.PlayerUtils.DeathUtil;
-import de.polo.metropiacity.PlayerUtils.PayDayUtil;
+import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.DataStorage.PlayerData;
-import de.polo.metropiacity.PlayerUtils.Scoreboard;
-import de.polo.metropiacity.PlayerUtils.tutorial;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -550,13 +547,54 @@ public class PlayerManager implements Listener {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         PlayerData targetplayerData = playerDataMap.get(targetplayer.getUniqueId().toString());
         playerData.setVariable("current_inventory", "interaktionsmenü");
+        playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
+        inv.setItem(20, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§aGeld geben", null));
+        inv.setItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen", null));
         for (int i = 0; i < 54; i++) {
             if (inv.getItem(i) == null) {
                 inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
             }
         }
         player.openInventory(inv);
+    }
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo().equals("givemoney")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(event.getPlayerData().getVariable("current_player")));
+            if (targetplayer ==  null) {
+                event.end();
+                return;
+            }
+            if (event.getPlayer().getLocation().distance(targetplayer.getLocation()) < 5) {
+                int amount = Integer.parseInt(event.getMessage());
+                if (amount >= 1) {
+                    if (event.getPlayerData().getBargeld() >= amount) {
+                        try {
+                            PlayerManager.removeMoney(event.getPlayer(), amount, "Geld an " + targetplayer.getName() + " übergeben.");
+                            PlayerManager.addMoney(targetplayer, amount);
+                            event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
+                            targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
+                            ChatUtils.sendMeMessageAtPlayer(event.getPlayer(),  "§o"+ event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        event.getPlayer().sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                    }
+                } else {
+                    event.getPlayer().sendMessage(Main.error + "Der Betrag muss >= 1 sein.");
+                }
+            } else {
+                event.getPlayer().sendMessage(Main.error + "Der Spieler ist nicht in deiner nähe.");
+            }
+            event.end();
+        }
     }
 
     @EventHandler

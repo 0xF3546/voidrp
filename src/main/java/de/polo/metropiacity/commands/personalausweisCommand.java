@@ -55,7 +55,7 @@ public class personalausweisCommand implements CommandExecutor, TabCompleter {
                                     }
                                 }
                             } else {
-                                player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
+                                targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
                             }
                             targetplayer.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + PlayerManager.visum(player));
                         } else {
