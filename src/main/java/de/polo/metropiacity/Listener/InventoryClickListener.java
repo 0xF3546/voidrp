@@ -1154,6 +1154,14 @@ public class InventoryClickListener implements Listener {
                     player.performCommand("personalausweis show " + targetplayer.getName());
                     player.closeInventory();
                     break;
+                case 40:
+                    Player targetplayer2 = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
+                    if (targetplayer2 ==  null) {
+                        return;
+                    }
+                    Utils.kissPlayer(player, targetplayer2);
+                    player.closeInventory();
+                    break;
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "garage")) {
