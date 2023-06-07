@@ -120,6 +120,11 @@ public class playerInteractListener implements Listener {
                 ItemStack itemStack = event.getItem().clone();
                 itemStack.setAmount(1);
                 player.getInventory().removeItem(itemStack);
+            } else if (event.getItem().getItemMeta().getDisplayName().contains("XP-Case")) {
+                ItemStack itemStack = event.getItem().clone();
+                itemStack.setAmount(1);
+                player.getInventory().removeItem(itemStack);
+                PlayerManager.addExp(player, Main.random(50, 200));
             }
         }
     }

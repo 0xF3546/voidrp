@@ -5,6 +5,7 @@ import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.Utils.*;
 import de.polo.metropiacity.commands.*;
+import de.polo.metropiacity.discord.discord;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -116,6 +117,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new tutorial(), this);
         getServer().getPluginManager().registerEvents(new nachrichtenCommand(), this);
         getServer().getPluginManager().registerEvents(new Navigation(), this);
+        getServer().getPluginManager().registerEvents(new fishingListener(), this);
     }
 
     private void registerCommands() {

@@ -13,7 +13,7 @@ public class discord {
     public static void runBot() throws InterruptedException {
         bot = JDABuilder.createDefault("MTA2NjExOTE4MTk4MTk3ODY4NA.GYIgqN.1JVKQCshvBoI09PM-C-Z4qufCZpw28SRdH9XYM")
                 .addEventListeners(new ReadyListener())
-                .setActivity(Activity.watching("auf Void Roleplay"))
+                .setActivity(Activity.watching("auf MetropiaCity"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES)
@@ -23,9 +23,9 @@ public class discord {
         bot.getPresence().setStatus(OnlineStatus.IDLE);
         do {
             if (Main.getInstance().isOnline) {
-                bot.getPresence().setActivity(Activity.watching("auf Void Roleplay [" + (long) Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers() + "]"));
+                bot.getPresence().setActivity(Activity.watching("auf MetropiaCity [" + (long) Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers() + "]"));
                 Thread.sleep(1300);
-                bot.getPresence().setActivity(Activity.watching("auf Void Roleplay [" + (long) Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers() + "]"));
+                bot.getPresence().setActivity(Activity.watching("auf MetropiaCity [" + (long) Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers() + "]"));
             }
         } while (true);
     }
