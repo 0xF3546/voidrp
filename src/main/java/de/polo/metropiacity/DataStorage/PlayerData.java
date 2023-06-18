@@ -4,9 +4,11 @@ import de.polo.metropiacity.PlayerUtils.Scoreboard;
 import org.bukkit.Location;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerData {
     private int id;
+    private UUID uuid;
     private String firstname;
     private String lastname;
     private int bargeld;
@@ -18,6 +20,7 @@ public class PlayerData {
     private int faction_grade;
     private HashMap<String, String> variables = new HashMap<>();
     private HashMap<String, Integer> integer_variables = new HashMap<>();
+    private HashMap<String, Location> locationVariables = new HashMap<>();
     private HashMap<String, Integer> skillLevel = new HashMap<>();
     private HashMap<String, Integer> skillExp = new HashMap<>();
     private HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
@@ -397,5 +400,21 @@ public class PlayerData {
 
     public void setRelationShip(HashMap<String, String> relationShip) {
         this.relationShip = relationShip;
+    }
+
+    public HashMap<String, Location> getLocationVariables() {
+        return locationVariables;
+    }
+
+    public void setLocationVariables(HashMap<String, Location> locationVariables) {
+        this.locationVariables = locationVariables;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 }

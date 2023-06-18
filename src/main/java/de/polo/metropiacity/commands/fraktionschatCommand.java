@@ -26,11 +26,11 @@ public class fraktionschatCommand implements CommandExecutor {
                 FactionData factionData = FactionManager.factionDataMap.get(playerfac);
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (Objects.equals(FactionManager.faction(players), playerfac)) {
-                        players.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + FactionManager.getFactionFullname(playerfac) + "§8]§"+FactionManager.getFactionPrimaryColor(playerfac)+" " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + "§8:§" + FactionManager.getFactionSecondaryColor(playerfac) +" " + msg);
+                        players.sendMessage("§"+FactionManager.getFactionPrimaryColor(playerfac) + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + "§8:§7 " + msg);
                     }
                 }
             } else {
-                player.sendMessage(Main.admin_error + "Syntax-Error: /fraktionschat [Nachricht]");
+                player.sendMessage(Main.error + "Syntax-Error: /fraktionschat [Nachricht]");
             }
         } else {
             player.sendMessage(Main.error_nopermission);

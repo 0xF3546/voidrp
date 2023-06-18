@@ -5,7 +5,6 @@ import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.Utils.*;
 import de.polo.metropiacity.commands.*;
-import de.polo.metropiacity.discord.discord;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -90,7 +89,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new chatListener(), this);
         getServer().getPluginManager().registerEvents(new blockbreakListener(), this);
         getServer().getPluginManager().registerEvents(new blockplaceListener(), this);
-        getServer().getPluginManager().registerEvents(new unknownCommandListener(), this);
+        getServer().getPluginManager().registerEvents(new commandListener(), this);
         getServer().getPluginManager().registerEvents(new deathListener(), this);
         getServer().getPluginManager().registerEvents(new serverPingListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
@@ -228,6 +227,7 @@ public final class Main extends JavaPlugin {
         getCommand("antrag").setExecutor(new antragCommand());
         getCommand("self").setExecutor(new selfCommand());
         getCommand("garage").setExecutor(new garageCommand());
+        getCommand("akten").setExecutor(new aktenCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());

@@ -46,7 +46,7 @@ public class aduty implements CommandExecutor {
         for (Player player1 : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = PlayerManager.playerDataMap.get(player1.getUniqueId().toString());
             if (playerData.isAduty()) {
-                player1.sendMessage(Main.admin_info + msg);
+                player1.sendMessage("§8[§bNotify§8]§a " + msg);
             }
         }
     }

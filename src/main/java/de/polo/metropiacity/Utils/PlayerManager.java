@@ -93,6 +93,7 @@ public class PlayerManager implements Listener {
             ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
+                    playerData.setUuid(player.getUniqueId());
                     playerData.setFirstname(name.getString(1));
                     playerData.setLastname(name.getString(2));
                     playerData.setBargeld(name.getInt(3));
