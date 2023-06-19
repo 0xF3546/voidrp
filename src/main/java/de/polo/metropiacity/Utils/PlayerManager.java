@@ -1,10 +1,13 @@
 package de.polo.metropiacity.Utils;
 
+import de.polo.metropiacity.DataStorage.FactionData;
+import de.polo.metropiacity.DataStorage.GangwarData;
 import de.polo.metropiacity.DataStorage.RankData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.commands.aduty;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -23,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -453,6 +457,48 @@ public class PlayerManager implements Listener {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     add1MinutePlaytime(player);
                 }
+                for (FactionData factionData : FactionManager.factionDataMap.values()) {
+                    if (factionData.getPayDay() >= 60) {
+                        for (PlayerData playerData : playerDataMap.values()) {
+                            if (playerData.getFactionGrade() >= 7) {
+                                Player player = Bukkit.getPlayer(playerData.getUuid());
+                                player.sendMessage(" ");
+                                player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
+                                double plus = 0;
+                                double zinsen = Math.round(PlayerManager.bank(player) * 0.0075);
+                                double steuern = Math.round(PlayerManager.bank(player) * 0.0035);
+                                plus += zinsen;
+                                plus -= steuern;
+                                player.sendMessage(" ");
+                                player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
+                                player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
+                                player.sendMessage(" ");
+                                for (GangwarData gangwarData : Gangwar.gangwarDataMap.values()) {
+                                    if (gangwarData.getOwner().equals(factionData.getName())) {
+                                        player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangwarData.getZone() + ")§8:§a +" + 150 + "$");
+                                        plus += 150;
+                                    }
+                                }
+                                player.sendMessage(" ");
+                                if (plus >= 0) {
+                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(FactionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
+                                } else {
+                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(FactionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
+                                }
+                                player.sendMessage(" ");
+                                factionData.setPayDay(0);
+                                try {
+                                    FactionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
+                                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }
+                    } else {
+                        factionData.setPayDay(factionData.getPayDay() + 1);
+                    }
+                }
             }
         }.runTaskTimer(Main.getInstance(), 20*2, 20*60);
     }
@@ -583,6 +629,7 @@ public class PlayerManager implements Listener {
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(),  "§o"+ event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
+                            aduty.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.");
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }

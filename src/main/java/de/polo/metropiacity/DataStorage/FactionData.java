@@ -7,6 +7,8 @@ public class FactionData {
     private String fullname;
     private String name;
     private int bank;
+    private int PayDay;
+    private int maxMember;
     private boolean hasBlacklist;
     private int teamSpeakID;
     private int channelGroupID;
@@ -99,5 +101,21 @@ public class FactionData {
 
     public void setDoGangwar(boolean doGangwar) {
         this.doGangwar = doGangwar;
+    }
+
+    public int getPayDay() {
+        return PayDay;
+    }
+
+    public void setPayDay(int payDay) {
+        PayDay = payDay;
+    }
+
+    public int getMaxMember() {
+        return maxMember;
+    }
+
+    public void setMaxMember(int maxMember) {
+        this.maxMember = maxMember;
     }
 }

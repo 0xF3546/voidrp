@@ -28,6 +28,9 @@ public class aduty implements CommandExecutor {
                 if (playerData.isDuty()) {
                     FactionManager.setDuty(player, true);
                 }
+                if (playerData.getVariable("isSpec") != null) {
+                    specCommand.leaveSpec(player);
+                }
             } else {
                 playerData.setAduty(true);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");

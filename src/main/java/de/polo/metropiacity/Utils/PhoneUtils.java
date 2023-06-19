@@ -462,7 +462,7 @@ public class PhoneUtils implements Listener {
                     phoneCallConnection.remove(player1.getUniqueId().toString());
                     phoneCallConnection.remove(player.getUniqueId().toString());
                     player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
-                    player1.sendMessage("§8[§6Handy§8] " + player.getName() + " hat aufgelegt.");
+                    player1.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat aufgelegt.");
                     player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
                     player1.playSound(player1.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
                 }
@@ -473,7 +473,7 @@ public class PhoneUtils implements Listener {
                     VertragUtil.deleteVertrag(player);
                     VertragUtil.deleteVertrag(players);
                     player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
-                    players.sendMessage("§8[§6Handy§8]§7§l " + playerData.getNumber() + "§7 hat aufgelegt.");
+                    players.sendMessage("§8[§6Handy§8]§7 " + playerData.getNumber() + "§7 hat aufgelegt.");
                 }
             }
         } else {

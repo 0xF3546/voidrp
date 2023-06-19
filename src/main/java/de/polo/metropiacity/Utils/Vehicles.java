@@ -251,7 +251,10 @@ public class Vehicles implements Listener, CommandExecutor {
                 double speedMetersPerSecond = currentSpeed * 1000.0 / 36000.0;
                 Vector direction = player.getLocation().getDirection().setY(player.getLocation().getDirection().getY()).normalize();
                 Vector newVelocity = direction.multiply(speedMetersPerSecond);
-                player.getVehicle().setVelocity(newVelocity);
+                if (direction.getY() < 0) {
+                    player.getVehicle().setVelocity(newVelocity);
+                }
+                System.out.println(direction.getY());
 
             }
         }

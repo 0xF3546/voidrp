@@ -28,6 +28,7 @@ commands:
   assistentchat:
     aliases: ac
   support:
+    aliases: [report, help]
   cancelsupport:
   acceptsupport:
     aliases: asupport
@@ -88,7 +89,7 @@ commands:
   gotoveh:
     aliases: gotovehicle
   navi:
-    aliases: [navigation, nav, route]
+    aliases: [navigation, nav, route, gps]
   einreise:
   registerhouse:
   reinforcement:
@@ -152,3 +153,10 @@ commands:
   self:
   garage:
   akten:
+  spec:
+    aliases: spectator
+  msg:
+  leaderchat:
+    aliases: [lchat, lc]
+  frakstats:
+    aliases: [fstats, fraktionsstats]

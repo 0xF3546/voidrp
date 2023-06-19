@@ -17,15 +17,23 @@ public class specCommand implements CommandExecutor {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getPermlevel() >= 60) {
             if (playerData.isAduty()) {
-                if (playerData.getVariable("isSpec") != null) {
+                if (playerData.getVariable("isSpec") == null) {
                     if (args.length >= 1) {
                         Player targetplayer = Bukkit.getPlayer(args[0]);
+                        player.setGameMode(GameMode.SPECTATOR);
                         player.setSpectatorTarget(targetplayer);
+                        playerData.setVariable("isSpec", targetplayer.getUniqueId().toString());
+                        playerData.setLocationVariable("specLoc", player.getLocation());
+                        player.sendMessage(Main.admin_prefix + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
+                    } else {
+                        player.sendMessage(Main.admin_error + "Syntax-Fehler: /spec [Spieler]");
                     }
                 } else {
                     player.setGameMode(GameMode.SURVIVAL);
                     player.setAllowFlight(true);
                     player.sendMessage(Main.admin_prefix + "Du hast den Spectator-Modus verlassen");
+                    player.teleport(playerData.getLocationVariable("specLoc"));
+                    playerData.setVariable("isSpec", null);
                 }
             } else {
                 player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst.");
@@ -34,5 +42,13 @@ public class specCommand implements CommandExecutor {
             player.sendMessage(Main.error_nopermission);
         }
         return false;
+    }
+
+    public static void leaveSpec(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setAllowFlight(true);
+        player.teleport(playerData.getLocationVariable("specLoc"));
+        playerData.setVariable("isSpec", null);
     }
 }

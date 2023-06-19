@@ -402,12 +402,16 @@ public class PlayerData {
         this.relationShip = relationShip;
     }
 
-    public HashMap<String, Location> getLocationVariables() {
-        return locationVariables;
+    public void setLocationVariable(String variable, Location value) {
+        if (this.locationVariables.get(variable) != null) {
+            this.locationVariables.replace(variable, value);
+        } else {
+            this.locationVariables.put(variable, value);
+        }
     }
 
-    public void setLocationVariables(HashMap<String, Location> locationVariables) {
-        this.locationVariables = locationVariables;
+    public Location getLocationVariable(String variable) {
+        return locationVariables.get(variable);
     }
 
     public UUID getUuid() {
