@@ -1,6 +1,7 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.SupportManager;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -12,6 +13,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class supportCommand implements CommandExecutor {
     @Override
@@ -38,6 +42,12 @@ public class supportCommand implements CommandExecutor {
 
                         players.spigot().sendMessage(message);
                     }
+                }
+                try {
+                    Statement statement = MySQL.getStatement();
+                    statement.execute("INSERT INTO `tickets` (`creator`, `reason`) VALUES ('" + player.getUniqueId() + "', '" + msg + "')");
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 player.sendMessage(Main.support_prefix + "Du hast bereits ein Ticket offen.");

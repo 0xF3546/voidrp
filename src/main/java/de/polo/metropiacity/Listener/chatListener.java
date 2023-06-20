@@ -31,7 +31,7 @@ public class chatListener implements Listener {
                 if (PhoneUtils.isInConnection(player)) {
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         if (PhoneUtils.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
-                            players.sendMessage("§6Handy§8 »§e " + player.getName() + "§8:§7 " + event.getMessage());
+                            players.sendMessage("§8[§6Handy§8]§e " + player.getName() + "§8:§7 " + event.getMessage());
                         }
                     }
                 }

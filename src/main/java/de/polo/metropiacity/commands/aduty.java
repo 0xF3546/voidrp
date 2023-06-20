@@ -16,9 +16,10 @@ public class aduty implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (PlayerManager.onPlayer.get(player.getUniqueId().toString())) {
+        if (playerData.getPermlevel() >= 60) {
             if (playerData.isAduty()) {
                 playerData.setAduty(false);
+                aduty.send_message(player.getName() + " hat den Admindienst verlassen.");
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 (player).setFlying(false);
                 (player).setAllowFlight(false);
@@ -32,6 +33,7 @@ public class aduty implements CommandExecutor {
                     specCommand.leaveSpec(player);
                 }
             } else {
+                aduty.send_message(player.getName() + " hat den Admindienst betreten.");
                 playerData.setAduty(true);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");
                 (player).setAllowFlight(true);
@@ -49,7 +51,7 @@ public class aduty implements CommandExecutor {
         for (Player player1 : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = PlayerManager.playerDataMap.get(player1.getUniqueId().toString());
             if (playerData.isAduty()) {
-                player1.sendMessage("§8[§bNotify§8]§a " + msg);
+                player1.sendMessage("§8[§c§l!§8]§b " + msg);
             }
         }
     }

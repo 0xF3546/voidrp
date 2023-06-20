@@ -81,7 +81,7 @@ public class DeathUtil {
         playerData.setCanInteract(false);
         playerData.setDead(false);
         deathPlayer.remove(player.getUniqueId().toString());
-        aduty.send_message( "§c"+ player.getName() + "§7 wurde wiederbelebt.");
+        aduty.send_message( player.getName() + " wurde wiederbelebt.");
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);

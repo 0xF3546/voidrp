@@ -22,6 +22,7 @@ public class acceptticketCommand implements CommandExecutor {
                             SupportManager.createTicketConnection(player, targetplayer);
                             targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
                             player.sendMessage(Main.support_prefix + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
+                            aduty.send_message(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName()+ ".");
                         } else {
                             player.sendMessage(Main.support_prefix + "§c" + targetplayer.getName() + "§7 hat kein Ticket erstellt.");
                         }

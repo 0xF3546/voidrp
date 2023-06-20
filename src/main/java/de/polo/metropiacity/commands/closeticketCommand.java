@@ -24,6 +24,7 @@ public class closeticketCommand implements CommandExecutor {
             assert targetplayer != null;
             targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
             player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
+            aduty.send_message(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.");
         } else {
             player.sendMessage(Main.error_nopermission);
         }

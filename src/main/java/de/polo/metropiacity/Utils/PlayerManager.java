@@ -460,13 +460,13 @@ public class PlayerManager implements Listener {
                 for (FactionData factionData : FactionManager.factionDataMap.values()) {
                     if (factionData.getPayDay() >= 60) {
                         for (PlayerData playerData : playerDataMap.values()) {
-                            if (playerData.getFactionGrade() >= 7) {
+                            if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                 Player player = Bukkit.getPlayer(playerData.getUuid());
                                 player.sendMessage(" ");
                                 player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
                                 double plus = 0;
-                                double zinsen = Math.round(PlayerManager.bank(player) * 0.0075);
-                                double steuern = Math.round(PlayerManager.bank(player) * 0.0035);
+                                double zinsen = Math.round(factionData.getBank() * 0.0075);
+                                double steuern = Math.round(factionData.getBank() * 0.0035);
                                 plus += zinsen;
                                 plus -= steuern;
                                 player.sendMessage(" ");

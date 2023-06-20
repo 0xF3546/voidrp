@@ -297,4 +297,17 @@ public class FactionManager {
     public static boolean isInBündnisWith(Player player, String faction) {
         return false;
     }
+
+    public static int getMemberCount(String faction) {
+        int count = 0;
+        for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
+            if (factionPlayerData.getFaction().equals(faction)) {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(factionPlayerData.getUuid()));
+                if (offlinePlayer.isOnline()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }
