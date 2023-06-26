@@ -437,7 +437,7 @@ public class PlayerManager implements Listener {
     }
 
     public static boolean isTeam(Player player) {
-        return onPlayer.get(player.getUniqueId().toString()) != null;
+        return playerDataMap.get(player.getUniqueId().toString()).getPermlevel() >= 40;
     }
     public static Integer perms(Player player) {
         String uuid = player.getUniqueId().toString();

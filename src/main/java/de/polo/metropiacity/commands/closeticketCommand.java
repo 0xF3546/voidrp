@@ -1,5 +1,6 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.SupportManager;
@@ -13,7 +14,8 @@ public class closeticketCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (PlayerManager.isTeam(player)) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (playerData.getPermlevel() >= 40) {
             Player targetplayer = null;
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (SupportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {

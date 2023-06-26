@@ -44,7 +44,7 @@ public class inviteCommand implements CommandExecutor {
                                     }
                                     targetplayer.openInventory(inv);*/
                                     targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Fraktion " + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§6 eingeladen.");
-                                    VertragUtil.sendInfoMessage(player);
+                                    VertragUtil.sendInfoMessage(targetplayer);
                                     PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
                                     //tplayerData.setVariable("current_inventory", "faction_invite");
                                 } else {

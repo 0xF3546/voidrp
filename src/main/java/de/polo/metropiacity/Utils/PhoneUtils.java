@@ -404,7 +404,7 @@ public class PhoneUtils implements Listener {
                     players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
                     try {
                         Statement statement = MySQL.getStatement();
-                        statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + player.getUniqueId() + "', '" + players.getUniqueId() + "', '" + message + "', " + number + ");");
+                        statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + players.getUniqueId() + "', '" + player.getUniqueId() + "', '" + message + "', " + number + ");");
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
