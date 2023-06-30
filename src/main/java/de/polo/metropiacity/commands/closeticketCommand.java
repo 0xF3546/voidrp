@@ -4,6 +4,7 @@ import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.SupportManager;
+import de.polo.metropiacity.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,6 +26,7 @@ public class closeticketCommand implements CommandExecutor {
             SupportManager.deleteTicketConnection(player, targetplayer);
             assert targetplayer != null;
             targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
+            Utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
             player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
             aduty.send_message(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.");
         } else {

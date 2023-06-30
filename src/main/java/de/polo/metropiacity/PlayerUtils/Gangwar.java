@@ -3,12 +3,10 @@ package de.polo.metropiacity.PlayerUtils;
 import de.polo.metropiacity.DataStorage.FactionData;
 import de.polo.metropiacity.DataStorage.GangwarData;
 import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.DataStorage.WeaponData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
-import de.polo.metropiacity.Utils.FactionManager;
-import de.polo.metropiacity.Utils.ItemManager;
-import de.polo.metropiacity.Utils.LocationManager;
-import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.Utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +53,7 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                 player.sendMessage("§7   ===§8[§cGangwar§8]§7===");
                 for (GangwarData gangwarData : gangwarDataMap.values()) {
                     FactionData factionData = FactionManager.factionDataMap.get(gangwarData.getOwner());
-                    player.sendMessage("§8 ➥ §e" + gangwarData.getZone() + " §8| §" + factionData.getPrimaryColor() + factionData.getName());
+                    player.sendMessage("§8 ➥ §e" + gangwarData.getZone() + " §8| §" + factionData.getPrimaryColor() + factionData.getFullname());
                 }
             }
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
@@ -64,6 +63,9 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                     if (factionData.getCurrent_gangwar() != null) {
                         leaveGangwar(player);
                         player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar verlassen.");
+                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Gangwar verlassen.");
+                    } else {
+                        player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
                     }
                 } else {
                     player.sendMessage(Main.error + "Du bist in keienr Fraktion.");
@@ -76,6 +78,9 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                         joinGangwar(player, factionData.getCurrent_gangwar());
                         GangwarData gangwarData = gangwarDataMap.get(factionData.getCurrent_gangwar());
                         player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar §c" + gangwarData.getZone() + "§7 betreten.");
+                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " ist dem Gangwar beigetreten.");
+                    } else {
+                        player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
                     }
                 } else {
                     player.sendMessage(Main.error + "Du bist in keienr Fraktion.");
@@ -84,8 +89,12 @@ public class Gangwar implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("attack")) {
                 if (args.length >= 2) {
                     if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
-                        if (LocationManager.getDistanceBetweenCoords(player, "gangwar_attack_" + args[1].replace(" ", "")) < 5) {
-                            GangwarData gangwarData = gangwarDataMap.get(args[1].replace(" ", ""));
+                        StringBuilder msg = new StringBuilder(args[1]);
+                        for (int i = 2; i < args.length; i++) {
+                            msg.append(" ").append(args[i]);
+                        }
+                        if (LocationManager.getDistanceBetweenCoords(player, "gangwar_attack_" + msg.toString().replace(" ", "")) < 5) {
+                            GangwarData gangwarData = gangwarDataMap.get(msg.toString());
                             Inventory inv = Bukkit.createInventory(player, 27, "§8 » §c" + gangwarData.getZone());
                             inv.setItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", "Lädt..."));
                             ItemMeta meta = inv.getItem(13).getItemMeta();
@@ -130,13 +139,53 @@ public class Gangwar implements CommandExecutor, TabCompleter {
         } else {
             LocationManager.useLocation(player, "defender_spawn_" + zone);
         }
+        equipPlayer(player);
+    }
+
+    public static void equipPlayer(Player player) {
+        Weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "FFA");
     }
 
     public static void leaveGangwar(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getVariable("gangwar") != null) {
             LocationManager.useLocation(player, "gangwar_out_" + playerData.getFaction());
+            for (ItemStack item : player.getInventory().getContents()) {
+                for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                    if (weaponData.getMaterial() != null && item != null) {
+                        if (item.getType() == weaponData.getMaterial()) {
+                            ItemMeta meta = item.getItemMeta();
+                            if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
+                                if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "Gangwar") {
+                                    player.getInventory().remove(item);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    public static void respawnPlayer(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        LocationManager.useLocation(player, "attacker_spawn_" + playerData.getVariable("gangwar"));
+        //todo: hier noch checken ob er attacker oder defender ist
+        for (ItemStack item : player.getInventory().getContents()) {
+            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                if (weaponData.getMaterial() != null && item != null) {
+                    if (item.getType() == weaponData.getMaterial()) {
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
+                            if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "Gangwar") {
+                                player.getInventory().remove(item);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        equipPlayer(player);
     }
 
     public static void startGangwar(Player player, String zone) {

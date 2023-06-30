@@ -57,10 +57,12 @@ public final class Main extends JavaPlugin {
         try {
             Statement statement = MySQL.getStatement();
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
+            statement.execute("DELETE FROM phone_messages WHERE datum < DATE_SUB(NOW(), INTERVAL 14 DAY)");
             Weapons.loadWeapons();
             Vehicles.loadVehicles();
             Vehicles.loadPlayerVehicles();
             PlayerManager.startTimeTracker();
+            ServerManager.loadShops();
             ServerManager.startTabUpdateInterval();
             ServerManager.loadRanks();
             LocationManager.loadLocations();
@@ -117,6 +119,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new nachrichtenCommand(), this);
         getServer().getPluginManager().registerEvents(new Navigation(), this);
         getServer().getPluginManager().registerEvents(new fishingListener(), this);
+        getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
     }
 
     private void registerCommands() {

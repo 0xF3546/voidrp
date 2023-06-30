@@ -88,7 +88,7 @@ public class playerInteractWithPlayerListener implements Listener {
                             player.sendMessage(Main.error + player.getName() + " & du seid nicht verlobt.");
                         }
                     }
-                } else if (item.getType().equals(Material.PAPER)) {
+                } else if (item.getType().equals(Material.PAPER) && item.getItemMeta().getDisplayName().equalsIgnoreCase("§c§lIboprofen")) {
                     if (playerData.getFaction().equals("Medic")) {
                         targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12, 1));
                         targetplayer.addPotionEffect(PotionEffectType.HEAL.createEffect(12, 1));

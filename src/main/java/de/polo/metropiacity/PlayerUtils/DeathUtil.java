@@ -73,6 +73,11 @@ public class DeathUtil {
         playerData.setDeathTime(playerData.getDeathTime() + 300);
     }
 
+    public static void setGangwarDeath(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setDeathTime(playerData.getDeathTime() - 180);
+    }
+
     public static void killPlayer(Player player) {
         player.setHealth(0);
     }
@@ -94,7 +99,6 @@ public class DeathUtil {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        player.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
         if (deathSkulls.get(player.getUniqueId().toString()) != null) {
             Item skull = deathSkulls.get(player.getUniqueId().toString());
             player.teleport(skull.getLocation());
@@ -105,9 +109,16 @@ public class DeathUtil {
             players.showPlayer(Main.plugin, player);
         }
         PlayerManager.setPlayerMove(player, true);
+        if (playerData.getVariable("gangwar") != null) {
+            Gangwar.respawnPlayer(player);
+            player.sendMessage("§8[§cGangwar§8]§a Du bist respawnt.");
+        } else {
+            player.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
+        }
     }
 
     public static void despawnPlayer(Player player) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         deathPlayer.remove(player.getUniqueId().toString());
         try {
             Statement statement = MySQL.getStatement();
@@ -117,8 +128,14 @@ public class DeathUtil {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        LocationManager.useLocation(player, "Krankenhaus");
-        player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
+        if (playerData.getVariable("gangwar") != null) {
+            Gangwar.respawnPlayer(player);
+            player.sendMessage("§8[§cGangwar§8]§a Du bist respawnt.");
+        } else {
+            LocationManager.useLocation(player, "Krankenhaus");
+            player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
+            player.getInventory().clear();
+        }
         Item skull = deathSkulls.get(player.getUniqueId().toString());
         skull.remove();
         deathSkulls.remove(player.getUniqueId().toString());

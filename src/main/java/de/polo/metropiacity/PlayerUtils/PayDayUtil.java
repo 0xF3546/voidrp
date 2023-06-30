@@ -6,10 +6,7 @@ import de.polo.metropiacity.DataStorage.PlayerVehicleData;
 import de.polo.metropiacity.DataStorage.VehicleData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
-import de.polo.metropiacity.Utils.FactionManager;
-import de.polo.metropiacity.Utils.Housing;
-import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.Vehicles;
+import de.polo.metropiacity.Utils.*;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -65,6 +62,14 @@ public class PayDayUtil {
                 }
             }
         }
+        if (playerData.getPermlevel() >= 40) {
+            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getRang() + ")§8: §a" + playerData.getPermlevel() * ServerManager.getPayout("teamgehalt") + "$");
+            plus += playerData.getPermlevel() * ServerManager.getPayout("teamgehalt");
+        }
+        if (playerData.getSecondaryTeam() != null) {
+            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getSecondaryTeam() + ")§8: §a" + ServerManager.getPayout("secondaryteam") + "$");
+            plus += ServerManager.getPayout("secondaryteam");
+        }
         for (PlayerVehicleData vehicleData : Vehicles.playerVehicleDataMap.values()) {
             if (vehicleData.getUuid().equals(player.getUniqueId().toString())) {
                 VehicleData vehicleData1 = Vehicles.vehicleDataMap.get(vehicleData.getType());
@@ -76,9 +81,9 @@ public class PayDayUtil {
         player.sendMessage(" ");
         plus = Math.round(plus);
         if (plus >= 0) {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §8(§a+" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(PlayerManager.bank(player) + (int) plus) + "$ §8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §8(§c" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(PlayerManager.bank(player) + (int) plus) + "$ §8(§c" + (int) plus + "$§8)");
         }
         player.sendMessage(" ");
         PlayerManager.addBankMoney(player, (int) plus, "PayDay");

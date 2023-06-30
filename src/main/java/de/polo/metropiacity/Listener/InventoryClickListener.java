@@ -724,13 +724,13 @@ public class InventoryClickListener implements Listener {
                         }
                         break;
                     case LIME_DYE:
-                        if (vehicleData.getMaxFuel() >= playerData.getIntVariable("plusfuel") + 1) {
+                        if (vehicleData.getMaxFuel() <= playerData.getIntVariable("plusfuel") + 1) {
                             playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") + 1);
                             playerData.setIntVariable("plusfuel", playerData.getIntVariable("plusfuel") + 1);
                         }
                         break;
                     case GREEN_DYE:
-                        if (vehicleData.getMaxFuel() >= playerData.getIntVariable("plusfuel") + 10) {
+                        if (vehicleData.getMaxFuel() <= playerData.getIntVariable("plusfuel") + 10) {
                             playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") + 10);
                             playerData.setIntVariable("plusfuel", playerData.getIntVariable("plusfuel") + 10);
                         }
@@ -771,7 +771,7 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 4:
                     if (event.getClick().isLeftClick()) {
-                        playerData.setVariable("einreise_gender", "Maennlich");
+                        playerData.setVariable("einreise_gender", "Männlich");
                         ItemMeta meta = event.getCurrentItem().getItemMeta();
                         meta.setDisplayName("§eMännlich");
                         event.getCurrentItem().setItemMeta(meta);

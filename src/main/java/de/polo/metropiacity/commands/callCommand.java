@@ -23,21 +23,14 @@ public class callCommand implements CommandExecutor {
         if (PhoneUtils.hasPhone(player)) {
             if (!playerData.isFlightmode()) {
                 if (args.length >= 1) {
-                    if (Integer.parseInt(args[0]) != 0) {
                         if (!Objects.equals(playerData.getVariable("calling"), "Ja")) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData targetplayerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                                if (targetplayerData.getNumber() == Integer.parseInt(args[0])) {
+                                if (players.getName().equalsIgnoreCase(args[0])) {
                                     if (PhoneUtils.getConnection(players) == null) {
                                         if (!targetplayerData.isFlightmode()) {
                                             try {
-                                                if (playerData.getNumber() == 0) {
-                                                    player.sendMessage("§8[§6Handy§8]&a Deine Nummer lautet nun " + playerData.getId());
-                                                    playerData.setNumber(playerData.getId());
-                                                    Statement statement = MySQL.getStatement();
-                                                    statement.executeUpdate("UPDATE `players` SET `number` = " + playerData.getId() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
-                                                }
-                                                PhoneUtils.callNumber(player, targetplayerData.getNumber());
+                                                PhoneUtils.callNumber(player, players);
                                             } catch (SQLException e) {
                                                 player.sendMessage(Main.error + "Ein Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
                                                 throw new RuntimeException(e);
@@ -53,11 +46,8 @@ public class callCommand implements CommandExecutor {
                         } else {
                             player.sendMessage(Main.error + "Du rufst bereits jemanden an.");
                         }
-                    } else {
-                        player.sendMessage(Main.error + "Die Nummer muss größer als 0 sein");
-                    }
                 } else {
-                    player.sendMessage(Main.error + "Syntax-Fehler: /call [Nummer]");
+                    player.sendMessage(Main.error + "Syntax-Fehler: /call [Spieler]");
                 }
             } else {
                 player.sendMessage(PhoneUtils.error_flightmode);

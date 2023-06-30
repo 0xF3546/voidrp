@@ -76,6 +76,15 @@ public class deathListener implements Listener {
                 } else {
                     entity.setCustomName("§7" + player.getName());
                     entity.setCustomNameVisible(true);
+                    if (playerData.getVariable("gangwar") != null) {
+                        PlayerData killerData = PlayerManager.playerDataMap.get(player.getKiller().getUniqueId().toString());
+                        for (Player players : Bukkit.getOnlinePlayers()) {
+                            if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction().equals(killerData.getFaction())) {
+                                players.sendMessage("§8[§cGangwar§8]7 +3 Punkte für das Töten eines Gegners (" + player.getKiller().getName() + "§8 » §7" + player.getName() + ").");
+                            }
+                        }
+                        DeathUtil.setGangwarDeath(player);
+                    }
                 }
 
             }

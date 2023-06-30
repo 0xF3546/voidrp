@@ -371,16 +371,14 @@ public class PhoneUtils implements Listener {
         statement.executeQuery("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId().toString() + "', '" + targetplayer.getName() + "', " + playerData.getNumber() + ", '" + targetplayer.getUniqueId().toString() + "')");
     }
 
-    public static void callNumber(Player player, int number) throws SQLException {
+    public static void callNumber(Player player, Player players) throws SQLException {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        for (Player players : Bukkit.getOnlinePlayers()) {
-            if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
                 if (VertragUtil.setVertrag(player, players, "phonecall", players.getUniqueId().toString())) {
                     if (PhoneUtils.hasPhone(players)) {
                         ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
                         ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
-                        player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + number + "§e an.");
-                        players.sendMessage("§8[§6Handy§8] §eDu wirst von §l" + playerData.getNumber() + "§e angerufen.");
+                        player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + players.getName() + "§e an.");
+                        players.sendMessage("§8[§6Handy§8] §eDu wirst von §l" + player.getName() + "§e angerufen.");
                         playerData.setVariable("calling", players.getUniqueId().toString());
                         VertragUtil.sendInfoMessage(players);
                         players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
@@ -390,8 +388,6 @@ public class PhoneUtils implements Listener {
                 } else {
                     player.sendMessage(Main.error + "Dein Handy konnte keine Verbindung aufbauen. §o(Systemfehler)");
                 }
-            }
-        }
     }
 
     public static void sendSMS(Player player, int number, StringBuilder message) {

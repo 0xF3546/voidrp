@@ -125,6 +125,8 @@ public class playerInteractListener implements Listener {
                 itemStack.setAmount(1);
                 player.getInventory().removeItem(itemStack);
                 PlayerManager.addExp(player, Main.random(50, 200));
+            } else if (event.getItem().getItemMeta().getDisplayName().equals("§6§lCase")) {
+                //todo
             }
         }
     }

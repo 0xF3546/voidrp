@@ -4,6 +4,7 @@ import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.Navigation;
 import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,6 +22,7 @@ public class ortenCommand implements CommandExecutor {
                 if (args.length >= 1) {
                     playerData.setIntVariable("ortet", Integer.parseInt(args[0]));
                     playerData.setVariable("ortet", args[0]);
+                    Utils.sendActionBar(player, "§9Orte Handy...");
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -28,8 +30,15 @@ public class ortenCommand implements CommandExecutor {
                             if (playerData1.getVariable("ortet") != null) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
                                     if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == playerData1.getIntVariable("ortet")) {
-                                        Navigation.createNaviByCord(player, (int) players.getLocation().getX(), (int) players.getLocation().getY(), (int) players.getLocation().getZ());
-                                        player.sendMessage("§8[§9Orten§8]§3 Navi geupdated.");
+                                        if (!PlayerManager.playerDataMap.get(players.getUniqueId().toString()).isFlightmode()) {
+                                            Navigation.createNaviByCord(player, (int) players.getLocation().getX(), (int) players.getLocation().getY(), (int) players.getLocation().getZ());
+                                            player.sendMessage("§8[§9Orten§8]§3 Navi geupdated.");
+                                        } else {
+                                            player.sendMessage("§8[§9Orten§8]§c Das Handy ist nicht mehr erreichbar.");
+                                            playerData.setVariable("ortet", null);
+                                            playerData.setIntVariable("ortet", null);
+                                            this.cancel();
+                                        }
                                     }
                                 }
                             } else {

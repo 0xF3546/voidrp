@@ -4,6 +4,7 @@ import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -22,6 +23,7 @@ public class ServerManager {
     public static Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
     public static Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
     public static Map<String, ContractData> contractDataMap = new HashMap<>();
+    public static Map<Integer, ShopData> shopDataMap = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {
@@ -77,6 +79,23 @@ public class ServerManager {
             contractData.setAmount(locs.getInt(3));
             contractData.setSetter(locs.getString(4));
             contractDataMap.put(locs.getString(2), contractData);
+        }
+    }
+    public static void loadShops() throws SQLException {
+        Statement statement = MySQL.getStatement();
+        ResultSet locs = statement.executeQuery("SELECT * FROM shops");
+        while (locs.next()) {
+            ShopData shopData = new ShopData();
+            shopData.setId(locs.getInt(1));
+            shopData.setName(locs.getString(2));
+            shopData.setX(locs.getInt(3));
+            shopData.setY(locs.getInt(4));
+            shopData.setZ(locs.getInt(5));
+            shopData.setWelt(Bukkit.getWorld(locs.getString(6)));
+            shopData.setYaw(locs.getFloat(7));
+            shopData.setPitch(locs.getFloat(8));
+            shopData.setFaction(locs.getString(9));
+            shopDataMap.put(locs.getInt(1), shopData);
         }
     }
 

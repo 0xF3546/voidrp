@@ -53,16 +53,10 @@ public class StaatUtil {
             JailData jailData = new JailData();
             LocationManager.useLocation(player, "gefaengnis");
             player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + hafteinheiten + " Hafteinheiten§7 inhaftiert.");
-            player.sendMessage("§8[§cGefängnis§8] §7Tatvorwürfe§8:§7 " + reason + ".");
+            player.sendMessage("§8[§cGefängnis§8] §7Tatvorwürfe§8:§7 " + reason.substring(0, reason.length() - 2) + ".");
             playerData.setJailed(true);
             playerData.setHafteinheiten(hafteinheiten);
             FactionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
-            for (Player players : Bukkit.getOnlinePlayers()) {
-                PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                    players.sendMessage("§8[§cGefängnis§8] §7 " + FactionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
-                }
-            }
             if (geldstrafe > 0) {
                 if (playerData.getBank() >= geldstrafe) {
                     PlayerManager.removeBankMoney(player, geldstrafe, "Gefängnis Geldstrafe");
@@ -73,6 +67,12 @@ public class StaatUtil {
                 }
             }
             statement.execute("DELETE FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
+                    players.sendMessage("§8[§cGefängnis§8] §7" + FactionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
+                }
+            }
             statement.execute("INSERT INTO `Jail` (`uuid`, `hafteinheiten`, `reason`, `hafteinheiten_verbleibend`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + reason + "', " + hafteinheiten + ")");
             jailData.setUuid(player.getUniqueId().toString());
             jailData.setHafteinheiten(hafteinheiten);

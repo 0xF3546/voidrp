@@ -17,14 +17,20 @@ public class commandListener implements Listener {
         String msg = event.getMessage();
         String[] args = msg.split(" ");
         Player player = event.getPlayer();
-
-        if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (playerData.isDead() && playerData.getPermlevel() <= 40) {
+            System.out.println(args[0]);
+            player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
             event.setCancelled(true);
-            player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 wurde nicht gefunden.");
+        } else {
+            if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
+                event.setCancelled(true);
+                player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 wurde nicht gefunden.");
+            }
         }
-        for (PlayerData playerData : PlayerManager.playerDataMap.values()) {
-            if (playerData.getVariable("isSpec") != null) {
-                Player targetplayer = Bukkit.getPlayer(playerData.getUuid());
+        for (PlayerData playerData2 : PlayerManager.playerDataMap.values()) {
+            if (playerData2.getVariable("isSpec") != null) {
+                Player targetplayer = Bukkit.getPlayer(playerData2.getUuid());
                 targetplayer.sendMessage("§8[§cSpec§8]§6 " + player.getName() + "§7 hat den Befehl \"§6" + msg + "§7\" ausgeführt.");
             }
         }

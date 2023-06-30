@@ -1,10 +1,7 @@
 package de.polo.metropiacity.Utils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
-import de.polo.metropiacity.DataStorage.GarageData;
-import de.polo.metropiacity.DataStorage.GasStationData;
-import de.polo.metropiacity.DataStorage.LocationData;
-import de.polo.metropiacity.DataStorage.NaviData;
+import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import org.bukkit.*;
@@ -162,13 +159,8 @@ public class LocationManager {
     }
 
     public static String getShopNameById(Integer id) {
-        for (Object[] row : shops) {
-            if (row[0] == id) {
-                System.out.println((String) row[1]);
-                return (String) row[1];
-            }
-        }
-        return null;
+        ShopData shopData = ServerManager.shopDataMap.get(id);
+        return shopData.getName();
     }
 
     public static boolean nearATM(Player player) {
