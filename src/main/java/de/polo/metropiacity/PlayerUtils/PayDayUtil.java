@@ -2,11 +2,14 @@ package de.polo.metropiacity.PlayerUtils;
 
 import de.polo.metropiacity.DataStorage.HouseData;
 import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.DataStorage.PlayerVehicleData;
+import de.polo.metropiacity.DataStorage.VehicleData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.FactionManager;
 import de.polo.metropiacity.Utils.Housing;
 import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.Utils.Vehicles;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -60,6 +63,13 @@ public class PayDayUtil {
                     player.sendMessage("§8 ➥ §6Mieteinnahmen (Haus " + houseData.getNumber() + ")§8: §a+" + houseData.getMoney() + "$");
                     houseData.setMoney(0);
                 }
+            }
+        }
+        for (PlayerVehicleData vehicleData : Vehicles.playerVehicleDataMap.values()) {
+            if (vehicleData.getUuid().equals(player.getUniqueId().toString())) {
+                VehicleData vehicleData1 = Vehicles.vehicleDataMap.get(vehicleData.getType());
+                player.sendMessage("§8 ➥ §6KFZ-Steuer (" + vehicleData.getType() + ")§8:§c -" + vehicleData1.getTax() + "$");
+                plus -= vehicleData1.getTax();
             }
         }
         plus -= rent;

@@ -240,6 +240,7 @@ public final class Main extends JavaPlugin {
         getCommand("contracts").setTabCompleter(new contractsCommand());
         getCommand("personalausweis").setTabCompleter(new personalausweisCommand());
         getCommand("fraktionsinfo").setTabCompleter(new frakinfoCommand());
+        getCommand("tpto").setTabCompleter(new tptoCommand());
     }
 
 

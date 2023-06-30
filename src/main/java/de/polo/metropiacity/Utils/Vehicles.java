@@ -39,6 +39,7 @@ public class Vehicles implements Listener, CommandExecutor {
             vehicleData.setMaxspeed(result.getInt(4));
             vehicleData.setPrice(result.getInt(5));
             vehicleData.setMaxFuel(result.getInt(6));
+            vehicleData.setTax(result.getInt(7));
             vehicleDataMap.put(result.getString(2), vehicleData);
         }
     }

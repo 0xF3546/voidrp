@@ -7,6 +7,7 @@ public class VehicleData {
     private int maxspeed;
     private int price;
     private int maxFuel;
+    private int tax;
 
     public int getId() {
         return id;
@@ -54,5 +55,13 @@ public class VehicleData {
 
     public void setMaxFuel(int maxFuel) {
         this.maxFuel = maxFuel;
+    }
+
+    public int getTax() {
+        return tax;
+    }
+
+    public void setTax(int tax) {
+        this.tax = tax;
     }
 }

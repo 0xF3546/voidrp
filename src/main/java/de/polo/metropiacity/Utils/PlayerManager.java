@@ -22,13 +22,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 public class PlayerManager implements Listener {
 
@@ -457,8 +455,8 @@ public class PlayerManager implements Listener {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     add1MinutePlaytime(player);
                 }
-                for (FactionData factionData : FactionManager.factionDataMap.values()) {
-                    if (factionData.getPayDay() >= 60) {
+                if (Utils.getCurrentMinute() == 0) {
+                    for (FactionData factionData : FactionManager.factionDataMap.values()) {
                         for (PlayerData playerData : playerDataMap.values()) {
                             if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                 Player player = Bukkit.getPlayer(playerData.getUuid());
@@ -495,8 +493,6 @@ public class PlayerManager implements Listener {
                                 }
                             }
                         }
-                    } else {
-                        factionData.setPayDay(factionData.getPayDay() + 1);
                     }
                 }
             }

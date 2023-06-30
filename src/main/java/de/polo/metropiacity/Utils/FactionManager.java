@@ -30,11 +30,10 @@ public class FactionManager {
             factionData.setSecondaryColor(locs.getString(5));
             factionData.setBank(locs.getInt(6));
             factionData.setMaxMember(locs.getInt(7));
-            factionData.setPayDay(locs.getInt(8));
-            factionData.setTeamSpeakID(locs.getInt(9));
-            factionData.setChannelGroupID(locs.getInt(10));
-            factionData.setHasBlacklist(locs.getBoolean(11));
-            factionData.setDoGangwar(locs.getBoolean(12));
+            factionData.setTeamSpeakID(locs.getInt(8));
+            factionData.setChannelGroupID(locs.getInt(9));
+            factionData.setHasBlacklist(locs.getBoolean(10));
+            factionData.setDoGangwar(locs.getBoolean(11));
             factionDataMap.put(locs.getString(2), factionData);
         }
 

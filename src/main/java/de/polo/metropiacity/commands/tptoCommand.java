@@ -1,5 +1,6 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.DataStorage.LocationData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Utils.LocationManager;
@@ -7,9 +8,14 @@ import de.polo.metropiacity.Utils.PlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
-public class tptoCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class tptoCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -29,5 +35,18 @@ public class tptoCommand implements CommandExecutor {
             player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
         }
         return false;
+    }
+    @Nullable
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            for (LocationData locationData : LocationManager.locationDataMap.values()) {
+                suggestions.add(locationData.getName());
+            }
+
+            return suggestions;
+        }
+        return null;
     }
 }

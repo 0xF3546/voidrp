@@ -18,6 +18,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
@@ -30,6 +32,7 @@ public class playerInteractWithPlayerListener implements Listener {
             if (event.getRightClicked() instanceof Player) {
                 Player player = event.getPlayer();
                 Player targetplayer = (Player) event.getRightClicked();
+                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                 System.out.println(player.getName());
                 System.out.println(targetplayer.getName());
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -47,7 +50,6 @@ public class playerInteractWithPlayerListener implements Listener {
                 } else if (item.getType() == Material.DIAMOND) {
                     if (item.getItemMeta().getDisplayName().contains("Ehering")) {
                         PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
-                        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                         if (playerData.getRelationShip().get(targetplayer.getUniqueId().toString()).equals("verlobt")) {
                             if (targetplayerData.getRelationShip().get(player.getUniqueId().toString()).equals("verlobt")) {
                                 ItemStack itemStack = item.clone();
@@ -85,6 +87,16 @@ public class playerInteractWithPlayerListener implements Listener {
                         } else {
                             player.sendMessage(Main.error + player.getName() + " & du seid nicht verlobt.");
                         }
+                    }
+                } else if (item.getType().equals(Material.PAPER)) {
+                    if (playerData.getFaction().equals("Medic")) {
+                        targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12, 1));
+                        targetplayer.addPotionEffect(PotionEffectType.HEAL.createEffect(12, 1));
+                        targetplayer.sendMessage("§dMediziner " + player.getName() + " hat dir Iboprofen verabreicht.");
+                        player.sendMessage("§dDu hast " + targetplayer.getName() + " Iboprofen verabreicht.");
+                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Iboprofen verabreicht.");
+                    } else {
+                        player.sendMessage(Main.error + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
                     }
                 } else {
                     if (player.isSneaking()) PlayerManager.openInterActionMenu(player, targetplayer);

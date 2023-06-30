@@ -7,6 +7,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.FactionManager;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.ServerManager;
+import de.polo.metropiacity.Utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,7 +42,7 @@ public class frakstatsCommand implements CommandExecutor {
                 }
             }
             player.sendMessage("§8 - §eMitglieder§8:§7 " + member + "/" + factionData.getMaxMember());
-            player.sendMessage("§8 - §ePayDay§8:§7 " + factionData.getPayDay() + "/60");
+            player.sendMessage("§8 - §ePayDay§8:§7 " + Utils.getCurrentMinute() + "/60");
         } else {
             player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
         }
