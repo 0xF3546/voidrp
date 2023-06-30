@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.xml.stream.events.StartDocument;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -390,24 +391,21 @@ public class PhoneUtils implements Listener {
                 }
     }
 
-    public static void sendSMS(Player player, int number, StringBuilder message) {
-        for (Player players : Bukkit.getOnlinePlayers()) {
-            if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == number) {
-                if (PhoneUtils.hasPhone(players)) {
-                    players.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
-                    player.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
-                    player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
-                    players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
-                    try {
-                        Statement statement = MySQL.getStatement();
-                        statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + players.getUniqueId() + "', '" + player.getUniqueId() + "', '" + message + "', " + number + ");");
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    player.sendMessage(Main.error + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen.");
-                }
-            }
+    public static void sendSMS(Player player, Player players, StringBuilder message) {
+        if (PhoneUtils.hasPhone(players)) {
+            players.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
+            player.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
+            player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
+            players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
+        } else {
+            player.sendMessage(Main.error + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen werden.");
+        }
+        PlayerData targetplayerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+        try {
+            Statement statement = MySQL.getStatement();
+            statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + players.getUniqueId() + "', '" + player.getUniqueId() + "', '" + message + "', " + targetplayerData.getId() + ");");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

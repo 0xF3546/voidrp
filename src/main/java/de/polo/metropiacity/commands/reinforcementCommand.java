@@ -51,7 +51,7 @@ public class reinforcementCommand implements CommandExecutor, TabCompleter {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§4§lDRINGEND HILFE! §3" + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                players.sendMessage("§c§lDRINGEND HILFE! §3" + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                 TextComponent start = new TextComponent("§8 ➥ ");
                                 TextComponent route = new TextComponent("§aRoute");
                                 TextComponent mid = new TextComponent("§8 | ");
