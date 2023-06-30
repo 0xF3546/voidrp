@@ -485,13 +485,24 @@ public class PlayerManager implements Listener {
                                 }
                                 player.sendMessage(" ");
                                 factionData.setPayDay(0);
-                                try {
-                                    FactionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
-                                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                                } catch (SQLException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                             }
+                        }
+                        double plus = 0;
+                        double zinsen = Math.round(factionData.getBank() * 0.0075);
+                        double steuern = Math.round(factionData.getBank() * 0.0035);
+                        plus += zinsen;
+                        plus -= steuern;
+                        for (GangwarData gangwarData : Gangwar.gangwarDataMap.values()) {
+                            if (gangwarData.getOwner().equals(factionData.getName())) {
+                                plus += 150;
+                            }
+                        }
+                        factionData.setPayDay(0);
+                        try {
+                            FactionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 }

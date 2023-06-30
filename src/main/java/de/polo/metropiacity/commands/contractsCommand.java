@@ -42,15 +42,23 @@ public class contractsCommand implements CommandExecutor, TabCompleter {
                         if (targetplayer.isOnline()) {
                             if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
                                 if (playerData.getFactionGrade() >= 7) {
-                                    for (Player players : Bukkit.getOnlinePlayers()) {
-                                        if (FactionManager.faction(players).equals("ICA")) {
-                                            players.sendMessage("§8[§cKopfgeld§8]§e " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " §7hat das Kopfgeld von §e" + targetplayer.getName() + " §7gelöscht.");
-                                        }
-                                    }
-                                    ServerManager.contractDataMap.remove(targetplayer.getUniqueId().toString());
                                     try {
-                                        Statement statement = MySQL.getStatement();
-                                        statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + targetplayer.getUniqueId().toString() + "'");
+                                        if (FactionManager.removeFactionMoney(playerData.getFaction(), ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()).getAmount(), "Kopfgeld entfernung durch " + player.getName())) {
+                                            for (Player players : Bukkit.getOnlinePlayers()) {
+                                                if (FactionManager.faction(players).equals("ICA")) {
+                                                    players.sendMessage("§8[§cKopfgeld§8]§e " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " §7hat das Kopfgeld von §e" + targetplayer.getName() + " §7gelöscht.");
+                                                }
+                                            }
+                                            ServerManager.contractDataMap.remove(targetplayer.getUniqueId().toString());
+                                            try {
+                                                Statement statement = MySQL.getStatement();
+                                                statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + targetplayer.getUniqueId().toString() + "'");
+                                            } catch (SQLException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        } else {
+                                            player.sendMessage(Main.error + "Deine Fraktion kann das Kopfgeld nicht zahlen.");
+                                        }
                                     } catch (SQLException e) {
                                         throw new RuntimeException(e);
                                     }

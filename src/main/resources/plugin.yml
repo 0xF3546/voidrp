@@ -160,3 +160,4 @@ commands:
     aliases: [lchat, lc]
   frakstats:
     aliases: [fstats, fraktionsstats]
+  checkinv:

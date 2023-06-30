@@ -1,6 +1,8 @@
 package de.polo.metropiacity.Listener;
 
+import de.polo.metropiacity.DataStorage.BlacklistData;
 import de.polo.metropiacity.DataStorage.ContractData;
+import de.polo.metropiacity.DataStorage.FactionData;
 import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
@@ -84,6 +86,35 @@ public class deathListener implements Listener {
                             }
                         }
                         DeathUtil.setGangwarDeath(player);
+                    } else {
+                        for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
+                            if (blacklistData.getUuid().equals(player.getUniqueId().toString())) {
+                                if (FactionManager.faction(player.getKiller()) == blacklistData.getFaction()) {
+                                    FactionData factionData = FactionManager.factionDataMap.get(blacklistData.getFaction());
+                                    player.sendMessage("§8[§cBlacklist§8]§7 Du wurdest getötet, weil du auf der Blacklist der von " + factionData.getFullname() + " bist.");
+                                    PlayerManager.addExp(player.getKiller(), Main.random(3, 9));
+                                    if (blacklistData.getKills() >= 1) {
+                                        blacklistData.setKills(blacklistData.getKills() - 1);
+                                        try {
+                                            Statement statement = MySQL.getStatement();
+                                            statement.executeUpdate("UPDATE blacklist SET kills = " + blacklistData.getKills() + " WHERE uuid = '" + player.getUniqueId() + "' AND faction = '" + factionData.getName() + "'");
+                                        } catch (SQLException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    } else {
+                                        try {
+                                            Statement statement = MySQL.getStatement();
+                                            statement.execute("DELETE FROM `blacklist` WHERE `id` = " + blacklistData.getId());
+                                            FactionManager.sendMessageToFaction(factionData.getName(), "§c" + player.getName() + " wurde von der Blacklist gelöscht.");
+                                            FactionManager.blacklistDataMap.remove(blacklistData.getId());
+                                            player.sendMessage("§8[§cBlacklist§8]§7 Du wurdest von der Blacklist der " + factionData.getFullname() + " gelöscht.");
+                                        } catch (SQLException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 

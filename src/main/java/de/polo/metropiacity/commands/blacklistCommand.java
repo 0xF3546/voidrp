@@ -112,6 +112,7 @@ public class blacklistCommand implements CommandExecutor, TabCompleter {
                                                 statement.execute("DELETE FROM `blacklist` WHERE `id` = " + blacklistData.getId());
                                                 FactionManager.sendMessageToFaction(factionData.getName(), "§c" + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " von der Blacklist gelöscht.");
                                                 FactionManager.blacklistDataMap.remove(blacklistData.getId());
+                                                player1.sendMessage("§8[§cBlacklist§8]§7 " + player.getName() + " hat dich von der Blacklist der " + factionData.getFullname() + " gelöscht");
                                             } catch (SQLException e) {
                                                 throw new RuntimeException(e);
                                             }
