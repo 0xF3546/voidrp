@@ -1,9 +1,6 @@
 package de.polo.metropiacity.PlayerUtils;
 
-import de.polo.metropiacity.DataStorage.FactionData;
-import de.polo.metropiacity.DataStorage.GangwarData;
-import de.polo.metropiacity.DataStorage.PlayerData;
-import de.polo.metropiacity.DataStorage.WeaponData;
+import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.*;
@@ -102,7 +99,8 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM | HH:mm");
                             String date = gangwarData.getLastAttack().toLocalDateTime().format(formatter);
 
-                            meta.setLore(Arrays.asList("§8 ➥ §6Besitzer§8:§e " + gangwarData.getOwner(), "§8 ➥ §6Letzter Angriff§8:§e " + date));
+                            FactionData ownerData = FactionManager.factionDataMap.get(gangwarData.getOwner());
+                            meta.setLore(Arrays.asList("§8 ➥ §6Besitzer§8:§e " + ownerData.getFullname(), "§8 ➥ §6Letzter Angriff§8:§e " + date));
                             inv.getItem(13).setItemMeta(meta);
 
                             inv.setItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren", null));
@@ -135,21 +133,22 @@ public class Gangwar implements CommandExecutor, TabCompleter {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.setVariable("gangwar", zone);
         if (gangwarData.getAttacker().equals(playerData.getFaction())) {
-            LocationManager.useLocation(player, "attacker_spawn_" + zone);
+            LocationManager.useLocation(player, "attacker_spawn_" + zone.replace(" ", ""));
         } else {
-            LocationManager.useLocation(player, "defender_spawn_" + zone);
+            LocationManager.useLocation(player, "defender_spawn_" + zone.replace(" ", ""));
         }
         equipPlayer(player);
     }
 
     public static void equipPlayer(Player player) {
-        Weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "FFA");
+        Weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "Gangwar");
     }
 
     public static void leaveGangwar(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getVariable("gangwar") != null) {
-            LocationManager.useLocation(player, "gangwar_out_" + playerData.getFaction());
+            LocationManager.useLocation(player, playerData.getFaction());
+            playerData.setVariable("gangwar", null);
             for (ItemStack item : player.getInventory().getContents()) {
                 for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
                     if (weaponData.getMaterial() != null && item != null) {
@@ -169,8 +168,12 @@ public class Gangwar implements CommandExecutor, TabCompleter {
 
     public static void respawnPlayer(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        LocationManager.useLocation(player, "attacker_spawn_" + playerData.getVariable("gangwar"));
-        //todo: hier noch checken ob er attacker oder defender ist
+        GangwarData gangwarData = Gangwar.gangwarDataMap.get(playerData.getVariable("gangwar"));
+        if (gangwarData.getAttacker().equals(playerData.getFaction())) {
+            LocationManager.useLocation(player, "attacker_spawn_" + playerData.getVariable("gangwar").replace(" ", ""));
+        } else {
+            LocationManager.useLocation(player, "defender_spawn_" + playerData.getVariable("gangwar").replace(" ", ""));
+        }
         for (ItemStack item : player.getInventory().getContents()) {
             for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
                 if (weaponData.getMaterial() != null && item != null) {
@@ -185,22 +188,24 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                 }
             }
         }
+        player.sendMessage("§8[§cGangwar§8]§a Du bist wieder am Leben.");
         equipPlayer(player);
     }
 
     public static void startGangwar(Player player, String zone) {
-        if (LocalDateTime.now().getHour() >= 18 && LocalDateTime.now().getHour() <= 22) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if ((LocalDateTime.now().getHour() >= 18 && LocalDateTime.now().getHour() <= 22) || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
             GangwarData gangwarData = gangwarDataMap.get(zone);
-            FactionData factionData = FactionManager.factionDataMap.get(player.getUniqueId().toString());
+            FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
             if (factionData.canDoGangwar()) {
                 Timestamp timestamp = Timestamp.valueOf(gangwarData.getLastAttack().toLocalDateTime());
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 LocalDateTime twoDaysAfterTimestamp = timestamp.toLocalDateTime().plusDays(2);
                 boolean isTwoDaysAfter = currentDateTime.isAfter(twoDaysAfterTimestamp);
-                if (isTwoDaysAfter) {
+                if (isTwoDaysAfter || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
                     if (factionData.getCurrent_gangwar() == null) {
                         if (!factionData.getName().equals(gangwarData.getOwner())) {
-                            FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getZone());
+                            FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
                             if (defenderData.getCurrent_gangwar() == null) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
                                     String playersFaction = PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction();
@@ -208,7 +213,7 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                                         players.sendMessage("§8[§cGangwar§8]§c Euer Gebiet §l§n" + gangwarData.getZone() + "§c wird von §l" + factionData.getName() + "§c angegriffen!");
                                     }
                                     if (playersFaction.equals(factionData.getName())) {
-                                        players.sendMessage("§8[§cGangwar§8]§c Ihr greift das Gebiet Gebiet §l§n" + gangwarData.getZone() + "§c von §l" + defenderData.getName() + "§c an!");
+                                        players.sendMessage("§8[§cGangwar§8]§c Ihr greift das Gebiet §l§n" + gangwarData.getZone() + "§c von §l" + defenderData.getName() + "§c an!");
                                     }
                                 }
                                 defenderData.setCurrent_gangwar(gangwarData.getZone());
@@ -216,7 +221,7 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                                 gangwarData.setAttacker(factionData.getName());
                                 gangwarData.setAttackerPoints(0);
                                 gangwarData.setDefenderPoints(0);
-                                gangwarData.setMinutes(25);
+                                gangwarData.setMinutes(5);
                                 gangwarData.setSeconds(0);
                                 gangwarData.startGangwar();
                             } else {
@@ -243,14 +248,19 @@ public class Gangwar implements CommandExecutor, TabCompleter {
         GangwarData gangwarData = gangwarDataMap.get(zone);
         FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
         FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
+        gangwarData.setAttacker(null);
+        attackerData.setCurrent_gangwar(null);
+        defenderData.setCurrent_gangwar(null);
         if (gangwarData.getDefenderPoints() >= gangwarData.getAttackerPoints()) {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 String playersFaction = PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction();
                 if (playersFaction.equals(defenderData.getName())) {
                     players.sendMessage("§8[§cGangwar§8]§a Ihr habt das Gebiet §l§n" + gangwarData.getZone() + "§a gegen §l" + attackerData.getName() + "§a verteitigt!");
+                    leaveGangwar(players);
                 }
                 if (playersFaction.equals(attackerData.getName())) {
                     players.sendMessage("§8[§cGangwar§8]§c Ihr habt den Angriff des Gebietes §l§n" + gangwarData.getZone() + "§c von §l" + defenderData.getName() + "§c verloren!");
+                    leaveGangwar(players);
                 }
             }
             try {
@@ -263,10 +273,12 @@ public class Gangwar implements CommandExecutor, TabCompleter {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 String playersFaction = PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction();
                 if (playersFaction.equals(defenderData.getName())) {
-                    players.sendMessage("§8[§cGangwar§8]§c Ihr habt die vertetigung des Gebietes §l§n" + gangwarData.getZone() + "§c gegen §l" + attackerData.getName() + "§c verloren!");
+                    players.sendMessage("§8[§cGangwar§8]§c Ihr habt die Vertetigung des Gebietes §l§n" + gangwarData.getZone() + "§c gegen §l" + attackerData.getName() + "§c verloren!");
+                    leaveGangwar(players);
                 }
                 if (playersFaction.equals(attackerData.getName())) {
-                    players.sendMessage("§8[§cGangwar§8]§a Ihr habt den Angriff des Gebietes §l§n" + gangwarData.getZone() + "§a von §l" + defenderData.getName() + "§a gewonnen!");
+                    players.sendMessage("§8[§cGangwar§8]§a Ihr habt den Angriff des Gebietes §l§n" + gangwarData.getZone() + "§a gegen §l" + defenderData.getName() + "§a gewonnen!");
+                    leaveGangwar(players);
                 }
             }
             gangwarData.setOwner(attackerData.getName());

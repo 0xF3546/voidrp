@@ -107,7 +107,7 @@ public class GangwarData {
                 if (getSeconds() <= 0) {
                     setSeconds(60);
                     setMinutes(getMinutes() - 1);
-                    if (getMinutes() <= 0) {
+                    if (getMinutes() <= 0 && getSeconds() <= 0) {
                         Gangwar.endGangwar(getZone());
                         cancel();
                     }
