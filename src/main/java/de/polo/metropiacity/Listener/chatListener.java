@@ -28,31 +28,35 @@ public class chatListener implements Listener {
                     }
                 }
             } else {
-                if (PhoneUtils.isInConnection(player)) {
-                    for (Player players : Bukkit.getOnlinePlayers()) {
-                        if (PhoneUtils.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
-                            players.sendMessage("§8[§6Handy§8]§e " + player.getName() + "§8:§7 " + event.getMessage());
+                if (!playerData.isDead()) {
+                    if (PhoneUtils.isInConnection(player)) {
+                        for (Player players : Bukkit.getOnlinePlayers()) {
+                            if (PhoneUtils.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
+                                players.sendMessage("§8[§6Handy§8]§e " + player.getName() + "§8:§7 " + event.getMessage());
+                            }
                         }
                     }
-                }
-                String msg = event.getMessage();
-                String type = "sagt";
-                if (msg.charAt(msg.length() - 1) == '?') {
-                    type = "fragt";
-                }
-                if (msg.length() >= 4) {
-                    String firstChar = String.valueOf(msg.charAt(0)).toUpperCase();
-                    String restOfString = msg.substring(1).toLowerCase();
-                    msg = firstChar + restOfString;
-                }
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (player.getLocation().distance(players.getLocation()) <= 5) {
-                        players.sendMessage("§f" + player.getName() + " " + type + "§8:§f " + msg);
-                    } else if (player.getLocation().distance(players.getLocation()) <= 9) {
-                        players.sendMessage("§7" + player.getName() + " " + type + "§8:§7 " + msg);
-                    } else if (player.getLocation().distance(players.getLocation()) <= 16) {
-                        players.sendMessage("§8" + player.getName() + " " + type + "§8:§8 " + msg);
+                    String msg = event.getMessage();
+                    String type = "sagt";
+                    if (msg.charAt(msg.length() - 1) == '?') {
+                        type = "fragt";
                     }
+                    if (msg.length() >= 4) {
+                        String firstChar = String.valueOf(msg.charAt(0)).toUpperCase();
+                        String restOfString = msg.substring(1).toLowerCase();
+                        msg = firstChar + restOfString;
+                    }
+                    for (Player players : Bukkit.getOnlinePlayers()) {
+                        if (player.getLocation().distance(players.getLocation()) <= 5) {
+                            players.sendMessage("§f" + player.getName() + " " + type + "§8:§f " + msg);
+                        } else if (player.getLocation().distance(players.getLocation()) <= 9) {
+                            players.sendMessage("§7" + player.getName() + " " + type + "§8:§7 " + msg);
+                        } else if (player.getLocation().distance(players.getLocation()) <= 16) {
+                            players.sendMessage("§8" + player.getName() + " " + type + "§8:§8 " + msg);
+                        }
+                    }
+                } else {
+                    player.sendMessage("§7Du bist bewusstlos.");
                 }
             }
         } else {

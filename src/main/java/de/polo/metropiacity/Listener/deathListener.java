@@ -1,13 +1,11 @@
 package de.polo.metropiacity.Listener;
 
-import de.polo.metropiacity.DataStorage.BlacklistData;
-import de.polo.metropiacity.DataStorage.ContractData;
-import de.polo.metropiacity.DataStorage.FactionData;
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.DeathUtil;
 import de.polo.metropiacity.PlayerUtils.FFA;
+import de.polo.metropiacity.PlayerUtils.Gangwar;
 import de.polo.metropiacity.Utils.FactionManager;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.ServerManager;
@@ -86,8 +84,14 @@ public class deathListener implements Listener {
                         PlayerData killerData = PlayerManager.playerDataMap.get(player.getKiller().getUniqueId().toString());
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction().equals(killerData.getFaction())) {
-                                players.sendMessage("§8[§cGangwar§8]7 +3 Punkte für das Töten eines Gegners (" + player.getKiller().getName() + "§8 » §7" + player.getName() + ").");
+                                players.sendMessage("§8[§cGangwar§8]§7 +3 Punkte für das Töten eines Gegners (" + player.getKiller().getName() + "§8 » §7" + player.getName() + ").");
                             }
+                        }
+                        GangwarData gangwarData = Gangwar.gangwarDataMap.get(playerData.getVariable("gangwar"));
+                        if (gangwarData.getAttacker().equals(killerData.getFaction())) {
+                            gangwarData.setAttackerPoints(gangwarData.getAttackerPoints() + 3);
+                        } else {
+                            gangwarData.setDefenderPoints(gangwarData.getDefenderPoints() + 3);
                         }
                         DeathUtil.setGangwarDeath(player);
                     } else {

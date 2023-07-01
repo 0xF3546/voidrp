@@ -77,7 +77,6 @@ public class DeathUtil {
         PlayerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {
             Gangwar.respawnPlayer(player);
-            player.sendMessage("§8[§cGangwar§8]§a Du bist respawnt.");
         } else {
             player.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
         }
@@ -99,7 +98,6 @@ public class DeathUtil {
         }
         if (playerData.getVariable("gangwar") != null) {
             Gangwar.respawnPlayer(player);
-            player.sendMessage("§8[§cGangwar§8]§a Du bist respawnt.");
         } else {
             LocationManager.useLocation(player, "Krankenhaus");
             player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");

@@ -6,6 +6,7 @@ import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.PlayerUtils.ChatUtils;
 import de.polo.metropiacity.PlayerUtils.DeathUtil;
 import de.polo.metropiacity.PlayerUtils.FFA;
+import de.polo.metropiacity.PlayerUtils.Gangwar;
 import de.polo.metropiacity.Utils.*;
 import de.polo.metropiacity.commands.*;
 import org.bukkit.Bukkit;
@@ -28,6 +29,9 @@ public class QuitListener implements Listener {
         ServerManager.updateTablist(null);
         if (playerData.getVariable("current_lobby") != null) {
             FFA.leaveFFA(player);
+        }
+        if (playerData.getVariable("gangwar") != null) {
+            Gangwar.leaveGangwar(player);
         }
         if (player.getVehicle() != null) {
             player.getVehicle().eject();

@@ -4,6 +4,9 @@ import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.DeathUtil;
+import de.polo.metropiacity.PlayerUtils.Gangwar;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -106,12 +109,47 @@ public class ServerManager {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (Utils.getCurrentHour() >= 0 && Utils.getCurrentHour() < 22) {
+                    for (GangwarData gangwarData : Gangwar.gangwarDataMap.values()) {
+                        if (gangwarData.getAttacker() != null) {
+                            FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
+                            FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
+                            for (Player players : Bukkit.getOnlinePlayers()) {
+                                PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                                if (playerData.getFaction().equals(gangwarData.getAttacker()) || playerData.getFaction().equals(gangwarData.getOwner())) {
+                                    if (playerData.getVariable("gangwar") != null) {
+                                        if (!playerData.isDead()) {
+                                            Utils.sendActionBar(players, "§5" + gangwarData.getZone() + "§8 | §5" + gangwarData.getMinutes() + "§8:§5" + gangwarData.getSeconds() + "§8 | §" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints());
+                                        } else {
+                                            Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 20, 20);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
                     if (!playerData.isDead()) return;
                     playerData.setDeathTime(playerData.getDeathTime() - 1);
-                    String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
-                    players.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+                    if (playerData.getVariable("gangwar") != null) {
+                        for (GangwarData gangwarData : Gangwar.gangwarDataMap.values()) {
+                            if (gangwarData.getAttacker() != null) {
+                                FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
+                                FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
+                                Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
+                            }
+                        }
+                    } else {
+                        String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
+                        players.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBarText));
+                    }
                     if (playerData.getDeathTime() <= 0) {
                         DeathUtil.despawnPlayer(players);
                         cancel();

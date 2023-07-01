@@ -13,6 +13,9 @@ public class Utils {
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(message));
     }
 
+    public static void sendBossBar(Player player, String text) {
+    }
+
     public static void kissPlayer(Player player, Player targetplayer) {
         if (player.getLocation().distance(targetplayer.getLocation()) < 5) {
             ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " gibt " + targetplayer.getName() + " einen Kuss.");
@@ -27,6 +30,6 @@ public class Utils {
         return Calendar.getInstance().get(Calendar.MINUTE);
     }
     public static int getCurrentHour() {
-        return Calendar.getInstance().get(Calendar.HOUR);
+        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     }
 }
