@@ -6,6 +6,8 @@ public class DBPlayerData {
     private String player_rank;
     private String faction;
     private int faction_grade;
+    private String business;
+    private int business_grade;
 
     public int getId() {
         return id;
@@ -45,5 +47,21 @@ public class DBPlayerData {
 
     public void setFaction_grade(int faction_grade) {
         this.faction_grade = faction_grade;
+    }
+
+    public String getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(String business) {
+        this.business = business;
+    }
+
+    public int getBusiness_grade() {
+        return business_grade;
+    }
+
+    public void setBusiness_grade(int business_grade) {
+        this.business_grade = business_grade;
     }
 }

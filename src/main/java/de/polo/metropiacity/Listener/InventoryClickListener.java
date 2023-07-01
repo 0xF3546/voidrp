@@ -1152,7 +1152,35 @@ public class InventoryClickListener implements Listener {
                         return;
                     }
                     player.performCommand("personalausweis show " + targetplayer.getName());
+                    if (playerData.getGender().equals("Männlich")) {
+                        ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " seinen Personalausweis.");
+                    } else {
+                        ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " ihren Personalausweis.");
+                    }
                     player.closeInventory();
+                    break;
+                case 38:
+                    player.closeInventory();
+                    Player targetplayer3 = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
+                    if (targetplayer3.getLocation().distance(player.getLocation()) < 3) {
+                        if (!PlayerManager.canPlayerMove(targetplayer3)) {
+                            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " versucht " + targetplayer3.getName() + " zu durchsuchen.");
+                            progress.start(player, 5);
+                            Main.waitSeconds(5, () -> {
+                                if (targetplayer3.getLocation().distance(player.getLocation()) < 3) {
+                                    player.openInventory(targetplayer3.getInventory());
+                                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " durchsucht " + targetplayer3.getName());
+                                } else {
+                                    player.sendMessage("§8[§6Interaktion§8]§7 " + targetplayer3.getName() + " ist nicht in deiner nähe.");
+                                }
+                            });
+                        } else {
+                            player.openInventory(targetplayer3.getInventory());
+                            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " durchsucht " + targetplayer3.getName());
+                        }
+                    } else {
+                        player.sendMessage("§8[§6Interaktion§8]§7 " + targetplayer3.getName() + " ist nicht in deiner nähe.");
+                    }
                     break;
                 case 40:
                     Player targetplayer2 = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));

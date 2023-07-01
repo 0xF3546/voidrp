@@ -59,6 +59,8 @@ public class ServerManager {
             dbPlayerData.setPlayer_rank(locs.getString(6));
             dbPlayerData.setFaction(locs.getString(19));
             dbPlayerData.setFaction_grade(locs.getInt(20));
+            dbPlayerData.setBusiness(locs.getString(41));
+            dbPlayerData.setBusiness_grade(locs.getInt(42));
             dbPlayerDataMap.put(locs.getString(2), dbPlayerData);
             if (locs.getString(19) != null && !locs.getString(19).equals("Zivilist")) {
                 FactionPlayerData factionPlayerData = new FactionPlayerData();

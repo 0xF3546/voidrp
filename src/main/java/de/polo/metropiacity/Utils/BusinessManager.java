@@ -24,6 +24,7 @@ public class BusinessManager {
             businessData.setName(locs.getString(2));
             businessData.setFullname(locs.getString(3));
             businessData.setBank(locs.getInt(4));
+            businessData.setMaxMember(25);
             businessDataMap.put(locs.getString(2), businessData);
         }
     }
@@ -67,5 +68,14 @@ public class BusinessManager {
             }
         }
         return val;
+    }
+    public static int getMemberCount(String business) {
+        int count = 0;
+        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+            if (dbPlayerData.getBusiness().equals(business)) {
+                count++;
+            }
+        }
+        return count;
     }
 }

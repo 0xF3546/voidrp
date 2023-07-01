@@ -50,6 +50,9 @@ public class VertragUtil {
                     FactionManager.setPlayerInFrak(player, curr, 0);
                     FactionManager.sendMessageToFaction(curr,player.getName() + " ist der Fraktion §abeigetreten§7.");
                     break;
+                case "business_invite":
+                    BusinessManager.setPlayerInBusiness(player, curr, 0);
+                    break;
                 case "rental":
                     String[] args = curr.split("_");
                     Integer haus = Integer.valueOf(args[0]);
@@ -126,6 +129,8 @@ public class VertragUtil {
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.sendMessageToFaction(curr, player.getName() + " wurde eingeladen und ist nicht beigetreten.");
+                    break;
+                case "business_invite":
                     break;
                 case "phonecall":
                     PhoneUtils.denyCall(player, curr);

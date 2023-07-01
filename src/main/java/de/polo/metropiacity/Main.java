@@ -238,6 +238,7 @@ public final class Main extends JavaPlugin {
         getCommand("leaderchat").setExecutor(new leaderchatCommand());
         getCommand("frakstats").setExecutor(new frakstatsCommand());
         getCommand("checkinv").setExecutor(new checkinvCommand());
+        getCommand("bizinvite").setExecutor(new bizinviteCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());

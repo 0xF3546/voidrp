@@ -5,6 +5,7 @@ public class BusinessData {
     private String name;
     private String fullname;
     private int bank;
+    private int maxMember;
 
     public int getId() {
         return id;
@@ -36,5 +37,13 @@ public class BusinessData {
 
     public void setBank(int bank) {
         this.bank = bank;
+    }
+
+    public int getMaxMember() {
+        return maxMember;
+    }
+
+    public void setMaxMember(int maxMember) {
+        this.maxMember = maxMember;
     }
 }

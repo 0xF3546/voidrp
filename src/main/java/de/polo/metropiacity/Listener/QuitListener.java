@@ -37,6 +37,11 @@ public class QuitListener implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        if (DeathUtil.deathSkulls.get(player.getUniqueId().toString()) != null) {
+            Item skull = DeathUtil.deathSkulls.get(player.getUniqueId().toString());
+            skull.remove();
+            DeathUtil.deathSkulls.remove(player.getUniqueId().toString());
+        }
         try {
             if (playerData.getVariable("job") != null) {
                 switch (playerData.getVariable("job")) {
@@ -78,9 +83,6 @@ public class QuitListener implements Listener {
             if (serviceData != null) {
                 StaatUtil.cancelservice(player);
             }
-            Item item = DeathUtil.deathSkulls.get(player.getUniqueId().toString());
-            if (item != null) item.remove();
-            DeathUtil.deathSkulls.remove(player.getUniqueId().toString());
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
         } catch (SQLException e) {
             throw new RuntimeException(e);

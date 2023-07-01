@@ -192,7 +192,7 @@ public class TabletUtils implements Listener {
         playerData.setVariable("current_app", "player_aktenlist");
         playerData.setIntVariable("current_page", page);
         Statement statement = MySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch` FROM `player_akten` WHERE `uuid` = '" + playerData.getVariable("current_akte") + "'");
+        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch`, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `player_akten` WHERE `uuid` = '" + playerData.getVariable("current_akte") + "'");
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
         int i = 0;
         while (result.next()) {
@@ -203,7 +203,7 @@ public class TabletUtils implements Listener {
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 NamespacedKey id = new NamespacedKey(Main.plugin, "id");
                 assert meta != null;
-                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
+                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5),"§8 ➥ §bDatum§8:§7 " +  result.getString("formatted_timestamp")));
                 meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
                 Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
