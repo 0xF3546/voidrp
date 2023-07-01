@@ -62,6 +62,7 @@ public final class Main extends JavaPlugin {
             Vehicles.loadVehicles();
             Vehicles.loadPlayerVehicles();
             PlayerManager.startTimeTracker();
+            ServerManager.everySecond();
             ServerManager.loadShops();
             ServerManager.startTabUpdateInterval();
             ServerManager.loadRanks();
@@ -120,6 +121,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Navigation(), this);
         getServer().getPluginManager().registerEvents(new fishingListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
+        getServer().getPluginManager().registerEvents(new WorldGuard(), this);
     }
 
     private void registerCommands() {

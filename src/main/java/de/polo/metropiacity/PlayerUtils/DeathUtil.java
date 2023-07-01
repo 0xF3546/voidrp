@@ -26,45 +26,10 @@ public class DeathUtil {
             deathPlayer.put(player.getUniqueId().toString(), true);
             try {
                 Statement statement = MySQL.getStatement();
-                statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        for (Player players : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                            if (!playerData.isDead()) cancel();
-                            playerData.setDeathTime(playerData.getDeathTime() - 1);
-                            String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
-                            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
-                            if (playerData.getDeathTime() <= 0) {
-                                playerData.setDeathTime(600);
-                                despawnPlayer(players);
-                                cancel();
-                            }
-                        }
-                    }
-                }.runTaskTimer(Main.getInstance(), 20, 20);
+                statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        } else {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    for (Player players : Bukkit.getOnlinePlayers()) {
-                        PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                        if (!playerData.isDead()) cancel();
-                        playerData.setDeathTime(playerData.getDeathTime() - 1);
-                        String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
-                        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
-                        if (playerData.getDeathTime() <= 0) {
-                            playerData.setDeathTime(600);
-                            despawnPlayer(players);
-                            cancel();
-                        }
-                    }
-                }
-            }.runTaskTimer(Main.getInstance(), 20, 20);
         }
     }
 
@@ -85,6 +50,7 @@ public class DeathUtil {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.setCanInteract(false);
         playerData.setDead(false);
+        playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
         aduty.send_message( player.getName() + " wurde wiederbelebt.");
         if (player.isSleeping()) player.wakeup(true);
@@ -95,7 +61,7 @@ public class DeathUtil {
             Statement statement = MySQL.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
-            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 600 WHERE `uuid` = '" + uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -120,11 +86,14 @@ public class DeathUtil {
     public static void despawnPlayer(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         deathPlayer.remove(player.getUniqueId().toString());
+        player.setGameMode(GameMode.SURVIVAL);
+        playerData.setDeathTime(300);
+        playerData.setDead(false);
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
-            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 600 WHERE `uuid` = '" + uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -139,9 +108,6 @@ public class DeathUtil {
         Item skull = deathSkulls.get(player.getUniqueId().toString());
         skull.remove();
         deathSkulls.remove(player.getUniqueId().toString());
-        for (Player players : Bukkit.getOnlinePlayers()) {
-            players.showPlayer(Main.plugin, player);
-        }
         PlayerManager.setPlayerMove(player, true);
     }
 

@@ -139,11 +139,11 @@ public class farmerCommand implements CommandExecutor {
         playerData.getScoreboard().createWeizentransportScoreboard();
         player.sendMessage("§8[§eLieferant§8]§7 Bringe das Weizen zur Mühle.");
         player.sendMessage("§8 ➥ §7Nutze §8/§edrop§7 um das Weizen abzugeben.");
-        Navigation.createNavi(player, "muehle", true);
+        Navigation.createNavi(player, "Mühle", true);
     }
 
     public static void dropTransport(Player player) {
-        if (LocationManager.getDistanceBetweenCoords(player, "muehle") < 5) {
+        if (LocationManager.getDistanceBetweenCoords(player, "Mühle") < 5) {
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             int payout = Main.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));
             player.sendMessage("§8[§eLieferant§8]§7 Danke für's abliefern. §a+" + payout + "$");

@@ -29,7 +29,7 @@ public class smsCommand implements CommandExecutor {
                         }
                         PhoneUtils.sendSMS(player, targetplayer, msg);
                 } else {
-                    player.sendMessage(Main.error + "Syntax-Fehler: /sms [Nummer] [Nachricht]");
+                    player.sendMessage(Main.error + "Syntax-Fehler: /sms [Spieler] [Nachricht]");
                 }
             } else {
                 player.sendMessage(PhoneUtils.error_flightmode);

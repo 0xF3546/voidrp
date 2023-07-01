@@ -3,6 +3,7 @@ package de.polo.metropiacity.Utils;
 import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
+import de.polo.metropiacity.PlayerUtils.DeathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -97,6 +98,25 @@ public class ServerManager {
             shopData.setFaction(locs.getString(9));
             shopDataMap.put(locs.getInt(1), shopData);
         }
+    }
+
+    public static void everySecond() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player players : Bukkit.getOnlinePlayers()) {
+                    PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                    if (!playerData.isDead()) return;
+                    playerData.setDeathTime(playerData.getDeathTime() - 1);
+                    String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
+                    players.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+                    if (playerData.getDeathTime() <= 0) {
+                        DeathUtil.despawnPlayer(players);
+                        cancel();
+                    }
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 20, 20);
     }
 
     public static boolean canDoJobs() {

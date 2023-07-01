@@ -11,6 +11,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
@@ -301,6 +302,12 @@ public class Vehicles implements Listener, CommandExecutor {
                     player.openInventory(inv);
                 }
             }
+        }
+    }
+    @EventHandler
+    public void onVehicleDamage(VehicleDamageEvent event) {
+        if (event.getVehicle().getType() == EntityType.MINECART) {
+            event.setCancelled(true);
         }
     }
     @Override

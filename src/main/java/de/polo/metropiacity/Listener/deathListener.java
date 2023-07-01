@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 public class deathListener implements Listener {
     @EventHandler
@@ -38,12 +39,15 @@ public class deathListener implements Listener {
             } else {
                 playerData.setDeathLocation(player.getLocation());
                 if (!playerData.isDead()) {
-                    aduty.send_message("§c" + player.getName() + "§7 starb.");
+                    aduty.send_message(player.getName() + " starb.");
                 } else {
-                    aduty.send_message("§c" + player.getName() + "§7 starb. (Rejoin)");
+                    aduty.send_message(player.getName() + " starb. (Rejoin)");
                 }
                 DeathUtil.startDeathTimer(player);
-                if (!playerData.isDead()) playerData.setDead(true);
+                if (!playerData.isDead()) {
+                    playerData.setDead(true);
+                    playerData.setDeathTime(300);
+                }
                 ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) skull.getItemMeta();
                 assert meta != null;
@@ -54,7 +58,7 @@ public class deathListener implements Listener {
                 Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
                 DeathUtil.deathSkulls.put(player.getUniqueId().toString(), item);
                 Entity entity = item;
-                if (ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null) {
+                if (ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null && Objects.equals(FactionManager.faction(Objects.requireNonNull(player.getKiller())), "ICA")) {
                     ContractData contractData = ServerManager.contractDataMap.get(player.getUniqueId().toString());
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         if (FactionManager.faction(players).equals("ICA")) {

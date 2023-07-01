@@ -377,7 +377,7 @@ public class PhoneUtils implements Listener {
                 if (VertragUtil.setVertrag(player, players, "phonecall", players.getUniqueId().toString())) {
                     if (PhoneUtils.hasPhone(players)) {
                         ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
-                        ChatUtils.sendGrayMessageAtPlayer(player, players.getName() + " wählt eine Nummer auf dem Handy.");
+                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " wählt eine Nummer auf dem Handy.");
                         player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + players.getName() + "§e an.");
                         players.sendMessage("§8[§6Handy§8] §eDu wirst von §l" + player.getName() + "§e angerufen.");
                         playerData.setVariable("calling", players.getUniqueId().toString());
@@ -467,7 +467,7 @@ public class PhoneUtils implements Listener {
                     VertragUtil.deleteVertrag(player);
                     VertragUtil.deleteVertrag(players);
                     player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
-                    players.sendMessage("§8[§6Handy§8]§7 " + playerData.getNumber() + "§7 hat aufgelegt.");
+                    players.sendMessage("§8[§6Handy§8]§7 " + player.getName() + "§7 hat aufgelegt.");
                 }
             }
         } else {
