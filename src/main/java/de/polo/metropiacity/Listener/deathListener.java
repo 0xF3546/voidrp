@@ -81,6 +81,7 @@ public class deathListener implements Listener {
                     entity.setCustomName("§7" + player.getName());
                     entity.setCustomNameVisible(true);
                     if (playerData.getVariable("gangwar") != null) {
+                        DeathUtil.setGangwarDeath(player);
                         PlayerData killerData = PlayerManager.playerDataMap.get(player.getKiller().getUniqueId().toString());
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getFaction().equals(killerData.getFaction())) {
@@ -93,7 +94,6 @@ public class deathListener implements Listener {
                         } else {
                             gangwarData.setDefenderPoints(gangwarData.getDefenderPoints() + 3);
                         }
-                        DeathUtil.setGangwarDeath(player);
                     } else {
                         for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
                             if (blacklistData.getUuid().equals(player.getUniqueId().toString())) {

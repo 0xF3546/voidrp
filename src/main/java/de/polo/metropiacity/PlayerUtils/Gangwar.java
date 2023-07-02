@@ -56,28 +56,36 @@ public class Gangwar implements CommandExecutor, TabCompleter {
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             if (args[0].equalsIgnoreCase("leave")) {
                 if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
-                    FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-                    if (factionData.getCurrent_gangwar() != null) {
-                        leaveGangwar(player);
-                        player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar verlassen.");
-                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Gangwar verlassen.");
+                    if (playerData.getVariable("gangwar") != null) {
+                        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+                        if (factionData.getCurrent_gangwar() != null) {
+                            leaveGangwar(player);
+                            player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar verlassen.");
+                            FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Gangwar verlassen.");
+                        } else {
+                            player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
+                        }
                     } else {
-                        player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
-                    }
+                    player.sendMessage("§8[§cGangwar§8]§c Du bist in keinem Gangwar.");
+                }
                 } else {
                     player.sendMessage(Main.error + "Du bist in keienr Fraktion.");
                 }
             }
             if (args[0].equalsIgnoreCase("join")) {
                 if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
-                    FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-                    if (factionData.getCurrent_gangwar() != null) {
-                        joinGangwar(player, factionData.getCurrent_gangwar());
-                        GangwarData gangwarData = gangwarDataMap.get(factionData.getCurrent_gangwar());
-                        player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar §c" + gangwarData.getZone() + "§7 betreten.");
-                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " ist dem Gangwar beigetreten.");
+                    if (playerData.getVariable("gangwar") == null) {
+                        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+                        if (factionData.getCurrent_gangwar() != null) {
+                            joinGangwar(player, factionData.getCurrent_gangwar());
+                            GangwarData gangwarData = gangwarDataMap.get(factionData.getCurrent_gangwar());
+                            player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar §c" + gangwarData.getZone() + "§7 betreten.");
+                            FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " ist dem Gangwar beigetreten.");
+                        } else {
+                            player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
+                        }
                     } else {
-                        player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
+                        player.sendMessage("§8[§cGangwar§8]§c Du bist bereits im Gangwar.");
                     }
                 } else {
                     player.sendMessage(Main.error + "Du bist in keienr Fraktion.");
@@ -221,9 +229,10 @@ public class Gangwar implements CommandExecutor, TabCompleter {
                                 gangwarData.setAttacker(factionData.getName());
                                 gangwarData.setAttackerPoints(0);
                                 gangwarData.setDefenderPoints(0);
-                                gangwarData.setMinutes(5);
+                                gangwarData.setMinutes(25);
                                 gangwarData.setSeconds(0);
                                 gangwarData.startGangwar();
+                                joinGangwar(player, gangwarData.getZone());
                             } else {
                                 player.sendMessage(Main.error + "Diese Fraktion ist bereits im Gangwar.");
                             }

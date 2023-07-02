@@ -25,7 +25,7 @@ public class QuitListener implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData == null) return;
         event.setQuitMessage("");
-        aduty.send_message("§c" + player.getName() + "§7 hat den Server verlassen.");
+        aduty.send_message(player.getName() + " hat den Server verlassen.");
         ServerManager.updateTablist(null);
         if (playerData.getVariable("current_lobby") != null) {
             FFA.leaveFFA(player);
@@ -45,6 +45,7 @@ public class QuitListener implements Listener {
             Item skull = DeathUtil.deathSkulls.get(player.getUniqueId().toString());
             skull.remove();
             DeathUtil.deathSkulls.remove(player.getUniqueId().toString());
+            PlayerManager.setPlayerMove(player, true);
         }
         try {
             if (playerData.getVariable("job") != null) {

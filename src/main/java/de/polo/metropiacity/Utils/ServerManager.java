@@ -139,20 +139,15 @@ public class ServerManager {
                     if (!playerData.isDead()) return;
                     playerData.setDeathTime(playerData.getDeathTime() - 1);
                     if (playerData.getVariable("gangwar") != null) {
-                        for (GangwarData gangwarData : Gangwar.gangwarDataMap.values()) {
-                            if (gangwarData.getAttacker() != null) {
-                                FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
-                                FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
-                                Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
-                            }
-                        }
+                        GangwarData gangwarData = Gangwar.gangwarDataMap.get(playerData.getVariable("gangwar"));
+                        FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
+                        FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
+                        Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
                     } else {
-                        String actionBarText = "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.";
-                        players.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBarText));
+                        Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
                     }
                     if (playerData.getDeathTime() <= 0) {
                         DeathUtil.despawnPlayer(players);
-                        cancel();
                     }
                 }
             }

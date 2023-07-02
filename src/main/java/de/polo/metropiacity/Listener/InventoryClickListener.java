@@ -803,6 +803,7 @@ public class InventoryClickListener implements Listener {
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                                     PlayerManager.addExp(player, Main.random(100, 200));
                                     tutorial.createdAusweis(player);
+                                    player.playSound(player.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 0);
                                 } else {
                                     player.sendMessage(Main.error + "Bitte gib deinen Geburtstag noch an!");
                                 }

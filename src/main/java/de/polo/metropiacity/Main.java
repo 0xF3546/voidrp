@@ -122,6 +122,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new fishingListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new WorldGuard(), this);
+        getServer().getPluginManager().registerEvents(new InventoryOpenListener(), this);
     }
 
     private void registerCommands() {

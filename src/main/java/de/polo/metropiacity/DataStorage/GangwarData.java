@@ -104,13 +104,13 @@ public class GangwarData {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (getMinutes() <= 0 && getSeconds() <= 1) {
+                    Gangwar.endGangwar(getZone());
+                    cancel();
+                }
                 if (getSeconds() <= 0) {
                     setSeconds(60);
                     setMinutes(getMinutes() - 1);
-                    if (getMinutes() <= 0 && getSeconds() <= 0) {
-                        Gangwar.endGangwar(getZone());
-                        cancel();
-                    }
                 } else {
                     setSeconds(getSeconds() - 1);
                 }

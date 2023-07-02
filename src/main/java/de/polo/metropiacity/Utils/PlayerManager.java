@@ -282,6 +282,7 @@ public class PlayerManager implements Listener {
                         playerData.setVisum(visum);
                         playerData.setHours(playerData.getHours() + 1);
                         player.setMaxHealth(30 + (visum / 5) * 2);
+                        player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                     } else {
                         PayDayUtil.givePayDay(player);
                         current_hours = current_hours + 1;
@@ -523,7 +524,7 @@ public class PlayerManager implements Listener {
             playerData.setLevel(playerData.getLevel() + 1);
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0);
+            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
         } else {
             player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);

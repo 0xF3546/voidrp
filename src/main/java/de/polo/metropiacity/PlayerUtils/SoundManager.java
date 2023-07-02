@@ -10,4 +10,8 @@ public class SoundManager {
     public static void successSound(Player player) {
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
     }
+
+    public static void openSound(Player player) {
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
+    }
 }
