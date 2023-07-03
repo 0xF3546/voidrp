@@ -15,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class bizinviteCommand implements CommandExecutor {
     @Override
@@ -23,22 +22,20 @@ public class bizinviteCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getBusiness() != null) {
-            String playerfac = playerData.getBusiness();
-            BusinessData businessData = BusinessManager.businessDataMap.get(playerfac);
+            BusinessData businessData = BusinessManager.businessDataMap.get(playerData.getBusiness());
             if (playerData.getBusiness_grade() >= 4) {
                 if (args.length >= 1) {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
                     assert targetplayer != null;
                     if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
                         if (PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString()).getBusiness() == null) {
-                            if (BusinessManager.getMemberCount(playerfac) < businessData.getMaxMember()) {
+                            if (BusinessManager.getMemberCount(playerData.getBusiness()) < businessData.getMaxMember()) {
                                 try {
-                                    if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerfac)) {
+                                    if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {
                                         player.sendMessage("§8[§6Business§8] §7" + targetplayer.getName() + " wurde in das Business §aeingeladen§7.");
-                                        targetplayer.sendMessage("§6" + player.getName() + " hat dich in das Business §e" + playerfac + "§6 eingeladen.");
+                                        targetplayer.sendMessage("§6" + player.getName() + " hat dich in das Business §e" + playerData.getBusiness() + "§6 eingeladen.");
                                         VertragUtil.sendInfoMessage(targetplayer);
                                         PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
-                                        //tplayerData.setVariable("current_inventory", "faction_invite");
                                     } else {
                                         player.sendMessage("§8[§6Business§8]§8 §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
                                     }
