@@ -1,0 +1,96 @@
+package de.polo.metropiacity.commands;
+
+import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.DataStorage.ShopData;
+import de.polo.metropiacity.Main;
+import de.polo.metropiacity.PlayerUtils.progress;
+import de.polo.metropiacity.Utils.FactionManager;
+import de.polo.metropiacity.Utils.LocationManager;
+import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.Utils.ServerManager;
+import jdk.internal.net.http.common.Utils;
+import org.bukkit.Server;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.sql.SQLException;
+
+public class shoprobCommand implements CommandExecutor {
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
+        int shopId = LocationManager.isNearShop(player);
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (playerData.getVisum() >= 3) {
+            if (shopId != 0) {
+                if (ServerManager.serverVariables.get("shoprob") == null) {
+                    if (!Main.cooldownManager.isOnCooldown(player, "shoprob")) {
+                        if (!Main.cooldownManager.isOnStringCooldown("shop_" + shopId, "shoprob")) {
+                            player.sendMessage("§8[§cShoprob§8]§7 Du fängst an den Shop auszurauben, warte 60 Sekunden!");
+                            player.sendMessage("§b   Info:§f Du bekommst dann jede Minute Geld, bis der Shop leer ist.");
+                            Main.cooldownManager.setStringCooldown("shop_" + shopId, "shoprob", 3600);
+                            progress.start(player, 60);
+                            ServerManager.setVariable("shoprob", "isRob");
+                            for (ShopData shopData : ServerManager.shopDataMap.values()) {
+                                if (shopData.getId() == shopId) {
+                                    FactionManager.sendMessageToFaction("Polizei", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
+                                    FactionManager.sendMessageToFaction("FBI", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
+                                    Main.waitSeconds(60, () -> {
+                                        if (player.isOnline()) {
+                                            new BukkitRunnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (player.isOnline()) {
+                                                        if (Integer.parseInt(ServerManager.getVariable("shoprob_payout")) < ServerManager.getPayout("maxShopRobPayout")) {
+                                                            try {
+                                                                int payout = Main.random(80, 120);
+                                                                PlayerManager.addMoney(player, payout);
+                                                                player.sendMessage("§8[§cShoprob§8]§a +" + payout + "$");
+                                                                ServerManager.setVariable("shoprob_payout", String.valueOf(Integer.parseInt(ServerManager.getVariable("shoprob_payout")) + payout));
+                                                            } catch (SQLException e) {
+                                                                throw new RuntimeException(e);
+                                                            }
+                                                        } else {
+                                                            player.sendMessage("§8[§cShoprob§8]§c Du hast alles erbeutet!");
+                                                            ServerManager.setVariable("shoprob", null);
+                                                            FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                                            FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                                            cancel();
+                                                        }
+                                                    } else {
+                                                        ServerManager.setVariable("shoprob", null);
+                                                        FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                                        FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                                        cancel();
+                                                    }
+                                                }
+                                            }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
+                                        } else {
+                                            ServerManager.setVariable("shoprob", null);
+                                            FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                            FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                        }
+                                    });
+                                }
+                            }
+                        } else {
+                            player.sendMessage(Main.error + "Dieser Shop kann erst in " + Main.getTime(Main.cooldownManager.getRemainingStringTime("shop_" + shopId, "shoprob")) + " wieder ausgeraubt werden.");
+                        }
+                    } else {
+                        player.sendMessage(Main.error + "Du kannst in " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "shoprob")) + " wieder einen Shop ausrauben.");
+                    }
+                } else {
+                    player.sendMessage(Main.error + "Es ist bereits in Shoprob im gange.");
+                }
+            } else {
+                player.sendMessage(Main.error + "Du bist nicht in der nähe eines Shops.");
+            }
+        } else {
+            player.sendMessage(Main.error + "Du kannst erst mit Visum 2 Shops ausrauben!");
+        }
+        return false;
+    }
+}
