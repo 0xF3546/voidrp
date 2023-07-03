@@ -21,8 +21,11 @@ public class businesschatCommand implements CommandExecutor {
                     msg.append(" ").append(args[i]);
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getBusiness().equals(playerData.getBusiness())) {
-                        players.sendMessage("§8[§6" + playerData.getBusiness() + "§8]§e " + player.getName() + "§8:§7 " + msg);
+                    PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                    if (playersData.getBusiness() == null) {
+                        if (playersData.getBusiness().equals(playerData.getBusiness())) {
+                            players.sendMessage("§8[§6" + playerData.getBusiness() + "§8]§e " + player.getName() + "§8:§7 " + msg);
+                        }
                     }
                 }
             } else {
