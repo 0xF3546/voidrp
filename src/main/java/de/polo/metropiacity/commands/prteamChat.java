@@ -20,8 +20,11 @@ public class prteamChat implements CommandExecutor {
                 msg.append(' ').append(args[i]);
             }
             for (Player players : Bukkit.getOnlinePlayers()) {
-                if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getSecondaryTeam().equals("PR-Team") || PlayerManager.playerDataMap.get(players.getUniqueId().toString()).isAduty()) {
-                    players.sendMessage("§8[§6PRTeam§8]§e " + player.getName() + "§8:§7 " + msg);
+                PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                if (playersData.getBusiness() != null || playersData.isAduty()) {
+                    if (playersData.getSecondaryTeam().equals("PR-Team") || playersData.isAduty()) {
+                        players.sendMessage("§8[§6PRTeam§8]§e " + player.getName() + "§8:§7 " + msg);
+                    }
                 }
             }
         } else {

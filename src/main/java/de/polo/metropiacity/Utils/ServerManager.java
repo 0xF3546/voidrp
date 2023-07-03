@@ -28,6 +28,7 @@ public class ServerManager {
     public static Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
     public static Map<String, ContractData> contractDataMap = new HashMap<>();
     public static Map<Integer, ShopData> shopDataMap = new HashMap<>();
+    public static Map<String, String> serverVariables = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {
@@ -193,5 +194,17 @@ public class ServerManager {
 
     public static int getPayout(String type) {
         return payoutDataMap.get(type).getPayout();
+    }
+
+    public static void setVariable(String variable, String value) {
+        if (serverVariables.get(variable) != null) {
+            serverVariables.replace(variable, value);
+        } else {
+            serverVariables.put(variable, value);
+        }
+    }
+
+    public static String getVariable(String variable) {
+        return serverVariables.get(variable);
     }
 }

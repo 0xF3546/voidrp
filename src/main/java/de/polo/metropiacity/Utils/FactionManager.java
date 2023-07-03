@@ -122,14 +122,11 @@ public class FactionManager {
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
     }
 
-    public static void removeOfflinePlayerFromFrak(String playername) throws SQLException {
+    public static void removeOfflinePlayerFromFrak(OfflinePlayer player) throws SQLException {
         Statement statement = MySQL.getStatement();
         assert statement != null;
-        ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
-        if (result != null) {
-            statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `player_name` = '" + playername + "'");
-            ServerManager.factionPlayerDataMap.remove(result.getString(2));
-        }
+        ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
+        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static String faction_offlinePlayer(String playername) throws SQLException {
@@ -171,6 +168,10 @@ public class FactionManager {
 
     public static String getPlayerFactionRankName(Player p) {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction(p) + "_" + faction_grade(p));
+        return factionGradeData.getName();
+    }
+    public static String getRankName(String faction, int rang) {
+        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rang);
         return factionGradeData.getName();
     }
     public static Integer getPaydayFromFaction(String faction, Integer rank) {

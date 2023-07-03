@@ -119,7 +119,7 @@ public class PhoneUtils implements Listener {
         while (result.next()) {
             rows++;
             if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
-                if (result.getBoolean(2)) {
+                if (result.getBoolean(2) && result.getInt(4) >= 0) {
                     inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §aEinzahlung", "Lädt..."));
                     ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                     assert meta != null;
@@ -129,7 +129,8 @@ public class PhoneUtils implements Listener {
                     inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §cAuszahlung", "Lädt..."));
                     ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                     assert meta != null;
-                    meta.setLore(Arrays.asList("§8 ➥ §7Höhe§8:§c -" + result.getInt(4) + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
+                    String höhe = String.valueOf(result.getInt(4)).replace("-", "");
+                    meta.setLore(Arrays.asList("§8 ➥ §7Höhe§8:§c -" + höhe + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
                     Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 }
                 i++;

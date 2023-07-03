@@ -163,3 +163,4 @@ commands:
   checkinv:
   bizinvite:
     aliases: businessinvite
+  shoprob:

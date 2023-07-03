@@ -14,25 +14,25 @@ public class businesschatCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (playerData.getBusiness() != null) {
-            if (args.length >= 1) {
-                StringBuilder msg = new StringBuilder(args[0]);
-                for (int i = 1; i < args.length; i++) {
-                    msg.append(" ").append(args[i]);
-                }
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                    if (playersData.getBusiness() == null) {
-                        if (playersData.getBusiness().equals(playerData.getBusiness())) {
-                            players.sendMessage("§8[§6" + playerData.getBusiness() + "§8]§e " + player.getName() + "§8:§7 " + msg);
-                        }
-                    }
-                }
-            } else {
-                player.sendMessage(Main.error + "Syntax-Fehler: /businesschat [Nachricht]");
-            }
-        } else {
+        if (playerData.getBusiness() == null) {
             player.sendMessage(Main.business_prefix + "Du bist in keinem Business.");
+            return false;
+        }
+        if (args.length < 1) {
+            player.sendMessage(Main.error + "Syntax-Fehler: /businesschat [Nachricht]");
+            return false;
+        }
+        StringBuilder msg = new StringBuilder(args[0]);
+        for (int i = 1; i < args.length; i++) {
+            msg.append(" ").append(args[i]);
+        }
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+            if (playersData.getBusiness() != null) {
+                if (playersData.getBusiness().equals(playerData.getBusiness())) {
+                    players.sendMessage("§8[§6" + playerData.getBusiness() + "§8]§e " + player.getName() + "§8:§7 " + msg);
+                }
+            }
         }
         return false;
     }

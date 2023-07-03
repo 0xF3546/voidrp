@@ -2,6 +2,7 @@ package de.polo.metropiacity.DataStorage;
 
 import de.polo.metropiacity.PlayerUtils.Scoreboard;
 import org.bukkit.Location;
+import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class PlayerData {
     private HashMap<String, String> variables = new HashMap<>();
     private HashMap<String, Integer> integer_variables = new HashMap<>();
     private HashMap<String, Location> locationVariables = new HashMap<>();
+    private HashMap<String, Inventory> inventoryVariables = new HashMap<>();
     private HashMap<String, Integer> skillLevel = new HashMap<>();
     private HashMap<String, Integer> skillExp = new HashMap<>();
     private HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
@@ -50,6 +52,7 @@ public class PlayerData {
     private int minutes;
     private String business;
     private int business_grade;
+    private int warns;
     private HashMap<String, String> relationShip = new HashMap<>();
 
     public PlayerData() {
@@ -420,5 +423,25 @@ public class PlayerData {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public void setInventoryVariable(String variable, Inventory value) {
+        if (this.locationVariables.get(variable) != null) {
+            this.inventoryVariables.replace(variable, value);
+        } else {
+            this.inventoryVariables.put(variable, value);
+        }
+    }
+
+    public Inventory getInventoryVariable(String variable) {
+        return inventoryVariables.get(variable);
+    }
+
+    public int getWarns() {
+        return warns;
+    }
+
+    public void setWarns(int warns) {
+        this.warns = warns;
     }
 }

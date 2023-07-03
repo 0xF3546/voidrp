@@ -1,42 +1,65 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.DataStorage.DBPlayerData;
+import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.FactionManager;
 import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.Utils.ServerManager;
+import de.polo.metropiacity.Utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.UUID;
 
 public class adminuninviteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        String playergroup = PlayerManager.rang(player);
-        if (playergroup.equalsIgnoreCase("Administrator") || playergroup.equalsIgnoreCase("Fraktionsmanager")) {
-            if (args.length >= 1) {
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (!playerData.isAduty()) {
+            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            return false;
+        }
+        if (!(args.length >= 1)) {
+            player.sendMessage(Main.admin_error + "Syntax-Fehler: /auninvite [Spieler]");
+            return false;
+        }
+        if (playerData.getPermlevel() < 80) {
+            player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
+        if (offlinePlayer == null) {
+            player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+            return false;
+        }
+        DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(offlinePlayer.getUniqueId().toString());
+        if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
+            if (offlinePlayer.isOnline()) {
                 try {
-                    Player targetplayer = Bukkit.getPlayer(args[0]);
-                    if (targetplayer != null && targetplayer.isOnline()) {
-                            FactionManager.removePlayerFromFrak(targetplayer);
-                            player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 Administrativ aus der Fraktion geworfen.");
-                            targetplayer.sendMessage(Main.support_prefix + "Du wurdest von §c" + player.getName() + "§7 Administrativ aus der Fraktion geworfen.");
-                    } else {
-                        FactionManager.removeOfflinePlayerFromFrak(args[0]);
-                        player.sendMessage(Main.admin_prefix + "Du hast §c" + args[0] + "§7 Administrativ aus der Fraktion geworfen (Spieler ist offline).");
-                    }
+                    FactionManager.removePlayerFromFrak(offlinePlayer.getPlayer());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                player.sendMessage(Main.admin_error + "Syntax-Fehler: /adminuninvite [Spieler]");
+                try {
+                    FactionManager.removeOfflinePlayerFromFrak(offlinePlayer);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        } else {
-            player.sendMessage(Main.error_nopermission);
+            aduty.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.");
+            player.sendMessage(Main.admin_prefix + "Du hast " + offlinePlayer.getName() + " aus der Fraktion geworfen.");
+            return true;
         }
+        player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
         return false;
     }
 }

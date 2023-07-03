@@ -92,7 +92,7 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setUuid(player.getUniqueId());
@@ -158,6 +158,10 @@ public class PlayerManager implements Listener {
                         map.put(key, value);
                     }
                     playerData.setRelationShip(map);
+
+                    playerData.setWarns(name.getInt(32));
+                    playerData.setBusiness(name.getString(33));
+                    playerData.setBusiness_grade(name.getInt(34));
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);

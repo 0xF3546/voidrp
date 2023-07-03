@@ -13,7 +13,7 @@ public class speedCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (playerData.getPermlevel() >= 70) {
+            if (playerData.getPermlevel() >= 70) {
             if (playerData.isAduty()) {
                 if (args.length > 0) {
                     player.sendMessage(Main.admin_prefix + "Dein Fly-Speed wurde auf §c" + args[0] + "§7 gestellt.");

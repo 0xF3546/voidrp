@@ -240,6 +240,7 @@ public final class Main extends JavaPlugin {
         getCommand("frakstats").setExecutor(new frakstatsCommand());
         getCommand("checkinv").setExecutor(new checkinvCommand());
         getCommand("bizinvite").setExecutor(new bizinviteCommand());
+        getCommand("shoprob").setExecutor(new shoprobCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());

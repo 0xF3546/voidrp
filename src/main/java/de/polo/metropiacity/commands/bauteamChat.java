@@ -20,8 +20,11 @@ public class bauteamChat implements CommandExecutor {
                 msg.append(' ').append(args[i]);
             }
             for (Player players : Bukkit.getOnlinePlayers()) {
-                if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getSecondaryTeam().equals("Bau-Team") || PlayerManager.playerDataMap.get(players.getUniqueId().toString()).isAduty()) {
-                    players.sendMessage("§8[§6BauTeam§8]§e " + player.getName() + "§8:§7 " + msg);
+                PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                if (playersData.getBusiness() != null || playersData.isAduty()) {
+                    if (playersData.getSecondaryTeam().equals("Bau-Team") || playersData.isAduty()) {
+                        players.sendMessage("§8[§6BauTeam§8]§e " + player.getName() + "§8:§7 " + msg);
+                    }
                 }
             }
         } else {
