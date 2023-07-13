@@ -30,6 +30,11 @@ public class WorldGuard implements Listener {
                 event.setCancelled(true);
             }
         }
+        if (event.getClickedBlock().getType() == Material.CRAFTING_TABLE) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                event.setCancelled(true);
+            }
+        }
         if (event.getAction() == Action.PHYSICAL && event.getClickedBlock() != null) {
             if (event.getClickedBlock().getType() == Material.FARMLAND) {
                 event.setCancelled(true);

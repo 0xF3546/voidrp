@@ -241,6 +241,7 @@ public final class Main extends JavaPlugin {
         getCommand("checkinv").setExecutor(new checkinvCommand());
         getCommand("bizinvite").setExecutor(new bizinviteCommand());
         getCommand("shoprob").setExecutor(new shoprobCommand());
+        getCommand("respawn").setExecutor(new respawnCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());

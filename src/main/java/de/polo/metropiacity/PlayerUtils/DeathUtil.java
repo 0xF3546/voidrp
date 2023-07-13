@@ -53,6 +53,7 @@ public class DeathUtil {
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
         aduty.send_message( player.getName() + " wurde wiederbelebt.");
+        player.setFlySpeed(0.1F);
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
@@ -77,8 +78,6 @@ public class DeathUtil {
         PlayerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {
             Gangwar.respawnPlayer(player);
-        } else {
-            player.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
         }
     }
 

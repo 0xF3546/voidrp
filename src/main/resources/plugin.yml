@@ -164,3 +164,4 @@ commands:
   bizinvite:
     aliases: businessinvite
   shoprob:
+  respawn:

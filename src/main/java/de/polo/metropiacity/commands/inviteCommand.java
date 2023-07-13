@@ -36,10 +36,6 @@ public class inviteCommand implements CommandExecutor {
             return false;
         } else {
             OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
-            if (offlinePlayer == null) {
-                player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
-                return false;
-            }
             if (!offlinePlayer.isOnline()) {
                 player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht online.");
                 return false;

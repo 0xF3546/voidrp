@@ -307,7 +307,8 @@ public class Vehicles implements Listener, CommandExecutor {
     @EventHandler
     public void onVehicleDamage(VehicleDamageEvent event) {
         if (event.getVehicle().getType() == EntityType.MINECART) {
-            event.setCancelled(true);
+            if (event.getVehicle().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.STRING) != null)
+                event.setCancelled(true);
         }
     }
     @Override

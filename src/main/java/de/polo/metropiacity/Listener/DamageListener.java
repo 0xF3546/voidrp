@@ -1,14 +1,17 @@
 package de.polo.metropiacity.Listener;
 
 import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.PlayerManager;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 public class DamageListener implements Listener {
     @EventHandler
@@ -34,6 +37,8 @@ public class DamageListener implements Listener {
             event.setCancelled(true);
         }
         if (event.getEntity().getType() == EntityType.VILLAGER) {
+            String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
+            if (command == null) return;
             event.setCancelled(true);
         }
     }

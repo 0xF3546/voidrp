@@ -69,8 +69,10 @@ public class reviveCommand implements CommandExecutor {
                             DeathUtil.RevivePlayer(targetplayer);
                             targetplayer.teleport(player.getLocation());
                             PlayerManager.addExp(player, Main.random(2, 5));
+                            targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
                             try {
                                 FactionManager.addFactionMoney("Medic", ServerManager.getPayout("revive"), "Revive durch " + player.getName());
+                                PlayerManager.removeBankMoney(targetplayer, ServerManager.getPayout("revive"), "Medizinische Behandlung");
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
