@@ -6,7 +6,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.FactionManager;
 import de.polo.metropiacity.Utils.ItemManager;
 import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.SubmitChatEvent;
+import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -2,6 +2,8 @@ package de.polo.metropiacity.Utils;
 
 import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.Utils.Events.NaviReachEvent;
+import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

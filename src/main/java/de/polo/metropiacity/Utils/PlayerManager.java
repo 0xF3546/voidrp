@@ -7,6 +7,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
 import de.polo.metropiacity.commands.aduty;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;

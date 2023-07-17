@@ -4,6 +4,7 @@ import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.ChatUtils;
+import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import javax.xml.stream.events.StartDocument;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

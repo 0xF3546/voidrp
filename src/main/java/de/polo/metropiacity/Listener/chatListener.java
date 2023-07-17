@@ -4,7 +4,7 @@ import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.PhoneUtils;
 import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.SubmitChatEvent;
+import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
 import de.polo.metropiacity.Utils.SupportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

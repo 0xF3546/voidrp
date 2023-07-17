@@ -5,6 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.Utils.*;
+import de.polo.metropiacity.Utils.Server;
 import de.polo.metropiacity.commands.*;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -1188,7 +1189,7 @@ public class InventoryClickListener implements Listener {
                     if (targetplayer2 ==  null) {
                         return;
                     }
-                    Utils.kissPlayer(player, targetplayer2);
+                    Server.Utils.kissPlayer(player, targetplayer2);
                     player.closeInventory();
                     break;
             }

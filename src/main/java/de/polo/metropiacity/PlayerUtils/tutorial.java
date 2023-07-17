@@ -3,7 +3,7 @@ package de.polo.metropiacity.PlayerUtils;
 import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
-import de.polo.metropiacity.Utils.NaviReachEvent;
+import de.polo.metropiacity.Utils.Events.NaviReachEvent;
 import de.polo.metropiacity.Utils.Navigation;
 import de.polo.metropiacity.Utils.PlayerManager;
 import net.md_5.bungee.api.chat.ClickEvent;

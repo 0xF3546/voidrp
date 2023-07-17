@@ -1,6 +1,7 @@
-package de.polo.metropiacity.Utils;
+package de.polo.metropiacity.Utils.Events;
 
 import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.Utils.PlayerManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

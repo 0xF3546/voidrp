@@ -3,6 +3,7 @@ package de.polo.metropiacity.Utils;
 import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
+import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
 import de.polo.metropiacity.commands.openBossMenuCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
