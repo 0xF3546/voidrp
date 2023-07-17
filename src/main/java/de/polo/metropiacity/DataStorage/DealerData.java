@@ -1,12 +1,14 @@
 package de.polo.metropiacity.DataStorage;
 
+import org.bukkit.World;
+
 public class DealerData {
     private int id;
     private String name;
     private int x;
     private int y;
     private int z;
-    private String welt;
+    private World welt;
     private float yaw;
     private float pitch;
     private String type;
@@ -33,14 +35,6 @@ public class DealerData {
 
     public void setYaw(float yaw) {
         this.yaw = yaw;
-    }
-
-    public String getWelt() {
-        return welt;
-    }
-
-    public void setWelt(String welt) {
-        this.welt = welt;
     }
 
     public int getZ() {
@@ -81,5 +75,13 @@ public class DealerData {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public World getWelt() {
+        return welt;
+    }
+
+    public void setWelt(World welt) {
+        this.welt = welt;
     }
 }

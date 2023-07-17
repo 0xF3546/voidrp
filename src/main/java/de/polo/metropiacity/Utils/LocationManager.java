@@ -263,4 +263,13 @@ public class LocationManager {
         return loc;
     }
 
+    public static Integer isNearDealer(Player player) {
+        for (DealerData dealerData : ServerManager.dealerDataMap.values()) {
+            if (player.getLocation().distance(new Location(dealerData.getWelt(), dealerData.getX(), dealerData.getY(), dealerData.getZ(), dealerData.getYaw(), dealerData.getPitch())) < 8) {
+                return dealerData.getId();
+            }
+        }
+        return 0;
+    }
+
 }

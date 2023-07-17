@@ -65,6 +65,8 @@ public final class Main extends JavaPlugin {
             ServerManager.everySecond();
             ServerManager.loadShops();
             ServerManager.startTabUpdateInterval();
+            ServerManager.loadDealer();
+
             ServerManager.loadRanks();
             LocationManager.loadLocations();
             FactionManager.loadFactions();
@@ -242,6 +244,7 @@ public final class Main extends JavaPlugin {
         getCommand("bizinvite").setExecutor(new bizinviteCommand());
         getCommand("shoprob").setExecutor(new shoprobCommand());
         getCommand("respawn").setExecutor(new respawnCommand());
+        getCommand("dealer").setExecutor(new DealerCommand());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());

@@ -29,6 +29,7 @@ public class ServerManager {
     public static Map<String, ContractData> contractDataMap = new HashMap<>();
     public static Map<Integer, ShopData> shopDataMap = new HashMap<>();
     public static Map<String, String> serverVariables = new HashMap<>();
+    public static Map<Integer, DealerData> dealerDataMap = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {
@@ -103,6 +104,23 @@ public class ServerManager {
             shopData.setPitch(locs.getFloat(8));
             shopData.setFaction(locs.getString(9));
             shopDataMap.put(locs.getInt(1), shopData);
+        }
+    }
+    public static void loadDealer() throws SQLException {
+        Statement statement = MySQL.getStatement();
+        ResultSet locs = statement.executeQuery("SELECT * FROM dealers");
+        while (locs.next()) {
+            DealerData data = new DealerData();
+            data.setId(locs.getInt(1));
+            data.setName(locs.getString(2));
+            data.setX(locs.getInt(3));
+            data.setY(locs.getInt(4));
+            data.setZ(locs.getInt(5));
+            data.setWelt(Bukkit.getWorld(locs.getString(6)));
+            data.setYaw(locs.getFloat(7));
+            data.setPitch(locs.getFloat(8));
+            data.setType(locs.getString(9));
+            dealerDataMap.put(locs.getInt(1), data);
         }
     }
 
