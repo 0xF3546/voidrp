@@ -9,6 +9,8 @@ public class LocationData {
     private String welt;
     private float yaw;
     private float pitch;
+    private String type;
+    private String info;
 
     public int getId() {
         return id;
@@ -72,5 +74,21 @@ public class LocationData {
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

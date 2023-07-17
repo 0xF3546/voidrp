@@ -35,6 +35,8 @@ public class LocationManager {
             locationData.setWelt(locs.getString(6));
             locationData.setYaw(locs.getFloat(7));
             locationData.setPitch(locs.getFloat(8));
+            locationData.setType(locs.getString(9));
+            locationData.setInfo(locs.getString(10));
             locationDataMap.put(locs.getString(2).toLowerCase(), locationData);
             System.out.println(locationData.getName());
         }

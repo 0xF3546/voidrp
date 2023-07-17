@@ -1,5 +1,6 @@
 package de.polo.metropiacity;
 
+import de.polo.metropiacity.DataStorage.FarmingData;
 import de.polo.metropiacity.Listener.*;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
@@ -66,6 +67,7 @@ public final class Main extends JavaPlugin {
             ServerManager.loadShops();
             ServerManager.startTabUpdateInterval();
             ServerManager.loadDealer();
+            Farming.loadData();
 
             ServerManager.loadRanks();
             LocationManager.loadLocations();
