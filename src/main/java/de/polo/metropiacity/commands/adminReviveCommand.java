@@ -19,8 +19,7 @@ public class adminReviveCommand implements CommandExecutor {
         if (playerData.isAduty()) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
-                assert targetplayer != null;
-                if (targetplayer.isOnline()) {
+                if (targetplayer != null) {
                     DeathUtil.RevivePlayer(targetplayer);
                     player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 wiederbelebt.");
                     targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");

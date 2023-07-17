@@ -23,7 +23,7 @@ public class contractCommand implements CommandExecutor {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             if (args.length >= 2) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
-                if (targetplayer.isOnline()) {
+                if (targetplayer != null) {
                     int price = Integer.parseInt(args[1]);
                     if (price >= ServerManager.getPayout("kopfgeld")) {
                         if (playerData.getBargeld() >= price) {

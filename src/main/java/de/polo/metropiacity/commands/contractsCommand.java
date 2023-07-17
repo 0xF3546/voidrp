@@ -39,7 +39,7 @@ public class contractsCommand implements CommandExecutor, TabCompleter {
                 if (args[0].equalsIgnoreCase("remove")) {
                     if (args.length >= 2) {
                         Player targetplayer = Bukkit.getPlayer(args[1]);
-                        if (targetplayer.isOnline()) {
+                        if (targetplayer != null) {
                             if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
                                 if (playerData.getFactionGrade() >= 7) {
                                     try {

@@ -1,6 +1,7 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.DataStorage.DealerData;
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.ItemManager;
 import de.polo.metropiacity.Utils.LocationManager;
 import de.polo.metropiacity.Utils.ServerManager;
@@ -24,6 +25,8 @@ public class DealerCommand implements CommandExecutor {
                 inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
             }
             player.openInventory(inv);
+        } else {
+            player.sendMessage(Main.error + "Du bist nicht in der nähe eines Dealers.");
         }
         return false;
     }

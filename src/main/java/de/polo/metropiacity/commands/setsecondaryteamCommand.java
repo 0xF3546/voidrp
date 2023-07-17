@@ -21,7 +21,7 @@ public class setsecondaryteamCommand implements CommandExecutor {
         if (playerData.getPermlevel() >= 90) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
-                if (targetplayer.isOnline()) {
+                if (targetplayer != null) {
                     PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
                     targetplayerData.setSecondaryTeam(args[1]);
                     targetplayer.sendMessage("§8[§6" + args[1] + "§8]§e " + player.getName() + " hat dich in das Team hinzugefügt.");

@@ -19,7 +19,7 @@ public class acceptticketCommand implements CommandExecutor {
         if (playerData.getPermlevel() >= 40) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
-                if (targetplayer.isOnline()) {
+                if (targetplayer != null) {
                     if (!SupportManager.isInConnection(player)) {
                         if (SupportManager.ticketCreated(targetplayer)) {
                             SupportManager.createTicketConnection(player, targetplayer);

@@ -15,7 +15,7 @@ public class friskCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length >= 1) {
             Player targetplayer = Bukkit.getPlayer(args[0]);
-            if (targetplayer.isOnline()) {
+            if (targetplayer != null) {
                 if (!targetplayer.getName().equals(player.getName())) {
                     if (player.getLocation().distance(targetplayer.getLocation()) < 5) {
                         if (!PlayerManager.canPlayerMove(targetplayer)) {

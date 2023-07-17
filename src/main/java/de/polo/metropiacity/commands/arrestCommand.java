@@ -24,7 +24,7 @@ public class arrestCommand implements CommandExecutor {
             FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
                 if (args.length > 0) {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
-                    if (targetplayer.isOnline()) {
+                    if (targetplayer != null) {
                         if (!PlayerManager.canPlayerMove(targetplayer)) {
                             if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
                                 try {

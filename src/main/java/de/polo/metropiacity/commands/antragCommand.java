@@ -19,7 +19,7 @@ public class antragCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length >= 1) {
             Player player1 = Bukkit.getPlayer(args[0]);
-            if (player1.isOnline()) {
+            if (player1 != null) {
                 if (player.getLocation().distance(player1.getLocation()) < 5) {
                     PlayerData targetplayerData = PlayerManager.playerDataMap.get(player1.getUniqueId().toString());
                     PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());

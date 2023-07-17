@@ -19,7 +19,7 @@ public class closeserviceCommand implements CommandExecutor {
         if (playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei")) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
-                if (targetplayer.isOnline()) {
+                if (targetplayer != null) {
                     ServiceData serviceData = StaatUtil.serviceDataMap.get(targetplayer.getUniqueId().toString());
                     if (serviceData != null) {
                         if (serviceData.getAcceptedByUuid().equals(player.getUniqueId().toString())) {
