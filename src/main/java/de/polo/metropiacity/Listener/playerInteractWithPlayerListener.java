@@ -90,6 +90,7 @@ public class playerInteractWithPlayerListener implements Listener {
                     }
                 } else if (item.getType().equals(Material.PAPER) && item.getItemMeta().getDisplayName().equalsIgnoreCase("§c§lIboprofen")) {
                     if (playerData.getFaction().equals("Medic")) {
+                        //todo: auf zeit testen
                         targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12, 1));
                         targetplayer.addPotionEffect(PotionEffectType.HEAL.createEffect(12, 1));
                         targetplayer.sendMessage("§dMediziner " + player.getName() + " hat dir Iboprofen verabreicht.");

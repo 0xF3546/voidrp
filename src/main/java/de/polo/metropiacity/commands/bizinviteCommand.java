@@ -26,30 +26,33 @@ public class bizinviteCommand implements CommandExecutor {
             if (playerData.getBusiness_grade() >= 4) {
                 if (args.length >= 1) {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
-                    assert targetplayer != null;
-                    if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
-                        if (PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString()).getBusiness() == null) {
-                            if (BusinessManager.getMemberCount(playerData.getBusiness()) < businessData.getMaxMember()) {
-                                try {
-                                    if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {
-                                        player.sendMessage("§8[§6Business§8] §7" + targetplayer.getName() + " wurde in das Business §aeingeladen§7.");
-                                        targetplayer.sendMessage("§6" + player.getName() + " hat dich in das Business §e" + playerData.getBusiness() + "§6 eingeladen.");
-                                        VertragUtil.sendInfoMessage(targetplayer);
-                                        PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
-                                    } else {
-                                        player.sendMessage("§8[§6Business§8]§8 §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+                    if (targetplayer != null) {
+                        if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
+                            if (PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString()).getBusiness() == null) {
+                                if (BusinessManager.getMemberCount(playerData.getBusiness()) < businessData.getMaxMember()) {
+                                    try {
+                                        if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {
+                                            player.sendMessage("§8[§6Business§8] §7" + targetplayer.getName() + " wurde in das Business §aeingeladen§7.");
+                                            targetplayer.sendMessage("§6" + player.getName() + " hat dich in das Business §e" + playerData.getBusiness() + "§6 eingeladen.");
+                                            VertragUtil.sendInfoMessage(targetplayer);
+                                            PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                                        } else {
+                                            player.sendMessage("§8[§6Business§8]§8 §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+                                        }
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
                                     }
-                                } catch (SQLException e) {
-                                    throw new RuntimeException(e);
+                                } else {
+                                    player.sendMessage(Main.error + "Dein Business ist voll!");
                                 }
                             } else {
-                                player.sendMessage(Main.error + "Dein Business ist voll!");
+                                player.sendMessage("§8[§6Business§8] §c" + targetplayer.getName() + "§7 ist bereits in einem Business.");
                             }
                         } else {
-                            player.sendMessage("§8[§6Business§8] §c" + targetplayer.getName() + "§7 ist bereits in einem Business.");
+                            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
                         }
                     } else {
-                        player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+                        player.sendMessage(Main.error + args[0] + " ist nicht online.");
                     }
                 } else {
                     player.sendMessage(Main.error + "Syntax-Fehler: /bizinvite [Spieler]");

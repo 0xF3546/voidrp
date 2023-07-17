@@ -65,7 +65,8 @@ public class PlayerManager implements Listener {
     public static void updatePlayer(String uuid, String name, String adress) {
         try {
             Statement statement = MySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adress + "' WHERE uuid = '"+ uuid + "'");
+            String[] adresse = adress.split(":");
+            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adresse[0] + "' WHERE uuid = '"+ uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
