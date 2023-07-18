@@ -66,7 +66,6 @@ public final class Main extends JavaPlugin {
             ServerManager.everySecond();
             ServerManager.loadShops();
             ServerManager.startTabUpdateInterval();
-            ServerManager.loadDealer();
             Farming.loadData();
 
             ServerManager.loadRanks();
@@ -249,6 +248,7 @@ public final class Main extends JavaPlugin {
         getCommand("shoprob").setExecutor(new shoprobCommand());
         getCommand("respawn").setExecutor(new respawnCommand());
         getCommand("dealer").setExecutor(new DealerCommand());
+        getCommand("farming").setExecutor(new Farming());
 
         getCommand("reinforcement").setTabCompleter(new reinforcementCommand());
         getCommand("blacklist").setTabCompleter(new blacklistCommand());
@@ -258,6 +258,7 @@ public final class Main extends JavaPlugin {
         getCommand("personalausweis").setTabCompleter(new personalausweisCommand());
         getCommand("fraktionsinfo").setTabCompleter(new frakinfoCommand());
         getCommand("tpto").setTabCompleter(new tptoCommand());
+        getCommand("farming").setTabCompleter(new Farming());
     }
 
 

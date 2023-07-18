@@ -38,6 +38,7 @@ public class InventoryClickListener implements Listener {
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
+            playerData.setVariable("current_inventory", null);
             if (event.getCurrentItem().getType() == Material.GRAY_DYE) {
                 playerData.setVariable("current_inventory", "rubbellos");
                 int pers = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER);
@@ -70,6 +71,7 @@ public class InventoryClickListener implements Listener {
             int f = i + 1;
             if (event.getView().getTitle().equalsIgnoreCase("§8» §c" + LocationManager.getShopNameById(f))) {
                 event.setCancelled(true);
+                playerData.setVariable("current_inventory", null);
                 for (Object[] row : Shop.shop_items) {
                     int shop = LocationManager.isNearShop(player);
                     if ((int) row[1] == shop) {
@@ -1236,6 +1238,12 @@ public class InventoryClickListener implements Listener {
                         break;
                 }
             }
+        }
+        if (playerData.getVariable("current_inventory").contains("verarbeiter")) {
+            event.setCancelled(true);
+        }
+        if (playerData.getVariable("current_inventory").contains("dealer")) {
+            event.setCancelled(true);
         }
     }
 }
