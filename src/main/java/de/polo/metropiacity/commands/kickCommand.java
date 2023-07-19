@@ -23,7 +23,7 @@ public class kickCommand implements CommandExecutor {
                         message.append(" ").append(args[i]);
                     }
                     PlayerManager.kickPlayer(targetplayer, String.valueOf(message));
-                    Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + targetplayer.getName() + " gekickt. Grund: " + args[1]);
+                    Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + targetplayer.getName() + " gekickt. Grund: " + message);
                 } else {
                     player.sendMessage(Main.admin_error + args[0] + " ist nicht online.");
                 }

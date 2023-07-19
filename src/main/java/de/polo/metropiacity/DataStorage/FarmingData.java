@@ -11,6 +11,7 @@ public class FarmingData {
     private Material item;
     private String needed_item;
     private String itemName;
+    private String drug;
 
     public int getId() {
         return id;
@@ -77,5 +78,13 @@ public class FarmingData {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public String getDrug() {
+        return drug;
+    }
+
+    public void setDrug(String drug) {
+        this.drug = drug;
     }
 }

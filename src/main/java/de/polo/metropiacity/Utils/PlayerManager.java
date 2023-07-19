@@ -527,12 +527,14 @@ public class PlayerManager implements Listener {
         playerData.setExp(playerData.getExp() + exp);
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
+            Utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
             playerData.setLevel(playerData.getLevel() + 1);
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
         } else {
             player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            Utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
         }
     }

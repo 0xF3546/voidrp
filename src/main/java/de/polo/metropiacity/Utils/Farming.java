@@ -17,16 +17,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Farming implements Listener, CommandExecutor, TabCompleter {
     public static Map<String, FarmingData> farmingDataMap = new HashMap<>();
@@ -43,6 +41,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             farmingData.setNeeded_item(res.getString(6));
             farmingData.setItem(Material.valueOf(res.getString(7)));
             farmingData.setItemName(res.getString(8));
+            farmingData.setDrug(res.getString(10));
             farmingDataMap.put(res.getString(3), farmingData);
         }
     }
@@ -65,7 +64,14 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
                 player.sendMessage(Main.error + "Du bist nicht in der nähe eines Verarbeiters.");
                 return false;
             }
-            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eVerarbeiter§8 | §e" + location.getInfo());
+            FarmingData farmingData = farmingDataMap.get(location.getInfo());
+            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eVerarbeiter§8 | §e" + farmingData.getDrug());
+            inv.setItem(10, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", "Lädt..."));
+            ItemMeta meta = inv.getItem(10).getItemMeta();
+            meta.setLore(Arrays.asList("§8 ➥ §6Typ§8:§e " + farmingData.getDrug(), "§8 ➥ §6Benötigtes Item§8: " + farmingData.getNeeded_item().replace("&", "§"), "§8 ➥ §6Hergestelltes Item§8: " + farmingData.getItemName().replace("&", "§"), "§8 ➥ §6Benötigt " + farmingData.getAmount() + " um 1 Stoff herzustellen"));
+            inv.getItem(10).setItemMeta(meta);
+            inv.setItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHerstellen", null));
+            inv.setItem(16, ItemManager.createItem(farmingData.getItem(), 1, 0, farmingData.getItemName().replace("&", "§"), null));
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "", null));
             }
@@ -82,7 +88,8 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
                 player.sendMessage(Main.error + "Du bist nicht in der nähe eines Dealers.");
                 return false;
             }
-            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eDealer§8 | §e" + location.getInfo());
+            FarmingData farmingData = farmingDataMap.get(location.getInfo());
+            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eDealer§8 | §e" + farmingData.getDrug());
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "", null));
             }
@@ -108,7 +115,12 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
         String type = event.getPersistentData(PersistentDataType.STRING);
         if (type.contains("farming_")) {
             String farmingType = type.replace("farming_", "");
-            FarmingData farmingData = farmingDataMap.get(farmingType);
+            FarmingData farmingData = null;
+            for (FarmingData fData : farmingDataMap.values()) {
+                if (fData.getDrug().equalsIgnoreCase(farmingType)) {
+                    farmingData = fData;
+                }
+            }
             if (farmingData == null) return;
             Player player = event.getPlayer();
             if (Main.cooldownManager.isOnCooldown(player, "farming")) return;

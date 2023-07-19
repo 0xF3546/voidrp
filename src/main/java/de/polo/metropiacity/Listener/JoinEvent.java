@@ -26,7 +26,7 @@ public class  JoinEvent implements Listener {
             if (DeathUtil.isDead(player)) {
                 DeathUtil.killPlayer(player);
             }
-            aduty.send_message("§c" + player.getName() + "§7 hat den Server betreten.");
+            aduty.send_message(player.getName() + " hat den Server betreten.");
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getPermlevel() >= 40) {
                 Utils.sendActionBar(player, "§aDeine Account-Daten wurden erfolgreich geladen!");
