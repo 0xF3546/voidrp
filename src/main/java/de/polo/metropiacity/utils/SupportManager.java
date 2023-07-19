@@ -45,12 +45,16 @@ public class SupportManager {
         isInConnection.put(player.getUniqueId().toString(), true);
         isInConnection.put(targetplayer.getUniqueId().toString(), true);
     }
-    public static void deleteTicketConnection(Player player, Player targetplayer) {
+    public static boolean deleteTicketConnection(Player player, Player targetplayer) {
+        if (ticketConnection.get(player.getUniqueId().toString()) == null || ticketConnection.get(targetplayer.getUniqueId().toString()) == null) {
+            return false;
+        }
         ticketConnection.remove(player.getUniqueId().toString());
         ticketConnection.remove(targetplayer.getUniqueId().toString());
         deleteTicket(targetplayer);
         isInConnection.remove(targetplayer.getUniqueId().toString());
         isInConnection.remove(player.getUniqueId().toString());
+        return true;
     }
     public static String getConnection(Player player) {
         return ticketConnection.get(player.getUniqueId().toString());
