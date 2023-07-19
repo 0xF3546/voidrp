@@ -34,15 +34,12 @@ public class inviteCommand implements CommandExecutor {
         if (!(args.length >= 1)) {
             player.sendMessage(Main.error + "Syntax-Fehler: /invite [Spieler]");
             return false;
-        } else {
-            OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
-            if (!offlinePlayer.isOnline()) {
-                player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht online.");
-                return false;
-            }
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
-        assert targetplayer != null;
+        if (targetplayer == null) {
+            player.sendMessage(Main.error + args[0]+ " ist nicht online.");
+            return false;
+        }
         if (player.getLocation().distance(targetplayer.getLocation()) >= 5) {
             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
