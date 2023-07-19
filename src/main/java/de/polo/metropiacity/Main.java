@@ -1,6 +1,5 @@
 package de.polo.metropiacity;
 
-import de.polo.metropiacity.DataStorage.FarmingData;
 import de.polo.metropiacity.Listener.*;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
@@ -20,23 +19,23 @@ public final class Main extends JavaPlugin {
     public boolean isOnline = false;
 
     public static Plugin plugin = null;
-    public static String prefix = "§8[§6Metropia§8] §7";
+    public static final String prefix = "§8[§6Metropia§8] §7";
     public static String debug_prefix = "§8[§7§lDEBUG§8] §cMetropia§8 » §7";
-    public static String admin_prefix = "§8[§cAdmin§8] §7";
-    public static String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
-    public static String PayDay_prefix = "§8[§aPayDay§8] §7";
-    public static String faction_prefix = "§8[§9Fraktion§8] §7";
-    public static String support_prefix = "§8[§3Support§8] §7";
-    public static String gamedesign_prefix = "§8[§9Gamedesign§8] §7";
-    public static String bank_prefix = "§8[§3Bank§8] §7";
+    public static final String admin_prefix = "§8[§cAdmin§8] §7";
+    public static final String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
+    public static final String PayDay_prefix = "§8[§aPayDay§8] §7";
+    public static final String faction_prefix = "§8[§9Fraktion§8] §7";
+    public static final String support_prefix = "§8[§3Support§8] §7";
+    public static final String gamedesign_prefix = "§8[§9Gamedesign§8] §7";
+    public static final String bank_prefix = "§8[§3Bank§8] §7";
 
-    public static String error_nopermission = "§8[§cFehler§8] §7Für den ausgeführten Befehl hast du keine Rechte.";
-    public static String error = "§8[§cFehler§8] §7";
-    public static String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
+    public static final String error_nopermission = "§8[§cFehler§8] §7Für den ausgeführten Befehl hast du keine Rechte.";
+    public static final String error = "§8[§cFehler§8] §7";
+    public static final String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static String admin_info = "§8[§9§lINFO§8] §cAdmin§8 » §7";
-    public static String business_prefix = "§8[§6Business§8]§7 ";
+    public static final String business_prefix = "§8[§6Business§8]§7 ";
 
-    public static CooldownManager cooldownManager = new CooldownManager();
+    public static final CooldownManager cooldownManager = new CooldownManager();
 
     private static Main instance;
 
@@ -266,7 +265,7 @@ public final class Main extends JavaPlugin {
     public void onDisable() {
         TeamSpeak.getAPI().logout();
         TeamSpeak.getQuery().exit();
-        System.out.println("disablding MetroCity Roleplay");
+        System.out.println("Disabling MetroCity Roleplay");
         isOnline = false;
         try {
             ServerManager.savePlayers();

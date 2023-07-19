@@ -24,8 +24,8 @@ import java.util.List;
 
 public class TeamSpeak implements CommandExecutor {
     static TS3Api api = null;
-    static TS3Query query = new TS3Query();
-    public static HashMap<String, Client> verifyCodes = new HashMap<>();
+    static final TS3Query query = new TS3Query();
+    public static final HashMap<String, Client> verifyCodes = new HashMap<>();
 
 
 
@@ -129,7 +129,7 @@ public class TeamSpeak implements CommandExecutor {
                 }
                 try {
                     Statement statement = MySQL.getStatement();
-                    statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = '" + client.getUniqueIdentifier() + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                    statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = '" + client.getUniqueIdentifier() + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

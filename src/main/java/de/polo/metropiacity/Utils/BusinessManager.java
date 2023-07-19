@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BusinessManager {
-    public static Map<String, BusinessData> businessDataMap = new HashMap<>();
+    public static final Map<String, BusinessData> businessDataMap = new HashMap<>();
     public static void loadBusinesses() throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM business");
@@ -59,7 +59,7 @@ public class BusinessManager {
         }
     }
 
-    public static String business_offlinePlayer(String playername) throws SQLException {
+    public static String business_offlinePlayer(String playername) {
         String val = null;
         for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));

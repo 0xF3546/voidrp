@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        Player player = (Player) event.getPlayer();
+        Player player = event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData == null) return;
         event.setQuitMessage("");

@@ -14,8 +14,8 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class BreakPersistentBlockEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
-    private Block block;
+    private final Player player;
+    private final Block block;
 
     public BreakPersistentBlockEvent(Player player, Block block) {
         this.player = player;

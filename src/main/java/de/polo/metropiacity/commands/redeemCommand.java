@@ -55,7 +55,7 @@ public class redeemCommand implements CommandExecutor {
                         }
                         PlayerManager.addExp(player, Main.random(20, 50));
                         statement.execute("DELETE FROM `payments` WHERE `id` = " + id);
-                        statement.execute("INSERT INTO `payments_claimed` (`user`, `type`, `duration`, `duration_type`) VALUES ('" + player.getUniqueId().toString() + "', '" + type + "', " + duration + ", '" + duration_type + "')");
+                        statement.execute("INSERT INTO `payments_claimed` (`user`, `type`, `duration`, `duration_type`) VALUES ('" + player.getUniqueId() + "', '" + type + "', " + duration + ", '" + duration_type + "')");
                     } else {
                         player.sendMessage(Main.error + "Dieser Kauf konnte nicht gefunden werden.");
                     }

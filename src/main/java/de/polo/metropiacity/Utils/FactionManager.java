@@ -13,9 +13,9 @@ import java.sql.Statement;
 import java.util.*;
 
 public class FactionManager {
-    public static Map<String, FactionData> factionDataMap = new HashMap<>();
-    public static Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
-    public static Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
+    public static final Map<String, FactionData> factionDataMap = new HashMap<>();
+    public static final Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
+    public static final Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadFactions() throws SQLException {
@@ -129,7 +129,7 @@ public class FactionManager {
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
-    public static String faction_offlinePlayer(String playername) throws SQLException {
+    public static String faction_offlinePlayer(String playername) {
         String val = null;
         for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
@@ -140,7 +140,7 @@ public class FactionManager {
         return val;
     }
 
-    public static Integer faction_grade_offlinePlayer(String playername) throws SQLException {
+    public static Integer faction_grade_offlinePlayer(String playername) {
         int val = 0;
         for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
@@ -187,13 +187,12 @@ public class FactionManager {
         return factionData.getBank();
     }
 
-    public static boolean addFactionMoney(String faction, Integer amount, String reason) throws SQLException {
+    public static void addFactionMoney(String faction, Integer amount, String reason) throws SQLException {
         FactionData factionData = factionDataMap.get(faction);
         factionData.setBank(factionData.getBank() + amount);
         Statement statement = MySQL.getStatement();
         statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('einzahlung', '" + faction + "', " + amount + ", '" + reason + "', true)");
         statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
-        return true;
     }
     public static boolean removeFactionMoney(String faction, Integer amount, String reason) throws SQLException {
         boolean returnval = false;
@@ -256,7 +255,7 @@ public class FactionManager {
         try {
             Statement statement = MySQL.getStatement();
             if (state) {
-                statement.executeUpdate("UPDATE `players` SET `isDuty` = true WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                statement.executeUpdate("UPDATE `players` SET `isDuty` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
                 if (playerData.getPermlevel() >= 60) {
                     player.setDisplayName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
                     player.setPlayerListName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
@@ -270,7 +269,7 @@ public class FactionManager {
                 }
                 playerData.setDuty(true);
             } else {
-                statement.executeUpdate("UPDATE `players` SET `isDuty` = false WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                statement.executeUpdate("UPDATE `players` SET `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
                 if (playerData.getPermlevel() >= 60) {
                     player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
                     player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());

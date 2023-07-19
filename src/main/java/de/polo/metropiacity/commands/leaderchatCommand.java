@@ -3,6 +3,7 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,10 +19,7 @@ public class leaderchatCommand implements CommandExecutor {
             for (PlayerData pData : PlayerManager.playerDataMap.values()) {
                 if (pData.getPermlevel() >= 70 || pData.getFactionGrade() >= 7) {
                     Player targetplayer = Bukkit.getPlayer(pData.getUuid());
-                    String msg = args[0];
-                    for (int i = 1 ; i < args.length; i++) {
-                        msg = msg + " " + args[i];
-                    }
+                    String msg = Utils.stringArrayToString(args);
                     targetplayer.sendMessage("§8[§6Leader§8]§e " + playerData.getFaction() + " " + player.getName() + ": " + msg);
                 }
             }

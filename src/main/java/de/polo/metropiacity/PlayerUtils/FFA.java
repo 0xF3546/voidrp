@@ -23,8 +23,8 @@ import java.sql.Statement;
 import java.util.*;
 
 public class FFA implements CommandExecutor, Listener {
-    public static Map<Integer, FFALobbyData> FFAlobbyDataMap = new HashMap<>();
-    public static Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
+    public static final Map<Integer, FFALobbyData> FFAlobbyDataMap = new HashMap<>();
+    public static final Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
 
     public static void loadFFALobbys() throws SQLException {
         Statement statement = MySQL.getStatement();

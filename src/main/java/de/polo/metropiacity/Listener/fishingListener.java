@@ -1,10 +1,7 @@
 package de.polo.metropiacity.Listener;
 
-import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.ItemManager;
-import de.polo.metropiacity.Utils.PlayerManager;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

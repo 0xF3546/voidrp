@@ -8,8 +8,8 @@ import org.bukkit.event.HandlerList;
 
 public class NaviReachEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
-    private String navi;
+    private final Player player;
+    private final String navi;
 
     public NaviReachEvent(Player player, String navi) {
         this.player = player;

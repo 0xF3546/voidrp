@@ -8,8 +8,6 @@ import de.polo.metropiacity.Utils.FactionManager;
 import de.polo.metropiacity.Utils.LocationManager;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.ServerManager;
-import jdk.internal.net.http.common.Utils;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

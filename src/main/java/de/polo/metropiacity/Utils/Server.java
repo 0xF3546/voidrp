@@ -1,15 +1,9 @@
 package de.polo.metropiacity.Utils;
 
-import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.ChatUtils;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Server {
     public interface TeamSpeak {

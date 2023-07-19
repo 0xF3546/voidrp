@@ -1,11 +1,8 @@
 package de.polo.metropiacity.Utils;
 
 import de.polo.metropiacity.DataStorage.DBPlayerData;
-import de.polo.metropiacity.Main;
-import de.polo.metropiacity.PlayerUtils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import java.util.Calendar;
@@ -35,5 +32,16 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static String stringArrayToString(String[] args) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < args.length; i++) {
+            stringBuilder.append(args[i]);
+            if (i != args.length - 1) {
+                stringBuilder.append(" ");
+            }
+        }
+        return stringBuilder.toString();
     }
 }

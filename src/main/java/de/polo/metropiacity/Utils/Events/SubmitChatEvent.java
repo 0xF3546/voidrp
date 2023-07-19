@@ -8,8 +8,8 @@ import org.bukkit.event.HandlerList;
 
 public class SubmitChatEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
-    private String message;
+    private final Player player;
+    private final String message;
 
     public SubmitChatEvent(Player player, String message) {
         this.player = player;

@@ -81,13 +81,13 @@ public class InventoryClickListener implements Listener {
                                     if (Objects.equals(row[5].toString(), "weapon")) {
                                         String weapon = row[3].toString().replace("&", "").replace("6", "");
                                         Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType(), "default");
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
                                     } else if (Objects.equals(row[5].toString(), "ammo")) {
                                         String ammo = row[3].toString().replace("&", "").replace("6", "");
                                         Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
                                     } else if (Objects.equals(row[5].toString(), "car")) {
@@ -95,7 +95,7 @@ public class InventoryClickListener implements Listener {
                                     } else {
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
                                         player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                     }
                                 } catch (SQLException e) {
@@ -141,10 +141,10 @@ public class InventoryClickListener implements Listener {
                     OfflinePlayer offlinePlayer1 = Bukkit.getOfflinePlayer(uuid1);
                     FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
                     Statement statement = MySQL.getStatement();
-                    ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
+                    ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId() + "'");
                     if (res.next()) {
                         if (res.getInt(1) < 8 && res.getInt(1) > 0) {
-                            statement.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res.getInt(1) + 1) + " WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
+                            statement.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res.getInt(1) + 1) + " WHERE `uuid` = '" + offlinePlayer1.getUniqueId() + "'");
                         } else {
                             return;
                         }
@@ -158,10 +158,10 @@ public class InventoryClickListener implements Listener {
                     UUID uuid2 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer2 = Bukkit.getOfflinePlayer(uuid2);
                     Statement statement1 = MySQL.getStatement();
-                    ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
+                    ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId() + "'");
                     if (res1.next()) {
                         if (res1.getInt(1) < 8 && res1.getInt(1) > 0) {
-                            statement1.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res1.getInt(1) - 1) + " WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
+                            statement1.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res1.getInt(1) - 1) + " WHERE `uuid` = '" + offlinePlayer2.getUniqueId() + "'");
                         } else {
                             return;
                         }
@@ -178,26 +178,16 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    if (playerData.getVariable("offlinePLayers") == "nein")
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, false);
-                    else
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, true);
+                    adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, playerData.getVariable("offlinePLayers") != "nein");
                     break;
                 case GOLD_NUGGET:
-                    if (playerData.getVariable("offlinePLayers") == "nein")
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, false);
-                    else
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, true);
+                    adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, playerData.getVariable("offlinePLayers") != "nein");
                     break;
                 case PLAYER_HEAD:
                     adminmenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
                     break;
                 case DIAMOND:
-                    if (playerData.getVariable("offlinePLayers") == "nein") {
-                        adminmenuCommand.openAdminMenu(player, 1, true);
-                    } else {
-                        adminmenuCommand.openAdminMenu(player, 1, false);
-                    }
+                    adminmenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") == "nein");
                     break;
             }
         }
@@ -207,9 +197,7 @@ public class InventoryClickListener implements Listener {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    if (playerData.getVariable("offlinePLayers") == "nein")
-                        adminmenuCommand.openAdminMenu(player, 1, false);
-                    else adminmenuCommand.openAdminMenu(player, 1, true);
+                    adminmenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") != "nein");
                     break;
                 case REDSTONE:
                     if (!offlinePlayer.isOnline()) return;
@@ -802,7 +790,7 @@ public class InventoryClickListener implements Listener {
                                     playerData.setBirthday(playerData.getVariable("einreise_dob"));
                                     playerData.setGender(playerData.getVariable("einreise_gender"));
                                     Statement statement = MySQL.getStatement();
-                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                                     PlayerManager.addExp(player, Main.random(100, 200));
                                     tutorial.createdAusweis(player);
@@ -1038,7 +1026,7 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
                     Statement statement = MySQL.getStatement();
-                    statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                    statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId() + "'");
                     player.closeInventory();
                     break;
                 case 15:

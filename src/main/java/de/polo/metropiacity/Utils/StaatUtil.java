@@ -20,8 +20,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class StaatUtil {
-    public static Map<String, JailData> jailDataMap = new HashMap<>();
-    public static Map<String, ServiceData> serviceDataMap = new HashMap<>();
+    public static final Map<String, JailData> jailDataMap = new HashMap<>();
+    public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
 
     public static void loadJail() throws SQLException {
         Statement statement = MySQL.getStatement();
@@ -37,7 +37,7 @@ public class StaatUtil {
     }
     public static boolean arrestPlayer(Player player, Player arrester) throws SQLException {
         Statement statement = MySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `hafteinheiten`, `akte`, `geldstrafe` FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        ResultSet result = statement.executeQuery("SELECT `hafteinheiten`, `akte`, `geldstrafe` FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId() + "'");
         int hafteinheiten = 0;
         int geldstrafe = 0;
         StringBuilder reason = new StringBuilder();
@@ -92,12 +92,12 @@ public class StaatUtil {
         Statement statement = MySQL.getStatement();
         LocationManager.useLocation(player, "gefaengnis_out");
         player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
-        statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) throws SQLException {
         Statement statement = MySQL.getStatement();
-        statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
+        statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
@@ -107,7 +107,7 @@ public class StaatUtil {
         }
     }
 
-    public static boolean removeAkteFromPlayer(Player player, int id) throws SQLException {
+    public static void removeAkteFromPlayer(Player player, int id) throws SQLException {
         Statement statement = MySQL.getStatement();
         statement.execute("DELETE FROM `player_akten` WHERE `id` = " + id);
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
@@ -117,7 +117,6 @@ public class StaatUtil {
                 players.sendMessage("§8[§9Zentrale§8]§7 " + FactionManager.getTitle(player) + " " + player.getName() + " hat " + player.getName() + " eine Akte entfernt.");
             }
         }
-        return true;
     }
 
     public static void createService(Player player, int service, String reason) {

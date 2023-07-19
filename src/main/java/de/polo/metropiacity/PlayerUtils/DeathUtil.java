@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,8 +17,8 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 public class DeathUtil {
-    public static HashMap<String, Boolean> deathPlayer = new HashMap<String, Boolean>();
-    public static HashMap<String, Item> deathSkulls = new HashMap<>();
+    public static final HashMap<String, Boolean> deathPlayer = new HashMap<>();
+    public static final HashMap<String, Item> deathSkulls = new HashMap<>();
     public static void startDeathTimer(Player player) {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (!playerData.isDead()) {

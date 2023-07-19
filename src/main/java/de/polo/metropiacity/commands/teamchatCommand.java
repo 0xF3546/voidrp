@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,10 +16,7 @@ public class teamchatCommand implements CommandExecutor {
         String uuid = player.getUniqueId().toString();
         if (PlayerManager.onPlayer.get(uuid)) {
             if (args.length >= 1) {
-                String msg = args[0];
-                for (int i = 1; i < args.length; i++) {
-                    msg = msg + ' ' + args[i];
-                }
+                String msg = Utils.stringArrayToString(args);
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (PlayerManager.onPlayer.get(players.getUniqueId().toString())) {
                         players.sendMessage(Main.admin_prefix + "§c" +PlayerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);

@@ -17,8 +17,8 @@ import java.sql.Statement;
 import java.util.*;
 
 public class VertragUtil {
-    public static HashMap<String, String> vertrag_type = new HashMap<>();
-    public static HashMap<String, String> current = new HashMap<>();
+    public static final HashMap<String, String> vertrag_type = new HashMap<>();
+    public static final HashMap<String, String> current = new HashMap<>();
 
     public static boolean setVertrag(Player player, Player target, String type, String vertrag) throws SQLException {
         if (current.get(target.getUniqueId().toString()) == null) {
@@ -26,20 +26,18 @@ public class VertragUtil {
             current.put(target.getUniqueId().toString(), vertrag);
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId().toString() + "', '" + target.getUniqueId().toString() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
+            statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
             return true;
         } else {
             return false;
         }
     }
 
-    public static boolean deleteVertrag(Player player) {
+    public static void deleteVertrag(Player player) {
         if (current.get(player.getUniqueId().toString()) != null) {
             current.remove(player.getUniqueId().toString());
             vertrag_type.remove(player.getUniqueId().toString());
-            return true;
         } else {
-            return false;
         }
     }
     public static void acceptVertrag(Player player) throws SQLException {
@@ -55,8 +53,8 @@ public class VertragUtil {
                     break;
                 case "rental":
                     String[] args = curr.split("_");
-                    Integer haus = Integer.valueOf(args[0]);
-                    Integer preis = Integer.valueOf(args[1]);
+                    int haus = Integer.parseInt(args[0]);
+                    int preis = Integer.parseInt(args[1]);
                     HouseData houseData = Housing.houseDataMap.get(haus);
                     houseData.addRenter(player.getUniqueId().toString(), preis);
                     Housing.updateRenter(haus);
@@ -123,7 +121,7 @@ public class VertragUtil {
             player.sendMessage(Main.error + "Dir wird nichts angeboten.");
         }
     }
-    public static void denyVertrag(Player player) throws SQLException {
+    public static void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
             switch (vertrag_type.get(player.getUniqueId().toString())) {

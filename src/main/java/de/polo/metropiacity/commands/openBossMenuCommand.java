@@ -77,7 +77,7 @@ public class openBossMenuCommand implements CommandExecutor {
             OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
             playerData.setVariable("current_inventory", "edit_factionplayer_" + targetplayer.getUniqueId());
             Statement statement = MySQL.getStatement();
-            ResultSet result = statement.executeQuery("SELECT `uuid`, `player_name`, `faction`, `faction_grade` FROM `players` WHERE `uuid` = '" + uuid.toString() + "'");
+            ResultSet result = statement.executeQuery("SELECT `uuid`, `player_name`, `faction`, `faction_grade` FROM `players` WHERE `uuid` = '" + uuid + "'");
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §" +  factionData.getSecondaryColor() + "Mitglied bearbeiten");
             if (result.next()) {
                 inv.setItem(4, ItemManager.createItemHead(result.getString(1), 1, 0, "§8» §6" + result.getString(2), "§8 ➥ §eRang§8:§7 " + result.getInt(4)));

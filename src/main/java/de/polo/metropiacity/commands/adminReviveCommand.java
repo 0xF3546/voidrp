@@ -5,7 +5,6 @@ import de.polo.metropiacity.PlayerUtils.DeathUtil;
 import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Utils.PlayerManager;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

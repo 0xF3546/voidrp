@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SupportManager {
-    public static HashMap<String, Boolean> ticketIsCreated = new HashMap<String, Boolean>();
-    public static HashMap<String, String> ticketReason = new HashMap<String, String>();
-    public static HashMap<String, String> ticketConnection = new HashMap<String, String>();
-    public static HashMap<String, Boolean> isInConnection = new HashMap<String, Boolean>();
+    public static final HashMap<String, Boolean> ticketIsCreated = new HashMap<>();
+    public static final HashMap<String, String> ticketReason = new HashMap<>();
+    public static final HashMap<String, String> ticketConnection = new HashMap<>();
+    public static final HashMap<String, Boolean> isInConnection = new HashMap<>();
     public static int TicketCount = 0;
-    public static List<String> playerTickets = new ArrayList<>();
+    public static final List<String> playerTickets = new ArrayList<>();
 
     public static boolean ticketCreated(Player player) {
         return ticketIsCreated.get(player.getUniqueId().toString()) != null;

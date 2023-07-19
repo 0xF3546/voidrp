@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.sql.SQLException;
 
 public class farmerCommand implements CommandExecutor {
-    public static String prefix = "§8[§eFarmer§8] §7";
+    public static final String prefix = "§8[§eFarmer§8] §7";
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -106,12 +106,9 @@ public class farmerCommand implements CommandExecutor {
             if (playerData.getIntVariable("heuballen_remaining") <= 0) {
                 player.sendMessage("§8[§eFarmer§8]§7 Du hast alle heuballen abgebaut, begib dich wieder zum Farmer.");
             }
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    if (block.getType() == Material.AIR) {
-                        block.setType(Material.HAY_BLOCK);
-                    }
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                if (block.getType() == Material.AIR) {
+                    block.setType(Material.HAY_BLOCK);
                 }
             }, 2 * 60 * 20);
         }

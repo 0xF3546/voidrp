@@ -26,9 +26,9 @@ import java.sql.Statement;
 import java.util.*;
 
 public class Vehicles implements Listener, CommandExecutor {
-    public static Map<String, VehicleData> vehicleDataMap = new HashMap<>();
-    public static Map<Integer, PlayerVehicleData> playerVehicleDataMap = new HashMap<Integer, PlayerVehicleData>();
-    public static HashMap<String, Integer> vehicleIDByUUid = new HashMap<>();
+    public static final Map<String, VehicleData> vehicleDataMap = new HashMap<>();
+    public static final Map<Integer, PlayerVehicleData> playerVehicleDataMap = new HashMap<>();
+    public static final HashMap<String, Integer> vehicleIDByUUid = new HashMap<>();
     public static void loadVehicles() throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `vehicles`");
@@ -72,7 +72,7 @@ public class Vehicles implements Listener, CommandExecutor {
         VehicleData vehicleData = vehicleDataMap.get(vehicle);
         assert vehicleData != null;
         Statement statement = MySQL.getStatement();
-        statement.execute("INSERT INTO `player_vehicles` (`uuid`, `type`) VALUES ('" + player.getUniqueId().toString() + "', '" + vehicleData.getName() + "')");
+        statement.execute("INSERT INTO `player_vehicles` (`uuid`, `type`) VALUES ('" + player.getUniqueId() + "', '" + vehicleData.getName() + "')");
         ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID()");
         LocationManager.useLocation(player, "vehicleshop_out");
         if (result.next()) {
@@ -103,7 +103,7 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     public static void spawnVehicle(Player player, PlayerVehicleData playerVehicleData) {
-        Location location = new Location(playerVehicleData.getWelt(), playerVehicleData.getX(), playerVehicleData.getY() + 1, playerVehicleData.getZ(), (float) playerVehicleData.getYaw(), (float) playerVehicleData.getPitch());
+        Location location = new Location(playerVehicleData.getWelt(), playerVehicleData.getX(), playerVehicleData.getY() + 1, playerVehicleData.getZ(), playerVehicleData.getYaw(), playerVehicleData.getPitch());
         Minecart minecart = (Minecart) playerVehicleData.getWelt().spawnEntity(location, EntityType.MINECART);
         NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
         minecart.getPersistentDataContainer().set(key_id, PersistentDataType.INTEGER, playerVehicleData.getId());
@@ -228,7 +228,7 @@ public class Vehicles implements Listener, CommandExecutor {
             playerData.getScoreboard().killScoreboard();
         }
     }
-    private HashMap<Player, Double> playerSpeeds = new HashMap<>();
+    private final HashMap<Player, Double> playerSpeeds = new HashMap<>();
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {

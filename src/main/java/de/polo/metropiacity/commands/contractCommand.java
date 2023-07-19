@@ -39,7 +39,7 @@ public class contractCommand implements CommandExecutor {
                                 try {
                                     PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
                                     Statement statement = MySQL.getStatement();
-                                    statement.executeUpdate("UPDATE `contract` SET `amount` = " + contractData.getAmount() + " WHERE `uuid` = '" + targetplayer.getUniqueId().toString() + "'");
+                                    statement.executeUpdate("UPDATE `contract` SET `amount` = " + contractData.getAmount() + " WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -58,7 +58,7 @@ public class contractCommand implements CommandExecutor {
                                 try {
                                     PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
                                     Statement statement = MySQL.getStatement();
-                                    statement.execute("INSERT INTO `contract` (`uuid`, `amount`, `setter`) VALUES ('" + targetplayer.getUniqueId().toString() + "', " + price + ", '" + player.getUniqueId().toString() + "')");
+                                    statement.execute("INSERT INTO `contract` (`uuid`, `amount`, `setter`) VALUES ('" + targetplayer.getUniqueId() + "', " + price + ", '" + player.getUniqueId() + "')");
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
                                 }

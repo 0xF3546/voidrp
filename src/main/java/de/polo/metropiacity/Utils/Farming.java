@@ -7,7 +7,6 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.Events.BreakPersistentBlockEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +26,7 @@ import java.sql.Statement;
 import java.util.*;
 
 public class Farming implements Listener, CommandExecutor, TabCompleter {
-    public static Map<String, FarmingData> farmingDataMap = new HashMap<>();
+    public static final Map<String, FarmingData> farmingDataMap = new HashMap<>();
     public static void loadData() throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet res = statement.executeQuery("SELECT * FROM farming");

@@ -28,7 +28,7 @@ public class setsecondaryteamCommand implements CommandExecutor {
                     player.sendMessage("§8[§6" + args[1] + "§8]§e Du hast " + targetplayer.getName() + " in das Team hinzugefügt.");
                     try {
                         Statement statement = MySQL.getStatement();
-                        statement.executeUpdate("UPDATE `players` SET `secondaryTeam` = '" + args[1] + "' WHERE `uuid` = '" + targetplayer.getUniqueId().toString() + "'");
+                        statement.executeUpdate("UPDATE `players` SET `secondaryTeam` = '" + args[1] + "' WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
                         statement.close();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

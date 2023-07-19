@@ -17,10 +17,10 @@ import java.sql.Statement;
 import java.util.*;
 
 public class LocationManager {
-    public static Map<String, LocationData> locationDataMap = new HashMap<String, LocationData>();
-    public static Map<Integer, GasStationData> gasStationDataMap = new HashMap<>();
-    public static Map<Integer, GarageData> garageDataMap = new HashMap<>();
-    public static Map<Integer, NaviData> naviDataMap = new HashMap<>();
+    public static final Map<String, LocationData> locationDataMap = new HashMap<>();
+    public static final Map<Integer, GasStationData> gasStationDataMap = new HashMap<>();
+    public static final Map<Integer, GarageData> garageDataMap = new HashMap<>();
+    public static final Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
     public static void loadLocations() throws SQLException {
         Statement statement = MySQL.getStatement();

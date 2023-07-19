@@ -67,7 +67,7 @@ public class deathListener implements Listener {
                     ServerManager.contractDataMap.remove(player.getUniqueId().toString());
                     try {
                         Statement statement = MySQL.getStatement();
-                        statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                        statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + player.getUniqueId() + "'");
                         FactionManager.addFactionMoney("ICA", contractData.getAmount(), "Kopfgeld " + player.getName());
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

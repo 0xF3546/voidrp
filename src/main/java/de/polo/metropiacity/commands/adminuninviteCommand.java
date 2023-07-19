@@ -7,7 +7,6 @@ import de.polo.metropiacity.Utils.FactionManager;
 import de.polo.metropiacity.Utils.PlayerManager;
 import de.polo.metropiacity.Utils.ServerManager;
 import de.polo.metropiacity.Utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,8 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.UUID;
 
 public class adminuninviteCommand implements CommandExecutor {
     @Override

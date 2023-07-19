@@ -31,10 +31,10 @@ import java.util.Date;
 
 public class PlayerManager implements Listener {
 
-    public static Map<String, PlayerData> playerDataMap = new HashMap<>();
-    public static HashMap<String, Boolean> onPlayer = new HashMap<String, Boolean>();
-    public static HashMap<String, Boolean> playerMovement = new HashMap<>();
-    public static HashMap<String, Integer> player_rent = new HashMap<String, Integer>();
+    public static final Map<String, PlayerData> playerDataMap = new HashMap<>();
+    public static final HashMap<String, Boolean> onPlayer = new HashMap<>();
+    public static final HashMap<String, Boolean> playerMovement = new HashMap<>();
+    public static final HashMap<String, Integer> player_rent = new HashMap<>();
     public static boolean isCreated(String uuid) {
 
         try {
@@ -88,7 +88,7 @@ public class PlayerManager implements Listener {
         return false;
     }
 
-    public static boolean loadPlayer(Player player) {
+    public static void loadPlayer(Player player) {
         String uuid = player.getUniqueId().toString();
         boolean returnval = false;
         try {
@@ -189,7 +189,7 @@ public class PlayerManager implements Listener {
                         playerData.setFaction(name.getString(6));
                         playerData.setFactionGrade(name.getInt(7));
                     }
-                    player.setMaxHealth(30 + ((name.getInt(5) / 5) * 2));
+                    player.setMaxHealth(30 + (((double) name.getInt(5) / 5) * 2));
 
 
                     ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
@@ -219,7 +219,6 @@ public class PlayerManager implements Listener {
             returnval = false;
             e.printStackTrace();
         }
-        return returnval;
     }
 
     public static void savePlayer(Player player) throws SQLException {
@@ -287,7 +286,7 @@ public class PlayerManager implements Listener {
                         player.setLevel(visum);
                         playerData.setVisum(visum);
                         playerData.setHours(playerData.getHours() + 1);
-                        player.setMaxHealth(30 + (visum / 5) * 2);
+                        player.setMaxHealth(30 + ((double) visum / 5) * 2);
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                     } else {
                         PayDayUtil.givePayDay(player);
@@ -549,7 +548,7 @@ public class PlayerManager implements Listener {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setBoostDuration(playerData.getBoostDuration() + hours);
         Statement statement = MySQL.getStatement();
-        statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static void redeemRank(Player player, String type, int duration, String duration_type) throws SQLException {
@@ -575,7 +574,7 @@ public class PlayerManager implements Listener {
                 break;
         }
         Statement statement = MySQL.getStatement();
-        statement.executeUpdate("UPDATE `players` SET `rankDuration` = " + playerData.getRankDuration() + ", `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        statement.executeUpdate("UPDATE `players` SET `rankDuration` = " + playerData.getRankDuration() + ", `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static void setJob(Player player, String job) {
@@ -583,7 +582,7 @@ public class PlayerManager implements Listener {
         playerData.setJob(job);
         try {
             Statement statement = MySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `job` = '" + job + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+            statement.executeUpdate("UPDATE `players` SET `job` = '" + job + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -594,7 +593,7 @@ public class PlayerManager implements Listener {
         playerData.setJob(null);
         try {
             Statement statement = MySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `job` = null WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+            statement.executeUpdate("UPDATE `players` SET `job` = null WHERE `uuid` = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

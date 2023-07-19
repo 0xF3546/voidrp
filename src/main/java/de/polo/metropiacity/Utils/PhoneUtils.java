@@ -27,11 +27,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PhoneUtils implements Listener {
-    public static HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
-    public static HashMap<String, String> phoneCallConnection = new HashMap<>();
-    public static HashMap<String, Boolean> isInCallConnection = new HashMap<>();
-    public static String error_nophone = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
-    public static String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
+    public static final HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
+    public static final HashMap<String, String> phoneCallConnection = new HashMap<>();
+    public static final HashMap<String, Boolean> isInCallConnection = new HashMap<>();
+    public static final String error_nophone = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
+    public static final String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
 
     @EventHandler
     public void onPhoneUse(PlayerInteractEvent event) {
@@ -370,7 +370,7 @@ public class PhoneUtils implements Listener {
         String uuid = player.getUniqueId().toString();
         Statement statement = MySQL.getStatement();
         PlayerData playerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
-        statement.executeQuery("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId().toString() + "', '" + targetplayer.getName() + "', " + playerData.getNumber() + ", '" + targetplayer.getUniqueId().toString() + "')");
+        statement.executeQuery("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId() + "', '" + targetplayer.getName() + "', " + playerData.getNumber() + ", '" + targetplayer.getUniqueId() + "')");
     }
 
     public static void callNumber(Player player, Player players) throws SQLException {

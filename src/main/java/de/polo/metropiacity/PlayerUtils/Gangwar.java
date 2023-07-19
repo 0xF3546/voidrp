@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Gangwar implements CommandExecutor, TabCompleter {
-    public static HashMap<String, GangwarData> gangwarDataMap = new HashMap<>();
+    public static final HashMap<String, GangwarData> gangwarDataMap = new HashMap<>();
 
     public static void loadGangwar() throws SQLException {
         Statement statement = MySQL.getStatement();

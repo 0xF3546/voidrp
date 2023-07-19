@@ -16,7 +16,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class chatListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
-        Player player = (Player) event.getPlayer();
+        Player player = event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         event.setCancelled(true);
         if (playerData.getVariable("chatblock") == null) {

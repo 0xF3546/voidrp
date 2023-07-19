@@ -34,7 +34,7 @@ public class mietersCommand implements CommandExecutor {
                         if (player.getUniqueId().toString().equals(houseData.getOwner())) {
                             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
                             TextComponent unrent = new TextComponent("§cKündigen");
-                            unrent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/unrent " + offlinePlayer.getUniqueId().toString() + " " + houseData.getNumber()));
+                            unrent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/unrent " + offlinePlayer.getUniqueId() + " " + houseData.getNumber()));
                             unrent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§c§oKündigen")));
                             TextComponent message = new TextComponent("§8 ➥§e " + offlinePlayer.getName() + " (" + entry.getValue() + "$)§8 | ");
                             message.addExtra(unrent);

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class muellmannCommand implements CommandExecutor {
-    public static List<Integer> array = new ArrayList<>();
+    public static final List<Integer> array = new ArrayList<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -107,8 +107,6 @@ public class muellmannCommand implements CommandExecutor {
             }
         }
         array.add(house);
-        Main.waitSeconds(1800, () -> {
-            array.removeIf(number -> number == house);
-        });
+        Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

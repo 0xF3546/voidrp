@@ -20,8 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 
 public class mineCommand implements CommandExecutor {
-    public static Material[] blocks = new Material[]{Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE};
-    public static String prefix ="§8[§7Mine§8] §7";
+    public static final Material[] blocks = new Material[]{Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE};
+    public static final String prefix ="§8[§7Mine§8] §7";
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -71,12 +71,9 @@ public class mineCommand implements CommandExecutor {
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                 player.getInventory().addItem(ItemManager.createItem(material, 1, 0, block.getType().name(), null));
                 block.setType(Material.STONE);
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        if (block.getType() == Material.STONE) {
-                            block.setType(blocks[(int) (Math.random() * blocks.length)]);
-                        }
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                    if (block.getType() == Material.STONE) {
+                        block.setType(blocks[(int) (Math.random() * blocks.length)]);
                     }
                 }, 2 * 60 * 20);
             }
@@ -94,23 +91,23 @@ public class mineCommand implements CommandExecutor {
         int diamant = ItemManager.getItem(player, Material.DIAMOND_ORE);
         int exp = 0;
         int verdienst = 0;
-        player.sendMessage(prefix + "Verdienst durch §7Eisenerz§8: §a+" + iron * 1 + "$");
-        verdienst = verdienst + (iron * 1);
+        player.sendMessage(prefix + "Verdienst durch §7Eisenerz§8: §a+" + iron + "$");
+        verdienst = verdienst + (iron);
         exp = (int) (exp + iron * 0.35);
-        player.sendMessage(prefix + "Verdienst durch §cRedstonerz§8: §a+" + redstone * 1 + "$");
-        verdienst = verdienst + (redstone * 1);
+        player.sendMessage(prefix + "Verdienst durch §cRedstonerz§8: §a+" + redstone + "$");
+        verdienst = verdienst + (redstone);
         exp = (int) (exp + redstone * 0.47);
-        player.sendMessage(prefix + "Verdienst durch §9Lapislazulierz§8: §a+" + lapis * 1 + "$");
-        verdienst = verdienst + (lapis * 1);
+        player.sendMessage(prefix + "Verdienst durch §9Lapislazulierz§8: §a+" + lapis + "$");
+        verdienst = verdienst + (lapis);
         exp = (int) (exp + lapis * 0.60);
-        player.sendMessage(prefix + "Verdienst durch §6Golderz§8: §a+" + gold * 1 + "$");
-        verdienst = verdienst + (gold * 1);
+        player.sendMessage(prefix + "Verdienst durch §6Golderz§8: §a+" + gold + "$");
+        verdienst = verdienst + (gold);
         exp = (int) (exp + gold * 0.8);
-        player.sendMessage(prefix + "Verdienst durch §aSmaragderz§8: §a+" + smaragd * 1 + "$");
-        verdienst = verdienst + (smaragd * 1);
+        player.sendMessage(prefix + "Verdienst durch §aSmaragderz§8: §a+" + smaragd + "$");
+        verdienst = verdienst + (smaragd);
         exp = (exp + smaragd);
-        player.sendMessage(prefix + "Verdienst durch §bDiamanterz§8: §a+" + diamant * 1 + "$");
-        verdienst = verdienst + (diamant * 1);
+        player.sendMessage(prefix + "Verdienst durch §bDiamanterz§8: §a+" + diamant + "$");
+        verdienst = verdienst + (diamant);
         exp = (int) (exp + diamant * 1.25);
         try {
             PlayerManager.addBankMoney(player, verdienst, "Auszahlung Minenarbeiter");

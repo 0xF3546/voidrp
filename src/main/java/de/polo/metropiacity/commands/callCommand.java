@@ -2,7 +2,6 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.PhoneUtils;
 import de.polo.metropiacity.Utils.PlayerManager;
 import org.bukkit.Bukkit;
@@ -12,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Objects;
 
 public class callCommand implements CommandExecutor {

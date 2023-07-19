@@ -12,11 +12,7 @@ public class ablehnenVertrag implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        try {
-            VertragUtil.denyVertrag(player);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        VertragUtil.denyVertrag(player);
         return false;
     }
 }

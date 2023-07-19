@@ -21,7 +21,7 @@ import java.sql.Statement;
 import java.util.*;
 
 public class Housing {
-    public static Map<Integer, HouseData> houseDataMap = new HashMap<>();
+    public static final Map<Integer, HouseData> houseDataMap = new HashMap<>();
     public static void loadHousing() throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
@@ -47,11 +47,7 @@ public class Housing {
 
     public static boolean isPlayerOwner(Player player, int number) {
         HouseData houseData = houseDataMap.get(number);
-        if (player.getUniqueId().toString().equals(houseData.getOwner())) {
-            return true;
-        } else {
-            return false;
-        }
+        return player.getUniqueId().toString().equals(houseData.getOwner());
     }
 
     public static boolean canPlayerInteract(Player player, int number) {
@@ -59,13 +55,10 @@ public class Housing {
         if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) {
             System.out.println("spieler ist kein owner");
             System.out.println(houseData.getRenter().get(player.getUniqueId().toString()));
-            if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
-                return true;
-            }
+            return houseData.getRenter().get(player.getUniqueId().toString()) != null;
         } else {
             return true;
         }
-        return false;
     }
     public static void updateRenter(int number) {
         HouseData houseData = houseDataMap.get(number);
@@ -83,7 +76,7 @@ public class Housing {
         System.out.println("hausslot hinzugefügt");
         playerData.setHouseSlot(playerData.getHouseSlot() + 1);
         Statement statement = MySQL.getStatement();
-        statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+        statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static boolean resetHouse(Player player, int house) {

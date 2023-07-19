@@ -26,7 +26,7 @@ public class tsunlinkCommand implements CommandExecutor {
                 playerData.setTeamSpeakUID(null);
                 try {
                     Statement statement = MySQL.getStatement();
-                    statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = " + playerData.getTeamSpeakUID() + " WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                    statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = " + playerData.getTeamSpeakUID() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

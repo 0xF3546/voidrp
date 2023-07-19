@@ -5,10 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.DeathUtil;
 import de.polo.metropiacity.PlayerUtils.Gangwar;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,16 +16,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServerManager {
-    public static boolean canDoJobsBoolean = true;
-    public static String error_cantDoJobs = Main.error + "Der Job ist Serverseitig bis nach Restart gesperrt.";
+    public static final boolean canDoJobsBoolean = true;
+    public static final String error_cantDoJobs = Main.error + "Der Job ist Serverseitig bis nach Restart gesperrt.";
 
-    public static Map<String, RankData> rankDataMap = new HashMap<>();
-    public static Map<String, PayoutData> payoutDataMap = new HashMap<>();
-    public static Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
-    public static Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
-    public static Map<String, ContractData> contractDataMap = new HashMap<>();
-    public static Map<Integer, ShopData> shopDataMap = new HashMap<>();
-    public static Map<String, String> serverVariables = new HashMap<>();
+    public static final Map<String, RankData> rankDataMap = new HashMap<>();
+    public static final Map<String, PayoutData> payoutDataMap = new HashMap<>();
+    public static final Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
+    public static final Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
+    public static final Map<String, ContractData> contractDataMap = new HashMap<>();
+    public static final Map<Integer, ShopData> shopDataMap = new HashMap<>();
+    public static final Map<String, String> serverVariables = new HashMap<>();
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {

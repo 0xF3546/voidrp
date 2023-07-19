@@ -17,7 +17,7 @@ public class CooldownManager {
     }
 
     public void setCooldown(Player player, String key, int seconds) {
-        cooldowns.put(getCooldownKey(player, key), System.currentTimeMillis() + (seconds * 1000));
+        cooldowns.put(getCooldownKey(player, key), System.currentTimeMillis() + (seconds * 1000L));
     }
 
     public int getRemainingTime(Player player, String key) {
@@ -44,7 +44,7 @@ public class CooldownManager {
     }
 
     public void setStringCooldown(String player, String key, int seconds) {
-        stringCooldowns.put(getStringCooldownKey(player, key), System.currentTimeMillis() + (seconds * 1000));
+        stringCooldowns.put(getStringCooldownKey(player, key), System.currentTimeMillis() + (seconds * 1000L));
     }
 
     public int getRemainingStringTime(String player, String key) {

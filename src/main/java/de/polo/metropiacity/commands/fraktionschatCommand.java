@@ -3,6 +3,7 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.DataStorage.FactionData;
 import de.polo.metropiacity.Utils.FactionManager;
+import de.polo.metropiacity.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,10 +19,7 @@ public class fraktionschatCommand implements CommandExecutor {
         String uuid = player.getUniqueId().toString();
         if (FactionManager.faction(player) != null) {
             if (args.length >= 1) {
-                String msg = args[0];
-                for (int i = 1; i < args.length; i++) {
-                    msg = msg + ' ' + args[i];
-                }
+                String msg = Utils.stringArrayToString(args);
                 String playerfac = FactionManager.faction(player);
                 FactionData factionData = FactionManager.factionDataMap.get(playerfac);
                 for (Player players : Bukkit.getOnlinePlayers()) {

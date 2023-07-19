@@ -17,7 +17,7 @@ public class cpCommand implements CommandExecutor {
         if (args.length >= 2) {
             try {
                 Statement statement = MySQL.getStatement();
-                statement.executeUpdate("UPDATE `players` SET `email` = '" + args[0] + "', password = '" + args[1] + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+                statement.executeUpdate("UPDATE `players` SET `email` = '" + args[0] + "', password = '" + args[1] + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
                 player.sendMessage(Main.prefix + "§aDein Controlpanel-Zugang wurde geupdated.");
             } catch (SQLException e) {
                 player.sendMessage(Main.error + "§cEin Fehler ist aufgetreten. Kontaktiere einen Entwickler.");

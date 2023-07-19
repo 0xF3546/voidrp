@@ -68,8 +68,8 @@ public class blacklistCommand implements CommandExecutor, TabCompleter {
                                                 Date date = new Date();
                                                 String newDate = formatter.format(date);
                                                 Statement statement = MySQL.getStatement();
-                                                statement.execute("INSERT INTO `blacklist` (`uuid`, `faction`, `kills`, `price`, `date`, `reason`) VALUES ('" + player1.getUniqueId().toString() + "', '" + factionData.getName() + "', " + kills + ", " + price + ", '" + newDate + "', '" + reason + "')");
-                                                ResultSet checkId = statement.executeQuery("SELECT `id` FROM `blacklist` WHERE `uuid` = '" + player1.getUniqueId().toString() + "' AND `date` = '" + newDate + "'");
+                                                statement.execute("INSERT INTO `blacklist` (`uuid`, `faction`, `kills`, `price`, `date`, `reason`) VALUES ('" + player1.getUniqueId() + "', '" + factionData.getName() + "', " + kills + ", " + price + ", '" + newDate + "', '" + reason + "')");
+                                                ResultSet checkId = statement.executeQuery("SELECT `id` FROM `blacklist` WHERE `uuid` = '" + player1.getUniqueId() + "' AND `date` = '" + newDate + "'");
                                                 if (checkId.next()) {
                                                     BlacklistData blacklistData = new BlacklistData();
                                                     blacklistData.setDate(newDate);

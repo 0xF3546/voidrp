@@ -31,9 +31,7 @@ public class tutorial implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getVariable("tutorial") != null) {
             player.sendMessage("§8[§9Tutorial§8]§7 Sehr gut gemacht!");
-            Main.waitSeconds(1, () -> {
-                player.sendMessage("§8[§9Tutorial§8]§7 Nutze §8/§epersonalausweis§7 um deinen Personalausweis anzusehen.");
-            });
+            Main.waitSeconds(1, () -> player.sendMessage("§8[§9Tutorial§8]§7 Nutze §8/§epersonalausweis§7 um deinen Personalausweis anzusehen."));
         }
     }
 
@@ -73,9 +71,7 @@ public class tutorial implements Listener {
                     TextComponent c = new TextComponent("§7ein.");
                     b.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/main/"));
                     player.spigot().sendMessage(a,b,c);
-                    Main.waitSeconds(4, () -> {
-                        endTutorial(player);
-                    });
+                    Main.waitSeconds(4, () -> endTutorial(player));
                 });
             });
         });
@@ -90,7 +86,7 @@ public class tutorial implements Listener {
         PlayerManager.addExp(player, 30);
         try {
             Statement statement = MySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `tutorial` = false WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+            statement.executeUpdate("UPDATE `players` SET `tutorial` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -111,9 +107,7 @@ public class tutorial implements Listener {
                         player.sendMessage("§8[§9Tutorial§8]§7 Mit §8/§ecall§7 kannst du Sie auch Anrufen.");
                         Main.waitSeconds(6, () -> {
                             player.sendMessage("§8[§9Tutorial§8]§7 Das Tutorial ist fast durch, nur noch ein bisschen was um zu vermeiden, dass du gebannt wirst.");
-                            Main.waitSeconds(4, () -> {
-                                supportMessage(player);
-                            });
+                            Main.waitSeconds(4, () -> supportMessage(player));
                         });
                     });
                 });

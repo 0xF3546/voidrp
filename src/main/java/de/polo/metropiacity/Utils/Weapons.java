@@ -21,12 +21,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Weapons implements Listener {
-    public static Map<Material, WeaponData> weaponDataMap = new HashMap<>();
+    public static final Map<Material, WeaponData> weaponDataMap = new HashMap<>();
     public static void loadWeapons() throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT `id`, `material`, `name`, `maxAmmo`, `reloadDuration`, `damage`, `weaponSound`, `velocity`, `shootDuration`, `type` FROM `weapons`");
