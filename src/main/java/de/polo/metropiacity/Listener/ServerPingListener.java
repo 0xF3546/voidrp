@@ -1,0 +1,46 @@
+package de.polo.metropiacity.Listener;
+
+import de.polo.metropiacity.DataStorage.FactionData;
+import de.polo.metropiacity.MySQl.MySQL;
+import de.polo.metropiacity.Utils.FactionManager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerListPingEvent;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+
+public class ServerPingListener implements Listener {
+    @EventHandler
+    public void onServerPing(ServerListPingEvent event) {
+        String firstline = "§6§lMetropiaCity §8| §edsc.gg/metropiacity";
+        String secondline = "§8➥ §cRoleplay mit Stil. §8 - §bⓘ§a V1.0 bald online!";
+        String motd = null;
+
+        try {
+            Statement statement = MySQL.getStatement();
+            ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'");
+            System.out.println("Server Ping erhalten von: " + event.getAddress().toString().replace("/", ""));
+            if (res.next()) {
+                if (res.getString(3) != null) {
+                    FactionData factionData = FactionManager.factionDataMap.get(res.getString(3));
+                    secondline = "§8 » §6Level§8: §e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §" + factionData.getPrimaryColor() + factionData.getName();
+                } else {
+                    secondline = "§8 » §6Level§8: §e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §7Zivilist";
+                }
+            } else {
+                SQLWarning warning = statement.getWarnings();
+                if (warning != null) {
+                    System.out.println("Warnung: " + warning.getMessage());
+                } else {
+                    System.out.println("Keine übereinstimmenden Datensätze gefunden.");
+                }
+            }
+            event.setMotd(firstline + "\n" + secondline);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

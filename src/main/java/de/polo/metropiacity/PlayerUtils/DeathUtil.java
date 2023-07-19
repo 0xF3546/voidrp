@@ -5,7 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.LocationManager;
 import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.commands.aduty;
+import de.polo.metropiacity.commands.Aduty;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
@@ -51,7 +51,7 @@ public class DeathUtil {
         playerData.setDead(false);
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
-        aduty.send_message( player.getName() + " wurde wiederbelebt.");
+        Aduty.send_message( player.getName() + " wurde wiederbelebt.");
         player.setFlySpeed(0.1F);
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());

@@ -81,13 +81,13 @@ public class InventoryClickListener implements Listener {
                                     if (Objects.equals(row[5].toString(), "weapon")) {
                                         String weapon = row[3].toString().replace("&", "").replace("6", "");
                                         Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType(), "default");
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
                                     } else if (Objects.equals(row[5].toString(), "ammo")) {
                                         String ammo = row[3].toString().replace("&", "").replace("6", "");
                                         Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
                                     } else if (Objects.equals(row[5].toString(), "car")) {
@@ -95,7 +95,7 @@ public class InventoryClickListener implements Listener {
                                     } else {
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
                                         player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
+                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + (int) row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                     }
                                 } catch (SQLException e) {
@@ -115,13 +115,13 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
+                    OpenBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
                     break;
                 case GOLD_NUGGET:
-                    openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
+                    OpenBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
                     break;
                 case PLAYER_HEAD:
-                    openBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
+                    OpenBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
                     break;
             }
         }
@@ -129,7 +129,7 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    openBossMenuCommand.openBossMenu(player, 1);
+                    OpenBossMenuCommand.openBossMenu(player, 1);
                     break;
                 case REDSTONE:
                     UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
@@ -141,10 +141,10 @@ public class InventoryClickListener implements Listener {
                     OfflinePlayer offlinePlayer1 = Bukkit.getOfflinePlayer(uuid1);
                     FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
                     Statement statement = MySQL.getStatement();
-                    ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId() + "'");
+                    ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
                     if (res.next()) {
                         if (res.getInt(1) < 8 && res.getInt(1) > 0) {
-                            statement.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res.getInt(1) + 1) + " WHERE `uuid` = '" + offlinePlayer1.getUniqueId() + "'");
+                            statement.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res.getInt(1) + 1) + " WHERE `uuid` = '" + offlinePlayer1.getUniqueId().toString() + "'");
                         } else {
                             return;
                         }
@@ -158,10 +158,10 @@ public class InventoryClickListener implements Listener {
                     UUID uuid2 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer2 = Bukkit.getOfflinePlayer(uuid2);
                     Statement statement1 = MySQL.getStatement();
-                    ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId() + "'");
+                    ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
                     if (res1.next()) {
                         if (res1.getInt(1) < 8 && res1.getInt(1) > 0) {
-                            statement1.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res1.getInt(1) - 1) + " WHERE `uuid` = '" + offlinePlayer2.getUniqueId() + "'");
+                            statement1.executeUpdate("UPDATE `players` SET `faction_grade` = " + (res1.getInt(1) - 1) + " WHERE `uuid` = '" + offlinePlayer2.getUniqueId().toString() + "'");
                         } else {
                             return;
                         }
@@ -178,16 +178,26 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, playerData.getVariable("offlinePLayers") != "nein");
+                    if (playerData.getVariable("offlinePLayers") == "nein")
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, false);
+                    else
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, true);
                     break;
                 case GOLD_NUGGET:
-                    adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, playerData.getVariable("offlinePLayers") != "nein");
+                    if (playerData.getVariable("offlinePLayers") == "nein")
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, false);
+                    else
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, true);
                     break;
                 case PLAYER_HEAD:
-                    adminmenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
+                    AdminmenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
                     break;
                 case DIAMOND:
-                    adminmenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") == "nein");
+                    if (playerData.getVariable("offlinePLayers") == "nein") {
+                        AdminmenuCommand.openAdminMenu(player, 1, true);
+                    } else {
+                        AdminmenuCommand.openAdminMenu(player, 1, false);
+                    }
                     break;
             }
         }
@@ -197,7 +207,9 @@ public class InventoryClickListener implements Listener {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    adminmenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") != "nein");
+                    if (playerData.getVariable("offlinePLayers") == "nein")
+                        AdminmenuCommand.openAdminMenu(player, 1, false);
+                    else AdminmenuCommand.openAdminMenu(player, 1, true);
                     break;
                 case REDSTONE:
                     if (!offlinePlayer.isOnline()) return;
@@ -790,7 +802,7 @@ public class InventoryClickListener implements Listener {
                                     playerData.setBirthday(playerData.getVariable("einreise_dob"));
                                     playerData.setGender(playerData.getVariable("einreise_gender"));
                                     Statement statement = MySQL.getStatement();
-                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                                     PlayerManager.addExp(player, Main.random(100, 200));
                                     tutorial.createdAusweis(player);
@@ -1026,7 +1038,7 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
                     Statement statement = MySQL.getStatement();
-                    statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId() + "'");
+                    statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
                     player.closeInventory();
                     break;
                 case 15:
@@ -1050,11 +1062,11 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     break;
                 case BOOK:
-                    postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    PostboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
                     player.closeInventory();
                     break;
                 case CAULDRON:
-                    muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    MuellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
                     player.closeInventory();
                     break;
             }
@@ -1063,15 +1075,15 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    farmerCommand.startJob(player);
+                    FarmerCommand.startJob(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    farmerCommand.quitJob(player);
+                    FarmerCommand.quitJob(player);
                     player.closeInventory();
                     break;
                 case WHEAT:
-                    farmerCommand.startTransport(player);
+                    FarmerCommand.startTransport(player);
                     player.closeInventory();
                     break;
             }
@@ -1080,11 +1092,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    postboteCommand.startTransport(player);
+                    PostboteCommand.startTransport(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    postboteCommand.quitJob(player, false);
+                    PostboteCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
@@ -1093,11 +1105,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    muellmannCommand.startTransport(player);
+                    MuellmannCommand.startTransport(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    muellmannCommand.quitJob(player, false);
+                    MuellmannCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
@@ -1106,11 +1118,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    lumberjackCommand.startJob(player);
+                    LumberjackCommand.startJob(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    lumberjackCommand.quitJob(player, false);
+                    LumberjackCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
