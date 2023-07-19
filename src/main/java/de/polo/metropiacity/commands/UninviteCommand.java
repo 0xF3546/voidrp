@@ -1,11 +1,11 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.DBPlayerData;
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.DBPlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.Utils.FactionManager;
-import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.ServerManager;
+import de.polo.metropiacity.utils.FactionManager;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.ServerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -48,7 +48,7 @@ public class UninviteCommand implements CommandExecutor {
                             }
                         }
                         FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
-                        Aduty.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.");
+                        ADutyCommand.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.");
                     } else {
                         player.sendMessage(Main.error_nopermission);
                     }

@@ -1,9 +1,9 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.PlayerUtils.SoundManager;
-import de.polo.metropiacity.Utils.*;
+import de.polo.metropiacity.playerUtils.SoundManager;
+import de.polo.metropiacity.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostboteCommand implements CommandExecutor {
-    public static List<Integer> array = new ArrayList<>();
+    public static final List<Integer> array = new ArrayList<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -102,8 +102,6 @@ public class PostboteCommand implements CommandExecutor {
                 playerData.getScoreboard().killScoreboard();
             }
             array.add(house);
-            Main.waitSeconds(1800, () -> {
-                array.removeIf(number -> number == house);
-            });
+            Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

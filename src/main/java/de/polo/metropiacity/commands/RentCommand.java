@@ -1,8 +1,8 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.Utils.LocationManager;
-import de.polo.metropiacity.Utils.VertragUtil;
+import de.polo.metropiacity.utils.LocationManager;
+import de.polo.metropiacity.utils.VertragUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

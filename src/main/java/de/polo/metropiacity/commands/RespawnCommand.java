@@ -1,11 +1,11 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.PlayerUtils.DeathUtil;
-import de.polo.metropiacity.Utils.LocationManager;
-import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.Utils;
+import de.polo.metropiacity.playerUtils.DeathUtils;
+import de.polo.metropiacity.utils.LocationManager;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -42,14 +42,14 @@ public class RespawnCommand implements CommandExecutor {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         targetplayer.sendMessage(Main.prefix + "§a" + player.getName() + " hat dich Respawnt!");
-        Aduty.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.");
+        ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.");
         PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
         if (targetplayerData.getFaction() != null) {
             LocationManager.useLocation(targetplayer, targetplayerData.getFaction());
         } else {
             LocationManager.useLocation(targetplayer, "Stadthalle");
         }
-        DeathUtil.RevivePlayer(targetplayer);
+        DeathUtils.RevivePlayer(targetplayer);
         return false;
     }
 }

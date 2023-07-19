@@ -1,10 +1,10 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.HouseData;
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.HouseData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.Utils.Housing;
-import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.utils.Housing;
+import de.polo.metropiacity.utils.PlayerManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;

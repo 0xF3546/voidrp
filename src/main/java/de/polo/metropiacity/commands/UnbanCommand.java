@@ -1,9 +1,9 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.MySQl.MySQL;
-import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -31,14 +31,14 @@ public class UnbanCommand implements CommandExecutor {
                     if (args[0].equalsIgnoreCase("uuid")) {
                         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[1]));
                         Bukkit.getBanList(BanList.Type.NAME).pardon(Objects.requireNonNull(offlinePlayer.getName()));
-                        Aduty.send_message(player.getName() + " hat  §l" + offlinePlayer.getName() + "§7 entbannt.");
+                        ADutyCommand.send_message(player.getName() + " hat  §l" + offlinePlayer.getName() + "§7 entbannt.");
                         player.sendMessage(Main.admin_prefix + "Du hast §l" + offlinePlayer.getName() + "§7 entbannt.");
                     } else if (args[0].equalsIgnoreCase("name")) {
                         ResultSet res = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `player_name` = '" + args[1] + "'");
                         if (res.next()) {
                             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(res.getString(1)));
                             Bukkit.getBanList(BanList.Type.NAME).pardon(Objects.requireNonNull(offlinePlayer.getName()));
-                            Aduty.send_message(player.getName() + " hat " + offlinePlayer.getName() + " entbannt.");
+                            ADutyCommand.send_message(player.getName() + " hat " + offlinePlayer.getName() + " entbannt.");
                             player.sendMessage(Main.admin_prefix + "Du hast §l" + offlinePlayer.getName() + "§7 entbannt.");
                         } else {
                             player.sendMessage(Main.admin_error + "Spieler konnte nicht gefunden werden.");

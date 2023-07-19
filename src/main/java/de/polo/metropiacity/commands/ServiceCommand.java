@@ -1,10 +1,10 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.Utils.PhoneUtils;
-import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.StaatUtil;
+import de.polo.metropiacity.utils.PhoneUtils;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.StaatUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

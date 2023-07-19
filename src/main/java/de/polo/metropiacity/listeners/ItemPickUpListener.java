@@ -1,0 +1,16 @@
+package de.polo.metropiacity.listeners;
+
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+
+public class ItemPickUpListener implements Listener {
+
+        @EventHandler
+        public void onItemPickup(EntityPickupItemEvent event) {
+            if (event.getItem().getItemStack().getType().equals(Material.SKELETON_SKULL) || event.getItem().getItemStack().getType().equals(Material.PLAYER_HEAD)) {
+                event.setCancelled(true);
+            }
+        }
+}

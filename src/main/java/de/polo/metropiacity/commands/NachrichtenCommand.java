@@ -1,9 +1,9 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.Utils.*;
-import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
+import de.polo.metropiacity.utils.*;
+import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

@@ -1,6 +1,6 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.Utils.PhoneUtils;
+import de.polo.metropiacity.utils.PhoneUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

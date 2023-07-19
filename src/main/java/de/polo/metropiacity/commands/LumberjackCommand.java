@@ -1,12 +1,12 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.DataStorage.PlayerData;
-import de.polo.metropiacity.PlayerUtils.SoundManager;
-import de.polo.metropiacity.Utils.ItemManager;
-import de.polo.metropiacity.Utils.LocationManager;
-import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.ServerManager;
+import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.playerUtils.SoundManager;
+import de.polo.metropiacity.utils.ItemManager;
+import de.polo.metropiacity.utils.LocationManager;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.ServerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

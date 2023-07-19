@@ -1,9 +1,9 @@
 package de.polo.metropiacity;
 
-import de.polo.metropiacity.Listener.*;
-import de.polo.metropiacity.MySQl.MySQL;
-import de.polo.metropiacity.PlayerUtils.*;
-import de.polo.metropiacity.Utils.*;
+import de.polo.metropiacity.listeners.*;
+import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.playerUtils.*;
+import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -74,8 +74,8 @@ public final class Main extends JavaPlugin {
             Shop.loadShopItems();
             StaatUtil.loadJail();
             Housing.loadHousing();
-            FFA.loadFFALobbys();
-            Gangwar.loadGangwar();
+            FFAUtils.loadFFALobbys();
+            GangwarUtils.loadGangwar();
 
             ServerManager.loadDBPlayer();
             ServerManager.loadContracts();
@@ -88,12 +88,12 @@ public final class Main extends JavaPlugin {
 
     private void registerListener() {
 
-        getServer().getPluginManager().registerEvents(new JoinEvent(), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(), this);
         getServer().getPluginManager().registerEvents(new QuitListener(), this);
         getServer().getPluginManager().registerEvents(new DamageListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockbreakListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockplaceListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
         getServer().getPluginManager().registerEvents(new CommandListener(), this);
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new ServerPingListener(), this);
@@ -116,39 +116,39 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ExpPickupListener(), this);
         getServer().getPluginManager().registerEvents(new ItemPickUpListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerManager(), this);
-        getServer().getPluginManager().registerEvents(new FFA(), this);
+        getServer().getPluginManager().registerEvents(new FFAUtils(), this);
         getServer().getPluginManager().registerEvents(new BankingUtils(), this);
-        getServer().getPluginManager().registerEvents(new tutorial(), this);
+        getServer().getPluginManager().registerEvents(new Tutorial(), this);
         getServer().getPluginManager().registerEvents(new NachrichtenCommand(), this);
         getServer().getPluginManager().registerEvents(new Navigation(), this);
         getServer().getPluginManager().registerEvents(new FishingListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
-        getServer().getPluginManager().registerEvents(new WorldGuard(), this);
+        getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryOpenListener(), this);
         getServer().getPluginManager().registerEvents(new Farming(), this);
 
     }
 
     private void registerCommands() {
-        getCommand("aduty").setExecutor(new Aduty());
-        getCommand("setgroup").setExecutor(new SetteamCommand());
+        getCommand("aduty").setExecutor(new ADutyCommand());
+        getCommand("setgroup").setExecutor(new SetTeamCommand());
         getCommand("geldbeutel").setExecutor(new GeldbeutelCommand());
         getCommand("personalausweis").setExecutor(new PersonalausweisCommand());
-        getCommand("teamchat").setExecutor(new TeamchatCommand());
-        getCommand("leadfrak").setExecutor(new LeadfrakCommand());
-        getCommand("fraktionschat").setExecutor(new FraktionschatCommand());
+        getCommand("teamchat").setExecutor(new TeamChatCommand());
+        getCommand("leadfrak").setExecutor(new LeadFrakCommand());
+        getCommand("fraktionschat").setExecutor(new FraktionsChatCommand());
         getCommand("uninvite").setExecutor(new UninviteCommand());
         getCommand("setloc").setExecutor(new LocationCommand());
-        getCommand("setfraktion").setExecutor(new SetfrakCommand());
-        getCommand("adminuninvite").setExecutor(new AdminuninviteCommand());
+        getCommand("setfraktion").setExecutor(new SetFrakCommand());
+        getCommand("adminuninvite").setExecutor(new AdminUnInviteCommand());
         getCommand("assistentchat").setExecutor(new AssistentchatCommand());
         getCommand("support").setExecutor(new SupportCommand());
-        getCommand("cancelsupport").setExecutor(new CancelsupportCommand());
-        getCommand("acceptsupport").setExecutor(new AcceptticketCommand());
-        getCommand("closesupport").setExecutor(new CloseticketCommand());
-        getCommand("tpto").setExecutor(new TPtoCommand());
+        getCommand("cancelsupport").setExecutor(new CancelSupportCommand());
+        getCommand("acceptsupport").setExecutor(new AcceptTicketCommand());
+        getCommand("closesupport").setExecutor(new CloseTicketCommand());
+        getCommand("tpto").setExecutor(new TPToCommand());
         getCommand("adminrevive").setExecutor(new AdminReviveCommand());
-        getCommand("playerinfo").setExecutor(new PlayerinfoCommand());
+        getCommand("playerinfo").setExecutor(new PlayerInfoCommand());
         getCommand("me").setExecutor(new MeCommand());
         getCommand("announce").setExecutor(new BroadcastCommand());
         getCommand("gov").setExecutor(new GovCommand());
@@ -164,63 +164,63 @@ public final class Main extends JavaPlugin {
         getCommand("minenarbeiter").setExecutor(new MineCommand());
         getCommand("arrest").setExecutor(new ArrestCommand());
         getCommand("tp").setExecutor(new TPCommand());
-        getCommand("tphere").setExecutor(new TPhereCommand());
+        getCommand("tphere").setExecutor(new TPHereCommand());
         getCommand("speed").setExecutor(new SpeedCommand());
         getCommand("bossmenu").setExecutor(new OpenBossMenuCommand());
         getCommand("kick").setExecutor(new KickCommand());
         getCommand("ooc").setExecutor(new OOCCommand());
         getCommand("plugins").setExecutor(new PluginCommand());
-        getCommand("adminmenu").setExecutor(new AdminmenuCommand());
+        getCommand("adminmenu").setExecutor(new AdminMenuCommand());
         getCommand("vote").setExecutor(new VoteCommand());
-        getCommand("setrankname").setExecutor(new SetranknameCommand());
-        getCommand("setrankpayday").setExecutor(new SetrankpaydayCommand());
+        getCommand("setrankname").setExecutor(new SetRankNameCommand());
+        getCommand("setrankpayday").setExecutor(new SetRankPayDayCommand());
         getCommand("cp").setExecutor(new CPCommand());
         getCommand("sms").setExecutor(new SMSCommand());
         getCommand("call").setExecutor(new CallCommand());
         getCommand("auflegen").setExecutor(new AuflegenCommand());
         getCommand("jailtime").setExecutor(new JailtimeCommand());
         getCommand("drop").setExecutor(new DropCommand());
-        getCommand("lebensmittellieferant").setExecutor(new LebensmittellieferantCommand());
+        getCommand("lebensmittellieferant").setExecutor(new LebensmittelLieferantCommand());
         getCommand("ban").setExecutor(new BanCommand());
         getCommand("unban").setExecutor(new UnbanCommand());
-        getCommand("setblockvalue").setExecutor(new SetblockvalueCommand());
+        getCommand("setblockvalue").setExecutor(new SetBlockValueCommand());
         getCommand("car").setExecutor(new Vehicles());
-        getCommand("getveh").setExecutor(new GetvehCommand());
-        getCommand("gotoveh").setExecutor(new GotovehCommand());
+        getCommand("getveh").setExecutor(new GetVehCommand());
+        getCommand("gotoveh").setExecutor(new GoToVehCommand());
         getCommand("navi").setExecutor(new Navigation());
         getCommand("einreise").setExecutor(new EinreiseCommand());
-        getCommand("registerhouse").setExecutor(new RegisterhouseCommand());
+        getCommand("registerhouse").setExecutor(new RegisterHouseCommand());
         getCommand("reinforcement").setExecutor(new ReinforcementCommand());
-        getCommand("buyhouse").setExecutor(new BuyhouseCommand());
+        getCommand("buyhouse").setExecutor(new BuyHouseCommand());
         getCommand("mieters").setExecutor(new MietersCommand());
         getCommand("unrent").setExecutor(new UnrentCommand());
         getCommand("frisk").setExecutor(new FriskCommand());
         getCommand("blacklist").setExecutor(new BlacklistCommand());
-        getCommand("ffa").setExecutor(new FFA());
+        getCommand("ffa").setExecutor(new FFAUtils());
         getCommand("npc").setExecutor(new NPC());
         getCommand("redeem").setExecutor(new RedeemCommand());
         getCommand("link").setExecutor(new LinkCommand());
         getCommand("whistle").setExecutor(new WhistleCommand());
         getCommand("shout").setExecutor(new ShoutCommand());
-        getCommand("setsecondaryteam").setExecutor(new SetsecondaryteamCommand());
+        getCommand("setsecondaryteam").setExecutor(new SetSecondaryTeamCommand());
         getCommand("bauteamchat").setExecutor(new BauteamChat());
         getCommand("eventteamchat").setExecutor(new EventTeamChat());
         getCommand("prteamchat").setExecutor(new PRTeamChat());
         getCommand("stats").setExecutor(new StatsCommand());
         getCommand("revive").setExecutor(new ReviveCommand());
         getCommand("service").setExecutor(new ServiceCommand());
-        getCommand("acceptservice").setExecutor(new AcceptserviceCommand());
+        getCommand("acceptservice").setExecutor(new AcceptServiceCommand());
         getCommand("services").setExecutor(new ServicesCommand());
-        getCommand("cancelservice").setExecutor(new CancelserviceCommand());
-        getCommand("closeservice").setExecutor(new CloseserviceCommand());
-        getCommand("tslink").setExecutor(new TSlinkCommand());
+        getCommand("cancelservice").setExecutor(new CancelServiceCommand());
+        getCommand("closeservice").setExecutor(new CloseServiceCommand());
+        getCommand("tslink").setExecutor(new TSLinkCommand());
         getCommand("verify").setExecutor(new TeamSpeak());
-        getCommand("tsunlink").setExecutor(new TSunlinkCommand());
+        getCommand("tsunlink").setExecutor(new TSUnlinkCommand());
         getCommand("orten").setExecutor(new OrtenCommand());
-        getCommand("gangwar").setExecutor(new Gangwar());
+        getCommand("gangwar").setExecutor(new GangwarUtils());
         getCommand("youtube").setExecutor(new YoutubeCommand());
         getCommand("discord").setExecutor(new DiscordCommand());
-        getCommand("departmentchat").setExecutor(new DepartmentChat());
+        getCommand("departmentchat").setExecutor(new DepartmentChatCommand());
         getCommand("member").setExecutor(new MemberCommand());
         getCommand("farmer").setExecutor(new FarmerCommand());
         getCommand("müllmann").setExecutor(new MuellmannCommand());
@@ -228,9 +228,9 @@ public final class Main extends JavaPlugin {
         getCommand("contracts").setExecutor(new ContractsCommand());
         getCommand("contract").setExecutor(new ContractCommand());
         getCommand("nachrichten").setExecutor(new NachrichtenCommand());
-        getCommand("businesschat").setExecutor(new BusinesschatCommand());
-        getCommand("leadbusiness").setExecutor(new LeadbusinessCommand());
-        getCommand("fraktionsinfo").setExecutor(new FrakinfoCommand());
+        getCommand("businesschat").setExecutor(new BusinessChatCommand());
+        getCommand("leadbusiness").setExecutor(new LeadBusinessCommand());
+        getCommand("fraktionsinfo").setExecutor(new FrakInfoCommand());
         getCommand("beziehung").setExecutor(new BeziehungCommand());
         getCommand("trennen").setExecutor(new TrennenCommand());
         getCommand("antrag").setExecutor(new AntragCommand());
@@ -239,23 +239,23 @@ public final class Main extends JavaPlugin {
         getCommand("akten").setExecutor(new AktenCommand());
         getCommand("spec").setExecutor(new SpecCommand());
         getCommand("msg").setExecutor(new MsgCommand());
-        getCommand("leaderchat").setExecutor(new LeaderchatCommand());
-        getCommand("frakstats").setExecutor(new FrakstatsCommand());
-        getCommand("checkinv").setExecutor(new CheckinvCommand());
-        getCommand("bizinvite").setExecutor(new BizinviteCommand());
-        getCommand("shoprob").setExecutor(new ShoprobCommand());
+        getCommand("leaderchat").setExecutor(new LeaderChatCommand());
+        getCommand("frakstats").setExecutor(new FrakStatsCommand());
+        getCommand("checkinv").setExecutor(new CheckInvCommand());
+        getCommand("bizinvite").setExecutor(new BizInviteCommand());
+        getCommand("shoprob").setExecutor(new ShopRobCommand());
         getCommand("respawn").setExecutor(new RespawnCommand());
         getCommand("dealer").setExecutor(new DealerCommand());
         getCommand("farming").setExecutor(new Farming());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());
-        getCommand("gangwar").setTabCompleter(new Gangwar());
+        getCommand("gangwar").setTabCompleter(new GangwarUtils());
         getCommand("navi").setTabCompleter(new Navigation());
         getCommand("contracts").setTabCompleter(new ContractsCommand());
         getCommand("personalausweis").setTabCompleter(new PersonalausweisCommand());
-        getCommand("fraktionsinfo").setTabCompleter(new FrakinfoCommand());
-        getCommand("tpto").setTabCompleter(new TPtoCommand());
+        getCommand("fraktionsinfo").setTabCompleter(new FrakInfoCommand());
+        getCommand("tpto").setTabCompleter(new TPToCommand());
         getCommand("farming").setTabCompleter(new Farming());
     }
 
@@ -275,8 +275,7 @@ public final class Main extends JavaPlugin {
     }
 
     public static int random(int min, int max) {
-        int randomNumber = min + (int) (Math.random() * ((max - min) + 1));
-        return randomNumber;
+        return min + (int) (Math.random() * ((max - min) + 1));
     }
 
     public static char getRandomChar(String characters) {

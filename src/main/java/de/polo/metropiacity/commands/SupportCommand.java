@@ -1,9 +1,9 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.MySQl.MySQL;
-import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.SupportManager;
+import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.SupportManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;

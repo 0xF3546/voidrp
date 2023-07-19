@@ -1,13 +1,13 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.DataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.PlayerUtils.ChatUtils;
-import de.polo.metropiacity.PlayerUtils.DeathUtil;
-import de.polo.metropiacity.PlayerUtils.progress;
-import de.polo.metropiacity.Utils.FactionManager;
-import de.polo.metropiacity.Utils.PlayerManager;
-import de.polo.metropiacity.Utils.ServerManager;
+import de.polo.metropiacity.playerUtils.ChatUtils;
+import de.polo.metropiacity.playerUtils.DeathUtils;
+import de.polo.metropiacity.playerUtils.Progress;
+import de.polo.metropiacity.utils.FactionManager;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.ServerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -60,13 +60,13 @@ public class ReviveCommand implements CommandExecutor {
                 targetplayer.sendMessage(Main.prefix + "Du wirst von " + player.getName() + " wiederbelebt.");
                 player.sendMessage(Main.prefix + "Du fängst an " + targetplayer.getName() + " wiederzubeleben.");
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " fängt an " + targetplayer.getName() + " wiederzubeleben.");
-                progress.start(player, 6);
+                Progress.start(player, 6);
                 final Item skull = nearestSkull;
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (skull.getLocation().distance(player.getLocation()) < 3) {
-                            DeathUtil.RevivePlayer(targetplayer);
+                            DeathUtils.RevivePlayer(targetplayer);
                             targetplayer.teleport(player.getLocation());
                             PlayerManager.addExp(player, Main.random(2, 5));
                             targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");

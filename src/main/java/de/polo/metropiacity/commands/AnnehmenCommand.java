@@ -1,6 +1,6 @@
 package de.polo.metropiacity.commands;
 
-import de.polo.metropiacity.Utils.VertragUtil;
+import de.polo.metropiacity.utils.VertragUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -1,9 +1,9 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.PlayerUtils.DeathUtil;
-import de.polo.metropiacity.DataStorage.PlayerData;
-import de.polo.metropiacity.Utils.PlayerManager;
+import de.polo.metropiacity.playerUtils.DeathUtils;
+import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,14 +19,14 @@ public class AdminReviveCommand implements CommandExecutor {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
                 if (targetplayer != null) {
-                    DeathUtil.RevivePlayer(targetplayer);
+                    DeathUtils.RevivePlayer(targetplayer);
                     player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 wiederbelebt.");
                     targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
                 } else {
                     player.sendMessage(Main.admin_error + "§c" + args[0] + "§7 ist nicht online.");
                 }
             } else {
-                DeathUtil.RevivePlayer(player);
+                DeathUtils.RevivePlayer(player);
                 player.sendMessage(Main.admin_prefix + "Du hast dich wiederbelebt.");
             }
         } else {
