@@ -8,7 +8,7 @@ import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.PlayerUtils.*;
 import de.polo.metropiacity.DataStorage.PlayerData;
 import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
-import de.polo.metropiacity.commands.aduty;
+import de.polo.metropiacity.commands.Aduty;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -646,7 +646,7 @@ public class PlayerManager implements Listener {
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(),  "§o"+ event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
-                            aduty.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.");
+                            Aduty.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.");
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }

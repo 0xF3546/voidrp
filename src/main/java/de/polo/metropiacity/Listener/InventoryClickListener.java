@@ -115,13 +115,13 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
+                    OpenBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
                     break;
                 case GOLD_NUGGET:
-                    openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
+                    OpenBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
                     break;
                 case PLAYER_HEAD:
-                    openBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
+                    OpenBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
                     break;
             }
         }
@@ -129,7 +129,7 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    openBossMenuCommand.openBossMenu(player, 1);
+                    OpenBossMenuCommand.openBossMenu(player, 1);
                     break;
                 case REDSTONE:
                     UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
@@ -179,24 +179,24 @@ public class InventoryClickListener implements Listener {
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
                     if (playerData.getVariable("offlinePLayers") == "nein")
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, false);
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, false);
                     else
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, true);
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, true);
                     break;
                 case GOLD_NUGGET:
                     if (playerData.getVariable("offlinePLayers") == "nein")
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, false);
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, false);
                     else
-                        adminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, true);
+                        AdminmenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, true);
                     break;
                 case PLAYER_HEAD:
-                    adminmenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
+                    AdminmenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
                     break;
                 case DIAMOND:
                     if (playerData.getVariable("offlinePLayers") == "nein") {
-                        adminmenuCommand.openAdminMenu(player, 1, true);
+                        AdminmenuCommand.openAdminMenu(player, 1, true);
                     } else {
-                        adminmenuCommand.openAdminMenu(player, 1, false);
+                        AdminmenuCommand.openAdminMenu(player, 1, false);
                     }
                     break;
             }
@@ -208,8 +208,8 @@ public class InventoryClickListener implements Listener {
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
                     if (playerData.getVariable("offlinePLayers") == "nein")
-                        adminmenuCommand.openAdminMenu(player, 1, false);
-                    else adminmenuCommand.openAdminMenu(player, 1, true);
+                        AdminmenuCommand.openAdminMenu(player, 1, false);
+                    else AdminmenuCommand.openAdminMenu(player, 1, true);
                     break;
                 case REDSTONE:
                     if (!offlinePlayer.isOnline()) return;
@@ -1062,11 +1062,11 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     break;
                 case BOOK:
-                    postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    PostboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
                     player.closeInventory();
                     break;
                 case CAULDRON:
-                    muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    MuellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
                     player.closeInventory();
                     break;
             }
@@ -1075,15 +1075,15 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    farmerCommand.startJob(player);
+                    FarmerCommand.startJob(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    farmerCommand.quitJob(player);
+                    FarmerCommand.quitJob(player);
                     player.closeInventory();
                     break;
                 case WHEAT:
-                    farmerCommand.startTransport(player);
+                    FarmerCommand.startTransport(player);
                     player.closeInventory();
                     break;
             }
@@ -1092,11 +1092,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    postboteCommand.startTransport(player);
+                    PostboteCommand.startTransport(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    postboteCommand.quitJob(player, false);
+                    PostboteCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
@@ -1105,11 +1105,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    muellmannCommand.startTransport(player);
+                    MuellmannCommand.startTransport(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    muellmannCommand.quitJob(player, false);
+                    MuellmannCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
@@ -1118,11 +1118,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    lumberjackCommand.startJob(player);
+                    LumberjackCommand.startJob(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    lumberjackCommand.quitJob(player, false);
+                    LumberjackCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }

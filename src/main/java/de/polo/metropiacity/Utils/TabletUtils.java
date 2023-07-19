@@ -4,7 +4,7 @@ import de.polo.metropiacity.DataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.MySQl.MySQL;
 import de.polo.metropiacity.Utils.Events.SubmitChatEvent;
-import de.polo.metropiacity.commands.openBossMenuCommand;
+import de.polo.metropiacity.commands.OpenBossMenuCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -60,7 +60,7 @@ public class TabletUtils implements Listener {
         playerData.setVariable("current_app", null);
         switch (app) {
             case "fraktionsapp":
-                openBossMenuCommand.openBossMenu(player, 1);
+                OpenBossMenuCommand.openBossMenu(player, 1);
                 playerData.setVariable("current_app", "fraktionsapp");
                 break;
             case "aktenapp":

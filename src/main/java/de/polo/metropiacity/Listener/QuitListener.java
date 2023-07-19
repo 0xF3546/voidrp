@@ -25,7 +25,7 @@ public class QuitListener implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData == null) return;
         event.setQuitMessage("");
-        aduty.send_message(player.getName() + " hat den Server verlassen.");
+        Aduty.send_message(player.getName() + " hat den Server verlassen.");
         ServerManager.updateTablist(null);
         if (playerData.getVariable("current_lobby") != null) {
             FFA.leaveFFA(player);
@@ -51,25 +51,25 @@ public class QuitListener implements Listener {
             if (playerData.getVariable("job") != null) {
                 switch (playerData.getVariable("job")) {
                     case "lumberjack":
-                        lumberjackCommand.quitJob(player, true);
+                        LumberjackCommand.quitJob(player, true);
                         break;
                     case "apfelsammler":
-                        apfelplantageCommand.quitJob(player);
+                        ApfelplantageCommand.quitJob(player);
                         break;
                     case "mine":
-                        mineCommand.quitJob(player);
+                        MineCommand.quitJob(player);
                         break;
                     case "lieferant":
-                        lebensmittellieferantCommand.quitJob(player);
+                        LebensmittellieferantCommand.quitJob(player);
                         break;
                     case "farmer":
-                        farmerCommand.quitJob(player);
+                        FarmerCommand.quitJob(player);
                         break;
                     case "Postbote":
-                        postboteCommand.quitJob(player, true);
+                        PostboteCommand.quitJob(player, true);
                         break;
                     case "Müllmann":
-                        muellmannCommand.quitJob(player, true);
+                        MuellmannCommand.quitJob(player, true);
                         break;
                 }
             }
