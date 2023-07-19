@@ -35,7 +35,11 @@ public class PlayerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).isDead()) return;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (playerData.isDead()) {
+            event.setCancelled(true);
+            return;
+        }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
                 if (event.getClickedBlock().getType() == Material.CAULDRON) {
@@ -61,7 +65,6 @@ public class PlayerInteractListener implements Listener {
                     for (HouseData houseData : Housing.houseDataMap.values()) {
                         if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {
                             Inventory inv = Bukkit.createInventory(player, 45, "");
-                            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                             playerData.setVariable("current_inventory", "haus");
                             playerData.setIntVariable("current_house", houseData.getNumber());
                             if (houseData.getOwner() != null) {

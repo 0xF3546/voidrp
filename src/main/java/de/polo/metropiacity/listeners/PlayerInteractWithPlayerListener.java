@@ -30,6 +30,10 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 Player player = event.getPlayer();
                 Player targetplayer = (Player) event.getRightClicked();
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                if (playerData.isDead()) {
+                    event.setCancelled(true);
+                    return;
+                }
                 System.out.println(player.getName());
                 System.out.println(targetplayer.getName());
                 ItemStack item = player.getInventory().getItemInMainHand();
