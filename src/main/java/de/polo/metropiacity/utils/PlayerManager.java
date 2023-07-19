@@ -469,8 +469,8 @@ public class PlayerManager implements Listener {
                                 player.sendMessage(" ");
                                 player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
                                 double plus = 0;
-                                double zinsen = Math.round(factionData.getBank() * 0.0075);
-                                double steuern = Math.round(factionData.getBank() * 0.0035);
+                                double zinsen = Math.round(factionData.getBank() * 0.00075);
+                                double steuern = Math.round(factionData.getBank() * 0.00035);
                                 plus += zinsen;
                                 plus -= steuern;
                                 player.sendMessage(" ");
