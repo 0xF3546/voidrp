@@ -40,7 +40,8 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
         }
-        if (playerData.getFaction() != null) {
+        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+        if (targetplayerData.getFaction() != null) {
             player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + "§7 ist bereits in einer Fraktion.");
             return false;
         }
@@ -51,7 +52,7 @@ public class InviteCommand implements CommandExecutor {
         try {
             if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
                 player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
-                targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Fraktion §" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§6 eingeladen.");
+                targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Fraktion §" + FactionManager.getFactionPrimaryColor(playerfac) + factionData.getFullname() + "§6 eingeladen.");
                 VertragUtil.sendInfoMessage(targetplayer);
             } else {
                 player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
