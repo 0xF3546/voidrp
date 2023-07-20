@@ -248,6 +248,7 @@ public final class Main extends JavaPlugin {
         getCommand("dealer").setExecutor(new DealerCommand());
         getCommand("farming").setExecutor(new Farming());
         getCommand("gethead").setExecutor(new GetHeadCommand());
+        getCommand("factions").setExecutor(new FactionsCommand());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());

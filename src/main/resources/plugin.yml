@@ -168,3 +168,5 @@ commands:
   dealer:
   farming:
   gethead:
+  factions:
+    aliases: fraktionen
