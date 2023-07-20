@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -45,5 +46,8 @@ public class Utils {
             }
         }
         return stringBuilder.toString();
+    }
+    public static String toDecimalFormat(int number) {
+        return new DecimalFormat("#,###").format(number);
     }
 }
