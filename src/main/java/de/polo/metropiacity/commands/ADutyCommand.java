@@ -8,15 +8,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ADutyCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ADutyCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (playerData.getPermlevel() >= 60) {
+        if (playerData.getPermlevel() < 60) {
+            player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        if (args.length == 0) {
             if (playerData.isAduty()) {
                 playerData.setAduty(false);
                 ADutyCommand.send_message(player.getName() + " hat den Admindienst verlassen.");
@@ -41,8 +51,27 @@ public class ADutyCommand implements CommandExecutor {
                 player.getPlayer().setDisplayName("§8[§cTeam§8]§c " + player.getName());
                 playerData.getScoreboard().createAdminScoreboard();
             }
-        } else {
-            player.sendMessage(Main.error_nopermission);
+        }
+        if (args.length >= 1) {
+            switch (args[0].toLowerCase()) {
+                case "-v":
+                    if (playerData.getVariable("isVanish") == null) {
+                        player.sendMessage(Main.admin_prefix + "Du bist nun im Vanish.");
+                        playerData.setVariable("isVanish", "D:");
+                        for (Player players : Bukkit.getOnlinePlayers()) {
+                            players.hidePlayer(Main.getInstance(), player);
+                        }
+                        send_message(player.getName() + " hat den Vanish betreten.");
+                    } else {
+                        player.sendMessage(Main.admin_prefix + "Du bist nun nicht mehr im Vanish.");
+                        playerData.setVariable("isVanish", null);
+                        for (Player players : Bukkit.getOnlinePlayers()) {
+                            players.showPlayer(Main.getInstance(), player);
+                        }
+                        send_message(player.getName() + " hat den Vanish verlassen.");
+                    }
+                    break;
+            }
         }
         return false;
     }
@@ -54,5 +83,17 @@ public class ADutyCommand implements CommandExecutor {
                 player1.sendMessage("§8[§c§l!§8]§b " + msg);
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            suggestions.add("-v");
+
+            return suggestions;
+        }
+        return null;
     }
 }

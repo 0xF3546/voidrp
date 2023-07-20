@@ -259,6 +259,7 @@ public final class Main extends JavaPlugin {
         getCommand("fraktionsinfo").setTabCompleter(new FrakInfoCommand());
         getCommand("tpto").setTabCompleter(new TPToCommand());
         getCommand("farming").setTabCompleter(new Farming());
+        getCommand("aduty").setTabCompleter(new ADutyCommand());
     }
 
 

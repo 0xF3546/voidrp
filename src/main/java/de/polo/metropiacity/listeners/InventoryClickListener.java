@@ -37,7 +37,6 @@ public class InventoryClickListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-        event.setResult(Event.Result.DENY); //keine ahnung was das macht, nur test
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
             playerData.setVariable("current_inventory", null);
