@@ -45,12 +45,17 @@ public class VertragUtil {
     public static void acceptVertrag(Player player) throws SQLException {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
-            Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+            Player targetplayer = null;
+            try {
+                targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.setPlayerInFrak(player, curr, 0);
-                    FactionManager.sendMessageToFaction(curr,player.getName() + " ist der Fraktion §abeigetreten§7.");
+                    FactionManager.sendMessageToFaction(curr,player.getName() + " ist der Fraktion beigetreten");
                     break;
                 case "business_invite":
                     BusinessManager.setPlayerInBusiness(player, curr, 0);
@@ -119,20 +124,21 @@ public class VertragUtil {
                     if (targetplayer.isOnline()) {
                         ChatUtils.sendGrayMessageAtPlayer(targetplayer, targetplayer.getName() + " testet eine Blutgruppe im Labor.");
                         targetplayer.sendMessage("§8[§cLabor§8]§e Prüfe Ergebnisse...");
+                        Player finalTargetplayer = targetplayer;
                         Main.waitSeconds(7, () -> {
-                            if (!targetplayer.isOnline() || !player.isOnline()) {
+                            if (!finalTargetplayer.isOnline() || !player.isOnline()) {
                                 return;
                             }
                             String[] blutgruppen = {"A-", "A+", "B-", "B+", "AB-", "AB+", "0+", "0-"};
                             String random = blutgruppen[new Random().nextInt(blutgruppen.length)];
-                            targetplayer.sendMessage("§8[§cLabor§8]§e Die Blutgruppe ist " + random + "!");
+                            finalTargetplayer.sendMessage("§8[§cLabor§8]§e Die Blutgruppe ist " + random + "!");
                             player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
                             playerData.setBloodType(random);
                             try {
                                 Statement statement = MySQL.getStatement();
                                 statement.executeUpdate("UPDATE players SET bloodtype = '" + random + "' WHERE uuid = '" + player.getUniqueId() + "'");
                                 PlayerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
-                                FactionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + targetplayer.getName() + " (Blutgruppe)");
+                                FactionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + finalTargetplayer.getName() + " (Blutgruppe)");
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
