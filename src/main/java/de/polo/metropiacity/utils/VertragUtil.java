@@ -4,11 +4,13 @@ import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.playerUtils.ChatUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
@@ -43,6 +45,8 @@ public class VertragUtil {
     public static void acceptVertrag(Player player) throws SQLException {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.setPlayerInFrak(player, curr, 0);
@@ -66,7 +70,6 @@ public class VertragUtil {
                     PhoneUtils.acceptCall(player, curr);
                     break;
                 case "beziehung":
-                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
                     if (targetplayer.isOnline()) {
                         player.sendMessage("§aDu und " + targetplayer.getName() + " sind jetzt zusammen.");
                         targetplayer.sendMessage("§aDu und " + player.getName() + " sind jetzt zusammen.");
@@ -75,7 +78,6 @@ public class VertragUtil {
                         hmap1.put(player.getUniqueId().toString(), "beziehung");
                         targetplayerData.setRelationShip(hmap1);
 
-                        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                         HashMap<String, String> hmap2 = new HashMap<>();
                         hmap2.put(targetplayer.getUniqueId().toString(), "beziehung");
                         playerData.setRelationShip(hmap2);
@@ -90,19 +92,17 @@ public class VertragUtil {
                     }
                     break;
                 case "verlobt":
-                    Player targetplayer2 = Bukkit.getPlayer(UUID.fromString(curr));
-                    if (targetplayer2.isOnline()) {
-                        player.sendMessage("§aDu und " + targetplayer2.getName() + " sind jetzt verlobt.");
-                        targetplayer2.sendMessage("§aDu und " + player.getName() + " sind jetzt verlobt.");
-                        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer2.getUniqueId().toString());
+                    if (targetplayer.isOnline()) {
+                        player.sendMessage("§aDu und " + targetplayer.getName() + " sind jetzt verlobt.");
+                        targetplayer.sendMessage("§aDu und " + player.getName() + " sind jetzt verlobt.");
+                        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
                         HashMap<String, String> hmap1 = new HashMap<>();
                         hmap1.put(player.getUniqueId().toString(), "verlobt");
                         targetplayerData.getRelationShip().clear();
                         targetplayerData.setRelationShip(hmap1);
 
-                        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                         HashMap<String, String> hmap2 = new HashMap<>();
-                        hmap2.put(targetplayer2.getUniqueId().toString(), "verlobt");
+                        hmap2.put(targetplayer.getUniqueId().toString(), "verlobt");
                         playerData.getRelationShip().clear();
                         playerData.setRelationShip(hmap2);
                         Statement statement = MySQL.getStatement();
@@ -110,7 +110,33 @@ public class VertragUtil {
                         statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
 
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
-                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "' WHERE `uuid` = '" + targetplayer2.getUniqueId() + "'");
+                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "' WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
+                    } else {
+                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                    }
+                    break;
+                case "blutgruppe":
+                    if (targetplayer.isOnline()) {
+                        ChatUtils.sendGrayMessageAtPlayer(targetplayer, targetplayer.getName() + " testet eine Blutgruppe im Labor.");
+                        targetplayer.sendMessage("§8[§cLabor§8]§e Prüfe Ergebnisse...");
+                        Main.waitSeconds(7, () -> {
+                            if (!targetplayer.isOnline() || !player.isOnline()) {
+                                return;
+                            }
+                            String[] blutgruppen = {"A-", "A+", "B-", "B+", "AB-", "AB+", "0+", "0-"};
+                            String random = blutgruppen[new Random().nextInt(blutgruppen.length)];
+                            targetplayer.sendMessage("§8[§cLabor§8]§e Die Blutgruppe ist " + random + "!");
+                            player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
+                            playerData.setBloodType(random);
+                            try {
+                                Statement statement = MySQL.getStatement();
+                                statement.executeUpdate("UPDATE players SET bloodtype = '" + random + "' WHERE uuid = '" + player.getUniqueId() + "'");
+                                PlayerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
+                                FactionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + targetplayer.getName() + " (Blutgruppe)");
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
                     } else {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
@@ -124,6 +150,7 @@ public class VertragUtil {
     public static void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.sendMessageToFaction(curr, player.getName() + " wurde eingeladen und ist nicht beigetreten.");
@@ -144,7 +171,6 @@ public class VertragUtil {
                     break;
                 case "beziehung":
                 case "verlobt":
-                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
                     if (targetplayer.isOnline()) {
                         player.sendMessage("§cDu hast die Anfrage abgelehnt.");
                         targetplayer.sendMessage("§c" + player.getName() + " hat die Anfrage abgelehnt.");
@@ -152,6 +178,13 @@ public class VertragUtil {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
+                case "blutgruppe":
+                    if (targetplayer.isOnline()) {
+                        player.sendMessage("§cDu hast die Anfrage abgelehnt.");
+                        targetplayer.sendMessage("§e" + player.getName() + " hat die Anfrage abgelehnt.");
+                    } else {
+                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                    }
             }
             deleteVertrag(player);
         } else {

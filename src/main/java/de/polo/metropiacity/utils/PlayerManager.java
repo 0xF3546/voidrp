@@ -94,7 +94,7 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                     PlayerData playerData = new PlayerData();
                     playerData.setUuid(player.getUniqueId());
@@ -164,6 +164,7 @@ public class PlayerManager implements Listener {
                     playerData.setWarns(name.getInt(32));
                     playerData.setBusiness(name.getString(33));
                     playerData.setBusiness_grade(name.getInt(34));
+                    playerData.setBloodType(name.getString("bloodtype"));
 
                     playerData.setCanInteract(true);
                     playerData.setFlightmode(false);
@@ -615,6 +616,32 @@ public class PlayerManager implements Listener {
         inv.setItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen", null));
         inv.setItem(38, ItemManager.createItem(Material.IRON_BARS, 1, 0, "§7Durchsuchen", null));
         inv.setItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen", null));
+        if (playerData.getFaction() != null) {
+            FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+            inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü", null));
+        }
+        for (int i = 0; i < 54; i++) {
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            }
+        }
+        player.openInventory(inv);
+    }
+    public static void openFactionInteractionMenu(Player player, String faction) {
+        Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
+        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
+        if (targetplayer == null) return;
+        PlayerData targetplayerData = playerDataMap.get(targetplayer.getUniqueId().toString());
+        playerData.setVariable("current_inventory", "interaktionsmenü_" + faction);
+        playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
+        inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
+        switch (faction.toLowerCase()) {
+            case "medic":
+                inv.setItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen", null));
+                break;
+        }
+        inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§7Interaktionsmenü", null));
         for (int i = 0; i < 54; i++) {
             if (inv.getItem(i) == null) {
                 inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));

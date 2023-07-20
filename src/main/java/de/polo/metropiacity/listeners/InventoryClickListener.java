@@ -1182,6 +1182,23 @@ public class InventoryClickListener implements Listener {
                     Server.Utils.kissPlayer(player, targetplayer2);
                     player.closeInventory();
                     break;
+                case 53:
+                    Main.cooldownManager.setCooldown(player, "interaction_cooldown", 1);
+                    PlayerManager.openFactionInteractionMenu(player, playerData.getFaction());
+                    break;
+            }
+        }
+        if (playerData.getVariable("current_inventory").startsWith("interaktionsmenü_")) {
+            event.setCancelled(true);
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
+            switch (event.getSlot()) {
+                case 20:
+                    StaatUtil.checkBloodGroup(player, targetplayer);
+                    player.closeInventory();
+                    break;
+                case 53:
+                    if (!Main.cooldownManager.isOnCooldown(player, "interaction_cooldown")) PlayerManager.openInterActionMenu(player, targetplayer);
+                    break;
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "garage")) {

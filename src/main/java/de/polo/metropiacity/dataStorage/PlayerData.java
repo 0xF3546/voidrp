@@ -54,6 +54,7 @@ public class PlayerData {
     private int business_grade;
     private int warns;
     private HashMap<String, String> relationShip = new HashMap<>();
+    private String bloodType;
 
     public PlayerData() {
     }
@@ -443,5 +444,13 @@ public class PlayerData {
 
     public void setWarns(int warns) {
         this.warns = warns;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
+    public void setBloodType(String bloodType) {
+        this.bloodType = bloodType;
     }
 }

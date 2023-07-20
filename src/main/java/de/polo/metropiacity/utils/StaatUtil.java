@@ -1,5 +1,6 @@
 package de.polo.metropiacity.utils;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.JailData;
 import de.polo.metropiacity.dataStorage.ServiceData;
 import de.polo.metropiacity.database.MySQL;
@@ -164,5 +165,29 @@ public class StaatUtil {
             accepter.sendMessage("§8[§6Notruf§8]§e " + player.getName() + " hat seinen Notruf abgebrochen.");
         }
         StaatUtil.serviceDataMap.remove(player.getUniqueId().toString());
+    }
+
+    public static void checkBloodGroup(Player player, Player targetplayer) {
+        PlayerData targetPlayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+        if (targetPlayerData.getBloodType() != null) {
+            player.sendMessage("§e" + targetplayer.getName() + "'s Blutgruppe ist " + targetPlayerData.getBloodType() + "!");
+            return;
+        }
+        if (targetPlayerData.getBargeld() < 200) {
+            player.sendMessage(Main.error + targetplayer.getName() + " hat nicht genug Geld dabei! (200$)");
+            return;
+        }
+        try {
+            if (VertragUtil.setVertrag(player, targetplayer, "blutgruppe", player.getUniqueId().toString())) {
+                player.sendMessage("§eDu hast " + targetplayer.getName() + " eine Anfrage zur Prüfung seiner Blutgruppe gestellt.");
+                targetplayer.sendMessage("§eMediziner " + player.getName() + " möchte deine Blutgruppe testen.");
+                VertragUtil.sendInfoMessage(targetplayer);
+            } else {
+                player.sendMessage(Main.error + targetplayer.getName() + " hat einen Vertrag offen.");
+            }
+        } catch (SQLException e) {
+            player.sendMessage("§cEin Fehler ist aufgetreten.");
+            throw new RuntimeException(e);
+        }
     }
 }

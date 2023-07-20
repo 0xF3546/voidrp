@@ -99,7 +99,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ServerPingListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new HouseLockListener(), this);
-        getServer().getPluginManager().registerEvents(new inventoryCloseListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryCloseListener(), this);
         getServer().getPluginManager().registerEvents(new Weapons(), this);
         getServer().getPluginManager().registerEvents(new ItemDropListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerPickUpArrowListener(), this);
