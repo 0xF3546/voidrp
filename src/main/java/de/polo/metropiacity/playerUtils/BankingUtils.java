@@ -6,6 +6,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -170,8 +171,8 @@ public class BankingUtils implements Listener {
                 if (PlayerManager.money(player) >= amount) {
                     PlayerManager.removeMoney(player, amount, "Bankauszahlung");
                     FactionManager.addFactionMoney(event.getPlayerData().getFaction(), amount, "Bankeinzahlung " + player.getName());
-                    player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ eingezahlt.");
-                    FactionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + amount + "$ auf das Fraktionskonto eingezahlt.");
+                    player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ eingezahlt.");
+                    FactionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Fraktionskonto eingezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
                 }
@@ -189,8 +190,8 @@ public class BankingUtils implements Listener {
                 if (FactionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
                     FactionManager.removeFactionMoney(event.getPlayerData().getFaction(), amount, "Bankauszahlung " + player.getName());
                     PlayerManager.addMoney(player, amount);
-                    player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
-                    FactionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + amount + "$ vom Fraktionskonto ausgezahlt.");
+                    player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
+                    FactionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
                 }

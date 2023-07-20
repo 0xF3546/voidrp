@@ -141,7 +141,7 @@ public final class Main extends JavaPlugin {
         getCommand("setloc").setExecutor(new LocationCommand());
         getCommand("setfraktion").setExecutor(new SetFrakCommand());
         getCommand("adminuninvite").setExecutor(new AdminUnInviteCommand());
-        getCommand("assistentchat").setExecutor(new AssistentchatCommand());
+        getCommand("guidechat").setExecutor(new AssistentchatCommand());
         getCommand("support").setExecutor(new SupportCommand());
         getCommand("cancelsupport").setExecutor(new CancelSupportCommand());
         getCommand("acceptsupport").setExecutor(new AcceptTicketCommand());

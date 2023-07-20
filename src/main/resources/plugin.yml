@@ -25,8 +25,8 @@ commands:
     aliases: setfrak
   adminuninvite:
     aliases: auninvite
-  assistentchat:
-    aliases: ac
+  guidechat:
+    aliases: gc
   support:
     aliases: [report, help]
   cancelsupport:
