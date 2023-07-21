@@ -93,13 +93,16 @@ public class DeathListener implements Listener {
                             gangwarData.setDefenderPoints(gangwarData.getDefenderPoints() + 3);
                         }
                     } else {
+                        if (player.getKiller() == null) return;
+                        PlayerData killerData = PlayerManager.playerDataMap.get(player.getKiller().getUniqueId().toString());
+                        if (killerData.getFaction() == null) return;
                         for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
                             if (blacklistData.getUuid().equals(player.getUniqueId().toString())) {
-                                if (FactionManager.faction(player.getKiller()) == blacklistData.getFaction()) {
+                                if (killerData.getFaction().equals(blacklistData.getFaction())) {
                                     FactionData factionData = FactionManager.factionDataMap.get(blacklistData.getFaction());
-                                    player.sendMessage("§8[§cBlacklist§8]§7 Du wurdest getötet, weil du auf der Blacklist der von " + factionData.getFullname() + " bist.");
+                                    player.sendMessage("§8[§cBlacklist§8]§7 Du wurdest getötet, weil du auf der Blacklist der " + factionData.getFullname() + " bist.");
                                     PlayerManager.addExp(player.getKiller(), Main.random(3, 9));
-                                    if (blacklistData.getKills() >= 1) {
+                                    if (blacklistData.getKills() > 1) {
                                         blacklistData.setKills(blacklistData.getKills() - 1);
                                         try {
                                             Statement statement = MySQL.getStatement();
