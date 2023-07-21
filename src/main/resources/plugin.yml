@@ -170,3 +170,5 @@ commands:
   gethead:
   factions:
     aliases: fraktionen
+  serverreload:
+  serverstop:
