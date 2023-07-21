@@ -49,7 +49,7 @@ public class AntragCommand implements CommandExecutor {
                 player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /beziehung [Spieler]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /antrag [Spieler]");
         }
         return false;
     }
