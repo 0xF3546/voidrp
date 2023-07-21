@@ -1,0 +1,79 @@
+package de.polo.metropiacity.commands;
+
+import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.DBPlayerData;
+import de.polo.metropiacity.dataStorage.FactionData;
+import de.polo.metropiacity.dataStorage.FactionPlayerData;
+import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.FactionManager;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.ServerManager;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class GiveRankCommand implements CommandExecutor {
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (playerData.getFactionGrade() < 7) {
+            player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        if (args.length < 2) {
+            player.sendMessage(Main.error + "Syntax-Fehler: /giverank [Spieler] [Rang]");
+            return false;
+        }
+        OfflinePlayer targetplayer = Bukkit.getPlayer(args[0]);
+        if (targetplayer == null) {
+            player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+            return false;
+        }
+        int rang;
+        try {
+            rang = Integer.parseInt(args[1]);
+        } catch (IllegalArgumentException e) {
+            player.sendMessage(Main.error + "Der Rang muss eine Zahl sein!");
+            return false;
+        }
+        if (0 > rang || rang > 8) {
+            player.sendMessage(Main.error + "Der Rang muss von 0-8 sein!");
+            return false;
+        }
+        FactionPlayerData factionPlayerData = ServerManager.factionPlayerDataMap.get(targetplayer.getUniqueId().toString());
+        if (!factionPlayerData.getFaction().equals(playerData.getFaction())) {
+            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner Fraktion.");
+            return false;
+        }
+        if (factionPlayerData.getFaction_grade() >= playerData.getFactionGrade()) {
+            player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
+        factionPlayerData.setFaction_grade(rang);
+        DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
+        dbPlayerData.setFaction_grade(rang);
+        try {
+            Statement statement = MySQL.getStatement();
+            statement.executeUpdate("UPDATE players SET faction_grade = " + rang + " WHERE uuid = '" + targetplayer.getUniqueId() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if (targetplayer.isOnline()) {
+            Player target = Bukkit.getPlayer(args[0]);
+            PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+            targetplayerData.setFactionGrade(rang);
+            target.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat dir Rang " + rang + " gegeben!");
+        }
+        return false;
+    }
+}

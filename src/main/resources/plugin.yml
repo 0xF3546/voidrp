@@ -172,3 +172,4 @@ commands:
     aliases: fraktionen
   serverreload:
   serverstop:
+  giverank:
