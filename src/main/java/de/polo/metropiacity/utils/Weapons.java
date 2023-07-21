@@ -23,6 +23,7 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Weapons implements Listener {
     public static final Map<Material, WeaponData> weaponDataMap = new HashMap<>();
@@ -91,7 +92,9 @@ public class Weapons implements Listener {
                 if (meta.getPersistentDataContainer().get(isReloading, PersistentDataType.INTEGER) == 1) {
                     meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 0);
                     meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
+                    player.sendMessage("joa");
                     reload(player, player.getEquipment().getItemInMainHand());
+                    //das event wird auch beim droppen einer waffe (wenn man in die luft schaut) getriggered
                 }
                 event.getItem().setItemMeta(meta);
             }
@@ -170,19 +173,17 @@ public class Weapons implements Listener {
 
     public static void reloadWeapon(Player player, ItemStack weapon) {
         WeaponData weaponData = weaponDataMap.get(weapon.getType());
-        NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
         NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
         ItemMeta meta = weapon.getItemMeta();
         meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
         weapon.setItemMeta(meta);
-        String actionBarText = "§7Lade " + weaponData.getName() + "§7 nach!";
-        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+        Utils.sendActionBar(player, "§7Lade " + weaponData.getName() + "§7 nach!");
         NamespacedKey type = new NamespacedKey(Main.plugin, "type");
-        if (meta.getPersistentDataContainer().get(type, PersistentDataType.STRING) != null) {
+        if (!Objects.equals(meta.getPersistentDataContainer().get(type, PersistentDataType.STRING), "default")) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    player.sendMessage("reload2");
                     reload(player, weapon);
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
@@ -197,6 +198,7 @@ public class Weapons implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    player.sendMessage("reload");
                     reload(player, weapon);
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
