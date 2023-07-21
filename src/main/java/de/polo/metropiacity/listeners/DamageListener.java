@@ -3,8 +3,7 @@ package de.polo.metropiacity.listeners;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.PlayerManager;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +20,7 @@ public class DamageListener implements Listener {
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             ItemStack chestplate = player.getInventory().getArmorContents()[2];
             if (!playerData.isAduty()) {
+                player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     event.setCancelled(PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVisum() <= 2);
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
