@@ -535,7 +535,7 @@ public class PlayerManager implements Listener {
         } else {
             player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             Utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
-            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         }
     }
 

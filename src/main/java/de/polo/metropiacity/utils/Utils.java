@@ -47,6 +47,9 @@ public class Utils {
         }
         return stringBuilder.toString();
     }
+    public static void sendPlayerAchievementMessage(Player player, String message) {
+
+    }
     public static String toDecimalFormat(int number) {
         return new DecimalFormat("#,###").format(number);
     }
