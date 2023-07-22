@@ -20,7 +20,7 @@ public class SetTeamCommand implements CommandExecutor {
                 String uuid = targetplayer.getUniqueId().toString();
                 PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
                 String rank = args[1];
-                if (PlayerManager.updatePlayerTeam(targetplayer.getUniqueId().toString(), rank)) {
+                if (PlayerManager.setRang(targetplayer.getUniqueId().toString(), rank)) {
                     player.sendMessage(Main.admin_prefix + targetplayer.getName() + " ist nun §c" + rank + "§7.");
                     targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
                 } else {

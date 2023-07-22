@@ -9,6 +9,7 @@ import de.polo.metropiacity.playerUtils.*;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import de.polo.metropiacity.commands.ADutyCommand;
+import net.dv8tion.jda.api.events.session.SessionState;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -26,6 +27,11 @@ import java.io.Serializable;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
 
@@ -35,6 +41,7 @@ public class PlayerManager implements Listener {
     public static final HashMap<String, Boolean> onPlayer = new HashMap<>();
     public static final HashMap<String, Boolean> playerMovement = new HashMap<>();
     public static final HashMap<String, Integer> player_rent = new HashMap<>();
+
     public static boolean isCreated(String uuid) {
 
         try {
@@ -63,11 +70,12 @@ public class PlayerManager implements Listener {
         }
         return false;
     }
+
     public static void updatePlayer(String uuid, String name, String adress) {
         try {
             Statement statement = MySQL.getStatement();
             String[] adresse = adress.split(":");
-            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adresse[0] + "' WHERE uuid = '"+ uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adresse[0] + "' WHERE uuid = '" + uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -96,46 +104,55 @@ public class PlayerManager implements Listener {
             assert statement != null;
             ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
-                    PlayerData playerData = new PlayerData();
-                    playerData.setUuid(player.getUniqueId());
-                    playerData.setFirstname(name.getString(1));
-                    playerData.setLastname(name.getString(2));
-                    playerData.setBargeld(name.getInt(3));
-                    playerData.setBank(name.getInt(4));
-                    playerData.setVisum(name.getInt(5));
-                    playerData.setPermlevel(name.getInt(8));
-                    playerData.setRang(name.getString(10));
-                    playerData.setAduty(false);
-                    playerData.setLevel(name.getInt(11));
-                    playerData.setExp(name.getInt(12));
-                    playerData.setNeeded_exp(name.getInt(13));
-                    playerData.setScoreboard(new Scoreboard(player));
-                    playerData.setDead(name.getBoolean(14));
-                    if (name.getBoolean(14)) playerData.setDeathTime(name.getInt(15));
-                    playerData.setNumber(name.getInt(20));
-                    playerData.setDuty(name.getBoolean(17));
-                    playerData.setGender(name.getString(18));
-                    playerData.setBirthday(name.getString(19));
-                    playerData.setId(name.getInt(20));
-                    playerData.setHouseSlot(name.getInt(21));
-                    playerData.setRankDuration(name.getInt(22));
-                    playerData.setBoostDuration(name.getInt(23));
-                    playerData.setSecondaryTeam(name.getString(24));
-                    playerData.setTeamSpeakUID(name.getString(25));
-                    playerData.setJob(name.getString(26));
+                PlayerData playerData = new PlayerData();
+                playerData.setUuid(player.getUniqueId());
+                playerData.setFirstname(name.getString(1));
+                playerData.setLastname(name.getString(2));
+                playerData.setBargeld(name.getInt(3));
+                playerData.setBank(name.getInt(4));
+                playerData.setVisum(name.getInt(5));
+                playerData.setPermlevel(name.getInt(8));
+                playerData.setRang(name.getString(10));
+                playerData.setAduty(false);
+                playerData.setLevel(name.getInt("level"));
+                playerData.setExp(name.getInt(12));
+                playerData.setNeeded_exp(name.getInt(13));
+                playerData.setScoreboard(new Scoreboard(player));
+                playerData.setDead(name.getBoolean(14));
+                if (name.getBoolean(14)) playerData.setDeathTime(name.getInt(15));
+                playerData.setNumber(name.getInt(20));
+                playerData.setDuty(name.getBoolean(17));
+                playerData.setGender(name.getString(18));
+                playerData.setBirthday(name.getString(19));
+                playerData.setId(name.getInt(20));
+                playerData.setHouseSlot(name.getInt(21));
+                if (name.getDate(22) != null) {
+                    java.util.Date utilDate = new java.util.Date(name.getDate(22).getTime());
 
-                    if (!name.getBoolean(27)) {
-                        playerData.setVariable("current_inventory", "jugendschutz");
-                        playerData.setVariable("jugendschutz", "muss");
-                        Main.waitSeconds(1, () -> {
+                    // Konvertierung von java.util.Date zu LocalDateTime
+                    LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+                    playerData.setRankDuration(localDateTime);
+                }
+                playerData.setBoostDuration(name.getInt(23));
+                playerData.setSecondaryTeam(name.getString(24));
+                playerData.setTeamSpeakUID(name.getString(25));
+                playerData.setJob(name.getString(26));
+                player.setMaxHealth(30 + (((double) name.getInt("level") / 5) * 2));
+                player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
+
+                if (!name.getBoolean(27)) {
+                    playerData.setVariable("current_inventory", "jugendschutz");
+                    playerData.setVariable("jugendschutz", "muss");
+                    Main.waitSeconds(1, () -> {
                         Inventory inv = Bukkit.createInventory(player, 27, "§c§lJugendschutz");
                         inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", "Lädt..."));
                         ItemMeta meta = inv.getItem(11).getItemMeta();
-                        meta.setLore(Arrays.asList("§7Void Roleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,"," §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7","§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7","§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das Void Roleplay Team behält sich vor","§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder","§a§l habe die Erlaubnis meiner Eltern"));
+                        meta.setLore(Arrays.asList("§7Void Roleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das Void Roleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"));
                         inv.getItem(11).setItemMeta(meta);
                         inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", "Lädt..."));
                         ItemMeta nmeta = inv.getItem(15).getItemMeta();
-                        nmeta.setLore(Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist","§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7","§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt","§c§l und habe keine Erlaubnis meiner Eltern"));
+                        nmeta.setLore(Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist", "§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7", "§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt", "§c§l und habe keine Erlaubnis meiner Eltern"));
                         inv.getItem(15).setItemMeta(nmeta);
                         for (int i = 0; i < 27; i++) {
                             if (inv.getItem(i) == null) {
@@ -143,78 +160,85 @@ public class PlayerManager implements Listener {
                             }
                         }
                         player.openInventory(inv);
-                        });
-                    }
-                    if (name.getBoolean(28)) {
-                        playerData.setVariable("tutorial", "muss");
-                        Tutorial.start(player);
-                    }
+                    });
+                }
+                if (name.getBoolean(28)) {
+                    playerData.setVariable("tutorial", "muss");
+                    Tutorial.start(player);
+                }
 
-                    playerData.setHours(name.getInt(29));
-                    playerData.setMinutes(name.getInt(30));
+                playerData.setHours(name.getInt(29));
+                playerData.setMinutes(name.getInt(30));
 
-                    JSONObject object = new JSONObject(name.getString(31));
-                    HashMap<String, String> map = new HashMap<>();
-                    for (String key : object.keySet()) {
-                        String value = (String) object.get(key);
-                        map.put(key, value);
-                    }
-                    playerData.setRelationShip(map);
+                JSONObject object = new JSONObject(name.getString(31));
+                HashMap<String, String> map = new HashMap<>();
+                for (String key : object.keySet()) {
+                    String value = (String) object.get(key);
+                    map.put(key, value);
+                }
+                playerData.setRelationShip(map);
 
-                    playerData.setWarns(name.getInt(32));
-                    playerData.setBusiness(name.getString(33));
-                    playerData.setBusiness_grade(name.getInt(34));
-                    playerData.setBloodType(name.getString("bloodtype"));
+                playerData.setWarns(name.getInt(32));
+                playerData.setBusiness(name.getString(33));
+                playerData.setBusiness_grade(name.getInt(34));
+                playerData.setBloodType(name.getString("bloodtype"));
 
-                    playerData.setCanInteract(true);
-                    playerData.setFlightmode(false);
+                playerData.setCanInteract(true);
+                playerData.setFlightmode(false);
 
-                    updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
-                    if (name.getInt(8) >= 60) {
-                        onPlayer.put(player.getUniqueId().toString(), true);
-                        player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
-                        player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-                        player.setCustomName("§8[§7Team§8]§7 " + player.getName());
-                        player.setCustomNameVisible(true);
-                    } else {
-                        onPlayer.put(player.getUniqueId().toString(), false);
-                        player.setDisplayName("§7" + player.getName());
-                        player.setPlayerListName("§7" + player.getName());
-                        player.setCustomName("§7" + player.getName());
-                        player.setCustomNameVisible(true);
-                    }
+                updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
+                if (name.getInt(8) >= 60) {
+                    onPlayer.put(player.getUniqueId().toString(), true);
+                    player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
+                    player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
+                    player.setCustomName("§8[§7Team§8]§7 " + player.getName());
+                    player.setCustomNameVisible(true);
+                } else {
+                    onPlayer.put(player.getUniqueId().toString(), false);
+                    player.setDisplayName("§7" + player.getName());
+                    player.setPlayerListName("§7" + player.getName());
+                    player.setCustomName("§7" + player.getName());
+                    player.setCustomNameVisible(true);
+                }
 
-                    player_rent.put(player.getUniqueId().toString(), name.getInt(8));
-                    player.setLevel(name.getInt(5));
-                    if (name.getString(6) != null) {
-                        playerData.setFaction(name.getString(6));
-                        playerData.setFactionGrade(name.getInt(7));
-                    }
-                    player.setMaxHealth(30 + (((double) name.getInt(5) / 5) * 2));
+                player_rent.put(player.getUniqueId().toString(), name.getInt(8));
+                player.setLevel(name.getInt("level"));
+                if (name.getString(6) != null) {
+                    playerData.setFaction(name.getString(6));
+                    playerData.setFactionGrade(name.getInt(7));
+                }
 
 
-                    ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
-                    if (jail.next()) {
-                        playerData.setHafteinheiten(jail.getInt(1));
-                        playerData.setVariable("jail_reason", jail.getString(2));
-                        playerData.setJailed(true);
+                ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+                if (jail.next()) {
+                    playerData.setHafteinheiten(jail.getInt(1));
+                    playerData.setVariable("jail_reason", jail.getString(2));
+                    playerData.setJailed(true);
+                }
+                ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` FROM `player_skills` WHERE `uuid` = '" + uuid + "'");
+                if (skills.next()) {
+                    playerData.setSkillLevel("miner", skills.getInt(1));
+                    playerData.setSkillExp("miner", skills.getInt(2));
+                    playerData.setSkillNeeded_Exp("miner", skills.getInt(3));
+                }
+                ResultSet ammo = statement.executeQuery("SELECT * FROM `player_ammo` WHERE `uuid` = '" + uuid + "'");
+                if (ammo.next()) {
+                    //for (int i = 0; i < Weapons.weaponDataMap.size(); i++) playerData.getIntVariable("ammo_" + ammo.getRow(), ammo.getInt(i));
+                }
+                playerDataMap.put(uuid, playerData);
+                if (playerData.getRankDuration() != null) {
+                    LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    if (date.isBefore(LocalDateTime.now())) {
+                        player.sendMessage(Main.prefix + "Dein " + playerData.getRang() + " ist ausgelaufen.");
+                        setRang(uuid, "Spieler");
+                        statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + player.getUniqueId() + "'");
                     }
-                    ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` FROM `player_skills` WHERE `uuid` = '" + uuid + "'");
-                    if (skills.next()) {
-                        playerData.setSkillLevel("miner", skills.getInt(1));
-                        playerData.setSkillExp("miner", skills.getInt(2));
-                        playerData.setSkillNeeded_Exp("miner", skills.getInt(3));
-                    }
-                    ResultSet ammo = statement.executeQuery("SELECT * FROM `player_ammo` WHERE `uuid` = '" + uuid + "'");
-                    if (ammo.next()) {
-                        //for (int i = 0; i < Weapons.weaponDataMap.size(); i++) playerData.getIntVariable("ammo_" + ammo.getRow(), ammo.getInt(i));
-                    }
-                    playerDataMap.put(uuid, playerData);
-                    if (playerData.isDuty()) {
-                        FactionManager.setDuty(player, true);
-                    }
-                    returnval = true;
-                    if (playerData.isDead()) DeathUtils.killPlayer(player);
+                }
+                if (playerData.isDuty()) {
+                    FactionManager.setDuty(player, true);
+                }
+                returnval = true;
+                if (playerData.isDead()) DeathUtils.killPlayer(player);
             }
         } catch (SQLException e) {
             returnval = false;
@@ -270,7 +294,7 @@ public class PlayerManager implements Listener {
             ResultSet result = statement.executeQuery("SELECT `playtime_hours`, `playtime_minutes`, `current_hours`, `needed_hours`, `visum` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (result.next()) {
                 int hours = result.getInt(1) + 1;
-                int minutes =  result.getInt(2);
+                int minutes = result.getInt(2);
                 int newMinutes = result.getInt(2) + 1;
                 int current_hours = result.getInt(3);
                 int needed_hours = result.getInt(4);
@@ -284,7 +308,6 @@ public class PlayerManager implements Listener {
                         PayDayUtils.givePayDay(player);
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
                         player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
-                        player.setLevel(visum);
                         playerData.setVisum(visum);
                         playerData.setHours(playerData.getHours() + 1);
                         player.setMaxHealth(30 + ((double) visum / 5) * 2);
@@ -310,6 +333,7 @@ public class PlayerManager implements Listener {
             e.printStackTrace();
         }
     }
+
     public static void addMoney(Player player, int amount) throws SQLException {
         Statement statement = MySQL.getStatement();
         assert statement != null;
@@ -318,7 +342,7 @@ public class PlayerManager implements Listener {
         playerData.setBargeld(playerData.getBargeld() + amount);
         ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + uuid + "'");
         if (result.next()) {
-            int res =  result.getInt(1);
+            int res = result.getInt(1);
             statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + uuid + "'");
         }
     }
@@ -349,6 +373,7 @@ public class PlayerManager implements Listener {
             statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
         }
     }
+
     public static void removeBankMoney(Player player, int amount, String reason) throws SQLException {
         Statement statement = MySQL.getStatement();
         assert statement != null;
@@ -364,12 +389,12 @@ public class PlayerManager implements Listener {
     }
 
 
-    public static boolean updatePlayerTeam(String uuid, String rank) {
+    public static boolean setRang(String uuid, String rank) {
         try {
             for (RankData rankData : ServerManager.rankDataMap.values()) {
                 if (rankData.getRang().equalsIgnoreCase(rank)) {
                     Statement statement = MySQL.getStatement();
-                    statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rankData.getRang() + "', `player_permlevel` = " + rankData.getPermlevel() + " WHERE uuid = '"+ uuid + "'");
+                    statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rankData.getRang() + "', `player_permlevel` = " + rankData.getPermlevel() + " WHERE uuid = '" + uuid + "'");
                     PlayerData playerData = playerDataMap.get(uuid);
                     playerData.setRang(rankData.getRang());
                     playerData.setPermlevel(rankData.getPermlevel());
@@ -444,11 +469,13 @@ public class PlayerManager implements Listener {
     public static boolean isTeam(Player player) {
         return playerDataMap.get(player.getUniqueId().toString()).getPermlevel() >= 40;
     }
+
     public static Integer perms(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getPermlevel();
     }
+
     public static String rang(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
@@ -514,7 +541,7 @@ public class PlayerManager implements Listener {
                     }
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 20*2, 20*60);
+        }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
 
     public static void kickPlayer(Player player, String reason) {
@@ -529,6 +556,7 @@ public class PlayerManager implements Listener {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
             Utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
             playerData.setLevel(playerData.getLevel() + 1);
+            player.setMaxHealth(30 + (((double) playerData.getLevel() / 5) * 2));
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
@@ -537,6 +565,7 @@ public class PlayerManager implements Listener {
             Utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         }
+        player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
     }
 
     public static void removeExp(Player player, Integer exp) {
@@ -554,28 +583,44 @@ public class PlayerManager implements Listener {
 
     public static void redeemRank(Player player, String type, int duration, String duration_type) throws SQLException {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
-        switch (type) {
-            case "VIP":
+        switch (type.toLowerCase()) {
+            case "vip":
                 playerData.setRang("VIP");
                 playerData.setPermlevel(30);
-                playerData.setRankDuration(playerData.getRankDuration() + duration);
+                if (playerData.getRankDuration() != null) {
+                    playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                } else {
+                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                }
                 break;
-            case "Premium":
+            case "premium":
                 playerData.setRang("Premium");
                 playerData.setPermlevel(20);
-                playerData.setRankDuration(playerData.getRankDuration() + duration);
+                if (playerData.getRankDuration() != null) {
+                    playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                } else {
+                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                }
                 break;
-            case "Gold":
+            case "gold":
                 playerData.setRang("Gold");
                 playerData.setPermlevel(10);
-                playerData.setRankDuration(playerData.getRankDuration() + duration);
+                if (playerData.getRankDuration() != null) {
+                    playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                } else {
+                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                }
                 break;
             default:
                 player.sendMessage(Main.error + "§cFehler. Bitte einen Administratoren kontaktieren.");
                 break;
         }
         Statement statement = MySQL.getStatement();
-        statement.executeUpdate("UPDATE `players` SET `rankDuration` = " + playerData.getRankDuration() + ", `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        System.out.println(playerData.getRankDuration());
+        LocalDateTime localDateTime = playerData.getRankDuration();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = localDateTime.format(formatter);
+        statement.executeUpdate("UPDATE `players` SET `rankDuration` = '" + playerData.getRankDuration() + "', `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static void setJob(Player player, String job) {
@@ -627,6 +672,7 @@ public class PlayerManager implements Listener {
         }
         player.openInventory(inv);
     }
+
     public static void openFactionInteractionMenu(Player player, String faction) {
         Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
@@ -649,6 +695,7 @@ public class PlayerManager implements Listener {
         }
         player.openInventory(inv);
     }
+
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
         if (event.getSubmitTo().equals("givemoney")) {
@@ -658,7 +705,7 @@ public class PlayerManager implements Listener {
                 return;
             }
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(event.getPlayerData().getVariable("current_player")));
-            if (targetplayer ==  null) {
+            if (targetplayer == null) {
                 event.end();
                 return;
             }
@@ -671,7 +718,7 @@ public class PlayerManager implements Listener {
                             PlayerManager.addMoney(targetplayer, amount);
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
-                            ChatUtils.sendMeMessageAtPlayer(event.getPlayer(),  "§o"+ event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
+                            ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
                             ADutyCommand.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.");
                         } catch (SQLException e) {
                             throw new RuntimeException(e);

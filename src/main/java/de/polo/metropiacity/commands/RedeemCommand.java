@@ -35,8 +35,8 @@ public class RedeemCommand implements CommandExecutor {
                         duration = result.getInt(4);
                         duration_type = result.getString(5);
                         player.sendMessage(Main.prefix + "§bDu hast dein §9" + args[0] + "§b eingelöst");
-                        player.sendMessage(Main.prefix + "§eDanke für's Unterstützen von Void Roleplay!");
-                        switch (args[0]) {
+                        player.sendMessage(Main.prefix + "§eDanke für's Unterstützen vom Server!");
+                        switch (args[0].toLowerCase()) {
                             case "vip":
                                 PlayerManager.redeemRank(player, "VIP", result.getInt(4), result.getString(5));
                                 break;

@@ -4,6 +4,10 @@ import de.polo.metropiacity.playerUtils.Scoreboard;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -42,7 +46,7 @@ public class PlayerData {
     private String gender;
     private String birthday;
     private int houseSlot;
-    private int rankDuration;
+    private LocalDateTime rankDuration;
     private int boostDuration;
     private Location deathLocation;
     private String secondaryTeam;
@@ -318,13 +322,6 @@ public class PlayerData {
         this.houseSlot = houseSlot;
     }
 
-    public int getRankDuration() {
-        return rankDuration;
-    }
-
-    public void setRankDuration(int rankDuration) {
-        this.rankDuration = rankDuration;
-    }
 
     public int getBoostDuration() {
         return boostDuration;
@@ -452,5 +449,13 @@ public class PlayerData {
 
     public void setBloodType(String bloodType) {
         this.bloodType = bloodType;
+    }
+
+    public LocalDateTime getRankDuration() {
+        return rankDuration;
+    }
+
+    public void setRankDuration(LocalDateTime rankDuration) {
+        this.rankDuration = rankDuration;
     }
 }
