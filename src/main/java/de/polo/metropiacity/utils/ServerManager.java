@@ -12,6 +12,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -182,6 +184,7 @@ public class ServerManager {
         new BukkitRunnable() {
             @Override
             public void run() {
+                Bukkit.getServer().getWorlds().forEach(world -> world.setFullTime(LocalTime.now().toSecondOfDay()));
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     updateTablist(player);
                 }

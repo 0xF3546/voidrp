@@ -126,6 +126,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryOpenListener(), this);
         getServer().getPluginManager().registerEvents(new Farming(), this);
+        getServer().getPluginManager().registerEvents(new HungerListener(), this);
 
     }
 

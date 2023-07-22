@@ -138,7 +138,7 @@ public class PlayerManager implements Listener {
                 playerData.setSecondaryTeam(name.getString(24));
                 playerData.setTeamSpeakUID(name.getString(25));
                 playerData.setJob(name.getString(26));
-                player.setMaxHealth(30 + (((double) name.getInt("level") / 5) * 2));
+                player.setMaxHealth(32 + (((double) name.getInt("level") / 5) * 2));
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
                 if (!name.getBoolean(27)) {
@@ -310,7 +310,6 @@ public class PlayerManager implements Listener {
                         player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                         playerData.setVisum(visum);
                         playerData.setHours(playerData.getHours() + 1);
-                        player.setMaxHealth(30 + ((double) visum / 5) * 2);
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                     } else {
                         PayDayUtils.givePayDay(player);
@@ -556,7 +555,7 @@ public class PlayerManager implements Listener {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
             Utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
             playerData.setLevel(playerData.getLevel() + 1);
-            player.setMaxHealth(30 + (((double) playerData.getLevel() / 5) * 2));
+            player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
@@ -585,31 +584,46 @@ public class PlayerManager implements Listener {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         switch (type.toLowerCase()) {
             case "vip":
-                playerData.setRang("VIP");
-                playerData.setPermlevel(30);
-                if (playerData.getRankDuration() != null) {
-                    playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                if (playerData.getRang().equals("VIP") || playerData.getRang().equals("Spieler")) {
+                    if (playerData.getRankDuration() != null) {
+                        playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                    } else {
+                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    }
                 } else {
                     playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf VIP gestiegen bist, ist der alte Rang verloren gegangen.");
                 }
+                playerData.setPermlevel(30);
+                playerData.setRang("VIP");
                 break;
             case "premium":
+                if (playerData.getRang().equals("Premium") || playerData.getRang().equals("Spieler")) {
+                    if (playerData.getRankDuration() != null) {
+                        playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                    } else {
+                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    }
+                } else {
+                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf Premium gestiegen bist, ist der alte Rang verloren gegangen.");
+                }
                 playerData.setRang("Premium");
                 playerData.setPermlevel(20);
-                if (playerData.getRankDuration() != null) {
-                    playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
-                } else {
-                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
-                }
                 break;
             case "gold":
-                playerData.setRang("Gold");
-                playerData.setPermlevel(10);
-                if (playerData.getRankDuration() != null) {
-                    playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                if (playerData.getRang().equals("Gold") || playerData.getRang().equals("Spieler")) {
+                    if (playerData.getRankDuration() != null) {
+                        playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                    } else {
+                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    }
                 } else {
                     playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf Gold gestiegen bist, ist der alte Rang verloren gegangen.");
                 }
+                playerData.setRang("Gold");
+                playerData.setPermlevel(10);
                 break;
             default:
                 player.sendMessage(Main.error + "§cFehler. Bitte einen Administratoren kontaktieren.");
