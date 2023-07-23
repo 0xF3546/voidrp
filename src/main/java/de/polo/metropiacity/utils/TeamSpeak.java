@@ -34,8 +34,8 @@ public class TeamSpeak implements CommandExecutor {
     public static void loadConfig() {
         System.out.println("Lade TS3 config...");
         final TS3Config config = new TS3Config();
-        config.setHost("193.41.226.26:9001").setFloodRate(TS3Query.FloodRate.UNLIMITED);
-        config.setConnectionHandler(new ConnectionHandler() {
+        config.setHost("37.221.92.65").setFloodRate(TS3Query.FloodRate.UNLIMITED).setQueryPort(10011);
+        /*config.setConnectionHandler(new ConnectionHandler() {
             @Override
             public void onConnect(TS3Api api) {
                 System.out.println("[TS3Bot] Bot wurde gestartet.");
@@ -45,7 +45,7 @@ public class TeamSpeak implements CommandExecutor {
             public void onDisconnect(TS3Query ts3Query) {
                 System.out.println("[TS3Bot] Bot wurde gestoppt.");
             }
-        });
+        });*/
 
         query.connect();
         if (!query.isConnected()) {
@@ -53,8 +53,8 @@ public class TeamSpeak implements CommandExecutor {
             return;
         }
         api = query.getApi();
-        api.login("tsquery", "zRF0GIrN");
-        api.selectVirtualServerById(162);
+        api.login("serveradmin", "WrQzPS72");
+        api.selectVirtualServerById(2);
         api.setNickname("MetropiaCity");
     }
 
@@ -77,7 +77,7 @@ public class TeamSpeak implements CommandExecutor {
             TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
         }
         for (FactionData factionData : FactionManager.factionDataMap.values()) {
-            getAPI().setClientChannelGroup(8, factionData.getChannelGroupID(), client.getDatabaseId());
+            getAPI().setClientChannelGroup(9, factionData.getChannelGroupID(), client.getDatabaseId());
         }
     }
 
@@ -96,9 +96,9 @@ public class TeamSpeak implements CommandExecutor {
             RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
             getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
             if (playerData.getFactionGrade() >= 7) {
-                getAPI().setClientChannelGroup(953, factionData.getChannelGroupID(), client.getDatabaseId());
+                getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
             } else {
-                getAPI().setClientChannelGroup(954, factionData.getChannelGroupID(), client.getDatabaseId());
+                getAPI().setClientChannelGroup(11, factionData.getChannelGroupID(), client.getDatabaseId());
             }
             if (!playerData.getRang().equals("Spieler")) {
                 RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
@@ -131,10 +131,10 @@ public class TeamSpeak implements CommandExecutor {
                     RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
                     getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
                     if (playerData.getFactionGrade() >= 7) {
-                        getAPI().setClientChannelGroup(953, factionData.getChannelGroupID(), client.getDatabaseId());
+                        getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
                         getAPI().sendPrivateMessage(client.getId(), "Dir wurden Leaderrechte für " + playerData.getFaction() + " gegeben!");
                     } else {
-                        getAPI().setClientChannelGroup(954, factionData.getChannelGroupID(), client.getDatabaseId());
+                        getAPI().setClientChannelGroup(11, factionData.getChannelGroupID(), client.getDatabaseId());
                         getAPI().sendPrivateMessage(client.getId(), "Dir wurden Memberrechte für " + playerData.getFaction() + " gegeben!");
                     }
                     if (playerData.getSecondaryTeam() != null) {
