@@ -269,8 +269,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        TeamSpeak.getAPI().logout();
-        TeamSpeak.getQuery().exit();
+        TeamSpeak.shutdown();
         System.out.println("Disabling MetroCity Roleplay");
         isOnline = false;
         try {
