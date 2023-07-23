@@ -42,13 +42,18 @@ public class WorldListener implements Listener {
     }
     @EventHandler
     public void onVehicleDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            event.setCancelled(true);
+            return;
+        }
+        Player player = (Player) event.getEntity();
         if (event.getEntity().getType() == EntityType.PAINTING) {
-            if (!(event.getEntity() instanceof Player) || !((Player) event.getEntity()).getGameMode().equals(GameMode.CREATIVE)) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 event.setCancelled(true);
             }
         }
         if (event.getEntity().getType() == EntityType.ITEM_FRAME) {
-            if (!(event.getEntity() instanceof Player) || !((Player) event.getEntity()).getGameMode().equals(GameMode.CREATIVE)) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 event.setCancelled(true);
             }
         }

@@ -20,10 +20,11 @@ public class SpecCommand implements CommandExecutor {
                 if (playerData.getVariable("isSpec") == null) {
                     if (args.length >= 1) {
                         Player targetplayer = Bukkit.getPlayer(args[0]);
+                        playerData.setLocationVariable("specLoc", player.getLocation());
+                        player.teleport(targetplayer.getLocation());
                         player.setGameMode(GameMode.SPECTATOR);
                         player.setSpectatorTarget(targetplayer);
                         playerData.setVariable("isSpec", targetplayer.getUniqueId().toString());
-                        playerData.setLocationVariable("specLoc", player.getLocation());
                         player.sendMessage(Main.admin_prefix + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
                     } else {
                         player.sendMessage(Main.admin_error + "Syntax-Fehler: /spec [Spieler]");

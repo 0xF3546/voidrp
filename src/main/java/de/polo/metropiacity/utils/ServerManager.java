@@ -184,7 +184,7 @@ public class ServerManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.getServer().getWorlds().forEach(world -> world.setFullTime(LocalTime.now().toSecondOfDay()));
+                //Bukkit.getServer().getWorlds().forEach(world -> world.setFullTime(LocalTime.now().toSecondOfDay()));
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     updateTablist(player);
                 }

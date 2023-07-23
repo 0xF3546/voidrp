@@ -86,11 +86,27 @@ public class InventoryClickListener implements Listener {
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                         PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
                                     } else if (Objects.equals(row[5].toString(), "ammo")) {
-                                        String ammo = row[3].toString().replace("&", "").replace("6", "");
-                                        Weapons.giveWeaponAmmoToPlayer(player, ammo, 1);
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
-                                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + ammo);
+                                        String ammo = row[6].toString();
+                                        if (player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
+                                            player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
+                                            player.closeInventory();
+                                            return;
+                                        }
+                                        for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                                            if (weaponData.getType().equalsIgnoreCase(ammo)) {
+                                                if (weaponData.getMaterial().equals(player.getEquipment().getItemInMainHand().getType())) {
+                                                    Weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
+                                                    player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
+                                                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
+                                                    PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + weaponData.getType());
+                                                } else {
+                                                    player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
+                                                    player.closeInventory();
+                                                }
+                                                return;
+                                            }
+                                        }
+                                        player.sendMessage(Main.error + "Es konnte keine Waffe zur Munition gefunden werden.");
                                     } else if (Objects.equals(row[5].toString(), "car")) {
                                         Vehicles.giveVehicle(player, row[6].toString());
                                     } else {
