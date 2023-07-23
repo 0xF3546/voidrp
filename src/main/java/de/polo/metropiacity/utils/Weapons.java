@@ -30,7 +30,7 @@ public class Weapons implements Listener {
 
     public static void loadWeapons() throws SQLException {
         Statement statement = MySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `material`, `name`, `maxAmmo`, `reloadDuration`, `damage`, `weaponSound`, `velocity`, `shootDuration`, `type` FROM `weapons`");
+        ResultSet result = statement.executeQuery("SELECT `id`, `material`, `name`, `maxAmmo`, `reloadDuration`, `damage`, `weaponSound`, `velocity`, `shootDuration`, `type`, `soundPitch` FROM `weapons`");
         while (result.next()) {
             WeaponData weaponData = new WeaponData();
             weaponData.setId(result.getInt(1));
@@ -43,6 +43,7 @@ public class Weapons implements Listener {
             weaponData.setArrowVelocity(result.getFloat(8));
             weaponData.setShootDuration(result.getFloat(9));
             weaponData.setType(result.getString(10));
+            weaponData.setSoundPitch(result.getFloat(11));
             weaponDataMap.put(Material.valueOf(result.getString(2)), weaponData);
         }
     }
@@ -65,14 +66,23 @@ public class Weapons implements Listener {
         NamespacedKey typeKey = new NamespacedKey(Main.plugin, "type");
         meta.getPersistentDataContainer().set(typeKey, PersistentDataType.STRING, type);
 
+        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
+        meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
+
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weaponData.getMaxAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
 
     }
 
-    public static void giveWeaponAmmoToPlayer(Player player, String ammo, Integer amount) {
-
+    public static void giveWeaponAmmoToPlayer(Player player, ItemStack weapon, Integer amount) {
+        ItemMeta meta = weapon.getItemMeta();
+        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
+        int current_ammo = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
+        meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, current_ammo += amount);
+        int ammo = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "current_ammo"), PersistentDataType.INTEGER);
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + ammo + "§8/§6" + (current_ammo += amount)));
+        weapon.setItemMeta(meta);
     }
 
     @EventHandler
@@ -92,7 +102,6 @@ public class Weapons implements Listener {
                 if (meta.getPersistentDataContainer().get(isReloading, PersistentDataType.INTEGER) == 1) {
                     meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 0);
                     meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
-                    player.sendMessage("joa");
                     reload(player, player.getEquipment().getItemInMainHand());
                     //das event wird auch beim droppen einer waffe (wenn man in die luft schaut) getriggered
                 }
@@ -103,9 +112,11 @@ public class Weapons implements Listener {
         NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
         NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
         NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
+        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
         Integer isReloadingPers = event.getItem().getItemMeta().getPersistentDataContainer().get(isReloading, PersistentDataType.INTEGER);
         Integer canShootPers = event.getItem().getItemMeta().getPersistentDataContainer().get(canShoot, PersistentDataType.INTEGER);
         Integer curr_ammo = event.getItem().getItemMeta().getPersistentDataContainer().get(current_ammo, PersistentDataType.INTEGER);
+        Integer ammo = event.getItem().getItemMeta().getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
         if (canShootPers == 0 && isReloadingPers == 0) {
             return;
         }
@@ -133,13 +144,13 @@ public class Weapons implements Listener {
             double distance = location.distance(playerLocation);
             if (distance <= 20) {
                 float volume = (float) (1.0 - (distance / 20.0));
-                nearbyPlayer.playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, volume, 1.0f);
+                nearbyPlayer.playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, volume, weaponData.getSoundPitch());
             }
         }
         int newAmmo = curr_ammo - 1;
         meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, newAmmo);
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + weaponData.getMaxAmmo()));
-        String actionBarText = "§e" + newAmmo + "§8/§6" + weaponData.getMaxAmmo();
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + ammo));
+        String actionBarText = "§e" + newAmmo + "§8/§6" + meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
 
         meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 0);
@@ -152,14 +163,7 @@ public class Weapons implements Listener {
                     meta1.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
                     event.getItem().setItemMeta(meta1);
                 } else {
-                    NamespacedKey type = new NamespacedKey(Main.plugin, "type");
-                    if (meta1.getPersistentDataContainer().get(type, PersistentDataType.STRING) == null) {
-                        if (ItemManager.getItem(player, weaponData.getAmmoItem()) >= 1) {
-                            reloadWeapon(player, event.getItem());
-                        } else {
-                            Utils.sendPlayerAchievementMessage(player, "§cDu hast keine Magazine mehr!");
-                        }
-                    }
+                    reloadWeapon(player, event.getItem());
                 }
             }
         }.runTaskLater(Main.getInstance(), (long) (weaponData.getShootDuration() * 2));
@@ -183,28 +187,24 @@ public class Weapons implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    player.sendMessage("reload2");
                     reload(player, weapon);
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
             return;
         }
-        if (ItemManager.getItem(player, weaponData.getAmmoItem()) >= 1) {
-            ItemStack itemStack = new ItemStack(weaponData.getAmmoItem());
-            itemStack.setAmount(1);
-            player.getInventory().removeItem(itemStack);
+        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
+        int ammo = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
+        if (ammo >= 1) {
             meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 1);
             weapon.setItemMeta(meta);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    player.sendMessage("reload");
                     reload(player, weapon);
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
         } else {
-            String text = "§cDu hast keine Magazine mehr!";
-            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(text));
+            Utils.sendActionBar(player, "§cDu hast eine Munition mehr!");
         }
     }
 
@@ -213,13 +213,26 @@ public class Weapons implements Listener {
         NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
         NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
         NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
+        NamespacedKey type = new NamespacedKey(Main.plugin, "type");
         ItemMeta meta = weapon.getItemMeta();
         if (meta.getPersistentDataContainer().get(isReloading, PersistentDataType.INTEGER) == 0) return;
         meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 0);
         meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
+        if (!Objects.equals(meta.getPersistentDataContainer().get(type, PersistentDataType.STRING), "default")) {
+            meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
+        } else {
+            NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
+            int ammo = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
+            if (ammo >= weaponData.getMaxAmmo()) {
+                meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
+                meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, ammo - weaponData.getMaxAmmo());
+            } else {
+                meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo() - ammo);
+                meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, 0);
+            }
+            weapon.setItemMeta(meta);
+        }
         weapon.setItemMeta(meta);
-        String actionBarText = weaponData.getName() + "§7 wurde nachgeladen!";
-        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+        Utils.sendActionBar(player, weaponData.getName() + "§7 wurde nachgeladen!");
     }
 }
