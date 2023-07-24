@@ -29,12 +29,13 @@ public class TeamSpeak implements CommandExecutor {
     static TS3Api api = null;
     static final TS3Query query = new TS3Query();
     public static final HashMap<String, Client> verifyCodes = new HashMap<>();
+    public static int GastChannel = 9;
 
 
     public static void loadConfig() {
         System.out.println("Lade TS3 config...");
         final TS3Config config = new TS3Config();
-        config.setHost("37.221.92.65").setFloodRate(TS3Query.FloodRate.UNLIMITED).setQueryPort(10011);
+        config.setHost("37.221.92.65").setFloodRate(TS3Query.FloodRate.DEFAULT).setQueryPort(10011);
         /*config.setConnectionHandler(new ConnectionHandler() {
             @Override
             public void onConnect(TS3Api api) {
@@ -74,7 +75,7 @@ public class TeamSpeak implements CommandExecutor {
     public static void removeClientGroups(Client client) {
         List<ServerGroup> serverGroups = TeamSpeak.getAPI().getServerGroupsByClientId(client.getDatabaseId());
         for (ServerGroup serverGroup : serverGroups) {
-            TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
+            if (client.isInServerGroup(serverGroup.getId())) TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
         }
         for (FactionData factionData : FactionManager.factionDataMap.values()) {
             getAPI().setClientChannelGroup(9, factionData.getChannelGroupID(), client.getDatabaseId());
@@ -82,36 +83,41 @@ public class TeamSpeak implements CommandExecutor {
     }
 
     public static void updateClientGroup(Player player, Client client) {
+        Utils.sendActionBar(player, "§aSynchronisiere TeamSpeak-Daten.");
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         List<ServerGroup> serverGroups = TeamSpeak.getAPI().getServerGroupsByClientId(client.getDatabaseId());
         for (ServerGroup serverGroup : serverGroups) {
-            TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
+            if (client.isInServerGroup(serverGroup.getId())) TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
         }
+        Utils.sendActionBar(player, "§aSynchronisiere TeamSpeak-Daten..");
         for (FactionData factionData : FactionManager.factionDataMap.values()) {
-            getAPI().setClientChannelGroup(8, factionData.getChannelGroupID(), client.getDatabaseId());
+            getAPI().setClientChannelGroup(9, factionData.getChannelGroupID(), client.getDatabaseId());
         }
+        Utils.sendActionBar(player, "§aSynchronisiere TeamSpeak-Daten...");
         getAPI().editClient(client.getId(), ClientProperty.CLIENT_DESCRIPTION, player.getName());
+        RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
+        getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
         if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
             FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-            RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
-            getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
             if (playerData.getFactionGrade() >= 7) {
                 getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
             } else {
                 getAPI().setClientChannelGroup(11, factionData.getChannelGroupID(), client.getDatabaseId());
             }
-            if (!playerData.getRang().equals("Spieler")) {
-                RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
-                getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
-            }
-            if (playerData.getSecondaryTeam() != null) {
-                System.out.println(playerData.getSecondaryTeam());
-                RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
-                getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
-            }
             getAPI().addClientToServerGroup(factionData.getTeamSpeakID(), client.getDatabaseId());
-            getAPI().sendPrivateMessage(client.getId(), "Deine TeamSpeak-Rechte wurden aktuallisiert.");
         }
+        Utils.sendActionBar(player, "§aSynchronisiere TeamSpeak-Daten....");
+        if (playerData.getSecondaryTeam() != null) {
+            RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
+            getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
+        }
+        Utils.sendActionBar(player, "§aSynchronisiere TeamSpeak-Daten.....");
+        if (!playerData.getRang().equals("Spieler")) {
+            RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+            getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
+        }
+        Utils.sendActionBar(player, "§a§lDaten Synchronisiert!");
+        getAPI().sendPrivateMessage(client.getId(), "Deine TeamSpeak-Rechte wurden aktuallisiert.");
     }
 
     @Override
@@ -120,16 +126,16 @@ public class TeamSpeak implements CommandExecutor {
         if (args.length >= 1) {
             Client client = verifyCodes.get(args[0]);
             if (client != null) {
+                verifyCodes.remove(args[0]);
                 PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                 getAPI().sendPrivateMessage(client.getId(), "Du bist nun verifiziert!");
                 player.sendMessage("§8[§3TeamSpeak§8]§b Du bist nun verifiziert!");
                 playerData.setTeamSpeakUID(client.getUniqueIdentifier());
                 getAPI().editClient(client.getId(), ClientProperty.CLIENT_DESCRIPTION, player.getName());
+                RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
+                getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
                 if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
                     FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-                    verifyCodes.remove(args[0]);
-                    RankData spielerRang = ServerManager.rankDataMap.get("Spieler");
-                    getAPI().addClientToServerGroup(spielerRang.getTeamSpeakID(), client.getDatabaseId());
                     if (playerData.getFactionGrade() >= 7) {
                         getAPI().setClientChannelGroup(10, factionData.getChannelGroupID(), client.getDatabaseId());
                         getAPI().sendPrivateMessage(client.getId(), "Dir wurden Leaderrechte für " + playerData.getFaction() + " gegeben!");
@@ -137,15 +143,15 @@ public class TeamSpeak implements CommandExecutor {
                         getAPI().setClientChannelGroup(11, factionData.getChannelGroupID(), client.getDatabaseId());
                         getAPI().sendPrivateMessage(client.getId(), "Dir wurden Memberrechte für " + playerData.getFaction() + " gegeben!");
                     }
-                    if (playerData.getSecondaryTeam() != null) {
-                        RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
-                        getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
-                    }
-                    if (!playerData.getRang().equals("Spieler")) {
-                        RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
-                        getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
-                    }
                     getAPI().addClientToServerGroup(factionData.getTeamSpeakID(), client.getDatabaseId());
+                }
+                if (playerData.getSecondaryTeam() != null) {
+                    RankData rankData = ServerManager.rankDataMap.get(playerData.getSecondaryTeam());
+                    getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
+                }
+                if (!playerData.getRang().equals("Spieler")) {
+                    RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+                    getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
                 }
                 try {
                     Statement statement = MySQL.getStatement();

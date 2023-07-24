@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.ServerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,20 +25,21 @@ public class SetTeamCommand implements CommandExecutor {
                 String uuid = targetplayer.getUniqueId().toString();
                 PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
                 String rank = args[1];
-                if (PlayerManager.setRang(targetplayer.getUniqueId().toString(), rank)) {
-                    player.sendMessage(Main.admin_prefix + targetplayer.getName() + " ist nun §c" + rank + "§7.");
-                    targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
-                    try {
-                        Statement statement = MySQL.getStatement();
-                        statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + targetplayer.getUniqueId() + "'");
-                        targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
-                        playerData.setRankDuration(null);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    player.sendMessage(Main.admin_prefix + "Der Rang \"§c" + rank + "§7\" wurde nicht gefunden.");
+                if (ServerManager.rankDataMap.get(rank) == null) {
+                    player.sendMessage(Main.error + "Rang nicht gefunden.");
+                    return false;
                 }
+                player.sendMessage(Main.admin_prefix + targetplayer.getName() + " ist nun §c" + rank + "§7.");
+                targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
+                try {
+                    Statement statement = MySQL.getStatement();
+                    statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + targetplayer.getUniqueId() + "'");
+                    targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
+                    playerData.setRankDuration(null);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                PlayerManager.setRang(targetplayer.getUniqueId().toString(), rank);
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }

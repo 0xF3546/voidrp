@@ -1,5 +1,6 @@
 package de.polo.metropiacity.commands;
 
+import com.github.theholywaffle.teamspeak3.api.exception.TS3ConnectionFailedException;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
@@ -17,16 +18,22 @@ public class TSLinkCommand implements CommandExecutor {
         if (args.length >= 1) {
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             if (playerData.getTeamSpeakUID() == null) {
-                Client client = TeamSpeak.getAPI().getClientByUId(args[0]);
-                String code = Main.generateRandomCode(12);
-                if (client != null) {
-                    TeamSpeak.verifyCodes.put(code, client);
-                    TeamSpeak.getAPI().sendPrivateMessage(client.getId(), "Dein Bestätigungscode lautet: [b]" + code + "[/b]");
-                    TeamSpeak.getAPI().sendPrivateMessage(client.getId(), "Nutze [b]/verify " + code + "[/b] um dich zu verifizieren.");
-                    player.sendMessage("§8[§3TeamSpeak§8]§b Dir wurde eine Nachricht im TS3 geschickt!");
-                } else {
-                    player.sendMessage(Main.error + "Die UID konnte nicht gefunden werden.");
+                Client client = null;
+                try {
+                    client = TeamSpeak.getAPI().getClientByUId(args[0]);
+                } catch (TS3ConnectionFailedException e) {
+                    player.sendMessage(Main.error + "Client konnte nicht auf dem TeamSpeak gefunden werden.");
+                    return false;
                 }
+                if (client == null) {
+                    player.sendMessage(Main.error + "Client konnte nicht auf dem TeamSpeak gefunden werden.");
+                    return false;
+                }
+                String code = Main.generateRandomCode(12);
+                TeamSpeak.verifyCodes.put(code, client);
+                TeamSpeak.getAPI().sendPrivateMessage(client.getId(), "Dein Bestätigungscode lautet: [b]" + code + "[/b]");
+                TeamSpeak.getAPI().sendPrivateMessage(client.getId(), "Nutze [b]/verify " + code + "[/b] um dich zu verifizieren.");
+                player.sendMessage("§8[§3TeamSpeak§8]§b Dir wurde eine Nachricht im TS3 geschickt!");
             } else {
                 player.sendMessage(Main.error + "Dein TeamSpeak ist bereits verifiziert.");
             }

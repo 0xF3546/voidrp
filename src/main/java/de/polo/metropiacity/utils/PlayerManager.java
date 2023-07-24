@@ -1,5 +1,6 @@
 package de.polo.metropiacity.utils;
 
+import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import de.polo.metropiacity.dataStorage.FactionData;
 import de.polo.metropiacity.dataStorage.GangwarData;
 import de.polo.metropiacity.dataStorage.RankData;
@@ -230,8 +231,8 @@ public class PlayerManager implements Listener {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     if (date.isBefore(LocalDateTime.now())) {
                         player.sendMessage(Main.prefix + "Dein " + playerData.getRang() + " ist ausgelaufen.");
-                        setRang(uuid, "Spieler");
                         statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + player.getUniqueId() + "'");
+                        setRang(uuid, "Spieler");
                     }
                 }
                 if (playerData.isDuty()) {
@@ -388,7 +389,7 @@ public class PlayerManager implements Listener {
     }
 
 
-    public static boolean setRang(String uuid, String rank) {
+    public static void setRang(String uuid, String rank) {
         try {
             for (RankData rankData : ServerManager.rankDataMap.values()) {
                 if (rankData.getRang().equalsIgnoreCase(rank)) {
@@ -397,10 +398,16 @@ public class PlayerManager implements Listener {
                     PlayerData playerData = playerDataMap.get(uuid);
                     playerData.setRang(rankData.getRang());
                     playerData.setPermlevel(rankData.getPermlevel());
-                    return true;
+                    Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+                    if (player == null) {
+                        return;
+                    }
+                    if (playerData.getTeamSpeakUID() != null) {
+                        Client client = TeamSpeak.getAPI().getClientByUId(playerData.getTeamSpeakUID());
+                        TeamSpeak.updateClientGroup(player, client);
+                    }
                 }
             }
-            return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

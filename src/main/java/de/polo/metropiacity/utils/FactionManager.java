@@ -1,5 +1,6 @@
 package de.polo.metropiacity.utils;
 
+import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
@@ -97,6 +98,10 @@ public class FactionManager {
             factionPlayerData.setId(playerData.getId());
             ServerManager.factionPlayerDataMap.put(player.getUniqueId().toString(), factionPlayerData);
         }
+        if (playerData.getTeamSpeakUID() != null) {
+            Client client = TeamSpeak.getAPI().getClientByUId(playerData.getTeamSpeakUID());
+            TeamSpeak.updateClientGroup(player, client);
+        }
     }
 
     public static void removePlayerFromFrak(Player player) throws SQLException {
@@ -120,6 +125,10 @@ public class FactionManager {
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
+        if (playerData.getTeamSpeakUID() != null) {
+            Client client = TeamSpeak.getAPI().getClientByUId(playerData.getTeamSpeakUID());
+            TeamSpeak.updateClientGroup(player, client);
+        }
     }
 
     public static void removeOfflinePlayerFromFrak(OfflinePlayer player) throws SQLException {
@@ -127,6 +136,7 @@ public class FactionManager {
         assert statement != null;
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
+        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
     }
 
     public static String faction_offlinePlayer(String playername) {

@@ -26,6 +26,7 @@ public class SetFrakCommand implements CommandExecutor {
                         FactionManager.setPlayerInFrak(targetplayer, frak, rang);
                     } else {
                         player.sendMessage(Main.admin_error + "Syntax-Fehler: /setfraktion [Spieler] [Fraktion] [Rang(1-8)]");
+                        return false;
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

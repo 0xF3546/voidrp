@@ -20,13 +20,13 @@ public class LeadFrakCommand implements CommandExecutor {
             if (args.length >= 2) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
                 String frak = args[1];
+                player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 in die Fraktion §c" + frak + "§7 gesetzt.");
+                targetplayer.sendMessage(Main.faction_prefix + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
                 try {
                     FactionManager.setPlayerInFrak(targetplayer, frak, 8);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 in die Fraktion §c" + frak + "§7 gesetzt.");
-                targetplayer.sendMessage(Main.faction_prefix + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /leadfrak [Spieler] [Fraktion]");
             }
