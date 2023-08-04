@@ -14,6 +14,8 @@ public class FactionData {
     private int channelGroupID;
     private String current_gangwar;
     private boolean doGangwar;
+    private int forumID;
+    private int forumID_Leader;
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -117,5 +119,21 @@ public class FactionData {
 
     public void setMaxMember(int maxMember) {
         this.maxMember = maxMember;
+    }
+
+    public int getForumID() {
+        return forumID;
+    }
+
+    public void setForumID(int forumID) {
+        this.forumID = forumID;
+    }
+
+    public int getForumID_Leader() {
+        return forumID_Leader;
+    }
+
+    public void setForumID_Leader(int forumID_Leader) {
+        this.forumID_Leader = forumID_Leader;
     }
 }

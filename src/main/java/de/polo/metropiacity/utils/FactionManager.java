@@ -35,6 +35,8 @@ public class FactionManager {
             factionData.setChannelGroupID(locs.getInt(9));
             factionData.setHasBlacklist(locs.getBoolean(10));
             factionData.setDoGangwar(locs.getBoolean(11));
+            factionData.setForumID(locs.getInt("forumID"));
+            factionData.setForumID_Leader(locs.getInt("forumID_Leader"));
             factionDataMap.put(locs.getString(2), factionData);
         }
 

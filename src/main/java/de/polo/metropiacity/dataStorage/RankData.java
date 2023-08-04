@@ -6,6 +6,7 @@ public class RankData {
     private int permlevel;
     private int TeamSpeakID;
     private boolean isSecondary;
+    private int forumID;
 
     public int getId() {
         return id;
@@ -45,5 +46,13 @@ public class RankData {
 
     public void setSecondary(boolean secondary) {
         isSecondary = secondary;
+    }
+
+    public int getForumID() {
+        return forumID;
+    }
+
+    public void setForumID(int forumID) {
+        this.forumID = forumID;
     }
 }

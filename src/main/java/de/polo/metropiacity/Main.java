@@ -127,6 +127,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryOpenListener(), this);
         getServer().getPluginManager().registerEvents(new Farming(), this);
         getServer().getPluginManager().registerEvents(new HungerListener(), this);
+        getServer().getPluginManager().registerEvents(new AntiCheat(), this);
 
     }
 
@@ -253,6 +254,7 @@ public final class Main extends JavaPlugin {
         getCommand("serverreload").setExecutor(new ServerReloadCommand());
         getCommand("serverstop").setExecutor(new ServerStopCommand());
         getCommand("giverank").setExecutor(new GiveRankCommand());
+        getCommand("forum").setExecutor(new ForumCommand());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());

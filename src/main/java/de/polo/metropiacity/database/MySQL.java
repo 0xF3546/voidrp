@@ -43,5 +43,30 @@ public class MySQL {
     public static void endConnection() throws SQLException {
         MySQL.connection.close();
     }
+    public interface forum {
+        String url = "jdbc:mysql://localhost/wcf?autoReconnect=true&useSSL=false";
+        String user = "gameserver";
+        String password = "woert8/§\"fg348rt74ghj5asd";
+        int port = 3306;
+        static Connection getConnection() throws SQLException {
+            if(connection != null) {
+                return connection;
+            }
+            Connection connection = DriverManager.getConnection(url, user, password);
+
+            for (int i = 0; i < 5; i++) {
+                System.out.println("[MySQL]: Datenbank verbunden");
+            }
+            return connection;
+        }
+        static Statement getStatement() throws SQLException {
+            if(connection != null) {
+                return (Statement) connection;
+            }
+            Connection connection = DriverManager.getConnection(url, user, password);
+
+            return connection.createStatement();
+        }
+    }
 
 }

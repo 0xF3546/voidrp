@@ -57,6 +57,7 @@ public class PlayerData {
     private String business;
     private int business_grade;
     private int warns;
+    private Integer forumID;
     private HashMap<String, String> relationShip = new HashMap<>();
     private String bloodType;
 
@@ -457,5 +458,13 @@ public class PlayerData {
 
     public void setRankDuration(LocalDateTime rankDuration) {
         this.rankDuration = rankDuration;
+    }
+
+    public Integer getForumID() {
+        return forumID;
+    }
+
+    public void setForumID(Integer forumID) {
+        this.forumID = forumID;
     }
 }

@@ -105,7 +105,6 @@ commands:
   npc:
   redeem:
   link:
-    aliases: forum
   whistle:
     aliases: [w, flüstern]
   shout:
@@ -173,3 +172,4 @@ commands:
   serverreload:
   serverstop:
   giverank:
+  forum:
