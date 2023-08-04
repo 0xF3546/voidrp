@@ -77,6 +77,11 @@ public class PlayerManager implements Listener {
             Statement statement = MySQL.getStatement();
             String[] adresse = adress.split(":");
             statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adresse[0] + "' WHERE uuid = '" + uuid + "'");
+            PlayerData playerData = playerDataMap.get(uuid);
+            if (playerData.getForumID() != null) {
+                Statement wcfStatement = MySQL.forum.getStatement();
+                wcfStatement.execute("UPDATE wcf1_user SET username = " + name + " WHERE userID = " + playerData.getForumID());
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
