@@ -11,8 +11,8 @@ public class ItemDropListener implements Listener {
     public void onItemDrop(PlayerDropItemEvent event) {
         WeaponData weaponData = Weapons.weaponDataMap.get(event.getItemDrop().getItemStack().getType());
         if (weaponData != null) {
-            Weapons.reloadWeapon(event.getPlayer(), event.getItemDrop().getItemStack());
             event.setCancelled(true);
+            Weapons.reloadWeapon(event.getPlayer(), event.getItemDrop().getItemStack());
         }
     }
 }
