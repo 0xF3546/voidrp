@@ -19,6 +19,16 @@ public class WorldListener implements Listener {
                 event.setCancelled(true);
             }
         }
+        if (event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                event.setCancelled(true);
+            }
+        }
+        if (event.getClickedBlock().getType() == Material.ENDER_CHEST) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                event.setCancelled(true);
+            }
+        }
         if (event.getClickedBlock().getType() == Material.ANVIL) {
             if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 event.setCancelled(true);
@@ -30,6 +40,16 @@ public class WorldListener implements Listener {
             }
         }
         if (event.getClickedBlock().getType() == Material.CRAFTING_TABLE) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                event.setCancelled(true);
+            }
+        }
+        if (event.getClickedBlock().getType() == Material.SHULKER_BOX) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                event.setCancelled(true);
+            }
+        }
+        if (event.getClickedBlock().getType() == Material.BARREL) {
             if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 event.setCancelled(true);
             }

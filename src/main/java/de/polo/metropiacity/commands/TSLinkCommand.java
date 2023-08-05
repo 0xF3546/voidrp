@@ -20,7 +20,7 @@ public class TSLinkCommand implements CommandExecutor {
             if (playerData.getTeamSpeakUID() == null) {
                 Client client = null;
                 try {
-                    client = TeamSpeak.getAPI().getClientByUId(args[0]);
+                    client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(args[0]);
                 } catch (TS3ConnectionFailedException e) {
                     player.sendMessage(Main.error + "Client konnte nicht auf dem TeamSpeak gefunden werden.");
                     return false;
@@ -31,8 +31,8 @@ public class TSLinkCommand implements CommandExecutor {
                 }
                 String code = Main.generateRandomCode(12);
                 TeamSpeak.verifyCodes.put(code, client);
-                TeamSpeak.getAPI().sendPrivateMessage(client.getId(), "Dein Bestätigungscode lautet: [b]" + code + "[/b]");
-                TeamSpeak.getAPI().sendPrivateMessage(client.getId(), "Nutze [b]/verify " + code + "[/b] um dich zu verifizieren.");
+                TeamSpeak.getTeamSpeak().getAPI().sendPrivateMessage(client.getId(), "Dein Bestätigungscode lautet: [b]" + code + "[/b]");
+                TeamSpeak.getTeamSpeak().getAPI().sendPrivateMessage(client.getId(), "Nutze [b]/verify " + code + "[/b] um dich zu verifizieren.");
                 player.sendMessage("§8[§3TeamSpeak§8]§b Dir wurde eine Nachricht im TS3 geschickt!");
             } else {
                 player.sendMessage(Main.error + "Dein TeamSpeak ist bereits verifiziert.");

@@ -6,7 +6,17 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 public class Server {
+    //static de.polo.metropiacity.utils.TeamSpeak teamSpeak = null;
+    public Server() {
+        init();
+    }
+    private void init() {
+        //teamSpeak = new de.polo.metropiacity.utils.TeamSpeak();
+    }
     public interface TeamSpeak {
+        /*static de.polo.metropiacity.utils.TeamSpeak getTeamSpeak() {
+            return teamSpeak;
+        }*/
     }
     public interface Faction {
 

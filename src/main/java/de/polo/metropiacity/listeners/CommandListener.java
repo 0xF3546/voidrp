@@ -9,17 +9,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommandListener implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         String msg = event.getMessage();
         String[] args = msg.split(" ");
         Player player = event.getPlayer();
+        String[] nonBlockedCommands = {"support", "report", "help", "vote", "jailtime"};
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (playerData.isDead() && playerData.getPermlevel() <= 40) {
-            System.out.println(args[0]);
-            player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
-            event.setCancelled(true);
+        if (playerData.isDead() && !playerData.isAduty()) {
+            for (int i = 0; i < nonBlockedCommands.length; i++) {
+                if (!Bukkit.getServer().getHelpMap().getHelpTopic(args[0]).toString().equalsIgnoreCase(nonBlockedCommands[i])) {
+                    player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
+                    event.setCancelled(true);
+                }
+            }
         } else {
             if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
                 event.setCancelled(true);
@@ -28,8 +35,10 @@ public class CommandListener implements Listener {
         }
         for (PlayerData playerData2 : PlayerManager.playerDataMap.values()) {
             if (playerData2.getVariable("isSpec") != null) {
-                Player targetplayer = Bukkit.getPlayer(playerData2.getUuid());
-                targetplayer.sendMessage("§8[§cSpec§8]§6 " + player.getName() + "§7 hat den Befehl \"§6" + msg + "§7\" ausgeführt.");
+                if (playerData.getVariable("isSpec").equals(player.getUniqueId().toString())) {
+                    Player targetplayer = Bukkit.getPlayer(playerData2.getUuid());
+                    targetplayer.sendMessage("§8[§cSpec§8]§6 " + player.getName() + "§7 hat den Befehl \"§6" + msg + "§7\" ausgeführt.");
+                }
             }
         }
     }

@@ -28,6 +28,10 @@ public class SetRankPayDayCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Der PayDay muss größer gleich 0 sein!");
             return false;
         }
+        if (Integer.parseInt(args[1]) > 20000) {
+            player.sendMessage(Main.error + "Der PayDay darf nicht größer als 20.000$ sein!");
+            return false;
+        }
         try {
             if (FactionManager.changeRankPayDay(playerData.getFaction(), Integer.parseInt(args[0]), Integer.parseInt(args[1]))) {
                 player.sendMessage(Main.faction_prefix + "PayDay von Rang §l" + args[0] + "§7 zu §l" + args[1] + "§§7 geändert.");

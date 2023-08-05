@@ -37,6 +37,8 @@ public final class Main extends JavaPlugin {
 
     public static final CooldownManager cooldownManager = new CooldownManager();
 
+    private static TeamSpeak teamSpeak;
+
     private static Main instance;
 
 
@@ -46,6 +48,10 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (!MySQL.loadDBData()) {
+            System.out.println("Datenbank konnte nicht geladen werden.");
+            return;
+        }
         isOnline = true;
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
@@ -80,7 +86,8 @@ public final class Main extends JavaPlugin {
             ServerManager.loadDBPlayer();
             ServerManager.loadContracts();
 
-            TeamSpeak.loadConfig();
+            //TeamSpeak.loadConfig();
+            teamSpeak = new TeamSpeak();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -128,6 +135,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Farming(), this);
         getServer().getPluginManager().registerEvents(new HungerListener(), this);
         getServer().getPluginManager().registerEvents(new AntiCheat(), this);
+        getServer().getPluginManager().registerEvents(new PlayerSwapHandItemsListener(), this);
 
     }
 
@@ -271,7 +279,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        TeamSpeak.shutdown();
+        TeamSpeak.getTeamSpeak().shutdown();
         System.out.println("Disabling MetroCity Roleplay");
         isOnline = false;
         try {

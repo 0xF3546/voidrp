@@ -36,7 +36,6 @@ public class ReviveCommand implements CommandExecutor {
             double nearestDistance = Double.MAX_VALUE;
             for (Entity entity : entities) {
                 if (entity instanceof Item && entity.getType() == EntityType.DROPPED_ITEM) {
-                    System.out.println("1 item gefunden");
                     Item item = (Item) entity;
                     if (item.getItemStack().getType() == Material.PLAYER_HEAD) {
                         double distance = item.getLocation().distance(player.getLocation());
@@ -54,6 +53,11 @@ public class ReviveCommand implements CommandExecutor {
 
             if (nearestSkull != null) {
                 SkullMeta skullMeta = (SkullMeta) nearestSkull.getItemStack().getItemMeta();
+                final Item skull = nearestSkull;
+                if (skull.getOwner() == player.getUniqueId()) {
+                    player.sendMessage(Main.error + "Du kannst dich nicht selbst wiederbeleben.");
+                    return false;
+                }
                 UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
                 Player targetplayer = Bukkit.getPlayer(uuid);
                 PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
@@ -61,7 +65,6 @@ public class ReviveCommand implements CommandExecutor {
                 player.sendMessage(Main.prefix + "Du fängst an " + targetplayer.getName() + " wiederzubeleben.");
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " fängt an " + targetplayer.getName() + " wiederzubeleben.");
                 Progress.start(player, 6);
-                final Item skull = nearestSkull;
                 new BukkitRunnable() {
                     @Override
                     public void run() {

@@ -26,28 +26,37 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TeamSpeak implements CommandExecutor {
-    static TS3Api api = null;
+    static TS3Api api;
     static final TS3Query query = new TS3Query();
     public static final HashMap<String, Client> verifyCodes = new HashMap<>();
-    public static int GastChannel = 9;
-
+    static int GastChannel = 9;
+    private static TeamSpeak teamSpeak;
+    public TeamSpeak() {
+        init();
+    }
+    private void init() {
+        teamSpeak = this;
+        System.out.println("Lade TS3 config...");
+        final TS3Config config = new TS3Config();
+        config.setHost("37.221.92.65").setFloodRate(TS3Query.FloodRate.DEFAULT).setQueryPort(10011);
+        query.connect();
+        if (!query.isConnected()) {
+            System.out.println("[TS3Bot] Query konnte nicht verbunden werden.");
+            return;
+        }
+        api = query.getApi();
+        api.login("serveradmin", "WrQzPS72");
+        api.selectVirtualServerById(2);
+        api.setNickname("MetropiaCity");
+    }
+    public static TeamSpeak getTeamSpeak() {
+        return teamSpeak;
+    }
 
     public static void loadConfig() {
         System.out.println("Lade TS3 config...");
         final TS3Config config = new TS3Config();
         config.setHost("37.221.92.65").setFloodRate(TS3Query.FloodRate.DEFAULT).setQueryPort(10011);
-        /*config.setConnectionHandler(new ConnectionHandler() {
-            @Override
-            public void onConnect(TS3Api api) {
-                System.out.println("[TS3Bot] Bot wurde gestartet.");
-            }
-
-            @Override
-            public void onDisconnect(TS3Query ts3Query) {
-                System.out.println("[TS3Bot] Bot wurde gestoppt.");
-            }
-        });*/
-
         query.connect();
         if (!query.isConnected()) {
             System.out.println("[TS3Bot] Query konnte nicht verbunden werden.");
@@ -59,11 +68,11 @@ public class TeamSpeak implements CommandExecutor {
         api.setNickname("MetropiaCity");
     }
 
-    public static TS3Api getAPI() {
+    public TS3Api getAPI() {
         return api;
     }
 
-    public static void shutdown() {
+    public void shutdown() {
         api.logout();
         query.exit();
     }
@@ -72,22 +81,22 @@ public class TeamSpeak implements CommandExecutor {
         return query;
     }
 
-    public static void removeClientGroups(Client client) {
-        List<ServerGroup> serverGroups = TeamSpeak.getAPI().getServerGroupsByClientId(client.getDatabaseId());
+    public void removeClientGroups(Client client) {
+        List<ServerGroup> serverGroups = getAPI().getServerGroupsByClientId(client.getDatabaseId());
         for (ServerGroup serverGroup : serverGroups) {
-            if (client.isInServerGroup(serverGroup.getId())) TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
+            if (client.isInServerGroup(serverGroup.getId())) getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
         }
         for (FactionData factionData : FactionManager.factionDataMap.values()) {
             getAPI().setClientChannelGroup(9, factionData.getChannelGroupID(), client.getDatabaseId());
         }
     }
 
-    public static void updateClientGroup(Player player, Client client) {
+    public void updateClientGroup(Player player, Client client) {
         Utils.sendActionBar(player, "§aSynchronisiere TeamSpeak-Daten.");
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        List<ServerGroup> serverGroups = TeamSpeak.getAPI().getServerGroupsByClientId(client.getDatabaseId());
+        List<ServerGroup> serverGroups = getAPI().getServerGroupsByClientId(client.getDatabaseId());
         for (ServerGroup serverGroup : serverGroups) {
-            if (client.isInServerGroup(serverGroup.getId())) TeamSpeak.getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
+            getAPI().removeClientFromServerGroup(serverGroup.getId(), client.getDatabaseId());
         }
         Utils.sendActionBar(player, "§aSynchronisiere TeamSpeak-Daten..");
         for (FactionData factionData : FactionManager.factionDataMap.values()) {

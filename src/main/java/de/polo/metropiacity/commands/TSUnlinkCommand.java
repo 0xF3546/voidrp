@@ -21,7 +21,7 @@ public class TSUnlinkCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getTeamSpeakUID() != null) {
-            Client client = TeamSpeak.getAPI().getClientByUId(playerData.getTeamSpeakUID());
+            Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
             if (client != null) {
                 playerData.setTeamSpeakUID(null);
                 try {
@@ -31,8 +31,8 @@ public class TSUnlinkCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
                 player.sendMessage("§8[§3TeamSpeak§8]§b Du bist nun nicht mehr verifiziert.");
-                TeamSpeak.getAPI().editClient(client.getId(), ClientProperty.CLIENT_DESCRIPTION, "Spieler ist nicht verifiziert");
-                TeamSpeak.removeClientGroups(client);
+                TeamSpeak.getTeamSpeak().getAPI().editClient(client.getId(), ClientProperty.CLIENT_DESCRIPTION, "Spieler ist nicht verifiziert");
+                TeamSpeak.getTeamSpeak().removeClientGroups(client);
             } else {
                 player.sendMessage(Main.error + "Du bist nicht auf dem TeamSpeak online.");
             }

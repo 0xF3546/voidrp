@@ -101,8 +101,8 @@ public class FactionManager {
             ServerManager.factionPlayerDataMap.put(player.getUniqueId().toString(), factionPlayerData);
         }
         if (playerData.getTeamSpeakUID() != null) {
-            Client client = TeamSpeak.getAPI().getClientByUId(playerData.getTeamSpeakUID());
-            TeamSpeak.updateClientGroup(player, client);
+            Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
+            TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
         }
     }
 
@@ -128,8 +128,8 @@ public class FactionManager {
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
         if (playerData.getTeamSpeakUID() != null) {
-            Client client = TeamSpeak.getAPI().getClientByUId(playerData.getTeamSpeakUID());
-            TeamSpeak.updateClientGroup(player, client);
+            Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
+            TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
         }
     }
 

@@ -193,7 +193,6 @@ public class PlayerManager implements Listener {
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
 
-                updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 if (name.getInt(8) >= 60) {
                     onPlayer.put(player.getUniqueId().toString(), true);
                     player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
@@ -245,6 +244,7 @@ public class PlayerManager implements Listener {
                     FactionManager.setDuty(player, true);
                 }
                 returnval = true;
+                updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 if (playerData.isDead()) DeathUtils.killPlayer(player);
             }
         } catch (SQLException e) {
@@ -409,8 +409,8 @@ public class PlayerManager implements Listener {
                         return;
                     }
                     if (playerData.getTeamSpeakUID() != null) {
-                        Client client = TeamSpeak.getAPI().getClientByUId(playerData.getTeamSpeakUID());
-                        TeamSpeak.updateClientGroup(player, client);
+                        Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
+                        TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
                     }
                 }
             }
