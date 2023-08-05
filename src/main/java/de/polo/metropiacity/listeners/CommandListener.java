@@ -18,19 +18,23 @@ public class CommandListener implements Listener {
         String msg = event.getMessage();
         String[] args = msg.split(" ");
         Player player = event.getPlayer();
-        String[] nonBlockedCommands = {"support", "report", "help", "vote", "jailtime"};
+        String[] nonBlockedCommands = {"support", "report", "help", "vote", "jailtime", "ad", "aduty"};
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
+            event.setCancelled(true);
+            player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 wurde nicht gefunden.");
+            return;
+        }
         if (playerData.isDead() && !playerData.isAduty()) {
+            boolean performCommand = false;
             for (int i = 0; i < nonBlockedCommands.length; i++) {
                 if (!Bukkit.getServer().getHelpMap().getHelpTopic(args[0]).toString().equalsIgnoreCase(nonBlockedCommands[i])) {
-                    player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
-                    event.setCancelled(true);
+                    performCommand = true;
                 }
             }
-        } else {
-            if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
+            if (!performCommand) {
+                player.sendMessage("§7Du kannst diesen  Befehl aktuell nicht nutzen.");
                 event.setCancelled(true);
-                player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 wurde nicht gefunden.");
             }
         }
         for (PlayerData playerData2 : PlayerManager.playerDataMap.values()) {

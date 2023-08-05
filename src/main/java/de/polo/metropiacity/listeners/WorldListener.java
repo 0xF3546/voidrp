@@ -29,6 +29,11 @@ public class WorldListener implements Listener {
                 event.setCancelled(true);
             }
         }
+        if (event.getClickedBlock().getType().name().equals("Sign")) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                event.setCancelled(true);
+            }
+        }
         if (event.getClickedBlock().getType() == Material.ANVIL) {
             if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 event.setCancelled(true);

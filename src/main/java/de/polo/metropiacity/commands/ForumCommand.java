@@ -40,6 +40,8 @@ public class ForumCommand implements CommandExecutor {
                     Statement statement1 = MySQL.getStatement();
                     Utils.sendActionBar(player, "§aVerknüpfe Forum & Minecraft...");
                     statement1.executeUpdate("UPDATE players SET forumID = " + res.getInt(1) + " WHERE uuid = '" + player.getUniqueId() + "'");
+                    statement.execute("UPDATE wcf1_user SET activationCode = 0 WHERE userID = " + res.getInt(1));
+                    Utils.sendActionBar(player, "§aAccount freigeschalten.");
                     playerData.setForumID(res.getInt(1));
                     Utils.sendActionBar(player, "§aWeise Forum-Rechte zu...");
                     ArrayList<Integer> ranks = new ArrayList<>();
@@ -63,7 +65,7 @@ public class ForumCommand implements CommandExecutor {
                         statement.execute("INSERT INTO wcf1_user_to_group (userID, groupID) VALUES (" + playerData.getForumID() + ", " + ranks.get(i) + ")");
                     }
                     Utils.sendActionBar(player, "§aErfolgreich!");
-                    player.sendMessage("§8[§6Forum§8]§a Du hast dein Forum-Account verknüpft.");
+                    player.sendMessage("§8[§6Forum§8]§a Du hast dein Forum-Account verknüpft & freigeschalten.");
                 } catch (SQLException e) {
                     player.sendMessage(Main.error + "Etwas ist schief gelaufen...");
                     throw new RuntimeException(e);
