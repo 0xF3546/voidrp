@@ -77,6 +77,12 @@ public class PayDayUtils {
                 plus -= vehicleData1.getTax();
             }
         }
+        if (playerData.hasAnwalt()) {
+            int anwalt = Main.random(15, 55);
+            player.sendMessage(" ");
+            player.sendMessage("§8 ➥ §6Anwaltskosten§8: §c-" + anwalt + "$");
+            anwalt -= plus;
+        }
         plus -= rent;
         player.sendMessage(" ");
         plus = Math.round(plus);

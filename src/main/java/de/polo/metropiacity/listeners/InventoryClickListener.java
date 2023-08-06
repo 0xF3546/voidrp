@@ -418,6 +418,9 @@ public class InventoryClickListener implements Listener {
                     case 15:
                         PhoneUtils.openSettings(player);
                         break;
+                    case 16:
+                        PhoneUtils.openInternet(player);
+                        break;
                 }
             } else if (playerData.getVariable("current_app").equals("contacts")) {
                 switch (event.getCurrentItem().getType()) {
@@ -626,6 +629,23 @@ public class InventoryClickListener implements Listener {
                         break;
                     case 45:
                         PhoneUtils.openPhone(player);
+                        break;
+                }
+            } else if (playerData.getVariable("current_app").equals("internet")) {
+                Statement statement = MySQL.getStatement();
+                switch (event.getSlot()) {
+                    case 11:
+                        if (playerData.hasAnwalt()) {
+                            playerData.setHasAnwalt(false);
+                            statement.execute("UPDATE players SET hasAnwalt = " + playerData.hasAnwalt() + " WHERE uuid = '" + player.getUniqueId() + "'");
+                            player.closeInventory();
+                            player.sendMessage("§8[§6Anwalt§8]§7 Du hast deinen Anwalt §cabbestellt§7.");
+                        } else {
+                            playerData.setHasAnwalt(true);
+                            statement.execute("UPDATE players SET hasAnwalt = " + playerData.hasAnwalt() + " WHERE uuid = '" + player.getUniqueId() + "'");
+                            player.closeInventory();
+                            player.sendMessage("§8[§6Anwalt§8]§7 Du hast deinen Anwalt §aeingestellt§7.");
+                        }
                         break;
                 }
             }
