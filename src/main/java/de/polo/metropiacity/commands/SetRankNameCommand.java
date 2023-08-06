@@ -4,6 +4,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,6 +26,7 @@ public class SetRankNameCommand implements CommandExecutor {
                     }
                     if (FactionManager.changeRankName(playerData.getFaction(), Integer.parseInt(args[0]), newName)) {
                         player.sendMessage(Main.faction_prefix + "Rangname von Rang §l" + args[0] + "§7 zu §l" + newName + "§7 geändert.");
+                        ADutyCommand.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + args[1] + " gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

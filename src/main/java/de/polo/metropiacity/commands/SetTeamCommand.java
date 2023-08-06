@@ -5,6 +5,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,6 +41,7 @@ public class SetTeamCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
                 PlayerManager.setRang(targetplayer.getUniqueId().toString(), rank);
+                ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " in das Team als " + rank + " aufgenommen.", ChatColor.DARK_RED);
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }

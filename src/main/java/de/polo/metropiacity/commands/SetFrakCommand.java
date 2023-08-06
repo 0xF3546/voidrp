@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class SetFrakCommand implements CommandExecutor {
                 try {
                     if (rang >= 0 && rang <= 8) {
                         FactionManager.setPlayerInFrak(targetplayer, frak, rang);
+                        ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " (Rang " + rang + ") gesetzt.", ChatColor.DARK_PURPLE);
                     } else {
                         player.sendMessage(Main.admin_error + "Syntax-Fehler: /setfraktion [Spieler] [Fraktion] [Rang(1-8)]");
                         return false;

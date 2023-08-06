@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class LeadFrakCommand implements CommandExecutor {
                 targetplayer.sendMessage(Main.faction_prefix + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
                 try {
                     FactionManager.setPlayerInFrak(targetplayer, frak, 8);
+                    ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " gesetzt.", ChatColor.DARK_PURPLE);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
