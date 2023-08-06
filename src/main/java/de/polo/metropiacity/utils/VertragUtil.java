@@ -1,5 +1,6 @@
 package de.polo.metropiacity.utils;
 
+import de.polo.metropiacity.commands.ADutyCommand;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
@@ -10,6 +11,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
@@ -24,6 +26,16 @@ public class VertragUtil {
 
     public static boolean setVertrag(Player player, Player target, String type, String vertrag) throws SQLException {
         if (current.get(target.getUniqueId().toString()) == null) {
+            current.remove(target.getUniqueId().toString(), vertrag);
+            vertrag_type.put(target.getUniqueId().toString(), type);
+        }
+        vertrag_type.put(target.getUniqueId().toString(), type);
+        current.put(target.getUniqueId().toString(), vertrag);
+        Statement statement = MySQL.getStatement();
+        assert statement != null;
+        statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
+        return true;
+        /*if (current.get(target.getUniqueId().toString()) == null) {
             vertrag_type.put(target.getUniqueId().toString(), type);
             current.put(target.getUniqueId().toString(), vertrag);
             Statement statement = MySQL.getStatement();
@@ -31,17 +43,19 @@ public class VertragUtil {
             statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
             return true;
         } else {
+            current.remove(target.getUniqueId().toString(), vertrag);
+            vertrag_type.put(target.getUniqueId().toString(), type);
             return false;
-        }
+        }*/
     }
 
     public static void deleteVertrag(Player player) {
         if (current.get(player.getUniqueId().toString()) != null) {
             current.remove(player.getUniqueId().toString());
             vertrag_type.remove(player.getUniqueId().toString());
-        } else {
         }
     }
+
     public static void acceptVertrag(Player player) throws SQLException {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
@@ -55,7 +69,8 @@ public class VertragUtil {
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.setPlayerInFrak(player, curr, 0);
-                    FactionManager.sendMessageToFaction(curr,player.getName() + " ist der Fraktion beigetreten");
+                    FactionManager.sendMessageToFaction(curr, player.getName() + " ist der Fraktion beigetreten");
+                    ADutyCommand.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
                     break;
                 case "business_invite":
                     BusinessManager.setPlayerInBusiness(player, curr, 0);
@@ -153,6 +168,7 @@ public class VertragUtil {
             player.sendMessage(Main.error + "Dir wird nichts angeboten.");
         }
     }
+
     public static void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {

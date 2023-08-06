@@ -6,6 +6,7 @@ import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.SupportManager;
 import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,7 @@ public class AcceptTicketCommand implements CommandExecutor {
                             SupportManager.createTicketConnection(player, targetplayer);
                             targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
                             player.sendMessage(Main.support_prefix + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
-                            ADutyCommand.send_message(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName()+ ".");
+                            ADutyCommand.send_message(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName()+ ".", ChatColor.YELLOW);
                             Utils.sendActionBar(targetplayer, "§a§lDein Ticket wurde angenommen!");
                         } else {
                             player.sendMessage(Main.support_prefix + "§c" + targetplayer.getName() + "§7 hat kein Ticket erstellt.");

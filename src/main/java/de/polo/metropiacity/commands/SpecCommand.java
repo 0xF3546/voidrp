@@ -4,6 +4,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,6 +27,7 @@ public class SpecCommand implements CommandExecutor {
                         player.setSpectatorTarget(targetplayer);
                         playerData.setVariable("isSpec", targetplayer.getUniqueId().toString());
                         player.sendMessage(Main.admin_prefix + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
+                        ADutyCommand.send_message(player.getName() + " beobachtet nun " + targetplayer.getName(), ChatColor.RED);
                     } else {
                         player.sendMessage(Main.admin_error + "Syntax-Fehler: /spec [Spieler]");
                     }
@@ -35,6 +37,7 @@ public class SpecCommand implements CommandExecutor {
                     player.sendMessage(Main.admin_prefix + "Du hast den Spectator-Modus verlassen");
                     player.teleport(playerData.getLocationVariable("specLoc"));
                     playerData.setVariable("isSpec", null);
+                    ADutyCommand.send_message(player.getName() + " hat den Beobachter-Modus verlassen.", ChatColor.RED);
                 }
             } else {
                 player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst.");

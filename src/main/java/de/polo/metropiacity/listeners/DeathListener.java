@@ -36,9 +36,9 @@ public class DeathListener implements Listener {
             } else {
                 playerData.setDeathLocation(player.getLocation());
                 if (!playerData.isDead()) {
-                    ADutyCommand.send_message(player.getName() + " starb.");
+                    ADutyCommand.send_message(player.getName() + " starb.", null);
                 } else {
-                    ADutyCommand.send_message(player.getName() + " starb. (Rejoin)");
+                    ADutyCommand.send_message(player.getName() + " starb. (Rejoin)", null);
                 }
                 DeathUtils.startDeathTimer(player);
                 if (!playerData.isDead()) {

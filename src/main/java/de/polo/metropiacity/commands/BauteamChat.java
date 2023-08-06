@@ -18,9 +18,11 @@ public class BauteamChat implements CommandExecutor {
         if (playerData.getSecondaryTeam().equals("Bau-Team") || playerData.isAduty()) {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                if (playersData.getSecondaryTeam().equalsIgnoreCase("Bau-Team") || playersData.isAduty()) {
-                    if (playersData.getSecondaryTeam().equals("Bau-Team") || playersData.isAduty()) {
-                        players.sendMessage("§8[§6BauTeam§8]§e " + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
+                if (playersData.getSecondaryTeam() != null) {
+                    if (playersData.getSecondaryTeam().equalsIgnoreCase("Bau-Team") || playersData.isAduty()) {
+                        if (playersData.getSecondaryTeam().equals("Bau-Team") || playersData.isAduty()) {
+                            players.sendMessage("§8[§6BauTeam§8]§e " + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
+                        }
                     }
                 }
             }

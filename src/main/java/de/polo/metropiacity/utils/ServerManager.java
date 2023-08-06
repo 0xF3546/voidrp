@@ -5,6 +5,10 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.playerUtils.GangwarUtils;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -183,11 +187,48 @@ public class ServerManager {
 
     public static void startTabUpdateInterval() {
         new BukkitRunnable() {
+            int announceTick = 5;
+            int announceType = 1;
             @Override
             public void run() {
                 //Bukkit.getServer().getWorlds().forEach(world -> world.setFullTime(LocalTime.now().toSecondOfDay()));
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     updateTablist(player);
+                }
+                if (announceTick == 0) {
+                    announceTick = 5;
+                    switch (announceType) {
+                        case 1:
+                            TextComponent text = new TextComponent("§8[§6Regelwerk§8]§e Unwissenheit schützt vor Strafe nicht!");
+                            text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://metropiacity.de/forum/index.php?thread%2F4-ingame-regelwerk%2F=&postID=4#post4"));
+                            text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oRegelwerk öffnen")));
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.spigot().sendMessage(text);
+                            }
+                            break;
+                        case 2:
+                            TextComponent forum = new TextComponent("§8[§6Forum§8]§e Bist du schon Mitglied in unserem Forum?");
+                            forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://metropiacity.de/forum/"));
+                            forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oForum öffnen")));
+                            Bukkit.spigot().broadcast(forum);
+                            TextComponent forum2 = new TextComponent("§8[§6Forum§8]§e Fraktionen, Informationen, Spiele - Werde Teil unserer Foren-Community!");
+                            forum2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://metropiacity.de/forum/"));
+                            forum2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oForum öffnen")));
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.spigot().sendMessage(forum2);
+                            }
+                            break;
+                        case 3:
+                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Warst du bereits auf unserem TeamSpeak?");
+                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Betritt noch heute unseren TeamSpeak unter §lmetropiacity.de§3!");
+                            break;
+                    }
+                    announceType++;
+                    if (announceType == 4) {
+                        announceType = 1;
+                    }
+                } else {
+                    announceTick--;
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20*2, 20*60);

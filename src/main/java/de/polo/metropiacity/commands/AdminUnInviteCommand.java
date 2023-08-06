@@ -7,6 +7,7 @@ import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;
 import de.polo.metropiacity.utils.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -52,7 +53,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
             }
-            ADutyCommand.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.");
+            ADutyCommand.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
             player.sendMessage(Main.admin_prefix + "Du hast " + offlinePlayer.getName() + " aus der Fraktion geworfen.");
             return true;
         }

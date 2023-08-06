@@ -6,6 +6,7 @@ import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.SupportManager;
 import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +31,7 @@ public class CloseTicketCommand implements CommandExecutor {
             targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
             Utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
             player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
-            ADutyCommand.send_message(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.");
+            ADutyCommand.send_message(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.", ChatColor.YELLOW);
         } else {
             player.sendMessage(Main.error_nopermission);
         }

@@ -5,6 +5,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +30,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
         if (args.length == 0) {
             if (playerData.isAduty()) {
                 playerData.setAduty(false);
-                ADutyCommand.send_message(player.getName() + " hat den Admindienst verlassen.");
+                ADutyCommand.send_message(player.getName() + " hat den Admindienst verlassen.", ChatColor.RED);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 (player).setFlying(false);
                 (player).setAllowFlight(false);
@@ -43,7 +44,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                     SpecCommand.leaveSpec(player);
                 }
             } else {
-                ADutyCommand.send_message(player.getName() + " hat den Admindienst betreten.");
+                ADutyCommand.send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");
                 (player).setAllowFlight(true);
@@ -61,14 +62,14 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.hidePlayer(Main.getInstance(), player);
                         }
-                        send_message(player.getName() + " hat den Vanish betreten.");
+                        send_message(player.getName() + " hat den Vanish betreten.", null);
                     } else {
                         player.sendMessage(Main.admin_prefix + "Du bist nun nicht mehr im Vanish.");
                         playerData.setVariable("isVanish", null);
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.showPlayer(Main.getInstance(), player);
                         }
-                        send_message(player.getName() + " hat den Vanish verlassen.");
+                        send_message(player.getName() + " hat den Vanish verlassen.", null);
                     }
                     break;
             }
@@ -76,11 +77,14 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public static void send_message(String msg) {
+    public static void send_message(String msg, ChatColor color) {
+        if (color == null) {
+            color = ChatColor.AQUA;
+        }
         for (Player player1 : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = PlayerManager.playerDataMap.get(player1.getUniqueId().toString());
             if (playerData.isAduty()) {
-                player1.sendMessage("§8[§c§l!§8]§b " + msg);
+                player1.sendMessage("§8[§c§l!§8] " + color + msg);
             }
         }
     }

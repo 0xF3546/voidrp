@@ -80,26 +80,11 @@ public class PlayerManager implements Listener {
             PlayerData playerData = playerDataMap.get(uuid);
             if (playerData.getForumID() != null) {
                 Statement wcfStatement = MySQL.forum.getStatement();
-                wcfStatement.execute("UPDATE wcf1_user SET username = " + name + " WHERE userID = " + playerData.getForumID());
+                wcfStatement.execute("UPDATE wcf1_user SET username = '" + name + "' WHERE userID = " + playerData.getForumID());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static Serializable playerRang(Player player) {
-        String uuid = player.getUniqueId().toString();
-        try {
-            Statement statement = MySQL.getStatement();
-            assert statement != null;
-            ResultSet result = statement.executeQuery("SELECT `player_rank` FROM `players` WHERE `uuid` = '" + uuid + "'");
-            if (result.next()) {
-                return result.getString(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public static void loadPlayer(Player player) {
@@ -108,7 +93,7 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = MySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype`, `forumID` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype`, `forumID`, `hasAnwalt` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                 PlayerData playerData = new PlayerData();
                 playerData.setUuid(player.getUniqueId());
@@ -189,6 +174,7 @@ public class PlayerManager implements Listener {
                 playerData.setBusiness_grade(name.getInt(34));
                 playerData.setBloodType(name.getString("bloodtype"));
                 playerData.setForumID(name.getInt("forumID"));
+                playerData.setHasAnwalt(name.getBoolean("hasAnwalt"));
 
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
@@ -746,7 +732,7 @@ public class PlayerManager implements Listener {
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
-                            ADutyCommand.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.");
+                            ADutyCommand.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }

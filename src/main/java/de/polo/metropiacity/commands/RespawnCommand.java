@@ -7,6 +7,7 @@ import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,7 +43,7 @@ public class RespawnCommand implements CommandExecutor {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         targetplayer.sendMessage(Main.prefix + "§a" + player.getName() + " hat dich Respawnt!");
-        ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.");
+        ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.", null);
         PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
         if (targetplayerData.getFaction() != null) {
             LocationManager.useLocation(targetplayer, targetplayerData.getFaction());

@@ -60,6 +60,7 @@ public class PlayerData {
     private Integer forumID;
     private HashMap<String, String> relationShip = new HashMap<>();
     private String bloodType;
+    private boolean hasAnwalt;
 
     public PlayerData() {
     }
@@ -466,5 +467,13 @@ public class PlayerData {
 
     public void setForumID(Integer forumID) {
         this.forumID = forumID;
+    }
+
+    public boolean hasAnwalt() {
+        return hasAnwalt;
+    }
+
+    public void setHasAnwalt(boolean hasAnwalt) {
+        this.hasAnwalt = hasAnwalt;
     }
 }

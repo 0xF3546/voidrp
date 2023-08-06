@@ -10,6 +10,7 @@ import de.polo.metropiacity.playerUtils.GangwarUtils;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.commands.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +26,7 @@ public class QuitListener implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData == null) return;
         event.setQuitMessage("");
-        ADutyCommand.send_message(player.getName() + " hat den Server verlassen.");
+        ADutyCommand.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
         ServerManager.updateTablist(null);
         if (playerData.getVariable("current_lobby") != null) {
             FFAUtils.leaveFFA(player);

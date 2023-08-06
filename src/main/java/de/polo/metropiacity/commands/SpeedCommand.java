@@ -13,21 +13,33 @@ public class SpeedCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-            if (playerData.getPermlevel() >= 70) {
-            if (playerData.isAduty()) {
-                if (args.length > 0) {
-                    player.sendMessage(Main.admin_prefix + "Dein Fly-Speed wurde auf §c" + args[0] + "§7 gestellt.");
-                    player.setFlySpeed(Float.parseFloat(args[0].replace(",", ".")));
-                } else {
-                    player.setFlySpeed(0.1F);
-                    player.sendMessage(Main.admin_prefix + "Dein Fly-Speed wurde §czurückgesetzt§7.");
-                }
-            } else {
-                player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
-            }
-        } else {
+        if (playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
+            return false;
         }
+        if (!playerData.isAduty()) {
+            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            return false;
+        }
+        if (args.length < 1) {
+            player.setFlySpeed(0.1F);
+            player.sendMessage(Main.admin_prefix + "Dein Fly-Speed wurde §czurückgesetzt§7.");
+            return false;
+        }
+        float speed = 0;
+        try {
+            speed = Float.parseFloat(args[0].replace(",", "."));
+        } catch (IllegalArgumentException e) {
+            player.sendMessage(Main.error + "Das ist keine gültige Zahl.");
+            return false;
+        }
+        if (speed < 0 || speed > 10) {
+            player.sendMessage(Main.error + "Der Speed muss von 0-10 sein!");
+            return false;
+        }
+        speed = speed / 10;
+        player.sendMessage(Main.admin_prefix + "Dein Fly-Speed wurde auf §c" + speed + "§7 gestellt.");
+        player.setFlySpeed(speed);
         return false;
     }
 }

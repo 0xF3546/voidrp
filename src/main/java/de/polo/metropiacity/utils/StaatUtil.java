@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -100,6 +101,8 @@ public class StaatUtil {
         Statement statement = MySQL.getStatement();
         statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        player.sendMessage("§8[§6Anwalt§8]§7 Die Staatsanwaltschaft hat mich über eine neue Akte deinerseits Informiert.");
+        player.sendMessage("§8[§6Anwalt§8]§7 Tatvorwurf: " + akte);
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
@@ -110,6 +113,18 @@ public class StaatUtil {
 
     public static void removeAkteFromPlayer(Player player, int id) throws SQLException {
         Statement statement = MySQL.getStatement();
+        ResultSet akte = statement.executeQuery("SELECT * FROM player_akten WHERE id = " + id);
+        if (akte.next()) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(akte.getString(2)));
+            if (offlinePlayer.isOnline()) {
+                Player targetplayer = Bukkit.getPlayer(offlinePlayer.getUniqueId());
+                PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                if (targetplayerData.hasAnwalt()) {
+                    targetplayer.sendMessage("§8[§6Anwalt§8]§7 Ein " + FactionManager.getTitle(player) + " " + " hat dir eine Akte erlassen.");
+                    targetplayer.sendMessage("§8[§6Anwalt§8]§7 Akte: " + akte.getString("akte"));
+                }
+            }
+        }
         statement.execute("DELETE FROM `player_akten` WHERE `id` = " + id);
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         for (Player players : Bukkit.getOnlinePlayers()) {

@@ -48,8 +48,9 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Der Rang muss von 0-8 sein!");
             return false;
         }
+        DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
         FactionPlayerData factionPlayerData = ServerManager.factionPlayerDataMap.get(targetplayer.getUniqueId().toString());
-        if (!factionPlayerData.getFaction().equals(playerData.getFaction())) {
+        if (!factionPlayerData.getFaction().equals(playerData.getFaction()) || dbPlayerData.getFaction() == null) {
             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner Fraktion.");
             return false;
         }
@@ -60,7 +61,6 @@ public class GiveRankCommand implements CommandExecutor {
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
         factionPlayerData.setFaction_grade(rang);
-        DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
         dbPlayerData.setFaction_grade(rang);
         try {
             Statement statement = MySQL.getStatement();

@@ -5,6 +5,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.commands.ADutyCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class JoinListener implements Listener {
             if (DeathUtils.isDead(player)) {
                 DeathUtils.killPlayer(player);
             }
-            ADutyCommand.send_message(player.getName() + " hat den Server betreten.");
+            ADutyCommand.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getPermlevel() >= 40) {
                 Utils.sendActionBar(player, "§aDeine Account-Daten wurden erfolgreich geladen!");
@@ -54,7 +55,7 @@ public class JoinListener implements Listener {
             LocationManager.useLocation(player, "Spawn");
             player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
-            ADutyCommand.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.");
+            ADutyCommand.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
         }
     }
 }
