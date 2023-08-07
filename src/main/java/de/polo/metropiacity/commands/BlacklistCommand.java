@@ -16,6 +16,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -49,7 +50,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             return false;
         } else {
             if (!(args.length >= 2)) {
-                player.sendMessage(Main.error + "Syntax-Fehler: /blacklist [add/remove] [Spieler] [Kills] [Preis] [Grund]");
+                player.sendMessage(Main.error + "Syntax-Fehler: /blacklist [add/remove/pay] [Spieler/Fraktion] [<Kills>] [<Preis>] [<Grund>]");
                 return false;
             }
             if (args[0].equalsIgnoreCase("add")) {
@@ -139,6 +140,39 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 player.sendMessage(Main.error + player1.getName() + " ist nicht auf der Blacklist.");
+            } else if (args[0].equalsIgnoreCase("pay")) {
+                for (FactionData factionData1 : FactionManager.factionDataMap.values()) {
+                    if (factionData1.getName().equalsIgnoreCase(args[1]) || factionData1.getFullname().equalsIgnoreCase(args[1])) {
+                        for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
+                            if (blacklistData.getFaction().equals(factionData1.getName())) {
+                                if (blacklistData.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
+                                    if (playerData.getBargeld() >= blacklistData.getPrice()) {
+                                        try {
+                                            PlayerManager.removeMoney(player, blacklistData.getPrice(), "Blacklist bezahlt - " + factionData1.getName());
+                                            player.sendMessage("§8[§cBlacklist§8]§7 Du hast dich von der Blacklist von §" + factionData1.getPrimaryColor() + factionData1.getFullname() + "§7 freigekauft. §c-" + blacklistData.getPrice());
+                                            for (PlayerData playerData1 : PlayerManager.playerDataMap.values()) {
+                                                if (playerData1.getFaction().equals(factionData1.getName())) {
+                                                    Player player1 = Bukkit.getPlayer(UUID.fromString(playerData1.getUuid().toString()));
+                                                    player1.sendMessage("§8[§cBlacklist§8] §" + factionData1.getPrimaryColor() + player.getName() + " hat sich freigekauft (§a" + blacklistData.getPrice() + "$§" + factionData1.getPrimaryColor() +").");
+                                                }
+                                            }
+                                            FactionManager.addFactionMoney(factionData1.getName(), blacklistData.getPrice(), "Blacklist-Zahlung " + player.getName());
+                                            Statement statement = MySQL.getStatement();
+                                            statement.execute("DELETE FROM blacklist WHERE id = " + blacklistData.getId());
+                                            FactionManager.blacklistDataMap.remove(blacklistData.getId());
+                                        } catch (SQLException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    } else {
+                                        player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                                    }
+                                }
+                            }
+                        }
+                        return false;
+                    }
+                }
+                player.sendMessage(Main.error + "Die Fraktion konnte nicht gefunden werden.");
             } else {
                 player.sendMessage(Main.error + "Syntax-Fehler: /blacklist add [Spieler] [Kills] [Preis] [Grund]");
             }
@@ -153,6 +187,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             List<String> suggestions = new ArrayList<>();
             suggestions.add("add");
             suggestions.add("remove");
+            suggestions.add("pay");
 
             return suggestions;
         }

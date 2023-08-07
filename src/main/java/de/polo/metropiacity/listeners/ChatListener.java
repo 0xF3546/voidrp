@@ -49,9 +49,9 @@ public class ChatListener implements Listener {
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         int distance = (int) player.getLocation().distance(players.getLocation());
                         if (player.getLocation().distance(players.getLocation()) <= 8) {
-                            players.sendMessage("§8[§2" + distance + "§8] | §f" + player.getName() + " " + type + ":§f " + msg);
+                            players.sendMessage("§8[§2" + distance + "§8] §f" + player.getName() + " " + type + ":§f " + msg);
                         } else if (player.getLocation().distance(players.getLocation()) <= 15) {
-                            players.sendMessage("§8[§2" + distance + "§8] | §7" + player.getName() + " " + type + "§8:§7 " + msg);
+                            players.sendMessage("§8[§2" + distance + "§8] §7" + player.getName() + " " + type + "§8:§7 " + msg);
                         } else if (player.getLocation().distance(players.getLocation()) <= 28) {
                             players.sendMessage("§8[§2" + distance + "§8] §8" + player.getName() + " " + type + "§8:§8 " + msg);
                         }

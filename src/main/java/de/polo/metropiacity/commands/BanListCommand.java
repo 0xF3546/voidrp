@@ -29,18 +29,21 @@ public class BanListCommand implements CommandExecutor {
             return false;
         }
         String query = null;
+        player.sendMessage("§7   ===§8[§cBanlist§8]§7===");
         if (args.length == 0) {
-            player.sendMessage("§7   ===§8[§cBanlist§8]§7===");
             query = "SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans";
         }
         if (args.length >= 2) {
             if (args[0].equalsIgnoreCase("search")) {
-                query = "SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans WHERE name LIKE %" + args[1] + "%";
+                query = "SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans WHERE name LIKE '%" + args[1] + "%'";
             }
         }
         try {
             Statement statement = MySQL.getStatement();
             ResultSet res = statement.executeQuery(query);
+            if (!res.next()) {
+                player.sendMessage("§8 » §eDie Liste ist leer.");
+            }
             while (res.next()) {
                 TextComponent db = new TextComponent("§8 » §e" + res.getString(3) + "§8 | §e" + res.getString(4));
                 db.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eBan läuft ab: " + res.getString("formatted_timestamp") + "\n§eGebannt durch: " + res.getString(5))));
