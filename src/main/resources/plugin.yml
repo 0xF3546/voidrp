@@ -173,3 +173,5 @@ commands:
   serverstop:
   giverank:
   forum:
+  autoban:
+    aliases: aban
