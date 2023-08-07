@@ -31,11 +31,11 @@ public class BanListCommand implements CommandExecutor {
         String query = null;
         if (args.length == 0) {
             player.sendMessage("§7   ===§8[§cBanlist§8]§7===");
-            query ="SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans";
+            query = "SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans";
         }
         if (args.length >= 2) {
             if (args[0].equalsIgnoreCase("search")) {
-                query = "SELECT * FROM player_bans WHERE name LIKE " + args[1];
+                query = "SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans WHERE name LIKE %" + args[1] + "%";
             }
         }
         try {
