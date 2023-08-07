@@ -104,7 +104,6 @@ commands:
   ffa:
   npc:
   redeem:
-  link:
   whistle:
     aliases: [w, flüstern]
   shout:

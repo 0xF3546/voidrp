@@ -210,7 +210,6 @@ public final class Main extends JavaPlugin {
         getCommand("ffa").setExecutor(new FFAUtils());
         getCommand("npc").setExecutor(new NPC());
         getCommand("redeem").setExecutor(new RedeemCommand());
-        getCommand("link").setExecutor(new LinkCommand());
         getCommand("whistle").setExecutor(new WhistleCommand());
         getCommand("shout").setExecutor(new ShoutCommand());
         getCommand("setsecondaryteam").setExecutor(new SetSecondaryTeamCommand());
