@@ -55,6 +55,7 @@ public class PlayerInteractListener implements Listener {
                         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     }
                 }
+                if (!(event.getClickedBlock().getState() instanceof TileState)) return;
                 TileState state = (TileState) event.getClickedBlock().getState();
                 if (state instanceof Sign) {
                     Sign sign = (Sign) event.getClickedBlock().getState();
