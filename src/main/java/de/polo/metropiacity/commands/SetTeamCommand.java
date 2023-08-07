@@ -41,7 +41,7 @@ public class SetTeamCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
                 PlayerManager.setRang(targetplayer.getUniqueId().toString(), rank);
-                ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " in das Team als " + rank + " aufgenommen.", ChatColor.DARK_RED);
+                ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }
