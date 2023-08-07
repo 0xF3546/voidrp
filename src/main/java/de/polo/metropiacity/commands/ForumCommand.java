@@ -37,12 +37,13 @@ public class ForumCommand implements CommandExecutor {
                         player.sendMessage(Main.error + "Es wurde kein Forum-Account mit dem Namen \"" + player.getName() + "\" gefunden.");
                         return false;
                     }
+                    int forumID = res.getInt(1);
+                    statement.execute("UPDATE wcf1_user SET activationCode = 0 WHERE userID = " + forumID);
                     Statement statement1 = MySQL.getStatement();
                     Utils.sendActionBar(player, "§aVerknüpfe Forum & Minecraft...");
-                    statement1.executeUpdate("UPDATE players SET forumID = " + res.getInt(1) + " WHERE uuid = '" + player.getUniqueId() + "'");
-                    statement.execute("UPDATE wcf1_user SET activationCode = 0 WHERE userID = " + res.getInt(1));
+                    statement1.executeUpdate("UPDATE players SET forumID = " + forumID + " WHERE uuid = '" + player.getUniqueId() + "'");
                     Utils.sendActionBar(player, "§aAccount freigeschalten.");
-                    playerData.setForumID(res.getInt(1));
+                    playerData.setForumID(forumID);
                     Utils.sendActionBar(player, "§aWeise Forum-Rechte zu...");
                     ArrayList<Integer> ranks = new ArrayList<>();
                     RankData spielerData = ServerManager.rankDataMap.get("Spieler");
@@ -66,6 +67,7 @@ public class ForumCommand implements CommandExecutor {
                     }
                     Utils.sendActionBar(player, "§aErfolgreich!");
                     player.sendMessage("§8[§6Forum§8]§a Du hast dein Forum-Account verknüpft & freigeschalten.");
+
                 } catch (SQLException e) {
                     player.sendMessage(Main.error + "Etwas ist schief gelaufen...");
                     throw new RuntimeException(e);

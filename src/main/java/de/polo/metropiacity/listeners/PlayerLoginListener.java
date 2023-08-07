@@ -23,7 +23,7 @@ public class PlayerLoginListener implements Listener {
         Player player = event.getPlayer();
         try {
             Statement statement = MySQL.getStatement();
-            ResultSet res = statement.executeQuery("SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') FROM player_bans WHERE uuid = '" + player.getUniqueId() + "'");
+            ResultSet res = statement.executeQuery("SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans WHERE uuid = '" + player.getUniqueId() + "'");
             if (res.next()) {
                 java.util.Date utilDate = new java.util.Date(res.getDate(6).getTime());
 
@@ -36,7 +36,7 @@ public class PlayerLoginListener implements Listener {
                     return;
                 }
                 event.setResult(PlayerLoginEvent.Result.KICK_BANNED);
-                event.setKickMessage("§8 • §6MetropiaCity§8 •\n\n§cDu bist vom Server gesperrt.\nGrund: " + res.getString(4) + "\nGebannt durch: " + res.getString(5) + "\nBan läuft ab: " + res.getString("date")+ "\n\n§8 • §6MetropiaCity§8 •");
+                event.setKickMessage("§8 • §6MetropiaCity§8 •\n\n§cDu bist vom Server gesperrt.\nGrund: " + res.getString(4) + "\nGebannt durch: " + res.getString(5) + "\nBan läuft ab: " + res.getString("formatted_timestamp")+ "\n\n§8 • §6MetropiaCity§8 •");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
