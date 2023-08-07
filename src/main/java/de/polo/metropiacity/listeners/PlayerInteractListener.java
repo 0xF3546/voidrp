@@ -58,6 +58,7 @@ public class PlayerInteractListener implements Listener {
                 if (!(event.getClickedBlock().getState() instanceof TileState)) return;
                 TileState state = (TileState) event.getClickedBlock().getState();
                 if (state instanceof Sign) {
+                    event.setCancelled(true);
                     Sign sign = (Sign) event.getClickedBlock().getState();
                     if (sign.getLine(1).contains("Bankautomat")) {
                         BankingUtils.openBankMenu(player);

@@ -2,6 +2,7 @@ package de.polo.metropiacity.listeners;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +33,7 @@ public class WorldListener implements Listener {
                 event.setCancelled(true);
             }
         }
-        if (event.getClickedBlock().getType().name().equals("Sign")) {
+        if (event.getClickedBlock() instanceof Sign) {
             if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 event.setCancelled(true);
             }

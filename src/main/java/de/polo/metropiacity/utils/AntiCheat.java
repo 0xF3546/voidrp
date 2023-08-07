@@ -9,7 +9,7 @@ public class AntiCheat implements Listener, PluginMessageListener {
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
         if (channel.equalsIgnoreCase("WDL|INIT")) {
-            //todo: spieler kick
+            player.kickPlayer("§cDu nutzt nicht zulässig Client-Modifikationen.");
         }
     }
 }

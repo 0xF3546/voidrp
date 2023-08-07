@@ -1,6 +1,7 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,18 +12,15 @@ public class WhistleCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (args.length >= 1) {
-            StringBuilder message = new StringBuilder(args[0]);
-            for (int i = 1; i < args.length; i++) {
-                message.append(" ").append(args[i]);
-            }
-            for (Player players : Bukkit.getOnlinePlayers()) {
-                if (player.getLocation().distance(players.getLocation()) <= 3) {
-                    players.sendMessage("§8" + player.getName() + " flüstert§8:§8 " + message);
-                }
-            }
-        } else {
+        if (args.length < 1) {
             player.sendMessage(Main.error + "Syntax-Fehler: /whistle [Nachricht]");
+            return false;
+        }
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            if (player.getLocation().distance(players.getLocation()) <= 3) {
+                int range = (int) player.getLocation().distance(players.getLocation());
+                players.sendMessage("§8[§2" + range +"§8] §8" + player.getName() + " flüstert§8:§8 " + Utils.stringArrayToString(args));
+            }
         }
         return false;
     }
