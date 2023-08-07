@@ -28,7 +28,7 @@ public class BanCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = PlayerManager.getPlayerData(player);
         String syntax_error = Main.admin_error + "Syntax-Fehler: /ban [name/uuid] [Wert] [Zeit] [Grund]";
         if (playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
@@ -74,6 +74,7 @@ public class BanCommand implements CommandExecutor {
                     } else if (BanDuration.contains("y")) {
                         localDateTime = localDateTime.plusYears(Integer.parseInt(BanDuration.replace("y", "")));
                     }
+                    statement.execute("DELETE FROM player_bans WHERE uuid = '" + uuid + "'");
                     statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `punisher`, `date`) VALUES ('" + uuid + "', '" + args[1] + "', '" + banreason + "', '" + player.getName() + "', '" + localDateTime + "')");
                     targetName = args[1];
                 }
@@ -114,6 +115,7 @@ public class BanCommand implements CommandExecutor {
                     } else if (BanDuration.contains("y")) {
                         localDateTime = localDateTime.plusYears(Integer.parseInt(BanDuration.replace("y", "")));
                     }
+                    statement.execute("DELETE FROM player_bans WHERE uuid = '" + args[1] + "'");
                     statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `punisher`, `date`) VALUES ('" + args[1] + "', '" + result.getString(1) + "', '" + banreason + "', '" + player.getName() + "', '" + localDateTime + "')");
                     targetName = playername;
                 }

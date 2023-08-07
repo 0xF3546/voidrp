@@ -175,3 +175,4 @@ commands:
   forum:
   autoban:
     aliases: aban
+  banlist:

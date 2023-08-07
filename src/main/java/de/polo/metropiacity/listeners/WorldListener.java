@@ -14,6 +14,9 @@ public class WorldListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (event.getClickedBlock() == null) {
+            return;
+        }
         if (event.getClickedBlock().getType() == Material.CHEST) {
             if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 event.setCancelled(true);
