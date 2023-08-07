@@ -85,6 +85,7 @@ public final class Main extends JavaPlugin {
 
             ServerManager.loadDBPlayer();
             ServerManager.loadContracts();
+            AutoBanCommand.init();
 
             //TeamSpeak.loadConfig();
             teamSpeak = new TeamSpeak();
@@ -263,6 +264,7 @@ public final class Main extends JavaPlugin {
         getCommand("serverstop").setExecutor(new ServerStopCommand());
         getCommand("giverank").setExecutor(new GiveRankCommand());
         getCommand("forum").setExecutor(new ForumCommand());
+        getCommand("autoban").setExecutor(new AutoBanCommand());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());
@@ -274,6 +276,7 @@ public final class Main extends JavaPlugin {
         getCommand("tpto").setTabCompleter(new TPToCommand());
         getCommand("farming").setTabCompleter(new Farming());
         getCommand("aduty").setTabCompleter(new ADutyCommand());
+        getCommand("autoban").setTabCompleter(new AutoBanCommand());
     }
 
 

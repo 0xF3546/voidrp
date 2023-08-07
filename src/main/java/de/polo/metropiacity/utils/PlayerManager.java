@@ -756,4 +756,8 @@ public class PlayerManager implements Listener {
         player.setFlying(false);
         //event.setCancelled(true);
     }
+
+    public static PlayerData getPlayerData(Player player) {
+        return playerDataMap.get(player.getUniqueId().toString());
+    }
 }
