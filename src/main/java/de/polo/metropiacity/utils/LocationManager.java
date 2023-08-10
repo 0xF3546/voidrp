@@ -265,5 +265,17 @@ public class LocationManager {
         return loc;
     }
 
+    public static String isNearFarmingSpot(Player player, int radius) {
+        String spot = null;
+        for (LocationData locationData : locationDataMap.values()) {
+            if (locationData.getType() != null) {
+                if (locationData.getType().equalsIgnoreCase("farming") && player.getLocation().distance(new Location(Bukkit.getWorld(locationData.getWelt()), locationData.getX(), locationData.getY(), locationData.getZ())) < radius) {
+                    spot = locationData.getName();
+                }
+            }
+        }
+        return spot;
+    }
+
 
 }

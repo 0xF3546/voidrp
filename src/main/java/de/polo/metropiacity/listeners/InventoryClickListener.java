@@ -1287,5 +1287,32 @@ public class InventoryClickListener implements Listener {
         if (playerData.getVariable("current_inventory").contains("dealer")) {
             event.setCancelled(true);
         }
+        if (playerData.getVariable("current_inventory").contains("tasche_")) {
+            event.setCancelled(true);
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_inventory").replace("tasche_", "")));
+            if (targetplayer == null) return;
+            PlayerData targetplayerData = PlayerManager.getPlayerData(targetplayer);
+            switch (event.getSlot()) {
+                case 11:
+                    player.closeInventory();
+                    if (targetplayerData.getBargeld() < 1) {
+                        player.sendMessage(Main.error + targetplayer.getName() + " hat kein Bargeld dabei.");
+                        return;
+                    }
+                    player.sendMessage("§8[§cAusraub§8]§c Du hast " + targetplayer.getName() + " §a" + targetplayerData.getBargeld() + "$§c geklaut.");
+                    targetplayer.sendMessage("§8[§cAusraub§8]§c " + player.getName() + " hat dir §4" + targetplayerData.getBargeld() + "$§c geklaut.");
+                    PlayerManager.addMoney(player, targetplayerData.getBargeld());
+                    PlayerManager.removeMoney(targetplayer, targetplayerData.getBargeld(), "Raub (" + player.getName() + ")");
+                    ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " klaut das Bargeld von " + targetplayer.getName() + ".");
+                    break;
+                case 12:
+                    player.closeInventory();
+                    player.sendMessage("§cDas Feature ist in Arbeit.");
+                    break;
+            }
+        }
+        if (playerData.getVariable("current_inventory").equals("tasche")) {
+            event.setCancelled(true);
+        }
     }
 }

@@ -5,8 +5,9 @@ import de.polo.metropiacity.dataStorage.LocationData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
-import de.polo.metropiacity.utils.events.BreakPersistentBlockEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,9 +16,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
@@ -44,6 +45,23 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             farmingDataMap.put(res.getString(3), farmingData);
         }
     }
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (event.getBlock().getType() != Material.LARGE_FERN) {
+            return;
+        }
+        String nearestFarmSpot = LocationManager.isNearFarmingSpot(event.getPlayer(), 20);
+        if (nearestFarmSpot == null) return;
+        LocationData typeData = LocationManager.locationDataMap.get(nearestFarmSpot);
+        String type = typeData.getInfo();
+        FarmingData farmingData = farmingDataMap.get(type);
+        Player player = event.getPlayer();
+        if (Main.cooldownManager.isOnCooldown(player, "farming")) return;
+        player.getInventory().addItem(ItemManager.createItem(farmingData.getItem(), farmingData.getAmount(), 0, farmingData.getItemName().replace("&", "§"), null));
+        Main.cooldownManager.setCooldown(player, "farming", farmingData.getDuration());
+        Utils.sendActionBar(player, farmingData.getItemName().replace("&", "§") + " abgebaut!");
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -108,24 +126,5 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             return suggestions;
         }
         return null;
-    }
-    @EventHandler
-    public void onPersistentBlockBreak(BreakPersistentBlockEvent event) {
-        String type = event.getPersistentData(PersistentDataType.STRING);
-        if (type.contains("farming_")) {
-            String farmingType = type.replace("farming_", "");
-            FarmingData farmingData = null;
-            for (FarmingData fData : farmingDataMap.values()) {
-                if (fData.getDrug().equalsIgnoreCase(farmingType)) {
-                    farmingData = fData;
-                }
-            }
-            if (farmingData == null) return;
-            Player player = event.getPlayer();
-            if (Main.cooldownManager.isOnCooldown(player, "farming")) return;
-            player.getInventory().addItem(ItemManager.createItem(farmingData.getItem(), farmingData.getAmount(), 0, farmingData.getItemName().replace("&", "§"), null));
-            Main.cooldownManager.setCooldown(player, "farming", farmingData.getDuration());
-            Utils.sendActionBar(player, farmingData.getItemName().replace("&", "§") + " abgebaut!");
-        }
     }
 }

@@ -33,7 +33,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
-        if (!factionData.hasBlacklist()) {
+        if (!factionData.hasBlacklist() && !args[0].equalsIgnoreCase("pay")) {
             player.sendMessage(Main.error + "Deine Fraktion hat keine Blacklist.");
             return false;
         }
@@ -165,10 +165,12 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                                         }
                                     } else {
                                         player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                                        return false;
                                     }
                                 }
                             }
                         }
+                        player.sendMessage(Main.error + "Du bist nicht auf dieser Blacklist.");
                         return false;
                     }
                 }

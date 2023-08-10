@@ -1,5 +1,8 @@
 package de.polo.metropiacity.dataStorage;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+
 public class FactionData {
     private int id;
     private String primaryColor;

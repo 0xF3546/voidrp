@@ -265,6 +265,7 @@ public final class Main extends JavaPlugin {
         getCommand("forum").setExecutor(new ForumCommand());
         getCommand("autoban").setExecutor(new AutoBanCommand());
         getCommand("banlist").setExecutor(new BanListCommand());
+        getCommand("gm").setExecutor(new GMCommand());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());
