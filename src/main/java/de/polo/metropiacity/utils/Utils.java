@@ -26,12 +26,9 @@ public class Utils {
     }
 
     public static OfflinePlayer getOfflinePlayer(String player) {
-        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-            if (!(offlinePlayer.getName() == null)) {
-                if (offlinePlayer.getName().equalsIgnoreCase(player)) {
-                    return offlinePlayer;
-                }
+        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            if (offlinePlayer.getName().equalsIgnoreCase(player)) {
+                return offlinePlayer;
             }
         }
         return null;
