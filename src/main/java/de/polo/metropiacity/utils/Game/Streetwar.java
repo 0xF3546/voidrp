@@ -67,12 +67,12 @@ public class Streetwar implements CommandExecutor {
             winner = streetwarData.getDefender();
             FactionData factionData = FactionManager.factionDataMap.get(streetwarData.getDefender());
             FactionData loserFaction = FactionManager.factionDataMap.get(streetwarData.getAttacker());
-            Bukkit.broadcastMessage("§6§lSTREETWAR§e Die Fraktion §6" + factionData.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + loserFaction.getFullname() + "§e mit §6" + streetwarData.getDefender_points() + " zu " + streetwarData.getAttacker_points() + "§e gewonnen!");
+            Bukkit.broadcastMessage("§8[§6§lSTREETWAR§8]§e Die Fraktion §6" + factionData.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + loserFaction.getFullname() + "§e mit §6" + streetwarData.getDefender_points() + " zu " + streetwarData.getAttacker_points() + "§e gewonnen!");
         } else if (streetwarData.getAttacker_points() >= 450) {
             winner = streetwarData.getAttacker();
             FactionData factionData = FactionManager.factionDataMap.get(streetwarData.getDefender());
             FactionData loserFaction = FactionManager.factionDataMap.get(streetwarData.getAttacker());
-            Bukkit.broadcastMessage("§6§lSTREETWAR§e Die Fraktion §6" + loserFaction.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + factionData.getFullname() + "§e mit §6" + streetwarData.getAttacker_points() + " zu " + streetwarData.getDefender_points() + "§e gewonnen!");
+            Bukkit.broadcastMessage("§8[§6§lSTREETWAR§8]§e Die Fraktion §6" + loserFaction.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + factionData.getFullname() + "§e mit §6" + streetwarData.getAttacker_points() + " zu " + streetwarData.getDefender_points() + "§e gewonnen!");
         }
         Bukkit.broadcastMessage("");
         try {
@@ -95,7 +95,6 @@ public class Streetwar implements CommandExecutor {
             statement.setString(1, attackerData.getName());
             statement.setString(2, factionData.getName());
 
-            int rowsUpdated = statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 StreetwarData streetwarData = new StreetwarData();
@@ -111,7 +110,7 @@ public class Streetwar implements CommandExecutor {
             e.printStackTrace();
         }
         Bukkit.broadcastMessage("");
-        Bukkit.broadcastMessage("§6§lSTREETWAR§e Die Fraktion " + attackerData.getName() + " hat einen Streetwar gegen die Fraktion " + factionData.getName() + " gestartet!");
+        Bukkit.broadcastMessage("§8[§6§lSTREETWAR§8]§e Die Fraktion " + attackerData.getName() + " hat einen Streetwar gegen die Fraktion " + factionData.getName() + " gestartet!");
         Bukkit.broadcastMessage("");
     }
 
@@ -152,10 +151,28 @@ public class Streetwar implements CommandExecutor {
             player.sendMessage(Main.error + "Es ist kein Fraktionsleader der Gegner-Partei online.");
             return false;
         }
+        if (playerData.getFaction().equalsIgnoreCase(args[0])) {
+            player.sendMessage(Main.error + "Du kannst keinen Streetwar gegen deine eigene Fraktion starte.");
+            return false;
+        }
+        for (StreetwarData streetwarData : streetwarDataMap.values()) {
+            if (streetwarData.getDefender().equalsIgnoreCase(args[0]) || streetwarData.getAttacker().equalsIgnoreCase(args[0])) {
+                player.sendMessage(Main.error + "Die Gegner-Partei befindet sich bereits im Streetwar.");
+                return false;
+            }
+        }
+        boolean sendMessage = false;
         for (Player leader : availablePlayers) {
-            leader.sendMessage("§8[§6Streetwar§8]§c " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat deine Fraktion zum Streetfight herausgefordert.");
-            VertragUtil.sendInfoMessage(leader);
-            VertragUtil.setVertrag(player, leader, "streetwar", factionData.getName());
+            if (player.getLocation().distance(leader.getLocation()) < 5) {
+                leader.sendMessage("§8[§6Streetwar§8]§c " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat deine Fraktion zum Streetwar herausgefordert.");
+                VertragUtil.sendInfoMessage(leader);
+                VertragUtil.setVertrag(player, leader, "streetwar", factionData.getName());
+                sendMessage = true;
+            }
+        }
+        if (!sendMessage) {
+            player.sendMessage(Main.error + "Es befindet sich kein Fraktionsleader in deiner nähe.");
+            return false;
         }
         player.sendMessage("§8[§6Streetwar§8]§a Du hast die Fraktion zum Streetwar herausgefordert.");
         return false;

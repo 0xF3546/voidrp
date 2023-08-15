@@ -69,7 +69,6 @@ public class VertragUtil {
             try {
                 targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
             }
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             switch (vertrag_type.get(player.getUniqueId().toString())) {
@@ -181,7 +180,11 @@ public class VertragUtil {
     public static void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
-            Player targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+            Player targetplayer = null;
+            try {
+                targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+            } catch (IllegalArgumentException e) {
+            }
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
                     FactionManager.sendMessageToFaction(curr, player.getName() + " wurde eingeladen und ist nicht beigetreten.");
