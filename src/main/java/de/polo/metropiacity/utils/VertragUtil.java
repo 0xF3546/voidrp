@@ -6,13 +6,14 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.ChatUtils;
+import de.polo.metropiacity.utils.Game.Housing;
+import de.polo.metropiacity.utils.Game.Streetwar;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
@@ -24,17 +25,22 @@ public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
     public static final HashMap<String, String> current = new HashMap<>();
 
-    public static boolean setVertrag(Player player, Player target, String type, String vertrag) throws SQLException {
+    public static boolean setVertrag(Player player, Player target, String type, String vertrag)  {
         if (current.get(target.getUniqueId().toString()) == null) {
             current.remove(target.getUniqueId().toString(), vertrag);
             vertrag_type.put(target.getUniqueId().toString(), type);
         }
         vertrag_type.put(target.getUniqueId().toString(), type);
         current.put(target.getUniqueId().toString(), vertrag);
-        Statement statement = MySQL.getStatement();
-        assert statement != null;
-        statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
-        return true;
+        Statement statement = null;
+        try {
+            statement = MySQL.getStatement();
+            assert statement != null;
+            statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         /*if (current.get(target.getUniqueId().toString()) == null) {
             vertrag_type.put(target.getUniqueId().toString(), type);
             current.put(target.getUniqueId().toString(), vertrag);
@@ -162,6 +168,9 @@ public class VertragUtil {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
+                case "streetwar":
+                    Streetwar.acceptStreetwar(player, curr);
+                    break;
             }
             deleteVertrag(player);
         } else {
@@ -207,6 +216,9 @@ public class VertragUtil {
                     } else {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
+                case "streetwar":
+                    Streetwar.denyStreetwar(player, curr);
+                    break;
             }
             deleteVertrag(player);
         } else {

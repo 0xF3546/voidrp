@@ -8,6 +8,7 @@ import de.polo.metropiacity.commands.*;
 import de.polo.metropiacity.utils.Game.Farming;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.Game.Housing;
+import de.polo.metropiacity.utils.Game.Streetwar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -270,6 +271,7 @@ public final class Main extends JavaPlugin {
         getCommand("banlist").setExecutor(new BanListCommand());
         getCommand("gm").setExecutor(new GMCommand());
         getCommand("note").setExecutor(new NoteCommand());
+        getCommand("streetwar").setExecutor(new Streetwar());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());

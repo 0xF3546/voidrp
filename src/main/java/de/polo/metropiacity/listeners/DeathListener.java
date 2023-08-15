@@ -7,6 +7,7 @@ import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.playerUtils.FFAUtils;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.FactionManager;
+import de.polo.metropiacity.utils.Game.Streetwar;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;
 import de.polo.metropiacity.commands.ADutyCommand;
@@ -78,6 +79,13 @@ public class DeathListener implements Listener {
                 } else {
                     item.setCustomName("§7" + player.getName());
                     item.setCustomNameVisible(true);
+                    for (StreetwarData streetwarData : Streetwar.streetwarDataMap.values()) {
+                        if (playerData.getFaction().equalsIgnoreCase(streetwarData.getAttacker()) || playerData.getFaction().equalsIgnoreCase(streetwarData.getDefender())) {
+                            if (PlayerManager.getPlayerData(player.getKiller()).getFaction().equalsIgnoreCase(streetwarData.getDefender()) || PlayerManager.getPlayerData(player.getKiller()).getFaction().equalsIgnoreCase(streetwarData.getAttacker())) {
+                                Streetwar.addPunkte(PlayerManager.getPlayerData(player.getKiller()).getFaction(), 3, "eliminierung durch " + player.getKiller().getName());
+                            }
+                        }
+                    }
                     if (playerData.getVariable("gangwar") != null) {
                         DeathUtils.setGangwarDeath(player);
                         PlayerData killerData = PlayerManager.playerDataMap.get(player.getKiller().getUniqueId().toString());
