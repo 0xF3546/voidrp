@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -52,6 +53,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                 player.getPlayer().setDisplayName("§8[§cTeam§8]§c " + player.getName());
                 playerData.getScoreboard().createAdminScoreboard();
             }
+            Utils.Tablist.updatePlayer(player);
         }
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {

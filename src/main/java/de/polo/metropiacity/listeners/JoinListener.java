@@ -57,5 +57,6 @@ public class JoinListener implements Listener {
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
             ADutyCommand.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
         }
+        Utils.Tablist.updatePlayer(player);
     }
 }

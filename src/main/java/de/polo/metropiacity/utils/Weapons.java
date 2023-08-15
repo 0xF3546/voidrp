@@ -93,7 +93,7 @@ public class Weapons implements Listener {
         if (weaponData == null) {
             return;
         }
-        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
+        /*if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
             if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
                 NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
@@ -108,7 +108,7 @@ public class Weapons implements Listener {
                 event.getItem().setItemMeta(meta);
             }
             return;
-        }
+        }*/
         NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
         NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
         NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");

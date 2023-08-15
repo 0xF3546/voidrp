@@ -2,7 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.utils.Housing;
+import de.polo.metropiacity.utils.Game.Housing;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

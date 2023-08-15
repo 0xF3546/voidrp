@@ -1,10 +1,11 @@
-package de.polo.metropiacity.utils;
+package de.polo.metropiacity.utils.Game;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;

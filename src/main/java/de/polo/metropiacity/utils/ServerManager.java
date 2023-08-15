@@ -4,7 +4,7 @@ import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.DeathUtils;
-import de.polo.metropiacity.playerUtils.GangwarUtils;
+import de.polo.metropiacity.utils.Game.GangwarUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -16,8 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 

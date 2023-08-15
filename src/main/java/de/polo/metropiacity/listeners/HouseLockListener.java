@@ -3,7 +3,7 @@ package de.polo.metropiacity.listeners;
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.utils.Housing;
+import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;

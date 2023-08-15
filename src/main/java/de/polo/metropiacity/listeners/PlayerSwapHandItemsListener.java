@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -64,7 +65,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         System.out.println(targetplayer.getName());
         PlayerData targetplayerData = PlayerManager.getPlayerData(targetplayer);
         Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")");
-        inv.setItem(11, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + targetplayerData.getBargeld() + "$"));
+        inv.setItem(11, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + Utils.toDecimalFormat(targetplayerData.getBargeld()) + "$"));
         ItemMeta meta = inv.getItem(11).getItemMeta();
         meta.setLore(Arrays.asList("§8 ➥ §7" + targetplayerData.getBargeld() + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"));
         inv.getItem(11).setItemMeta(meta);

@@ -53,12 +53,18 @@ public class NoteCommand implements CommandExecutor {
                 }
                 player.sendMessage("§7   ===§8[§e" + offlinePlayer.getName() + "'s Notes§8]§7===");
                 TextComponent db = new TextComponent("§8 » §e" + res.getInt(1) + "§8 × §e" + res.getString(4));
-                OfflinePlayer punisher = Bukkit.getOfflinePlayer(UUID.fromString(res.getString(2)));
-                db.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eVergeben am " + res.getString("formatted_timestamp") + "\n§edurch: " + punisher.getName())));
+                String punisher = null;
+                if (res.getString(2).equalsIgnoreCase("System")) {
+                    punisher = "System";
+                } else {
+                    OfflinePlayer punisher2 = Bukkit.getOfflinePlayer(UUID.fromString(res.getString(2)));
+                    punisher = punisher2.getName();
+                }
+                db.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eVergeben am " + res.getString("formatted_timestamp") + "\n§edurch: " + punisher)));
                 player.spigot().sendMessage(db);
                 while (res.next()) {
                     TextComponent db2 = new TextComponent("§8 » §e" + res.getInt(1) + "§8 × §e" + res.getString(4));
-                    db2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eVergeben am " + res.getString("formatted_timestamp") + "\n§edurch: " + punisher.getName())));
+                    db2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§eVergeben am " + res.getString("formatted_timestamp") + "\n§edurch: " + punisher)));
                     player.spigot().sendMessage(db2);
                 }
             } catch (SQLException e) {

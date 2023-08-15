@@ -39,12 +39,13 @@ public class BanCommand implements CommandExecutor {
             return false;
         }
         String targetName = null;
+        UUID targetUUID = null;
         String BanDuration = args[2].toLowerCase();
+        StringBuilder banreason = new StringBuilder(args[3]);
+        for (int i = 4; i < args.length; i++) {
+            banreason.append(" ").append(args[i]);
+        }
         if (args[0].equalsIgnoreCase("name")) {
-            StringBuilder banreason = new StringBuilder();
-            for (int i = 3; i < args.length; i++) {
-                banreason.append(" ").append(args[i]);
-            }
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (players.getName().equalsIgnoreCase(args[1])) {
                     try {
@@ -74,6 +75,7 @@ public class BanCommand implements CommandExecutor {
                     } else if (BanDuration.contains("y")) {
                         localDateTime = localDateTime.plusYears(Integer.parseInt(BanDuration.replace("y", "")));
                     }
+                    targetUUID = UUID.fromString(result.getString(1));
                     statement.execute("DELETE FROM player_bans WHERE uuid = '" + uuid + "'");
                     statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `punisher`, `date`) VALUES ('" + uuid + "', '" + args[1] + "', '" + banreason + "', '" + player.getName() + "', '" + localDateTime + "')");
                     targetName = args[1];
@@ -82,10 +84,6 @@ public class BanCommand implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         } else if (args[0].equalsIgnoreCase("uuid")) {
-            StringBuilder banreason = new StringBuilder();
-            for (int i = 3; i < args.length; i++) {
-                banreason.append(" ").append(args[i]);
-            }
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (players.getUniqueId().toString().equalsIgnoreCase(args[1])) {
                     try {
@@ -99,7 +97,7 @@ public class BanCommand implements CommandExecutor {
             }
             try {
                 Statement statement = MySQL.getStatement();
-                ResultSet result = statement.executeQuery("SELECT `player_name` FROM `players` WHERE `uuid` = '" + args[1] + "'");
+                ResultSet result = statement.executeQuery("SELECT `player_name`, `uuid` FROM `players` WHERE `uuid` = '" + args[1] + "'");
                 if (result.next()) {
                     String playername = result.getString(1);
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[1]));
@@ -115,6 +113,7 @@ public class BanCommand implements CommandExecutor {
                     } else if (BanDuration.contains("y")) {
                         localDateTime = localDateTime.plusYears(Integer.parseInt(BanDuration.replace("y", "")));
                     }
+                    targetUUID = UUID.fromString(result.getString(2));
                     statement.execute("DELETE FROM player_bans WHERE uuid = '" + args[1] + "'");
                     statement.execute("INSERT INTO `player_bans` (`uuid`, `name`, `reason`, `punisher`, `date`) VALUES ('" + args[1] + "', '" + result.getString(1) + "', '" + banreason + "', '" + player.getName() + "', '" + localDateTime + "')");
                     targetName = playername;
@@ -126,7 +125,14 @@ public class BanCommand implements CommandExecutor {
             player.sendMessage(syntax_error);
             return false;
         }
-        Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grnd: " + args[3]);
+        Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grnd: " + banreason);
+        Statement statement = null;
+        try {
+            statement = MySQL.getStatement();
+            statement.execute("INSERT INTO notes (uuid, target, note) VALUES ('System', '" + targetUUID + "', 'Spieler wurde gebannt (" + banreason + ")')");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
 }

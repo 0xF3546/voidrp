@@ -3,10 +3,11 @@ package de.polo.metropiacity.listeners;
 import de.polo.metropiacity.dataStorage.ServiceData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.ChatUtils;
 import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.playerUtils.FFAUtils;
-import de.polo.metropiacity.playerUtils.GangwarUtils;
+import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.commands.*;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class QuitListener implements Listener {
     @EventHandler
@@ -90,6 +92,10 @@ public class QuitListener implements Listener {
                 StaatUtil.cancelservice(player);
             }
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
+            if (playerData.getVariable("tutorial") != null) {
+                Statement s = MySQL.getStatement();
+                s.executeUpdate("UPDATE players SET firstname = null, lastname = null, birthday = null, gender = null WHERE uuid = '" + player.getUniqueId() + "'");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

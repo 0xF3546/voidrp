@@ -1,10 +1,14 @@
-package de.polo.metropiacity.utils;
+package de.polo.metropiacity.utils.Game;
 
 import de.polo.metropiacity.dataStorage.FarmingData;
 import de.polo.metropiacity.dataStorage.LocationData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.ItemManager;
+import de.polo.metropiacity.utils.LocationManager;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;

@@ -7,7 +7,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.playerUtils.BankingUtils;
 import de.polo.metropiacity.playerUtils.ChatUtils;
 import de.polo.metropiacity.playerUtils.Rubbellose;
-import de.polo.metropiacity.utils.Housing;
+import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.commands.MuellmannCommand;

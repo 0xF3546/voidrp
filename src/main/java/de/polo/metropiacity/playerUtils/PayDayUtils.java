@@ -7,6 +7,7 @@ import de.polo.metropiacity.dataStorage.VehicleData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.*;
+import de.polo.metropiacity.utils.Game.Housing;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 

@@ -225,6 +225,13 @@ public class FactionManager {
             }
         }
     }
+    public static void sendCustomMessageToFaction(String faction, String message) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (Objects.equals(faction(player), faction)) {
+                player.sendMessage(message);
+            }
+        }
+    }
     public static boolean changeRankPayDay(String faction, int rank, int payday) throws SQLException {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
@@ -295,6 +302,7 @@ public class FactionManager {
                 }
                 playerData.setDuty(false);
             }
+            Utils.Tablist.updatePlayer(player);
         } catch (SQLException e) {
             player.sendMessage(Main.error + "Fehler.");
             throw new RuntimeException(e);

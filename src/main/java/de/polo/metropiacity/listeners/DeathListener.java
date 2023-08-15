@@ -5,7 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.playerUtils.FFAUtils;
-import de.polo.metropiacity.playerUtils.GangwarUtils;
+import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;

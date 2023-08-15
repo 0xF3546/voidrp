@@ -1,7 +1,7 @@
 package de.polo.metropiacity.dataStorage;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.GangwarUtils;
+import de.polo.metropiacity.utils.Game.GangwarUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Timestamp;
