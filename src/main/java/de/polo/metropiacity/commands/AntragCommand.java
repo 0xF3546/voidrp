@@ -24,17 +24,13 @@ public class AntragCommand implements CommandExecutor {
                     PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
                     if (playerData.getRelationShip().get(player1.getUniqueId().toString()) != null) {
                         if (targetplayerData.getRelationShip().get(player.getUniqueId().toString()) != null) {
-                            try {
-                                VertragUtil.deleteVertrag(player1);
-                                if (VertragUtil.setVertrag(player, player1, "verlobt", player.getUniqueId().toString())) {
-                                    player.sendMessage("§dDu hast " + player1.getName() + " nach einer Verlobung gefragt.");
-                                    player1.sendMessage("§d" + player.getName() + " möchte sich mit dir verloben.");
-                                    VertragUtil.sendInfoMessage(player1);
-                                } else {
-                                    player.sendMessage(Main.error + "Es ist ein Fehler unterlaufen.");
-                                }
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
+                            VertragUtil.deleteVertrag(player1);
+                            if (VertragUtil.setVertrag(player, player1, "verlobt", player.getUniqueId().toString())) {
+                                player.sendMessage("§dDu hast " + player1.getName() + " nach einer Verlobung gefragt.");
+                                player1.sendMessage("§d" + player.getName() + " möchte sich mit dir verloben.");
+                                VertragUtil.sendInfoMessage(player1);
+                            } else {
+                                player.sendMessage(Main.error + "Es ist ein Fehler unterlaufen.");
                             }
                         } else {
                             player.sendMessage(Main.error + player1.getName() + " & du seid nicht in einer Beziehung.");

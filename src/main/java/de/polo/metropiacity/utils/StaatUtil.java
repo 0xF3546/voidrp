@@ -37,6 +37,7 @@ public class StaatUtil {
             jailDataMap.put(result.getString(2), jailData);
         }
     }
+
     public static boolean arrestPlayer(Player player, Player arrester) throws SQLException {
         Statement statement = MySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT `hafteinheiten`, `akte`, `geldstrafe` FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId() + "'");
@@ -192,17 +193,12 @@ public class StaatUtil {
             player.sendMessage(Main.error + targetplayer.getName() + " hat nicht genug Geld dabei! (200$)");
             return;
         }
-        try {
-            if (VertragUtil.setVertrag(player, targetplayer, "blutgruppe", player.getUniqueId().toString())) {
-                player.sendMessage("§eDu hast " + targetplayer.getName() + " eine Anfrage zur Prüfung seiner Blutgruppe gestellt.");
-                targetplayer.sendMessage("§eMediziner " + player.getName() + " möchte deine Blutgruppe testen.");
-                VertragUtil.sendInfoMessage(targetplayer);
-            } else {
-                player.sendMessage(Main.error + targetplayer.getName() + " hat einen Vertrag offen.");
-            }
-        } catch (SQLException e) {
-            player.sendMessage("§cEin Fehler ist aufgetreten.");
-            throw new RuntimeException(e);
+        if (VertragUtil.setVertrag(player, targetplayer, "blutgruppe", player.getUniqueId().toString())) {
+            player.sendMessage("§eDu hast " + targetplayer.getName() + " eine Anfrage zur Prüfung seiner Blutgruppe gestellt.");
+            targetplayer.sendMessage("§eMediziner " + player.getName() + " möchte deine Blutgruppe testen.");
+            VertragUtil.sendInfoMessage(targetplayer);
+        } else {
+            player.sendMessage(Main.error + targetplayer.getName() + " hat einen Vertrag offen.");
         }
     }
 }

@@ -45,17 +45,13 @@ public class BeziehungCommand implements CommandExecutor {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         if (playerData.getRelationShip().isEmpty()) {
             if (targetplayerData.getRelationShip().isEmpty()) {
-                try {
-                    VertragUtil.deleteVertrag(player1);
-                    if (VertragUtil.setVertrag(player, player1, "beziehung", player.getUniqueId().toString())) {
-                        player.sendMessage("§6Du hast " + player1.getName() + " nach einer Beziehung gefragt.");
-                        player1.sendMessage("§6" + player.getName() + " möchte mit dir zusammen sein.");
-                        VertragUtil.sendInfoMessage(player1);
-                    } else {
-                        player.sendMessage(Main.error + "Es ist ein Fehler unterlaufen.");
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                VertragUtil.deleteVertrag(player1);
+                if (VertragUtil.setVertrag(player, player1, "beziehung", player.getUniqueId().toString())) {
+                    player.sendMessage("§6Du hast " + player1.getName() + " nach einer Beziehung gefragt.");
+                    player1.sendMessage("§6" + player.getName() + " möchte mit dir zusammen sein.");
+                    VertragUtil.sendInfoMessage(player1);
+                } else {
+                    player.sendMessage(Main.error + "Es ist ein Fehler unterlaufen.");
                 }
             } else {
                 player.sendMessage(Main.error + player1.getName() + " ist bereits in einer Beziehung.");

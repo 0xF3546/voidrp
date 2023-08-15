@@ -33,7 +33,7 @@ public class InviteCommand implements CommandExecutor {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + args[0]+ " ist nicht online.");
+            player.sendMessage(Main.error + args[0] + " ist nicht online.");
             return false;
         }
         if (player.getLocation().distance(targetplayer.getLocation()) >= 5) {
@@ -49,16 +49,12 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Deine Fraktion ist voll!");
             return false;
         }
-        try {
-            if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
-                player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
-                targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Fraktion §" + FactionManager.getFactionPrimaryColor(playerfac) + factionData.getFullname() + "§6 eingeladen.");
-                VertragUtil.sendInfoMessage(targetplayer);
-            } else {
-                player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
+            player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
+            targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Fraktion §" + FactionManager.getFactionPrimaryColor(playerfac) + factionData.getFullname() + "§6 eingeladen.");
+            VertragUtil.sendInfoMessage(targetplayer);
+        } else {
+            player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
         }
         return false;
     }

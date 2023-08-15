@@ -49,17 +49,13 @@ public class BizInviteCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Dein Business ist voll!");
             return false;
         }
-        try {
-            if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {
-                player.sendMessage("§8[§6Business§8] §7" + targetplayer.getName() + " wurde in das Business §aeingeladen§7.");
-                targetplayer.sendMessage("§6" + player.getName() + " hat dich in das Business §e" + playerData.getBusiness() + "§6 eingeladen.");
-                VertragUtil.sendInfoMessage(targetplayer);
-                PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
-            } else {
-                player.sendMessage("§8[§6Business§8]§8 §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {
+            player.sendMessage("§8[§6Business§8] §7" + targetplayer.getName() + " wurde in das Business §aeingeladen§7.");
+            targetplayer.sendMessage("§6" + player.getName() + " hat dich in das Business §e" + playerData.getBusiness() + "§6 eingeladen.");
+            VertragUtil.sendInfoMessage(targetplayer);
+            PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+        } else {
+            player.sendMessage("§8[§6Business§8]§8 §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
         }
         return false;
     }
