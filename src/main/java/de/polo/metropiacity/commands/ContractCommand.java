@@ -47,6 +47,8 @@ public class ContractCommand implements CommandExecutor {
                         players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde versucht ein Kopfgeld auf einen Mitarbeiter der ICA zu setzen. Das Kopfgeld wurde auf das Fraktionskonto überschrieben.");
                     }
                 }
+                PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
+                player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -55,12 +57,12 @@ public class ContractCommand implements CommandExecutor {
         if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
             ContractData contractData = ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString());
             contractData.setAmount(contractData.getAmount() + price);
-            player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (FactionManager.faction(players).equals("ICA")) {
                     players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
                 }
             }
+            player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             try {
                 PlayerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
                 Statement statement = Main.getInstance().mySQL.getStatement();

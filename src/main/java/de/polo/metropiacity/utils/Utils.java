@@ -8,8 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.*;
 
 import java.net.URL;
 import java.sql.*;
@@ -102,6 +101,20 @@ public class Utils {
         }
     }
     public interface Display {
+        static void setNameBelow(Player player, String name) {
+            PlayerData playerData = PlayerManager.getPlayerData(player);
+            Scoreboard scoreboard = playerData.getScoreboard().scoreboard;
+            if (scoreboard.getObjective(name) != null) scoreboard.getObjective(name).unregister();
+            Objective objective = scoreboard.registerNewObjective(name, "name");
+            objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+            player.setScoreboard(scoreboard);
+        }
+        static void deleteNameBelow(Player player, String name) {
+            PlayerData playerData = PlayerManager.getPlayerData(player);
+            Scoreboard scoreboard = playerData.getScoreboard().scoreboard;
+            Objective objective = scoreboard.getObjective(name);
+            if (objective != null) objective.unregister();
+        }
     }
     public interface Skin {
         static boolean saveOutfit(Player player, String name) {

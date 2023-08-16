@@ -24,9 +24,7 @@ public class DamageListener implements Listener {
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     event.setCancelled(PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVisum() <= 2);
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
-                        event.setDamage(event.getDamage() / 2);
-                    } else if (chestplate.getType() == Material.IRON_CHESTPLATE) {
-                        event.setDamage(event.getDamage() / 5);
+                        event.setDamage(event.getDamage() / 1.2);
                     }
                 }
             } else {
