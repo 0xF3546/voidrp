@@ -33,7 +33,7 @@ public class SetTeamCommand implements CommandExecutor {
                 player.sendMessage(Main.admin_prefix + targetplayer.getName() + " ist nun §c" + rank + "§7.");
                 targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + targetplayer.getUniqueId() + "'");
                     targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
                     playerData.setRankDuration(null);

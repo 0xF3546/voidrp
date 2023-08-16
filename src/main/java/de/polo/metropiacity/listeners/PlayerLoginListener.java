@@ -1,5 +1,6 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -22,7 +23,7 @@ public class PlayerLoginListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery("SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans WHERE uuid = '" + player.getUniqueId() + "'");
             if (res.next()) {
                 java.util.Date utilDate = new java.util.Date(res.getDate(6).getTime());

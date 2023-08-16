@@ -33,7 +33,7 @@ public class ServerManager {
 
     public static Object[][] faction_grades;
     public static void loadRanks() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM ranks");
         while (locs.next()) {
             RankData rankData = new RankData();
@@ -56,7 +56,7 @@ public class ServerManager {
         }
     }
     public static void loadDBPlayer() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM players");
         while (locs.next()) {
             DBPlayerData dbPlayerData = new DBPlayerData();
@@ -79,7 +79,7 @@ public class ServerManager {
         }
     }
     public static void loadContracts() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM contract");
         while (locs.next()) {
             ContractData contractData = new ContractData();
@@ -91,7 +91,7 @@ public class ServerManager {
         }
     }
     public static void loadShops() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM shops");
         while (locs.next()) {
             ShopData shopData = new ShopData();

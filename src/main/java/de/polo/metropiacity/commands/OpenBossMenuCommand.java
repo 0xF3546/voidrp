@@ -48,7 +48,7 @@ public class OpenBossMenuCommand implements CommandExecutor {
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
         playerData.setVariable("current_inventory", "bossmenu_" + playerData.getFaction());
         playerData.setIntVariable("current_page", page);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT `uuid`, `player_name`, `faction`, `faction_grade` FROM `players` WHERE `faction` = '" + playerData.getFaction() + "'");
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §" + factionData.getSecondaryColor() + "BossMenü §l" + factionData.getFullname() + "§8 - §" + factionData.getSecondaryColor() + "Seite§8:§7 " + page);
         int i = 0;
@@ -76,7 +76,7 @@ public class OpenBossMenuCommand implements CommandExecutor {
             UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
             OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
             playerData.setVariable("current_inventory", "edit_factionplayer_" + targetplayer.getUniqueId());
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet result = statement.executeQuery("SELECT `uuid`, `player_name`, `faction`, `faction_grade` FROM `players` WHERE `uuid` = '" + uuid + "'");
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §" +  factionData.getSecondaryColor() + "Mitglied bearbeiten");
             if (result.next()) {

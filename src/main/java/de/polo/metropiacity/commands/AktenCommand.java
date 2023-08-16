@@ -27,7 +27,7 @@ public class AktenCommand implements CommandExecutor {
             player.sendMessage("§7   ===§8[§9Offene Akten§8]§7===");
             HashMap<OfflinePlayer, Integer> hafteinheiten = new HashMap<>();
             try {
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 ResultSet result = statement.executeQuery("SELECT * FROM player_akten");
                 while (result.next()) {
                     OfflinePlayer player1 = Bukkit.getOfflinePlayer(UUID.fromString(result.getString(2)));

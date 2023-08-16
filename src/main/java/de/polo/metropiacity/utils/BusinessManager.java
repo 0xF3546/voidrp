@@ -1,5 +1,6 @@
 package de.polo.metropiacity.utils;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.database.MySQL;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ import java.util.UUID;
 public class BusinessManager {
     public static final Map<String, BusinessData> businessDataMap = new HashMap<>();
     public static void loadBusinesses() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM business");
         while (locs.next()) {
             BusinessData businessData = new BusinessData();
@@ -34,7 +35,7 @@ public class BusinessManager {
         PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
         playerData.setBusiness(frak);
         playerData.setBusiness_grade(rang);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `business` = '" + frak + "', `business_grade` = " + rang + " WHERE `uuid` = '" + uuid + "'");
         boolean found = false;
@@ -45,13 +46,13 @@ public class BusinessManager {
         PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
         playerData.setBusiness(null);
         playerData.setBusiness_grade(0);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `business` = NULL, `business_grade` = 0 WHERE `uuid` = '" + uuid + "'");
     }
 
     public static void removeOfflinePlayerFromBusiness(String playername) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
         if (result != null) {

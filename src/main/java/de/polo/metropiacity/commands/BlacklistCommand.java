@@ -87,7 +87,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyy '|' HH:mm:ss ");
                         Date date = new Date();
                         String newDate = formatter.format(date);
-                        Statement statement = MySQL.getStatement();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.execute("INSERT INTO `blacklist` (`uuid`, `faction`, `kills`, `price`, `date`, `reason`) VALUES ('" + player1.getUniqueId() + "', '" + factionData.getName() + "', " + kills + ", " + price + ", '" + newDate + "', '" + reason + "')");
                         ResultSet checkId = statement.executeQuery("SELECT `id` FROM `blacklist` WHERE `uuid` = '" + player1.getUniqueId() + "' AND `date` = '" + newDate + "'");
                         if (checkId.next()) {
@@ -128,7 +128,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                         canDo = true;
 
                         try {
-                            Statement statement = MySQL.getStatement();
+                            Statement statement = Main.getInstance().mySQL.getStatement();
                             statement.execute("DELETE FROM `blacklist` WHERE `id` = " + blacklistData.getId());
                             FactionManager.sendMessageToFaction(factionData.getName(), "§c" + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " von der Blacklist gelöscht.");
                             FactionManager.blacklistDataMap.remove(blacklistData.getId());
@@ -157,7 +157,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                                                 }
                                             }
                                             FactionManager.addFactionMoney(factionData1.getName(), blacklistData.getPrice(), "Blacklist-Zahlung " + player.getName());
-                                            Statement statement = MySQL.getStatement();
+                                            Statement statement = Main.getInstance().mySQL.getStatement();
                                             statement.execute("DELETE FROM blacklist WHERE id = " + blacklistData.getId());
                                             FactionManager.blacklistDataMap.remove(blacklistData.getId());
                                         } catch (SQLException e) {

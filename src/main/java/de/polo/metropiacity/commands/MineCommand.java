@@ -30,7 +30,7 @@ public class MineCommand implements CommandExecutor {
         if (ServerManager.canDoJobs()) {
             if (playerData.canInteract()) {
                 if (playerData.getVariable("job") == null) {
-                    if (!Main.cooldownManager.isOnCooldown(player, "mine")) {
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mine")) {
                         if (LocationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
                             playerData.setVariable("job", "mine");
                             player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
@@ -41,7 +41,7 @@ public class MineCommand implements CommandExecutor {
                             player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Mine§7!");
                         }
                     } else {
-                        player.sendMessage("§8[§7Mine§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.cooldownManager.getRemainingTime(player, "farmer")) + "§7 beginnen.");
+                        player.sendMessage("§8[§7Mine§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
                     }
                 } else {
                     if (playerData.getVariable("job").equals("mine")) {
@@ -124,6 +124,6 @@ public class MineCommand implements CommandExecutor {
                 }
             }
         }
-        Main.cooldownManager.setCooldown(player, "mine", 600);
+        Main.getInstance().getCooldownManager().setCooldown(player, "mine", 600);
     }
 }

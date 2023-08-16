@@ -34,17 +34,17 @@ public class ShopRobCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Es ist bereits in Shoprob im gange.");
             return false;
         }
-        if (Main.cooldownManager.isOnCooldown(player, "shoprob")) {
-            player.sendMessage(Main.error + "Du kannst in " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "shoprob")) + " wieder einen Shop ausrauben.");
+        if (Main.getInstance().getCooldownManager().isOnCooldown(player, "shoprob")) {
+            player.sendMessage(Main.error + "Du kannst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "shoprob")) + " wieder einen Shop ausrauben.");
             return false;
         }
-        if (Main.cooldownManager.isOnStringCooldown("shop_" + shopId, "shoprob")) {
-            player.sendMessage(Main.error + "Dieser Shop kann erst in " + Main.getTime(Main.cooldownManager.getRemainingStringTime("shop_" + shopId, "shoprob")) + " wieder ausgeraubt werden.");
+        if (Main.getInstance().getCooldownManager().isOnStringCooldown("shop_" + shopId, "shoprob")) {
+            player.sendMessage(Main.error + "Dieser Shop kann erst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingStringTime("shop_" + shopId, "shoprob")) + " wieder ausgeraubt werden.");
             return false;
         }
         player.sendMessage("§8[§cShoprob§8]§7 Du fängst an den Shop auszurauben, warte 60 Sekunden!");
         player.sendMessage("§b   Info:§f Du bekommst dann jede Minute Geld, bis der Shop leer ist.");
-        Main.cooldownManager.setStringCooldown("shop_" + shopId, "shoprob", 3600);
+        Main.getInstance().getCooldownManager().setStringCooldown("shop_" + shopId, "shoprob", 3600);
         ServerManager.setVariable("shoprob", "isRob");
         for (ShopData shopData : ServerManager.shopDataMap.values()) {
             if (shopData.getId() == shopId) {

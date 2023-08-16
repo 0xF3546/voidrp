@@ -19,9 +19,9 @@ import java.util.List;
 
 public class AutoBanCommand implements CommandExecutor, TabCompleter {
     public static ArrayList<String> banReasons = new ArrayList<>();
-    public static void init() {
+    public AutoBanCommand() {
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM banreasons");
             while (res.next()) {
                 banReasons.add(res.getString(2));
@@ -45,7 +45,7 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
         for (int i = 0; i < banReasons.size(); i++) {
             if (banReasons.get(i).equalsIgnoreCase(args[1])) {
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     ResultSet res = statement.executeQuery("SELECT * FROM banreasons WHERE LOWER(reason) = '" + args[1].toLowerCase() + "'");
                     if (res.next()) {
                         player.performCommand("ban name " + args[0] + " " + res.getInt(3) + res.getString(4) + " " + res.getString(2));

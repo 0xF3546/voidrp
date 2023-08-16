@@ -34,7 +34,7 @@ public class VertragUtil {
         current.put(target.getUniqueId().toString(), vertrag);
         Statement statement = null;
         try {
-            statement = MySQL.getStatement();
+            statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
             return true;
@@ -106,7 +106,7 @@ public class VertragUtil {
                         HashMap<String, String> hmap2 = new HashMap<>();
                         hmap2.put(targetplayer.getUniqueId().toString(), "beziehung");
                         playerData.setRelationShip(hmap2);
-                        Statement statement = MySQL.getStatement();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
                         JSONObject object = new JSONObject(playerData.getRelationShip());
                         statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
 
@@ -130,7 +130,7 @@ public class VertragUtil {
                         hmap2.put(targetplayer.getUniqueId().toString(), "verlobt");
                         playerData.getRelationShip().clear();
                         playerData.setRelationShip(hmap2);
-                        Statement statement = MySQL.getStatement();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
                         JSONObject object = new JSONObject(playerData.getRelationShip());
                         statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
 
@@ -155,7 +155,7 @@ public class VertragUtil {
                             player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
                             playerData.setBloodType(random);
                             try {
-                                Statement statement = MySQL.getStatement();
+                                Statement statement = Main.getInstance().mySQL.getStatement();
                                 statement.executeUpdate("UPDATE players SET bloodtype = '" + random + "' WHERE uuid = '" + player.getUniqueId() + "'");
                                 PlayerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
                                 FactionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + finalTargetplayer.getName() + " (Blutgruppe)");

@@ -39,7 +39,7 @@ public class ForumCommand implements CommandExecutor {
                     }
                     int forumID = res.getInt(1);
                     statement.execute("UPDATE wcf1_user SET activationCode = 0 WHERE userID = " + forumID);
-                    Statement statement1 = MySQL.getStatement();
+                    Statement statement1 = Main.getInstance().mySQL.getStatement();
                     Utils.sendActionBar(player, "§aVerknüpfe Forum & Minecraft...");
                     statement1.executeUpdate("UPDATE players SET forumID = " + forumID + " WHERE uuid = '" + player.getUniqueId() + "'");
                     Utils.sendActionBar(player, "§aAccount freigeschaltet.");
@@ -79,7 +79,7 @@ public class ForumCommand implements CommandExecutor {
                     return false;
                 }
                 try {
-                    Statement mcStatement = MySQL.getStatement();
+                    Statement mcStatement = Main.getInstance().mySQL.getStatement();
                     mcStatement.executeUpdate("UPDATE players SET forumID = null WHERE uuid = '" + player.getName() + "'");
                     Statement wcfStatement = MySQL.forum.getStatement();
                     wcfStatement.execute("DELETE FROM wcf1_user_to_group WHERE userID = " + playerData.getForumID());

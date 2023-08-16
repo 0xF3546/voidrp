@@ -53,7 +53,7 @@ public class AdminMenuCommand implements CommandExecutor {
         System.out.println(offlinePlayers);
         if (offlinePlayers) {
             playerData.setVariable("offlinePlayers", "ja");
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet result = statement.executeQuery("SELECT `uuid`, `player_name`, `faction`, `faction_grade` FROM `players`");
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §cAdminMenü §8- §cSeite§8:§7 " + page);
             int i = 0;
@@ -103,7 +103,7 @@ public class AdminMenuCommand implements CommandExecutor {
             UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
             OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
             playerData.setVariable("current_inventory", "edit_player_" + targetplayer.getUniqueId());
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet result = statement.executeQuery("SELECT `uuid`, `player_name`, `faction`, `faction_grade` FROM `players`");
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §c" + targetplayer.getName());
             if (result.next()) {

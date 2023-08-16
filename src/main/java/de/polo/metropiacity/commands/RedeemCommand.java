@@ -19,10 +19,10 @@ public class RedeemCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 1) {
-            if (!Main.cooldownManager.isOnCooldown(player, "redeem")) {
+            if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "redeem")) {
                 try {
                     PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     ResultSet result = statement.executeQuery("SELECT * FROM `payments` WHERE `user` = '" + player.getUniqueId().toString().replace("-", "") + "' AND type = '" + args[0].toLowerCase() + "'");
                     System.out.println(args[0]);
                     int id;
@@ -59,7 +59,7 @@ public class RedeemCommand implements CommandExecutor {
                     } else {
                         player.sendMessage(Main.error + "Dieser Kauf konnte nicht gefunden werden.");
                     }
-                    Main.cooldownManager.setCooldown(player, "redeem", 5);
+                    Main.getInstance().getCooldownManager().setCooldown(player, "redeem", 5);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

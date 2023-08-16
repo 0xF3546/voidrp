@@ -163,7 +163,7 @@ public class TeamSpeak implements CommandExecutor {
                     getAPI().addClientToServerGroup(rankData.getTeamSpeakID(), client.getDatabaseId());
                 }
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = '" + client.getUniqueIdentifier() + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

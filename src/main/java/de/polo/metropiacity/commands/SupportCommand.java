@@ -44,7 +44,7 @@ public class SupportCommand implements CommandExecutor {
                     }
                 }
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.execute("INSERT INTO `tickets` (`creator`, `reason`) VALUES ('" + player.getUniqueId() + "', '" + msg + "')");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

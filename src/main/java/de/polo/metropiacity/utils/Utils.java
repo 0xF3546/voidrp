@@ -1,19 +1,22 @@
 package de.polo.metropiacity.utils;
 
-import de.polo.metropiacity.dataStorage.DBPlayerData;
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.database.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.sql.Date;
+import java.net.URL;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.UUID;
 
 public class Utils {
     static int minutes = 1;
@@ -95,6 +98,44 @@ public class Utils {
                         team_offduty.addEntry(player.getName());
                         break;
                 }
+            }
+        }
+    }
+    public interface Display {
+    }
+    public interface Skin {
+        static boolean saveOutfit(Player player, String name) {
+            PlayerProfile profile = player.getPlayerProfile();
+            try {
+                MySQL mySQL = Main.getInstance().mySQL;
+                Statement statement = Main.getInstance().mySQL.getStatement();
+                ResultSet res = statement.executeQuery("SELECT * FROM player_wardrobe WHERE uuid = '" + player.getUniqueId() + "' AND name = '" + name + "'");
+                if (res.next()) {
+                    return false;
+                }
+                String query = "INSERT INTO player_wardrobe (uuid, texture, name) VALUES (?, ?, ?)";
+                try (PreparedStatement preparedStatement = mySQL.getConnection().prepareStatement(query)) {
+                    preparedStatement.setString(1, player.getUniqueId().toString());
+                    preparedStatement.setString(2, profile.getTextures().toString());
+                    preparedStatement.setString(3, name);
+                    return true;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        static boolean loadOutfit(Player player, String name) {
+            try {
+                Statement statement = Main.getInstance().mySQL.getStatement();
+                ResultSet res = statement.executeQuery("SELECT * FROM player_wardrobe WHERE uuid = '" + player.getUniqueId() + "' and name = '" + name + "'");
+                if (!res.next()) {
+                    return false;
+                }
+                PlayerProfile profile = player.getPlayerProfile();
+                profile.setTextures(profile.getTextures());
+                return true;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }
     }

@@ -30,12 +30,12 @@ public class FarmerCommand implements CommandExecutor {
             if (LocationManager.getDistanceBetweenCoords(player, "farmer") <= 5) {
                 playerData.setVariable("current_inventory", "farmer");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eFarmer");
-                if (!Main.cooldownManager.isOnCooldown(player, "farmer") && playerData.getVariable("job") == null) {
+                if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "farmer") && playerData.getVariable("job") == null) {
                     inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aFarmer starten", null));
                     inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten", null));
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "farmer")) + "§7."));
+                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7."));
                         inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten", null));
                     } else {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
@@ -86,7 +86,7 @@ public class FarmerCommand implements CommandExecutor {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        Main.cooldownManager.setCooldown(player, "farmer", 600);
+        Main.getInstance().getCooldownManager().setCooldown(player, "farmer", 600);
     }
 
     public static void blockBroken(Player player, Block block, BlockBreakEvent event) {
@@ -115,7 +115,7 @@ public class FarmerCommand implements CommandExecutor {
     }
 
     public static void startJob(Player player) {
-        if (!Main.cooldownManager.isOnCooldown(player, "farmer")) {
+        if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "farmer")) {
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             playerData.setVariable("job", "farmer");
             player.sendMessage(prefix + "Du bist nun §eFarmer§7.");
@@ -125,7 +125,7 @@ public class FarmerCommand implements CommandExecutor {
             playerData.getScoreboard().createFarmerScoreboard();
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 0, true, false));
         } else {
-            player.sendMessage("§8[§eFarmer§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.cooldownManager.getRemainingTime(player, "farmer")) + "§7 beginnen.");
+            player.sendMessage("§8[§eFarmer§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
         }
     }
 

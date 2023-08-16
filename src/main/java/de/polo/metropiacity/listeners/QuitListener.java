@@ -93,7 +93,7 @@ public class QuitListener implements Listener {
             }
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
             if (playerData.getVariable("tutorial") != null) {
-                Statement s = MySQL.getStatement();
+                Statement s = Main.getInstance().mySQL.getStatement();
                 s.executeUpdate("UPDATE players SET firstname = null, lastname = null, birthday = null, gender = null WHERE uuid = '" + player.getUniqueId() + "'");
             }
         } catch (SQLException e) {

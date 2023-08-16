@@ -31,11 +31,11 @@ public class MuellmannCommand implements CommandExecutor {
             if (LocationManager.getDistanceBetweenCoords(player, "muellmann") <= 5) {
                 playerData.setVariable("current_inventory", "müllmann");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §9Müllmann");
-                if (!Main.cooldownManager.isOnCooldown(player, "müllmann") && playerData.getVariable("job") == null) {
+                if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "müllmann") && playerData.getVariable("job") == null) {
                     inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aMüllmann starten", null));
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "müllmann")) + "§7."));
+                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "müllmann")) + "§7."));
                     } else {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
                     }
@@ -73,7 +73,7 @@ public class MuellmannCommand implements CommandExecutor {
         if (!silent) player.sendMessage("§8[§9Müllmann§8]§7 Vielen Dank für die geleistete Arbeit.");
         SoundManager.successSound(player);
         playerData.getScoreboard().killScoreboard();
-        Main.cooldownManager.setCooldown(player, "müllmann", 600);
+        Main.getInstance().getCooldownManager().setCooldown(player, "müllmann", 600);
     }
 
     public static void startTransport(Player player) {

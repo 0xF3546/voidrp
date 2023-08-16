@@ -27,7 +27,7 @@ public class FFAUtils implements CommandExecutor, Listener {
     public static final Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
 
     public static void loadFFALobbys() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet lobby = statement.executeQuery("SELECT * FROM `ffa_lobbys`");
         while (lobby.next()) {
             FFALobbyData ffaLobbyData = new FFALobbyData();

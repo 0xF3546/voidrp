@@ -28,11 +28,11 @@ public class PostboteCommand implements CommandExecutor {
             if (LocationManager.getDistanceBetweenCoords(player, "postbote") <= 5) {
                 playerData.setVariable("current_inventory", "postbote");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §ePostbote");
-                if (!Main.cooldownManager.isOnCooldown(player, "postbote") && playerData.getVariable("job") == null) {
+                if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "postbote") && playerData.getVariable("job") == null) {
                     inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aPostbote starten", null));
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "postbote")) + "§7."));
+                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "postbote")) + "§7."));
                     } else {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
                     }
@@ -70,7 +70,7 @@ public class PostboteCommand implements CommandExecutor {
         if (!silent) player.sendMessage("§8[§ePostbote§8]§7 Vielen Dank für die geleistete Arbeit.");
         SoundManager.successSound(player);
         playerData.getScoreboard().killScoreboard();
-        Main.cooldownManager.setCooldown(player, "postbote", 600);
+        Main.getInstance().getCooldownManager().setCooldown(player, "postbote", 600);
     }
 
     public static void startTransport(Player player) {

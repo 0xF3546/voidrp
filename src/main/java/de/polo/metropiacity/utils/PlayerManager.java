@@ -44,7 +44,7 @@ public class PlayerManager implements Listener {
     public static boolean isCreated(String uuid) {
 
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             ResultSet result = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (result.next()) {
@@ -54,7 +54,7 @@ public class PlayerManager implements Listener {
             e.printStackTrace();
         }
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
             Date date = new Date();
             String newDate = formatter.format(date);
@@ -72,7 +72,7 @@ public class PlayerManager implements Listener {
 
     public static void updatePlayer(String uuid, String name, String adress) {
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             String[] adresse = adress.split(":");
             statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adresse[0] + "' WHERE uuid = '" + uuid + "'");
             PlayerData playerData = playerDataMap.get(uuid);
@@ -89,7 +89,7 @@ public class PlayerManager implements Listener {
         String uuid = player.getUniqueId().toString();
         boolean returnval = false;
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype`, `forumID`, `hasAnwalt` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
@@ -239,7 +239,7 @@ public class PlayerManager implements Listener {
 
     public static void savePlayer(Player player) throws SQLException {
         String uuid = player.getUniqueId().toString();
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         PlayerData playerData = playerDataMap.get(uuid);
         if (playerData != null) {
             assert statement != null;
@@ -256,7 +256,7 @@ public class PlayerManager implements Listener {
 
     public static Serializable createCpAccount(String uuid, String email, String password) {
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             String query = "UPDATE `players` SET `email` = '" + email + "', `password` = '" + password + "' WHERE `uuid` = '" + uuid + "'";
             PreparedStatement preparedStatement = MySQL.connection.prepareStatement(query);
@@ -274,7 +274,7 @@ public class PlayerManager implements Listener {
         try {
             String uuid = player.getUniqueId().toString();
             PlayerData playerData = playerDataMap.get(uuid);
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             if (playerData.isJailed()) {
                 playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
@@ -325,7 +325,7 @@ public class PlayerManager implements Listener {
     }
 
     public static void addMoney(Player player, int amount) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
@@ -338,7 +338,7 @@ public class PlayerManager implements Listener {
     }
 
     public static void removeMoney(Player player, int amount, String reason) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
@@ -351,7 +351,7 @@ public class PlayerManager implements Listener {
     }
 
     public static void addBankMoney(Player player, int amount, String reason) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
@@ -365,7 +365,7 @@ public class PlayerManager implements Listener {
     }
 
     public static void removeBankMoney(Player player, int amount, String reason) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
@@ -383,7 +383,7 @@ public class PlayerManager implements Listener {
         try {
             for (RankData rankData : ServerManager.rankDataMap.values()) {
                 if (rankData.getRang().equalsIgnoreCase(rank)) {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rankData.getRang() + "', `player_permlevel` = " + rankData.getPermlevel() + " WHERE uuid = '" + uuid + "'");
                     PlayerData playerData = playerDataMap.get(uuid);
                     playerData.setRang(rankData.getRang());
@@ -573,7 +573,7 @@ public class PlayerManager implements Listener {
     public static void addEXPBoost(Player player, int hours) throws SQLException {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setBoostDuration(playerData.getBoostDuration() + hours);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
@@ -626,7 +626,7 @@ public class PlayerManager implements Listener {
                 player.sendMessage(Main.error + "§cFehler. Bitte einen Administratoren kontaktieren.");
                 break;
         }
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         System.out.println(playerData.getRankDuration());
         LocalDateTime localDateTime = playerData.getRankDuration();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -638,7 +638,7 @@ public class PlayerManager implements Listener {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setJob(job);
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE `players` SET `job` = '" + job + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -649,7 +649,7 @@ public class PlayerManager implements Listener {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setJob(null);
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE `players` SET `job` = null WHERE `uuid` = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);

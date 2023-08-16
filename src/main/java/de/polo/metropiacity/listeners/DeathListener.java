@@ -65,7 +65,7 @@ public class DeathListener implements Listener {
                     PlayerManager.addExp(player.getKiller(), Main.random(10, 30));
                     ServerManager.contractDataMap.remove(player.getUniqueId().toString());
                     try {
-                        Statement statement = MySQL.getStatement();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + player.getUniqueId() + "'");
                         FactionManager.addFactionMoney("ICA", contractData.getAmount(), "Kopfgeld " + player.getName());
                     } catch (SQLException e) {
@@ -79,13 +79,6 @@ public class DeathListener implements Listener {
                 } else {
                     item.setCustomName("§7" + player.getName());
                     item.setCustomNameVisible(true);
-                    for (StreetwarData streetwarData : Streetwar.streetwarDataMap.values()) {
-                        if (playerData.getFaction().equalsIgnoreCase(streetwarData.getAttacker()) || playerData.getFaction().equalsIgnoreCase(streetwarData.getDefender())) {
-                            if (PlayerManager.getPlayerData(player.getKiller()).getFaction().equalsIgnoreCase(streetwarData.getDefender()) || PlayerManager.getPlayerData(player.getKiller()).getFaction().equalsIgnoreCase(streetwarData.getAttacker())) {
-                                Streetwar.addPunkte(PlayerManager.getPlayerData(player.getKiller()).getFaction(), 3, "eliminierung durch " + player.getKiller().getName());
-                            }
-                        }
-                    }
                     if (playerData.getVariable("gangwar") != null) {
                         DeathUtils.setGangwarDeath(player);
                         PlayerData killerData = PlayerManager.playerDataMap.get(player.getKiller().getUniqueId().toString());
@@ -104,6 +97,13 @@ public class DeathListener implements Listener {
                         if (player.getKiller() == null) return;
                         PlayerData killerData = PlayerManager.playerDataMap.get(player.getKiller().getUniqueId().toString());
                         if (killerData.getFaction() == null) return;
+                        for (StreetwarData streetwarData : Streetwar.streetwarDataMap.values()) {
+                            if (playerData.getFaction().equalsIgnoreCase(streetwarData.getAttacker()) || playerData.getFaction().equalsIgnoreCase(streetwarData.getDefender())) {
+                                if (PlayerManager.getPlayerData(player.getKiller()).getFaction().equalsIgnoreCase(streetwarData.getDefender()) || PlayerManager.getPlayerData(player.getKiller()).getFaction().equalsIgnoreCase(streetwarData.getAttacker())) {
+                                    Streetwar.addPunkte(PlayerManager.getPlayerData(player.getKiller()).getFaction(), 3, "eliminierung durch " + player.getKiller().getName());
+                                }
+                            }
+                        }
                         for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
                             if (blacklistData.getUuid().equals(player.getUniqueId().toString())) {
                                 if (killerData.getFaction().equals(blacklistData.getFaction())) {
@@ -113,14 +113,14 @@ public class DeathListener implements Listener {
                                     if (blacklistData.getKills() > 1) {
                                         blacklistData.setKills(blacklistData.getKills() - 1);
                                         try {
-                                            Statement statement = MySQL.getStatement();
+                                            Statement statement = Main.getInstance().mySQL.getStatement();
                                             statement.executeUpdate("UPDATE blacklist SET kills = " + blacklistData.getKills() + " WHERE uuid = '" + player.getUniqueId() + "' AND faction = '" + factionData.getName() + "'");
                                         } catch (SQLException e) {
                                             throw new RuntimeException(e);
                                         }
                                     } else {
                                         try {
-                                            Statement statement = MySQL.getStatement();
+                                            Statement statement = Main.getInstance().mySQL.getStatement();
                                             statement.execute("DELETE FROM `blacklist` WHERE `id` = " + blacklistData.getId());
                                             FactionManager.sendMessageToFaction(factionData.getName(), "§c" + player.getName() + " wurde von der Blacklist gelöscht.");
                                             FactionManager.blacklistDataMap.remove(blacklistData.getId());
@@ -134,7 +134,6 @@ public class DeathListener implements Listener {
                         }
                     }
                 }
-
             }
         }
 }

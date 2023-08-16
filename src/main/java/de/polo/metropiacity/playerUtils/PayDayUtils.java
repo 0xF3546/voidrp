@@ -50,13 +50,13 @@ public class PayDayUtils {
                 player.sendMessage("§8 ➥ §6Miete (Haus " + houseData.getNumber() + ")§8:§c -" + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
                 houseData.setMoney(houseData.getMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
                 houseData.setTotalMoney(houseData.getTotalMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 statement.executeUpdate("UPDATE `housing` SET `money` = " + houseData.getMoney() + ", `totalMoney` = " + houseData.getTotalMoney() + " WHERE `number` = " + houseData.getNumber());
             }
             if (houseData.getOwner() != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                     plus += houseData.getMoney();
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE `housing` SET `money` = 0 WHERE `number` = " + houseData.getNumber());
                     player.sendMessage("§8 ➥ §6Mieteinnahmen (Haus " + houseData.getNumber() + ")§8: §a+" + houseData.getMoney() + "$");
                     houseData.setMoney(0);

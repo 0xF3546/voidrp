@@ -85,7 +85,7 @@ public class Tutorial implements Listener {
         player.sendMessage("§8       ➥ §8/§9discord§7 & §8/§cyoutube");
         PlayerManager.addExp(player, 30);
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE `players` SET `tutorial` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);

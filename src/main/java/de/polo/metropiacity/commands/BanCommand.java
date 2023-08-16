@@ -58,7 +58,7 @@ public class BanCommand implements CommandExecutor {
                 }
             }
             try {
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 ResultSet result = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `player_name` = '" + args[1] + "'");
                 if (result.next()) {
                     String uuid = result.getString(1);
@@ -96,7 +96,7 @@ public class BanCommand implements CommandExecutor {
                 }
             }
             try {
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 ResultSet result = statement.executeQuery("SELECT `player_name`, `uuid` FROM `players` WHERE `uuid` = '" + args[1] + "'");
                 if (result.next()) {
                     String playername = result.getString(1);
@@ -128,7 +128,7 @@ public class BanCommand implements CommandExecutor {
         Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grnd: " + banreason);
         Statement statement = null;
         try {
-            statement = MySQL.getStatement();
+            statement = Main.getInstance().mySQL.getStatement();
             statement.execute("INSERT INTO notes (uuid, target, note) VALUES ('System', '" + targetUUID + "', 'Spieler wurde gebannt (" + banreason + ")')");
         } catch (SQLException e) {
             throw new RuntimeException(e);

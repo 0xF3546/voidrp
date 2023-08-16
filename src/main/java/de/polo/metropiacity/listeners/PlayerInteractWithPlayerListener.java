@@ -38,7 +38,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 System.out.println(targetplayer.getName());
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (item.getType() == Material.LEAD) {
-                    if (!Main.cooldownManager.isOnCooldown(player, "handschellen")) {
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
                         if (!PlayerManager.canPlayerMove(targetplayer)) {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
                             PlayerManager.setPlayerMove(targetplayer, false);
@@ -46,7 +46,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
                             PlayerManager.setPlayerMove(targetplayer, true);
                         }
-                        Main.cooldownManager.setCooldown(player, "handschellen", 1);
+                        Main.getInstance().getCooldownManager().setCooldown(player, "handschellen", 1);
                     }
                 } else if (item.getType() == Material.DIAMOND) {
                     if (item.getItemMeta().getDisplayName().contains("Ehering")) {
@@ -70,7 +70,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                                     playerData.getRelationShip().clear();
                                     playerData.setRelationShip(hmap2);
                                     try {
-                                        Statement statement = MySQL.getStatement();
+                                        Statement statement = Main.getInstance().mySQL.getStatement();
                                         JSONObject object = new JSONObject(playerData.getRelationShip());
                                         statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
 

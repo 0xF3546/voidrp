@@ -9,11 +9,13 @@ import de.polo.metropiacity.utils.Game.Farming;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.Game.Streetwar;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.units.qual.C;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,7 +26,6 @@ public final class Main extends JavaPlugin {
 
     public static Plugin plugin = null;
     public static final String prefix = "§8[§6Metropia§8] §7";
-    public static String debug_prefix = "§8[§7§lDEBUG§8] §cMetropia§8 » §7";
     public static final String admin_prefix = "§8[§cAdmin§8] §7";
     public static final String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
     public static final String PayDay_prefix = "§8[§aPayDay§8] §7";
@@ -39,11 +40,14 @@ public final class Main extends JavaPlugin {
     public static String admin_info = "§8[§9§lINFO§8] §cAdmin§8 » §7";
     public static final String business_prefix = "§8[§6Business§8]§7 ";
 
-    public static final CooldownManager cooldownManager = new CooldownManager();
 
-    private static TeamSpeak teamSpeak;
 
     private static Main instance;
+    @Getter
+    public MySQL mySQL;
+    @Getter
+    public CooldownManager cooldownManager;
+    public TeamSpeak teamSpeak;
 
 
     public void onLoad() {
@@ -52,6 +56,8 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        mySQL = new MySQL();
+        cooldownManager = new CooldownManager();
         if (!MySQL.loadDBData()) {
             System.out.println("Datenbank konnte nicht geladen werden.");
             return;
@@ -61,11 +67,9 @@ public final class Main extends JavaPlugin {
             player.kickPlayer("§cDer Server wurde reloaded.");
         }
         getLogger().info("§cMETROPIACITY ROLEPLAY STARTED.");
-        registerListener();
-        registerCommands();
         plugin = Bukkit.getPluginManager().getPlugin("MetropiaCity");
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = mySQL.getStatement();
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM phone_messages WHERE datum < DATE_SUB(NOW(), INTERVAL 14 DAY)");
             Weapons.loadWeapons();
@@ -89,13 +93,12 @@ public final class Main extends JavaPlugin {
 
             ServerManager.loadDBPlayer();
             ServerManager.loadContracts();
-            AutoBanCommand.init();
-
             //TeamSpeak.loadConfig();
-            teamSpeak = new TeamSpeak();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        registerListener();
+        registerCommands();
     }
 
     private void registerListener() {
@@ -272,6 +275,7 @@ public final class Main extends JavaPlugin {
         getCommand("gm").setExecutor(new GMCommand());
         getCommand("note").setExecutor(new NoteCommand());
         getCommand("streetwar").setExecutor(new Streetwar());
+        getCommand("getskin").setExecutor(new GetSkinCommand());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());

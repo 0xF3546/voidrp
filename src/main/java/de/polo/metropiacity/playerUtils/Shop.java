@@ -1,5 +1,6 @@
 package de.polo.metropiacity.playerUtils;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 
 import java.sql.ResultSet;
@@ -11,7 +12,7 @@ import java.util.List;
 public class Shop {
     public static Object[][] shop_items;
     public static void loadShopItems() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM shop_items");
         List<Object[]> resultList = new ArrayList<>();
         while (locs.next()) {

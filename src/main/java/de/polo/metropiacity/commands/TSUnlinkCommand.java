@@ -25,7 +25,7 @@ public class TSUnlinkCommand implements CommandExecutor {
             if (client != null) {
                 playerData.setTeamSpeakUID(null);
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = " + playerData.getTeamSpeakUID() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

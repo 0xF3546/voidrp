@@ -1,5 +1,6 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.FactionData;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.FactionManager;
@@ -20,7 +21,7 @@ public class ServerPingListener implements Listener {
         String motd = null;
 
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'");
             System.out.println("Server Ping erhalten von: " + event.getAddress().toString().replace("/", ""));
             if (res.next()) {

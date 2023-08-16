@@ -20,7 +20,7 @@ public class RegisterHouseCommand implements CommandExecutor {
         if (playerData.getPermlevel() >= 90) {
             if (args.length >= 1) {
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.execute("INSERT INTO `housing` (`number`, `price`) VALUES (" + args[0] + ", " + args[1] + ")");
                     player.sendMessage(Main.gamedesign_prefix + "Haus " + args[0] + " wurde mit Preis " + args[1] + " angelegt.");
                 } catch (SQLException e) {

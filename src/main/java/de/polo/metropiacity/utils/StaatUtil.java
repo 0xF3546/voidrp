@@ -26,7 +26,7 @@ public class StaatUtil {
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
 
     public static void loadJail() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `Jail`");
         while (result.next()) {
             JailData jailData = new JailData();
@@ -39,7 +39,7 @@ public class StaatUtil {
     }
 
     public static boolean arrestPlayer(Player player, Player arrester) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT `hafteinheiten`, `akte`, `geldstrafe` FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId() + "'");
         int hafteinheiten = 0;
         int geldstrafe = 0;
@@ -92,14 +92,14 @@ public class StaatUtil {
         playerData.setJailed(false);
         playerData.setHafteinheiten(0);
         jailDataMap.remove(player.getUniqueId().toString());
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         LocationManager.useLocation(player, "gefaengnis_out");
         player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
         statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         player.sendMessage("§8[§6Anwalt§8]§7 Die Staatsanwaltschaft hat mich über eine neue Akte deinerseits Informiert.");
@@ -113,7 +113,7 @@ public class StaatUtil {
     }
 
     public static void removeAkteFromPlayer(Player player, int id) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet akte = statement.executeQuery("SELECT * FROM player_akten WHERE id = " + id);
         if (akte.next()) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(akte.getString(2)));

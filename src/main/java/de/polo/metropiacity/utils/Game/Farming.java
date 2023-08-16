@@ -33,7 +33,7 @@ import java.util.*;
 public class Farming implements Listener, CommandExecutor, TabCompleter {
     public static final Map<String, FarmingData> farmingDataMap = new HashMap<>();
     public static void loadData() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet res = statement.executeQuery("SELECT * FROM farming");
         while (res.next()) {
             FarmingData farmingData = new FarmingData();
@@ -60,9 +60,9 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
         String type = typeData.getInfo();
         FarmingData farmingData = farmingDataMap.get(type);
         Player player = event.getPlayer();
-        if (Main.cooldownManager.isOnCooldown(player, "farming")) return;
+        if (Main.getInstance().getCooldownManager().isOnCooldown(player, "farming")) return;
         player.getInventory().addItem(ItemManager.createItem(farmingData.getItem(), farmingData.getAmount(), 0, farmingData.getItemName().replace("&", "§"), null));
-        Main.cooldownManager.setCooldown(player, "farming", farmingData.getDuration());
+        Main.getInstance().getCooldownManager().setCooldown(player, "farming", farmingData.getDuration());
         Utils.sendActionBar(player, farmingData.getItemName().replace("&", "§") + " abgebaut!");
     }
 

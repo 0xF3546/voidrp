@@ -23,7 +23,7 @@ public class LocationManager {
     public static final Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
     public static void loadLocations() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM locations");
         while (locs.next()) {
             LocationData locationData = new LocationData();
@@ -109,7 +109,7 @@ public class LocationManager {
     public static void setLocation(String name, Player p){
         Location loc = p.getLocation();
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             if (name.contains("isShop")) {
                 p.sendMessage(Main.gamedesign_prefix + " Shop regestriert.");

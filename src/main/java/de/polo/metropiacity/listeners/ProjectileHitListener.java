@@ -1,21 +1,29 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.Main;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ProjectileHitListener implements Listener {
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        if (event.getEntityType() == EntityType.ARROW) {
-            Arrow arrow = (Arrow) event.getEntity();
-            if (arrow.isOnGround()) {
-                Block block = event.getHitBlock();
-                arrow.remove();
-            }
+        Projectile projectile = event.getEntity();
+        if (projectile instanceof Arrow) {
+            Arrow arrow = (Arrow) projectile;
+            Block hitBlock = arrow.getLocation().getBlock();
+            arrow.remove();
+            /*new BukkitRunnable() {
+                @Override
+                public void run() {
+                    hitBlock.breakNaturally();
+                    hitBlock.getState().update();
+                }
+            }.runTask(Main.getInstance());*/
         }
     }
 }

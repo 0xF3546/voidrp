@@ -20,7 +20,7 @@ public class FactionManager {
 
     public static Object[][] faction_grades;
     public static void loadFactions() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM factions");
         while (locs.next()) {
             FactionData factionData = new FactionData();
@@ -81,7 +81,7 @@ public class FactionManager {
         PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
         playerData.setFaction(frak);
         playerData.setFactionGrade(rang);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = '" + frak + "', `faction_grade` = " + rang + " WHERE `uuid` = '" + uuid + "'");
         boolean found = false;
@@ -123,7 +123,7 @@ public class FactionManager {
             player.setCustomName("§7" + player.getName());
             player.setCustomNameVisible(true);
         }
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
@@ -134,7 +134,7 @@ public class FactionManager {
     }
 
     public static void removeOfflinePlayerFromFrak(OfflinePlayer player) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
@@ -202,7 +202,7 @@ public class FactionManager {
     public static void addFactionMoney(String faction, Integer amount, String reason) throws SQLException {
         FactionData factionData = factionDataMap.get(faction);
         factionData.setBank(factionData.getBank() + amount);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('einzahlung', '" + faction + "', " + amount + ", '" + reason + "', true)");
         statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
     }
@@ -211,7 +211,7 @@ public class FactionManager {
         FactionData factionData = factionDataMap.get(faction);
         if (factionData.getBank() >= amount) {
             factionData.setBank(factionData.getBank() - amount);
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('auszahlung', '" + faction + "', " + amount + ", '" + reason + "', false)");
             statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
             returnval = true;
@@ -236,7 +236,7 @@ public class FactionManager {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
             factionGradeData.setPayday(payday);
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE `faction_grades` SET `payday` = " + payday + " WHERE `faction` = '" + faction + "' AND `grade` = " + rank);
             return true;
         } else {
@@ -248,7 +248,7 @@ public class FactionManager {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
             factionGradeData.setName(name);
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE `faction_grades` SET `name` = '" + name + "' WHERE `faction` = '" + faction + "' AND `grade` = " + rank);
             return true;
         } else {
@@ -272,7 +272,7 @@ public class FactionManager {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             if (state) {
                 statement.executeUpdate("UPDATE `players` SET `isDuty` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
                 if (playerData.getPermlevel() >= 60) {

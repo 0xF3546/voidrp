@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class MySQL {
+    public MySQL() {
+        loadDBData();
+    }
     static final String url = "jdbc:mysql://localhost/minecraft?autoReconnect=true&useSSL=false";
     static String user = null;
     static String password = null;
@@ -40,7 +43,7 @@ public class MySQL {
         }
         return true;
     }
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         if(connection != null) {
             return connection;
         }
@@ -52,7 +55,7 @@ public class MySQL {
         return connection;
     }
 
-    public static Statement getStatement() throws SQLException {
+    public Statement getStatement() throws SQLException {
         if(connection != null) {
             return (Statement) connection;
         }

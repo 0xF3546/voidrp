@@ -25,7 +25,7 @@ public class DeathUtils {
         if (!playerData.isDead()) {
             deathPlayer.put(player.getUniqueId().toString(), true);
             try {
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public class DeathUtils {
         player.setFoodLevel(20);
         player.setGameMode(GameMode.SURVIVAL);
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
             statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");
@@ -88,7 +88,7 @@ public class DeathUtils {
         playerData.setDeathTime(300);
         playerData.setDead(false);
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
             statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");
@@ -109,7 +109,7 @@ public class DeathUtils {
     }
 
     public static boolean isDead(Player player) throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
         ResultSet result = statement.executeQuery("SELECT `isDead` FROM `players` WHERE `uuid` = '" + uuid + "'");

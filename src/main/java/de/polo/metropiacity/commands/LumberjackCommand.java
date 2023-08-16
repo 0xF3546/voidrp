@@ -32,11 +32,11 @@ public class LumberjackCommand implements CommandExecutor {
             if (LocationManager.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
                 playerData.setVariable("current_inventory", "holzfäller");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Holzfäller");
-                if (!Main.cooldownManager.isOnCooldown(player, "holzfäller") && playerData.getVariable("job") == null) {
+                if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller") && playerData.getVariable("job") == null) {
                     inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHolzfäller starten", null));
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.cooldownManager.getRemainingTime(player, "holzfäller")) + "§7."));
+                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7."));
                     } else {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
                     }
@@ -139,7 +139,7 @@ public class LumberjackCommand implements CommandExecutor {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        Main.cooldownManager.setCooldown(player, "holzfäller", 600);
+        Main.getInstance().getCooldownManager().setCooldown(player, "holzfäller", 600);
         Inventory inv = player.getInventory();
             for (ItemStack item : inv.getContents()) {
                 if (item.getType() == Material.WOODEN_AXE) {
@@ -148,7 +148,7 @@ public class LumberjackCommand implements CommandExecutor {
             }
     }
     public static void startJob(Player player) {
-        if (!Main.cooldownManager.isOnCooldown(player, "holzfäller")) {
+        if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller")) {
             PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
             playerData.setVariable("job", "Holzfäller");
             player.sendMessage("§8[§7Holzfäller§8]§7 Du bist nun Holzfäller.");
@@ -158,7 +158,7 @@ public class LumberjackCommand implements CommandExecutor {
             playerData.getScoreboard().createLumberjackScoreboard();
             player.getInventory().addItem(ItemManager.createItem(Material.WOODEN_AXE, 1, 0, "§7Holzaxt", null));
         } else {
-            player.sendMessage("§8[§7Holzfäller§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.cooldownManager.getRemainingTime(player, "holzfäller")) + "§7 beginnen.");
+            player.sendMessage("§8[§7Holzfäller§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7 beginnen.");
         }
     }
 }

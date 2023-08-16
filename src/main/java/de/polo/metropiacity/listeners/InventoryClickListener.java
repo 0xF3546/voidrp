@@ -158,7 +158,7 @@ public class InventoryClickListener implements Listener {
                     UUID uuid1 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer1 = Bukkit.getOfflinePlayer(uuid1);
                     FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId() + "'");
                     if (res.next()) {
                         if (res.getInt(1) < 8 && res.getInt(1) > 0) {
@@ -175,7 +175,7 @@ public class InventoryClickListener implements Listener {
                 case GLOWSTONE_DUST:
                     UUID uuid2 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer2 = Bukkit.getOfflinePlayer(uuid2);
-                    Statement statement1 = MySQL.getStatement();
+                    Statement statement1 = Main.getInstance().mySQL.getStatement();
                     ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId() + "'");
                     if (res1.next()) {
                         if (res1.getInt(1) < 8 && res1.getInt(1) > 0) {
@@ -469,7 +469,7 @@ public class InventoryClickListener implements Listener {
                     case EMERALD:
                         if (!playerData.getVariable("current_contact_name").equals("&6Name") && playerData.getIntVariable("current_contact_number") != 0) {
                             if (playerData.getIntVariable("current_contact_id") == 0) {
-                                Statement statement = MySQL.getStatement();
+                                Statement statement = Main.getInstance().mySQL.getStatement();
                                 String uuid = null;
                                 ResultSet res = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `id` = " + playerData.getIntVariable("current_contact_number"));
                                 if (res.next()) {
@@ -481,7 +481,7 @@ public class InventoryClickListener implements Listener {
                                     player.sendMessage("§8[§6Kontakte§8]§c Nummer konnte nicht gefunden werden.");
                                 }
                             } else {
-                                Statement statement = MySQL.getStatement();
+                                Statement statement = Main.getInstance().mySQL.getStatement();
                                 statement.executeUpdate("UPDATE `phone_contacts` SET `contact_name` = '" + playerData.getVariable("current_contact_name") + "', `contact_number` = " + playerData.getIntVariable("current_contact_number") + " WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
                                 player.sendMessage("§8[§6Kontakte§8]§7 Kontakt " + playerData.getVariable("current_contact_name").replace("&", "§") + "§7 angepasst.");
                                 PhoneUtils.openContacts(player, 1, null);
@@ -491,7 +491,7 @@ public class InventoryClickListener implements Listener {
                         }
                         break;
                     case RED_DYE:
-                        Statement statement = MySQL.getStatement();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.execute("DELETE FROM `phone_contacts` WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
                         player.sendMessage("§8[§6Kontakte§8]§c Kontakt gelöscht.");
                         PhoneUtils.openContacts(player, 1, null);
@@ -577,7 +577,7 @@ public class InventoryClickListener implements Listener {
                             meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "message"), PersistentDataType.STRING), "§8 ➥ §7Datum§8:§6 " + meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "date"), PersistentDataType.STRING)));
                             meta.getPersistentDataContainer().set(read, PersistentDataType.INTEGER, 1);
                             event.getCurrentItem().setItemMeta(meta);
-                            Statement statement = MySQL.getStatement();
+                            Statement statement = Main.getInstance().mySQL.getStatement();
                             statement.executeUpdate("UPDATE `phone_messages` SET `isRead` = true WHERE `id` = " + meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "message_id"), PersistentDataType.INTEGER));
                         }
                         break;
@@ -633,7 +633,7 @@ public class InventoryClickListener implements Listener {
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("internet")) {
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 switch (event.getSlot()) {
                     case 11:
                         if (playerData.hasAnwalt()) {
@@ -827,7 +827,7 @@ public class InventoryClickListener implements Listener {
                                     playerData.setLastname(playerData.getVariable("einreise_lastname"));
                                     playerData.setBirthday(playerData.getVariable("einreise_dob"));
                                     playerData.setGender(playerData.getVariable("einreise_gender"));
-                                    Statement statement = MySQL.getStatement();
+                                    Statement statement = Main.getInstance().mySQL.getStatement();
                                     statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                                     PlayerManager.addExp(player, Main.random(100, 200));
@@ -926,7 +926,7 @@ public class InventoryClickListener implements Listener {
                             }
                         }
                         player.openInventory(inv);
-                        Main.cooldownManager.setCooldown(player, "ffa_creator", 2);
+                        Main.getInstance().getCooldownManager().setCooldown(player, "ffa_creator", 2);
                         playerData.setVariable("current_inventory", "ffa_createlobby");
                     } else {
                         player.sendMessage(Main.error + "Du brauchst mindestens §ePremium§7 um eine Lobby zu erstellen!");
@@ -963,7 +963,7 @@ public class InventoryClickListener implements Listener {
                     SoundManager.clickSound(player);
                     break;
                 case EMERALD:
-                    if (!Main.cooldownManager.isOnCooldown(player, "ffa_creator")) FFAUtils.createLobby(player, playerData.getIntVariable("ffa_maxplayer"), playerData.getVariable("ffa_password"));
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "ffa_creator")) FFAUtils.createLobby(player, playerData.getIntVariable("ffa_maxplayer"), playerData.getVariable("ffa_password"));
                     break;
                 case NETHER_WART:
                     FFAUtils.openFFAMenu(player, 1);
@@ -1014,7 +1014,7 @@ public class InventoryClickListener implements Listener {
                 case 44:
                     if (playerData.getFaction() != null && playerData.getFaction() != "Zivilist") {
                         BankingUtils.openFactionBankMenu(player);
-                        Main.cooldownManager.setCooldown(player, "atm", 1);
+                        Main.getInstance().getCooldownManager().setCooldown(player, "atm", 1);
                     }
                     break;
             }
@@ -1052,7 +1052,7 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     break;
                 case 44:
-                    if (!Main.cooldownManager.isOnCooldown(player, "atm")) BankingUtils.openBankMenu(player);
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "atm")) BankingUtils.openBankMenu(player);
                     break;
             }
         }
@@ -1063,7 +1063,7 @@ public class InventoryClickListener implements Listener {
                     playerData.setVariable("jugendschutz", null);
                     player.closeInventory();
                     player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId() + "'");
                     player.closeInventory();
                     break;
@@ -1221,7 +1221,7 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     break;
                 case 53:
-                    Main.cooldownManager.setCooldown(player, "interaction_cooldown", 1);
+                    Main.getInstance().getCooldownManager().setCooldown(player, "interaction_cooldown", 1);
                     PlayerManager.openFactionInteractionMenu(player, playerData.getFaction());
                     break;
             }
@@ -1235,7 +1235,7 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     break;
                 case 53:
-                    if (!Main.cooldownManager.isOnCooldown(player, "interaction_cooldown")) PlayerManager.openInterActionMenu(player, targetplayer);
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "interaction_cooldown")) PlayerManager.openInterActionMenu(player, targetplayer);
                     break;
             }
         }
@@ -1255,7 +1255,7 @@ public class InventoryClickListener implements Listener {
                         Vehicles.deleteVehicleById(id);
                         Utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
                         SoundManager.successSound(player);
-                        Statement statement = MySQL.getStatement();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + playerData.getIntVariable("current_garage") + " WHERE id = " + id);
                         playerVehicleData.setGarage(playerData.getIntVariable("current_garage"));
                         player.closeInventory();
@@ -1274,7 +1274,7 @@ public class InventoryClickListener implements Listener {
                         playerVehicleData.setParked(false);
                         Utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a ausgeparkt!");
                         SoundManager.successSound(player);
-                        Statement statement = MySQL.getStatement();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + id);
                         Vehicles.spawnVehicle(player, playerVehicleData);
                         player.closeInventory();

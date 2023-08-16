@@ -39,7 +39,7 @@ public class BanListCommand implements CommandExecutor {
             }
         }
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery(query);
             if (!res.next()) {
                 player.sendMessage("§8 » §eDie Liste ist leer.");

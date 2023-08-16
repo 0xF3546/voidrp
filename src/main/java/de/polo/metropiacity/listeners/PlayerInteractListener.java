@@ -44,14 +44,14 @@ public class PlayerInteractListener implements Listener {
             if (event.getClickedBlock() != null) {
                 if (event.getClickedBlock().getType() == Material.CAULDRON) {
                     Material[] items = {Material.POTATO, Material.POISONOUS_POTATO, Material.GLASS_BOTTLE};
-                    if (!Main.cooldownManager.isOnCooldown(player, "mülleimer")) {
-                        Main.cooldownManager.setCooldown(player, "mülleimer", 30);
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mülleimer")) {
+                        Main.getInstance().getCooldownManager().setCooldown(player, "mülleimer", 30);
                         Material random = items[new Random().nextInt(items.length)];
                         player.getInventory().addItem(new ItemStack(random));
                         ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " duchwühlt einen Mülleimer.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                     } else {
-                        String actionBarText = "§7Warte noch " + Main.cooldownManager.getRemainingTime(player, "mülleimer") + " Sekunden!";
+                        String actionBarText = "§7Warte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "mülleimer") + " Sekunden!";
                         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     }
                 }

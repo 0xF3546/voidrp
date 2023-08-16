@@ -47,7 +47,7 @@ public class PhoneUtils implements Listener {
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eHandy");
         int unreadMessages = 0;
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet result = statement.executeQuery("SELECT COUNT(*) AS unreadCount FROM phone_messages WHERE isRead = false AND uuid = '" + player.getUniqueId() + "'");
             if (result.next()) unreadMessages = result.getInt("unreadCount");
         } catch (SQLException e) {
@@ -107,7 +107,7 @@ public class PhoneUtils implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.setVariable("current_app", "transactions");
         playerData.setIntVariable("current_page", page);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
@@ -155,7 +155,7 @@ public class PhoneUtils implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.setVariable("current_app", "messages");
         playerData.setIntVariable("current_page", page);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `phone_messages` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
@@ -207,7 +207,7 @@ public class PhoneUtils implements Listener {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         playerData.setVariable("current_app", "contacts");
         playerData.setIntVariable("current_page", page);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT * FROM `phone_contacts`");
@@ -260,7 +260,7 @@ public class PhoneUtils implements Listener {
                 OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
                 playerData.setVariable("current_contact", targetplayer.getUniqueId().toString());
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     ResultSet result = statement.executeQuery("SELECT * FROM `phone_contacts` WHERE `contact_uuid` = '" + uuid + "' AND `uuid` = '" + player.getUniqueId() + "'");
                     if (result.next()) {
                         Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt§8:§e " + result.getString(3).replace("&", "§"));
@@ -369,7 +369,7 @@ public class PhoneUtils implements Listener {
 
     public static void addNumberToContacts(Player player, Player targetplayer) throws SQLException {
         String uuid = player.getUniqueId().toString();
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         PlayerData playerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
         statement.executeQuery("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId() + "', '" + targetplayer.getName() + "', " + playerData.getNumber() + ", '" + targetplayer.getUniqueId() + "')");
     }
@@ -404,7 +404,7 @@ public class PhoneUtils implements Listener {
         }
         PlayerData targetplayerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + players.getUniqueId() + "', '" + player.getUniqueId() + "', '" + message + "', " + targetplayerData.getId() + ");");
         } catch (SQLException e) {
             throw new RuntimeException(e);

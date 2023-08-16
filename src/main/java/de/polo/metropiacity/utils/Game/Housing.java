@@ -24,7 +24,7 @@ import java.util.*;
 public class Housing {
     public static final Map<Integer, HouseData> houseDataMap = new HashMap<>();
     public static void loadHousing() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
         while (locs.next()) {
             HouseData houseData = new HouseData();
@@ -64,7 +64,7 @@ public class Housing {
     public static void updateRenter(int number) {
         HouseData houseData = houseDataMap.get(number);
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             JSONObject object = new JSONObject(houseData.getRenter());
             statement.executeUpdate("UPDATE `housing` SET `renter` = '" + object + "' WHERE `number` = " + number);
         } catch (SQLException e) {
@@ -76,7 +76,7 @@ public class Housing {
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
         System.out.println("hausslot hinzugefügt");
         playerData.setHouseSlot(playerData.getHouseSlot() + 1);
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
@@ -103,7 +103,7 @@ public class Housing {
                                         sign.setLine(2, "§aZu Verkaufen");
                                         sign.update();
                                         try {
-                                            Statement statement = MySQL.getStatement();
+                                            Statement statement = Main.getInstance().mySQL.getStatement();
                                             statement.executeUpdate("UPDATE `housing` SET `owner` = null WHERE `number` = " + house);
                                         } catch (SQLException e) {
                                             throw new RuntimeException(e);

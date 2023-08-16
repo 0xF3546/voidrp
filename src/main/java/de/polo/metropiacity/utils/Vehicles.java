@@ -30,7 +30,7 @@ public class Vehicles implements Listener, CommandExecutor {
     public static final Map<Integer, PlayerVehicleData> playerVehicleDataMap = new HashMap<>();
     public static final HashMap<String, Integer> vehicleIDByUUid = new HashMap<>();
     public static void loadVehicles() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `vehicles`");
         while (result.next()) {
             VehicleData vehicleData = new VehicleData();
@@ -46,7 +46,7 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     public static void loadPlayerVehicles() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `player_vehicles`");
         while (result.next()) {
             PlayerVehicleData playerVehicleData = new PlayerVehicleData();
@@ -71,7 +71,7 @@ public class Vehicles implements Listener, CommandExecutor {
     public static void giveVehicle(Player player, String vehicle) throws SQLException {
         VehicleData vehicleData = vehicleDataMap.get(vehicle);
         assert vehicleData != null;
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("INSERT INTO `player_vehicles` (`uuid`, `type`) VALUES ('" + player.getUniqueId() + "', '" + vehicleData.getName() + "')");
         ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID()");
         LocationManager.useLocation(player, "vehicleshop_out");
@@ -129,7 +129,7 @@ public class Vehicles implements Listener, CommandExecutor {
             if (entity.getType() == EntityType.MINECART) {
                 NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
                     statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + km + ", `fuel` = " + fuel + ", `x` = " + entity.getLocation().getX() + ", `y` = " + entity.getLocation().getY() + ", `z` = " + entity.getLocation().getZ() + ", `welt` = '" + entity.getWorld().getName() + "', `yaw` = " + entity.getLocation().getYaw() + ", `pitch` = " + entity.getLocation().getPitch() + " WHERE `id` = " + id);
@@ -152,7 +152,7 @@ public class Vehicles implements Listener, CommandExecutor {
             if (entity.getType() == EntityType.MINECART) {
                 NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), uuid)) {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
                     int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);

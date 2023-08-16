@@ -35,7 +35,7 @@ public class TrennenCommand implements CommandExecutor {
                 playerData.setRelationShip(new HashMap<>());
                 player.sendMessage("§cDu hast dich von " + offlinePlayer.getName() + " getrennt...");
                 try {
-                    Statement statement = MySQL.getStatement();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE `players` SET `relationShip` = '{}' WHERE `uuid` = '" + player.getUniqueId() + "'");
                     statement.executeUpdate("UPDATE `players` SET `relationShip` = '{}' WHERE `uuid` = '" + offlinePlayer.getUniqueId() + "'");
                 } catch (SQLException e) {

@@ -59,7 +59,7 @@ public class BuyHouseCommand implements CommandExecutor {
                                             try {
                                                 if (playerData.getHouseSlot() > houes) {
                                                     PlayerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
-                                                    Statement statement = MySQL.getStatement();
+                                                    Statement statement = Main.getInstance().mySQL.getStatement();
                                                     statement.executeUpdate("UPDATE `housing` SET `owner` = '" + player.getUniqueId() + "' WHERE `number` = " + houseData.getNumber());
                                                     houseData.setOwner(player.getUniqueId().toString());
                                                     sign.setLine(2, "§0" + player.getName());

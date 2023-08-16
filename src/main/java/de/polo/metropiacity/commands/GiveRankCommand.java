@@ -63,7 +63,7 @@ public class GiveRankCommand implements CommandExecutor {
         factionPlayerData.setFaction_grade(rang);
         dbPlayerData.setFaction_grade(rang);
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE players SET faction_grade = " + rang + " WHERE uuid = '" + targetplayer.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);

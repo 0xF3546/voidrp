@@ -9,13 +9,13 @@ import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
 import de.polo.metropiacity.utils.VertragUtil;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.yaml.snakeyaml.events.StreamEndEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,9 +28,14 @@ import java.util.Map;
 
 public class Streetwar implements CommandExecutor {
     public static Map<Integer, StreetwarData> streetwarDataMap = new HashMap<>();
+    public Streetwar() {
+        load();
+    }
 
-    public static void load() throws SQLException {
-        Statement statement = MySQL.getStatement();
+    @SneakyThrows
+    public static void load() {
+        MySQL mySQL = Main.getInstance().mySQL;
+        Statement statement = mySQL.getStatement();
         ResultSet res = statement.executeQuery("SELECT * FROM streetwar");
         while (res.next()) {
             StreetwarData streetwarData = new StreetwarData();
@@ -76,7 +81,7 @@ public class Streetwar implements CommandExecutor {
         }
         Bukkit.broadcastMessage("");
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             statement.execute("DELETE FROM streetwar WHERE id = " + streetwarData.getId());
             streetwarDataMap.remove(streetwarData.getId());
         } catch (SQLException e) {
@@ -85,13 +90,14 @@ public class Streetwar implements CommandExecutor {
     }
 
     public static void acceptStreetwar(Player player, String attackerFaction) {
+        MySQL mySQL = Main.getInstance().mySQL;
         PlayerData playerData = PlayerManager.getPlayerData(player);
         FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
         FactionData attackerData = FactionManager.factionDataMap.get(attackerFaction);
         FactionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§a Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag angenommen.");
         FactionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§a " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " angenommen.");
         String query = "INSERT INTO streetwar (attacker, defender) VALUES (?, ?)";
-        try (PreparedStatement statement = MySQL.getConnection().prepareStatement(query)) {
+        try (PreparedStatement statement = mySQL.getConnection().prepareStatement(query)) {
             statement.setString(1, attackerData.getName());
             statement.setString(2, factionData.getName());
 
@@ -121,6 +127,14 @@ public class Streetwar implements CommandExecutor {
         FactionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§c Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag abgelehnt.");
         FactionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§c " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " abgelehnt.");
     }
+    public static boolean isInStreetwar(String faction) {
+        for (StreetwarData streetwarData : streetwarDataMap.values()) {
+            if (streetwarData.getAttacker().equalsIgnoreCase(faction) || streetwarData.getDefender().equalsIgnoreCase(faction)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String
@@ -137,7 +151,16 @@ public class Streetwar implements CommandExecutor {
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /streetwar [Fraktion]");
+            if (!isInStreetwar(factionData.getName())) {
+                player.sendMessage(Main.error + "Syntax-Fehler: /streetwar [Fraktion]");
+                return false;
+            }
+            for (StreetwarData streetwarData : streetwarDataMap.values()) {
+                if (streetwarData.getDefender().equalsIgnoreCase(factionData.getName()) || streetwarData.getAttacker().equalsIgnoreCase(factionData.getName())) {
+                    player.sendMessage("§8[§6Streetwar§8]§e " + streetwarData.getAttacker() + " §8× §e" + streetwarData.getAttacker_points() + " vs " + streetwarData.getDefender_points() + " §8× §e" + streetwarData.getDefender());
+                    return false;
+                }
+            }
             return false;
         }
         ArrayList<Player> availablePlayers = new ArrayList<>();
@@ -151,8 +174,13 @@ public class Streetwar implements CommandExecutor {
             player.sendMessage(Main.error + "Es ist kein Fraktionsleader der Gegner-Partei online.");
             return false;
         }
+        FactionData defenderData = FactionManager.factionDataMap.get(PlayerManager.getPlayerData(availablePlayers.get(0)).getFaction());
+        if (!defenderData.canDoGangwar()) {
+            player.sendMessage(Main.error + "Die Gegner-Partei kann keinen Streetwar starten.");
+            return false;
+        }
         if (playerData.getFaction().equalsIgnoreCase(args[0])) {
-            player.sendMessage(Main.error + "Du kannst keinen Streetwar gegen deine eigene Fraktion starte.");
+            player.sendMessage(Main.error + "Du kannst keinen Streetwar gegen deine eigene Fraktion starten.");
             return false;
         }
         for (StreetwarData streetwarData : streetwarDataMap.values()) {

@@ -30,7 +30,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     public static final HashMap<String, GangwarData> gangwarDataMap = new HashMap<>();
 
     public static void loadGangwar() throws SQLException {
-        Statement statement = MySQL.getStatement();
+        Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `gangwar`");
         while (result.next()) {
             GangwarData gangwarData = new GangwarData();
@@ -88,7 +88,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         player.sendMessage("§8[§cGangwar§8]§c Du bist bereits im Gangwar.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Du bist in keienr Fraktion.");
+                    player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
                 }
             }
             if (args[0].equalsIgnoreCase("attack")) {
@@ -273,7 +273,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 }
             }
             try {
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 statement.executeUpdate("UPDATE `gangwar` SET `lastAttack` = NOW() WHERE `zone` = '" + gangwarData.getZone() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -292,7 +292,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             }
             gangwarData.setOwner(attackerData.getName());
             try {
-                Statement statement = MySQL.getStatement();
+                Statement statement = Main.getInstance().mySQL.getStatement();
                 statement.executeUpdate("UPDATE `gangwar` SET `lastAttack` = NOW(), `owner` = '" + attackerData.getName() + "' WHERE `zone` = '" + gangwarData.getZone() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);

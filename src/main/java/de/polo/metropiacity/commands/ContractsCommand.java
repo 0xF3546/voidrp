@@ -51,7 +51,7 @@ public class ContractsCommand implements CommandExecutor, TabCompleter {
                                             }
                                             ServerManager.contractDataMap.remove(targetplayer.getUniqueId().toString());
                                             try {
-                                                Statement statement = MySQL.getStatement();
+                                                Statement statement = Main.getInstance().mySQL.getStatement();
                                                 statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
                                             } catch (SQLException e) {
                                                 throw new RuntimeException(e);

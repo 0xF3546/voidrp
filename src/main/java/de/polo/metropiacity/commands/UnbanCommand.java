@@ -34,7 +34,7 @@ public class UnbanCommand implements CommandExecutor {
             return false;
         }
         try {
-            Statement statement = MySQL.getStatement();
+            Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM player_bans WHERE LOWER(name) = '" + args[0].toLowerCase() + "'");
             if (!res.next()) {
                 player.sendMessage(Main.error + "Der Spieler wurde nicht in der Banlist gefudnen.");
