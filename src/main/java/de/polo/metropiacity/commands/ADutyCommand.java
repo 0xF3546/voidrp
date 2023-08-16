@@ -44,6 +44,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                 if (playerData.getVariable("isSpec") != null) {
                     SpecCommand.leaveSpec(player);
                 }
+                player.setCollidable(true);
             } else {
                 ADutyCommand.send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
@@ -52,6 +53,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                 player.getPlayer().setPlayerListName("§8[§cTeam§8]§c " + player.getName());
                 player.getPlayer().setDisplayName("§8[§cTeam§8]§c " + player.getName());
                 playerData.getScoreboard().createAdminScoreboard();
+                player.setCollidable(false);
             }
             Utils.Tablist.updatePlayer(player);
         }

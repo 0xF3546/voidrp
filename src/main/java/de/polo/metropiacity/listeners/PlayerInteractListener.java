@@ -12,6 +12,7 @@ import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.commands.MuellmannCommand;
 import de.polo.metropiacity.commands.PostboteCommand;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
@@ -36,6 +37,10 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setIntVariable("afk", 0);
+        if (playerData.isAFK()) {
+            Utils.AFK.setAFK(player, false);
+        }
         if (playerData.isDead()) {
             event.setCancelled(true);
             return;

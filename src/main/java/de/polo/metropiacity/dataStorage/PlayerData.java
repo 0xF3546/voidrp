@@ -61,6 +61,7 @@ public class PlayerData {
     private HashMap<String, String> relationShip = new HashMap<>();
     private String bloodType;
     private boolean hasAnwalt;
+    private boolean isAFK;
 
     public PlayerData() {
     }
@@ -475,5 +476,13 @@ public class PlayerData {
 
     public void setHasAnwalt(boolean hasAnwalt) {
         this.hasAnwalt = hasAnwalt;
+    }
+
+    public boolean isAFK() {
+        return isAFK;
+    }
+
+    public void setAFK(boolean AFK) {
+        isAFK = AFK;
     }
 }

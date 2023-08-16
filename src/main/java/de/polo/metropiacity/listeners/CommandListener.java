@@ -3,6 +3,7 @@ package de.polo.metropiacity.listeners;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,10 @@ public class CommandListener implements Listener {
         Player player = event.getPlayer();
         String[] nonBlockedCommands = {"support", "report", "help", "vote", "jailtime", "ad", "aduty"};
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setIntVariable("afk", 0);
+        if (playerData.isAFK()) {
+            Utils.AFK.setAFK(player, false);
+        }
         if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
             event.setCancelled(true);
             player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 wurde nicht gefunden.");

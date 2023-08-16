@@ -4,6 +4,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.PhoneUtils;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import de.polo.metropiacity.utils.SupportManager;
 import org.bukkit.Bukkit;
@@ -18,6 +19,10 @@ public class ChatListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        playerData.setIntVariable("afk", 0);
+        if (playerData.isAFK()) {
+            Utils.AFK.setAFK(player, false);
+        }
         event.setCancelled(true);
         if (playerData.getVariable("chatblock") == null) {
             if (SupportManager.isInConnection(player)) {

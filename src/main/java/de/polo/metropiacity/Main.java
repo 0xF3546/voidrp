@@ -287,7 +287,6 @@ public final class Main extends JavaPlugin {
         getCommand("tpto").setTabCompleter(new TPToCommand());
         getCommand("farming").setTabCompleter(new Farming());
         getCommand("aduty").setTabCompleter(new ADutyCommand());
-        getCommand("autoban").setTabCompleter(new AutoBanCommand());
     }
 
 

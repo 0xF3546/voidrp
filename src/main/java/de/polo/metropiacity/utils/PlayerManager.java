@@ -158,6 +158,7 @@ public class PlayerManager implements Listener {
 
                 playerData.setHours(name.getInt(29));
                 playerData.setMinutes(name.getInt(30));
+                playerData.setAFK(false);
 
                 JSONObject object = new JSONObject(name.getString(31));
                 HashMap<String, String> map = new HashMap<>();
@@ -205,6 +206,7 @@ public class PlayerManager implements Listener {
                     playerData.setVariable("jail_reason", jail.getString(2));
                     playerData.setJailed(true);
                 }
+                playerData.setIntVariable("afk", 0);
                 ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` FROM `player_skills` WHERE `uuid` = '" + uuid + "'");
                 if (skills.next()) {
                     playerData.setSkillLevel("miner", skills.getInt(1));
@@ -483,7 +485,15 @@ public class PlayerManager implements Listener {
             @Override
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    add1MinutePlaytime(player);
+                    PlayerData playerData = getPlayerData(player);
+                    if (!playerData.isAFK()) {
+                        add1MinutePlaytime(player);
+                        if (playerData.getIntVariable("afk") >= 2) {
+                            Utils.AFK.setAFK(player, true);
+                        } else {
+                            playerData.setIntVariable("afk", playerData.getIntVariable("afk") + 1);
+                        }
+                    }
                 }
                 if (Utils.getCurrentMinute() == 0) {
                     for (FactionData factionData : FactionManager.factionDataMap.values()) {

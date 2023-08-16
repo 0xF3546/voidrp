@@ -139,4 +139,19 @@ public class Utils {
             }
         }
     }
+    public interface AFK {
+        static void setAFK(Player player, boolean state) {
+            PlayerData playerData = PlayerManager.getPlayerData(player);
+            if (state) {
+                player.sendMessage("§5Du bist nun abwesend.");
+                playerData.setAFK(true);
+                player.setCollidable(false);
+            } else {
+                player.sendMessage("§5Du bist nicht mehr abwesend.");
+                playerData.setAFK(false);
+                playerData.setIntVariable("afk", 0);
+                if (!playerData.isAduty()) player.setCollidable(true);
+            }
+        }
+    }
 }
