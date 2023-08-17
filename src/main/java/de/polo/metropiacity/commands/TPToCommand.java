@@ -5,6 +5,8 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
+import org.bukkit.Effect;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,6 +29,8 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
                 }
                 LocationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
                 player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + message + "§7 teleportiert.");
+                player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /tpto [Punkt]");
             }

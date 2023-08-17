@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import org.bukkit.scoreboard.*;
+import sun.tools.jconsole.Tab;
 
 import java.net.URL;
 import java.sql.*;
@@ -83,7 +84,7 @@ public class Utils {
                 //sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getRang()).setPrefix(rankData.getColor() + rankData.getRang() + "§8 × §7");
             }
         }
-        static void setTablist(Player player) {
+        static void setTablist(Player player, String suffix) {
             PlayerData playerData = PlayerManager.getPlayerData(player);
             String team = -playerData.getPermlevel() + "_" + playerData.getRang();
             sb.getTeam(team).addPlayer(player);
@@ -91,9 +92,17 @@ public class Utils {
             for (Player all : Bukkit.getOnlinePlayers()) {
                 all.setScoreboard(sb);
             }
-            player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
-            player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
-            player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+            if (suffix == null) {
+                player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+                player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+                player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+                player.setCustomNameVisible(true);
+                return;
+            }
+            suffix = " " + suffix;
+            player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName() + suffix);
+            player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName() + suffix);
+            player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName() + suffix);
             player.setCustomNameVisible(true);
         }
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -208,11 +217,13 @@ public class Utils {
                 player.sendMessage("§5Du bist nun abwesend.");
                 playerData.setAFK(true);
                 player.setCollidable(false);
+                if (playerData.isAduty()) return;
+                Tablist.setTablist(player, "§8[§5AFK§8]");
             } else {
                 player.sendMessage("§5Du bist nicht mehr abwesend.");
                 playerData.setAFK(false);
                 playerData.setIntVariable("afk", 0);
-                if (!playerData.isAduty()) player.setCollidable(true);
+                if (!playerData.isAduty()) {player.setCollidable(true); Tablist.setTablist(player, null);}
             }
         }
     }

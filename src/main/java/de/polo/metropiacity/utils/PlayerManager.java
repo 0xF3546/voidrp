@@ -93,7 +93,7 @@ public class PlayerManager implements Listener {
             assert statement != null;
             ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype`, `forumID`, `hasAnwalt`, `coins` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
-                PlayerData playerData = new PlayerData();
+                PlayerData playerData = new PlayerData(player);
                 playerData.setFirstname(name.getString(1));
                 playerData.setLastname(name.getString(2));
                 playerData.setBargeld(name.getInt(3));
@@ -378,8 +378,10 @@ public class PlayerManager implements Listener {
                     if (player == null) {
                         return;
                     }
+                    Utils.Tablist.setTablist(player, null);
                     if (playerData.getTeamSpeakUID() != null) {
                         Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
+                        if (client == null) return;
                         TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
                     }
                 }

@@ -1,0 +1,20 @@
+package de.polo.metropiacity.listeners;
+
+import de.polo.metropiacity.utils.Utils;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
+
+public class GameModeChangeEvent implements Listener {
+    @EventHandler
+    public void onGameModeChange(PlayerGameModeChangeEvent event) {
+        Player player = event.getPlayer();
+        if (event.getNewGameMode() == GameMode.CREATIVE) {
+            Utils.Tablist.setTablist(player, "§8[§2GM§8]");
+            return;
+        }
+        Utils.Tablist.setTablist(player, null);
+    }
+}

@@ -1313,14 +1313,15 @@ public class InventoryClickListener implements Listener {
             }
         }
         if (playerData.getVariable("current_inventory").equals("tasche")) {
+            event.setCancelled(true);
             switch (event.getSlot()) {
                 case 22:
                     Utils.CoinShop.GUI.openShop(player);
                     break;
             }
-            event.setCancelled(true);
         }
         if (playerData.getVariable("current_inventory").equals("coinshop")) {
+            event.setCancelled(true);
             switch (event.getSlot()) {
                 case 11:
                     Utils.CoinShop.GUI.openRankShop(player);
@@ -1337,9 +1338,9 @@ public class InventoryClickListener implements Listener {
                     Utils.GUI.Tasche.openMainInventory(player);
                     break;
             }
-            event.setCancelled(true);
         }
         if (playerData.getVariable("current_inventory").equals("coinshop_ranks")) {
+            event.setCancelled(true);
             switch (event.getSlot()) {
                 case 11:
                     if (Main.getInstance().getCooldownManager().isOnCooldown(player, "rankshop")) return;
@@ -1357,9 +1358,9 @@ public class InventoryClickListener implements Listener {
                     Utils.CoinShop.GUI.openShop(player);
                     break;
             }
-            event.setCancelled(true);
         }
         if (playerData.getVariable("current_inventory").equals("coinshop_extras")) {
+            event.setCancelled(true);
             switch (event.getSlot()) {
                 case 11:
                     if (Main.getInstance().getCooldownManager().isOnCooldown(player, "extrashop")) return;
@@ -1373,7 +1374,6 @@ public class InventoryClickListener implements Listener {
                     Utils.CoinShop.GUI.openShop(player);
                     break;
             }
-            event.setCancelled(true);
         }
     }
 }

@@ -46,7 +46,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                     SpecCommand.leaveSpec(player);
                 }
                 player.setCollidable(true);
-                Utils.Display.adminMode(player, false);
+                Utils.Tablist.setTablist(player, null);
             } else {
                 ADutyCommand.send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
@@ -54,9 +54,8 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                 (player).setAllowFlight(true);
                 playerData.getScoreboard().createAdminScoreboard();
                 player.setCollidable(false);
-                Utils.Display.adminMode(player, true);
+                Utils.Tablist.setTablist(player, "§8[§cℹ§8]");
             }
-            Utils.Tablist.updatePlayer(player);
         }
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {

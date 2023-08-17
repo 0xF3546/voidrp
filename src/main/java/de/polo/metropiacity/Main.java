@@ -145,6 +145,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new HungerListener(), this);
         getServer().getPluginManager().registerEvents(new AntiCheat(), this);
         getServer().getPluginManager().registerEvents(new PlayerSwapHandItemsListener(), this);
+        getServer().getPluginManager().registerEvents(new GameModeChangeEvent(), this);
 
     }
 

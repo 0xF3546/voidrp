@@ -1,7 +1,9 @@
 package de.polo.metropiacity.dataStorage;
 
 import de.polo.metropiacity.playerUtils.Scoreboard;
+import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.sql.Date;
@@ -12,6 +14,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerData {
+    @Getter
+    private Player player;
+    public PlayerData(Player player) {
+        this.player = player;
+    }
     private int id;
     private UUID uuid;
     private String firstname;

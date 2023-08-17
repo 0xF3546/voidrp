@@ -37,7 +37,7 @@ public class JoinListener implements Listener {
             player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
             player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
             player.setCustomNameVisible(true);*/
-            Utils.Tablist.setTablist(player);
+            Utils.Tablist.setTablist(player, null);
             playerData.setUuid(player.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
                 Utils.sendActionBar(player, "§aDeine Account-Daten wurden erfolgreich geladen!");
@@ -63,8 +63,6 @@ public class JoinListener implements Listener {
             player.sendMessage("§6MetropiaCity §8»§7 Herzlich Wilkommen in Metropia - der Stadt mit Zukunft, " + player.getName() + ".");
             player.sendMessage(" ");
             LocationManager.useLocation(player, "Spawn");
-            player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
-            player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
             ADutyCommand.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
         }
         Utils.Tablist.updatePlayer(player);
