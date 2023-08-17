@@ -94,7 +94,7 @@ public final class Main extends JavaPlugin {
 
             ServerManager.loadDBPlayer();
             ServerManager.loadContracts();
-            //TeamSpeak.loadConfig();
+            //teamSpeak = new TeamSpeak();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

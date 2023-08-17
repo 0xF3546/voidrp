@@ -39,12 +39,10 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                 (player).setFlying(false);
                 (player).setAllowFlight(false);
                 playerData.getScoreboard().killScoreboard();
-                if (playerData.isDuty()) {
-                    FactionManager.setDuty(player, true);
-                }
                 if (playerData.getVariable("isSpec") != null) {
                     SpecCommand.leaveSpec(player);
                 }
+                Utils.Display.adminMode(player, false);
                 player.setCollidable(true);
                 Utils.Tablist.setTablist(player, null);
             } else {
@@ -54,6 +52,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                 (player).setAllowFlight(true);
                 playerData.getScoreboard().createAdminScoreboard();
                 player.setCollidable(false);
+                Utils.Display.adminMode(player, true);
                 Utils.Tablist.setTablist(player, "§8[§cℹ§8]");
             }
         }

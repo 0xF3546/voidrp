@@ -22,7 +22,7 @@ public class Scoreboard extends ScoreboardBuilder {
     private Vehicle vehicle;
 
     public Scoreboard(Player p) {
-        super(p, null);
+        super(p, "§6MetropiaCity");
         uuid = p.getUniqueId().toString();
         player = p;
         run();

@@ -7,6 +7,7 @@ import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.Game.Housing;
 import kotlin.Suppress;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Item;
@@ -93,16 +94,16 @@ public class Utils {
                 all.setScoreboard(sb);
             }
             if (suffix == null) {
-                player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+                player.setDisplayName(Color.GRAY + player.getName());
                 player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
-                player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+                player.setCustomName(Color.GRAY + player.getName());
                 player.setCustomNameVisible(true);
                 return;
             }
             suffix = " " + suffix;
-            player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName() + suffix);
+            player.setDisplayName(Color.GRAY + player.getName());
             player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName() + suffix);
-            player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName() + suffix);
+            player.setCustomName(Color.GRAY + player.getName());
             player.setCustomNameVisible(true);
         }
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
