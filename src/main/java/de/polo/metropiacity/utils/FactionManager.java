@@ -275,31 +275,9 @@ public class FactionManager {
             Statement statement = Main.getInstance().mySQL.getStatement();
             if (state) {
                 statement.executeUpdate("UPDATE `players` SET `isDuty` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
-                if (playerData.getPermlevel() >= 60) {
-                    player.setDisplayName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
-                    player.setPlayerListName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
-                    player.setCustomName("§" + factionData.getPrimaryColor() + "[Team] " + player.getName());
-                    player.setCustomNameVisible(true);
-                } else {
-                    player.setDisplayName("§" + factionData.getPrimaryColor() + player.getName());
-                    player.setPlayerListName("§" + factionData.getPrimaryColor() + player.getName());
-                    player.setCustomName("§" + factionData.getPrimaryColor() + player.getName());
-                    player.setCustomNameVisible(true);
-                }
                 playerData.setDuty(true);
             } else {
                 statement.executeUpdate("UPDATE `players` SET `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
-                if (playerData.getPermlevel() >= 60) {
-                    player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
-                    player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-                    player.setCustomName("§8[§7Team§8]§7 " + player.getName());
-                    player.setCustomNameVisible(true);
-                } else {
-                    player.setDisplayName("§7" + player.getName());
-                    player.setPlayerListName("§7" + player.getName());
-                    player.setCustomName("§7" + player.getName());
-                    player.setCustomNameVisible(true);
-                }
                 playerData.setDuty(false);
             }
             Utils.Tablist.updatePlayer(player);

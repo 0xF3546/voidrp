@@ -1,5 +1,7 @@
 package de.polo.metropiacity.dataStorage;
 
+import org.bukkit.ChatColor;
+
 public class RankData {
     private int id;
     private String rang;
@@ -7,6 +9,7 @@ public class RankData {
     private int TeamSpeakID;
     private boolean isSecondary;
     private int forumID;
+    private ChatColor color;
 
     public int getId() {
         return id;
@@ -54,5 +57,13 @@ public class RankData {
 
     public void setForumID(int forumID) {
         this.forumID = forumID;
+    }
+
+    public ChatColor getColor() {
+        return color;
+    }
+
+    public void setColor(ChatColor color) {
+        this.color = color;
     }
 }

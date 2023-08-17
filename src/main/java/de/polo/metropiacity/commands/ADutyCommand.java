@@ -2,8 +2,10 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.RankData;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.ServerManager;
 import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,6 +30,7 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
+        RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
         if (args.length == 0) {
             if (playerData.isAduty()) {
                 playerData.setAduty(false);
@@ -35,8 +38,6 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 (player).setFlying(false);
                 (player).setAllowFlight(false);
-                player.getPlayer().setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-                player.getPlayer().setDisplayName("§8[§7Team§8]§7 " + player.getName());
                 playerData.getScoreboard().killScoreboard();
                 if (playerData.isDuty()) {
                     FactionManager.setDuty(player, true);
@@ -45,17 +46,15 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
                     SpecCommand.leaveSpec(player);
                 }
                 player.setCollidable(true);
-                Utils.Display.deleteNameBelow(player, "§c§lADMIN-DIENST");
+                Utils.Display.adminMode(player, false);
             } else {
                 ADutyCommand.send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");
                 (player).setAllowFlight(true);
-                player.getPlayer().setPlayerListName("§8[§cTeam§8]§c " + player.getName());
-                player.getPlayer().setDisplayName("§8[§cTeam§8]§c " + player.getName());
                 playerData.getScoreboard().createAdminScoreboard();
                 player.setCollidable(false);
-                Utils.Display.setNameBelow(player, "§c§lADMIN-DIENST");
+                Utils.Display.adminMode(player, true);
             }
             Utils.Tablist.updatePlayer(player);
         }

@@ -1,5 +1,7 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.RankData;
 import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.*;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import sun.tools.jconsole.Tab;
 
 import java.sql.SQLException;
 
@@ -29,6 +32,13 @@ public class JoinListener implements Listener {
             }
             ADutyCommand.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
+            RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+            /*player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+            player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+            player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+            player.setCustomNameVisible(true);*/
+            Utils.Tablist.setTablist(player);
+            playerData.setUuid(player.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
                 Utils.sendActionBar(player, "§aDeine Account-Daten wurden erfolgreich geladen!");
                 player.sendMessage("§8 ➥ §cEs sind " + SupportManager.playerTickets.size() + " Tickets offen.");

@@ -91,10 +91,9 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype`, `forumID`, `hasAnwalt` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            ResultSet name = statement.executeQuery("SELECT `firstname`, `lastname`, `bargeld`, `bank`, `visum`, `faction`, `faction_grade`, `player_permlevel`, `rent`, `player_rank`, `level`, `exp`, `needed_exp`, `isDead`, `deathTime`, `number`, `isDuty`, `gender`, `birthday`, `id`, `houseSlot`, `rankDuration`, `boostDuration`, `secondaryTeam`, `teamSpeakUID`, `job`, `jugendschutz`, `tutorial`, `playtime_hours`, `playtime_minutes`, `relationShip`, `warns`, `business`, `business_grade`, `bloodtype`, `forumID`, `hasAnwalt`, `coins` FROM `players` WHERE `uuid` = '" + uuid + "'");
             if (name.next()) {
                 PlayerData playerData = new PlayerData();
-                playerData.setUuid(player.getUniqueId());
                 playerData.setFirstname(name.getString(1));
                 playerData.setLastname(name.getString(2));
                 playerData.setBargeld(name.getInt(3));
@@ -135,13 +134,11 @@ public class PlayerManager implements Listener {
                     playerData.setVariable("jugendschutz", "muss");
                     Main.waitSeconds(1, () -> {
                         Inventory inv = Bukkit.createInventory(player, 27, "§c§lJugendschutz");
-                        inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", "Lädt..."));
+                        inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7MetropiaCity simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das MetropiaCity Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern")));
                         ItemMeta meta = inv.getItem(11).getItemMeta();
-                        meta.setLore(Arrays.asList("§7Void Roleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das Void Roleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"));
                         inv.getItem(11).setItemMeta(meta);
-                        inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", "Lädt..."));
+                        inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist", "§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7", "§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt", "§c§l und habe keine Erlaubnis meiner Eltern")));
                         ItemMeta nmeta = inv.getItem(15).getItemMeta();
-                        nmeta.setLore(Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist", "§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7", "§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt", "§c§l und habe keine Erlaubnis meiner Eltern"));
                         inv.getItem(15).setItemMeta(nmeta);
                         for (int i = 0; i < 27; i++) {
                             if (inv.getItem(i) == null) {
@@ -177,20 +174,7 @@ public class PlayerManager implements Listener {
 
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
-
-                if (name.getInt(8) >= 60) {
-                    onPlayer.put(player.getUniqueId().toString(), true);
-                    player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
-                    player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-                    player.setCustomName("§8[§7Team§8]§7 " + player.getName());
-                    player.setCustomNameVisible(true);
-                } else {
-                    onPlayer.put(player.getUniqueId().toString(), false);
-                    player.setDisplayName("§7" + player.getName());
-                    player.setPlayerListName("§7" + player.getName());
-                    player.setCustomName("§7" + player.getName());
-                    player.setCustomNameVisible(true);
-                }
+                playerData.setCoins(name.getInt("coins"));
 
                 player_rent.put(player.getUniqueId().toString(), name.getInt(8));
                 player.setLevel(name.getInt("level"));
@@ -767,5 +751,25 @@ public class PlayerManager implements Listener {
 
     public static PlayerData getPlayerData(Player player) {
         return playerDataMap.get(player.getUniqueId().toString());
+    }
+    public static void addCoins(Player player, int amount) {
+        PlayerData playerData = getPlayerData(player);
+        playerData.setCoins(playerData.getCoins() + amount);
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE players SET coins = " + playerData.getCoins() + " WHERE uuid = '" + player.getUniqueId() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void removeCoins(Player player, int amount) {
+        PlayerData playerData = getPlayerData(player);
+        playerData.setCoins(playerData.getCoins() - amount);
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE players SET coins = " + playerData.getCoins() + " WHERE uuid = '" + player.getUniqueId() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

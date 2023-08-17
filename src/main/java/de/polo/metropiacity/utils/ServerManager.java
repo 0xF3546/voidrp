@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -43,8 +44,10 @@ public class ServerManager {
             rankData.setTeamSpeakID(locs.getInt(4));
             rankData.setSecondary(locs.getBoolean(5));
             rankData.setForumID(locs.getInt("forumID"));
+            rankData.setColor(ChatColor.valueOf(locs.getString("color")));
             rankDataMap.put(locs.getString(2), rankData);
         }
+        Utils.Tablist.loadTeams();
 
         ResultSet res = statement.executeQuery("SELECT * FROM payouts");
         while (res.next()) {

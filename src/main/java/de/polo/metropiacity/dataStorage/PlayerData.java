@@ -62,6 +62,7 @@ public class PlayerData {
     private String bloodType;
     private boolean hasAnwalt;
     private boolean isAFK;
+    private int Coins;
 
     public PlayerData() {
     }
@@ -484,5 +485,13 @@ public class PlayerData {
 
     public void setAFK(boolean AFK) {
         isAFK = AFK;
+    }
+
+    public int getCoins() {
+        return Coins;
+    }
+
+    public void setCoins(int coins) {
+        Coins = coins;
     }
 }

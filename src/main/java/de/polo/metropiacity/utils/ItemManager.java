@@ -10,9 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 public class ItemManager {
 
@@ -49,7 +47,7 @@ public class ItemManager {
         return i;
     }
 
-    public static ItemStack createCustomHead(String texture, int anzahl, int subid, String displayname, String lore)
+    public static ItemStack createCustomHead(String texture, int anzahl, int subid, String displayname, List list)
     {
         short neuesubid = (short)subid;
         ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
@@ -72,8 +70,8 @@ public class ItemManager {
 
         ItemMeta m = i.getItemMeta();
         m.setDisplayName(displayname);
-        if (lore != null) {
-            m.setLore(Collections.singletonList(lore));
+        if (list != null) {
+            m.setLore(list);
         }
         i.setItemMeta(m);
 

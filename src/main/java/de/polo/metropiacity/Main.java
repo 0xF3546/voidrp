@@ -10,6 +10,7 @@ import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.Game.Streetwar;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -230,9 +231,6 @@ public final class Main extends JavaPlugin {
         getCommand("services").setExecutor(new ServicesCommand());
         getCommand("cancelservice").setExecutor(new CancelServiceCommand());
         getCommand("closeservice").setExecutor(new CloseServiceCommand());
-        getCommand("tslink").setExecutor(new TSLinkCommand());
-        getCommand("verify").setExecutor(new TeamSpeak());
-        getCommand("tsunlink").setExecutor(new TSUnlinkCommand());
         getCommand("orten").setExecutor(new OrtenCommand());
         getCommand("gangwar").setExecutor(new GangwarUtils());
         getCommand("youtube").setExecutor(new YoutubeCommand());
@@ -276,6 +274,10 @@ public final class Main extends JavaPlugin {
         getCommand("note").setExecutor(new NoteCommand());
         getCommand("streetwar").setExecutor(new Streetwar());
         getCommand("getskin").setExecutor(new GetSkinCommand());
+
+        getCommand("tslink").setExecutor(new TSLinkCommand());
+        getCommand("verify").setExecutor(new TeamSpeak());
+        getCommand("tsunlink").setExecutor(new TSUnlinkCommand());
 
         getCommand("reinforcement").setTabCompleter(new ReinforcementCommand());
         getCommand("blacklist").setTabCompleter(new BlacklistCommand());

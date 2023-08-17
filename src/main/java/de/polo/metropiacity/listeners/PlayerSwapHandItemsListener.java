@@ -49,14 +49,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         PlayerData playerData = PlayerManager.getPlayerData(player);
         playerData.setVariable("current_inventory", "tasche");
         if (nearestSkull == null) {
-            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6Deine Tasche");
-            inv.setItem(11, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + playerData.getBargeld() + "$"));
-            for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "", ""));
-                }
-            }
-            player.openInventory(inv);
+            Utils.GUI.Tasche.openMainInventory(player);
             return;
         }
         SkullMeta skullMeta = (SkullMeta) nearestSkull.getItemStack().getItemMeta();
