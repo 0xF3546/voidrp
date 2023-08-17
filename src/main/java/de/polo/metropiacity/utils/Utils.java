@@ -92,6 +92,9 @@ public class Utils {
                 all.setScoreboard(sb);
             }
             player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+            player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+            player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
+            player.setCustomNameVisible(true);
         }
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Team team = scoreboard.registerNewTeam("a");
