@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,10 +12,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TPCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    public TPCommand(PlayerManager playerManager, AdminManager adminManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        Main.registerCommand("tp", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
             return false;
@@ -34,7 +42,7 @@ public class TPCommand implements CommandExecutor {
         }
         player.teleport(targetplayer.getLocation());
         player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + targetplayer.getName() + "§7 teleportiert.");
-        ADutyCommand.send_message(player.getName() + " hat sich zu " + targetplayer.getName() + " Teleportiert.", ChatColor.RED);
+        adminManager.send_message(player.getName() + " hat sich zu " + targetplayer.getName() + " Teleportiert.", ChatColor.RED);
         return false;
     }
 }

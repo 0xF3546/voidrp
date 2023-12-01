@@ -24,11 +24,16 @@ import java.sql.Statement;
 import java.util.Objects;
 
 public class BuyHouseCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public BuyHouseCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("buyhouse", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 1) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             int centerX = player.getLocation().getBlockX();
             int centerY = player.getLocation().getBlockY();
             int centerZ = player.getLocation().getBlockZ();
@@ -58,7 +63,7 @@ public class BuyHouseCommand implements CommandExecutor {
                                             }
                                             try {
                                                 if (playerData.getHouseSlot() > houes) {
-                                                    PlayerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
+                                                    playerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
                                                     Statement statement = Main.getInstance().mySQL.getStatement();
                                                     statement.executeUpdate("UPDATE `housing` SET `owner` = '" + player.getUniqueId() + "' WHERE `number` = " + houseData.getNumber());
                                                     houseData.setOwner(player.getUniqueId().toString());

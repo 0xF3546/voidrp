@@ -17,12 +17,19 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class MemberCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public MemberCommand(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("member", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
-            FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + factionData.getFullname() + "§8]§7===");
             Map<Integer, List<OfflinePlayer>> sort = new HashMap<>();
             for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
@@ -38,7 +45,7 @@ public class MemberCommand implements CommandExecutor {
                 }
             }
             for (int value = 8; value >= 0; value--) {
-                String message = "§8 » §" + factionData.getSecondaryColor() + FactionManager.getRankName(playerData.getFaction(), value) + " - " + FactionManager.getPaydayFromFaction(playerData.getFaction(), value) + "$/PayDay";
+                String message = "§8 » §" + factionData.getSecondaryColor() + factionManager.getRankName(playerData.getFaction(), value) + " - " + factionManager.getPaydayFromFaction(playerData.getFaction(), value) + "$/PayDay";
                 player.sendMessage(message);
                 if (sort.get(value) != null) {
                     for (int i = 0; i < sort.get(value).size(); i++) {

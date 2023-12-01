@@ -1,5 +1,5 @@
 package de.polo.metropiacity.commands;
-
+/*
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.PlayerManager;
@@ -14,10 +14,14 @@ import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.NotNull;
 
 public class GetSkinCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public GetSkinCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 60) {
             player.sendMessage(Main.error_nopermission);
             return false;
@@ -41,3 +45,4 @@ public class GetSkinCommand implements CommandExecutor {
         return false;
     }
 }
+*/

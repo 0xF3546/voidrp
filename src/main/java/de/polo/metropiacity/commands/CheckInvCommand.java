@@ -10,10 +10,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CheckInvCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public CheckInvCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("checkinv", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 60) {
             if (playerData.isAduty()) {
                 if (args.length >= 1) {

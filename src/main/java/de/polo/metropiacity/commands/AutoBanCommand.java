@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutoBanCommand implements CommandExecutor, TabCompleter {
+    private PlayerManager playerManager;
     public static ArrayList<String> banReasons = new ArrayList<>();
-    public AutoBanCommand() {
+    public AutoBanCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM banreasons");
@@ -29,11 +31,12 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        Main.registerCommand("autoban", this);
     }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
             return false;

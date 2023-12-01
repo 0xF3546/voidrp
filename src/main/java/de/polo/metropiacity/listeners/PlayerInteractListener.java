@@ -33,13 +33,22 @@ import java.util.Random;
 import java.util.UUID;
 
 public class PlayerInteractListener implements Listener {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    private final Main.Commands commands;
+    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        this.commands = commands;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
-            Utils.AFK.setAFK(player, false);
+            utils.setAFK(player, false);
         }
         if (playerData.isDead()) {
             event.setCancelled(true);
@@ -66,7 +75,7 @@ public class PlayerInteractListener implements Listener {
                     event.setCancelled(true);
                     Sign sign = (Sign) event.getClickedBlock().getState();
                     if (sign.getLine(1).contains("Bankautomat")) {
-                        BankingUtils.openBankMenu(player);
+                        utils.bankingUtils.openBankMenu(player);
                     }
                     PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
                     for (HouseData houseData : Housing.houseDataMap.values()) {
@@ -93,16 +102,16 @@ public class PlayerInteractListener implements Listener {
                             if (playerData.getVariable("job") == null) {
                                 inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
                             } else {
-                                if (!playerData.getVariable("job").equalsIgnoreCase("postbote") && !playerData.getVariable("job").equalsIgnoreCase("müllmann")) {
+                                if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
                                     inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
-                                } else if (playerData.getVariable("job").equalsIgnoreCase("postbote")) {
-                                    if (PostboteCommand.canGive(houseData.getNumber())) {
+                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
+                                    if (commands.postboteCommand.canGive(houseData.getNumber())) {
                                         inv.setItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben", null));
                                     } else {
                                         inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert", null));
                                     }
-                                } else if (playerData.getVariable("job").equalsIgnoreCase("müllmann")) {
-                                    if (MuellmannCommand.canGet(houseData.getNumber())) {
+                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                    if (commands.muellmannCommand.canGet(houseData.getNumber())) {
                                         inv.setItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln", null));
                                     } else {
                                         inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert", null));
@@ -126,7 +135,8 @@ public class PlayerInteractListener implements Listener {
 
             if (event.getItem() == null) return;
             if (event.getItem().getItemMeta().getDisplayName().contains("Rubbellos")) {
-                Rubbellose.startGame(player);
+                Rubbellose rubbellose = new Rubbellose(Main.getInstance().playerManager);
+                rubbellose.startGame(player);
                 ItemStack itemStack = event.getItem().clone();
                 itemStack.setAmount(1);
                 player.getInventory().removeItem(itemStack);
@@ -134,7 +144,7 @@ public class PlayerInteractListener implements Listener {
                 ItemStack itemStack = event.getItem().clone();
                 itemStack.setAmount(1);
                 player.getInventory().removeItem(itemStack);
-                PlayerManager.addExp(player, Main.random(50, 200));
+                playerManager.addExp(player, Main.random(50, 200));
             } else if (event.getItem().getItemMeta().getDisplayName().equals("§6§lCase")) {
                 //todo
             }

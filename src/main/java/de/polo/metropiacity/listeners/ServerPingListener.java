@@ -14,6 +14,11 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 
 public class ServerPingListener implements Listener {
+    private final FactionManager factionManager;
+    public ServerPingListener(FactionManager factionManager) {
+        this.factionManager = factionManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
         String firstline = "§6§lMetropiaCity §8| §edsc.gg/metropiacity";
@@ -26,7 +31,7 @@ public class ServerPingListener implements Listener {
             System.out.println("Server Ping erhalten von: " + event.getAddress().toString().replace("/", ""));
             if (res.next()) {
                 if (res.getString(3) != null) {
-                    FactionData factionData = FactionManager.factionDataMap.get(res.getString(3));
+                    FactionData factionData = factionManager.getFactionData(res.getString(3));
                     secondline = "§8 » §6Level§8: §e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §" + factionData.getPrimaryColor() + factionData.getName();
                 } else {
                     secondline = "§8 » §6Level§8: §e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §7Zivilist";

@@ -20,10 +20,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class GiveRankCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public GiveRankCommand(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("giverank", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFactionGrade() < 7) {
             player.sendMessage(Main.error_nopermission);
             return false;
@@ -58,7 +65,7 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
         factionPlayerData.setFaction_grade(rang);
         dbPlayerData.setFaction_grade(rang);
@@ -70,9 +77,9 @@ public class GiveRankCommand implements CommandExecutor {
         }
         if (targetplayer.isOnline()) {
             Player target = Bukkit.getPlayer(args[0]);
-            PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+            PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
             targetplayerData.setFactionGrade(rang);
-            target.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat dir Rang " + rang + " gegeben!");
+            target.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 " + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat dir Rang " + rang + " gegeben!");
         }
         return false;
     }

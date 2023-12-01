@@ -1,5 +1,6 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -9,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class VoteCommand implements CommandExecutor {
+    public VoteCommand() {
+        Main.registerCommand("vote", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

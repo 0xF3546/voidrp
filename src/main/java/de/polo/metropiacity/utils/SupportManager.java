@@ -14,18 +14,22 @@ public class SupportManager {
     public static int TicketCount = 0;
     public static final List<String> playerTickets = new ArrayList<>();
 
-    public static boolean ticketCreated(Player player) {
+    public SupportManager() {
+
+    }
+
+    public boolean ticketCreated(Player player) {
         return ticketIsCreated.get(player.getUniqueId().toString()) != null;
     }
 
-    public static void createTicket(Player player, String reason) {
+    public void createTicket(Player player, String reason) {
         ticketIsCreated.put(player.getUniqueId().toString(), true);
         ticketReason.put(player.getUniqueId().toString(), reason);
         TicketCount++;
         playerTickets.add(player.getName());
     }
 
-    public static void deleteTicket(Player player) {
+    public void deleteTicket(Player player) {
         if (ticketCreated(player)) {
             ticketReason.remove(player.getUniqueId().toString());
             ticketIsCreated.remove(player.getUniqueId().toString());
@@ -39,13 +43,13 @@ public class SupportManager {
         }
     }
 
-    public static void createTicketConnection(Player player, Player targetplayer) {
+    public void createTicketConnection(Player player, Player targetplayer) {
         ticketConnection.put(player.getUniqueId().toString(), targetplayer.getUniqueId().toString());
         ticketConnection.put(targetplayer.getUniqueId().toString(), player.getUniqueId().toString());
         isInConnection.put(player.getUniqueId().toString(), true);
         isInConnection.put(targetplayer.getUniqueId().toString(), true);
     }
-    public static boolean deleteTicketConnection(Player player, Player targetplayer) {
+    public boolean deleteTicketConnection(Player player, Player targetplayer) {
         if (ticketConnection.get(player.getUniqueId().toString()) == null || ticketConnection.get(targetplayer.getUniqueId().toString()) == null) {
             return false;
         }
@@ -56,11 +60,11 @@ public class SupportManager {
         isInConnection.remove(player.getUniqueId().toString());
         return true;
     }
-    public static String getConnection(Player player) {
+    public String getConnection(Player player) {
         return ticketConnection.get(player.getUniqueId().toString());
     }
 
-    public static boolean isInConnection(Player player) {
+    public boolean isInConnection(Player player) {
         return isInConnection.get(player.getUniqueId().toString()) != null;
     }
 }

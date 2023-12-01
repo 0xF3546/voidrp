@@ -22,8 +22,19 @@ public class LocationManager {
     public static final Map<Integer, GarageData> garageDataMap = new HashMap<>();
     public static final Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
-    public static void loadLocations() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+
+    private final MySQL mySQL;
+
+    public LocationManager(MySQL mySQL) {
+        this.mySQL = mySQL;
+        try {
+            loadLocations();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void loadLocations() throws SQLException {
+        Statement statement = mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM locations");
         while (locs.next()) {
             LocationData locationData = new LocationData();
@@ -106,10 +117,10 @@ public class LocationManager {
 
     }
 
-    public static void setLocation(String name, Player p){
+    public void setLocation(String name, Player p){
         Location loc = p.getLocation();
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = mySQL.getStatement();
             assert statement != null;
             if (name.contains("isShop")) {
                 p.sendMessage(Main.gamedesign_prefix + " Shop regestriert.");
@@ -134,25 +145,25 @@ public class LocationManager {
         }
     }
 
-    public static void useLocation(Player p, String name){
+    public void useLocation(Player p, String name){
         LocationData locationData = locationDataMap.get(name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
         p.teleport(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
     }
 
-    public static Location getLocation(String name) {
+    public Location getLocation(String name) {
         LocationData locationData = locationDataMap.get(" " + name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
         return new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch());
     }
 
-    public static double getDistanceBetweenCoords(Player player, String name) {
+    public double getDistanceBetweenCoords(Player player, String name) {
         LocationData locationData = locationDataMap.get(name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
         return player.getLocation().distance(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
     }
 
-    public static int isNearShop(Player player) {
+    public int isNearShop(Player player) {
         int distshop = 0;
         for (Object[] row : shops) {
             World welt = Bukkit.getWorld(row[5].toString());
@@ -163,36 +174,12 @@ public class LocationManager {
         return distshop;
     }
 
-    public static String getShopNameById(Integer id) {
+    public String getShopNameById(Integer id) {
         ShopData shopData = ServerManager.shopDataMap.get(id);
         return shopData.getName();
     }
 
-    public static boolean nearATM(Player player) {
-        boolean returnval = false;
-        int centerX = player.getLocation().getBlockX();
-        int centerY = player.getLocation().getBlockY();
-        int centerZ = player.getLocation().getBlockZ();
-        World world = player.getWorld();
-        for (int x = centerX - 3; x <= centerX + 3; x++) {
-            for (int y = centerY - 3; y <= centerY + 3; y++) {
-                for (int z = centerZ - 3; z <= centerZ + 3; z++) {
-                    Location location = new Location(world, x, y, z);
-                    Block block = location.getBlock();
-                    if (block.getType().toString().contains("SIGN")) {
-                        Sign sign = (Sign) block.getState();
-                        System.out.println(sign.getLine(1));
-                        if (sign.getLine(1).contains("Bankautomat")) {
-                            returnval = true;
-                        }
-                    }
-                }
-            }
-        }
-        return returnval;
-    }
-
-    public static Integer isPlayerNearOwnHouse(Player player) {
+    public Integer isPlayerNearOwnHouse(Player player) {
         int centerX = player.getLocation().getBlockX();
         int centerY = player.getLocation().getBlockY();
         int centerZ = player.getLocation().getBlockZ();
@@ -219,7 +206,7 @@ public class LocationManager {
         return 0;
     }
 
-    public static Integer isPlayerGasStation(Player player) {
+    public Integer isPlayerGasStation(Player player) {
         for (GasStationData gasStationData : gasStationDataMap.values()) {
             if (player.getLocation().distance(new Location(gasStationData.getWelt(), gasStationData.getX(), gasStationData.getY(), gasStationData.getZ(), gasStationData.getYaw(), gasStationData.getPitch())) < 25) {
                 return gasStationData.getId();
@@ -227,7 +214,7 @@ public class LocationManager {
         }
         return 0;
     }
-    public static Integer isPlayerNearGarage(Player player) {
+    public Integer isPlayerNearGarage(Player player) {
         for (GarageData garageData : garageDataMap.values()) {
             if (player.getLocation().distance(new Location(garageData.getWelt(), garageData.getX(), garageData.getY(), garageData.getZ(), garageData.getYaw(), garageData.getPitch())) < 8) {
                 return garageData.getId();
@@ -236,7 +223,7 @@ public class LocationManager {
         return 0;
     }
 
-    public static String getNearestLocation(Player player) {
+    public String getNearestLocation(Player player) {
         double distance = 30000;
         String loc = null;
         for (NaviData naviData : naviDataMap.values()) {
@@ -250,7 +237,7 @@ public class LocationManager {
         }
         return loc;
     }
-    public static Integer getNearestLocationId(Player player) {
+    public Integer getNearestLocationId(Player player) {
         double distance = 30000;
         Integer loc = null;
         for (NaviData naviData : naviDataMap.values()) {
@@ -265,7 +252,7 @@ public class LocationManager {
         return loc;
     }
 
-    public static String isNearFarmingSpot(Player player, int radius) {
+    public String isNearFarmingSpot(Player player, int radius) {
         String spot = null;
         for (LocationData locationData : locationDataMap.values()) {
             if (locationData.getType() != null) {
@@ -276,6 +263,4 @@ public class LocationManager {
         }
         return spot;
     }
-
-
 }

@@ -29,7 +29,22 @@ public class Vehicles implements Listener, CommandExecutor {
     public static final Map<String, VehicleData> vehicleDataMap = new HashMap<>();
     public static final Map<Integer, PlayerVehicleData> playerVehicleDataMap = new HashMap<>();
     public static final HashMap<String, Integer> vehicleIDByUUid = new HashMap<>();
-    public static void loadVehicles() throws SQLException {
+
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+
+    public Vehicles(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        try {
+            loadVehicles();
+            loadPlayerVehicles();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void loadVehicles() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `vehicles`");
         while (result.next()) {
@@ -45,7 +60,7 @@ public class Vehicles implements Listener, CommandExecutor {
         }
     }
 
-    public static void loadPlayerVehicles() throws SQLException {
+    private void loadPlayerVehicles() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `player_vehicles`");
         while (result.next()) {
@@ -68,13 +83,13 @@ public class Vehicles implements Listener, CommandExecutor {
         }
     }
 
-    public static void giveVehicle(Player player, String vehicle) throws SQLException {
+    public void giveVehicle(Player player, String vehicle) throws SQLException {
         VehicleData vehicleData = vehicleDataMap.get(vehicle);
         assert vehicleData != null;
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("INSERT INTO `player_vehicles` (`uuid`, `type`) VALUES ('" + player.getUniqueId() + "', '" + vehicleData.getName() + "')");
         ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID()");
-        LocationManager.useLocation(player, "vehicleshop_out");
+        locationManager.useLocation(player, "vehicleshop_out");
         if (result.next()) {
             PlayerVehicleData playerVehicleData = new PlayerVehicleData();
             playerVehicleData.setId(result.getInt(1));
@@ -209,7 +224,7 @@ public class Vehicles implements Listener, CommandExecutor {
             Vehicle vehicle = event.getVehicle();
             Player player = (Player) event.getEntered();
             if (vehicle.getPersistentDataContainer().get(key_lock, PersistentDataType.INTEGER) == 0) {
-                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 playerData.getScoreboard().createCarScoreboard(event.getVehicle());
                 playerSpeeds.put(player, 0.0);
             } else {
@@ -224,7 +239,7 @@ public class Vehicles implements Listener, CommandExecutor {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
             Vehicle vehicle = event.getVehicle();
             Player player = (Player) event.getExited();
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.getScoreboard().killScoreboard();
         }
     }
@@ -268,12 +283,12 @@ public class Vehicles implements Listener, CommandExecutor {
     public void onGasStationInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null) {
             if (event.getClickedBlock().getType() == Material.LEVER) {
-                Integer station = LocationManager.isPlayerGasStation(event.getPlayer());
+                Integer station = locationManager.isPlayerGasStation(event.getPlayer());
                 if (station != 0) {
                     event.setCancelled(true);
                     GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
                     Player player = event.getPlayer();
-                    PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                    PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                     Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6Tankstelle");
                     int i = 0;
                     for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
@@ -314,7 +329,7 @@ public class Vehicles implements Listener, CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("start")) {
                 Minecart minecart = (Minecart) player.getVehicle();
@@ -375,9 +390,9 @@ public class Vehicles implements Listener, CommandExecutor {
         return false;
     }
 
-    public static void openGarage(Player player, int station, boolean isParkin) {
+    public void openGarage(Player player, int station, boolean isParkin) {
         GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         GarageData garageData = LocationManager.garageDataMap.get(station);
         Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6" + garageData.getName());
         inv.setItem(48, ItemManager.createItem(Material.EMERALD, 1, 0, "§aEinparken", null));

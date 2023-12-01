@@ -10,10 +10,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BusinessChatCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public BusinessChatCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("businesschat", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getBusiness() == null) {
             player.sendMessage(Main.business_prefix + "Du bist in keinem Business.");
             return false;
@@ -27,7 +32,7 @@ public class BusinessChatCommand implements CommandExecutor {
             msg.append(" ").append(args[i]);
         }
         for (Player players : Bukkit.getOnlinePlayers()) {
-            PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+            PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
             if (playersData.getBusiness() != null) {
                 if (playersData.getBusiness().equals(playerData.getBusiness())) {
                     players.sendMessage("§8[§6" + playerData.getBusiness() + "§8]§e " + player.getName() + "§8:§7 " + msg);

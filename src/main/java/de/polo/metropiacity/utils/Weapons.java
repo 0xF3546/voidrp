@@ -28,7 +28,19 @@ import java.util.Objects;
 public class Weapons implements Listener {
     public static final Map<Material, WeaponData> weaponDataMap = new HashMap<>();
 
-    public static void loadWeapons() throws SQLException {
+    private final Utils utils;
+
+    public Weapons(Utils utils) {
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        try {
+            loadWeapons();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadWeapons() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT `id`, `material`, `name`, `maxAmmo`, `reloadDuration`, `damage`, `weaponSound`, `velocity`, `shootDuration`, `type`, `soundPitch` FROM `weapons`");
         while (result.next()) {
@@ -48,7 +60,7 @@ public class Weapons implements Listener {
         }
     }
 
-    public static void giveWeaponToPlayer(Player player, Material material, String type) {
+    public void giveWeaponToPlayer(Player player, Material material, String type) {
         WeaponData weaponData = weaponDataMap.get(material);
         ItemStack item = new ItemStack(weaponData.getMaterial());
         ItemMeta meta = item.getItemMeta();
@@ -75,7 +87,7 @@ public class Weapons implements Listener {
 
     }
 
-    public static void giveWeaponAmmoToPlayer(Player player, ItemStack weapon, Integer amount) {
+    public void giveWeaponAmmoToPlayer(Player player, ItemStack weapon, Integer amount) {
         ItemMeta meta = weapon.getItemMeta();
         NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
         int current_ammo = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
@@ -127,10 +139,9 @@ public class Weapons implements Listener {
         Arrow arrow = player.launchProjectile(Arrow.class);
         ProjectileSource shooter = arrow.getShooter();
         ItemMeta meta = event.getItem().getItemMeta();
-        Vector direction = player.getLocation().getDirection().normalize();
-        Location partikelLocation = player.getLocation().clone().add(direction.multiply(2));
-        partikelLocation.setY(partikelLocation.getY() + 1); // Die Y-Koordinate um 1 erhöhen
-        arrow.getWorld().spawnParticle(Particle.SMOKE_NORMAL, partikelLocation, 3, 0, 0, 0, 0.1);
+        Vector direction = player.getLocation().clone().subtract(player.getEyeLocation()).toVector().normalize();
+        Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(1));
+        player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.BLACK, 1));
 
         if (shooter instanceof Player) {
             arrow.setVelocity(arrow.getVelocity().multiply(weaponData.getArrowVelocity()));
@@ -175,13 +186,13 @@ public class Weapons implements Listener {
         }.runTaskLater(Main.getInstance(), 20 * 20);
     }
 
-    public static void reloadWeapon(Player player, ItemStack weapon) {
+    public void reloadWeapon(Player player, ItemStack weapon) {
         WeaponData weaponData = weaponDataMap.get(weapon.getType());
         NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
         ItemMeta meta = weapon.getItemMeta();
         meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 1);
         weapon.setItemMeta(meta);
-        Utils.sendActionBar(player, "§7Lade " + weaponData.getName() + "§7 nach!");
+        utils.sendActionBar(player, "§7Lade " + weaponData.getName() + "§7 nach!");
         NamespacedKey type = new NamespacedKey(Main.plugin, "type");
         if (!Objects.equals(meta.getPersistentDataContainer().get(type, PersistentDataType.STRING), "default")) {
             new BukkitRunnable() {
@@ -204,11 +215,11 @@ public class Weapons implements Listener {
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
         } else {
-            Utils.sendActionBar(player, "§cDu hast eine Munition mehr!");
+            utils.sendActionBar(player, "§cDu hast eine Munition mehr!");
         }
     }
 
-    public static void reload(Player player, ItemStack weapon) {
+    public void reload(Player player, ItemStack weapon) {
         WeaponData weaponData = weaponDataMap.get(weapon.getType());
         NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
         NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
@@ -233,6 +244,6 @@ public class Weapons implements Listener {
             weapon.setItemMeta(meta);
         }
         weapon.setItemMeta(meta);
-        Utils.sendActionBar(player, weaponData.getName() + "§7 wurde nachgeladen!");
+        utils.sendActionBar(player, weaponData.getName() + "§7 wurde nachgeladen!");
     }
 }

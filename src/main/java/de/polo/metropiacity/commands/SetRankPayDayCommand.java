@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.ChatColor;
@@ -13,10 +14,19 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 
 public class SetRankPayDayCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    private final FactionManager factionManager;
+    public SetRankPayDayCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("setrankpayday", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!(playerData.getFactionGrade() >= 7)) {
             player.sendMessage(Main.error_nopermission);
             return false;
@@ -34,9 +44,9 @@ public class SetRankPayDayCommand implements CommandExecutor {
             return false;
         }
         try {
-            if (FactionManager.changeRankPayDay(playerData.getFaction(), Integer.parseInt(args[0]), Integer.parseInt(args[1]))) {
+            if (factionManager.changeRankPayDay(playerData.getFaction(), Integer.parseInt(args[0]), Integer.parseInt(args[1]))) {
                 player.sendMessage(Main.faction_prefix + "PayDay von Rang §l" + args[0] + "§7 zu §l" + args[1] + "§§7 geändert.");
-                ADutyCommand.send_message(player.getName() + " den PayDay von Rang " + args[0] + " auf " + args[1] + "$ gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
+                adminManager.send_message(player.getName() + " den PayDay von Rang " + args[0] + " auf " + args[1] + "$ gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

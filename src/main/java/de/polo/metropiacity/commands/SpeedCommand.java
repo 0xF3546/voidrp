@@ -9,10 +9,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SpeedCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public SpeedCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("speed", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
             return false;

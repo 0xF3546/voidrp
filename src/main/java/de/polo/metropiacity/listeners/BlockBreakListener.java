@@ -17,21 +17,28 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
 public class BlockBreakListener implements Listener {
+    private final PlayerManager playerManager;
+    private final Main.Commands commands;
+    public BlockBreakListener(PlayerManager playerManager, Main.Commands commands) {
+        this.playerManager = playerManager;
+        this.commands = commands;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!player.getGameMode().equals(GameMode.CREATIVE)) {
             if (playerData.getVariable("job") != null) {
-                switch (playerData.getVariable("job")) {
+                switch (playerData.getVariable("job").toString()) {
                     case "Holzfäller":
-                        LumberjackCommand.blockBroken(player, event.getBlock(), event);
+                        commands.lumberjackCommand.blockBroken(player, event.getBlock(), event);
                         break;
                     case "mine":
-                        MineCommand.blockBroken(player, event.getBlock(), event);
+                        commands.mineCommand.blockBroken(player, event.getBlock(), event);
                         break;
                     case "farmer":
-                        FarmerCommand.blockBroken(player, event.getBlock(), event);
+                        commands.farmerCommand.blockBroken(player, event.getBlock(), event);
                         break;
                 }
                 PersistentDataContainer container = new CustomBlockData(event.getBlock(), Main.getInstance());

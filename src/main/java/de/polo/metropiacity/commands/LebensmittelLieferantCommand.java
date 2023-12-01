@@ -12,15 +12,21 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 
 public class LebensmittelLieferantCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public LebensmittelLieferantCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("lebensmittellieferant", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = "§8[§aLieferant§8] §7";
         Player player = (Player) sender;
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.canInteract()) {
             if (playerData.getVariable("job") == null) {
-                if (LocationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
+                if (locationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
                     playerData.setVariable("job", "lieferant");
                     player.sendMessage(prefix + "Du bist nun §aLebensmittel-Lieferant§7.");
                     player.sendMessage(prefix + "Bringe die Lebensmittel zu einem Shop deiner Wahl!");
@@ -32,7 +38,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
                 }
             } else {
                 if (playerData.getVariable("job").equals("lieferant")) {
-                    if (LocationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
+                    if (locationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
                         player.sendMessage(prefix + "Du hast den Job Lebensmittel-Lieferant beendet.");
                         playerData.setVariable("job", null);
                         quitJob(player);
@@ -47,18 +53,18 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
         return false;
     }
 
-    public static void dropLieferung(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        int shop = LocationManager.isNearShop(player);
+    public void dropLieferung(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        int shop = locationManager.isNearShop(player);
         if (shop > 0) {
             int drinks = playerData.getIntVariable("drinks");
             int snacks = playerData.getIntVariable("snacks");
             int payout = (snacks * 4) + (drinks * 3);
             int exp = (snacks * 2) +(drinks * 3);
-            PlayerManager.addExp(player, exp);
+            playerManager.addExp(player, exp);
             quitJob(player);
             try {
-                PlayerManager.addMoney(player, payout);
+                playerManager.addMoney(player, payout);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -68,8 +74,8 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
         }
     }
 
-    public static void quitJob(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void quitJob(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("drinks", null);
         playerData.setIntVariable("snacks", null);
         playerData.setVariable("job", null);

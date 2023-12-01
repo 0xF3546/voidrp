@@ -20,10 +20,15 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class SetBlockValueCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public SetBlockValueCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("setblockvalue", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 90) {
             Block block = player.getTargetBlock(null, 10);
             if (block.getType() == Material.AIR) {

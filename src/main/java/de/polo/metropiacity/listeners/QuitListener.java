@@ -3,7 +3,6 @@ package de.polo.metropiacity.listeners;
 import de.polo.metropiacity.dataStorage.ServiceData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
-import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.ChatUtils;
 import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.playerUtils.FFAUtils;
@@ -22,19 +21,34 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class QuitListener implements Listener {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    private final Utils utils;
+    private final Main.Commands commands;
+    private final ServerManager serverManager;
+    private final SupportManager supportManager;
+    public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        this.utils = utils;
+        this.commands = commands;
+        this.serverManager = serverManager;
+        this.supportManager = supportManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
         event.setQuitMessage("");
-        ADutyCommand.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
-        ServerManager.updateTablist(null);
+        adminManager.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
+        serverManager.updateTablist(null);
         if (playerData.getVariable("current_lobby") != null) {
-            FFAUtils.leaveFFA(player);
+            utils.ffaUtils.leaveFFA(player);
         }
         if (playerData.getVariable("gangwar") != null) {
-            GangwarUtils.leaveGangwar(player);
+            utils.gangwarUtils.leaveGangwar(player);
         }
         if (player.getVehicle() != null) {
             player.getVehicle().eject();
@@ -44,52 +58,52 @@ public class QuitListener implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if (DeathUtils.deathSkulls.get(player.getUniqueId().toString()) != null) {
-            Item skull = DeathUtils.deathSkulls.get(player.getUniqueId().toString());
+        if (utils.deathUtil.getDeathSkull(player.getUniqueId().toString()) != null) {
+            Item skull = utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
             skull.remove();
-            DeathUtils.deathSkulls.remove(player.getUniqueId().toString());
-            PlayerManager.setPlayerMove(player, true);
+            utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
+            playerManager.setPlayerMove(player, true);
         }
         try {
             if (playerData.getVariable("job") != null) {
-                switch (playerData.getVariable("job")) {
+                switch (playerData.getVariable("job").toString()) {
                     case "lumberjack":
-                        LumberjackCommand.quitJob(player, true);
+                        commands.lumberjackCommand.quitJob(player, true);
                         break;
                     case "apfelsammler":
-                        ApfelplantageCommand.quitJob(player);
+                        commands.apfelplantageCommand.quitJob(player);
                         break;
                     case "mine":
-                        MineCommand.quitJob(player);
+                        commands.mineCommand.quitJob(player);
                         break;
                     case "lieferant":
-                        LebensmittelLieferantCommand.quitJob(player);
+                        commands.lebensmittelLieferantCommand.quitJob(player);
                         break;
                     case "farmer":
-                        FarmerCommand.quitJob(player);
+                        commands.farmerCommand.quitJob(player);
                         break;
                     case "Postbote":
-                        PostboteCommand.quitJob(player, true);
+                        commands.postboteCommand.quitJob(player, true);
                         break;
                     case "Müllmann":
-                        MuellmannCommand.quitJob(player, true);
+                        commands.muellmannCommand.quitJob(player, true);
                         break;
                 }
             }
-            PlayerManager.savePlayer(player);
-            SupportManager.deleteTicket(player);
-            if (SupportManager.isInConnection(player)) {
+            playerManager.savePlayer(player);
+            supportManager.deleteTicket(player);
+            if (supportManager.isInConnection(player)) {
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (SupportManager.getConnection(players).equalsIgnoreCase(player.getUniqueId().toString()) || SupportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
-                        SupportManager.deleteTicketConnection(players, player);
-                        SupportManager.deleteTicketConnection(player, players);
+                    if (supportManager.getConnection(players).equalsIgnoreCase(player.getUniqueId().toString()) || supportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
+                        supportManager.deleteTicketConnection(players, player);
+                        supportManager.deleteTicketConnection(player, players);
                         players.sendMessage(Main.support_prefix + "§c" + player.getName() + "§7 ist offline gegangen. Das Ticket wurde geschlossen.");
                     }
                 }
             }
             ServiceData serviceData = StaatUtil.serviceDataMap.get(player.getUniqueId().toString());
             if (serviceData != null) {
-                StaatUtil.cancelservice(player);
+                utils.staatUtil.cancelService(player);
             }
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + event.getQuitMessage() + ").");
             if (playerData.getVariable("tutorial") != null) {

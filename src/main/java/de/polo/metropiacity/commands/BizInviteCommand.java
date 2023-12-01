@@ -5,6 +5,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.BusinessManager;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import de.polo.metropiacity.utils.VertragUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,10 +16,17 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 
 public class BizInviteCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public BizInviteCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("bizinvite", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getBusiness() == null) {
             player.sendMessage(Main.error + "Du bist in keinem Business");
             return false;
@@ -40,7 +48,7 @@ public class BizInviteCommand implements CommandExecutor {
             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
         }
-        if (PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString()).getBusiness() != null) {
+        if (playerManager.getPlayerData(targetplayer.getUniqueId()).getBusiness() != null) {
             player.sendMessage("§8[§6Business§8] §c" + targetplayer.getName() + "§7 ist bereits in einem Business.");
             return false;
         }
@@ -52,8 +60,8 @@ public class BizInviteCommand implements CommandExecutor {
         if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {
             player.sendMessage("§8[§6Business§8] §7" + targetplayer.getName() + " wurde in das Business §aeingeladen§7.");
             targetplayer.sendMessage("§6" + player.getName() + " hat dich in das Business §e" + playerData.getBusiness() + "§6 eingeladen.");
-            VertragUtil.sendInfoMessage(targetplayer);
-            PlayerData tplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+            utils.vertragUtil.sendInfoMessage(targetplayer);
+            PlayerData tplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         } else {
             player.sendMessage("§8[§6Business§8]§8 §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
         }

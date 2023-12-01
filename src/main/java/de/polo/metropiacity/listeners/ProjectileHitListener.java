@@ -7,9 +7,11 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class ProjectileHitListener implements Listener {
+    public ProjectileHitListener() {
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();

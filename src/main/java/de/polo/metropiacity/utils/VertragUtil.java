@@ -1,10 +1,8 @@
 package de.polo.metropiacity.utils;
 
-import de.polo.metropiacity.commands.ADutyCommand;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.Game.Streetwar;
@@ -24,6 +22,15 @@ import java.util.*;
 public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
     public static final HashMap<String, String> current = new HashMap<>();
+
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    private final AdminManager adminManager;
+    public VertragUtil(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        this.adminManager = adminManager;
+    }
 
     public static boolean setVertrag(Player player, Player target, String type, String vertrag)  {
         if (current.get(target.getUniqueId().toString()) == null) {
@@ -62,7 +69,7 @@ public class VertragUtil {
         }
     }
 
-    public static void acceptVertrag(Player player) throws SQLException {
+    public void acceptVertrag(Player player) throws SQLException {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
             Player targetplayer = null;
@@ -70,15 +77,15 @@ public class VertragUtil {
                 targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
             } catch (IllegalArgumentException e) {
             }
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
-                    FactionManager.setPlayerInFrak(player, curr, 0);
-                    FactionManager.sendMessageToFaction(curr, player.getName() + " ist der Fraktion beigetreten");
-                    ADutyCommand.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
+                    factionManager.setPlayerInFrak(player, curr, 0);
+                    factionManager.sendMessageToFaction(curr, player.getName() + " ist der Fraktion beigetreten");
+                    adminManager.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
                     break;
                 case "business_invite":
-                    BusinessManager.setPlayerInBusiness(player, curr, 0);
+                    Main.getInstance().businessManager.setPlayerInBusiness(player, curr, 0);
                     break;
                 case "rental":
                     String[] args = curr.split("_");
@@ -86,7 +93,7 @@ public class VertragUtil {
                     int preis = Integer.parseInt(args[1]);
                     HouseData houseData = Housing.houseDataMap.get(haus);
                     houseData.addRenter(player.getUniqueId().toString(), preis);
-                    Housing.updateRenter(haus);
+                    Main.getInstance().utils.housing.updateRenter(haus);
                     Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
                     player1.sendMessage("§8[§6Haus§8]§a " + player.getName() + " Mietet nun in Haus " + houseData.getNumber() + " für " + preis + "$.");
                     player.sendMessage("§8[§6Haus§8]§a Du mietest nun in Haus " + houseData.getNumber() + " für " + preis + "$/PayDay.");
@@ -98,7 +105,7 @@ public class VertragUtil {
                     if (targetplayer.isOnline()) {
                         player.sendMessage("§aDu und " + targetplayer.getName() + " sind jetzt zusammen.");
                         targetplayer.sendMessage("§aDu und " + player.getName() + " sind jetzt zusammen.");
-                        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                        PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                         HashMap<String, String> hmap1 = new HashMap<>();
                         hmap1.put(player.getUniqueId().toString(), "beziehung");
                         targetplayerData.setRelationShip(hmap1);
@@ -120,7 +127,7 @@ public class VertragUtil {
                     if (targetplayer.isOnline()) {
                         player.sendMessage("§aDu und " + targetplayer.getName() + " sind jetzt verlobt.");
                         targetplayer.sendMessage("§aDu und " + player.getName() + " sind jetzt verlobt.");
-                        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                        PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                         HashMap<String, String> hmap1 = new HashMap<>();
                         hmap1.put(player.getUniqueId().toString(), "verlobt");
                         targetplayerData.getRelationShip().clear();
@@ -157,8 +164,8 @@ public class VertragUtil {
                             try {
                                 Statement statement = Main.getInstance().mySQL.getStatement();
                                 statement.executeUpdate("UPDATE players SET bloodtype = '" + random + "' WHERE uuid = '" + player.getUniqueId() + "'");
-                                PlayerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
-                                FactionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + finalTargetplayer.getName() + " (Blutgruppe)");
+                                playerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
+                                factionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + finalTargetplayer.getName() + " (Blutgruppe)");
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
@@ -168,7 +175,7 @@ public class VertragUtil {
                     }
                     break;
                 case "streetwar":
-                    Streetwar.acceptStreetwar(player, curr);
+                    Main.getInstance().streetwar.acceptStreetwar(player, curr);
                     break;
             }
             deleteVertrag(player);
@@ -177,7 +184,7 @@ public class VertragUtil {
         }
     }
 
-    public static void denyVertrag(Player player) {
+    public void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
             Player targetplayer = null;
@@ -187,7 +194,7 @@ public class VertragUtil {
             }
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
-                    FactionManager.sendMessageToFaction(curr, player.getName() + " wurde eingeladen und ist nicht beigetreten.");
+                    factionManager.sendMessageToFaction(curr, player.getName() + " wurde eingeladen und ist nicht beigetreten.");
                     break;
                 case "business_invite":
                     break;
@@ -220,7 +227,7 @@ public class VertragUtil {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
                 case "streetwar":
-                    Streetwar.denyStreetwar(player, curr);
+                    Main.getInstance().streetwar.denyStreetwar(player, curr);
                     break;
             }
             deleteVertrag(player);
@@ -229,7 +236,7 @@ public class VertragUtil {
         }
     }
 
-    public static void sendInfoMessage(Player player) {
+    public void sendInfoMessage(Player player) {
         TextComponent annehmen = new TextComponent("§8/§aannehmen");
         annehmen.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/annehmen"));
         annehmen.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oAnnehmen")));

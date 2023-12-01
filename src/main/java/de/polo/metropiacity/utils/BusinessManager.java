@@ -16,7 +16,16 @@ import java.util.UUID;
 
 public class BusinessManager {
     public static final Map<String, BusinessData> businessDataMap = new HashMap<>();
-    public static void loadBusinesses() throws SQLException {
+    private final PlayerManager playerManager;
+    public BusinessManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        try {
+            loadBusinesses();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void loadBusinesses() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM business");
         while (locs.next()) {
@@ -30,25 +39,23 @@ public class BusinessManager {
         }
     }
 
-    public static void setPlayerInBusiness(Player player, String frak, Integer rang) throws SQLException {
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+    public void setPlayerInBusiness(Player player, String frak, Integer rang) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setBusiness(frak);
         playerData.setBusiness_grade(rang);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `business` = '" + frak + "', `business_grade` = " + rang + " WHERE `uuid` = '" + uuid + "'");
+        statement.executeUpdate("UPDATE `players` SET `business` = '" + frak + "', `business_grade` = " + rang + " WHERE `uuid` = '" + player.getUniqueId() + "'");
         boolean found = false;
     }
 
-    public static void removePlayerFromBusiness(Player player) throws SQLException {
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+    public void removePlayerFromBusiness(Player player) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setBusiness(null);
         playerData.setBusiness_grade(0);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `business` = NULL, `business_grade` = 0 WHERE `uuid` = '" + uuid + "'");
+        statement.executeUpdate("UPDATE `players` SET `business` = NULL, `business_grade` = 0 WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
     public static void removeOfflinePlayerFromBusiness(String playername) throws SQLException {

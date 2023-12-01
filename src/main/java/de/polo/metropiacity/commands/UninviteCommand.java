@@ -3,6 +3,7 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.dataStorage.DBPlayerData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;
@@ -18,10 +19,19 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class UninviteCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    private final FactionManager factionManager;
+    public UninviteCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("uninvite", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFactionGrade() < 7) {
             player.sendMessage(Main.error_nopermission);
             return false;
@@ -37,19 +47,19 @@ public class UninviteCommand implements CommandExecutor {
                     if (dbPlayerData.getFaction_grade() < playerData.getFactionGrade()) {
                         if (offlinePlayer.isOnline()) {
                             try {
-                                FactionManager.removePlayerFromFrak(offlinePlayer.getPlayer());
+                                factionManager.removePlayerFromFrak(offlinePlayer.getPlayer());
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
                         } else {
                             try {
-                                FactionManager.removeOfflinePlayerFromFrak(offlinePlayer);
+                                factionManager.removeOfflinePlayerFromFrak(offlinePlayer);
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
                         }
-                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
-                        ADutyCommand.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
+                        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
+                        adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
                     } else {
                         player.sendMessage(Main.error_nopermission);
                     }

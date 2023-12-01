@@ -10,16 +10,25 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class ApfelplantageCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public ApfelplantageCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("apfelsammler", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = "§8[§cApfelplantage§8] §7";
         Player player = (Player) sender;
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        UUID uuid = player.getUniqueId();
+        PlayerData playerData = playerManager.getPlayerData(uuid);
         if (playerData.canInteract()) {
             if (playerData.getVariable("job") == null) {
-                if (LocationManager.getDistanceBetweenCoords(player, "apfelsammler") <= 5) {
+                if (locationManager.getDistanceBetweenCoords(player, "apfelsammler") <= 5) {
                     playerData.setVariable("job", "apfelsammler");
                     player.sendMessage(prefix + "Du bist nun §cApfelsammler§7.");
                     player.sendMessage(prefix + "Pflücke nun die Äpfel von den Bäumen ab.");
@@ -28,7 +37,7 @@ public class ApfelplantageCommand implements CommandExecutor {
                 }
             } else {
                 if (playerData.getVariable("job").equals("apfelsammler")) {
-                    if (LocationManager.getDistanceBetweenCoords(player, "apfelsammler") <= 5) {
+                    if (locationManager.getDistanceBetweenCoords(player, "apfelsammler") <= 5) {
                         player.sendMessage(prefix + "Du hast den Job Apfelsammler beendet.");
                         playerData.setVariable("job", null);
                         quitJob(player);

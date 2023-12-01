@@ -15,13 +15,14 @@ public class MySQL {
     public MySQL() {
         loadDBData();
     }
-    static final String url = "jdbc:mysql://localhost/minecraft?autoReconnect=true&useSSL=false";
+    static final String url = "jdbc:mysql://62.72.37.1/u644544293_minecraft?autoReconnect=true&useSSL=false";
     static String user = null;
     static String password = null;
     static int port = 3306;
     private static boolean error;
     public static Connection connection;
-    public static boolean loadDBData() {
+    //6~nPp?hL
+    public boolean loadDBData() {
         File file = new File("plugins//roleplay//database.yml");
         if (!file.exists()) {
             try {
@@ -38,9 +39,7 @@ public class MySQL {
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
         password = cfg.getString("password");
         user = cfg.getString("user");
-        for (int i = 0; i < 100; i++) {
-            System.out.println(password);
-        }
+        System.out.println("Database loaded");
         return true;
     }
     public Connection getConnection() throws SQLException {

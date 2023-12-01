@@ -1,5 +1,6 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.SupportManager;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -12,10 +13,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TicketsCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public TicketsCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("tickets", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (PlayerManager.perms(player) >= 30) {
+        if (playerManager.perms(player) >= 30) {
             player.sendMessage("§6§lTicketübersicht§8:");
             for (int i = 0; i < SupportManager.playerTickets.size(); i++) {
                 String creator = SupportManager.playerTickets.get(i);

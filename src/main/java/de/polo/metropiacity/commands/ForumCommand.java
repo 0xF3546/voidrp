@@ -20,10 +20,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ForumCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    private final Utils utils;
+    public ForumCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        this.utils = utils;
+        Main.registerCommand("forum", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (args.length < 1) {
             player.sendMessage(Main.error + "Syntax-Fehler: /forum [link/unlink]");
             return false;
@@ -40,11 +49,11 @@ public class ForumCommand implements CommandExecutor {
                     int forumID = res.getInt(1);
                     statement.execute("UPDATE wcf1_user SET activationCode = 0 WHERE userID = " + forumID);
                     Statement statement1 = Main.getInstance().mySQL.getStatement();
-                    Utils.sendActionBar(player, "§aVerknüpfe Forum & Minecraft...");
+                    utils.sendActionBar(player, "§aVerknüpfe Forum & Minecraft...");
                     statement1.executeUpdate("UPDATE players SET forumID = " + forumID + " WHERE uuid = '" + player.getUniqueId() + "'");
-                    Utils.sendActionBar(player, "§aAccount freigeschaltet.");
+                    utils.sendActionBar(player, "§aAccount freigeschaltet.");
                     playerData.setForumID(forumID);
-                    Utils.sendActionBar(player, "§aWeise Forum-Rechte zu...");
+                    utils.sendActionBar(player, "§aWeise Forum-Rechte zu...");
                     ArrayList<Integer> ranks = new ArrayList<>();
                     RankData spielerData = ServerManager.rankDataMap.get("Spieler");
                     ranks.add(spielerData.getForumID());
@@ -53,7 +62,7 @@ public class ForumCommand implements CommandExecutor {
                         ranks.add(rankData.getForumID());
                     }
                     if (playerData.getFaction() != null) {
-                        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+                        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                         if (playerData.getFactionGrade() >= 7) {
                             ranks.add(factionData.getForumID_Leader());
                         } else {
@@ -65,7 +74,7 @@ public class ForumCommand implements CommandExecutor {
                     for (int i = 0; i < ranks.size(); i++) {
                         statement.execute("INSERT INTO wcf1_user_to_group (userID, groupID) VALUES (" + playerData.getForumID() + ", " + ranks.get(i) + ")");
                     }
-                    Utils.sendActionBar(player, "§aErfolgreich!");
+                    utils.sendActionBar(player, "§aErfolgreich!");
                     player.sendMessage("§8[§6Forum§8]§a Du hast dein Forum-Account verknüpft & freigeschaltet.");
 
                 } catch (SQLException e) {

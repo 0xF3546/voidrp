@@ -3,6 +3,7 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -20,10 +21,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UnbanCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    public UnbanCommand(PlayerManager playerManager, AdminManager adminManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        Main.registerCommand("unban", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         String syntax_error = Main.admin_error + "Syntax-Fehler: /unban [Spieler]";
         if (playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
@@ -40,7 +48,7 @@ public class UnbanCommand implements CommandExecutor {
                 player.sendMessage(Main.error + "Der Spieler wurde nicht in der Banlist gefudnen.");
                 return false;
             }
-            ADutyCommand.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", ChatColor.RED);
+            adminManager.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", ChatColor.RED);
             player.sendMessage(Main.admin_prefix + "Du hast " + res.getString(3) + " entbannt.");
             statement.execute("DELETE FROM player_bans WHERE LOWER(name) = '" + args[0].toLowerCase() + "'");
         } catch (SQLException e) {

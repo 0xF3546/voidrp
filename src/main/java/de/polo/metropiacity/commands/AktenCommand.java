@@ -19,10 +19,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AktenCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public AktenCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("akten", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Polizei")) {
             player.sendMessage("§7   ===§8[§9Offene Akten§8]§7===");
             HashMap<OfflinePlayer, Integer> hafteinheiten = new HashMap<>();

@@ -17,23 +17,30 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public class ShopCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public ShopCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("shop", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        int shop = LocationManager.isNearShop(player);
+        int shop = locationManager.isNearShop(player);
         if (shop > 0) {
             ShopData shopData = ServerManager.shopDataMap.get(shop);
             boolean canAccess = false;
             if (shopData.getFaction() == null) {
                 canAccess = true;
             } else {
-                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 if (playerData.getFaction().equalsIgnoreCase(shopData.getFaction())) {
                     canAccess = true;
                 }
             }
             if (canAccess) {
-                Inventory inv = Bukkit.createInventory(player, 54, "§8» §c" + LocationManager.getShopNameById(shop));
+                Inventory inv = Bukkit.createInventory(player, 54, "§8» §c" + locationManager.getShopNameById(shop));
                 for (int i = 0; i < 54; i++) {
                     if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
                         inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));

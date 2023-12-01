@@ -18,10 +18,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TrennenCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public TrennenCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("trennen", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.getRelationShip().isEmpty()) {
             for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
             {
@@ -29,7 +34,7 @@ public class TrennenCommand implements CommandExecutor {
                 if (offlinePlayer.isOnline()) {
                     Player targetplayer = Bukkit.getPlayer(offlinePlayer.getName());
                     targetplayer.sendMessage("§c" + player.getName() + " hat sich von dir getrennt...");
-                    PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                    PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                     targetplayerData.setRelationShip(new HashMap<>());
                 }
                 playerData.setRelationShip(new HashMap<>());

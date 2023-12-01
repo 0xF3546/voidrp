@@ -25,10 +25,15 @@ import java.util.Date;
 import java.util.UUID;
 
 public class BanCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public BanCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("ban", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         String syntax_error = Main.admin_error + "Syntax-Fehler: /ban [name/uuid] [Wert] [Zeit] [Grund]";
         if (playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
@@ -49,7 +54,7 @@ public class BanCommand implements CommandExecutor {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (players.getName().equalsIgnoreCase(args[1])) {
                     try {
-                        PlayerManager.savePlayer(players);
+                        playerManager.savePlayer(players);
                         players.closeInventory();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -87,7 +92,7 @@ public class BanCommand implements CommandExecutor {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (players.getUniqueId().toString().equalsIgnoreCase(args[1])) {
                     try {
-                        PlayerManager.savePlayer(players);
+                        playerManager.savePlayer(players);
                         players.closeInventory();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);

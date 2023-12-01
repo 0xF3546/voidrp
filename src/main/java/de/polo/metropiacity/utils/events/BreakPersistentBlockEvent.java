@@ -35,7 +35,7 @@ public class BreakPersistentBlockEvent extends Event {
     }
 
     public PlayerData getPlayerData() {
-        return PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        return Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
     }
 
     @Override

@@ -5,47 +5,54 @@ import de.polo.metropiacity.dataStorage.RankData;
 import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.*;
-import de.polo.metropiacity.commands.ADutyCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import sun.tools.jconsole.Tab;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class JoinListener implements Listener {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    private final Utils utils;
+    private final LocationManager locationManager;
+    private final ServerManager serverManager;
+    public JoinListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, LocationManager locationManager, ServerManager serverManager) {
+        System.out.println("load joinlistener");
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        this.utils = utils;
+        this.locationManager = locationManager;
+        this.serverManager = serverManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onJoin(PlayerJoinEvent event) throws SQLException {
         Player player = event.getPlayer();
-        String uuid = player.getUniqueId().toString();
+        UUID uuid = player.getUniqueId();
         event.setJoinMessage("");
-        if (PlayerManager.isCreated(String.valueOf(player.getUniqueId()))) {
-            PlayerManager.loadPlayer(player);
-            PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        if (playerManager.isCreated(player.getUniqueId())) {
+            playerManager.loadPlayer(player);
+            PlayerData playerData = playerManager.getPlayerData(uuid);
             if (DeathUtils.isDead(player)) {
-                DeathUtils.killPlayer(player);
+                utils.deathUtil.killPlayer(player);
             }
-            ADutyCommand.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
+            adminManager.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
-            /*player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
-            player.setDisplayName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
-            player.setCustomName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
-            player.setCustomNameVisible(true);*/
             Utils.Tablist.setTablist(player, null);
             playerData.setUuid(player.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
-                Utils.sendActionBar(player, "§aDeine Account-Daten wurden erfolgreich geladen!");
+                utils.sendActionBar(player, "§aDeine Account-Daten wurden erfolgreich geladen!");
                 player.sendMessage("§8 ➥ §cEs sind " + SupportManager.playerTickets.size() + " Tickets offen.");
                 int teamCount = 0;
                 int deathCount = 0;
                 for (Player player1 : Bukkit.getOnlinePlayers()) {
-                    PlayerData playerData1 = PlayerManager.playerDataMap.get(player1.getUniqueId().toString());
+                    PlayerData playerData1 = playerManager.getPlayerData(player1.getUniqueId());
                     if (playerData1.getPermlevel() >= 40) {
                         teamCount++;
                     }
@@ -57,13 +64,13 @@ public class JoinListener implements Listener {
                 player.sendMessage("§8     ➥ §cEs sind " + deathCount + " Spieler bewusstlos.");
             }
             Vehicles.spawnPlayerVehicles(player);
-            ServerManager.updateTablist(null);
+            serverManager.updateTablist(null);
         } else {
             player.sendMessage(" ");
             player.sendMessage("§6MetropiaCity §8»§7 Herzlich Wilkommen in Metropia - der Stadt mit Zukunft, " + player.getName() + ".");
             player.sendMessage(" ");
-            LocationManager.useLocation(player, "Spawn");
-            ADutyCommand.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
+            locationManager.useLocation(player, "Spawn");
+            adminManager.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
         }
         Utils.Tablist.updatePlayer(player);
     }

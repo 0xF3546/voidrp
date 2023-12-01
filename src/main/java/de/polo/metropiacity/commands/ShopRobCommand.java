@@ -17,11 +17,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 
 public class ShopRobCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    private final FactionManager factionManager;
+    public ShopRobCommand(PlayerManager playerManager, LocationManager locationManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("shoprob", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        int shopId = LocationManager.isNearShop(player);
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        int shopId = locationManager.isNearShop(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVisum() < 3) {
             player.sendMessage(Main.error + "Du kannst erst mit Visum 2 Shops ausrauben!");
             return false;
@@ -48,34 +57,34 @@ public class ShopRobCommand implements CommandExecutor {
         ServerManager.setVariable("shoprob", "isRob");
         for (ShopData shopData : ServerManager.shopDataMap.values()) {
             if (shopData.getId() == shopId) {
-                FactionManager.sendMessageToFaction("Polizei", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
-                FactionManager.sendMessageToFaction("FBI", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
+                factionManager.sendMessageToFaction("Polizei", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
+                factionManager.sendMessageToFaction("FBI", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
                 ServerManager.setVariable("shoprob_payout", "0");
                 Main.waitSeconds(60, () -> {
                     if (player.isOnline()) {
-                        if (LocationManager.isNearShop(player) == 0) {
+                        if (locationManager.isNearShop(player) == 0) {
                             player.sendMessage("§8[§cShoprob§8]§c Der Shoprob ist fehlgeschlagen!");
                             ServerManager.setVariable("shoprob", null);
-                            FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
-                            FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                            factionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                            factionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
                             return;
                         }
                         new BukkitRunnable() {
                             @Override
                             public void run() {
                                 if (player.isOnline()) {
-                                    if (LocationManager.isNearShop(player) == 0) {
+                                    if (locationManager.isNearShop(player) == 0) {
                                         player.sendMessage("§8[§cShoprob§8]§c Der Shoprob ist fehlgeschlagen!");
                                         ServerManager.setVariable("shoprob", null);
-                                        FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
-                                        FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                        factionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                        factionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
                                         cancel();
                                     }
                                     if (Integer.parseInt(ServerManager.getVariable("shoprob_payout")) < ServerManager.getPayout("maxShopRobPayout")) {
                                         try {
                                             Progress.start(player, 60);
                                             int payout = Main.random(80, 120);
-                                            PlayerManager.addMoney(player, payout);
+                                            playerManager.addMoney(player, payout);
                                             player.sendMessage("§8[§cShoprob§8]§a +" + payout + "$");
                                             ServerManager.setVariable("shoprob_payout", String.valueOf(Integer.parseInt(ServerManager.getVariable("shoprob_payout")) + payout));
                                         } catch (SQLException e) {
@@ -84,14 +93,14 @@ public class ShopRobCommand implements CommandExecutor {
                                     } else {
                                         player.sendMessage("§8[§cShoprob§8]§a Du hast alles erbeutet!");
                                         ServerManager.setVariable("shoprob", null);
-                                        FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
-                                        FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                        factionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                        factionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
                                         cancel();
                                     }
                                 } else {
                                     ServerManager.setVariable("shoprob", null);
-                                    FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
-                                    FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                    factionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                                    factionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
                                     cancel();
                                 }
                             }
@@ -99,8 +108,8 @@ public class ShopRobCommand implements CommandExecutor {
 
                     } else {
                         ServerManager.setVariable("shoprob", null);
-                        FactionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
-                        FactionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                        factionManager.sendMessageToFaction("Polizei", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
+                        factionManager.sendMessageToFaction("FBI", "Der Shoprob bei \"" + shopData.getName() + "\" ist beendet!");
                     }
                 });
             }

@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,10 +13,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SpecCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    public SpecCommand(PlayerManager playerManager, AdminManager adminManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        Main.registerCommand("spec", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 60) {
             if (playerData.isAduty()) {
                 if (playerData.getVariable("isSpec") == null) {
@@ -27,7 +35,7 @@ public class SpecCommand implements CommandExecutor {
                         player.setSpectatorTarget(targetplayer);
                         playerData.setVariable("isSpec", targetplayer.getUniqueId().toString());
                         player.sendMessage(Main.admin_prefix + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
-                        ADutyCommand.send_message(player.getName() + " beobachtet nun " + targetplayer.getName(), ChatColor.RED);
+                        adminManager.send_message(player.getName() + " beobachtet nun " + targetplayer.getName(), ChatColor.RED);
                     } else {
                         player.sendMessage(Main.admin_error + "Syntax-Fehler: /spec [Spieler]");
                     }
@@ -37,7 +45,7 @@ public class SpecCommand implements CommandExecutor {
                     player.sendMessage(Main.admin_prefix + "Du hast den Spectator-Modus verlassen");
                     player.teleport(playerData.getLocationVariable("specLoc"));
                     playerData.setVariable("isSpec", null);
-                    ADutyCommand.send_message(player.getName() + " hat den Beobachter-Modus verlassen.", ChatColor.RED);
+                    adminManager.send_message(player.getName() + " hat den Beobachter-Modus verlassen.", ChatColor.RED);
                 }
             } else {
                 player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst.");
@@ -48,8 +56,8 @@ public class SpecCommand implements CommandExecutor {
         return false;
     }
 
-    public static void leaveSpec(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void leaveSpec(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.setGameMode(GameMode.SURVIVAL);
         player.setAllowFlight(true);
         player.teleport(playerData.getLocationVariable("specLoc"));

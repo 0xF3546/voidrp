@@ -2,11 +2,10 @@ package de.polo.metropiacity.playerUtils;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
-import de.polo.metropiacity.commands.ADutyCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
@@ -18,10 +17,30 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 public class DeathUtils {
-    public static final HashMap<String, Boolean> deathPlayer = new HashMap<>();
-    public static final HashMap<String, Item> deathSkulls = new HashMap<>();
-    public static void startDeathTimer(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    private final HashMap<String, Boolean> deathPlayer = new HashMap<>();
+    private final HashMap<String, Item> deathSkulls = new HashMap<>();
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    private final LocationManager locationManager;
+    public DeathUtils(PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        this.locationManager = locationManager;
+    }
+
+    public Item getDeathSkull(String UUID) {
+        return deathSkulls.get(UUID);
+    }
+
+    public void addDeathSkull(String UUID, Item item) {
+        deathSkulls.put(UUID, item);
+    }
+
+    public void removeDeathSkull(String UUID) {
+        deathSkulls.remove(UUID);
+    }
+    public void startDeathTimer(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.isDead()) {
             deathPlayer.put(player.getUniqueId().toString(), true);
             try {
@@ -33,26 +52,26 @@ public class DeathUtils {
         }
     }
 
-    public static void setHitmanDeath(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void setHitmanDeath(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setDeathTime(playerData.getDeathTime() + 300);
     }
 
-    public static void setGangwarDeath(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void setGangwarDeath(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setDeathTime(playerData.getDeathTime() - 180);
     }
 
-    public static void killPlayer(Player player) {
+    public void killPlayer(Player player) {
         player.setHealth(0);
     }
-    public static void RevivePlayer(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void RevivePlayer(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setCanInteract(false);
         playerData.setDead(false);
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
-        ADutyCommand.send_message( player.getName() + " wurde wiederbelebt.", null);
+        adminManager.send_message( player.getName() + " wurde wiederbelebt.", null);
         player.setFlySpeed(0.1F);
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());
@@ -75,14 +94,14 @@ public class DeathUtils {
         for (Player players : Bukkit.getOnlinePlayers()) {
             players.showPlayer(Main.plugin, player);
         }
-        PlayerManager.setPlayerMove(player, true);
+        playerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {
-            GangwarUtils.respawnPlayer(player);
+            Main.getInstance().gangwarUtils.respawnPlayer(player);
         }
     }
 
-    public static void despawnPlayer(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void despawnPlayer(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         deathPlayer.remove(player.getUniqueId().toString());
         player.setGameMode(GameMode.SURVIVAL);
         playerData.setDeathTime(300);
@@ -96,16 +115,16 @@ public class DeathUtils {
             throw new RuntimeException(e);
         }
         if (playerData.getVariable("gangwar") != null) {
-            GangwarUtils.respawnPlayer(player);
+            Main.getInstance().gangwarUtils.respawnPlayer(player);
         } else {
-            LocationManager.useLocation(player, "Krankenhaus");
+            locationManager.useLocation(player, "Krankenhaus");
             player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
             player.getInventory().clear();
         }
         Item skull = deathSkulls.get(player.getUniqueId().toString());
         skull.remove();
         deathSkulls.remove(player.getUniqueId().toString());
-        PlayerManager.setPlayerMove(player, true);
+        playerManager.setPlayerMove(player, true);
     }
 
     public static boolean isDead(Player player) throws SQLException {

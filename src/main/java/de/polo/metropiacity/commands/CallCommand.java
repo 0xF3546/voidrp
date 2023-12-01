@@ -4,6 +4,8 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.PhoneUtils;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
+import okhttp3.internal.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,21 +16,28 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class CallCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public CallCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("call", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (PhoneUtils.hasPhone(player)) {
             if (!playerData.isFlightmode()) {
                 if (args.length >= 1) {
                         if (!Objects.equals(playerData.getVariable("calling"), "Ja")) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData targetplayerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                                PlayerData targetplayerData = playerManager.getPlayerData(players.getUniqueId());
                                 if (players.getName().equalsIgnoreCase(args[0])) {
                                     if (PhoneUtils.getConnection(players) == null) {
                                         if (!targetplayerData.isFlightmode()) {
                                             try {
-                                                PhoneUtils.callNumber(player, players);
+                                                utils.phoneUtils.callNumber(player, players);
                                             } catch (SQLException e) {
                                                 player.sendMessage(Main.error + "Ein Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
                                                 throw new RuntimeException(e);

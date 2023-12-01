@@ -23,13 +23,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.SQLException;
 
 public class LumberjackCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public LumberjackCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("holzfäller", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
-        if (ServerManager.canDoJobs()) {
-            if (LocationManager.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (Main.getInstance().serverManager.canDoJobs()) {
+            if (locationManager.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
                 playerData.setVariable("current_inventory", "holzfäller");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Holzfäller");
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller") && playerData.getVariable("job") == null) {
@@ -47,7 +53,7 @@ public class LumberjackCommand implements CommandExecutor {
                     if (!playerData.getVariable("job").equals("Holzfäller")) {
                         inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen"));
                     } else {
-                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * ServerManager.getPayout("holz") + "$"));
+                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * Main.getInstance().serverManager.getPayout("holz") + "$"));
                     }
                 }
                 for (int i = 0; i < 27; i++) {
@@ -65,10 +71,10 @@ public class LumberjackCommand implements CommandExecutor {
         return false;
     }
 
-    public static void blockBroken(Player player, Block block, BlockBreakEvent event) {
+    public void blockBroken(Player player, Block block, BlockBreakEvent event) {
         event.setCancelled(true);
         if (block.getType() == Material.OAK_LOG) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             if (playerData.getIntVariable("holz") <= 0) {
                 player.sendMessage("§8[§7Holzfäller§8]§7 Du hast genug Bäume gefällt.");
                 return;
@@ -125,17 +131,17 @@ public class LumberjackCommand implements CommandExecutor {
         }
     }
 
-    public static void quitJob(Player player, boolean silent) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void quitJob(Player player, boolean silent) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
-        int payout = ServerManager.getPayout("holz") * playerData.getIntVariable("holzkg");
+        int payout = Main.getInstance().serverManager.getPayout("holz") * playerData.getIntVariable("holzkg");
         player.sendMessage("§8[§7Holzfäller§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
-        if (playerData.getIntVariable("holz") <= 0) PlayerManager.addExp(player, Main.random(12, 20));
+        if (playerData.getIntVariable("holz") <= 0) playerManager.addExp(player, Main.random(12, 20));
         playerData.getScoreboard().killScoreboard();
         player.closeInventory();
         try {
-            PlayerManager.addBankMoney(player, payout, "Auszahlung Holzfäller");
+            playerManager.addBankMoney(player, payout, "Auszahlung Holzfäller");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -147,9 +153,9 @@ public class LumberjackCommand implements CommandExecutor {
                 }
             }
     }
-    public static void startJob(Player player) {
+    public void startJob(Player player) {
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller")) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.setVariable("job", "Holzfäller");
             player.sendMessage("§8[§7Holzfäller§8]§7 Du bist nun Holzfäller.");
             player.sendMessage("§8[§7Holzfäller§8]§7 Baue §e6 Bäume§7 ab.");

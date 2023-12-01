@@ -14,15 +14,20 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SetSecondaryTeamCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public SetSecondaryTeamCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("setsecondaryteam", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 90) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
                 if (targetplayer != null) {
-                    PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                    PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                     targetplayerData.setSecondaryTeam(args[1]);
                     targetplayer.sendMessage("§8[§6" + args[1] + "§8]§e " + player.getName() + " hat dich in das Team hinzugefügt.");
                     player.sendMessage("§8[§6" + args[1] + "§8]§e Du hast " + targetplayer.getName() + " in das Team hinzugefügt.");

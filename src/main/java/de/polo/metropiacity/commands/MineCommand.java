@@ -20,18 +20,24 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 
 public class MineCommand implements CommandExecutor {
-    public static final Material[] blocks = new Material[]{Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE};
-    public static final String prefix ="§8[§7Mine§8] §7";
+    public final Material[] blocks = new Material[]{Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE};
+    public final String prefix ="§8[§7Mine§8] §7";
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public MineCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("minenarbeiter", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
-        if (ServerManager.canDoJobs()) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (Main.getInstance().serverManager.canDoJobs()) {
             if (playerData.canInteract()) {
                 if (playerData.getVariable("job") == null) {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mine")) {
-                        if (LocationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
+                        if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
                             playerData.setVariable("job", "mine");
                             player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
                             player.sendMessage(prefix + "Baue nun Erze ab.");
@@ -45,7 +51,7 @@ public class MineCommand implements CommandExecutor {
                     }
                 } else {
                     if (playerData.getVariable("job").equals("mine")) {
-                        if (LocationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
+                        if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
                             player.sendMessage(prefix + "Du hast den Job Minenarbeiter beendet.");
                             playerData.setVariable("job", null);
                             playerData.getScoreboard().killScoreboard();
@@ -64,11 +70,11 @@ public class MineCommand implements CommandExecutor {
         return false;
     }
 
-    public static void blockBroken(Player player, Block block, BlockBreakEvent event) {
+    public void blockBroken(Player player, Block block, BlockBreakEvent event) {
         event.setCancelled(true);
         for (Material material : blocks) {
             if (block.getType() == material) {
-                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 player.getInventory().addItem(ItemManager.createItem(material, 1, 0, block.getType().name(), null));
                 block.setType(Material.STONE);
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
@@ -80,8 +86,8 @@ public class MineCommand implements CommandExecutor {
         }
     }
 
-    public static void quitJob(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void quitJob(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.getScoreboard().killScoreboard();
         int iron = ItemManager.getItem(player, Material.IRON_ORE);
         int redstone = ItemManager.getItem(player, Material.REDSTONE_ORE);
@@ -110,12 +116,12 @@ public class MineCommand implements CommandExecutor {
         verdienst = verdienst + (diamant);
         exp = (int) (exp + diamant * 1.25);
         try {
-            PlayerManager.addBankMoney(player, verdienst, "Auszahlung Minenarbeiter");
+            playerManager.addBankMoney(player, verdienst, "Auszahlung Minenarbeiter");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         player.sendMessage(prefix + "Du hast insgesamt §a+" + verdienst + "$§7 verdient.");
-        PlayerManager.addExp(player, exp);
+        playerManager.addExp(player, exp);
         Inventory inv = player.getInventory();
         for (Material material : blocks) {
             for (ItemStack item : inv.getContents()) {

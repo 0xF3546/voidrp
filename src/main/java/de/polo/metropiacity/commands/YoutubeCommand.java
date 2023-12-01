@@ -1,5 +1,6 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.Command;
@@ -8,6 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class YoutubeCommand implements CommandExecutor {
+    public YoutubeCommand() {
+        Main.registerCommand("youtube", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

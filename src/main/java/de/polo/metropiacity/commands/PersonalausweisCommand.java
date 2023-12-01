@@ -4,6 +4,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.playerUtils.Tutorial;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,11 +20,18 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public PersonalausweisCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("personalausweis", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (PlayerManager.firstname(player) != null && PlayerManager.lastname(player) != null) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerManager.firstname(player) != null && playerManager.lastname(player) != null) {
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("show")) {
                     Player targetplayer = Bukkit.getPlayer(args[1]);
@@ -33,8 +41,8 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             targetplayer.sendMessage("");
                             targetplayer.sendMessage("§7     ===§8[§6FREMDER PERSONALAUSWEIS§8]§7===");
                             targetplayer.sendMessage(" ");
-                            targetplayer.sendMessage("§8 ➥ §eVorname§8:§7 " + PlayerManager.firstname(player));
-                            targetplayer.sendMessage("§8 ➥ §eNachname§8:§7 " + PlayerManager.lastname(player));
+                            targetplayer.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
+                            targetplayer.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
                             targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
                             targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
                             targetplayer.sendMessage(" ");
@@ -57,7 +65,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             } else {
                                 targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
                             }
-                            targetplayer.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + PlayerManager.visum(player));
+                            targetplayer.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + playerManager.visum(player));
                         } else {
                             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in der nähe.");
                         }
@@ -69,8 +77,8 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage("");
                 player.sendMessage("§7     ===§8[§6PERSONALAUSWEIS§8]§7===");
                 player.sendMessage(" ");
-                player.sendMessage("§8 ➥ §eVorname§8:§7 " + PlayerManager.firstname(player));
-                player.sendMessage("§8 ➥ §eNachname§8:§7 " + PlayerManager.lastname(player));
+                player.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
+                player.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
                 player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
                 player.sendMessage(" ");
@@ -93,8 +101,8 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 } else {
                     player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
                 }
-                player.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + PlayerManager.visum(player));
-                Tutorial.usedAusweis(player);
+                player.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + playerManager.visum(player));
+                utils.tutorial.usedAusweis(player);
             }
         } else {
             player.sendMessage(Main.error + "Du besitzt noch keinen Personalausweis.");

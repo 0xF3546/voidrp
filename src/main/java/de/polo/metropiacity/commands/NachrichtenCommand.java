@@ -17,11 +17,19 @@ import org.bukkit.inventory.Inventory;
 import java.sql.SQLException;
 
 public class NachrichtenCommand implements CommandExecutor, Listener {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public NachrichtenCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        Main.registerCommand("nachrichten", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (LocationManager.getDistanceBetweenCoords(player, "nachrichten") < 5) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        if (locationManager.getDistanceBetweenCoords(player, "nachrichten") < 5) {
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.setVariable("current_inventory", "news");
             Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6Nachrichtengebäude");
             inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2Werbung schalten", "§8 ➥ §7" + ServerManager.getPayout("werbung") + "$/Zeichen"));
@@ -59,7 +67,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
             if (event.getPlayerData().getBargeld() >= price) {
                 player.sendMessage("§8[§2Werbung§8]§a Werbung erfolgreich geschalten. §c-" + price + "$");
                 Bukkit.broadcastMessage("§8[§2Werbung§8] §7" + player.getName() + "§8:§f " + event.getMessage());
-                PlayerManager.removeMoney(player, price, "Werbung");
+                playerManager.removeMoney(player, price, "Werbung");
             } else {
                 player.sendMessage(Main.error + "Du benötigst " + price + "$.");
             }

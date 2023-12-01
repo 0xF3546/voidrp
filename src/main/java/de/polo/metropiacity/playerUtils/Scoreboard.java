@@ -47,7 +47,7 @@ public class Scoreboard extends ScoreboardBuilder {
         isScore = true;
     }
     public void createMineScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §7§lMine §8«");
         setScore("§bDiamanterz§8:", 11);
         setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.DIAMOND_ORE), 10);
@@ -66,7 +66,7 @@ public class Scoreboard extends ScoreboardBuilder {
     }
 
     public void createFarmerScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §eFarmer §8«");
         setScore("§eHeuballen abgebaut§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
@@ -76,7 +76,7 @@ public class Scoreboard extends ScoreboardBuilder {
         isFarmerScore = true;
     }
     public void updateFarmerScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §eFarmer §8«");
         setScore("§eHeuballen abgebaut§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
@@ -84,21 +84,21 @@ public class Scoreboard extends ScoreboardBuilder {
         setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen_remaining"), 0);
     }
     public void createPostboteScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §ePostbote §8«");
         setScore("§ePost verbleibend§8:", 1);
         setScore("§8 ➥ §7" + playerData.getIntVariable("post"), 0);
     }
 
     public void updatePostboteScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §ePostbote §8«");
         setScore("§ePost verbleibend§8:", 1);
         setScore("§8 ➥ §7" + playerData.getIntVariable("post"), 0);
     }
 
     public void createMuellmannScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §9Müllmann §8«");
         setScore("§3Müll gesammelt§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("muellkg") + "kg", 2);
@@ -107,7 +107,7 @@ public class Scoreboard extends ScoreboardBuilder {
     }
 
     public void updateMuellmannScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §9Müllmann §8«");
         setScore("§3Müll gesammelt§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("muellkg") + "kg", 2);
@@ -116,7 +116,7 @@ public class Scoreboard extends ScoreboardBuilder {
     }
 
     public void createLumberjackScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §7Holzfäller §8«");
         setScore("§7Holz gesammelt§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("holzkg") + "kg", 2);
@@ -125,7 +125,7 @@ public class Scoreboard extends ScoreboardBuilder {
     }
 
     public void updateLumberjackScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §7Holzfäller §8«");
         setScore("§7Holz gesammelt§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("holzkg") + "kg", 2);
@@ -134,7 +134,7 @@ public class Scoreboard extends ScoreboardBuilder {
     }
 
     public void createLebensmittelLieferantenScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("8» §6Lieferant §8«");
         setScore("§6Snacks§8:", 3);
         setScore("§8 ➥ §7" + playerData.getIntVariable("snacks"), 2);
@@ -145,14 +145,14 @@ public class Scoreboard extends ScoreboardBuilder {
     }
 
     public void createWeizentransportScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §eLieferant §8«");
         setScore("§eWeizen§8:", 1);
         setScore("§8 ➥ §7" + playerData.getIntVariable("weizen") + "kg", 0);
         isScore = true;
     }
     public void updateWeizentransportScoreboard() {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §eLieferant §8«");
         setScore("§eWeizen§8:", 1);
         setScore("§8 ➥ §7" + playerData.getIntVariable("weizen") + "kg", 0);
@@ -193,7 +193,7 @@ public class Scoreboard extends ScoreboardBuilder {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+                PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
                 if (isAdminScore) {
                     Runtime r = Runtime.getRuntime();
                     setScore("§8 ➥ §e" + SupportManager.TicketCount, 4);

@@ -17,15 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostboteCommand implements CommandExecutor {
-    public static final List<Integer> array = new ArrayList<>();
+    private final List<Integer> array = new ArrayList<>();
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public PostboteCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("postbote", this);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
-            if (LocationManager.getDistanceBetweenCoords(player, "postbote") <= 5) {
+            if (locationManager.getDistanceBetweenCoords(player, "postbote") <= 5) {
                 playerData.setVariable("current_inventory", "postbote");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §ePostbote");
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "postbote") && playerData.getVariable("job") == null) {
@@ -60,12 +66,12 @@ public class PostboteCommand implements CommandExecutor {
         }
         return false;
     }
-    public static boolean canGive(int number) {
+    public boolean canGive(int number) {
         return !array.contains(number);
     }
 
-    public static void quitJob(Player player, boolean silent) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void quitJob(Player player, boolean silent) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         if (!silent) player.sendMessage("§8[§ePostbote§8]§7 Vielen Dank für die geleistete Arbeit.");
         SoundManager.successSound(player);
@@ -73,8 +79,8 @@ public class PostboteCommand implements CommandExecutor {
         Main.getInstance().getCooldownManager().setCooldown(player, "postbote", 600);
     }
 
-    public static void startTransport(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void startTransport(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("post", Main.random(2, 5));
         playerData.setVariable("job", "Postbote");
         playerData.getScoreboard().createPostboteScoreboard();
@@ -82,16 +88,16 @@ public class PostboteCommand implements CommandExecutor {
         player.sendMessage("§8 ➥ §7Nutze §8[§6Rechtsklick§8]§7 auf die Hausschilder.");
     }
 
-    public static void dropTransport(Player player, int house) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void dropTransport(Player player, int house) {
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             int payout = Main.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
             player.sendMessage("§8[§ePostbote§8]§7 Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");
             SoundManager.successSound(player);
-            PlayerManager.addExp(player, Main.random(1, 3));
+            playerManager.addExp(player, Main.random(1, 3));
             playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
             playerData.getScoreboard().updatePostboteScoreboard();
             try {
-                PlayerManager.addBankMoney(player, payout, "Auszahlung Postbote");
+                playerManager.addBankMoney(player, payout, "Auszahlung Postbote");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

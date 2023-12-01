@@ -1,5 +1,6 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
@@ -21,14 +22,21 @@ import java.util.List;
 import java.util.Objects;
 
 public class ReinforcementCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public ReinforcementCommand(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("reinforcement", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
             if (args.length == 0) {
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                    PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                     if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
                         players.sendMessage("§c§lHilfe! §3" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                         TextComponent start = new TextComponent("§8 ➥ ");
@@ -49,7 +57,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                 switch (args[0]) {
                     case "-d":
                         for (Player players : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                            PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
                                 players.sendMessage("§c§lDRINGEND HILFE! §3" + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                 TextComponent start = new TextComponent("§8 ➥ ");
@@ -69,7 +77,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         break;
                     case "-p":
                         for (Player players : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                            PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
                                 players.sendMessage("§e§lGPS geteilt! §3" + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                 TextComponent start = new TextComponent("§8 ➥ ");
@@ -88,9 +96,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "-ed":
-                        if (PlayerManager.isInStaatsFrak(player)) {
+                        if (playerManager.isInStaatsFrak(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (PlayerManager.isInStaatsFrak(players)) {
+                                if (playerManager.isInStaatsFrak(players)) {
                                     players.sendMessage("§c§lDRINGEND HILFE! §3" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                     TextComponent start = new TextComponent("§8 ➥ ");
                                     TextComponent route = new TextComponent("§aRoute");
@@ -106,9 +114,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                                     players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                                 }
                             }
-                        } else if (FactionManager.isInBündnis(player)) {
+                        } else if (factionManager.isInBündnis(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (FactionManager.isInBündnisWith(players, playerData.getFaction())) {
+                                if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
                                     players.sendMessage("§c§lDRINGEND HILFE! §3" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                     TextComponent start = new TextComponent("§8 ➥ ");
                                     TextComponent route = new TextComponent("§aRoute");
@@ -127,10 +135,10 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "-ep":
-                        if (PlayerManager.isInStaatsFrak(player)) {
+                        if (playerManager.isInStaatsFrak(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                                if (PlayerManager.isInStaatsFrak(players)) {
+                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
+                                if (playerManager.isInStaatsFrak(players)) {
                                     players.sendMessage("§e§lGPS geteilt! §3" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                     TextComponent start = new TextComponent("§8 ➥ ");
                                     TextComponent route = new TextComponent("§aRoute");
@@ -146,9 +154,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                                     players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                                 }
                             }
-                        } else if (FactionManager.isInBündnis(player)) {
+                        } else if (factionManager.isInBündnis(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (FactionManager.isInBündnisWith(players, playerData.getFaction())) {
+                                if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
                                     players.sendMessage("§e§lGPS geteilt! §3" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                     TextComponent start = new TextComponent("§8 ➥ ");
                                     TextComponent route = new TextComponent("§aRoute");
@@ -167,10 +175,10 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "-e":
-                        if (PlayerManager.isInStaatsFrak(player)) {
+                        if (playerManager.isInStaatsFrak(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                                if (PlayerManager.isInStaatsFrak(players)) {
+                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
+                                if (playerManager.isInStaatsFrak(players)) {
                                     players.sendMessage("§c§lHilfe! §3" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                     TextComponent start = new TextComponent("§8 ➥ ");
                                     TextComponent route = new TextComponent("§aRoute");
@@ -186,9 +194,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                                     players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                                 }
                             }
-                        } else if (FactionManager.isInBündnis(player)) {
+                        } else if (factionManager.isInBündnis(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (FactionManager.isInBündnisWith(players, playerData.getFaction())) {
+                                if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
                                     players.sendMessage("§c§lHilfe! §3" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                     TextComponent start = new TextComponent("§8 ➥ ");
                                     TextComponent route = new TextComponent("§aRoute");
@@ -207,10 +215,10 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "-m":
-                        if (PlayerManager.isInStaatsFrak(player)) {
+                        if (playerManager.isInStaatsFrak(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
-                                if (PlayerManager.isInStaatsFrak(players)) {
+                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
+                                if (playerManager.isInStaatsFrak(players)) {
                                     players.sendMessage("§c§lMediziner benötigt! §3" + playerData.getFaction() + " " + player.getName() + " benöge einen Mediziner! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                     TextComponent start = new TextComponent("§8 ➥ ");
                                     TextComponent route = new TextComponent("§aRoute");
@@ -234,19 +242,19 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                             String type = args[5];
                             if (!type.equals("dep")) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
-                                    PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                                    PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                                     if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
                                         players.sendMessage("§8 ➥ §b" + player.getName() + " §7➡ §3" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
                                     }
                                 }
                             } else {
-                                if (PlayerManager.isInStaatsFrak(player)) {
+                                if (playerManager.isInStaatsFrak(player)) {
                                     for (Player players : Bukkit.getOnlinePlayers()) {
                                         players.sendMessage("§8 ➥ §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §3" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
                                     }
-                                } else if (FactionManager.isInBündnis(player)) {
+                                } else if (factionManager.isInBündnis(player)) {
                                     for (Player players : Bukkit.getOnlinePlayers()) {
-                                        if (FactionManager.isInBündnisWith(players, playerData.getFaction())) {
+                                        if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
                                             players.sendMessage("§8 ➥ §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §3" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
                                         }
                                     }
@@ -256,7 +264,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         break;
                     default:
                         for (Player players : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                            PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
                                 players.sendMessage("§c§lHilfe! §3" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
                                 TextComponent start = new TextComponent("§8 ➥ ");

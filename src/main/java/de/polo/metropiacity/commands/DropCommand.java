@@ -9,17 +9,24 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DropCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Main.Commands commands;
+    public DropCommand(PlayerManager playerManager, Main.Commands commands) {
+        this.playerManager = playerManager;
+        this.commands = commands;
+        Main.registerCommand("drop", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("job") != null) {
-            switch (playerData.getVariable("job")) {
+            switch (playerData.getVariable("job").toString()) {
                 case "lieferant":
-                    LebensmittelLieferantCommand.dropLieferung(player);
+                    commands.lebensmittelLieferantCommand.dropLieferung(player);
                     break;
                 case "weizenlieferant":
-                    FarmerCommand.dropTransport(player);
+                    commands.farmerCommand.dropTransport(player);
                     break;
             }
         } else {

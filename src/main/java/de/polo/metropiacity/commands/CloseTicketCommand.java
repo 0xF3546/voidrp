@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.SupportManager;
 import de.polo.metropiacity.utils.Utils;
@@ -13,25 +14,36 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CloseTicketCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final SupportManager supportManager;
+    private final AdminManager adminManager;
+    private final Utils utils;
+    public CloseTicketCommand(PlayerManager playerManager, SupportManager supportManager, AdminManager adminManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.supportManager = supportManager;
+        this.adminManager = adminManager;
+        this.utils = utils;
+        Main.registerCommand("closesupport", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 40) {
             Player targetplayer = null;
             for (Player players : Bukkit.getOnlinePlayers()) {
-                if (SupportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
+                if (supportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
                     targetplayer = players;
                 }
             }
-            if (!SupportManager.deleteTicketConnection(player, targetplayer)) {
+            if (!supportManager.deleteTicketConnection(player, targetplayer)) {
                 player.sendMessage(Main.support_prefix + "Du bearbeitest kein Ticket.");
                 return false;
             }
-            targetplayer.sendMessage(Main.support_prefix + "§c" + PlayerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
-            Utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
+            targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
+            utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
             player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
-            ADutyCommand.send_message(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.", ChatColor.YELLOW);
+            adminManager.send_message(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.", ChatColor.YELLOW);
         } else {
             player.sendMessage(Main.error_nopermission);
         }

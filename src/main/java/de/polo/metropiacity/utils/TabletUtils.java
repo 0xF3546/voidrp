@@ -28,6 +28,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class TabletUtils implements Listener {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public TabletUtils(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
 
     @EventHandler
     public void onTabletUse(PlayerInteractEvent event) {
@@ -38,8 +45,8 @@ public class TabletUtils implements Listener {
         }
     }
 
-    public static void openTablet(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openTablet(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eTablet");
         inv.setItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp", null));
         inv.setItem(1, ItemManager.createItem(Material.MINECART, 1, 0, "§6Fahrzeugübersicht", null));
@@ -47,7 +54,7 @@ public class TabletUtils implements Listener {
         inv.setItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp", null));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
             }
         }
         playerData.setVariable("current_inventory", "tablet");
@@ -55,12 +62,12 @@ public class TabletUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openApp(Player player, String app) throws SQLException {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openApp(Player player, String app) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", null);
         switch (app) {
             case "fraktionsapp":
-                OpenBossMenuCommand.openBossMenu(player, 1);
+                Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, 1);
                 playerData.setVariable("current_app", "fraktionsapp");
                 break;
             case "aktenapp":
@@ -78,8 +85,8 @@ public class TabletUtils implements Listener {
         }
     }
 
-    public static void openAktenApp(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openAktenApp(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei")) {
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §1Aktenapp");
             inv.setItem(0, ItemManager.createItem(Material.DIAMOND, 1, 0, "§9Akten bearbeiten", "§bBearbeite Akten von Spielern"));
@@ -94,10 +101,10 @@ public class TabletUtils implements Listener {
         }
     }
 
-    public static void openPlayerAktenList(Player player, int page) {
+    public void openPlayerAktenList(Player player, int page) {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         playerData.setVariable("current_inventory", "tablet");
         playerData.setVariable("current_app", "playeraktenlist");
         playerData.setIntVariable("current_page", page);
@@ -119,9 +126,9 @@ public class TabletUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void editPlayerAkte(Player player, ItemStack stack) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+    public void editPlayerAkte(Player player, ItemStack stack) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         ItemStack tempItemStack = new ItemStack(stack.getType());
         tempItemStack.setItemMeta(stack.getItemMeta());
         if (tempItemStack.getItemMeta() instanceof SkullMeta) {
@@ -131,17 +138,18 @@ public class TabletUtils implements Listener {
             playerData.setVariable("current_app", "edit_akte");
             playerData.setVariable("current_akte", targetplayer.getUniqueId().toString());
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §c" + targetplayer.getName());
-                inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null));
-                inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten", null));
-                inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen", null));
-                PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
-                if (targetplayerData.isJailed()) {
-                    inv.setItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen", null));
-                }
-                inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
-                for (int i = 0; i < 27; i++) {
-                    if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
-                }
+            inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null));
+            inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten", null));
+            inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen", null));
+            PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+            if (targetplayerData.isJailed()) {
+                inv.setItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen", null));
+            }
+            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+            for (int i = 0; i < 27; i++) {
+                if (inv.getItem(i) == null)
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            }
             player.openInventory(inv);
         } else {
             player.closeInventory();
@@ -149,9 +157,9 @@ public class TabletUtils implements Listener {
         }
     }
 
-    public static void openAktenList(Player player, int page, String search) throws SQLException {
+    public void openAktenList(Player player, int page, String search) throws SQLException {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", "aktenlist");
         playerData.setIntVariable("current_page", page);
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -182,14 +190,16 @@ public class TabletUtils implements Listener {
         inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
         inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
         inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        if (playerData.getFactionGrade() >= 7)
+            inv.setItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aAkte einfügen", null));
         inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Akte suchen...", null));
         result.close();
         player.openInventory(inv);
     }
 
-    public static void openPlayerAkte(Player player, int page) throws SQLException {
+    public void openPlayerAkte(Player player, int page) throws SQLException {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", "player_aktenlist");
         playerData.setIntVariable("current_page", page);
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -204,7 +214,7 @@ public class TabletUtils implements Listener {
                 ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
                 NamespacedKey id = new NamespacedKey(Main.plugin, "id");
                 assert meta != null;
-                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5),"§8 ➥ §bDatum§8:§7 " +  result.getString("formatted_timestamp")));
+                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5), "§8 ➥ §bDatum§8:§7 " + result.getString("formatted_timestamp")));
                 meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
                 Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
@@ -217,10 +227,10 @@ public class TabletUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openJailApp(Player player, int page) {
+    public void openJailApp(Player player, int page) {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (!FactionManager.faction(player).equals("FBI") || !FactionManager.faction(player).equals("Polizei")) return;
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (!factionManager.faction(player).equals("FBI") || !factionManager.faction(player).equals("Polizei")) return;
         playerData.setVariable("current_inventory", "tablet");
         playerData.setVariable("current_app", "gefängnisapp");
         playerData.setIntVariable("current_page", page);
@@ -246,9 +256,9 @@ public class TabletUtils implements Listener {
 
     }
 
-    public static void openVehiclesApp(Player player, int page) {
+    public void openVehiclesApp(Player player, int page) {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_inventory", "tablet");
         playerData.setVariable("current_app", "vehiclesapp");
         playerData.setIntVariable("current_page", page);
@@ -287,6 +297,32 @@ public class TabletUtils implements Listener {
 
     }
 
+    public void createAkte(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        Inventory inv = Bukkit.createInventory(player, 27, "§8 » §aAkte einfügen");
+        playerData.setVariable("current_inventory", "tablet");
+        playerData.setVariable("current_app", "createakte");
+        if (playerData.getVariable("input_akte") == null) {
+            inv.setItem(11, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", "§8 ➥ §cNicht angegeben"));
+        } else {
+            inv.setItem(11, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", "§8 ➥ §e" + playerData.getVariable("input_akte")));
+        }
+        inv.setItem(13, ItemManager.createItem(Material.CHEST, 1, 0, "§aHafteinheiten", "§8 ➥ §e" + playerData.getIntVariable("input_hafteinheiten")));
+        inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§aGeldstrafe", "§8 ➥ §e" + playerData.getIntVariable("input_geldstrafe")));
+        inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
+        for (int i = 0; i < 27; i++) {
+            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c", null));
+        }
+        player.openInventory(inv);
+    }
+    public void createNewAkte(Player player) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.execute("INSERT INTO akten (akte, hafteinheiten, geldstrafe) VALUES ('" + playerData.getVariable("input_akte") + "', " + playerData.getIntVariable("input_hafteinheiten") + ", " + playerData.getIntVariable("input_geldstrafe") + ")");
+        player.sendMessage("§8[§aAkte§8]§7 Akte wurde hinzugefügt.");
+        player.closeInventory();
+    }
+
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) throws SQLException {
         if (event.getSubmitTo().equals("aktensearch")) {
@@ -296,6 +332,52 @@ public class TabletUtils implements Listener {
                 return;
             }
             openAktenList(event.getPlayer(), 1, event.getMessage());
+            event.end();
+        }
+        if (event.getSubmitTo().equals("createakte_akte")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            event.getPlayerData().setVariable("input_akte", event.getMessage());
+            createAkte(event.getPlayer());
+            event.end();
+        }
+        if (event.getSubmitTo().equals("createakte_hafteinheiten")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            int input = 0;
+            try {
+                input = Integer.parseInt(event.getMessage());
+            } catch (IllegalArgumentException e) {
+                event.getPlayer().sendMessage(Main.error + "Du hast keine gültige Zahl angegeben");
+                event.end();
+                return;
+            }
+            event.getPlayerData().setIntVariable("input_hafteinheiten", input);
+            createAkte(event.getPlayer());
+            event.end();
+        }
+        if (event.getSubmitTo().equals("createakte_geldstrafe")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            int input = 0;
+            try {
+                input = Integer.parseInt(event.getMessage());
+            } catch (IllegalArgumentException e) {
+                event.getPlayer().sendMessage(Main.error + "Du hast keine gültige Zahl angegeben");
+                event.end();
+                return;
+            }
+            event.getPlayerData().setIntVariable("input_geldstrafe", input);
+            createAkte(event.getPlayer());
             event.end();
         }
     }

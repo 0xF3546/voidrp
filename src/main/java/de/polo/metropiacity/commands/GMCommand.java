@@ -11,10 +11,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class GMCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public GMCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("gm", this);
+    }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 100) {
             player.sendMessage(Main.error_nopermission);
             return false;

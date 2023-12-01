@@ -13,16 +13,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class DamageListener implements Listener {
+    private final PlayerManager playerManager;
+    public DamageListener(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = ((Player) event.getEntity()).getPlayer();
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             ItemStack chestplate = player.getInventory().getArmorContents()[2];
             if (!playerData.isAduty()) {
                 player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                    event.setCancelled(PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVisum() <= 2);
+                    event.setCancelled(playerManager.getPlayerData(player.getUniqueId()).getVisum() <= 2);
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
                         event.setDamage(event.getDamage() / 1.2);
                     }
@@ -31,7 +36,7 @@ public class DamageListener implements Listener {
                 event.setCancelled(true);
             }
         }
-        if ((event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.ITEM_FRAME || event.getEntity().getType() == EntityType.PAINTING || event.getEntity().getType() == EntityType.MINECART) && !PlayerManager.playerDataMap.get(event.getEntity().getUniqueId().toString()).isAduty()) {
+        if ((event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.ITEM_FRAME || event.getEntity().getType() == EntityType.PAINTING || event.getEntity().getType() == EntityType.MINECART) && !playerManager.getPlayerData(event.getEntity().getUniqueId()).isAduty()) {
             event.setCancelled(true);
         }
         if (event.getEntity().getType() == EntityType.VILLAGER) {

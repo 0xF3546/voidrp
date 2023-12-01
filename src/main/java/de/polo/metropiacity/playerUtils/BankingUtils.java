@@ -21,26 +21,33 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BankingUtils implements Listener {
-    public static void sendKontoauszug(Player player) {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public BankingUtils(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
+    public void sendKontoauszug(Player player) {
         player.sendMessage(" ");
         player.sendMessage("§7     ===§8[§2KONTOAUSZUG§8]§7===");
         player.sendMessage(" ");
-        player.sendMessage("§8 ➥ §aBankguthaben§8:§7 " + PlayerManager.bank(player) + "$");
+        player.sendMessage("§8 ➥ §aBankguthaben§8:§7 " + playerManager.bank(player) + "$");
         player.sendMessage(" ");
     }
 
-    public static void sendBankChangeReason(Player player, String reason) {
+    public void sendBankChangeReason(Player player, String reason) {
         player.sendMessage(" ");
         player.sendMessage("§7     ===§8[§2KONTOAUSZUG§8]§7===");
         player.sendMessage(" ");
         player.sendMessage("§8 ➜ §3Kontoveränderung§8:§b " + reason);
         player.sendMessage(" ");
-        player.sendMessage("§8 ➥ §aBankguthaben§8:§7 " + PlayerManager.bank(player) + "$");
+        player.sendMessage("§8 ➥ §aBankguthaben§8:§7 " + playerManager.bank(player) + "$");
         player.sendMessage(" ");
     }
 
-    public static void openBankMenu(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openBankMenu(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_inventory", "atm");
         Inventory inv = Bukkit.createInventory(player, 45, "§8 » §aBankautomat");
         inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null));
@@ -58,9 +65,9 @@ public class BankingUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openFactionBankMenu(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+    public void openFactionBankMenu(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         playerData.setVariable("current_inventory", "atm_frak");
         Inventory inv = Bukkit.createInventory(player, 45, "§8 » §" + factionData.getPrimaryColor() + "Fraktionskonto");
         inv.setItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §a" + new DecimalFormat("#,###").format(factionData.getBank()) + "$")));
@@ -89,9 +96,9 @@ public class BankingUtils implements Listener {
             }
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
-                if (PlayerManager.money(player) >= amount) {
-                    PlayerManager.removeMoney(player, amount, "Bankeinzahlung");
-                    PlayerManager.addBankMoney(player, amount, "Bankeinzahlung");
+                if (playerManager.money(player) >= amount) {
+                    playerManager.removeMoney(player, amount, "Bankeinzahlung");
+                    playerManager.addBankMoney(player, amount, "Bankeinzahlung");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ eingezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
@@ -107,9 +114,9 @@ public class BankingUtils implements Listener {
             }
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
-                if (PlayerManager.bank(player) >= amount) {
-                    PlayerManager.removeBankMoney(player, amount, "Bankauszahlung");
-                    PlayerManager.addMoney(player, amount);
+                if (playerManager.bank(player) >= amount) {
+                    playerManager.removeBankMoney(player, amount, "Bankauszahlung");
+                    playerManager.addMoney(player, amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
@@ -142,7 +149,7 @@ public class BankingUtils implements Listener {
                 return;
             }
             if (event.getMessage().equals(event.getPlayerData().getVariable("transfer_player"))) return;
-            Player targetplayer = Bukkit.getPlayer(event.getPlayerData().getVariable("transfer_player"));
+            Player targetplayer = Bukkit.getPlayer(event.getPlayerData().getVariable("transfer_player").toString());
             if (!targetplayer.isOnline()) {
                 player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
                 event.end();
@@ -150,9 +157,9 @@ public class BankingUtils implements Listener {
                 event.getPlayerData().setVariable("transfer_player", null);
                 int amount = Integer.parseInt(event.getMessage());
                 if (amount >= 1) {
-                    if (PlayerManager.bank(player) >= amount) {
-                        PlayerManager.removeBankMoney(player, amount, "Überweisung an " + targetplayer.getName());
-                        PlayerManager.addMoney(targetplayer, amount);
+                    if (playerManager.bank(player) >= amount) {
+                        playerManager.removeBankMoney(player, amount, "Überweisung an " + targetplayer.getName());
+                        playerManager.addMoney(targetplayer, amount);
                         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ an " + targetplayer.getName() + " überwiesen.");
                         targetplayer.sendMessage("§8[§6Bank§8]§a " + player.getName() + " hat dir " + amount + "$ überwiesen.");
                     } else {
@@ -170,11 +177,11 @@ public class BankingUtils implements Listener {
             }
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
-                if (PlayerManager.money(player) >= amount) {
-                    PlayerManager.removeMoney(player, amount, "Bankauszahlung");
-                    FactionManager.addFactionMoney(event.getPlayerData().getFaction(), amount, "Bankeinzahlung " + player.getName());
+                if (playerManager.money(player) >= amount) {
+                    playerManager.removeMoney(player, amount, "Bankauszahlung");
+                    factionManager.addFactionMoney(event.getPlayerData().getFaction(), amount, "Bankeinzahlung " + player.getName());
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ eingezahlt.");
-                    FactionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Fraktionskonto eingezahlt.");
+                    factionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Fraktionskonto eingezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
                 }
@@ -189,11 +196,11 @@ public class BankingUtils implements Listener {
             }
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
-                if (FactionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
-                    FactionManager.removeFactionMoney(event.getPlayerData().getFaction(), amount, "Bankauszahlung " + player.getName());
-                    PlayerManager.addMoney(player, amount);
+                if (factionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
+                    factionManager.removeFactionMoney(event.getPlayerData().getFaction(), amount, "Bankauszahlung " + player.getName());
+                    playerManager.addMoney(player, amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
-                    FactionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
+                    factionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
                 }

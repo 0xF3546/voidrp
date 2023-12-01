@@ -18,10 +18,15 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class ServicesCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public ServicesCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("services", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei")) {
             player.sendMessage("§7   ===§8[§9Notrufe§8]§7===");
             if (playerData.getFaction().equals("Medic")) {

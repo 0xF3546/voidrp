@@ -14,19 +14,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class FrakStatsCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    private final Utils utils;
+    public FrakStatsCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        this.utils = utils;
+        Main.registerCommand("frakstats", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() != null) {
             FactionData factionData = null;
             if (!playerData.isAduty()) {
-                factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+                factionData = factionManager.getFactionData(playerData.getFaction());
             } else {
                 if (args.length >= 1) {
-                    factionData = FactionManager.factionDataMap.get(args[0]);
+                    factionData = factionManager.getFactionData(args[0]);
                 } else {
-                    factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+                    factionData = factionManager.getFactionData(playerData.getFaction());
                 }
             }
             player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "Statistiken§8]§7===");
@@ -42,7 +51,7 @@ public class FrakStatsCommand implements CommandExecutor {
                 }
             }
             player.sendMessage("§8 - §eMitglieder§8:§7 " + member + "/" + factionData.getMaxMember());
-            player.sendMessage("§8 - §ePayDay§8:§7 " + Utils.getCurrentMinute() + "/60");
+            player.sendMessage("§8 - §ePayDay§8:§7 " + utils.getCurrentMinute() + "/60");
         } else {
             player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
         }

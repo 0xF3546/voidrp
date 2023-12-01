@@ -17,8 +17,12 @@ import java.sql.SQLException;
 import java.util.Random;
 
 public class Rubbellose {
-    public static void startGame(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    private final PlayerManager playerManager;
+    public Rubbellose(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
+    public void startGame(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.closeInventory();
         Inventory inv = Bukkit.createInventory(player, 54, "§6§lRubbellos");
         playerData.setIntVariable("rubbellose_gemacht", 0);
@@ -49,8 +53,8 @@ public class Rubbellose {
         player.openInventory(inv);
     }
 
-    public static void endGame(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void endGame(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         int payout = 0;
         System.out.println(playerData.getIntVariable("rubbellose_wins"));
         for (int i = 0; i < playerData.getIntVariable("rubbellose_wins"); i++) {
@@ -62,9 +66,9 @@ public class Rubbellose {
             player.sendMessage("§8[§6Rubbellos§8]§c Leider verloren!");
         }
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0);
-        PlayerManager.addExp(player, Main.random(1, 3));
+        playerManager.addExp(player, Main.random(1, 3));
         try {
-            PlayerManager.addMoney(player, payout);
+            playerManager.addMoney(player, payout);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

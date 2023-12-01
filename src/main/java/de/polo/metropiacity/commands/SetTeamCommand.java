@@ -3,6 +3,7 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;
 import org.bukkit.ChatColor;
@@ -14,17 +15,24 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.bukkit.Bukkit.getPluginManager;
 import static org.bukkit.Bukkit.getServer;
 
 public class SetTeamCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    public SetTeamCommand(PlayerManager playerManager, AdminManager adminManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        Main.registerCommand("setgroup", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (player.hasPermission("operator")) {
             if (args.length == 2) {
                 Player targetplayer = getServer().getPlayer(args[0]);
-                String uuid = targetplayer.getUniqueId().toString();
-                PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 String rank = args[1];
                 if (ServerManager.rankDataMap.get(rank) == null) {
                     player.sendMessage(Main.error + "Rang nicht gefunden.");
@@ -40,8 +48,8 @@ public class SetTeamCommand implements CommandExecutor {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                PlayerManager.setRang(targetplayer.getUniqueId().toString(), rank);
-                ADutyCommand.send_message(player.getName() + " hat " + targetplayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
+                playerManager.setRang(targetplayer.getUniqueId().toString(), rank);
+                adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }

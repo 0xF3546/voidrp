@@ -17,17 +17,24 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 public class TPToCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public TPToCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("tpto", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.isAduty()) {
             if (args.length >= 1) {
                 StringBuilder message = new StringBuilder();
                 for (String arg : args) {
                     message.append(" ").append(arg);
                 }
-                LocationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
+                locationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
                 player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + message + "§7 teleportiert.");
                 player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);

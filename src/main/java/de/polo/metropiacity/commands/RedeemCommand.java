@@ -5,6 +5,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,13 +16,20 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class RedeemCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public RedeemCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("redeem", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 1) {
             if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "redeem")) {
                 try {
-                    PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                    PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                     Statement statement = Main.getInstance().mySQL.getStatement();
                     ResultSet result = statement.executeQuery("SELECT * FROM `payments` WHERE `user` = '" + player.getUniqueId().toString().replace("-", "") + "' AND type = '" + args[0].toLowerCase() + "'");
                     System.out.println(args[0]);
@@ -38,22 +46,22 @@ public class RedeemCommand implements CommandExecutor {
                         player.sendMessage(Main.prefix + "§eDanke für's Unterstützen vom Server!");
                         switch (args[0].toLowerCase()) {
                             case "vip":
-                                PlayerManager.redeemRank(player, "VIP", result.getInt(4), result.getString(5));
+                                playerManager.redeemRank(player, "VIP", result.getInt(4), result.getString(5));
                                 break;
                             case "premium":
-                                PlayerManager.redeemRank(player, "Premium", result.getInt(4), result.getString(5));
+                                playerManager.redeemRank(player, "Premium", result.getInt(4), result.getString(5));
                                 break;
                             case "gold":
-                                PlayerManager.redeemRank(player, "Gold", result.getInt(4), result.getString(5));
+                                playerManager.redeemRank(player, "Gold", result.getInt(4), result.getString(5));
                                 break;
                             case "hausslot":
-                                Housing.addHausSlot(player);
+                                utils.housing.addHausSlot(player);
                                 break;
                             case "expbooster":
-                                PlayerManager.addEXPBoost(player, result.getInt(4));
+                                playerManager.addEXPBoost(player, result.getInt(4));
                                 break;
                         }
-                        PlayerManager.addExp(player, Main.random(20, 50));
+                        playerManager.addExp(player, Main.random(20, 50));
                         statement.execute("DELETE FROM `payments` WHERE `id` = " + id);
                         statement.execute("INSERT INTO `payments_claimed` (`user`, `type`, `duration`, `duration_type`) VALUES ('" + player.getUniqueId() + "', '" + type + "', " + duration + ", '" + duration_type + "')");
                     } else {

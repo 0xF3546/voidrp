@@ -10,10 +10,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class MsgCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public MsgCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("msg", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 40) {
             if (args.length >= 2) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);

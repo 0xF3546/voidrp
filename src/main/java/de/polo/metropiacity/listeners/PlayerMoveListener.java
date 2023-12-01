@@ -1,5 +1,6 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
@@ -9,13 +10,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PlayerMoveListener implements Listener {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public PlayerMoveListener(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = (Player) event.getPlayer();
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        Player player = event.getPlayer();
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
-            Utils.AFK.setAFK(player, false);
+            utils.setAFK(player, false);
         }
     }
 }

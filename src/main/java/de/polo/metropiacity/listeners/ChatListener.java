@@ -15,19 +15,28 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatListener implements Listener {
+    private final PlayerManager playerManager;
+    private final SupportManager supportManager;
+    private final Utils utils;
+    public ChatListener(PlayerManager playerManager, SupportManager supportManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.supportManager = supportManager;
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
-            Utils.AFK.setAFK(player, false);
+            utils.setAFK(player, false);
         }
         event.setCancelled(true);
         if (playerData.getVariable("chatblock") == null) {
-            if (SupportManager.isInConnection(player)) {
+            if (supportManager.isInConnection(player)) {
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (SupportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
+                    if (supportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
                         players.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                         player.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                     }
@@ -68,7 +77,7 @@ public class ChatListener implements Listener {
         } else {
             Bukkit.getScheduler().runTask(Main.plugin, () -> {
                 Bukkit.getPluginManager().callEvent(new SubmitChatEvent(player, event.getMessage()));
-                switch (playerData.getVariable("chatblock")) {
+                switch (playerData.getVariable("chatblock").toString()) {
                     case "firstname":
                         playerData.setVariable("einreise_firstname", event.getMessage());
                         player.sendMessage(Main.prefix + "Dein Vorname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");

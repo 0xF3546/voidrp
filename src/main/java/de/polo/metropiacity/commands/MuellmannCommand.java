@@ -20,15 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MuellmannCommand implements CommandExecutor {
-    public static final List<Integer> array = new ArrayList<>();
+    private final List<Integer> array = new ArrayList<>();
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public MuellmannCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("müllmann", this);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
-            if (LocationManager.getDistanceBetweenCoords(player, "muellmann") <= 5) {
+            if (locationManager.getDistanceBetweenCoords(player, "muellmann") <= 5) {
                 playerData.setVariable("current_inventory", "müllmann");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §9Müllmann");
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "müllmann") && playerData.getVariable("job") == null) {
@@ -63,12 +69,12 @@ public class MuellmannCommand implements CommandExecutor {
         }
         return false;
     }
-    public static boolean canGet(int number) {
+    public boolean canGet(int number) {
         return !array.contains(number);
     }
 
-    public static void quitJob(Player player, boolean silent) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void quitJob(Player player, boolean silent) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         if (!silent) player.sendMessage("§8[§9Müllmann§8]§7 Vielen Dank für die geleistete Arbeit.");
         SoundManager.successSound(player);
@@ -76,8 +82,8 @@ public class MuellmannCommand implements CommandExecutor {
         Main.getInstance().getCooldownManager().setCooldown(player, "müllmann", 600);
     }
 
-    public static void startTransport(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void startTransport(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("muell", Main.random(2, 5));
         playerData.setIntVariable("muellkg", 0);
         playerData.setVariable("job", "Müllmann");
@@ -86,11 +92,11 @@ public class MuellmannCommand implements CommandExecutor {
         player.sendMessage("§8 ➥ §7Nutze §8[§6Rechtsklick§8]§7 auf die Hausschilder.");
     }
 
-    public static void dropTransport(Player player, int house) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void dropTransport(Player player, int house) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.sendMessage("§8[§9Müllmann§8]§7 Du den Müll von §6Haus " + house + "§7 entleert.");
         SoundManager.successSound(player);
-        PlayerManager.addExp(player, Main.random(1, 3));
+        playerManager.addExp(player, Main.random(1, 3));
         playerData.setIntVariable("muell", playerData.getIntVariable("muell") - 1);
         playerData.setIntVariable("muellkg", playerData.getIntVariable("muellkg") + Main.random(1, 4));
         playerData.getScoreboard().updateMuellmannScoreboard();
@@ -101,7 +107,7 @@ public class MuellmannCommand implements CommandExecutor {
             quitJob(player, true);
             playerData.getScoreboard().killScoreboard();
             try {
-                PlayerManager.addBankMoney(player, payout, "Auszahlung Müllmann");
+                playerManager.addBankMoney(player, payout, "Auszahlung Müllmann");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

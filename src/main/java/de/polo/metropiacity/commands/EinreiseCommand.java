@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.listeners.BlockBreakListener;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
@@ -17,10 +18,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 
 public class EinreiseCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public EinreiseCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("einreise", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFirstname() == null || playerData.getLastname() == null) {
             openEinrese(player);
         } else {
@@ -29,10 +37,10 @@ public class EinreiseCommand implements CommandExecutor {
         return false;
     }
 
-    public static void openEinrese(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openEinrese(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6MetropiaCity Einreiseamt");
-        if (LocationManager.getDistanceBetweenCoords(player, "einreise") < 10) {
+        if (locationManager.getDistanceBetweenCoords(player, "einreise") < 10) {
             if (playerData.getVariable("einreise_firstname") == null) {
                 inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§eVorname", null));
             } else {

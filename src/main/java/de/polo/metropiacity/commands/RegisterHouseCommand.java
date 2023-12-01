@@ -13,10 +13,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class RegisterHouseCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public RegisterHouseCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("registerhouse", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 90) {
             if (args.length >= 1) {
                 try {

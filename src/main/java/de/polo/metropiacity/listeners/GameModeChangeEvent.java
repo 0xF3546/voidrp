@@ -1,5 +1,6 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -8,6 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
 public class GameModeChangeEvent implements Listener {
+    public GameModeChangeEvent() {
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();

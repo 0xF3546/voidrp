@@ -13,10 +13,14 @@ import org.bukkit.entity.Villager;
 import org.bukkit.persistence.PersistentDataType;
 
 public class NPC implements CommandExecutor {
+    private PlayerManager playerManager;
+    public NPC(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() >= 90) {
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("remove")) {
@@ -41,7 +45,7 @@ public class NPC implements CommandExecutor {
         }
         return false;
     }
-    public static void spawnNPC(Player player, String name, String displayname, String command) {
+    private void spawnNPC(Player player, String name, String displayname, String command) {
         System.out.println("name: " + name);
         System.out.println("displayname: " + displayname);
         System.out.println("command: " + command);
@@ -66,7 +70,7 @@ public class NPC implements CommandExecutor {
         player.sendMessage(Main.gamedesign_prefix + "Du hast einen Villager erstellt.");
     }
 
-    public static void deleteNPC(Player player, String name) {
+    private void deleteNPC(Player player, String name) {
         System.out.println("delete npc: " + name);
         for (Entity entity : player.getWorld().getEntities()) {
             if (entity instanceof Villager) {

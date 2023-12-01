@@ -8,6 +8,7 @@ import de.polo.metropiacity.playerUtils.Progress;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -26,10 +27,19 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ReviveCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    private final FactionManager factionManager;
+    public ReviveCommand(PlayerManager playerManager, Utils utils, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        this.factionManager = factionManager;
+        Main.registerCommand("revive", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (Objects.equals(playerData.getFaction(), "Medic")) {
             Collection<Entity> entities = player.getWorld().getNearbyEntities(player.getLocation(), 3, 3, 3);
             Item nearestSkull = null;
@@ -60,7 +70,7 @@ public class ReviveCommand implements CommandExecutor {
                 }
                 UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
                 Player targetplayer = Bukkit.getPlayer(uuid);
-                PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                 targetplayer.sendMessage(Main.prefix + "Du wirst von " + player.getName() + " wiederbelebt.");
                 player.sendMessage(Main.prefix + "Du fängst an " + targetplayer.getName() + " wiederzubeleben.");
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " fängt an " + targetplayer.getName() + " wiederzubeleben.");
@@ -69,13 +79,13 @@ public class ReviveCommand implements CommandExecutor {
                     @Override
                     public void run() {
                         if (skull.getLocation().distance(player.getLocation()) < 3) {
-                            DeathUtils.RevivePlayer(targetplayer);
+                            utils.deathUtil.RevivePlayer(targetplayer);
                             targetplayer.teleport(player.getLocation());
-                            PlayerManager.addExp(player, Main.random(2, 5));
+                            playerManager.addExp(player, Main.random(2, 5));
                             targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
                             try {
-                                FactionManager.addFactionMoney("Medic", ServerManager.getPayout("revive"), "Revive durch " + player.getName());
-                                PlayerManager.removeBankMoney(targetplayer, ServerManager.getPayout("revive"), "Medizinische Behandlung");
+                                factionManager.addFactionMoney("Medic", ServerManager.getPayout("revive"), "Revive durch " + player.getName());
+                                playerManager.removeBankMoney(targetplayer, ServerManager.getPayout("revive"), "Medizinische Behandlung");
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }

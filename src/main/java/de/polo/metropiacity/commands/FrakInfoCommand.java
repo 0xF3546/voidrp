@@ -19,12 +19,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class FrakInfoCommand implements CommandExecutor, TabCompleter {
+    private final FactionManager factionManager;
+    public FrakInfoCommand(FactionManager factionManager) {
+        this.factionManager = factionManager;
+        Main.registerCommand("frakinfo", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 1) {
             FactionData factionData = null;
-            for (FactionData fdata : FactionManager.factionDataMap.values()) {
+            for (FactionData fdata : factionManager.getFactions()) {
                 if (fdata.getName().equalsIgnoreCase(args[0])) {
                     factionData = fdata;
                 }
@@ -55,7 +60,7 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
-            for (FactionData factionData : FactionManager.factionDataMap.values()) {
+            for (FactionData factionData : factionManager.getFactions()) {
                 suggestions.add(factionData.getName());
             }
 

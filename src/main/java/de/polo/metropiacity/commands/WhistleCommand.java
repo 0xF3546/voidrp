@@ -9,6 +9,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class WhistleCommand implements CommandExecutor {
+    private final Utils utils;
+    public WhistleCommand(Utils utils) {
+        this.utils = utils;
+        Main.registerCommand("whistle", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -19,7 +24,7 @@ public class WhistleCommand implements CommandExecutor {
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 3) {
                 int range = (int) player.getLocation().distance(players.getLocation());
-                players.sendMessage("§8[§2" + range +"§8] §8" + player.getName() + " flüstert§8:§8 " + Utils.stringArrayToString(args));
+                players.sendMessage("§8[§2" + range +"§8] §8" + player.getName() + " flüstert§8:§8 " + utils.stringArrayToString(args));
             }
         }
         return false;

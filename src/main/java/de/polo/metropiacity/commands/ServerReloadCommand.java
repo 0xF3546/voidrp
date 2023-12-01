@@ -8,6 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ServerReloadCommand implements CommandExecutor {
+    public ServerReloadCommand() {
+        Main.registerCommand("serverreload", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

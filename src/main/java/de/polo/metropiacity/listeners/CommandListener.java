@@ -14,16 +14,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandListener implements Listener {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public CommandListener(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         String msg = event.getMessage();
         String[] args = msg.split(" ");
         Player player = event.getPlayer();
         String[] nonBlockedCommands = {"support", "report", "help", "vote", "jailtime", "ad", "aduty"};
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
-            Utils.AFK.setAFK(player, false);
+            utils.setAFK(player, false);
         }
         if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
             event.setCancelled(true);
@@ -42,7 +49,7 @@ public class CommandListener implements Listener {
                 event.setCancelled(true);
             }
         }
-        for (PlayerData playerData2 : PlayerManager.playerDataMap.values()) {
+        for (PlayerData playerData2 : playerManager.getPlayers()) {
             if (playerData2.getVariable("isSpec") != null) {
                 if (playerData.getVariable("isSpec").equals(player.getUniqueId().toString())) {
                     Player targetplayer = Bukkit.getPlayer(playerData2.getUuid());

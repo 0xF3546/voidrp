@@ -6,6 +6,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Navigation;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.StaatUtil;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,10 +14,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AcceptServiceCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public AcceptServiceCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("acceptservice", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei")) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
@@ -25,9 +33,9 @@ public class AcceptServiceCommand implements CommandExecutor {
                     if (serviceData != null) {
                         if (serviceData.getAcceptedByUuid() == null) {
                             serviceData.setAcceptedByUuid(player.getUniqueId().toString());
-                            Navigation.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
+                            utils.navigation.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (PlayerManager.playerDataMap.get(p.getUniqueId().toString()).getFaction().equals(playerData.getFaction())) {
+                                if (playerManager.getPlayerData(p.getUniqueId()).getFaction().equals(playerData.getFaction())) {
                                     p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat den Service von " + targetplayer.getName() + " angenommen [" + (int) player.getLocation().distance(targetplayer.getLocation()) + "m].");
                                 }
                             }

@@ -25,10 +25,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class OpenBossMenuCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public OpenBossMenuCommand(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("bossmenu", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFactionGrade() >= 8) {
             try {
                 openBossMenu(player, 1);
@@ -42,10 +49,10 @@ public class OpenBossMenuCommand implements CommandExecutor {
         return false;
     }
 
-    public static void openBossMenu(Player player, int page) throws SQLException {
+    public void openBossMenu(Player player, int page) throws SQLException {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         playerData.setVariable("current_inventory", "bossmenu_" + playerData.getFaction());
         playerData.setIntVariable("current_page", page);
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -66,9 +73,9 @@ public class OpenBossMenuCommand implements CommandExecutor {
         player.openInventory(inv);
     }
 
-    public static void editPlayerViaBoss(Player player, ItemStack stack) throws SQLException {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+    public void editPlayerViaBoss(Player player, ItemStack stack) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         ItemStack tempItemStack = new ItemStack(stack.getType());
         tempItemStack.setItemMeta(stack.getItemMeta());
         if (tempItemStack.getItemMeta() instanceof SkullMeta) {

@@ -31,13 +31,25 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class InventoryClickListener implements Listener {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    private final Utils utils;
+    private final LocationManager locationManager;
+    public InventoryClickListener(PlayerManager playerManager, FactionManager factionManager, Utils utils, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        this.utils = utils;
+        this.locationManager = locationManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
 
     @EventHandler
     public void onClick(InventoryClickEvent event) throws SQLException {
-        if (event.getCurrentItem() == null || !event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST)) return;
+        if (event.getCurrentItem() == null || !event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST))
+            return;
         Player player = (Player) event.getWhoClicked();
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
             playerData.setVariable("current_inventory", null);
@@ -51,7 +63,7 @@ public class InventoryClickListener implements Listener {
                     meta.setDisplayName("§aGewonnen!");
                     event.getCurrentItem().setItemMeta(meta);
                     event.getCurrentItem().setType(Material.LIME_DYE);
-                    playerData.setIntVariable("rubbellose_wins", playerData.getIntVariable("rubbellose_wins" ) + 1);
+                    playerData.setIntVariable("rubbellose_wins", playerData.getIntVariable("rubbellose_wins") + 1);
                 } else {
                     meta.setDisplayName("§cVerloren!");
                     event.getCurrentItem().setItemMeta(meta);
@@ -59,7 +71,7 @@ public class InventoryClickListener implements Listener {
                 }
                 playerData.setIntVariable("rubbellose_gemacht", playerData.getIntVariable("rubbellose_gemacht") + 1);
                 if (playerData.getIntVariable("rubbellose_gemacht") >= 5) {
-                    Rubbellose.endGame(player);
+                    new Rubbellose(playerManager).endGame(player);
                     player.closeInventory();
                 }
             } else if (event.getCurrentItem().getType() == Material.STRUCTURE_VOID) {
@@ -71,21 +83,21 @@ public class InventoryClickListener implements Listener {
         }
         for (int i = 0; i < LocationManager.shops.length; i++) {
             int f = i + 1;
-            if (event.getView().getTitle().equalsIgnoreCase("§8» §c" + LocationManager.getShopNameById(f))) {
+            if (event.getView().getTitle().equalsIgnoreCase("§8» §c" + locationManager.getShopNameById(f))) {
                 event.setCancelled(true);
                 playerData.setVariable("current_inventory", null);
                 for (Object[] row : Shop.shop_items) {
-                    int shop = LocationManager.isNearShop(player);
+                    int shop = locationManager.isNearShop(player);
                     if ((int) row[1] == shop) {
                         if (event.getCurrentItem().getType() == Material.valueOf((String) row[2]) && event.getCurrentItem().getType() != null) {
-                            if (PlayerManager.money(player) >= (int) row[4]) {
+                            if (playerManager.money(player) >= (int) row[4]) {
                                 try {
                                     if (Objects.equals(row[5].toString(), "weapon")) {
                                         String weapon = row[3].toString().replace("&", "").replace("6", "");
-                                        Weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType(), "default");
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
+                                        Main.getInstance().weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType(), "default");
+                                        player.sendMessage("§8[§6" + locationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
+                                        playerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
                                     } else if (Objects.equals(row[5].toString(), "ammo")) {
                                         String ammo = row[6].toString();
                                         if (player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
@@ -96,10 +108,10 @@ public class InventoryClickListener implements Listener {
                                         for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
                                             if (weaponData.getType().equalsIgnoreCase(ammo)) {
                                                 if (weaponData.getMaterial().equals(player.getEquipment().getItemInMainHand().getType())) {
-                                                    Weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
-                                                    player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
+                                                    Main.getInstance().weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
+                                                    player.sendMessage("§8[§6" + locationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
                                                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                                    PlayerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + weaponData.getType());
+                                                    playerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + weaponData.getType());
                                                 } else {
                                                     player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
                                                     player.closeInventory();
@@ -109,11 +121,11 @@ public class InventoryClickListener implements Listener {
                                         }
                                         player.sendMessage(Main.error + "Es konnte keine Waffe zur Munition gefunden werden.");
                                     } else if (Objects.equals(row[5].toString(), "car")) {
-                                        Vehicles.giveVehicle(player, row[6].toString());
+                                        Main.getInstance().vehicles.giveVehicle(player, row[6].toString());
                                     } else {
-                                        PlayerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
+                                        playerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
                                         player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
-                                        player.sendMessage("§8[§6" + LocationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
+                                        player.sendMessage("§8[§6" + locationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
                                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                                     }
                                 } catch (SQLException e) {
@@ -121,7 +133,7 @@ public class InventoryClickListener implements Listener {
                                     throw new RuntimeException(e);
                                 }
                             } else {
-                                player.sendMessage("§6" + LocationManager.getShopNameById(f) + "§8 » §7" + "Du hast leider nicht genug Bargeld.");
+                                player.sendMessage("§6" + locationManager.getShopNameById(f) + "§8 » §7" + "Du hast leider nicht genug Bargeld.");
                             }
                         }
                     }
@@ -133,31 +145,31 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    OpenBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
+                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
                     break;
                 case GOLD_NUGGET:
-                    OpenBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
+                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
                     break;
                 case PLAYER_HEAD:
-                    OpenBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
+                    Main.getInstance().commands.openBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
                     break;
             }
         }
-        if (playerData.getVariable("current_inventory").contains("edit_factionplayer_")) {
+        if (playerData.getVariable("current_inventory").toString().contains("edit_factionplayer_")) {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    OpenBossMenuCommand.openBossMenu(player, 1);
+                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, 1);
                     break;
                 case REDSTONE:
-                    UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
+                    UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                     player.performCommand("uninvite " + offlinePlayer.getName());
                     break;
                 case DIAMOND:
-                    UUID uuid1 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
+                    UUID uuid1 = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer1 = Bukkit.getOfflinePlayer(uuid1);
-                    FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
+                    factionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
                     Statement statement = Main.getInstance().mySQL.getStatement();
                     ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId() + "'");
                     if (res.next()) {
@@ -168,12 +180,12 @@ public class InventoryClickListener implements Listener {
                         }
                     }
                     if (offlinePlayer1.isOnline()) {
-                        PlayerData offlinePlayerData = PlayerManager.playerDataMap.get(offlinePlayer1.getUniqueId().toString());
+                        PlayerData offlinePlayerData = playerManager.getPlayerData(offlinePlayer1.getUniqueId());
                         offlinePlayerData.setFactionGrade(offlinePlayerData.getFactionGrade() + 1);
                     }
                     break;
                 case GLOWSTONE_DUST:
-                    UUID uuid2 = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_factionplayer_", ""));
+                    UUID uuid2 = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer2 = Bukkit.getOfflinePlayer(uuid2);
                     Statement statement1 = Main.getInstance().mySQL.getStatement();
                     ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId() + "'");
@@ -184,9 +196,9 @@ public class InventoryClickListener implements Listener {
                             return;
                         }
                     }
-                    FactionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer2.getName() + "§7 wurde von §c" + player.getName() + " degradiert.");
+                    factionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer2.getName() + "§7 wurde von §c" + player.getName() + " degradiert.");
                     if (offlinePlayer2.isOnline()) {
-                        PlayerData offlinePlayerData = PlayerManager.playerDataMap.get(offlinePlayer2.getUniqueId().toString());
+                        PlayerData offlinePlayerData = playerManager.getPlayerData(offlinePlayer2.getUniqueId());
                         offlinePlayerData.setFactionGrade(offlinePlayerData.getFactionGrade() - 1);
                     }
                     break;
@@ -196,30 +208,30 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    AdminMenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, playerData.getVariable("offlinePLayers") != "nein");
+                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, playerData.getVariable("offlinePLayers") != "nein");
                     break;
                 case GOLD_NUGGET:
-                    AdminMenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, playerData.getVariable("offlinePLayers") != "nein");
+                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, playerData.getVariable("offlinePLayers") != "nein");
                     break;
                 case PLAYER_HEAD:
-                    AdminMenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
+                    Main.getInstance().commands.adminMenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
                     break;
                 case DIAMOND:
-                    AdminMenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") == "nein");
+                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") == "nein");
                     break;
             }
         }
-        if (playerData.getVariable("current_inventory").contains("edit_player_")) {
+        if (playerData.getVariable("current_inventory").toString().contains("edit_player_")) {
             event.setCancelled(true);
-            UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").replace("edit_player_", ""));
+            UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_player_", ""));
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    AdminMenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") != "nein");
+                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") != "nein");
                     break;
                 case REDSTONE:
                     if (!offlinePlayer.isOnline()) return;
-                    PlayerManager.kickPlayer((Player) offlinePlayer, "[System] Kick durch Administrationsoberfläche");
+                    playerManager.kickPlayer((Player) offlinePlayer, "[System] Kick durch Administrationsoberfläche");
                     break;
                 case EMERALD_BLOCK:
                     player.performCommand("tphere " + offlinePlayer.getName());
@@ -247,65 +259,65 @@ public class InventoryClickListener implements Listener {
             if (playerData.getVariable("current_app") == null) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case PLAYER_HEAD:
-                        TabletUtils.openApp(player, "fraktionsapp");
+                        utils.tabletUtils.openApp(player, "fraktionsapp");
                         break;
                     case BLUE_DYE:
-                        TabletUtils.openApp(player, "aktenapp");
+                        utils.tabletUtils.openApp(player, "aktenapp");
                         break;
                     case ORANGE_DYE:
-                        TabletUtils.openApp(player, "gefängnisapp");
+                        utils.tabletUtils.openApp(player, "gefängnisapp");
                         break;
                     case MINECART:
-                        TabletUtils.openApp(player, "vehiclesapp");
+                        utils.tabletUtils.openApp(player, "vehiclesapp");
                         break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "aktenapp")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case DIAMOND:
-                        TabletUtils.openPlayerAktenList(player, 1);
+                        utils.tabletUtils.openPlayerAktenList(player, 1);
                         break;
                     case PAPER:
                         playerData.setVariable("current_akte", null);
-                        TabletUtils.openAktenList(player, 1, null);
+                        utils.tabletUtils.openAktenList(player, 1, null);
                         break;
                     case REDSTONE:
-                        TabletUtils.openTablet(player);
+                        utils.tabletUtils.openTablet(player);
                         break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "playeraktenlist")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case NETHER_WART:
-                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
+                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
                         break;
                     case GOLD_NUGGET:
-                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
+                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
                         break;
                     case PLAYER_HEAD:
-                        TabletUtils.editPlayerAkte(player, event.getCurrentItem());
+                        utils.tabletUtils.editPlayerAkte(player, event.getCurrentItem());
                         break;
                     case REDSTONE:
-                        TabletUtils.openApp(player, "aktenapp");
+                        utils.tabletUtils.openApp(player, "aktenapp");
                         break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "edit_akte")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case BOOK:
-                        TabletUtils.openPlayerAkte(player, 1);
+                        utils.tabletUtils.openPlayerAkte(player, 1);
                         break;
                     case GREEN_DYE:
-                        TabletUtils.openAktenList(player, 1, null);
+                        utils.tabletUtils.openAktenList(player, 1, null);
                         break;
                     case REDSTONE:
-                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page"));
+                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page"));
                         break;
                     case BARRIER:
                         if (playerData.getFactionGrade() >= 5) {
                             Player targetlpayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
-                            StaatUtil.unarrestPlayer(targetlpayer);
+                            utils.staatUtil.unarrestPlayer(targetlpayer);
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                                 if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                                    players.sendMessage("§8[§cGefängnis§8] §6" + FactionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
+                                    players.sendMessage("§8[§cGefängnis§8] §6" + factionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
                                 }
                             }
                             player.closeInventory();
@@ -317,10 +329,10 @@ public class InventoryClickListener implements Listener {
             } else if (Objects.equals(playerData.getVariable("current_app"), "aktenlist")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case NETHER_WART:
-                        TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") - 1, null);
+                        utils.tabletUtils.openAktenList(player, playerData.getIntVariable("current_page") - 1, null);
                         break;
                     case GOLD_NUGGET:
-                        TabletUtils.openAktenList(player, playerData.getIntVariable("current_page") + 1, null);
+                        utils.tabletUtils.openAktenList(player, playerData.getIntVariable("current_page") + 1, null);
                         break;
                     case PAPER:
                         if (playerData.getVariable("current_akte") != null) {
@@ -332,27 +344,33 @@ public class InventoryClickListener implements Listener {
                             String newAkte = meta.getPersistentDataContainer().get(akte, PersistentDataType.STRING);
                             int newHafteinheiten = meta.getPersistentDataContainer().get(hafteinheiten, PersistentDataType.INTEGER);
                             int newGeldstrafe = meta.getPersistentDataContainer().get(geldstrafe, PersistentDataType.INTEGER);
-                            StaatUtil.addAkteToPlayer(player, targetplayer, newHafteinheiten, newAkte, newGeldstrafe);
+                            utils.staatUtil.addAkteToPlayer(player, targetplayer, newHafteinheiten, newAkte, newGeldstrafe);
                             player.sendMessage("§8[§9Zentrale§8] §7Akte wurde für " + targetplayer.getName() + " hinzugefügt.");
                             player.sendMessage("§8[§9Zentrale§8] §7Akte: " + newAkte + " §8-§7 Hafteinheiten: " + newHafteinheiten + "§8 - §7Geldstrafe: " + newGeldstrafe + "$.");
                         }
                         break;
                     case REDSTONE:
-                        TabletUtils.openApp(player, "aktenapp");
+                        utils.tabletUtils.openApp(player, "aktenapp");
                         break;
                     case CLOCK:
                         playerData.setVariable("chatblock", "aktensearch");
                         player.sendMessage("§8[§9Akte§8]§7 Gib nun die Akte ein.");
                         player.closeInventory();
                         break;
+                    case PLAYER_HEAD:
+                        playerData.setIntVariable("input_hafteinheiten", 0);
+                        playerData.setIntVariable("input_geldstrafe", 0);
+                        playerData.setVariable("input_akte", null);
+                        utils.tabletUtils.createAkte(player);
+                        break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "player_aktenlist")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case NETHER_WART:
-                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
+                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
                         break;
                     case GOLD_NUGGET:
-                        TabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
+                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
                         break;
                     case WRITTEN_BOOK:
                         if (playerData.getVariable("current_akte") != null) {
@@ -361,81 +379,102 @@ public class InventoryClickListener implements Listener {
                             Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
                             assert meta != null;
                             int newId = meta.getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
-                            StaatUtil.removeAkteFromPlayer(player, newId);
+                            utils.staatUtil.removeAkteFromPlayer(player, newId);
                             event.getCurrentItem().setType(Material.BLACK_STAINED_GLASS_PANE);
                             player.sendMessage("§8[§9Zentrale§8] §7Akte von " + targetplayer.getName() + " entfernt.");
                         }
                         break;
                     case REDSTONE:
-                        TabletUtils.openAktenList(player, 1, null);
+                        utils.tabletUtils.openAktenList(player, 1, null);
                         break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "gefängnisapp")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case PLAYER_HEAD:
-                        TabletUtils.editPlayerAkte(player, event.getCurrentItem());
+                        utils.tabletUtils.editPlayerAkte(player, event.getCurrentItem());
                         break;
                     case REDSTONE:
-                        TabletUtils.openTablet(player);
+                        utils.tabletUtils.openTablet(player);
                         break;
                     case NETHER_WART:
-                        TabletUtils.openJailApp(player, playerData.getIntVariable("current_page") - 1);
+                        utils.tabletUtils.openJailApp(player, playerData.getIntVariable("current_page") - 1);
                         break;
                     case GOLD_NUGGET:
-                        TabletUtils.openJailApp(player, playerData.getIntVariable("current_page") + 1);
+                        utils.tabletUtils.openJailApp(player, playerData.getIntVariable("current_page") + 1);
                         break;
                 }
             } else if (Objects.equals(playerData.getVariable("current_app"), "vehiclesapp")) {
-            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                case REDSTONE:
-                    TabletUtils.openTablet(player);
-                    break;
-                case NETHER_WART:
-                    TabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") - 1);
-                    break;
-                case GOLD_NUGGET:
-                    TabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") + 1);
-                    break;
+                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
+                    case REDSTONE:
+                        utils.tabletUtils.openTablet(player);
+                        break;
+                    case NETHER_WART:
+                        utils.tabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") - 1);
+                        break;
+                    case GOLD_NUGGET:
+                        utils.tabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") + 1);
+                        break;
+                }
+            } else if (Objects.equals(playerData.getVariable("current_app"), "createakte")) {
+                switch (event.getSlot()) {
+                    case 11:
+                        playerData.setVariable("chatblock", "createakte_akte");
+                        player.closeInventory();
+                        player.sendMessage("§8[§aAkte§8]§7 Gib nun den Namen der Akte an.");
+                        break;
+                    case 13:
+                        playerData.setVariable("chatblock", "createakte_hafteinheiten");
+                        player.closeInventory();
+                        player.sendMessage("§8[§aAkte§8]§7 Gib nun die Hafteinheiten an.");
+                        break;
+                    case 15:
+                        playerData.setVariable("chatblock", "createakte_geldstrafe");
+                        player.closeInventory();
+                        player.sendMessage("§8[§aAkte§8]§7 Gib nun die Geldstrafe an an.");
+                        break;
+                    case 26:
+                        utils.tabletUtils.createNewAkte(player);
+                        break;
+                }
             }
-        }
-
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "handy")) {
             event.setCancelled(true);
             if (playerData.getVariable("current_app") == null) {
                 switch (event.getSlot()) {
                     case 10:
-                        PhoneUtils.openContacts(player, 1, null);
+                        utils.phoneUtils.openContacts(player, 1, null);
                         break;
                     case 11:
-                        PhoneUtils.openMessages(player, 1, null);
+                        utils.phoneUtils.openMessages(player, 1, null);
                         break;
                     case 12:
-                        PhoneUtils.openCallApp(player, true);
+                        utils.phoneUtils.openCallApp(player, true);
                         break;
                     case 14:
-                        PhoneUtils.openBanking(player);
+                        utils.phoneUtils.openBanking(player);
                         break;
                     case 15:
-                        PhoneUtils.openSettings(player);
+                        utils.phoneUtils.openSettings(player);
                         break;
                     case 16:
-                        PhoneUtils.openInternet(player);
+                        utils.phoneUtils.openInternet(player);
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("contacts")) {
                 switch (event.getCurrentItem().getType()) {
                     case REDSTONE:
-                        PhoneUtils.openPhone(player);
+                        utils.phoneUtils.openPhone(player);
                         break;
                     case NETHER_WART:
-                        PhoneUtils.openContacts(player, playerData.getIntVariable("current_page") - 1, null);
+                        utils.phoneUtils.openContacts(player, playerData.getIntVariable("current_page") - 1, null);
                         break;
                     case GOLD_NUGGET:
-                        PhoneUtils.openContacts(player, playerData.getIntVariable("current_page") + 1, null);
+                        utils.phoneUtils.openContacts(player, playerData.getIntVariable("current_page") + 1, null);
                         break;
                     case PLAYER_HEAD:
-                        if (!(event.getSlot() == 22)) PhoneUtils.editContact(player, event.getCurrentItem(), false, false);
+                        if (!(event.getSlot() == 22))
+                            utils.phoneUtils.editContact(player, event.getCurrentItem(), false, false);
                         break;
                     case CLOCK:
                         playerData.setVariable("chatblock", "contactsearch");
@@ -447,13 +486,13 @@ public class InventoryClickListener implements Listener {
                     case 22:
                         playerData.setIntVariable("current_contact_number", 0);
                         playerData.setVariable("current_contact_name", "&6Name");
-                        PhoneUtils.editContact(player, null, true, true);
+                        utils.phoneUtils.editContact(player, null, true, true);
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("edit_contact")) {
                 switch (event.getCurrentItem().getType()) {
                     case REDSTONE:
-                        PhoneUtils.openContacts(player, 1, null);
+                        utils.phoneUtils.openContacts(player, 1, null);
                         break;
                     case BOOK:
                         playerData.setVariable("chatblock", "changenumber");
@@ -475,16 +514,16 @@ public class InventoryClickListener implements Listener {
                                 if (res.next()) {
                                     uuid = res.getString(1);
                                     statement.execute("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId() + "', '" + playerData.getVariable("current_contact_name") + "', " + playerData.getIntVariable("current_contact_number") + ", '" + uuid + "')");
-                                    player.sendMessage("§8[§6Kontakte§8]§a Nummer " + playerData.getIntVariable("current_contact_number") + "§7 unter " + playerData.getVariable("current_contact_name").replace("&", "§") + "§7 eingespeichert.");
-                                    PhoneUtils.openContacts(player, 1, null);
+                                    player.sendMessage("§8[§6Kontakte§8]§a Nummer " + playerData.getIntVariable("current_contact_number") + "§7 unter " + playerData.getVariable("current_contact_name").toString().replace("&", "§") + "§7 eingespeichert.");
+                                    utils.phoneUtils.openContacts(player, 1, null);
                                 } else {
                                     player.sendMessage("§8[§6Kontakte§8]§c Nummer konnte nicht gefunden werden.");
                                 }
                             } else {
                                 Statement statement = Main.getInstance().mySQL.getStatement();
                                 statement.executeUpdate("UPDATE `phone_contacts` SET `contact_name` = '" + playerData.getVariable("current_contact_name") + "', `contact_number` = " + playerData.getIntVariable("current_contact_number") + " WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
-                                player.sendMessage("§8[§6Kontakte§8]§7 Kontakt " + playerData.getVariable("current_contact_name").replace("&", "§") + "§7 angepasst.");
-                                PhoneUtils.openContacts(player, 1, null);
+                                player.sendMessage("§8[§6Kontakte§8]§7 Kontakt " + playerData.getVariable("current_contact_name").toString().replace("&", "§") + "§7 angepasst.");
+                                utils.phoneUtils.openContacts(player, 1, null);
                             }
                         } else {
                             player.sendMessage("§8[§6Kontakte§8]§7 Gib bitte Namen & Nummer an.");
@@ -494,7 +533,7 @@ public class InventoryClickListener implements Listener {
                         Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.execute("DELETE FROM `phone_contacts` WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
                         player.sendMessage("§8[§6Kontakte§8]§c Kontakt gelöscht.");
-                        PhoneUtils.openContacts(player, 1, null);
+                        utils.phoneUtils.openContacts(player, 1, null);
                         break;
                 }
                 switch (event.getSlot()) {
@@ -525,28 +564,28 @@ public class InventoryClickListener implements Listener {
                         playerData.setFlightmode(false);
                         break;
                     case REDSTONE:
-                        PhoneUtils.openPhone(player);
+                        utils.phoneUtils.openPhone(player);
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("banking")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                     case REDSTONE:
-                        PhoneUtils.openPhone(player);
+                        utils.phoneUtils.openPhone(player);
                         break;
                     case DIAMOND:
-                        PhoneUtils.openTransactions(player, 1, null);
+                        utils.phoneUtils.openTransactions(player, 1, null);
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("transactions")) {
                 switch (event.getCurrentItem().getType()) {
                     case REDSTONE:
-                        PhoneUtils.openBanking(player);
+                        utils.phoneUtils.openBanking(player);
                         break;
                     case NETHER_WART:
-                        PhoneUtils.openTransactions(player, playerData.getIntVariable("current_page") - 1, null);
+                        utils.phoneUtils.openTransactions(player, playerData.getIntVariable("current_page") - 1, null);
                         break;
                     case GOLD_NUGGET:
-                        PhoneUtils.openTransactions(player, playerData.getIntVariable("current_page") + 1, null);
+                        utils.phoneUtils.openTransactions(player, playerData.getIntVariable("current_page") + 1, null);
                         break;
                     case CLOCK:
                         player.closeInventory();
@@ -557,13 +596,13 @@ public class InventoryClickListener implements Listener {
             } else if (playerData.getVariable("current_app").equals("messages")) {
                 switch (event.getCurrentItem().getType()) {
                     case REDSTONE:
-                        PhoneUtils.openPhone(player);
+                        utils.phoneUtils.openPhone(player);
                         break;
                     case NETHER_WART:
-                        PhoneUtils.openMessages(player, playerData.getIntVariable("current_page") - 1, null);
+                        utils.phoneUtils.openMessages(player, playerData.getIntVariable("current_page") - 1, null);
                         break;
                     case GOLD_NUGGET:
-                        PhoneUtils.openMessages(player, playerData.getIntVariable("current_page") + 1, null);
+                        utils.phoneUtils.openMessages(player, playerData.getIntVariable("current_page") + 1, null);
                         break;
                     case CLOCK:
                         player.closeInventory();
@@ -585,51 +624,51 @@ public class InventoryClickListener implements Listener {
             } else if (playerData.getVariable("current_app").equals("phonecall")) {
                 switch (event.getSlot()) {
                     case 12:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 1);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 1);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 13:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 2);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 2);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 14:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 3);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 3);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 21:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 4);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 4);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 22:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 5);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 5);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 23:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 6);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 6);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 30:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 7);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 7);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 31:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 8);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 8);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 32:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 9);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 9);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 40:
-                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber") + 0);
-                        PhoneUtils.openCallApp(player, false);
+                        playerData.setVariable("current_phone_callnumber", playerData.getVariable("current_phone_callnumber").toString() + 0);
+                        utils.phoneUtils.openCallApp(player, false);
                         break;
                     case 53:
                         player.closeInventory();
                         player.performCommand("call " + Integer.parseInt(playerData.getVariable("current_phone_callnumber")));
                         break;
                     case 45:
-                        PhoneUtils.openPhone(player);
+                        utils.phoneUtils.openPhone(player);
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("internet")) {
@@ -660,16 +699,16 @@ public class InventoryClickListener implements Listener {
                         ItemMeta meta = event.getCurrentItem().getItemMeta();
                         meta.setDisplayName("§c§lDienst verlassen!");
                         event.getCurrentItem().setItemMeta(meta);
-                        FactionManager.setDuty(player, false);
-                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst verlassen.");
+                        factionManager.setDuty(player, false);
+                        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst verlassen.");
                         break;
                     case GREEN_DYE:
                         event.getCurrentItem().setType(Material.RED_DYE);
                         ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
                         itemMeta.setDisplayName("§a§lDienst betreten!");
                         event.getCurrentItem().setItemMeta(itemMeta);
-                        FactionManager.setDuty(player, true);
-                        FactionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst betreten.");
+                        factionManager.setDuty(player, true);
+                        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst betreten.");
                         break;
                 }
             }
@@ -685,7 +724,7 @@ public class InventoryClickListener implements Listener {
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "gasstation")) {
             event.setCancelled(true);
-            Integer station = LocationManager.isPlayerGasStation(player);
+            Integer station = locationManager.isPlayerGasStation(player);
             GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
             if (playerData.getVariable("current_app") != "fill_options") {
                 if (event.getCurrentItem().getType() == Material.MINECART) {
@@ -718,7 +757,7 @@ public class InventoryClickListener implements Listener {
                             int price = (int) (vehicleData.getMaxFuel() - vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT)) * gasStationData.getLiterprice();
                             if (playerData.getBargeld() >= price) {
                                 Vehicles.fillVehicle((Vehicle) vehicle, null);
-                                PlayerManager.removeMoney(player, price, "Tankrechnung " + type);
+                                playerManager.removeMoney(player, price, "Tankrechnung " + type);
                                 player.sendMessage(Main.prefix + "Du hast dein §6" + type + "§7 betankt. §c-" + price + "$");
                                 player.closeInventory();
                                 playerData.setVariable("current_inventory", null);
@@ -767,7 +806,7 @@ public class InventoryClickListener implements Listener {
                     case EMERALD:
                         int price = playerData.getIntVariable("plusfuel") * gasStationData.getLiterprice();
                         if (playerData.getBargeld() >= price) {
-                            PlayerManager.removeMoney(player, price, "Tankrechnung " + type);
+                            playerManager.removeMoney(player, price, "Tankrechnung " + type);
                             Vehicles.fillVehicle((Vehicle) vehicle, playerData.getIntVariable("plusfuel"));
                             player.sendMessage(Main.prefix + "Du hast dein §6" + type + "§7 betankt. §c-" + price + "$");
                             SoundManager.successSound(player);
@@ -830,8 +869,8 @@ public class InventoryClickListener implements Listener {
                                     Statement statement = Main.getInstance().mySQL.getStatement();
                                     statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
-                                    PlayerManager.addExp(player, Main.random(100, 200));
-                                    Tutorial.createdAusweis(player);
+                                    playerManager.addExp(player, Main.random(100, 200));
+                                    utils.tutorial.createdAusweis(player);
                                     player.playSound(player.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 0);
                                 } else {
                                     player.sendMessage(Main.error + "Bitte gib deinen Geburtstag noch an!");
@@ -863,7 +902,7 @@ public class InventoryClickListener implements Listener {
                             int i = 0;
                             for (NaviData newNavi : LocationManager.naviDataMap.values()) {
                                 if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
-                                    inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), "§7 ➥ §e" + (int) LocationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m"));
+                                    inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), "§7 ➥ §e" + (int) locationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m"));
                                     ItemMeta meta = inv.getItem(i).getItemMeta();
                                     meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, newNavi.getId());
                                     inv.getItem(i).setItemMeta(meta);
@@ -874,7 +913,7 @@ public class InventoryClickListener implements Listener {
                         } else {
                             player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
                             LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
-                            Navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                            utils.navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                             player.closeInventory();
                         }
                     }
@@ -885,11 +924,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    FFAUtils.openFFAMenu(player, playerData.getIntVariable("current_page") - 1);
+                    utils.ffaUtils.openFFAMenu(player, playerData.getIntVariable("current_page") - 1);
                     SoundManager.clickSound(player);
                     break;
                 case GOLD_NUGGET:
-                    FFAUtils.openFFAMenu(player, playerData.getIntVariable("current_page") + 1);
+                    utils.ffaUtils.openFFAMenu(player, playerData.getIntVariable("current_page") + 1);
                     SoundManager.clickSound(player);
                     break;
                 case LIME_DYE:
@@ -900,7 +939,7 @@ public class InventoryClickListener implements Listener {
                         playerData.setIntVariable("ffa_passwordlobby", id);
                         player.sendMessage("§8[§6FFA§8]§e Gib das Passwort für die Lobby ein.");
                     } else {
-                        FFAUtils.joinLobby(player, id);
+                        utils.ffaUtils.joinLobby(player, id);
                     }
                     player.closeInventory();
                     break;
@@ -963,10 +1002,11 @@ public class InventoryClickListener implements Listener {
                     SoundManager.clickSound(player);
                     break;
                 case EMERALD:
-                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "ffa_creator")) FFAUtils.createLobby(player, playerData.getIntVariable("ffa_maxplayer"), playerData.getVariable("ffa_password"));
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "ffa_creator"))
+                        FFAUtils.createLobby(player, playerData.getIntVariable("ffa_maxplayer"), playerData.getVariable("ffa_password"));
                     break;
                 case NETHER_WART:
-                    FFAUtils.openFFAMenu(player, 1);
+                    utils.ffaUtils.openFFAMenu(player, 1);
                     SoundManager.clickSound(player);
                     break;
             }
@@ -976,7 +1016,7 @@ public class InventoryClickListener implements Listener {
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
                     ItemMeta meta = event.getCurrentItem().getItemMeta();
-                    GangwarUtils.startGangwar(player, meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "zone"), PersistentDataType.STRING));
+                    utils.gangwarUtils.startGangwar(player, meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "zone"), PersistentDataType.STRING));
                     player.closeInventory();
                     break;
             }
@@ -996,14 +1036,14 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 29:
                     player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBank() + "$ ausgezahlt.");
-                    PlayerManager.addMoney(player, playerData.getBank());
-                    PlayerManager.removeBankMoney(player, playerData.getBank(), "Bankauszahlung");
+                    playerManager.addMoney(player, playerData.getBank());
+                    playerManager.removeBankMoney(player, playerData.getBank(), "Bankauszahlung");
                     player.closeInventory();
                     break;
                 case 33:
                     player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBargeld() + "$ eingezahlt.");
-                    PlayerManager.addBankMoney(player, playerData.getBargeld(), "Bankeinzahlung");
-                    PlayerManager.removeMoney(player, playerData.getBargeld(), "Bankeinzahlung");
+                    playerManager.addBankMoney(player, playerData.getBargeld(), "Bankeinzahlung");
+                    playerManager.removeMoney(player, playerData.getBargeld(), "Bankeinzahlung");
                     player.closeInventory();
                     break;
                 case 31:
@@ -1013,7 +1053,7 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 44:
                     if (playerData.getFaction() != null && playerData.getFaction() != "Zivilist") {
-                        BankingUtils.openFactionBankMenu(player);
+                        utils.bankingUtils.openFactionBankMenu(player);
                         Main.getInstance().getCooldownManager().setCooldown(player, "atm", 1);
                     }
                     break;
@@ -1038,21 +1078,22 @@ public class InventoryClickListener implements Listener {
                 case 29:
                     if (playerData.getFactionGrade() >= 7) {
                         player.sendMessage("§8[§aATM§8]§a Du hast " + factionData.getBank() + "$ ausgezahlt.");
-                        FactionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + factionData.getBank() + "$ vom Fraktionskonto ausgezahlt.");
-                        PlayerManager.addMoney(player, factionData.getBank());
-                        FactionManager.removeFactionMoney(factionData.getName(), factionData.getBank(), "Bankauszahlung " + player.getName());
+                        factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + factionData.getBank() + "$ vom Fraktionskonto ausgezahlt.");
+                        playerManager.addMoney(player, factionData.getBank());
+                        factionManager.removeFactionMoney(factionData.getName(), factionData.getBank(), "Bankauszahlung " + player.getName());
                         player.closeInventory();
                     }
                     break;
                 case 33:
                     player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBargeld() + "$ eingezahlt.");
-                    FactionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + playerData.getBargeld() + "$ auf das Fraktionskonto eingezahlt.");
-                    FactionManager.addFactionMoney(factionData.getName(), playerData.getBargeld(), "Bankeinzahlung " + player.getName());
-                    PlayerManager.removeMoney(player, playerData.getBargeld(), "Bankeinzahlung auf " + factionData.getName());
+                    factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + playerData.getBargeld() + "$ auf das Fraktionskonto eingezahlt.");
+                    factionManager.addFactionMoney(factionData.getName(), playerData.getBargeld(), "Bankeinzahlung " + player.getName());
+                    playerManager.removeMoney(player, playerData.getBargeld(), "Bankeinzahlung auf " + factionData.getName());
                     player.closeInventory();
                     break;
                 case 44:
-                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "atm")) BankingUtils.openBankMenu(player);
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "atm"))
+                        utils.bankingUtils.openBankMenu(player);
                     break;
             }
         }
@@ -1076,10 +1117,10 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (event.getCurrentItem().getType()) {
                 case RED_DYE:
-                    if (Housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
+                    if (utils.housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
                         HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
-                        PlayerManager.addMoney(player, (int) (houseData.getPrice() * 0.8));
-                        player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " +  (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
+                        playerManager.addMoney(player, (int) (houseData.getPrice() * 0.8));
+                        player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
                         player.closeInventory();
                     }
                     break;
@@ -1088,11 +1129,11 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     break;
                 case BOOK:
-                    PostboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
                     player.closeInventory();
                     break;
                 case CAULDRON:
-                    MuellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                    Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
                     player.closeInventory();
                     break;
             }
@@ -1101,15 +1142,15 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    FarmerCommand.startJob(player);
+                    Main.getInstance().commands.farmerCommand.startJob(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    FarmerCommand.quitJob(player);
+                    Main.getInstance().commands.farmerCommand.quitJob(player);
                     player.closeInventory();
                     break;
                 case WHEAT:
-                    FarmerCommand.startTransport(player);
+                    Main.getInstance().commands.farmerCommand.startTransport(player);
                     player.closeInventory();
                     break;
             }
@@ -1118,11 +1159,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    PostboteCommand.startTransport(player);
+                    Main.getInstance().commands.postboteCommand.startTransport(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    PostboteCommand.quitJob(player, false);
+                    Main.getInstance().commands.postboteCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
@@ -1131,11 +1172,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    MuellmannCommand.startTransport(player);
+                    Main.getInstance().commands.muellmannCommand.startTransport(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    MuellmannCommand.quitJob(player, false);
+                    Main.getInstance().commands.muellmannCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
@@ -1144,11 +1185,11 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case LIME_DYE:
-                    LumberjackCommand.startJob(player);
+                    Main.getInstance().commands.lumberjackCommand.startJob(player);
                     player.closeInventory();
                     break;
                 case YELLOW_DYE:
-                    LumberjackCommand.quitJob(player, false);
+                    Main.getInstance().commands.lumberjackCommand.quitJob(player, false);
                     player.closeInventory();
                     break;
             }
@@ -1178,7 +1219,7 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 24:
                     Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
-                    if (targetplayer ==  null) {
+                    if (targetplayer == null) {
                         return;
                     }
                     player.performCommand("personalausweis show " + targetplayer.getName());
@@ -1193,7 +1234,7 @@ public class InventoryClickListener implements Listener {
                     player.closeInventory();
                     Player targetplayer3 = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
                     if (targetplayer3.getLocation().distance(player.getLocation()) < 3) {
-                        if (!PlayerManager.canPlayerMove(targetplayer3)) {
+                        if (!playerManager.canPlayerMove(targetplayer3)) {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " versucht " + targetplayer3.getName() + " zu durchsuchen.");
                             Progress.start(player, 5);
                             Main.waitSeconds(5, () -> {
@@ -1214,7 +1255,7 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 40:
                     Player targetplayer2 = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
-                    if (targetplayer2 ==  null) {
+                    if (targetplayer2 == null) {
                         return;
                     }
                     Server.Utils.kissPlayer(player, targetplayer2);
@@ -1222,29 +1263,30 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 53:
                     Main.getInstance().getCooldownManager().setCooldown(player, "interaction_cooldown", 1);
-                    PlayerManager.openFactionInteractionMenu(player, playerData.getFaction());
+                    playerManager.openFactionInteractionMenu(player, playerData.getFaction());
                     break;
             }
         }
-        if (playerData.getVariable("current_inventory").startsWith("interaktionsmenü_")) {
+        if (playerData.getVariable("current_inventory").toString().startsWith("interaktionsmenü_")) {
             event.setCancelled(true);
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
             switch (event.getSlot()) {
                 case 20:
-                    StaatUtil.checkBloodGroup(player, targetplayer);
+                    utils.staatUtil.checkBloodGroup(player, targetplayer);
                     player.closeInventory();
                     break;
                 case 53:
-                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "interaction_cooldown")) PlayerManager.openInterActionMenu(player, targetplayer);
+                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "interaction_cooldown"))
+                        playerManager.openInterActionMenu(player, targetplayer);
                     break;
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "garage")) {
             event.setCancelled(true);
-            if (playerData.getVariable("current_app").equalsIgnoreCase("parkin")) {
+            if (playerData.getVariable("current_app").toString().equalsIgnoreCase("parkin")) {
                 switch (event.getCurrentItem().getType()) {
                     case REDSTONE:
-                        Vehicles.openGarage(player, playerData.getIntVariable("current_garage"), false);
+                        Main.getInstance().vehicles.openGarage(player, playerData.getIntVariable("current_garage"), false);
                         break;
                     case MINECART:
                         ItemMeta meta = event.getCurrentItem().getItemMeta();
@@ -1253,7 +1295,7 @@ public class InventoryClickListener implements Listener {
                         VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
                         playerVehicleData.setParked(true);
                         Vehicles.deleteVehicleById(id);
-                        Utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
+                        utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
                         SoundManager.successSound(player);
                         Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + playerData.getIntVariable("current_garage") + " WHERE id = " + id);
@@ -1261,10 +1303,10 @@ public class InventoryClickListener implements Listener {
                         player.closeInventory();
                         break;
                 }
-            } else if (playerData.getVariable("current_app").equalsIgnoreCase("parkout")) {
+            } else if (playerData.getVariable("current_app").toString().equalsIgnoreCase("parkout")) {
                 switch (event.getCurrentItem().getType()) {
                     case EMERALD:
-                        Vehicles.openGarage(player, playerData.getIntVariable("current_garage"), true);
+                        Main.getInstance().vehicles.openGarage(player, playerData.getIntVariable("current_garage"), true);
                         break;
                     case MINECART:
                         ItemMeta meta = event.getCurrentItem().getItemMeta();
@@ -1272,7 +1314,7 @@ public class InventoryClickListener implements Listener {
                         PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
                         VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
                         playerVehicleData.setParked(false);
-                        Utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a ausgeparkt!");
+                        utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a ausgeparkt!");
                         SoundManager.successSound(player);
                         Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + id);
@@ -1282,17 +1324,17 @@ public class InventoryClickListener implements Listener {
                 }
             }
         }
-        if (playerData.getVariable("current_inventory").contains("verarbeiter")) {
+        if (playerData.getVariable("current_inventory").toString().contains("verarbeiter")) {
             event.setCancelled(true);
         }
-        if (playerData.getVariable("current_inventory").contains("dealer")) {
+        if (playerData.getVariable("current_inventory").toString().contains("dealer")) {
             event.setCancelled(true);
         }
-        if (playerData.getVariable("current_inventory").contains("tasche_")) {
+        if (playerData.getVariable("current_inventory").toString().contains("tasche_")) {
             event.setCancelled(true);
-            Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_inventory").replace("tasche_", "")));
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_inventory").toString().replace("tasche_", "")));
             if (targetplayer == null) return;
-            PlayerData targetplayerData = PlayerManager.getPlayerData(targetplayer);
+            PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
             switch (event.getSlot()) {
                 case 11:
                     player.closeInventory();
@@ -1302,8 +1344,8 @@ public class InventoryClickListener implements Listener {
                     }
                     player.sendMessage("§8[§cAusraub§8]§c Du hast " + targetplayer.getName() + " §a" + targetplayerData.getBargeld() + "$§c geklaut.");
                     targetplayer.sendMessage("§8[§cAusraub§8]§c " + player.getName() + " hat dir §4" + targetplayerData.getBargeld() + "$§c geklaut.");
-                    PlayerManager.addMoney(player, targetplayerData.getBargeld());
-                    PlayerManager.removeMoney(targetplayer, targetplayerData.getBargeld(), "Raub (" + player.getName() + ")");
+                    playerManager.addMoney(player, targetplayerData.getBargeld());
+                    playerManager.removeMoney(targetplayer, targetplayerData.getBargeld(), "Raub (" + player.getName() + ")");
                     ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " klaut das Bargeld von " + targetplayer.getName() + ".");
                     break;
                 case 12:
@@ -1316,7 +1358,7 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (event.getSlot()) {
                 case 22:
-                    Utils.CoinShop.GUI.openShop(player);
+                    utils.shop.openShop(player);
                     break;
             }
         }
@@ -1324,14 +1366,14 @@ public class InventoryClickListener implements Listener {
             event.setCancelled(true);
             switch (event.getSlot()) {
                 case 11:
-                    Utils.CoinShop.GUI.openRankShop(player);
+                    utils.shop.openRankShop(player);
                     Main.getInstance().getCooldownManager().setCooldown(player, "rankshop", 1);
                     break;
                 case 13:
-                    Utils.CoinShop.GUI.openCosmeticShop(player);
+                    utils.shop.openCosmeticShop(player);
                     break;
                 case 15:
-                    Utils.CoinShop.GUI.openExtraShop(player);
+                    utils.shop.openExtraShop(player);
                     Main.getInstance().getCooldownManager().setCooldown(player, "extrashop", 1);
                     break;
                 case 18:
@@ -1344,18 +1386,18 @@ public class InventoryClickListener implements Listener {
             switch (event.getSlot()) {
                 case 11:
                     if (Main.getInstance().getCooldownManager().isOnCooldown(player, "rankshop")) return;
-                    Utils.CoinShop.Shop.buy(player, "vip_30");
+                    utils.shop.buy(player, "vip_30");
                     break;
                 case 13:
                     if (Main.getInstance().getCooldownManager().isOnCooldown(player, "rankshop")) return;
-                    Utils.CoinShop.Shop.buy(player, "premium_30");
+                    utils.shop.buy(player, "premium_30");
                     break;
                 case 15:
                     if (Main.getInstance().getCooldownManager().isOnCooldown(player, "rankshop")) return;
-                    Utils.CoinShop.Shop.buy(player, "gold_30");
+                    utils.shop.buy(player, "gold_30");
                     break;
                 case 18:
-                    Utils.CoinShop.GUI.openShop(player);
+                    utils.shop.openShop(player);
                     break;
             }
         }
@@ -1364,14 +1406,14 @@ public class InventoryClickListener implements Listener {
             switch (event.getSlot()) {
                 case 11:
                     if (Main.getInstance().getCooldownManager().isOnCooldown(player, "extrashop")) return;
-                    Utils.CoinShop.Shop.buy(player, "hausslot");
+                    utils.shop.buy(player, "hausslot");
                     break;
                 case 13:
                     if (Main.getInstance().getCooldownManager().isOnCooldown(player, "extrashop")) return;
-                    Utils.CoinShop.Shop.buy(player, "gameboost_3");
+                    utils.shop.buy(player, "gameboost_3");
                     break;
                 case 18:
-                    Utils.CoinShop.GUI.openShop(player);
+                    utils.shop.openShop(player);
                     break;
             }
         }

@@ -12,11 +12,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TSLinkCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public TSLinkCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("tslink", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 1) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             if (playerData.getTeamSpeakUID() == null) {
                 Client client = null;
                 try {

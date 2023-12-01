@@ -13,17 +13,24 @@ import org.bukkit.entity.Player;
 import javax.swing.text.Utilities;
 
 public class EventTeamChat implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public EventTeamChat(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("eventteamchat", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getSecondaryTeam().equals("Event-Team") || playerData.isAduty()) {
             for (Player players : Bukkit.getOnlinePlayers()) {
-                PlayerData playersData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
                     if (playersData.getSecondaryTeam().equalsIgnoreCase("Event-Team") || playersData.isAduty()) {
                         if (playersData.getSecondaryTeam().equals("Event-Team") || playersData.isAduty()) {
-                            players.sendMessage("§8[§6Event-Team§8]§e " + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
+                            players.sendMessage("§8[§6Event-Team§8]§e " + player.getName() + "§8:§7 " + utils.stringArrayToString(args));
                         }
                     }
                 }

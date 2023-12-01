@@ -25,8 +25,20 @@ import java.util.*;
 public class FFAUtils implements CommandExecutor, Listener {
     public static final Map<Integer, FFALobbyData> FFAlobbyDataMap = new HashMap<>();
     public static final Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public FFAUtils(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        try {
+            loadFFALobbys();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public static void loadFFALobbys() throws SQLException {
+    private void loadFFALobbys() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet lobby = statement.executeQuery("SELECT * FROM `ffa_lobbys`");
         while (lobby.next()) {
@@ -58,8 +70,8 @@ public class FFAUtils implements CommandExecutor, Listener {
         Player player = (Player) sender;
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("join")) {
-                if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("current_lobby") == null) {
-                    if (LocationManager.getDistanceBetweenCoords(player, "ffa") < 5) {
+                if (playerManager.getPlayerData(player.getUniqueId()).getVariable("current_lobby") == null) {
+                    if (locationManager.getDistanceBetweenCoords(player, "ffa") < 5) {
                         openFFAMenu(player, 1);
                     } else {
                         player.sendMessage(Main.error + "Du bist nicht in der nähe der FFA-Arena!");
@@ -68,7 +80,7 @@ public class FFAUtils implements CommandExecutor, Listener {
                     player.sendMessage(Main.error + "Du bist bereits in einem FFA.");
                 }
             } else if (args[0].equalsIgnoreCase("leave")) {
-                if (PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("current_lobby") != null) {
+                if (playerManager.getPlayerData(player.getUniqueId()).getVariable("current_lobby") != null) {
                     player.sendMessage("§8[§6FFA§8]§a Du hast die FFA-Arena verlassen.");
                     leaveFFA(player);
                 } else {
@@ -83,9 +95,9 @@ public class FFAUtils implements CommandExecutor, Listener {
         return false;
     }
 
-    public static void openFFAMenu(Player player, int page) {
+    public void openFFAMenu(Player player, int page) {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_inventory", "ffa_menu");
         playerData.setIntVariable("current_page", page);
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §6FFA-Lobbys §8- §6Seite§8:§7 " + page);
@@ -116,28 +128,28 @@ public class FFAUtils implements CommandExecutor, Listener {
         player.openInventory(inv);
     }
 
-    public static void joinLobby(Player player, int id) {
+    public void joinLobby(Player player, int id) {
         FFALobbyData lobbyData = FFAlobbyDataMap.get(id);
         if (lobbyData.getPlayers() < lobbyData.getMaxPlayer()) {
             player.closeInventory();
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.setIntVariable("current_lobby", id);
             playerData.setVariable("current_lobby", lobbyData.getName());
             lobbyData.setPlayers(lobbyData.getPlayers() + 1);
             player.sendMessage("§8[§6FFA§8]§e Du betrittst: " + lobbyData.getDisplayname().replace("&", "§"));
             player.sendMessage("§8 ➥ §7Nutze §8/§effa leave §7um die Arena zu verlassen.");
-            Weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "FFA");
+            Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "FFA");
             useSpawn(player, id);
         } else {
             player.sendMessage("§8[§6FFA§8]§c Diese Lobby ist voll!");
         }
     }
 
-    public static void leaveFFA(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void leaveFFA(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FFALobbyData lobbyData = FFAlobbyDataMap.get(playerData.getIntVariable("current_lobby"));
         lobbyData.setPlayers(lobbyData.getPlayers() - 1);
-        LocationManager.useLocation(player, "ffa");
+        locationManager.useLocation(player, "ffa");
         playerData.setIntVariable("current_lobby", null);
         playerData.setVariable("current_lobby", null);
         for (ItemStack item : player.getInventory().getContents()) {
@@ -156,8 +168,8 @@ public class FFAUtils implements CommandExecutor, Listener {
         }
     }
 
-    public static void useSpawn(Player player, int ffa) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void useSpawn(Player player, int ffa) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         List<FFASpawnPoints> keysWithIdOne = new ArrayList<>();
         for (FFASpawnPoints spawnPoints : FFAspawnpointDataMap.values()) {
             if (spawnPoints.getLobby_type().equals(playerData.getVariable("current_lobby"))) {

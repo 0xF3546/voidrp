@@ -24,15 +24,22 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BlacklistCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public BlacklistCommand(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("blacklist", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
-        FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.hasBlacklist() && !args[0].equalsIgnoreCase("pay")) {
             player.sendMessage(Main.error + "Deine Fraktion hat keine Blacklist.");
             return false;
@@ -41,7 +48,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             player.sendMessage("§7   ===§8[§cBlacklist§8]§7===");
             player.sendMessage("§8 ➥ §" + factionData.getPrimaryColor() + factionData.getFullname());
             player.sendMessage(" ");
-            for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
+            for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                 if (blacklistData.getFaction().equals(factionData.getName())) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(blacklistData.getUuid()));
                     player.sendMessage("§8 ➥ §e" + offlinePlayer.getName() + "§8 | §e" + blacklistData.getPrice() + "$ §8 | §e" + blacklistData.getKills() + " Tode §8| §e" + blacklistData.getReason() + " §8|§e " + blacklistData.getDate());
@@ -65,7 +72,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                         return false;
                     }
                     boolean canDo = true;
-                    for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
+                    for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                         if (blacklistData.getFaction().equals(playerData.getFaction())) {
                             if (Objects.equals(blacklistData.getUuid(), player1.getUniqueId().toString())) {
                                 canDo = false;
@@ -99,9 +106,9 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                             blacklistData.setFaction(factionData.getName());
                             blacklistData.setId(checkId.getInt(1));
                             blacklistData.setUuid(player1.getUniqueId().toString());
-                            FactionManager.blacklistDataMap.put(checkId.getInt(1), blacklistData);
+                            factionManager.addBlacklist(checkId.getInt(1), blacklistData);
                         }
-                        FactionManager.sendMessageToFaction(factionData.getName(), FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " auf die Blacklist gesetzt.");
+                        factionManager.sendMessageToFaction(factionData.getName(), factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " auf die Blacklist gesetzt.");
                         player1.sendMessage("§8[§cBlacklist§8]§c Du wurdest auf die Blacklist von " + factionData.getFullname() + " gesetzt.");
                         player1.sendMessage("§8[§cBlacklist§8]§c " + kills + " Kills §8| §c" + price + "$§8 | §c" + reason);
                     } catch (SQLException e) {
@@ -123,15 +130,15 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
                 boolean canDo = false;
-                for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
+                for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                     if (blacklistData.getUuid().equals(player1.getUniqueId().toString()) && blacklistData.getFaction().equals(factionData.getName())) {
                         canDo = true;
 
                         try {
                             Statement statement = Main.getInstance().mySQL.getStatement();
                             statement.execute("DELETE FROM `blacklist` WHERE `id` = " + blacklistData.getId());
-                            FactionManager.sendMessageToFaction(factionData.getName(), "§c" + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " von der Blacklist gelöscht.");
-                            FactionManager.blacklistDataMap.remove(blacklistData.getId());
+                            factionManager.sendMessageToFaction(factionData.getName(), "§c" + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " von der Blacklist gelöscht.");
+                            factionManager.removeBlacklist(blacklistData.getId());
                             player1.sendMessage("§8[§cBlacklist§8]§7 " + player.getName() + " hat dich von der Blacklist der " + factionData.getFullname() + " gelöscht");
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
@@ -141,25 +148,25 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                 }
                 player.sendMessage(Main.error + player1.getName() + " ist nicht auf der Blacklist.");
             } else if (args[0].equalsIgnoreCase("pay")) {
-                for (FactionData factionData1 : FactionManager.factionDataMap.values()) {
+                for (FactionData factionData1 : factionManager.getFactions()) {
                     if (factionData1.getName().equalsIgnoreCase(args[1]) || factionData1.getFullname().equalsIgnoreCase(args[1])) {
-                        for (BlacklistData blacklistData : FactionManager.blacklistDataMap.values()) {
+                        for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                             if (blacklistData.getFaction().equals(factionData1.getName())) {
                                 if (blacklistData.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
                                     if (playerData.getBargeld() >= blacklistData.getPrice()) {
                                         try {
-                                            PlayerManager.removeMoney(player, blacklistData.getPrice(), "Blacklist bezahlt - " + factionData1.getName());
+                                            playerManager.removeMoney(player, blacklistData.getPrice(), "Blacklist bezahlt - " + factionData1.getName());
                                             player.sendMessage("§8[§cBlacklist§8]§7 Du hast dich von der Blacklist von §" + factionData1.getPrimaryColor() + factionData1.getFullname() + "§7 freigekauft. §c-" + blacklistData.getPrice());
-                                            for (PlayerData playerData1 : PlayerManager.playerDataMap.values()) {
+                                            for (PlayerData playerData1 : playerManager.getPlayers()) {
                                                 if (playerData1.getFaction().equals(factionData1.getName())) {
                                                     Player player1 = Bukkit.getPlayer(UUID.fromString(playerData1.getUuid().toString()));
                                                     player1.sendMessage("§8[§cBlacklist§8] §" + factionData1.getPrimaryColor() + player.getName() + " hat sich freigekauft (§a" + blacklistData.getPrice() + "$§" + factionData1.getPrimaryColor() +").");
                                                 }
                                             }
-                                            FactionManager.addFactionMoney(factionData1.getName(), blacklistData.getPrice(), "Blacklist-Zahlung " + player.getName());
+                                            factionManager.addFactionMoney(factionData1.getName(), blacklistData.getPrice(), "Blacklist-Zahlung " + player.getName());
                                             Statement statement = Main.getInstance().mySQL.getStatement();
                                             statement.execute("DELETE FROM blacklist WHERE id = " + blacklistData.getId());
-                                            FactionManager.blacklistDataMap.remove(blacklistData.getId());
+                                            factionManager.removeBlacklist(blacklistData.getId());
                                         } catch (SQLException e) {
                                             throw new RuntimeException(e);
                                         }

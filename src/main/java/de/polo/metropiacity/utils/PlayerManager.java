@@ -10,7 +10,6 @@ import de.polo.metropiacity.playerUtils.*;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
-import de.polo.metropiacity.commands.ADutyCommand;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -36,12 +35,22 @@ import java.util.Date;
 
 public class PlayerManager implements Listener {
 
-    public static final Map<String, PlayerData> playerDataMap = new HashMap<>();
-    public static final HashMap<String, Boolean> onPlayer = new HashMap<>();
-    public static final HashMap<String, Boolean> playerMovement = new HashMap<>();
-    public static final HashMap<String, Integer> player_rent = new HashMap<>();
+    private final Map<String, PlayerData> playerDataMap = new HashMap<>();
+    private final HashMap<String, Boolean> onPlayer = new HashMap<>();
+    private  final HashMap<String, Boolean> playerMovement = new HashMap<>();
+    public final HashMap<String, Integer> player_rent = new HashMap<>();
 
-    public static boolean isCreated(String uuid) {
+    private MySQL mySQL;
+    private Utils utils;
+
+    public PlayerManager(MySQL mySQL) {
+        this.mySQL = mySQL;
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        startTimeTracker();
+    }
+
+    public boolean isCreated(UUID uuid) {
 
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
@@ -60,7 +69,7 @@ public class PlayerManager implements Listener {
             String newDate = formatter.format(date);
             statement.execute("INSERT INTO `players` (`uuid`, `firstjoin`) VALUES ('" + uuid + "', '" + newDate + "')");
             statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
-            Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+            Player player = Bukkit.getPlayer(uuid);
             assert player != null;
             loadPlayer(player);
             setPlayerMove(player, true);
@@ -70,7 +79,7 @@ public class PlayerManager implements Listener {
         return false;
     }
 
-    public static void updatePlayer(String uuid, String name, String adress) {
+    public void updatePlayer(String uuid, String name, String adress) {
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             String[] adresse = adress.split(":");
@@ -85,7 +94,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void loadPlayer(Player player) {
+    public void loadPlayer(Player player) {
         String uuid = player.getUniqueId().toString();
         boolean returnval = false;
         try {
@@ -150,7 +159,7 @@ public class PlayerManager implements Listener {
                 }
                 if (name.getBoolean(28)) {
                     playerData.setVariable("tutorial", "muss");
-                    Tutorial.start(player);
+                    Main.getInstance().utils.tutorial.start(player);
                 }
 
                 playerData.setHours(name.getInt(29));
@@ -211,11 +220,11 @@ public class PlayerManager implements Listener {
                     }
                 }
                 if (playerData.isDuty()) {
-                    FactionManager.setDuty(player, true);
+                    Main.getInstance().factionManager.setDuty(player, true);
                 }
                 returnval = true;
                 updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
-                if (playerData.isDead()) DeathUtils.killPlayer(player);
+                if (playerData.isDead()) utils.deathUtil.killPlayer(player);
             }
         } catch (SQLException e) {
             returnval = false;
@@ -223,7 +232,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void savePlayer(Player player) throws SQLException {
+    public void savePlayer(Player player) throws SQLException {
         String uuid = player.getUniqueId().toString();
         Statement statement = Main.getInstance().mySQL.getStatement();
         PlayerData playerData = playerDataMap.get(uuid);
@@ -240,7 +249,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static Serializable createCpAccount(String uuid, String email, String password) {
+    public Serializable createCpAccount(String uuid, String email, String password) {
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
@@ -256,7 +265,7 @@ public class PlayerManager implements Listener {
         return 0;
     }
 
-    public static void add1MinutePlaytime(Player player) {
+    public void add1MinutePlaytime(Player player) {
         try {
             String uuid = player.getUniqueId().toString();
             PlayerData playerData = playerDataMap.get(uuid);
@@ -265,7 +274,7 @@ public class PlayerManager implements Listener {
             if (playerData.isJailed()) {
                 playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
                 if (playerData.getHafteinheiten() <= 0) {
-                    StaatUtil.unarrestPlayer(player);
+                    Main.getInstance().utils.staatUtil.unarrestPlayer(player);
                 }
             }
             ResultSet result = statement.executeQuery("SELECT `playtime_hours`, `playtime_minutes`, `current_hours`, `needed_hours`, `visum` FROM `players` WHERE `uuid` = '" + uuid + "'");
@@ -282,14 +291,14 @@ public class PlayerManager implements Listener {
                 if (minutes >= 60) {
                     if (current_hours >= needed_hours) {
                         needed_hours = needed_hours + 4;
-                        PayDayUtils.givePayDay(player);
+                        Main.getInstance().utils.payDayUtils.givePayDay(player);
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
                         player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                         playerData.setVisum(visum);
                         playerData.setHours(playerData.getHours() + 1);
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                     } else {
-                        PayDayUtils.givePayDay(player);
+                        Main.getInstance().utils.payDayUtils.givePayDay(player);
                         current_hours = current_hours + 1;
                         playerData.setHours(playerData.getHours() + 1);
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
@@ -310,7 +319,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void addMoney(Player player, int amount) throws SQLException {
+    public void addMoney(Player player, int amount) throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
@@ -323,7 +332,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void removeMoney(Player player, int amount, String reason) throws SQLException {
+    public void removeMoney(Player player, int amount, String reason) throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
@@ -336,7 +345,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void addBankMoney(Player player, int amount, String reason) throws SQLException {
+    public void addBankMoney(Player player, int amount, String reason) throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
@@ -350,7 +359,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void removeBankMoney(Player player, int amount, String reason) throws SQLException {
+    public void removeBankMoney(Player player, int amount, String reason) throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
@@ -365,7 +374,7 @@ public class PlayerManager implements Listener {
     }
 
 
-    public static void setRang(String uuid, String rank) {
+    public void setRang(String uuid, String rank) {
         try {
             for (RankData rankData : ServerManager.rankDataMap.values()) {
                 if (rankData.getRang().equalsIgnoreCase(rank)) {
@@ -391,41 +400,41 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static int money(Player player) {
+    public int money(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getBargeld();
     }
 
-    public static int bank(Player player) {
+    public int bank(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getBank();
     }
 
-    public static String firstname(Player player) {
+    public String firstname(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getFirstname();
     }
 
-    public static String lastname(Player player) {
+    public String lastname(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getLastname();
     }
 
-    public static int visum(Player player) {
+    public int visum(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getVisum();
     }
 
-    public static int paydayDuration(Player player) {
+    public int paydayDuration(Player player) {
         return playerDataMap.get(player.getUniqueId().toString()).getMinutes();
     }
 
-    public static void setPlayerMove(Player player, Boolean state) {
+    public void setPlayerMove(Player player, Boolean state) {
         if (!state) {
             if (playerMovement.get(player.getUniqueId().toString()) == null) {
                 playerMovement.put(player.getUniqueId().toString(), true);
@@ -446,43 +455,43 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static boolean canPlayerMove(Player player) {
+    public boolean canPlayerMove(Player player) {
         return playerMovement.get(player.getUniqueId().toString()) != null;
     }
 
-    public static boolean isTeam(Player player) {
+    public boolean isTeam(Player player) {
         return playerDataMap.get(player.getUniqueId().toString()).getPermlevel() >= 40;
     }
 
-    public static Integer perms(Player player) {
+    public Integer perms(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getPermlevel();
     }
 
-    public static String rang(Player player) {
+    public String rang(Player player) {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerDataMap.get(uuid);
         return playerData.getRang();
     }
 
-    public static void startTimeTracker() {
+    public void startTimeTracker() {
         new BukkitRunnable() {
             @Override
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    PlayerData playerData = getPlayerData(player);
+                    PlayerData playerData = getPlayerData(player.getUniqueId());
                     if (!playerData.isAFK()) {
                         add1MinutePlaytime(player);
                         if (playerData.getIntVariable("afk") >= 2) {
-                            Utils.AFK.setAFK(player, true);
+                            Main.getInstance().utils.setAFK(player, true);
                         } else {
                             playerData.setIntVariable("afk", playerData.getIntVariable("afk") + 1);
                         }
                     }
                 }
-                if (Utils.getCurrentMinute() == 0) {
-                    for (FactionData factionData : FactionManager.factionDataMap.values()) {
+                if (Main.getInstance().utils.getCurrentMinute() == 0) {
+                    for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
                         for (PlayerData playerData : playerDataMap.values()) {
                             if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                 Player player = Bukkit.getPlayer(playerData.getUuid());
@@ -505,9 +514,9 @@ public class PlayerManager implements Listener {
                                 }
                                 player.sendMessage(" ");
                                 if (plus >= 0) {
-                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(FactionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
+                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
                                 } else {
-                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(FactionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
+                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
                                 }
                                 player.sendMessage(" ");
                                 factionData.setPayDay(0);
@@ -526,7 +535,7 @@ public class PlayerManager implements Listener {
                         }
                         factionData.setPayDay(0);
                         try {
-                            FactionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
+                            Main.getInstance().factionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -536,17 +545,17 @@ public class PlayerManager implements Listener {
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
 
-    public static void kickPlayer(Player player, String reason) {
+    public void kickPlayer(Player player, String reason) {
         player.kickPlayer("§8• §6§lVoid Roleplay §8•\n\n§cDu wurdest vom Server geworfen.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoid Roleplay §8•");
     }
 
-    public static void addExp(Player player, Integer exp) {
+    public void addExp(Player player, Integer exp) {
         String characters = "a0b1c2d3e4569";
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setExp(playerData.getExp() + exp);
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
-            Utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
+            Main.getInstance().utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
             playerData.setLevel(playerData.getLevel() + 1);
             player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
@@ -554,26 +563,26 @@ public class PlayerManager implements Listener {
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
         } else {
             player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
-            Utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            Main.getInstance().utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         }
         player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
     }
 
-    public static void removeExp(Player player, Integer exp) {
+    public void removeExp(Player player, Integer exp) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setExp(playerData.getExp() - exp);
         player.sendMessage("§c-+" + exp + " EXP");
     }
 
-    public static void addEXPBoost(Player player, int hours) throws SQLException {
+    public void addEXPBoost(Player player, int hours) throws SQLException {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setBoostDuration(playerData.getBoostDuration() + hours);
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
-    public static void redeemRank(Player player, String type, int duration, String duration_type) throws SQLException {
+    public void redeemRank(Player player, String type, int duration, String duration_type) throws SQLException {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         switch (type.toLowerCase()) {
             case "vip":
@@ -630,7 +639,7 @@ public class PlayerManager implements Listener {
         statement.executeUpdate("UPDATE `players` SET `rankDuration` = '" + playerData.getRankDuration() + "', `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
-    public static void setJob(Player player, String job) {
+    public void setJob(Player player, String job) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setJob(job);
         try {
@@ -641,7 +650,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static void resetJob(Player player) {
+    public void resetJob(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         playerData.setJob(null);
         try {
@@ -652,15 +661,15 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public static boolean isInStaatsFrak(Player player) {
+    public boolean isInStaatsFrak(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
         return playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei");
     }
 
-    public static void openInterActionMenu(Player player, Player targetplayer) {
+    public void openInterActionMenu(Player player, Player targetplayer) {
         Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
-        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
-        PlayerData targetplayerData = playerDataMap.get(targetplayer.getUniqueId().toString());
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        PlayerData targetplayerData = getPlayerData(targetplayer.getUniqueId());
         playerData.setVariable("current_inventory", "interaktionsmenü");
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
@@ -669,7 +678,7 @@ public class PlayerManager implements Listener {
         inv.setItem(38, ItemManager.createItem(Material.IRON_BARS, 1, 0, "§7Durchsuchen", null));
         inv.setItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen", null));
         if (playerData.getFaction() != null) {
-            FactionData factionData = FactionManager.factionDataMap.get(playerData.getFaction());
+            FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
             inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü", null));
         }
         for (int i = 0; i < 54; i++) {
@@ -680,9 +689,9 @@ public class PlayerManager implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openFactionInteractionMenu(Player player, String faction) {
+    public void openFactionInteractionMenu(Player player, String faction) {
         Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
-        PlayerData playerData = playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = getPlayerData(player.getUniqueId());
         Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
         if (targetplayer == null) return;
         PlayerData targetplayerData = playerDataMap.get(targetplayer.getUniqueId().toString());
@@ -721,12 +730,12 @@ public class PlayerManager implements Listener {
                 if (amount >= 1) {
                     if (event.getPlayerData().getBargeld() >= amount) {
                         try {
-                            PlayerManager.removeMoney(event.getPlayer(), amount, "Geld an " + targetplayer.getName() + " übergeben.");
-                            PlayerManager.addMoney(targetplayer, amount);
+                            removeMoney(event.getPlayer(), amount, "Geld an " + targetplayer.getName() + " übergeben.");
+                            addMoney(targetplayer, amount);
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
-                            ADutyCommand.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
+                            Main.getInstance().adminManager.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -751,11 +760,14 @@ public class PlayerManager implements Listener {
         //event.setCancelled(true);
     }
 
-    public static PlayerData getPlayerData(Player player) {
-        return playerDataMap.get(player.getUniqueId().toString());
+    public PlayerData getPlayerData(UUID uuid) {
+        return playerDataMap.get(uuid);
     }
-    public static void addCoins(Player player, int amount) {
-        PlayerData playerData = getPlayerData(player);
+    public Collection<PlayerData> getPlayers() {
+        return playerDataMap.values();
+    }
+    public void addCoins(Player player, int amount) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
         playerData.setCoins(playerData.getCoins() + amount);
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
@@ -764,8 +776,8 @@ public class PlayerManager implements Listener {
             throw new RuntimeException(e);
         }
     }
-    public static void removeCoins(Player player, int amount) {
-        PlayerData playerData = getPlayerData(player);
+    public void removeCoins(Player player, int amount) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
         playerData.setCoins(playerData.getCoins() - amount);
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();

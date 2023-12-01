@@ -2,7 +2,6 @@ package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
@@ -24,12 +23,17 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 public class PlayerInteractWithPlayerListener implements Listener {
+    private final PlayerManager playerManager;
+    public PlayerInteractWithPlayerListener(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onPlayerInteractWithPlayer(PlayerInteractEntityEvent event) {
             if (event.getRightClicked() instanceof Player) {
                 Player player = event.getPlayer();
                 Player targetplayer = (Player) event.getRightClicked();
-                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 if (playerData.isDead()) {
                     event.setCancelled(true);
                     return;
@@ -39,18 +43,18 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (item.getType() == Material.LEAD) {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
-                        if (!PlayerManager.canPlayerMove(targetplayer)) {
+                        if (!playerManager.canPlayerMove(targetplayer)) {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
-                            PlayerManager.setPlayerMove(targetplayer, false);
+                            playerManager.setPlayerMove(targetplayer, false);
                         } else {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
-                            PlayerManager.setPlayerMove(targetplayer, true);
+                            playerManager.setPlayerMove(targetplayer, true);
                         }
                         Main.getInstance().getCooldownManager().setCooldown(player, "handschellen", 1);
                     }
                 } else if (item.getType() == Material.DIAMOND) {
                     if (item.getItemMeta().getDisplayName().contains("Ehering")) {
-                        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                        PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                         if (playerData.getRelationShip().get(targetplayer.getUniqueId().toString()).equals("verlobt")) {
                             if (targetplayerData.getRelationShip().get(player.getUniqueId().toString()).equals("verlobt")) {
                                 ItemStack itemStack = item.clone();
@@ -101,17 +105,17 @@ public class PlayerInteractWithPlayerListener implements Listener {
                         player.sendMessage(Main.error + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
                     }
                 } else {
-                    if (player.isSneaking()) PlayerManager.openInterActionMenu(player, targetplayer);
+                    if (player.isSneaking()) playerManager.openInterActionMenu(player, targetplayer);
                 }
             }
-        if ((event.getRightClicked().getType() == EntityType.ARMOR_STAND || event.getRightClicked().getType() == EntityType.ITEM_FRAME || event.getRightClicked().getType() == EntityType.PAINTING) && !PlayerManager.playerDataMap.get(event.getPlayer().getUniqueId().toString()).isAduty()) {
+        if ((event.getRightClicked().getType() == EntityType.ARMOR_STAND || event.getRightClicked().getType() == EntityType.ITEM_FRAME || event.getRightClicked().getType() == EntityType.PAINTING) && !playerManager.getPlayerData(event.getPlayer().getUniqueId()).isAduty()) {
             event.setCancelled(true);
         }
         if (event.getRightClicked() instanceof Villager) {
             Villager villager = (Villager) event.getRightClicked();
             String command = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
             assert command != null;
-            if (PlayerManager.playerDataMap.get(event.getPlayer().getUniqueId().toString()).isAduty()) {
+            if (playerManager.getPlayerData(event.getPlayer().getUniqueId()).isAduty()) {
                 String id_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING);
                 event.getPlayer().sendMessage(Main.gamedesign_prefix + "Befehl§8:§f " + command + "§8 | §7ID-Name§8:§f " + id_name);
             } else {

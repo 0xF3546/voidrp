@@ -19,6 +19,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerLoginListener implements Listener {
+    public PlayerLoginListener() {
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();

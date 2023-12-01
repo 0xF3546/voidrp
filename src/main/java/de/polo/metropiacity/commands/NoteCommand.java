@@ -26,10 +26,17 @@ import java.sql.Statement;
 import java.util.UUID;
 
 public class NoteCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public NoteCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("note", this);
+    }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 60) {
             player.sendMessage(Main.error_nopermission);
             return false;
@@ -39,7 +46,7 @@ public class NoteCommand implements CommandExecutor {
             return false;
         }
         if (args.length == 1) {
-            OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
+            OfflinePlayer offlinePlayer = utils.getOfflinePlayer(args[0]);
             if (offlinePlayer == null) {
                 player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
                 return false;
@@ -72,7 +79,7 @@ public class NoteCommand implements CommandExecutor {
             }
             return false;
         }
-        OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
+        OfflinePlayer offlinePlayer = utils.getOfflinePlayer(args[0]);
         if (offlinePlayer == null) {
             player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
             return false;

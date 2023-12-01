@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class CPCommand implements CommandExecutor {
+    public CPCommand() {
+        Main.registerCommand("cp", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

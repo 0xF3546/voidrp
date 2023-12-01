@@ -16,12 +16,18 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 
 public class PayDayUtils {
-    public static void givePayDay(Player player) throws SQLException {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public PayDayUtils(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+    }
+    public void givePayDay(Player player) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         double plus = 0;
-        double zinsen = Math.round(PlayerManager.bank(player) * 0.0075);
-        double steuern = Math.round(PlayerManager.bank(player) * 0.0035);
-        int visumbonus = PlayerManager.visum(player) * 10;
+        double zinsen = Math.round(playerManager.bank(player) * 0.0075);
+        double steuern = Math.round(playerManager.bank(player) * 0.0035);
+        int visumbonus = playerManager.visum(player) * 10;
         int frakpayday = 0;
         plus = plus + zinsen - steuern + visumbonus;
         player.sendMessage("");
@@ -30,15 +36,15 @@ public class PayDayUtils {
         player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
         if (playerData.getBank() >= 300000) {
-            double reichensteuer = Math.round(PlayerManager.bank(player) * 0.015);
+            double reichensteuer = Math.round(playerManager.bank(player) * 0.015);
             player.sendMessage("§8 ➥ §6Reichensteuer§8:§c -" + (int) reichensteuer + "$");
             plus -= reichensteuer;
         }
         player.sendMessage("§8 ➥ §6Sozialbonus§8:§a +" + visumbonus + "$");
         player.sendMessage(" ");
         if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
-            frakpayday = FactionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());
-            if (FactionManager.removeFactionMoney(playerData.getFaction(), frakpayday, "Gehalt " + player.getName())) {
+            frakpayday = factionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());
+            if (factionManager.removeFactionMoney(playerData.getFaction(), frakpayday, "Gehalt " + player.getName())) {
                 player.sendMessage("§8 ➥ §6Gehalt [" + playerData.getFaction() + "]§8: §a+" + frakpayday + "$");
                 plus += frakpayday;
             }
@@ -64,12 +70,12 @@ public class PayDayUtils {
             }
         }
         if (playerData.getPermlevel() >= 40) {
-            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getRang() + ")§8: §a" + playerData.getPermlevel() * ServerManager.getPayout("teamgehalt") + "$");
-            plus += playerData.getPermlevel() * ServerManager.getPayout("teamgehalt");
+            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getRang() + ")§8: §a" + playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt") + "$");
+            plus += playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt");
         }
         if (playerData.getSecondaryTeam() != null) {
-            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getSecondaryTeam() + ")§8: §a" + ServerManager.getPayout("secondaryteam") + "$");
-            plus += ServerManager.getPayout("secondaryteam");
+            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getSecondaryTeam() + ")§8: §a" + Main.getInstance().serverManager.getPayout("secondaryteam") + "$");
+            plus += Main.getInstance().serverManager.getPayout("secondaryteam");
         }
         for (PlayerVehicleData vehicleData : Vehicles.playerVehicleDataMap.values()) {
             if (vehicleData.getUuid().equals(player.getUniqueId().toString())) {
@@ -88,13 +94,13 @@ public class PayDayUtils {
         player.sendMessage(" ");
         plus = Math.round(plus);
         if (plus >= 0) {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(PlayerManager.bank(player) + (int) plus) + "$ §8(§a+" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(playerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(playerManager.bank(player) + (int) plus) + "$ §8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(PlayerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(PlayerManager.bank(player) + (int) plus) + "$ §8(§c" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(playerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(playerManager.bank(player) + (int) plus) + "$ §8(§c" + (int) plus + "$§8)");
         }
         player.sendMessage(" ");
-        PlayerManager.addBankMoney(player, (int) plus, "PayDay");
-        PlayerManager.addExp(player, Main.random(12, 20));
+        playerManager.addBankMoney(player, (int) plus, "PayDay");
+        playerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 }

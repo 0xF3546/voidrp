@@ -30,7 +30,7 @@ public class PlayerData {
     private int permlevel;
     private String faction;
     private int faction_grade;
-    private final HashMap<String, String> variables = new HashMap<>();
+    private final HashMap<String, Object> variables = new HashMap<>();
     private final HashMap<String, Integer> integer_variables = new HashMap<>();
     private final HashMap<String, Location> locationVariables = new HashMap<>();
     private final HashMap<String, Inventory> inventoryVariables = new HashMap<>();
@@ -137,7 +137,7 @@ public class PlayerData {
         return faction_grade;
     }
 
-    public void setVariable(String variable, String value) {
+    public <T> void setVariable(String variable, T value) {
         if (this.variables.get(variable) != null) {
             this.variables.replace(variable, value);
         } else {
@@ -145,8 +145,8 @@ public class PlayerData {
         }
     }
 
-    public String getVariable(String variable) {
-        return variables.get(variable);
+    public <T> T getVariable(String variable) {
+        return (T) variables.get(variable);
     }
 
     public boolean canInteract() {

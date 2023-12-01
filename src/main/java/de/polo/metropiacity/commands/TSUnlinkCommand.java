@@ -16,10 +16,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class TSUnlinkCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    public TSUnlinkCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("tsunlink", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getTeamSpeakUID() != null) {
             Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
             if (client != null) {

@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.ChatColor;
@@ -13,10 +14,19 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 
 public class SetRankNameCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final AdminManager adminManager;
+    private final FactionManager factionManager;
+    public SetRankNameCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.adminManager = adminManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("setrankname", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFactionGrade() >= 7) {
             if (args.length >= 2) {
                 try {
@@ -24,9 +34,9 @@ public class SetRankNameCommand implements CommandExecutor {
                     for (int i = 2; i < args.length; i++) {
                         newName = newName + " " + args[i];
                     }
-                    if (FactionManager.changeRankName(playerData.getFaction(), Integer.parseInt(args[0]), newName)) {
+                    if (factionManager.changeRankName(playerData.getFaction(), Integer.parseInt(args[0]), newName)) {
                         player.sendMessage(Main.faction_prefix + "Rangname von Rang §l" + args[0] + "§7 zu §l" + newName + "§7 geändert.");
-                        ADutyCommand.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + args[1] + " gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
+                        adminManager.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + args[1] + " gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

@@ -5,6 +5,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -18,6 +19,13 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Objects;
 
 public class HouseLockListener implements Listener {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public HouseLockListener(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onHouseOpen(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
@@ -26,12 +34,12 @@ public class HouseLockListener implements Listener {
             if (block.getType().toString().contains("DOOR") && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 NamespacedKey value = new NamespacedKey(Main.plugin, "value");
                 PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
-                PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 if (!playerData.isAduty()) {
                     PersistentDataType<?, ?> type = CustomBlockData.getDataType(container, value);
                     if (type == PersistentDataType.INTEGER) {
                         int number = Objects.requireNonNull(container.get(value, PersistentDataType.INTEGER));
-                        if (!Housing.canPlayerInteract(player, number)) {
+                        if (!utils.housing.canPlayerInteract(player, number)) {
                             event.setCancelled(true);
                         }
                     }

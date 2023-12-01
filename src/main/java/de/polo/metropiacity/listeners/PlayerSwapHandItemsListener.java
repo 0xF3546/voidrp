@@ -22,6 +22,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class PlayerSwapHandItemsListener implements Listener {
+    private final PlayerManager playerManager;
+    public PlayerSwapHandItemsListener(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
@@ -46,7 +51,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             }
         }
-        PlayerData playerData = PlayerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_inventory", "tasche");
         if (nearestSkull == null) {
             Utils.GUI.Tasche.openMainInventory(player);
@@ -56,7 +61,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         final Item skull = nearestSkull;
         Player targetplayer = Bukkit.getPlayer(skullMeta.getOwningPlayer().getUniqueId());
         System.out.println(targetplayer.getName());
-        PlayerData targetplayerData = PlayerManager.getPlayerData(targetplayer);
+        PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")");
         inv.setItem(11, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + Utils.toDecimalFormat(targetplayerData.getBargeld()) + "$"));
         ItemMeta meta = inv.getItem(11).getItemMeta();

@@ -23,10 +23,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class ContractsCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    public ContractsCommand(PlayerManager playerManager, FactionManager factionManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        Main.registerCommand("contracts", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction().equals("ICA")) {
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("all")) {
@@ -43,10 +50,10 @@ public class ContractsCommand implements CommandExecutor, TabCompleter {
                             if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
                                 if (playerData.getFactionGrade() >= 7) {
                                     try {
-                                        if (FactionManager.removeFactionMoney(playerData.getFaction(), ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()).getAmount(), "Kopfgeld entfernung durch " + player.getName())) {
+                                        if (factionManager.removeFactionMoney(playerData.getFaction(), ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()).getAmount(), "Kopfgeld entfernung durch " + player.getName())) {
                                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                                if (FactionManager.faction(players).equals("ICA")) {
-                                                    players.sendMessage("§8[§cKopfgeld§8]§e " + FactionManager.getPlayerFactionRankName(player) + " " + player.getName() + " §7hat das Kopfgeld von §e" + targetplayer.getName() + " §7gelöscht.");
+                                                if (factionManager.faction(players).equals("ICA")) {
+                                                    players.sendMessage("§8[§cKopfgeld§8]§e " + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " §7hat das Kopfgeld von §e" + targetplayer.getName() + " §7gelöscht.");
                                                 }
                                             }
                                             ServerManager.contractDataMap.remove(targetplayer.getUniqueId().toString());

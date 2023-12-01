@@ -12,10 +12,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CloseServiceCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+    public CloseServiceCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("closeservice", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei")) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
@@ -24,13 +29,13 @@ public class CloseServiceCommand implements CommandExecutor {
                     if (serviceData != null) {
                         if (serviceData.getAcceptedByUuid().equals(player.getUniqueId().toString())) {
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (PlayerManager.playerDataMap.get(p.getUniqueId().toString()).getFaction().equals(playerData.getFaction())) {
+                                if (playerManager.getPlayerData(p.getUniqueId()).getFaction().equals(playerData.getFaction())) {
                                     p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat den Service von " + targetplayer.getName() + " geschlossen.");
                                 }
                             }
                             targetplayer.sendMessage("§8[§6Notruf§8]§c Dein Notruf wurde von " + player.getName() + " geschlossen.");
                             StaatUtil.serviceDataMap.remove(targetplayer.getUniqueId().toString());
-                            PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+                            PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                             targetplayerData.setVariable("service", null);
                         } else {
                             player.sendMessage(Main.error + "Der Service wird nicht von dir bearbeitet.");

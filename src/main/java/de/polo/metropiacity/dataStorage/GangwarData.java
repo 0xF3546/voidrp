@@ -105,7 +105,7 @@ public class GangwarData {
             @Override
             public void run() {
                 if (getMinutes() <= 0 && getSeconds() <= 1) {
-                    GangwarUtils.endGangwar(getZone());
+                    Main.getInstance().gangwarUtils.endGangwar(getZone());
                     cancel();
                 }
                 if (getSeconds() <= 0) {

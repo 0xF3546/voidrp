@@ -13,25 +13,32 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class OrtenCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public OrtenCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("orten", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction().equals("FBI")) {
             if (playerData.getVariable("ortet") == null) {
                 if (args.length >= 1) {
                     playerData.setIntVariable("ortet", Integer.parseInt(args[0]));
                     playerData.setVariable("ortet", args[0]);
-                    Utils.sendActionBar(player, "§9Orte Handy...");
+                    utils.sendActionBar(player, "§9Orte Handy...");
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            PlayerData playerData1 = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+                            PlayerData playerData1 = playerManager.getPlayerData(player.getUniqueId());
                             if (playerData1.getVariable("ortet") != null) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
-                                    if (PlayerManager.playerDataMap.get(players.getUniqueId().toString()).getNumber() == playerData1.getIntVariable("ortet")) {
-                                        if (!PlayerManager.playerDataMap.get(players.getUniqueId().toString()).isFlightmode()) {
-                                            Navigation.createNaviByCord(player, (int) players.getLocation().getX(), (int) players.getLocation().getY(), (int) players.getLocation().getZ());
+                                    if (playerManager.getPlayerData(players.getUniqueId()).getNumber() == playerData1.getIntVariable("ortet")) {
+                                        if (!playerManager.getPlayerData(players.getUniqueId()).isFlightmode()) {
+                                            utils.navigation.createNaviByCord(player, (int) players.getLocation().getX(), (int) players.getLocation().getY(), (int) players.getLocation().getZ());
                                             player.sendMessage("§8[§9Orten§8]§3 Navi geupdated.");
                                         } else {
                                             player.sendMessage("§8[§9Orten§8]§c Das Handy ist nicht mehr erreichbar.");

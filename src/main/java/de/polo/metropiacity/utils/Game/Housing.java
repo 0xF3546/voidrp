@@ -23,7 +23,16 @@ import java.util.*;
 
 public class Housing {
     public static final Map<Integer, HouseData> houseDataMap = new HashMap<>();
-    public static void loadHousing() throws SQLException {
+    private final PlayerManager playerManager;
+    public Housing(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        try {
+            loadHousing();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void loadHousing() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
         while (locs.next()) {
@@ -46,12 +55,12 @@ public class Housing {
         }
     }
 
-    public static boolean isPlayerOwner(Player player, int number) {
+    public boolean isPlayerOwner(Player player, int number) {
         HouseData houseData = houseDataMap.get(number);
         return player.getUniqueId().toString().equals(houseData.getOwner());
     }
 
-    public static boolean canPlayerInteract(Player player, int number) {
+    public boolean canPlayerInteract(Player player, int number) {
         HouseData houseData = houseDataMap.get(number);
         if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) {
             System.out.println("spieler ist kein owner");
@@ -61,7 +70,7 @@ public class Housing {
             return true;
         }
     }
-    public static void updateRenter(int number) {
+    public void updateRenter(int number) {
         HouseData houseData = houseDataMap.get(number);
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
@@ -72,15 +81,15 @@ public class Housing {
         }
     }
 
-    public static void addHausSlot(Player player) throws SQLException {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void addHausSlot(Player player) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         System.out.println("hausslot hinzugefügt");
         playerData.setHouseSlot(playerData.getHouseSlot() + 1);
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
-    public static boolean resetHouse(Player player, int house) {
+    public boolean resetHouse(Player player, int house) {
         for (HouseData houseData : houseDataMap.values()) {
             int centerX = player.getLocation().getBlockX();
             int centerY = player.getLocation().getBlockY();

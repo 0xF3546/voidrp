@@ -1,5 +1,6 @@
 package de.polo.metropiacity.utils.events;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class NaviReachEvent extends Event {
     }
 
     public PlayerData getPlayerData() {
-        return PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        return Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
     }
 
     @Override

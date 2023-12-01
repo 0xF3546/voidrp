@@ -32,7 +32,23 @@ import java.util.*;
 
 public class Farming implements Listener, CommandExecutor, TabCompleter {
     public static final Map<String, FarmingData> farmingDataMap = new HashMap<>();
-    public static void loadData() throws SQLException {
+
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    private final Utils utils;
+
+    public Farming(PlayerManager playerManager, LocationManager locationManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        try {
+            loadData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void loadData() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet res = statement.executeQuery("SELECT * FROM farming");
         while (res.next()) {
@@ -54,7 +70,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
         if (event.getBlock().getType() != Material.LARGE_FERN) {
             return;
         }
-        String nearestFarmSpot = LocationManager.isNearFarmingSpot(event.getPlayer(), 20);
+        String nearestFarmSpot = locationManager.isNearFarmingSpot(event.getPlayer(), 20);
         if (nearestFarmSpot == null) return;
         LocationData typeData = LocationManager.locationDataMap.get(nearestFarmSpot);
         String type = typeData.getInfo();
@@ -63,7 +79,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
         if (Main.getInstance().getCooldownManager().isOnCooldown(player, "farming")) return;
         player.getInventory().addItem(ItemManager.createItem(farmingData.getItem(), farmingData.getAmount(), 0, farmingData.getItemName().replace("&", "§"), null));
         Main.getInstance().getCooldownManager().setCooldown(player, "farming", farmingData.getDuration());
-        Utils.sendActionBar(player, farmingData.getItemName().replace("&", "§") + " abgebaut!");
+        utils.sendActionBar(player, farmingData.getItemName().replace("&", "§") + " abgebaut!");
     }
 
     @Override
@@ -73,11 +89,11 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             player.sendMessage(Main.error + "Syntax-Fehler: /farming [openverarbeiter/opendealer]");
             return false;
         }
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (args[0].equalsIgnoreCase("openverarbeiter")) {
             LocationData location = null;
             for (LocationData locData : LocationManager.locationDataMap.values()) {
-                if (LocationManager.getDistanceBetweenCoords(player, locData.getName()) < 5 && locData.getType().equalsIgnoreCase("verarbeiter")) {
+                if (locationManager.getDistanceBetweenCoords(player, locData.getName()) < 5 && locData.getType().equalsIgnoreCase("verarbeiter")) {
                     location = locData;
                 }
             }
@@ -101,7 +117,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
         } else if (args[0].equalsIgnoreCase("opendealer")) {
             LocationData location = null;
             for (LocationData locData : LocationManager.locationDataMap.values()) {
-                if (LocationManager.getDistanceBetweenCoords(player, locData.getName()) < 5 && locData.getType().equalsIgnoreCase("dealer")) {
+                if (locationManager.getDistanceBetweenCoords(player, locData.getName()) < 5 && locData.getType().equalsIgnoreCase("dealer")) {
                     location = locData;
                 }
             }

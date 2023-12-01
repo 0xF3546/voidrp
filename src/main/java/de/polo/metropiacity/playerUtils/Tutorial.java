@@ -16,27 +16,34 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Tutorial implements Listener {
-    public static void start(Player player) {
+    private final PlayerManager playerManager;
+    private final Navigation navigation;
+    public Tutorial(PlayerManager playerManager, Navigation navigation) {
+        this.playerManager = playerManager;
+        this.navigation = navigation;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
+    public void start(Player player) {
         player.sendMessage("§8[§9Tutorial§8]§7 Willkommen im Tutorial.");
         Main.waitSeconds(4, () -> {
             player.sendMessage("§8[§9Tutorial§8]§7 Als erstes musst du dir einen Personalausweis erstellen. Gehe dazu ins Rathaus, folge dazu einfach der Route!");
-            Navigation.createNavi(player, "einreise", true);
+            navigation.createNavi(player, "einreise", true);
         });
     }
-    public static boolean isInTutorial(Player player) {
-        return PlayerManager.playerDataMap.get(player.getUniqueId().toString()).getVariable("tutorial") != null;
+    public boolean isInTutorial(Player player) {
+        return playerManager.getPlayerData(player.getUniqueId()).getVariable("tutorial") != null;
     }
 
-    public static void createdAusweis(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void createdAusweis(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("tutorial") != null) {
             player.sendMessage("§8[§9Tutorial§8]§7 Sehr gut gemacht!");
             Main.waitSeconds(1, () -> player.sendMessage("§8[§9Tutorial§8]§7 Nutze §8/§epersonalausweis§7 um deinen Personalausweis anzusehen."));
         }
     }
 
-    public static void usedAusweis(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void usedAusweis(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("tutorial") != null) {
             player.sendMessage("§8[§9Tutorial§8]§7 Ich denke es ist alles verständlich, außer die §eVisumstufe§7?");
             Main.waitSeconds(4, () -> {
@@ -47,7 +54,7 @@ public class Tutorial implements Listener {
                     mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/main/index.php?thread/4-visum-levelsystem/"));
                     player.spigot().sendMessage(one, mcserverlist);
                     Main.waitSeconds(3, () -> {
-                        Navigation.createNavi(player, "Shop-1", true);
+                        navigation.createNavi(player, "Shop-1", true);
                         player.sendMessage("§8[§9Tutorial§8]§7 Begib dich nun zum Shop.");
                     });
                 });
@@ -78,12 +85,12 @@ public class Tutorial implements Listener {
     }
 
     public void endTutorial(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("tutorial", null);
         player.sendMessage("§8[§9Tutorial§8]§7 Du hast das §9Tutorial§a erfolgreich§7 beendeet.");
         player.sendMessage("§8[§bInfo§8]§7 Solltest du noch mehr über den Server wissen wollen, komm auf unseren §9Discord§7 oder schau auf §cYouTube§7 vorbei.");
         player.sendMessage("§8       ➥ §8/§9discord§7 & §8/§cyoutube");
-        PlayerManager.addExp(player, 30);
+        playerManager.addExp(player, 30);
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE `players` SET `tutorial` = false WHERE `uuid` = '" + player.getUniqueId() + "'");

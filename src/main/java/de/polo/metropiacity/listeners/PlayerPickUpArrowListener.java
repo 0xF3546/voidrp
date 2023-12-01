@@ -1,10 +1,14 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.Main;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 
 public class PlayerPickUpArrowListener implements Listener {
+    public PlayerPickUpArrowListener() {
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
     @EventHandler
     public void onPlayerPickUpArrow(PlayerPickupArrowEvent event) {
         event.setCancelled(true);

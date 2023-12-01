@@ -9,6 +9,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ShoutCommand implements CommandExecutor {
+    private final Utils utils;
+    public ShoutCommand(Utils utils) {
+        this.utils = utils;
+        Main.registerCommand("shout", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -19,7 +24,7 @@ public class ShoutCommand implements CommandExecutor {
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 28) {
                 int range = (int) player.getLocation().distance(players.getLocation());
-                players.sendMessage("§8[§2" + range + "§8] §f" + player.getName() + " schreit§8:§f " + Utils.stringArrayToString(args) + "!");
+                players.sendMessage("§8[§2" + range + "§8] §f" + player.getName() + " schreit§8:§f " + utils.stringArrayToString(args) + "!");
             }
         }
         return false;

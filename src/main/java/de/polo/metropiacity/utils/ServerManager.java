@@ -33,7 +33,30 @@ public class ServerManager {
     public static final Map<String, String> serverVariables = new HashMap<>();
 
     public static Object[][] faction_grades;
-    public static void loadRanks() throws SQLException {
+
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    private final Utils utils;
+    private final LocationManager locationManager;
+
+    public ServerManager(PlayerManager playerManager, FactionManager factionManager, Utils utils, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        this.utils = utils;
+        this.locationManager = locationManager;
+        try {
+            loadRanks();
+            loadDBPlayer();
+            startTabUpdateInterval();
+            everySecond();
+            loadShops();
+            loadContracts();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadRanks() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM ranks");
         while (locs.next()) {
@@ -58,7 +81,7 @@ public class ServerManager {
             payoutDataMap.put(res.getString(2), payoutData);
         }
     }
-    public static void loadDBPlayer() throws SQLException {
+    private void loadDBPlayer() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM players");
         while (locs.next()) {
@@ -81,7 +104,7 @@ public class ServerManager {
             }
         }
     }
-    public static void loadContracts() throws SQLException {
+    private void loadContracts() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM contract");
         while (locs.next()) {
@@ -93,7 +116,7 @@ public class ServerManager {
             contractDataMap.put(locs.getString(2), contractData);
         }
     }
-    public static void loadShops() throws SQLException {
+    private void loadShops() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM shops");
         while (locs.next()) {
@@ -111,23 +134,23 @@ public class ServerManager {
         }
     }
 
-    public static void everySecond() {
+    private void everySecond() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (Utils.getCurrentHour() >= 0 && Utils.getCurrentHour() < 22) {
+                if (utils.getCurrentHour() >= 0 && utils.getCurrentHour() < 22) {
                     for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
                         if (gangwarData.getAttacker() != null) {
-                            FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
-                            FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
+                            FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
+                            FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
                             for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                                PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
                                 if (playerData.getFaction().equals(gangwarData.getAttacker()) || playerData.getFaction().equals(gangwarData.getOwner())) {
                                     if (playerData.getVariable("gangwar") != null) {
                                         if (!playerData.isDead()) {
-                                            Utils.sendActionBar(players, "§5" + gangwarData.getZone() + "§8 | §5" + gangwarData.getMinutes() + "§8:§5" + gangwarData.getSeconds() + "§8 | §" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints());
+                                            utils.sendActionBar(players, "§5" + gangwarData.getZone() + "§8 | §5" + gangwarData.getMinutes() + "§8:§5" + gangwarData.getSeconds() + "§8 | §" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints());
                                         } else {
-                                            Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
+                                            utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
                                         }
                                     }
                                 }
@@ -141,19 +164,19 @@ public class ServerManager {
             @Override
             public void run() {
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    PlayerData playerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+                    PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
                     if (!playerData.isDead()) return;
                     playerData.setDeathTime(playerData.getDeathTime() - 1);
                     if (playerData.getVariable("gangwar") != null) {
                         GangwarData gangwarData = GangwarUtils.gangwarDataMap.get(playerData.getVariable("gangwar"));
-                        FactionData attackerData = FactionManager.factionDataMap.get(gangwarData.getAttacker());
-                        FactionData defenderData = FactionManager.factionDataMap.get(gangwarData.getOwner());
-                        Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
+                        FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
+                        FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
+                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
                     } else {
-                        Utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
+                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
                     }
                     if (playerData.getDeathTime() <= 0) {
-                        DeathUtils.despawnPlayer(players);
+                        Main.getInstance().utils.deathUtil.despawnPlayer(players);
                     }
                 }
             }
@@ -164,29 +187,29 @@ public class ServerManager {
         return canDoJobsBoolean;
     }
 
-    public static void savePlayers() throws SQLException {
+    public void savePlayers() throws SQLException {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            PlayerManager.savePlayer(player);
+            playerManager.savePlayer(player);
         }
     }
 
-    public static void updateTablist(Player player) {
+    public void updateTablist(Player player) {
         if (player == null) {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                PlayerData playerData = PlayerManager.playerDataMap.get(p.getUniqueId().toString());
-                String loc = LocationManager.naviDataMap.get(LocationManager.getNearestLocationId(p)).getName().substring(2);
+                PlayerData playerData = Main.getInstance().playerManager.getPlayerData((p.getUniqueId()));
+                String loc = LocationManager.naviDataMap.get(locationManager.getNearestLocationId(p)).getName().substring(2);
                 p.setPlayerListHeader("\n§6§lMetropiaCity §8- §cV1.0\n\n§6Bargeld§8: §7" + playerData.getBargeld() + "$\n§6Ping§8:§7 " + p.getPing() + "ms\n");
                 p.setPlayerListFooter("\n§6Nächser Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n");
             }
         } else {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-            String loc = LocationManager.naviDataMap.get(LocationManager.getNearestLocationId(player)).getName().substring(2);
+            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+            String loc = LocationManager.naviDataMap.get(locationManager.getNearestLocationId(player)).getName().substring(2);
             player.setPlayerListHeader("\n§6§lMetropiaCity §8- §cV1.0\n\n§6Bargeld§8: §7" + playerData.getBargeld() + "$\n§6Ping§8:§7 " + player.getPing() + "ms\n");
             player.setPlayerListFooter("\n§6Nächser Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n");
         }
     }
 
-    public static void startTabUpdateInterval() {
+    private void startTabUpdateInterval() {
         new BukkitRunnable() {
             int announceTick = 5;
             int announceType = 1;

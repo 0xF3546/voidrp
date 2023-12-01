@@ -3,6 +3,7 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Game.Housing;
+import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -13,6 +14,11 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class UnrentCommand implements CommandExecutor {
+    private final Utils utils;
+    public UnrentCommand(Utils utils) {
+        this.utils = utils;
+        Main.registerCommand("unrent", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -23,7 +29,7 @@ public class UnrentCommand implements CommandExecutor {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                     if (houseData.getRenter().get(offlinePlayer.getUniqueId().toString()) != null) {
                         houseData.getRenter().remove(offlinePlayer.getUniqueId().toString());
-                        Housing.updateRenter(Integer.parseInt(args[1]));
+                        utils.housing.updateRenter(Integer.parseInt(args[1]));
                         player.sendMessage("§8[§6Haus§8]§a Du hast den Mietvertrag von " + offlinePlayer.getName() + " beendet.");
                         if (offlinePlayer.isOnline()) {
                             Player player1 = Bukkit.getPlayer(offlinePlayer.getUniqueId());

@@ -19,15 +19,24 @@ import org.bukkit.potion.PotionEffectType;
 import java.sql.SQLException;
 
 public class FarmerCommand implements CommandExecutor {
-    public static final String prefix = "§8[§eFarmer§8] §7";
+    public final String prefix = "§8[§eFarmer§8] §7";
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    private final Utils utils;
+    public FarmerCommand(PlayerManager playerManager, LocationManager locationManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        this.utils = utils;
+        Main.registerCommand("farmer", this);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         String uuid = player.getUniqueId().toString();
-        PlayerData playerData = PlayerManager.playerDataMap.get(uuid);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
-            if (LocationManager.getDistanceBetweenCoords(player, "farmer") <= 5) {
+            if (locationManager.getDistanceBetweenCoords(player, "farmer") <= 5) {
                 playerData.setVariable("current_inventory", "farmer");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eFarmer");
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "farmer") && playerData.getVariable("job") == null) {
@@ -66,8 +75,8 @@ public class FarmerCommand implements CommandExecutor {
         return false;
     }
 
-    public static void quitJob(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void quitJob(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("job") == "weizenlieferant") {
             playerData.setVariable("job", null);
             player.sendMessage("§8[§eLieferant§8]§7 Du hast den Job beendet.");
@@ -78,21 +87,21 @@ public class FarmerCommand implements CommandExecutor {
         int payout = ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen");
         player.sendMessage("§8[§eFarmer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
-        if (playerData.getIntVariable("heuballen_remaining") <= 0) PlayerManager.addExp(player, Main.random(12, 20));
+        if (playerData.getIntVariable("heuballen_remaining") <= 0) playerManager.addExp(player, Main.random(12, 20));
         playerData.getScoreboard().killScoreboard();
         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
         try {
-            PlayerManager.addBankMoney(player, payout, "Auszahlung Farmer");
+            playerManager.addBankMoney(player, payout, "Auszahlung Farmer");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         Main.getInstance().getCooldownManager().setCooldown(player, "farmer", 600);
     }
 
-    public static void blockBroken(Player player, Block block, BlockBreakEvent event) {
+    public void blockBroken(Player player, Block block, BlockBreakEvent event) {
         event.setCancelled(true);
         if (block.getType() == Material.HAY_BLOCK) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             if (playerData.getIntVariable("heuballen_remaining") <= 0) {
                 player.sendMessage("§8[§eFarmer§8]§7 Du hast alle heuballen abgebaut, begib dich wieder zum Farmer.");
                 return;
@@ -114,9 +123,9 @@ public class FarmerCommand implements CommandExecutor {
         }
     }
 
-    public static void startJob(Player player) {
+    public void startJob(Player player) {
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "farmer")) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.setVariable("job", "farmer");
             player.sendMessage(prefix + "Du bist nun §eFarmer§7.");
             player.sendMessage(prefix + "Baue §e" + player.getName() + " Heuballen§7 ab.");
@@ -129,27 +138,27 @@ public class FarmerCommand implements CommandExecutor {
         }
     }
 
-    public static void startTransport(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void startTransport(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("weizen", Main.random(2, 5));
         playerData.setVariable("job", "weizenlieferant");
         playerData.getScoreboard().createWeizentransportScoreboard();
         player.sendMessage("§8[§eLieferant§8]§7 Bringe das Weizen zur Mühle.");
         player.sendMessage("§8 ➥ §7Nutze §8/§edrop§7 um das Weizen abzugeben.");
-        Navigation.createNavi(player, "Mühle", true);
+        utils.navigation.createNavi(player, "Mühle", true);
     }
 
-    public static void dropTransport(Player player) {
-        if (LocationManager.getDistanceBetweenCoords(player, "Mühle") < 5) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void dropTransport(Player player) {
+        if (locationManager.getDistanceBetweenCoords(player, "Mühle") < 5) {
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             int payout = Main.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));
             player.sendMessage("§8[§eLieferant§8]§7 Danke für's abliefern. §a+" + payout + "$");
             SoundManager.successSound(player);
-            PlayerManager.addExp(player, Main.random(1, 3));
+            playerManager.addExp(player, Main.random(1, 3));
             playerData.setIntVariable("weizen", playerData.getIntVariable("weizen") - 1);
             playerData.getScoreboard().updateWeizentransportScoreboard();
             try {
-                PlayerManager.addBankMoney(player, payout, "Auszahlung Weizentransport");
+                playerManager.addBankMoney(player, payout, "Auszahlung Weizentransport");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

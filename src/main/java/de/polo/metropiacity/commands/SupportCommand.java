@@ -18,19 +18,26 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SupportCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final SupportManager supportManager;
+    public SupportCommand(PlayerManager playerManager, SupportManager supportManager) {
+        this.playerManager = playerManager;
+        this.supportManager = supportManager;
+        Main.registerCommand("support", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 1) {
-            if (!SupportManager.ticketCreated(player)) {
+            if (!supportManager.ticketCreated(player)) {
                 player.sendMessage(Main.support_prefix + "Du hast ein Ticket §aerstellt§7.");
                 StringBuilder msg = new StringBuilder(args[0]);
                 for (int i = 1; i < args.length; i++) {
                     msg.append(' ').append(args[i]);
                 }
-                SupportManager.createTicket(player, String.valueOf(msg));
+                supportManager.createTicket(player, String.valueOf(msg));
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (PlayerManager.isTeam(players)) {
+                    if (playerManager.isTeam(players)) {
                         players.sendMessage(Main.support_prefix + "§a" + player.getName() + "§7 hat ein Ticket erstellt. Grund: " + msg);
 
                         TextComponent annehmen = new TextComponent("§aTicket annehmen");

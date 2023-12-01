@@ -5,6 +5,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -20,14 +21,21 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MietersCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public MietersCommand(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.registerCommand("mieters", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (args.length >= 1) {
             HouseData houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
             if (houseData != null) {
-                if (Housing.canPlayerInteract(player, Integer.parseInt(args[0]))) {
+                if (utils.housing.canPlayerInteract(player, Integer.parseInt(args[0]))) {
                     player.sendMessage("§7   ===§8[§6Haus " + args[0] + "§8]§7===");
                     player.sendMessage("§8 ➥ §eBesitzer§8:§7 " + Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner())).getName());
                     for (Map.Entry<String, Integer> entry : houseData.getRenter().entrySet()) {

@@ -13,17 +13,26 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 
 public class InviteCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final FactionManager factionManager;
+    private final Utils utils;
+    public InviteCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.factionManager = factionManager;
+        this.utils = utils;
+        Main.registerCommand("invite", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) {
             player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
             return false;
         }
-        String playerfac = FactionManager.faction(player);
-        FactionData factionData = FactionManager.factionDataMap.get(playerfac);
-        if (FactionManager.faction_grade(player) < 7) {
+        String playerfac = factionManager.faction(player);
+        FactionData factionData = factionManager.getFactionData(playerfac);
+        if (factionManager.faction_grade(player) < 7) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -40,21 +49,21 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
         }
-        PlayerData targetplayerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+        PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         if (targetplayerData.getFaction() != null) {
-            player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + "§7 ist bereits in einer Fraktion.");
+            player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + "§7 ist bereits in einer Fraktion.");
             return false;
         }
-        if (FactionManager.getMemberCount(playerfac) >= factionData.getMaxMember()) {
+        if (factionManager.getMemberCount(playerfac) >= factionData.getMaxMember()) {
             player.sendMessage(Main.error + "Deine Fraktion ist voll!");
             return false;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {
-            player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
-            targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Fraktion §" + FactionManager.getFactionPrimaryColor(playerfac) + factionData.getFullname() + "§6 eingeladen.");
-            VertragUtil.sendInfoMessage(targetplayer);
+            player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " wurde in die Fraktion §aeingeladen§7.");
+            targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Fraktion §" + factionManager.getFactionPrimaryColor(playerfac) + factionData.getFullname() + "§6 eingeladen.");
+            utils.vertragUtil.sendInfoMessage(targetplayer);
         } else {
-            player.sendMessage("§8[§" + FactionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+            player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
         }
         return false;
     }

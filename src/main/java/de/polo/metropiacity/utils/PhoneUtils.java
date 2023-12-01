@@ -2,7 +2,6 @@ package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.*;
@@ -33,6 +32,14 @@ public class PhoneUtils implements Listener {
     public static final String error_nophone = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
     public static final String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
 
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    public PhoneUtils(PlayerManager playerManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
+
     @EventHandler
     public void onPhoneUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -42,8 +49,8 @@ public class PhoneUtils implements Listener {
         }
     }
 
-    public static void openPhone(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openPhone(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eHandy");
         int unreadMessages = 0;
         try {
@@ -69,8 +76,8 @@ public class PhoneUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openSettings(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openSettings(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §7Einstellungen");
         if (playerData.isFlightmode()) {
             inv.setItem(10, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten", null));
@@ -87,8 +94,8 @@ public class PhoneUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openBanking(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openBanking(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §3Banking");
         inv.setItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
         inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bTransaktionen", "§8 ➥ §7Alle Transaktionen der Letzten 7 Tage"));
@@ -102,9 +109,9 @@ public class PhoneUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openTransactions(Player player, int page, String search) throws SQLException {
+    public void openTransactions(Player player, int page, String search) throws SQLException {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", "transactions");
         playerData.setIntVariable("current_page", page);
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -150,9 +157,9 @@ public class PhoneUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openMessages(Player player, int page, String search) throws SQLException {
+    public void openMessages(Player player, int page, String search) throws SQLException {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", "messages");
         playerData.setIntVariable("current_page", page);
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -202,9 +209,9 @@ public class PhoneUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void openContacts(Player player, int page, String search) throws SQLException {
+    public void openContacts(Player player, int page, String search) throws SQLException {
         if (page <= 0) return;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", "contacts");
         playerData.setIntVariable("current_page", page);
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -247,8 +254,8 @@ public class PhoneUtils implements Listener {
         player.openInventory(inv);
     }
 
-    public static void editContact(Player player, ItemStack stack, boolean newContact, boolean canSave) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void editContact(Player player, ItemStack stack, boolean newContact, boolean canSave) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         System.out.println(newContact);
         playerData.setVariable("current_app", "edit_contact");
         if (!newContact) {
@@ -271,7 +278,7 @@ public class PhoneUtils implements Listener {
                         if (!canSave) playerData.setIntVariable("current_contact_number", result.getInt(4));
                         if (!canSave) playerData.setVariable("current_contact_name", result.getString(3));
                         inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§eNummer", "§8 ➥ §7" + playerData.getIntVariable("current_contact_number")));
-                        inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").replace("&", "§")));
+                        inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").toString().replace("&", "§")));
                         inv.setItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c§lKontakt löschen", null));
                         if (canSave) inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
                         playerData.setIntVariable("current_contact_id", result.getInt(1));
@@ -294,7 +301,7 @@ public class PhoneUtils implements Listener {
             playerData.setIntVariable("current_contact_id", 0);
             inv.setItem(4, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§8", null));
             inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§eNummer", "§8 ➥ §7" + playerData.getIntVariable("current_contact_number")));
-            inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").replace("&", "§")));
+            inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").toString().replace("&", "§")));
             inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
             inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
             for (int i = 0; i < 27; i++) {
@@ -305,9 +312,9 @@ public class PhoneUtils implements Listener {
         }
     }
 
-    public static void openCallApp(Player player, boolean isNew) {
+    public void openCallApp(Player player, boolean isNew) {
         Inventory inv;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (isNew) {
             inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§2 ");
             playerData.setVariable("current_phone_callnumber", "");
@@ -367,15 +374,15 @@ public class PhoneUtils implements Listener {
         return isInCallConnection.get(player.getUniqueId().toString()) != null;
     }
 
-    public static void addNumberToContacts(Player player, Player targetplayer) throws SQLException {
+    public void addNumberToContacts(Player player, Player targetplayer) throws SQLException {
         String uuid = player.getUniqueId().toString();
         Statement statement = Main.getInstance().mySQL.getStatement();
-        PlayerData playerData = PlayerManager.playerDataMap.get(targetplayer.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         statement.executeQuery("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId() + "', '" + targetplayer.getName() + "', " + playerData.getNumber() + ", '" + targetplayer.getUniqueId() + "')");
     }
 
-    public static void callNumber(Player player, Player players) throws SQLException {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void callNumber(Player player, Player players) throws SQLException {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 if (VertragUtil.setVertrag(player, players, "phonecall", players.getUniqueId().toString())) {
                     if (PhoneUtils.hasPhone(players)) {
                         ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
@@ -383,7 +390,7 @@ public class PhoneUtils implements Listener {
                         player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + players.getName() + "§e an.");
                         players.sendMessage("§8[§6Handy§8] §eDu wirst von §l" + player.getName() + "§e angerufen.");
                         playerData.setVariable("calling", players.getUniqueId().toString());
-                        VertragUtil.sendInfoMessage(players);
+                        utils.vertragUtil.sendInfoMessage(players);
                         players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
                     } else {
                         player.sendMessage(Main.error + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
@@ -393,7 +400,7 @@ public class PhoneUtils implements Listener {
                 }
     }
 
-    public static void sendSMS(Player player, Player players, StringBuilder message) {
+    public void sendSMS(Player player, Player players, StringBuilder message) {
         if (PhoneUtils.hasPhone(players)) {
             players.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
             player.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
@@ -402,7 +409,7 @@ public class PhoneUtils implements Listener {
         } else {
             player.sendMessage(Main.error + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen werden.");
         }
-        PlayerData targetplayerData = PlayerManager.playerDataMap.get(players.getUniqueId().toString());
+        PlayerData targetplayerData = playerManager.getPlayerData(players.getUniqueId());
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + players.getUniqueId() + "', '" + player.getUniqueId() + "', '" + message + "', " + targetplayerData.getId() + ");");
@@ -447,9 +454,9 @@ public class PhoneUtils implements Listener {
         }
     }
 
-    public static void closeCall(Player player) {
+    public void closeCall(Player player) {
         player.stopSound(Sound.MUSIC_CREATIVE);
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (isInCallConnection.get(player.getUniqueId().toString()) != null) {
             for (Player player1 : Bukkit.getOnlinePlayers()) {
                 if (Objects.equals(phoneCallConnection.get(player1.getUniqueId().toString()), player.getUniqueId().toString())) {
@@ -556,8 +563,8 @@ public class PhoneUtils implements Listener {
             event.end();
         }
     }
-    public static void openInternet(Player player) {
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+    public void openInternet(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §bInternet");
         inv.setItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
         inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§6Anwalt", "§8 ➥ §7Anwalt anheuern (§c15-55$/PayDay§7)"));

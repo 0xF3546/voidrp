@@ -1,12 +1,9 @@
-package de.polo.metropiacity.commands;
+package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.commands.SpecCommand;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.dataStorage.RankData;
-import de.polo.metropiacity.utils.FactionManager;
-import de.polo.metropiacity.utils.PlayerManager;
-import de.polo.metropiacity.utils.ServerManager;
-import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,12 +17,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ADutyCommand implements CommandExecutor, TabCompleter {
+public class AdminManager implements CommandExecutor, TabCompleter {
+
+    private PlayerManager playerManager;
+    public AdminManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 60) {
             player.sendMessage(Main.error_nopermission);
             return false;
@@ -34,19 +36,19 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
         if (args.length == 0) {
             if (playerData.isAduty()) {
                 playerData.setAduty(false);
-                ADutyCommand.send_message(player.getName() + " hat den Admindienst verlassen.", ChatColor.RED);
+                send_message(player.getName() + " hat den Admindienst verlassen.", ChatColor.RED);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 (player).setFlying(false);
                 (player).setAllowFlight(false);
                 playerData.getScoreboard().killScoreboard();
                 if (playerData.getVariable("isSpec") != null) {
-                    SpecCommand.leaveSpec(player);
+                    Main.getInstance().commands.specCommand.leaveSpec(player);
                 }
                 Utils.Display.adminMode(player, false);
                 player.setCollidable(true);
                 Utils.Tablist.setTablist(player, null);
             } else {
-                ADutyCommand.send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
+                send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");
                 (player).setAllowFlight(true);
@@ -80,12 +82,12 @@ public class ADutyCommand implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public static void send_message(String msg, ChatColor color) {
+    public void send_message(String msg, ChatColor color) {
         if (color == null) {
             color = ChatColor.AQUA;
         }
         for (Player player1 : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData = PlayerManager.playerDataMap.get(player1.getUniqueId().toString());
+            PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
             if (playerData.isAduty()) {
                 player1.sendMessage("§8[§c§l!§8] " + color + msg);
             }

@@ -14,29 +14,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 public class GoToVehCommand implements CommandExecutor {
+    private PlayerManager playerManager;
+
+    public GoToVehCommand(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        Main.registerCommand("gotoveh", this);
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = PlayerManager.playerDataMap.get(player.getUniqueId().toString());
-        if (playerData.getPermlevel() >= 60) {
-            if (playerData.isAduty()) {
-                if (args.length >= 1) {
-                    for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
-                        if (entity.getType() == EntityType.MINECART) {
-                            if (Integer.parseInt(args[0]) == (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER))) {
-                                player.teleport(entity.getLocation());
-                                player.sendMessage(Main.admin_prefix + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");
-                            }
-                        }
-                    }
-                } else {
-                    player.sendMessage(Main.admin_error + "Syntax-Fehler: /gotovehicle [ID]");
-                }
-            } else {
-                player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
-            }
-        } else {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.getPermlevel() < 60) {
             player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        if (!playerData.isAduty()) {
+            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            return false;
+        }
+        if (args.length < 1) {
+            player.sendMessage(Main.admin_error + "Syntax-Fehler: /gotovehicle [ID]");
+            return false;
+        }
+        for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
+            if (entity.getType() == EntityType.MINECART) {
+                if (Integer.parseInt(args[0]) == (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER))) {
+                    player.teleport(entity.getLocation());
+                    player.sendMessage(Main.admin_prefix + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");
+                }
+            }
         }
         return false;
     }

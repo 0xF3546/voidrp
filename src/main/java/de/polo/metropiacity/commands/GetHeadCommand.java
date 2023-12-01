@@ -10,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GetHeadCommand implements CommandExecutor {
+    public GetHeadCommand() {
+        Main.registerCommand("gethead", this);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
