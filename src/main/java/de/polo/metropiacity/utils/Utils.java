@@ -106,15 +106,17 @@ public class Utils {
 
     static Scoreboard sb;
 
-    public interface Tablist {
-        static void loadTeams() {
-            sb = Bukkit.getScoreboardManager().getMainScoreboard();
-            for (RankData rankData : ServerManager.rankDataMap.values()) {
-                if (sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getRang()) == null)
-                    sb.registerNewTeam(-rankData.getPermlevel() + "_" + rankData.getRang());
+    public void loadTeams() {
+        sb = Bukkit.getScoreboardManager().getMainScoreboard();
+        for (RankData rankData : ServerManager.rankDataMap.values()) {
+            if (sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getRang()) == null) {
+                //sb.registerNewTeam(-rankData.getPermlevel() + "_" + rankData.getRang());
                 //sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getRang()).setPrefix(rankData.getColor() + rankData.getRang() + "§8 × §7");
             }
         }
+    }
+
+    public interface Tablist {
 
         static void setTablist(Player player, String suffix) {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());

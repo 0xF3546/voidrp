@@ -46,7 +46,7 @@ public class MySQL {
         if(connection != null) {
             return connection;
         }
-        Connection connection = DriverManager.getConnection(url, user, password);
+        connection = DriverManager.getConnection(url, user, password);
 
         for (int i = 0; i < 5; i++) {
             System.out.println("[MySQL]: Datenbank verbunden");

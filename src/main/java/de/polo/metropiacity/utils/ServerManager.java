@@ -70,7 +70,7 @@ public class ServerManager {
             rankData.setColor(ChatColor.valueOf(locs.getString("color")));
             rankDataMap.put(locs.getString(2), rankData);
         }
-        Utils.Tablist.loadTeams();
+        utils.loadTeams();
 
         ResultSet res = statement.executeQuery("SELECT * FROM payouts");
         while (res.next()) {
@@ -80,6 +80,7 @@ public class ServerManager {
             payoutData.setPayout(res.getInt(3));
             payoutDataMap.put(res.getString(2), payoutData);
         }
+        statement.close();
     }
     private void loadDBPlayer() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -103,6 +104,7 @@ public class ServerManager {
                 factionPlayerDataMap.put(locs.getString(2), factionPlayerData);
             }
         }
+        statement.close();
     }
     private void loadContracts() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -115,6 +117,7 @@ public class ServerManager {
             contractData.setSetter(locs.getString(4));
             contractDataMap.put(locs.getString(2), contractData);
         }
+        statement.close();
     }
     private void loadShops() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -132,6 +135,7 @@ public class ServerManager {
             shopData.setFaction(locs.getString(9));
             shopDataMap.put(locs.getInt(1), shopData);
         }
+        statement.close();
     }
 
     private void everySecond() {
