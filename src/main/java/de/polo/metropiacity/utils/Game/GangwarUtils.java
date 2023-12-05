@@ -36,6 +36,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.locationManager = locationManager;
+        Main.registerCommand("gangwar", this);
+        Main.addTabCompeter("gangwar", this);
         try {
             loadGangwar();
         } catch (SQLException e) {
