@@ -194,19 +194,19 @@ public class Scoreboard extends ScoreboardBuilder {
             @Override
             public void run() {
                 PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-                if (isAdminScore) {
+                if (playerData.getScoreboard("admin") != null) {
                     Runtime r = Runtime.getRuntime();
                     setScore("§8 ➥ §e" + SupportManager.TicketCount, 4);
                     setScore("§8 ➥ §e" + (r.totalMemory() - r.freeMemory()) / 1048576, 2);
                     setScore("§8 ➥ §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers(), 0);
-                } else if (isMineScore) {
+                } else if (playerData.getScoreboard("mine") != null) {
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.IRON_ORE), 10);
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.EMERALD_ORE), 8);
                     setScore("§8 ➥ §7" +ItemManager.getItem(player, Material.GOLD_ORE), 6);
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.LAPIS_ORE), 4);
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.REDSTONE_ORE), 2);
                     setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.IRON_ORE), 0);
-                } else if (isCarScore) {
+                } else if (playerData.getScoreboard("vehicle") != null) {
                     int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
                     double speedMetersPerSecond = player.getVehicle().getVelocity().length();

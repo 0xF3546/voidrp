@@ -10,7 +10,7 @@ public class RankData {
     private boolean isSecondary;
     private int forumID;
     private ChatColor color;
-
+    private String shortName;
     public int getId() {
         return id;
     }
@@ -65,5 +65,13 @@ public class RankData {
 
     public void setColor(ChatColor color) {
         this.color = color;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 }

@@ -45,6 +45,7 @@ public class PlayerData {
     private int exp;
     private int needed_exp;
     private Scoreboard scoreboard;
+    private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
     private boolean isDead;
     private int deathTime;
     private int number;
@@ -221,8 +222,19 @@ public class PlayerData {
         return scoreboard;
     }
 
+    public Scoreboard getScoreboard(String scoreboard) {
+        return scoreboards.get(scoreboard);
+    }
+
     public void setScoreboard(Scoreboard scoreboard) {
         this.scoreboard = scoreboard;
+    }
+    public void setScoreboard(String scoreboardName, Scoreboard scoreboard) {
+        if (this.scoreboards.get(scoreboardName) != null) {
+            this.scoreboards.replace(scoreboardName, scoreboard);
+            return;
+        }
+        this.scoreboards.put(scoreboardName, scoreboard);
     }
 
     public Integer getSkillLevel(String type) {

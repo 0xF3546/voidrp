@@ -68,6 +68,7 @@ public class ServerManager {
             rankData.setSecondary(locs.getBoolean(5));
             rankData.setForumID(locs.getInt("forumID"));
             rankData.setColor(ChatColor.valueOf(locs.getString("color")));
+            rankData.setShortName(locs.getString("shortName"));
             rankDataMap.put(locs.getString(2), rankData);
         }
         utils.loadTeams();
@@ -276,5 +277,9 @@ public class ServerManager {
 
     public static String getVariable(String variable) {
         return serverVariables.get(variable);
+    }
+
+    public RankData getRankData(String rank) {
+        return rankDataMap.get(rank);
     }
 }

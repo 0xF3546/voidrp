@@ -101,10 +101,7 @@ public class PlayerManager implements Listener {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             ResultSet name = statement.executeQuery("SELECT * FROM `players` WHERE `uuid` = '" + uuid + "'");
-            player.sendMessage("loading");
             if (name.next()) {
-                player.sendMessage("Loaded");
-                player.sendMessage(name.getInt("id") + "");
                 PlayerData playerData = new PlayerData(player);
                 playerData.setFirstname(name.getString("firstname"));
                 playerData.setLastname(name.getString("lastname"));

@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.commands.SpecCommand;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.dataStorage.RankData;
+import de.polo.metropiacity.playerUtils.Scoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class AdminManager implements CommandExecutor, TabCompleter {
 
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
     public AdminManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
@@ -40,11 +41,11 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 (player).setFlying(false);
                 (player).setAllowFlight(false);
-                playerData.getScoreboard().killScoreboard();
+                playerData.getScoreboard("admin").killScoreboard();
                 if (playerData.getVariable("isSpec") != null) {
                     Main.getInstance().commands.specCommand.leaveSpec(player);
                 }
-                Utils.Display.adminMode(player, false);
+                //Utils.Display.adminMode(player, false);
                 player.setCollidable(true);
                 Utils.Tablist.setTablist(player, null);
             } else {
@@ -52,9 +53,11 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 playerData.setAduty(true);
                 player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");
                 (player).setAllowFlight(true);
-                playerData.getScoreboard().createAdminScoreboard();
+                Scoreboard adminScoreboard = new Scoreboard(player);
+                adminScoreboard.createAdminScoreboard();
+                playerData.setScoreboard("admin", adminScoreboard);
                 player.setCollidable(false);
-                Utils.Display.adminMode(player, true);
+                //Utils.Display.adminMode(player, true);
                 Utils.Tablist.setTablist(player, "§8[§cℹ§8]");
             }
         }

@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.playerUtils.Scoreboard;
 import de.polo.metropiacity.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.LocationManager;
@@ -84,7 +85,7 @@ public class LumberjackCommand implements CommandExecutor {
             int amount = Main.random(2, 4);
             playerData.setIntVariable("holzkg", playerData.getIntVariable("holzkg") + amount);
             player.sendMessage("§8[§7Holzfäller§8]§7 +" + amount + " KG Holz");
-            playerData.getScoreboard().updateLumberjackScoreboard();
+            playerData.getScoreboard("lumberjack").updateLumberjackScoreboard();
             if (playerData.getIntVariable("holz") <= 0) {
                 player.sendMessage("§8[§7Holzfäller§8]§7 Du hast genug Bäume gefällt, begib dich wieder zur Holzfällerei.");
             }
@@ -138,7 +139,7 @@ public class LumberjackCommand implements CommandExecutor {
         player.sendMessage("§8[§7Holzfäller§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
         if (playerData.getIntVariable("holz") <= 0) playerManager.addExp(player, Main.random(12, 20));
-        playerData.getScoreboard().killScoreboard();
+        playerData.getScoreboard("lumberjack").killScoreboard();
         player.closeInventory();
         try {
             playerManager.addBankMoney(player, payout, "Auszahlung Holzfäller");
@@ -161,7 +162,9 @@ public class LumberjackCommand implements CommandExecutor {
             player.sendMessage("§8[§7Holzfäller§8]§7 Baue §e6 Bäume§7 ab.");
             playerData.setIntVariable("holz", 6);
             playerData.setIntVariable("holzkg", 0);
-            playerData.getScoreboard().createLumberjackScoreboard();
+            Scoreboard scoreboard = new Scoreboard(player);
+            scoreboard.createLumberjackScoreboard();
+            playerData.setScoreboard("lumberjack", scoreboard);
             player.getInventory().addItem(ItemManager.createItem(Material.WOODEN_AXE, 1, 0, "§7Holzaxt", null));
         } else {
             player.sendMessage("§8[§7Holzfäller§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7 beginnen.");

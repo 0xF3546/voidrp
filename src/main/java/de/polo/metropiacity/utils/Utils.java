@@ -109,9 +109,9 @@ public class Utils {
     public void loadTeams() {
         sb = Bukkit.getScoreboardManager().getMainScoreboard();
         for (RankData rankData : ServerManager.rankDataMap.values()) {
-            if (sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getRang()) == null) {
-                //sb.registerNewTeam(-rankData.getPermlevel() + "_" + rankData.getRang());
-                //sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getRang()).setPrefix(rankData.getColor() + rankData.getRang() + "§8 × §7");
+            if (sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getShortName()) == null) {
+                sb.registerNewTeam(-rankData.getPermlevel() + "_" + rankData.getShortName());
+                sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getShortName()).setPrefix(rankData.getColor() + rankData.getShortName() + "§8 × §7");
             }
         }
     }
@@ -120,9 +120,9 @@ public class Utils {
 
         static void setTablist(Player player, String suffix) {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            String team = -playerData.getPermlevel() + "_" + playerData.getRang();
+            RankData rankData = Main.getInstance().serverManager.getRankData(playerData.getRang());
+            String team = -playerData.getPermlevel() + "_" + rankData.getShortName();
             sb.getTeam(team).addPlayer(player);
-            RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
             for (Player all : Bukkit.getOnlinePlayers()) {
                 all.setScoreboard(sb);
             }

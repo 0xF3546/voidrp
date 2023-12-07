@@ -22,7 +22,6 @@ public class JoinListener implements Listener {
     private final LocationManager locationManager;
     private final ServerManager serverManager;
     public JoinListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, LocationManager locationManager, ServerManager serverManager) {
-        System.out.println("load joinlistener");
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         this.utils = utils;

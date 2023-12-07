@@ -3,6 +3,7 @@ package de.polo.metropiacity.utils;
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.playerUtils.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -225,7 +226,9 @@ public class Vehicles implements Listener, CommandExecutor {
             Player player = (Player) event.getEntered();
             if (vehicle.getPersistentDataContainer().get(key_lock, PersistentDataType.INTEGER) == 0) {
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                playerData.getScoreboard().createCarScoreboard(event.getVehicle());
+                Scoreboard scoreboard = new Scoreboard(player);
+                scoreboard.createCarScoreboard(event.getVehicle());
+                playerData.setScoreboard("vehicle", scoreboard);
                 playerSpeeds.put(player, 0.0);
             } else {
                 event.setCancelled(true);
@@ -240,7 +243,7 @@ public class Vehicles implements Listener, CommandExecutor {
             Vehicle vehicle = event.getVehicle();
             Player player = (Player) event.getExited();
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            playerData.getScoreboard().killScoreboard();
+            playerData.getScoreboard("vehicle").killScoreboard();
         }
     }
     private final HashMap<Player, Double> playerSpeeds = new HashMap<>();

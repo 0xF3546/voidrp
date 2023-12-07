@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.playerUtils.Scoreboard;
 import de.polo.metropiacity.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.*;
 import org.bukkit.Bukkit;
@@ -80,7 +81,7 @@ public class FarmerCommand implements CommandExecutor {
         if (playerData.getVariable("job") == "weizenlieferant") {
             playerData.setVariable("job", null);
             player.sendMessage("§8[§eLieferant§8]§7 Du hast den Job beendet.");
-            playerData.getScoreboard().killScoreboard();
+            playerData.getScoreboard("farmer").killScoreboard();
             return;
         }
         playerData.setVariable("job", null);
@@ -88,7 +89,7 @@ public class FarmerCommand implements CommandExecutor {
         player.sendMessage("§8[§eFarmer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
         if (playerData.getIntVariable("heuballen_remaining") <= 0) playerManager.addExp(player, Main.random(12, 20));
-        playerData.getScoreboard().killScoreboard();
+        playerData.getScoreboard("farmer").killScoreboard();
         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
         try {
             playerManager.addBankMoney(player, payout, "Auszahlung Farmer");
@@ -111,7 +112,7 @@ public class FarmerCommand implements CommandExecutor {
             int amount = Main.random(2, 4);
             playerData.setIntVariable("heuballen", playerData.getIntVariable("heuballen") + amount);
             player.sendMessage("§8[§eFarmer§8]§7 +" + amount + " Heuballen");
-            playerData.getScoreboard().updateFarmerScoreboard();
+            playerData.getScoreboard("farmer").updateFarmerScoreboard();
             if (playerData.getIntVariable("heuballen_remaining") <= 0) {
                 player.sendMessage("§8[§eFarmer§8]§7 Du hast alle heuballen abgebaut, begib dich wieder zum Farmer.");
             }
@@ -131,7 +132,9 @@ public class FarmerCommand implements CommandExecutor {
             player.sendMessage(prefix + "Baue §e" + player.getName() + " Heuballen§7 ab.");
             playerData.setIntVariable("heuballen_remaining", 9);
             playerData.setIntVariable("heuballen", 0);
-            playerData.getScoreboard().createFarmerScoreboard();
+            Scoreboard scoreboard = new Scoreboard(player);
+            scoreboard.createFarmerScoreboard();
+            playerData.setScoreboard("farmer", scoreboard);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 0, true, false));
         } else {
             player.sendMessage("§8[§eFarmer§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
@@ -142,7 +145,9 @@ public class FarmerCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("weizen", Main.random(2, 5));
         playerData.setVariable("job", "weizenlieferant");
-        playerData.getScoreboard().createWeizentransportScoreboard();
+        Scoreboard scoreboard = new Scoreboard(player);
+        scoreboard.createWeizentransportScoreboard();
+        playerData.setScoreboard("weizen", scoreboard);
         player.sendMessage("§8[§eLieferant§8]§7 Bringe das Weizen zur Mühle.");
         player.sendMessage("§8 ➥ §7Nutze §8/§edrop§7 um das Weizen abzugeben.");
         utils.navigation.createNavi(player, "Mühle", true);
@@ -156,7 +161,7 @@ public class FarmerCommand implements CommandExecutor {
             SoundManager.successSound(player);
             playerManager.addExp(player, Main.random(1, 3));
             playerData.setIntVariable("weizen", playerData.getIntVariable("weizen") - 1);
-            playerData.getScoreboard().updateWeizentransportScoreboard();
+            playerData.getScoreboard("weizen").updateWeizentransportScoreboard();
             try {
                 playerManager.addBankMoney(player, payout, "Auszahlung Weizentransport");
             } catch (SQLException e) {
@@ -165,7 +170,7 @@ public class FarmerCommand implements CommandExecutor {
             if (playerData.getIntVariable("weizen") <= 0) {
                 player.sendMessage("§8[§eLieferant§8]§7 Du hast alles abgegeben. Danke!");
                 playerData.setVariable("job", null);
-                playerData.getScoreboard().killScoreboard();
+                playerData.getScoreboard("weizen").killScoreboard();
             }
         } else {
             player.sendMessage(Main.error + "Du bist nicht in der nähe der Mühle.");

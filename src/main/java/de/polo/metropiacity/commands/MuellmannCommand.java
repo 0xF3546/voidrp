@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.playerUtils.Scoreboard;
 import de.polo.metropiacity.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.LocationManager;
@@ -78,7 +79,7 @@ public class MuellmannCommand implements CommandExecutor {
         playerData.setVariable("job", null);
         if (!silent) player.sendMessage("§8[§9Müllmann§8]§7 Vielen Dank für die geleistete Arbeit.");
         SoundManager.successSound(player);
-        playerData.getScoreboard().killScoreboard();
+        playerData.getScoreboard("müllmann").killScoreboard();
         Main.getInstance().getCooldownManager().setCooldown(player, "müllmann", 600);
     }
 
@@ -87,7 +88,9 @@ public class MuellmannCommand implements CommandExecutor {
         playerData.setIntVariable("muell", Main.random(2, 5));
         playerData.setIntVariable("muellkg", 0);
         playerData.setVariable("job", "Müllmann");
-        playerData.getScoreboard().createMuellmannScoreboard();
+        Scoreboard scoreboard = new Scoreboard(player);
+        scoreboard.createMuellmannScoreboard();
+        playerData.setScoreboard("müllmann", scoreboard);
         player.sendMessage("§8[§9Müllmann§8]§7 Entleere den Müll verschiedner Häuser.");
         player.sendMessage("§8 ➥ §7Nutze §8[§6Rechtsklick§8]§7 auf die Hausschilder.");
     }
@@ -99,13 +102,13 @@ public class MuellmannCommand implements CommandExecutor {
         playerManager.addExp(player, Main.random(1, 3));
         playerData.setIntVariable("muell", playerData.getIntVariable("muell") - 1);
         playerData.setIntVariable("muellkg", playerData.getIntVariable("muellkg") + Main.random(1, 4));
-        playerData.getScoreboard().updateMuellmannScoreboard();
+        playerData.getScoreboard("müllmann").updateMuellmannScoreboard();
         if (playerData.getIntVariable("muell") <= 0) {
             int payout = Main.random(ServerManager.getPayout("muellmann"), ServerManager.getPayout("muellmann2")) * playerData.getIntVariable("muellkg");
             player.sendMessage("§8[§9Müllmann§8]§7 Du hast alles eingesammelt. Danke! §a+" + payout + "$");
             playerData.setVariable("job", null);
             quitJob(player, true);
-            playerData.getScoreboard().killScoreboard();
+            playerData.getScoreboard("müllmann").killScoreboard();
             try {
                 playerManager.addBankMoney(player, payout, "Auszahlung Müllmann");
             } catch (SQLException e) {
