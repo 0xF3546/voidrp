@@ -19,13 +19,6 @@ public class ProjectileHitListener implements Listener {
             Arrow arrow = (Arrow) projectile;
             Block hitBlock = arrow.getLocation().getBlock();
             arrow.remove();
-            /*new BukkitRunnable() {
-                @Override
-                public void run() {
-                    hitBlock.breakNaturally();
-                    hitBlock.getState().update();
-                }
-            }.runTask(Main.getInstance());*/
         }
     }
 }

@@ -1,7 +1,9 @@
 package de.polo.metropiacity.playerUtils;
 
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.ShopItem;
 import de.polo.metropiacity.database.MySQL;
+import org.bukkit.Material;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,25 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Shop {
-    public static Object[][] shop_items;
+    public static List<ShopItem> shopItems = new ArrayList<>();
     public static void loadShopItems() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM shop_items");
         List<Object[]> resultList = new ArrayList<>();
         while (locs.next()) {
-            Object[] row = new Object[7];
-            row[0] = locs.getInt(1);
-            row[1] = locs.getInt(2);
-            row[2] = locs.getString(3);
-            row[3] = locs.getString(4);
-            row[4] = locs.getInt(5);
-            row[5] = locs.getString(6);
-            row[6] = locs.getString(7);
-            resultList.add(row);
-        }
-        shop_items = new Object[resultList.size()][];
-        for (int i = 0; i < resultList.size(); i++) {
-            shop_items[i] = resultList.get(i);
+            ShopItem item = new ShopItem();
+            item.setId(locs.getInt("id"));
+            item.setShop(locs.getInt("shop"));
+            item.setMaterial(Material.valueOf(locs.getString("material")));
+            item.setDisplayName(locs.getString("name"));
+            item.setPrice(locs.getInt("price"));
+            item.setType(locs.getString("type"));
+            item.setSecondType(locs.getString("type2"));
+            shopItems.add(item);
         }
     }
 }

@@ -2,14 +2,10 @@ package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.*;
 import de.polo.metropiacity.utils.*;
-import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.Server;
-import de.polo.metropiacity.commands.*;
-import de.polo.metropiacity.utils.events.CertainInventoryClickEvent;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -51,7 +47,6 @@ public class InventoryClickListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        Bukkit.getPluginManager().callEvent(new CertainInventoryClickEvent(player, event.getCurrentItem(), playerData.getVariable("current_inventory"), playerData.getVariable("current_app"), playerData.getVariable("current_page"), playerData.getVariable("originClass")));
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
             playerData.setVariable("current_inventory", null);
@@ -80,66 +75,6 @@ public class InventoryClickListener implements Listener {
                 if (playerData.getIntVariable("rubbellose_gemacht") == 0) {
                     player.closeInventory();
                     player.sendMessage("§8[§6Rubbellos§8]§c Du hast das Spiel abgebrochen!");
-                }
-            }
-        }
-        for (int i = 0; i < LocationManager.shops.length; i++) {
-            int f = i + 1;
-            if (event.getView().getTitle().equalsIgnoreCase("§8» §c" + locationManager.getShopNameById(f))) {
-                event.setCancelled(true);
-                playerData.setVariable("current_inventory", null);
-                for (Object[] row : Shop.shop_items) {
-                    int shop = locationManager.isNearShop(player);
-                    if ((int) row[1] == shop) {
-                        if (event.getCurrentItem().getType() == Material.valueOf((String) row[2]) && event.getCurrentItem().getType() != null) {
-                            if (playerManager.money(player) >= (int) row[4]) {
-                                try {
-                                    if (Objects.equals(row[5].toString(), "weapon")) {
-                                        String weapon = row[3].toString().replace("&", "").replace("6", "");
-                                        Main.getInstance().weapons.giveWeaponToPlayer(player, event.getCurrentItem().getType(), "default");
-                                        player.sendMessage("§8[§6" + locationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
-                                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                        playerManager.removeMoney(player, (int) row[4], "Kauf der Waffe: " + weapon);
-                                    } else if (Objects.equals(row[5].toString(), "ammo")) {
-                                        String ammo = row[6].toString();
-                                        if (player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
-                                            player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
-                                            player.closeInventory();
-                                            return;
-                                        }
-                                        for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
-                                            if (weaponData.getType().equalsIgnoreCase(ammo)) {
-                                                if (weaponData.getMaterial().equals(player.getEquipment().getItemInMainHand().getType())) {
-                                                    Main.getInstance().weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
-                                                    player.sendMessage("§8[§6" + locationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
-                                                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                                    playerManager.removeMoney(player, (int) row[4], "Kauf von Munition: " + weaponData.getType());
-                                                } else {
-                                                    player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
-                                                    player.closeInventory();
-                                                }
-                                                return;
-                                            }
-                                        }
-                                        player.sendMessage(Main.error + "Es konnte keine Waffe zur Munition gefunden werden.");
-                                    } else if (Objects.equals(row[5].toString(), "car")) {
-                                        Main.getInstance().vehicles.giveVehicle(player, row[6].toString());
-                                    } else {
-                                        playerManager.removeMoney(player, (int) row[4], "Kauf von: " + event.getCurrentItem().getType());
-                                        player.getInventory().addItem(ItemManager.createItem(Material.valueOf((String) row[2]), 1, 0, event.getCurrentItem().getItemMeta().getDisplayName(), null));
-                                        player.sendMessage("§8[§6" + locationManager.getShopNameById(f) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + row[4] + "$.");
-                                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                    }
-                                } catch (SQLException e) {
-                                    player.sendMessage(Main.error + "Fehler. Bitte kontaktiere die Entwicklung.");
-                                    throw new RuntimeException(e);
-                                }
-                            } else {
-                                player.sendMessage("§6" + locationManager.getShopNameById(f) + "§8 » §7" + "Du hast leider nicht genug Bargeld.");
-                            }
-                        }
-                    }
-                    i++;
                 }
             }
         }

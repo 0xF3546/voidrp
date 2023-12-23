@@ -165,7 +165,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     }
 
     public static void equipPlayer(Player player) {
-        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "Gangwar");
+        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.GANGWAR);
     }
 
     public void leaveGangwar(Player player) {
@@ -180,7 +180,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                             ItemMeta meta = item.getItemMeta();
                             if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
                                 if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "Gangwar") {
-                                    player.getInventory().remove(item);
+                                    Main.getInstance().weapons.removeWeapon(player, item);
                                 }
                             }
                         }
@@ -205,7 +205,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         ItemMeta meta = item.getItemMeta();
                         if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
                             if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "Gangwar") {
-                                player.getInventory().remove(item);
+                                Main.getInstance().weapons.removeWeapon(player, item);
                             }
                         }
                     }

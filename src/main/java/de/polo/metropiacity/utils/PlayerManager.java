@@ -1,13 +1,10 @@
 package de.polo.metropiacity.utils;
 
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
-import de.polo.metropiacity.dataStorage.FactionData;
-import de.polo.metropiacity.dataStorage.GangwarData;
-import de.polo.metropiacity.dataStorage.RankData;
+import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.*;
-import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.enums.EXPType;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
@@ -70,6 +67,7 @@ public class PlayerManager implements Listener {
             String newDate = formatter.format(date);
             statement.execute("INSERT INTO `players` (`uuid`, `firstjoin`) VALUES ('" + uuid + "', '" + newDate + "')");
             statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
+            statement.execute("INSERT INTO `player_addonxp` (`uuid`) VALUES ('" + uuid + "')");
             Player player = Bukkit.getPlayer(uuid);
             assert player != null;
             loadPlayer(player);
@@ -240,7 +238,16 @@ public class PlayerManager implements Listener {
             if (playerData.isJailed()) {
                 statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
             }
+
+            for (Weapon weapon : Main.getInstance().weapons.getWeapons().values()) {
+                if (weapon.getOwner().equals(player.getUniqueId())) {
+                    Statement statement1 = mySQL.getStatement();
+                    statement1.executeUpdate("UPDATE player_weapons SET ammo = " + weapon.getAmmo() + ", current_ammo = " + weapon.getCurrentAmmo() + " WHERE id = " + weapon.getId());
+                    statement1.close();
+                }
+            }
             playerDataMap.remove(uuid);
+            statement.close();
         } else {
             System.out.println("Spieler " + player.getName() + "'s playerData konnte nicht gefunden werden.");
         }
@@ -557,11 +564,11 @@ public class PlayerManager implements Listener {
 
     public void addExp(Player player, EXPType expType, Integer amount) {
         PlayerData playerData = getPlayerData(player.getUniqueId());
-        Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp());
         switch (expType.getSkillType()) {
             case FISHING:
                 playerData.addonXP.addFishingXP(amount);
         }
+        Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp() + ")");
     }
 
     public void addEXPBoost(Player player, int hours) throws SQLException {

@@ -5,7 +5,6 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.InventoryManager.CustomItem;
 import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
-import de.polo.metropiacity.utils.events.CertainInventoryClickEvent;
 import de.polo.metropiacity.utils.events.NaviReachEvent;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.*;
@@ -17,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -28,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Navigation implements CommandExecutor, TabCompleter, Listener {
     private final PlayerManager playerManager;
@@ -84,8 +79,8 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                                     naviInventory.setItem(new CustomItem(i, stack) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
-                                            player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
-                                            LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
+                                            player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + newNavi.getName().replace("&", "§") + "§7 gesetzt.");
+                                            LocationData locationData = LocationManager.locationDataMap.get(newNavi.getLocation());
                                             Main.getInstance().utils.navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                                             player.closeInventory();
                                         }

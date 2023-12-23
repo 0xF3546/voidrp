@@ -36,6 +36,7 @@ public class FFAUtils implements CommandExecutor, Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        Main.registerCommand("ffa", this);
     }
 
     private void loadFFALobbys() throws SQLException {
@@ -138,7 +139,7 @@ public class FFAUtils implements CommandExecutor, Listener {
             lobbyData.setPlayers(lobbyData.getPlayers() + 1);
             player.sendMessage("§8[§6FFA§8]§e Du betrittst: " + lobbyData.getDisplayname().replace("&", "§"));
             player.sendMessage("§8 ➥ §7Nutze §8/§effa leave §7um die Arena zu verlassen.");
-            Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, "FFA");
+            Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.FFA);
             useSpawn(player, id);
         } else {
             player.sendMessage("§8[§6FFA§8]§c Diese Lobby ist voll!");
@@ -159,7 +160,7 @@ public class FFAUtils implements CommandExecutor, Listener {
                         ItemMeta meta = item.getItemMeta();
                         if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
                             if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "FFA") {
-                                player.getInventory().remove(item);
+                                Main.getInstance().weapons.removeWeapon(player, item);
                             }
                         }
                     }

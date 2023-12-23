@@ -1,8 +1,11 @@
 package de.polo.metropiacity.utils;
 
+import de.polo.metropiacity.dataStorage.Weapon;
 import de.polo.metropiacity.dataStorage.WeaponData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.WeaponType;
 import de.polo.metropiacity.database.MySQL;
+import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -20,13 +23,12 @@ import org.bukkit.util.Vector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Weapons implements Listener {
     public static final Map<Material, WeaponData> weaponDataMap = new HashMap<>();
+
+    private final HashMap<Integer, Weapon> weaponList = new HashMap<>();
 
     private final Utils utils;
 
@@ -35,6 +37,7 @@ public class Weapons implements Listener {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         try {
             loadWeapons();
+            loadPlayerWeapons();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -60,28 +63,46 @@ public class Weapons implements Listener {
         }
     }
 
-    public void giveWeaponToPlayer(Player player, Material material, String type) {
+    @SneakyThrows
+    private void loadPlayerWeapons() {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM player_weapons");
+        while (result.next()) {
+            Weapon weapon = new Weapon();
+            weapon.setAmmo(result.getInt("ammo"));
+            weapon.setCurrentAmmo(result.getInt("current_ammo"));
+            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
+            weapon.setId(result.getInt("id"));
+            weapon.setOwner(UUID.fromString(result.getString("uuid")));
+            for (WeaponData weaponData : weaponDataMap.values()) {
+                if (weaponData.getId() == result.getInt("weapon")) {
+                    weapon.setWeaponData(weaponDataMap.get("weapon"));
+                }
+            }
+            weaponList.put(weapon.getId(), weapon);
+        }
+    }
+
+    @SneakyThrows
+    public void giveWeaponToPlayer(Player player, Material material, WeaponType type) {
         WeaponData weaponData = weaponDataMap.get(material);
         ItemStack item = new ItemStack(weaponData.getMaterial());
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setDisplayName(weaponData.getName());
-        NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
-        meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
+        Weapon weapon = new Weapon();
+        weapon.setOwner(player.getUniqueId());
+        weapon.setWeaponData(weaponData);
+        weapon.setWeaponType(type);
+        weapon.setAmmo(0);
+        weapon.setCurrentAmmo(0);
+        weapon.setReloading(false);
+        addWeapon(weapon);
 
-        NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
-        meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
+        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
+        meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, weapon.getId());
 
-        NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
-        meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 0);
-
-        NamespacedKey typeKey = new NamespacedKey(Main.plugin, "type");
-        meta.getPersistentDataContainer().set(typeKey, PersistentDataType.STRING, type);
-
-        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
-        meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
-
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weaponData.getMaxAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
 
@@ -89,12 +110,52 @@ public class Weapons implements Listener {
 
     public void giveWeaponAmmoToPlayer(Player player, ItemStack weapon, Integer amount) {
         ItemMeta meta = weapon.getItemMeta();
-        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
-        int current_ammo = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
-        meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, current_ammo += amount);
-        int ammo = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "current_ammo"), PersistentDataType.INTEGER);
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + ammo + "§8/§6" + (current_ammo += amount)));
+        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "id");
+        Integer id = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
+        Weapon w = weaponList.get(id);
+
+        int newAmmo = w.getAmmo() + amount;
+        w.setAmmo(newAmmo);
+
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + w.getCurrentAmmo() + "§8/§6" + newAmmo));
         weapon.setItemMeta(meta);
+    }
+
+
+    @SneakyThrows
+    public Integer addWeapon(Weapon weapon) {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.execute("INSERT INTO player_weapons (uuid, weapon, weaponType) VALUES ('" + weapon.getOwner().toString() + "', " + weapon.getWeaponData().getId() + ", '" + weapon.getWeaponType().name() + "')", Statement.RETURN_GENERATED_KEYS);
+
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            weapon.setId(generatedKeys.getInt(1));
+            weaponList.put(weapon.getId(), weapon);
+            return generatedKeys.getInt(1);
+        }
+
+        statement.close();
+        return null;
+    }
+
+    @SneakyThrows
+    public void removeWeapon(Weapon weapon) {
+        weaponList.remove(weapon);
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.execute("DELETE FROM player_weapons WHERE id = " + weapon.getId());
+        statement.close();
+    }
+
+    public void removeWeapon(Player player, ItemStack stack) {
+        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
+        Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
+        Weapon weapon = weaponList.get(id);
+        player.getInventory().remove(stack);
+        removeWeapon(weapon);
+    }
+
+    public HashMap<Integer, Weapon> getWeapons() {
+        return weaponList;
     }
 
     @EventHandler
@@ -103,6 +164,10 @@ public class Weapons implements Listener {
         Action action = event.getAction();
         WeaponData weaponData = weaponDataMap.get(player.getEquipment().getItemInMainHand().getType());
         if (weaponData == null) {
+            return;
+        }
+
+        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         /*if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
@@ -121,18 +186,13 @@ public class Weapons implements Listener {
             }
             return;
         }*/
-        NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
-        NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
-        NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
-        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
-        Integer isReloadingPers = event.getItem().getItemMeta().getPersistentDataContainer().get(isReloading, PersistentDataType.INTEGER);
-        Integer canShootPers = event.getItem().getItemMeta().getPersistentDataContainer().get(canShoot, PersistentDataType.INTEGER);
-        Integer curr_ammo = event.getItem().getItemMeta().getPersistentDataContainer().get(current_ammo, PersistentDataType.INTEGER);
-        Integer ammo = event.getItem().getItemMeta().getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
-        if (canShootPers == 0 && isReloadingPers == 0) {
+        NamespacedKey id = new NamespacedKey(Main.plugin, "id");
+        Integer weaponId = event.getItem().getItemMeta().getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
+        Weapon weapon = weaponList.get(weaponId);
+        if (weapon.isReloading() || !weapon.isCanShoot()) {
             return;
         }
-        if (curr_ammo < 1) {
+        if (weapon.getCurrentAmmo() < 1) {
             reloadWeapon(event.getPlayer(), event.getItem());
             return;
         }
@@ -158,22 +218,20 @@ public class Weapons implements Listener {
                 nearbyPlayer.playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, volume, weaponData.getSoundPitch());
             }
         }
-        int newAmmo = curr_ammo - 1;
-        meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, newAmmo);
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + ammo));
-        String actionBarText = "§e" + newAmmo + "§8/§6" + meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
+        int newAmmo = weapon.getCurrentAmmo() - 1;
+        weapon.setCurrentAmmo(newAmmo);
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + weapon.getWeaponData().getMaxAmmo()));
+        String actionBarText = "§e" + newAmmo + "§8/§6" + weapon.getWeaponData().getMaxAmmo();
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
 
-        meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 0);
         event.getItem().setItemMeta(meta);
+        weapon.setCanShoot(false);
         new BukkitRunnable() {
             @Override
             public void run() {
                 ItemMeta meta1 = event.getItem().getItemMeta();
-                if (meta1.getPersistentDataContainer().get(current_ammo, PersistentDataType.INTEGER) >= 1) {
-                    meta1.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
-                    event.getItem().setItemMeta(meta1);
-                } else {
+                weapon.setCanShoot(true);
+                if (weapon.getCurrentAmmo() < 1) {
                     reloadWeapon(player, event.getItem());
                 }
             }
@@ -187,27 +245,23 @@ public class Weapons implements Listener {
     }
 
     public void reloadWeapon(Player player, ItemStack weapon) {
+        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
+        Integer id = weapon.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
+        Weapon w = weaponList.get(id);
         WeaponData weaponData = weaponDataMap.get(weapon.getType());
-        NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
-        ItemMeta meta = weapon.getItemMeta();
-        meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 1);
-        weapon.setItemMeta(meta);
+        w.setReloading(true);
         utils.sendActionBar(player, "§7Lade " + weaponData.getName() + "§7 nach!");
-        NamespacedKey type = new NamespacedKey(Main.plugin, "type");
-        if (!Objects.equals(meta.getPersistentDataContainer().get(type, PersistentDataType.STRING), "default")) {
+        if (w.getWeaponType() != WeaponType.NORMAL) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     reload(player, weapon);
+                    cancel();
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
             return;
         }
-        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
-        int ammo = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
-        if (ammo >= 1) {
-            meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 1);
-            weapon.setItemMeta(meta);
+        if (w.getCurrentAmmo() >= 1) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -220,30 +274,21 @@ public class Weapons implements Listener {
     }
 
     public void reload(Player player, ItemStack weapon) {
-        WeaponData weaponData = weaponDataMap.get(weapon.getType());
-        NamespacedKey current_ammo = new NamespacedKey(Main.plugin, "current_ammo");
-        NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
-        NamespacedKey canShoot = new NamespacedKey(Main.plugin, "canShoot");
-        NamespacedKey type = new NamespacedKey(Main.plugin, "type");
-        ItemMeta meta = weapon.getItemMeta();
-        if (meta.getPersistentDataContainer().get(isReloading, PersistentDataType.INTEGER) == 0) return;
-        meta.getPersistentDataContainer().set(isReloading, PersistentDataType.INTEGER, 0);
-        meta.getPersistentDataContainer().set(canShoot, PersistentDataType.INTEGER, 1);
-        if (!Objects.equals(meta.getPersistentDataContainer().get(type, PersistentDataType.STRING), "default")) {
-            meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
+        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
+        Integer id = weapon.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
+        Weapon w = weaponList.get(id);
+        if (!w.getWeaponType().isNeedsAmmoToReload()) {
+            w.setCurrentAmmo(w.getWeaponData().getMaxAmmo());
         } else {
-            NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "ammo");
-            int ammo = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
-            if (ammo >= weaponData.getMaxAmmo()) {
-                meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo());
-                meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, ammo - weaponData.getMaxAmmo());
+            if (w.getAmmo() >= w.getWeaponData().getMaxAmmo()) {
+                w.setCurrentAmmo(w.getWeaponData().getMaxAmmo());
+                w.setAmmo(w.getAmmo() - w.getWeaponData().getMaxAmmo());
             } else {
-                meta.getPersistentDataContainer().set(current_ammo, PersistentDataType.INTEGER, weaponData.getMaxAmmo() - ammo);
-                meta.getPersistentDataContainer().set(ammoKey, PersistentDataType.INTEGER, 0);
+                w.setCurrentAmmo(w.getWeaponData().getMaxAmmo() - w.getAmmo());
+                w.setAmmo(0);
             }
-            weapon.setItemMeta(meta);
         }
-        weapon.setItemMeta(meta);
-        utils.sendActionBar(player, weaponData.getName() + "§7 wurde nachgeladen!");
+        w.setReloading(false);
+        utils.sendActionBar(player, w.getWeaponData().getName() + "§7 wurde nachgeladen!");
     }
 }
