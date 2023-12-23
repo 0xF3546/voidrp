@@ -32,7 +32,7 @@ public class CloseTicketCommand implements CommandExecutor {
         if (playerData.getPermlevel() >= 40) {
             Player targetplayer = null;
             for (Player players : Bukkit.getOnlinePlayers()) {
-                if (supportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
+                if (supportManager.getTicket(player).getCreator() == players.getUniqueId()) {
                     targetplayer = players;
                 }
             }

@@ -32,6 +32,19 @@ public class CommandListener implements Listener {
         if (playerData.isAFK()) {
             utils.setAFK(player, false);
         }
+
+        for (PlayerData playerData2 : playerManager.getPlayers()) {
+            if (playerData2.getVariable("isSpec") != null) {
+                if (playerData.getVariable("isSpec").equals(player.getUniqueId().toString())) {
+                    Player targetplayer = Bukkit.getPlayer(playerData2.getUuid());
+                    if (targetplayer == null) {
+                        return;
+                    }
+                    targetplayer.sendMessage("§8[§cSpec§8]§6 " + player.getName() + "§7 hat den Befehl \"§6" + msg + "§7\" ausgeführt.");
+                }
+            }
+        }
+
         if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
             event.setCancelled(true);
             player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 wurde nicht gefunden.");
@@ -47,14 +60,6 @@ public class CommandListener implements Listener {
             if (!performCommand) {
                 player.sendMessage("§7Du kannst diesen  Befehl aktuell nicht nutzen.");
                 event.setCancelled(true);
-            }
-        }
-        for (PlayerData playerData2 : playerManager.getPlayers()) {
-            if (playerData2.getVariable("isSpec") != null) {
-                if (playerData.getVariable("isSpec").equals(player.getUniqueId().toString())) {
-                    Player targetplayer = Bukkit.getPlayer(playerData2.getUuid());
-                    targetplayer.sendMessage("§8[§cSpec§8]§6 " + player.getName() + "§7 hat den Befehl \"§6" + msg + "§7\" ausgeführt.");
-                }
             }
         }
     }

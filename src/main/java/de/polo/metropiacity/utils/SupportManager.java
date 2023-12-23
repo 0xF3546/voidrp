@@ -1,10 +1,19 @@
 package de.polo.metropiacity.utils;
 
+import de.polo.metropiacity.dataStorage.Ticket;
+import de.polo.metropiacity.database.MySQL;
+import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class SupportManager {
     public static final HashMap<String, Boolean> ticketIsCreated = new HashMap<>();
@@ -14,57 +23,112 @@ public class SupportManager {
     public static int TicketCount = 0;
     public static final List<String> playerTickets = new ArrayList<>();
 
-    public SupportManager() {
+    private List<Ticket> Tickets = new ArrayList<>();
 
+    private final MySQL mySQL;
+
+    public SupportManager(MySQL mySQL) {
+        this.mySQL  = mySQL;
     }
 
     public boolean ticketCreated(Player player) {
         return ticketIsCreated.get(player.getUniqueId().toString()) != null;
     }
 
-    public void createTicket(Player player, String reason) {
-        ticketIsCreated.put(player.getUniqueId().toString(), true);
-        ticketReason.put(player.getUniqueId().toString(), reason);
-        TicketCount++;
-        playerTickets.add(player.getName());
+    @SneakyThrows
+    public Ticket createTicket(Player player, String reason) {
+        Ticket ticket = new Ticket();
+
+        Connection connection = mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO tickets (creator, reason) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+        statement.setString(1, player.getUniqueId().toString());
+        statement.setString(2, reason);
+        statement.executeUpdate();
+
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+
+        if (generatedKeys.next()) {
+            int lastInsertedId = generatedKeys.getInt(1);
+            ticket.setId(lastInsertedId);
+            System.out.println(lastInsertedId);
+        }
+
+        ticket.setCreator(player.getUniqueId());
+        ticket.setReason(reason);
+
+        Tickets.add(ticket);
+
+        statement.close();
+        connection.close();
+
+        return ticket;
     }
 
+    @SneakyThrows
     public void deleteTicket(Player player) {
-        if (ticketCreated(player)) {
-            ticketReason.remove(player.getUniqueId().toString());
-            ticketIsCreated.remove(player.getUniqueId().toString());
-            TicketCount--;
-            for (int i = 0; i < playerTickets.size(); i++) {
-                System.out.println(playerTickets.get(i));
-                if (playerTickets.get(i) == player.getName()) {
-                    playerTickets.remove(i);
-                }
+        for (Ticket ticket : Tickets) {
+            if (ticket.getCreator() == player.getUniqueId()) {
+                Statement statement = mySQL.getStatement();
+                statement.executeUpdate("DELETE FROM tickets WHERE id = " + ticket.getId());
+                Tickets.remove(ticket);
+                return;
             }
         }
     }
 
+    public void removeTicket(Ticket ticket) {
+        Tickets.remove(ticket);
+    }
+
     public void createTicketConnection(Player player, Player targetplayer) {
-        ticketConnection.put(player.getUniqueId().toString(), targetplayer.getUniqueId().toString());
-        ticketConnection.put(targetplayer.getUniqueId().toString(), player.getUniqueId().toString());
-        isInConnection.put(player.getUniqueId().toString(), true);
-        isInConnection.put(targetplayer.getUniqueId().toString(), true);
+        for (Ticket ticket : Tickets) {
+            if (ticket.getCreator() == player.getUniqueId()) {
+                ticket.addEditor(targetplayer.getUniqueId());
+            }
+        }
     }
     public boolean deleteTicketConnection(Player player, Player targetplayer) {
-        if (ticketConnection.get(player.getUniqueId().toString()) == null || ticketConnection.get(targetplayer.getUniqueId().toString()) == null) {
-            return false;
+        Ticket ticket = getTicket(player);
+        Ticket ticket2 = getTicket(targetplayer);
+        if (ticket != null) {
+            Tickets.remove(ticket);
         }
-        ticketConnection.remove(player.getUniqueId().toString());
-        ticketConnection.remove(targetplayer.getUniqueId().toString());
-        deleteTicket(targetplayer);
-        isInConnection.remove(targetplayer.getUniqueId().toString());
-        isInConnection.remove(player.getUniqueId().toString());
+        if (ticket2 != null) {
+            Tickets.remove(ticket2);
+        }
         return true;
     }
-    public String getConnection(Player player) {
-        return ticketConnection.get(player.getUniqueId().toString());
+    public Ticket getTicket(Player player) {
+        for (Ticket ticket : Tickets) {
+            if (ticket.getCreator() == player.getUniqueId()) {
+                return ticket;
+            }
+            for (UUID uuid : ticket.getEditors()) {
+                if (uuid == player.getUniqueId()) {
+                    return ticket;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Player> getPlayersInTicket(Ticket ticket) {
+        List<Player> players = new ArrayList<>();
+
+        players.add(Bukkit.getPlayer(ticket.getCreator()));
+
+        for (UUID uuid : ticket.getEditors()) {
+            players.add(Bukkit.getPlayer(uuid));
+        }
+
+        return players;
     }
 
     public boolean isInConnection(Player player) {
-        return isInConnection.get(player.getUniqueId().toString()) != null;
+        if (getTicket(player) != null) {
+            return true;
+        }
+        return false;
     }
 }

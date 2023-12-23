@@ -182,6 +182,7 @@ public class Scoreboard extends ScoreboardBuilder {
         isCarScore = false;
         isLebensmittelLieferantScore = false;
         isFarmerScore = false;
+        Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).removeScoreboard(this);
     }
 
     @Override
@@ -194,6 +195,12 @@ public class Scoreboard extends ScoreboardBuilder {
             @Override
             public void run() {
                 PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+
+                if (!player.isOnline()) {
+                    cancel();
+                    return;
+                }
+
                 if (playerData.getScoreboard("admin") != null) {
                     Runtime r = Runtime.getRuntime();
                     setScore("§8 ➥ §e" + SupportManager.TicketCount, 4);
@@ -214,6 +221,8 @@ public class Scoreboard extends ScoreboardBuilder {
                     setScore("§8 ➥ §7" + (int) kmh * 2, 4);
                     setScore("§8 ➥ §7" + km, 2);
                     setScore("§8 ➥ §7" + fuel + "l", 0);
+                } else {
+                    cancel();
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20, 30);

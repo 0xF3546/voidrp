@@ -13,14 +13,6 @@ public class Server {
     private void init() {
         //teamSpeak = new de.polo.metropiacity.utils.TeamSpeak();
     }
-    public interface TeamSpeak {
-        /*static de.polo.metropiacity.utils.TeamSpeak getTeamSpeak() {
-            return teamSpeak;
-        }*/
-    }
-    public interface Faction {
-
-    }
     public interface Utils {
         static void kissPlayer(Player player, Player targetplayer) {
             if (player.getLocation().distance(targetplayer.getLocation()) < 5) {
@@ -29,21 +21,6 @@ public class Server {
                 targetplayer.spawnParticle(Particle.HEART, targetplayer.getLocation().add(0, 2, 0), 1);
             } else {
                 player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
-            }
-        }
-    }
-    public interface Economy {
-        interface farming {
-
-        }
-        interface jobs {
-
-        }
-        interface user {
-            static void addMoney(Player player, int amount) {
-            }
-            static void removeMoney(Player player, int amount) {
-
             }
         }
     }

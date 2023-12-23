@@ -1,12 +1,16 @@
 package de.polo.metropiacity.dataStorage;
 
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.playerUtils.Scoreboard;
+import de.polo.metropiacity.utils.enums.EXPType;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -235,6 +239,19 @@ public class PlayerData {
             return;
         }
         this.scoreboards.put(scoreboardName, scoreboard);
+    }
+
+    public void removeScoreboard(Scoreboard scoreboard) {
+        for (String key : scoreboards.keySet()) {
+            if (scoreboards.get(key).equals(scoreboard)) {
+                scoreboards.remove(key);
+                return;
+            }
+        }
+    }
+
+    public void removeScoreboard(String scoreboardName) {
+        scoreboards.remove(scoreboardName);
     }
 
     public Integer getSkillLevel(String type) {
@@ -512,5 +529,39 @@ public class PlayerData {
 
     public void setCoins(int coins) {
         Coins = coins;
+    }
+
+    public final AddonXP addonXP = new AddonXP();
+
+    public class AddonXP {
+        private int fishingXP;
+
+        private int fishingLevel;
+
+        public int getFishingXP() {
+            return fishingXP;
+        }
+
+        public void setFishingXP(int fishingXP) {
+            this.fishingXP = fishingXP;
+        }
+
+        public void addFishingXP(int amount) {
+            fishingXP += amount;
+            try {
+                Statement statement = Main.getInstance().mySQL.getStatement();
+                statement.executeUpdate("UPDATE player_addonxp SET fishingXP = " + fishingXP + " WHERE uuid = '" + player.getUniqueId() + "'");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public int getFishingLevel() {
+            return fishingLevel;
+        }
+
+        public void setFishingLevel(int fishingLevel) {
+            this.fishingLevel = fishingLevel;
+        }
     }
 }

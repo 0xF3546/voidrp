@@ -118,24 +118,23 @@ public class Utils {
 
     public interface Tablist {
 
-        static void setTablist(Player player, String suffix) {
+        static void setTablist(Player player, String prefix) {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
             RankData rankData = Main.getInstance().serverManager.getRankData(playerData.getRang());
-            String team = -playerData.getPermlevel() + "_" + rankData.getShortName();
-            sb.getTeam(team).addPlayer(player);
-            for (Player all : Bukkit.getOnlinePlayers()) {
-                all.setScoreboard(sb);
-            }
-            if (suffix == null) {
-                player.setDisplayName(Color.GRAY + player.getName());
-                player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName());
-                player.setCustomName(Color.GRAY + player.getName());
-                player.setCustomNameVisible(true);
-                return;
-            }
-            suffix = " " + suffix;
             player.setDisplayName(Color.GRAY + player.getName());
-            player.setPlayerListName(rankData.getColor() + rankData.getRang() + "§8 × §7" + player.getName() + suffix);
+            String suffix = "";
+            if (rankData.getPermlevel() >= 40) {
+                suffix = "§c◉";
+            } else if (rankData.getPermlevel() >= 10) {
+                suffix = "§d◈";
+            }
+            if (prefix != null) {
+                prefix = " " + prefix;
+            } else {
+                prefix = "";
+            }
+            player.setDisplayName(Color.GRAY + player.getName());
+            player.setPlayerListName(prefix + "§7" + player.getName() + " " + suffix);
             player.setCustomName(Color.GRAY + player.getName());
             player.setCustomNameVisible(true);
         }

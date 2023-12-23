@@ -1,6 +1,7 @@
 package de.polo.metropiacity.listeners;
 
 import com.jeff_media.customblockdata.CustomBlockData;
+import de.polo.metropiacity.dataStorage.ATM;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
@@ -75,7 +76,15 @@ public class PlayerInteractListener implements Listener {
                     event.setCancelled(true);
                     Sign sign = (Sign) event.getClickedBlock().getState();
                     if (sign.getLine(1).contains("Bankautomat")) {
-                        utils.bankingUtils.openBankMenu(player);
+                        for (ATM atm : utils.bankingUtils.getATMs()) {
+                            if (atm.getLocation().getX() == sign.getLocation().getX()
+                                    && atm.getLocation().getY() == sign.getLocation().getY()
+                                    && atm.getLocation().getZ() == sign.getLocation().getZ()) {
+                                utils.bankingUtils.openBankMenu(player, atm);
+                                return;
+                            }
+                        }
+                        player.sendMessage(Main.error + "Dieser Automat wurde noch nicht registriert.");
                     }
                     PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
                     for (HouseData houseData : Housing.houseDataMap.values()) {

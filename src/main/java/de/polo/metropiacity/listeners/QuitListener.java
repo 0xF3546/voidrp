@@ -3,12 +3,9 @@ package de.polo.metropiacity.listeners;
 import de.polo.metropiacity.dataStorage.ServiceData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.Ticket;
 import de.polo.metropiacity.playerUtils.ChatUtils;
-import de.polo.metropiacity.playerUtils.DeathUtils;
-import de.polo.metropiacity.playerUtils.FFAUtils;
-import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.*;
-import de.polo.metropiacity.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
@@ -91,15 +88,14 @@ public class QuitListener implements Listener {
                 }
             }
             playerManager.savePlayer(player);
-            supportManager.deleteTicket(player);
-            if (supportManager.isInConnection(player)) {
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (supportManager.getConnection(players).equalsIgnoreCase(player.getUniqueId().toString()) || supportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
-                        supportManager.deleteTicketConnection(players, player);
-                        supportManager.deleteTicketConnection(player, players);
-                        players.sendMessage(Main.support_prefix + "§c" + player.getName() + "§7 ist offline gegangen. Das Ticket wurde geschlossen.");
+            Ticket ticket = supportManager.getTicket(player);
+            if (ticket != null) {
+                for (Player p : supportManager.getPlayersInTicket(ticket)) {
+                    if (p.isOnline()) {
+                        p.sendMessage(Main.support_prefix + player.getName() + " hat den Server verlassen, das Ticket wurde geschlossen.");
                     }
                 }
+                supportManager.removeTicket(ticket);
             }
             ServiceData serviceData = StaatUtil.serviceDataMap.get(player.getUniqueId().toString());
             if (serviceData != null) {

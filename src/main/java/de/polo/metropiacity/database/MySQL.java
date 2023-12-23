@@ -43,15 +43,7 @@ public class MySQL {
         return true;
     }
     public Connection getConnection() throws SQLException {
-        if(connection != null) {
-            return connection;
-        }
-        connection = DriverManager.getConnection(url, user, password);
-
-        for (int i = 0; i < 5; i++) {
-            System.out.println("[MySQL]: Datenbank verbunden");
-        }
-        return connection;
+        return DriverManager.getConnection(url, user, password);
     }
 
     public Statement getStatement() throws SQLException {

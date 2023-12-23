@@ -1,6 +1,5 @@
 package de.polo.metropiacity;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import de.polo.metropiacity.listeners.*;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.*;
@@ -10,8 +9,8 @@ import de.polo.metropiacity.utils.Game.Farming;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.Game.Streetwar;
+import de.polo.metropiacity.utils.InventoryManager.InventoryApiRegister;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
@@ -65,6 +64,7 @@ public final class Main extends JavaPlugin {
     public Vehicles vehicles;
     public Streetwar streetwar;
     public Weapons weapons;
+    public BlockManager blockManager;
 
     public void onLoad() {
         instance = this;
@@ -73,7 +73,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         mySQL = new MySQL();
-        supportManager = new SupportManager();
+        supportManager = new SupportManager(mySQL);
         playerManager = new PlayerManager(mySQL);
         cooldownManager = new CooldownManager();
         locationManager = new LocationManager(mySQL);
@@ -89,8 +89,12 @@ public final class Main extends JavaPlugin {
         businessManager = new BusinessManager(playerManager);
         streetwar = new Streetwar(playerManager, factionManager, utils);
         weapons = new Weapons(utils);
+        blockManager = new BlockManager(mySQL);
         isOnline = true;
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles);
+
+        new InventoryApiRegister(this);
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
         }
@@ -132,7 +136,7 @@ public final class Main extends JavaPlugin {
         new PlayerInteractWithPlayerListener(playerManager);
         new ExpPickupListener();
         new ItemPickUpListener();
-        new FishingListener();
+        new FishingListener(playerManager);
         new ProjectileHitListener();
         new WorldListener();
         new InventoryOpenListener();
@@ -422,7 +426,7 @@ public final class Main extends JavaPlugin {
         public GetVehCommand getVehCommand;
         public GoToVehCommand goToVehCommand;
         public Navigation navigation;
-        public EinreiseCommand einreiseCommand;
+        //public EinreiseCommand einreiseCommand;
         public RegisterHouseCommand registerHouseCommand;
         public ReinforcementCommand reinforcementCommand;
         public BuyHouseCommand buyHouseCommand;
@@ -485,6 +489,8 @@ public final class Main extends JavaPlugin {
         public BanListCommand banListCommand;
         public GMCommand gmCommand;
         public NoteCommand noteCommand;
+        public RegisterblockCommand registerblockCommand;
+        public RegisterATMCommand registerATMCommand;
         //public GetSkinCommand getSkinCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
@@ -500,7 +506,7 @@ public final class Main extends JavaPlugin {
             assistentchatCommand = new AssistentchatCommand(playerManager, utils);
             supportCommand = new SupportCommand(playerManager, supportManager);
             cancelSupportCommand = new CancelSupportCommand(supportManager);
-            acceptTicketCommand = new AcceptTicketCommand(playerManager, adminManager, supportManager, utils);
+            acceptTicketCommand = new AcceptTicketCommand(playerManager, adminManager, supportManager, utils, mySQL);
             closeTicketCommand = new CloseTicketCommand(playerManager, supportManager, adminManager, utils);
             tpToCommand = new TPToCommand(playerManager, locationManager);
             adminReviveCommand = new AdminReviveCommand(playerManager, utils);
@@ -543,7 +549,7 @@ public final class Main extends JavaPlugin {
             getVehCommand = new GetVehCommand(playerManager);
             goToVehCommand = new GoToVehCommand(playerManager);
             navigation = new Navigation(playerManager);
-            einreiseCommand = new EinreiseCommand(playerManager, locationManager);
+            //einreiseCommand = new EinreiseCommand(playerManager, locationManager);
             registerHouseCommand = new RegisterHouseCommand(playerManager);
             reinforcementCommand = new ReinforcementCommand(playerManager, factionManager);
             buyHouseCommand = new BuyHouseCommand(playerManager);
@@ -607,6 +613,8 @@ public final class Main extends JavaPlugin {
             gmCommand = new GMCommand(playerManager);
             noteCommand = new NoteCommand(playerManager, utils);
             //GetSkinCommand getSkinCommand = new GetSkinCommand(playerManager);
+            registerblockCommand = new RegisterblockCommand(playerManager, mySQL, blockManager);
+            registerATMCommand = new RegisterATMCommand(playerManager, adminManager, mySQL);
 
             main.registerCommands();
             main.registerListener();

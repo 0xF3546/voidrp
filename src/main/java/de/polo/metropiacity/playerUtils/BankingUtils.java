@@ -1,32 +1,52 @@
 package de.polo.metropiacity.playerUtils;
 
+import de.polo.metropiacity.dataStorage.ATM;
 import de.polo.metropiacity.dataStorage.FactionData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.utils.FactionManager;
-import de.polo.metropiacity.utils.ItemManager;
-import de.polo.metropiacity.utils.PlayerManager;
-import de.polo.metropiacity.utils.Utils;
+import de.polo.metropiacity.dataStorage.RegisteredBlock;
+import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class BankingUtils implements Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+    private final List<ATM> atmList = new ArrayList<>();
+    @SneakyThrows
     public BankingUtils(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM atm LEFT JOIN blocks ON atm.blockId = blocks.id");
+        while (result.next()) {
+            ATM atm = new ATM();
+            atm.setId(result.getInt("atm.id"));
+            atm.setName(result.getString("atm.name"));
+            atm.setLocation(new Location(Bukkit.getWorld(result.getString("blocks.world")), result.getDouble("blocks.x"), result.getDouble("blocks.y"), result.getDouble("blocks.z")));
+            atmList.add(atm);
+        }
+    }
+
+    public Collection<ATM> getATMs() {
+        return atmList;
     }
     public void sendKontoauszug(Player player) {
         player.sendMessage(" ");
@@ -46,10 +66,11 @@ public class BankingUtils implements Listener {
         player.sendMessage(" ");
     }
 
-    public void openBankMenu(Player player) {
+    public void openBankMenu(Player player, ATM atm) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        playerData.setVariable("atm", atm);
         playerData.setVariable("current_inventory", "atm");
-        Inventory inv = Bukkit.createInventory(player, 45, "§8 » §aBankautomat");
+        Inventory inv = Bukkit.createInventory(player, 45, "§8 » §aBankautomat " + atm.getId());
         inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null));
         inv.setItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
         inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aEinzahlen", null));

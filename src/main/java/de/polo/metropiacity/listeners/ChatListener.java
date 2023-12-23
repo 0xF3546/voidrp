@@ -2,6 +2,7 @@ package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.Ticket;
 import de.polo.metropiacity.utils.PhoneUtils;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
@@ -13,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.List;
 
 public class ChatListener implements Listener {
     private final PlayerManager playerManager;
@@ -36,9 +39,9 @@ public class ChatListener implements Listener {
         if (playerData.getVariable("chatblock") == null) {
             if (supportManager.isInConnection(player)) {
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (supportManager.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
-                        players.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
-                        player.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
+                    Ticket ticket = supportManager.getTicket(player);
+                    for (Player p : supportManager.getPlayersInTicket(ticket)) {
+                        p.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                     }
                 }
             } else {

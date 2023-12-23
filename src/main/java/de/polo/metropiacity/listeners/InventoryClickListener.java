@@ -9,6 +9,7 @@ import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.Server;
 import de.polo.metropiacity.commands.*;
+import de.polo.metropiacity.utils.events.CertainInventoryClickEvent;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -50,6 +51,7 @@ public class InventoryClickListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Bukkit.getPluginManager().callEvent(new CertainInventoryClickEvent(player, event.getCurrentItem(), playerData.getVariable("current_inventory"), playerData.getVariable("current_app"), playerData.getVariable("current_page"), playerData.getVariable("originClass")));
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
             playerData.setVariable("current_inventory", null);
@@ -1093,7 +1095,7 @@ public class InventoryClickListener implements Listener {
                     break;
                 case 44:
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "atm"))
-                        utils.bankingUtils.openBankMenu(player);
+                        utils.bankingUtils.openBankMenu(player, playerData.getVariable("atm"));
                     break;
             }
         }

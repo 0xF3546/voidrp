@@ -9,6 +9,7 @@ import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.*;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
+import de.polo.metropiacity.utils.enums.EXPType;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -100,42 +101,46 @@ public class PlayerManager implements Listener {
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
-            ResultSet name = statement.executeQuery("SELECT * FROM `players` WHERE `uuid` = '" + uuid + "'");
-            if (name.next()) {
+            String query = "SELECT players.*, player_addonxp.* " +
+                    "FROM players " +
+                    "LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid " +
+                    "WHERE players.uuid = '" + uuid + "'";
+
+            ResultSet result = statement.executeQuery(query);
+            if (result.next()) {
                 PlayerData playerData = new PlayerData(player);
-                playerData.setFirstname(name.getString("firstname"));
-                playerData.setLastname(name.getString("lastname"));
-                playerData.setBargeld(name.getInt("bargeld"));
-                playerData.setBank(name.getInt("bank"));
-                playerData.setVisum(name.getInt("visum"));
-                playerData.setPermlevel(name.getInt("player_permlevel"));
-                playerData.setRang(name.getString("player_rank"));
+                playerData.setFirstname(result.getString("firstname"));
+                playerData.setLastname(result.getString("lastname"));
+                playerData.setBargeld(result.getInt("bargeld"));
+                playerData.setBank(result.getInt("bank"));
+                playerData.setVisum(result.getInt("visum"));
+                playerData.setPermlevel(result.getInt("player_permlevel"));
+                playerData.setRang(result.getString("player_rank"));
                 playerData.setAduty(false);
-                playerData.setLevel(name.getInt("level"));
-                playerData.setExp(name.getInt("exp"));
-                playerData.setNeeded_exp(name.getInt("needed_exp"));
-                playerData.setScoreboard(new Scoreboard(player));
-                playerData.setDead(name.getBoolean("isDead"));
-                if (name.getBoolean("isDead")) playerData.setDeathTime(name.getInt("deathTime"));
-                playerData.setNumber(name.getInt("number"));
-                playerData.setDuty(name.getBoolean("isDuty"));
-                playerData.setGender(name.getString("gender"));
-                playerData.setBirthday(name.getString("birthday"));
-                playerData.setId(name.getInt("id"));
-                playerData.setHouseSlot(name.getInt("houseSlot"));
-                if (name.getDate("rankDuration") != null) {
-                    java.util.Date utilDate = new java.util.Date(name.getDate("rankDuration").getTime());
+                playerData.setLevel(result.getInt("level"));
+                playerData.setExp(result.getInt("exp"));
+                playerData.setNeeded_exp(result.getInt("needed_exp"));
+                playerData.setDead(result.getBoolean("isDead"));
+                if (result.getBoolean("isDead")) playerData.setDeathTime(result.getInt("deathTime"));
+                playerData.setNumber(result.getInt("number"));
+                playerData.setDuty(result.getBoolean("isDuty"));
+                playerData.setGender(result.getString("gender"));
+                playerData.setBirthday(result.getString("birthday"));
+                playerData.setId(result.getInt("id"));
+                playerData.setHouseSlot(result.getInt("houseSlot"));
+                if (result.getDate("rankDuration") != null) {
+                    java.util.Date utilDate = new java.util.Date(result.getDate("rankDuration").getTime());
                     LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     playerData.setRankDuration(localDateTime);
                 }
-                playerData.setBoostDuration(name.getInt("boostDuration"));
-                playerData.setSecondaryTeam(name.getString("secondaryTeam"));
-                playerData.setTeamSpeakUID(name.getString("teamSpeakUID"));
-                playerData.setJob(name.getString("job"));
-                player.setMaxHealth(32 + (((double) name.getInt("level") / 5) * 2));
+                playerData.setBoostDuration(result.getInt("boostDuration"));
+                playerData.setSecondaryTeam(result.getString("secondaryTeam"));
+                playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
+                playerData.setJob(result.getString("job"));
+                player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
-                if (!name.getBoolean("jugendschutz")) {
+                if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("current_inventory", "jugendschutz");
                     playerData.setVariable("jugendschutz", "muss");
                     Main.waitSeconds(1, () -> {
@@ -154,16 +159,16 @@ public class PlayerManager implements Listener {
                         player.openInventory(inv);
                     });
                 }
-                if (name.getBoolean("tutorial")) {
+                if (result.getBoolean("tutorial")) {
                     playerData.setVariable("tutorial", "muss");
                     Main.getInstance().utils.tutorial.start(player);
                 }
 
-                playerData.setHours(name.getInt("current_hours"));
-                playerData.setMinutes(name.getInt("needed_hours"));
+                playerData.setHours(result.getInt("current_hours"));
+                playerData.setMinutes(result.getInt("needed_hours"));
                 playerData.setAFK(false);
 
-                JSONObject object = new JSONObject(name.getString("relationShip"));
+                JSONObject object = new JSONObject(result.getString("relationShip"));
                 HashMap<String, String> map = new HashMap<>();
                 for (String key : object.keySet()) {
                     String value = (String) object.get(key);
@@ -171,23 +176,26 @@ public class PlayerManager implements Listener {
                 }
                 playerData.setRelationShip(map);
 
-                playerData.setWarns(name.getInt("warns"));
-                playerData.setBusiness(name.getString("business"));
-                playerData.setBusiness_grade(name.getInt("business_grade"));
-                playerData.setBloodType(name.getString("bloodtype"));
-                playerData.setForumID(name.getInt("forumID"));
-                playerData.setHasAnwalt(name.getBoolean("hasAnwalt"));
+                playerData.setWarns(result.getInt("warns"));
+                playerData.setBusiness(result.getString("business"));
+                playerData.setBusiness_grade(result.getInt("business_grade"));
+                playerData.setBloodType(result.getString("bloodtype"));
+                playerData.setForumID(result.getInt("forumID"));
+                playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
 
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
-                playerData.setCoins(name.getInt("coins"));
+                playerData.setCoins(result.getInt("coins"));
 
-                player_rent.put(player.getUniqueId().toString(), name.getInt("rent"));
-                player.setLevel(name.getInt("level"));
-                if (name.getString("faction") != null) {
-                    playerData.setFaction(name.getString("faction"));
-                    playerData.setFactionGrade(name.getInt("faction_grade"));
+                player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
+                player.setLevel(result.getInt("level"));
+                if (result.getString("faction") != null) {
+                    playerData.setFaction(result.getString("faction"));
+                    playerData.setFactionGrade(result.getInt("faction_grade"));
                 }
+
+                playerData.addonXP.setFishingXP(result.getInt("fishingXP"));
+                playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
 
 
                 ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
@@ -197,16 +205,8 @@ public class PlayerManager implements Listener {
                     playerData.setJailed(true);
                 }
                 playerData.setIntVariable("afk", 0);
-                ResultSet skills = statement.executeQuery("SELECT `miner_level`, `miner_exp`, `miner_neededexp` FROM `player_skills` WHERE `uuid` = '" + uuid + "'");
-                if (skills.next()) {
-                    playerData.setSkillLevel("miner", skills.getInt(1));
-                    playerData.setSkillExp("miner", skills.getInt(2));
-                    playerData.setSkillNeeded_Exp("miner", skills.getInt(3));
-                }
-                ResultSet ammo = statement.executeQuery("SELECT * FROM `player_ammo` WHERE `uuid` = '" + uuid + "'");
-                if (ammo.next()) {
-                    //for (int i = 0; i < Weapons.weaponDataMap.size(); i++) playerData.getIntVariable("ammo_" + ammo.getRow(), ammo.getInt(i));
-                }
+
+
                 playerDataMap.put(uuid, playerData);
                 if (playerData.getRankDuration() != null) {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -555,10 +555,13 @@ public class PlayerManager implements Listener {
         player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
     }
 
-    public void removeExp(Player player, Integer exp) {
-        PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setExp(playerData.getExp() - exp);
-        player.sendMessage("§c-+" + exp + " EXP");
+    public void addExp(Player player, EXPType expType, Integer amount) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp());
+        switch (expType.getSkillType()) {
+            case FISHING:
+                playerData.addonXP.addFishingXP(amount);
+        }
     }
 
     public void addEXPBoost(Player player, int hours) throws SQLException {
@@ -749,6 +752,11 @@ public class PlayerManager implements Listener {
     public PlayerData getPlayerData(UUID uuid) {
         return playerDataMap.get(uuid);
     }
+
+    public PlayerData getPlayerData(Player player) {
+        return playerDataMap.get(player.getUniqueId());
+    }
+
     public Collection<PlayerData> getPlayers() {
         return playerDataMap.values();
     }

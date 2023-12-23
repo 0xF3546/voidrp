@@ -1,6 +1,7 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.Ticket;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.SupportManager;
@@ -30,12 +31,13 @@ public class SupportCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length >= 1) {
             if (!supportManager.ticketCreated(player)) {
-                player.sendMessage(Main.support_prefix + "Du hast ein Ticket §aerstellt§7.");
                 StringBuilder msg = new StringBuilder(args[0]);
                 for (int i = 1; i < args.length; i++) {
                     msg.append(' ').append(args[i]);
                 }
-                supportManager.createTicket(player, String.valueOf(msg));
+                Ticket ticket = supportManager.createTicket(player, String.valueOf(msg));
+
+                player.sendMessage(Main.support_prefix + "Du hast ein Ticket §aerstellt§7. §o(TicketID: #" + ticket.getId() + ")");
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (playerManager.isTeam(players)) {
                         players.sendMessage(Main.support_prefix + "§a" + player.getName() + "§7 hat ein Ticket erstellt. Grund: " + msg);
@@ -49,12 +51,6 @@ public class SupportCommand implements CommandExecutor {
 
                         players.spigot().sendMessage(message);
                     }
-                }
-                try {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.execute("INSERT INTO `tickets` (`creator`, `reason`) VALUES ('" + player.getUniqueId() + "', '" + msg + "')");
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
                 }
             } else {
                 player.sendMessage(Main.support_prefix + "Du hast bereits ein Ticket offen.");

@@ -1,7 +1,10 @@
 package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.ItemManager;
+import de.polo.metropiacity.utils.PlayerManager;
+import de.polo.metropiacity.utils.enums.EXPType;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -11,8 +14,10 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class FishingListener implements Listener {
-    public FishingListener() {
+    private final PlayerManager playerManager;
+    public FishingListener(PlayerManager playerManager) {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        this.playerManager = playerManager;
     }
 
     @EventHandler
@@ -22,6 +27,7 @@ public class FishingListener implements Listener {
 
         if (event.getCaught() != null && event.getCaught() instanceof Item) {
             Item caughtItem = (Item) event.getCaught();
+            PlayerData playerData = playerManager.getPlayerData(player);
 
             double randomNumber = Math.random() * 100;
 
@@ -44,6 +50,9 @@ public class FishingListener implements Listener {
                 caughtItem.setItemStack(ItemManager.createItem(Material.CHEST, 1, 0, "§6§lCase", "§8 ➥ §8[§6Rechtsklick§8]§7 Öffnen"));
                 player.sendMessage("§8 » §7Du hast eine §6§lCase§7 geangelt!");
             }
+
+            playerManager.addExp(player, EXPType.SKILL_FISHING, Main.random(3, 8));
+
         }
     }
 

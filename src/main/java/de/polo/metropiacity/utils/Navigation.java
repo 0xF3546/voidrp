@@ -2,6 +2,10 @@ package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.playerUtils.SoundManager;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
+import de.polo.metropiacity.utils.events.CertainInventoryClickEvent;
 import de.polo.metropiacity.utils.events.NaviReachEvent;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.*;
@@ -12,7 +16,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,12 +28,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Navigation implements CommandExecutor, TabCompleter, Listener {
     private final PlayerManager playerManager;
     public Navigation(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        Main.registerCommand("navi", this);
+        Main.addTabCompeter("navi", this);
     }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -55,34 +64,65 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
     }
 
     public void openNavi(Player player, String search) {
-        System.out.println("öffne inv");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6GPS");
+        InventoryManager inventory = new InventoryManager(player, 27, "§8 » §6GPS", true);
+        playerData.setVariable("originClass", this);
         int i = 0;
         for (NaviData naviData : LocationManager.naviDataMap.values()) {
             if (search == null) {
                 if (naviData.isGroup()) {
-                    inv.setItem(i, ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null));
-                    ItemMeta meta = inv.getItem(i).getItemMeta();
-                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, naviData.getId());
-                    inv.getItem(i).setItemMeta(meta);
+                    ItemStack stack = ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null);
+                    inventory.setItem(new CustomItem(i, stack) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            SoundManager.clickSound(player);
+                            InventoryManager naviInventory = new InventoryManager(player, 27, "§8 » " + naviData.getName().replace("&", "§"), true);
+                            int i = 0;
+                            for (NaviData newNavi : LocationManager.naviDataMap.values()) {
+                                if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
+                                    ItemStack stack = ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), "§7 ➥ §e" + (int) Main.getInstance().locationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m");
+                                    naviInventory.setItem(new CustomItem(i, stack) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
+                                            LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
+                                            Main.getInstance().utils.navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                                            player.closeInventory();
+                                        }
+                                    });
+                                    i++;
+                                }
+                            }
+                        }
+                    });
                     i++;
                 }
             } else {
                 if (naviData.getName().toLowerCase().contains(search.toLowerCase())) {
                     if (!naviData.isGroup()) {
-                        inv.setItem(i, ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null));
-                        ItemMeta meta = inv.getItem(i).getItemMeta();
-                        meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, naviData.getId());
-                        inv.getItem(i).setItemMeta(meta);
+                        ItemStack stack = ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null);
+                        inventory.setItem(new CustomItem(i, stack) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
+                                LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
+                                Main.getInstance().utils.navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                                player.closeInventory();
+                            }
+                        });
                         i++;
                     }
                 }
             }
         }
-        inv.setItem(22, ItemManager.createItem(Material.CLOCK, 1, 0, "§7GPS Punkt suchen...", null));
-        playerData.setVariable("current_inventory", "navi");
-        player.openInventory(inv);
+        inventory.setItem(new CustomItem(22, ItemManager.createItem(Material.CLOCK, 1, 0, "§7GPS Punkt suchen...", null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "gpssearch");
+                player.sendMessage("§8[§eGPS§8]§7 Gib nun den gesuchten GPS Punkt ein.");
+                player.closeInventory();
+            }
+        });
     }
 
     public void createNaviByCord(Player player, int x, int y, int z) {
@@ -183,8 +223,8 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                 return;
             }
             openNavi(event.getPlayer(), event.getMessage());
-            System.out.println("navi öfffnennn");
             event.end();
         }
     }
+
 }
