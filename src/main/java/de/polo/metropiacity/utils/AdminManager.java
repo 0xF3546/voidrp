@@ -47,7 +47,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 }
                 //Utils.Display.adminMode(player, false);
                 player.setCollidable(true);
-                Utils.Tablist.setTablist(player, null);
             } else {
                 send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
@@ -58,7 +57,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 playerData.setScoreboard("admin", adminScoreboard);
                 player.setCollidable(false);
                 //Utils.Display.adminMode(player, true);
-                Utils.Tablist.setTablist(player, "§8[§cℹ§8]");
             }
         }
         if (args.length >= 1) {
