@@ -36,6 +36,7 @@ public class Streetwar implements CommandExecutor {
         this.factionManager = factionManager;
         this.utils = utils;
         load();
+        Main.registerCommand("streetwar", this);
     }
 
     @SneakyThrows

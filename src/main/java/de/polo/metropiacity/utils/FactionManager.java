@@ -119,10 +119,10 @@ public class FactionManager {
             factionPlayerData.setId(playerData.getId());
             ServerManager.factionPlayerDataMap.put(player.getUniqueId().toString(), factionPlayerData);
         }
-        if (playerData.getTeamSpeakUID() != null) {
+        /*if (playerData.getTeamSpeakUID() != null) {
             Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
             TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
-        }
+        }*/
     }
 
     public void removePlayerFromFrak(Player player) throws SQLException {
@@ -146,10 +146,10 @@ public class FactionManager {
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
-        if (playerData.getTeamSpeakUID() != null) {
+        /*if (playerData.getTeamSpeakUID() != null) {
             Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
             TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
-        }
+        }*/
     }
 
     public void removeOfflinePlayerFromFrak(OfflinePlayer player) throws SQLException {

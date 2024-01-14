@@ -426,7 +426,7 @@ public final class Main extends JavaPlugin {
         public GetVehCommand getVehCommand;
         public GoToVehCommand goToVehCommand;
         public Navigation navigation;
-        //public EinreiseCommand einreiseCommand;
+        public EinreiseCommand einreiseCommand;
         public RegisterHouseCommand registerHouseCommand;
         public ReinforcementCommand reinforcementCommand;
         public BuyHouseCommand buyHouseCommand;
@@ -549,7 +549,7 @@ public final class Main extends JavaPlugin {
             getVehCommand = new GetVehCommand(playerManager);
             goToVehCommand = new GoToVehCommand(playerManager);
             navigation = new Navigation(playerManager);
-            //einreiseCommand = new EinreiseCommand(playerManager, locationManager);
+            einreiseCommand = new EinreiseCommand(playerManager, locationManager);
             registerHouseCommand = new RegisterHouseCommand(playerManager);
             reinforcementCommand = new ReinforcementCommand(playerManager, factionManager);
             buyHouseCommand = new BuyHouseCommand(playerManager);

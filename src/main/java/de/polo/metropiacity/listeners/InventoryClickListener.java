@@ -46,7 +46,8 @@ public class InventoryClickListener implements Listener {
             return;
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        FactionData factionData = null;
+        if (playerData.getFaction() != null) factionData = factionManager.getFactionData(playerData.getFaction());
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
             playerData.setVariable("current_inventory", null);
