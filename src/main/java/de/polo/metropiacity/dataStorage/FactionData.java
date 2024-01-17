@@ -1,8 +1,5 @@
 package de.polo.metropiacity.dataStorage;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-
 public class FactionData {
     private int id;
     private String primaryColor;
@@ -19,6 +16,7 @@ public class FactionData {
     private boolean doGangwar;
     private int forumID;
     private int forumID_Leader;
+    private boolean hasLaboratory;
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -138,5 +136,13 @@ public class FactionData {
 
     public void setForumID_Leader(int forumID_Leader) {
         this.forumID_Leader = forumID_Leader;
+    }
+
+    public boolean hasLaboratory() {
+        return hasLaboratory;
+    }
+
+    public void setHasLaboratory(boolean hasLaboratory) {
+        this.hasLaboratory = hasLaboratory;
     }
 }

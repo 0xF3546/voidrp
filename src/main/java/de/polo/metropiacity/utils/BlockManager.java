@@ -1,10 +1,12 @@
 package de.polo.metropiacity.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.RegisteredBlock;
 import de.polo.metropiacity.database.MySQL;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,10 +48,10 @@ public class BlockManager {
     }
 
     @SneakyThrows
-    public void addBlock(RegisteredBlock block) {
+    public int addBlock(RegisteredBlock block) {
         registeredBlocks.add(block);
         Connection connection = mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO blocks (info, x, y, z, world) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO blocks (info, x, y, z, world) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, block.getInfo());
         statement.setDouble(2,block.getLocation().getX());
         statement.setDouble(3, block.getLocation().getY());
@@ -58,8 +60,14 @@ public class BlockManager {
 
         statement.execute();
 
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            return generatedKeys.getInt(1);
+        }
+
         statement.close();
         connection.close();
+        return -1;
     }
 
     @SneakyThrows

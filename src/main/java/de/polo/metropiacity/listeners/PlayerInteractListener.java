@@ -101,7 +101,7 @@ public class PlayerInteractListener implements Listener {
                                     inv.setItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht."));
                                 }
                             } else {
-                                inv.setItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer", null));
+                                inv.setItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer"));
                                 inv.setItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$"));
                             }
                             inv.setItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", "Lädt..."));
@@ -115,21 +115,21 @@ public class PlayerInteractListener implements Listener {
                                     inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
                                 } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
                                     if (commands.postboteCommand.canGive(houseData.getNumber())) {
-                                        inv.setItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben", null));
+                                        inv.setItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben"));
                                     } else {
-                                        inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert", null));
+                                        inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert"));
                                     }
                                 } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
                                     if (commands.muellmannCommand.canGet(houseData.getNumber())) {
-                                        inv.setItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln", null));
+                                        inv.setItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln"));
                                     } else {
-                                        inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert", null));
+                                        inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert"));
                                     }
                                 }
                             }
                             for (int i = 0; i < 45; i++) {
                                 if (inv.getItem(i) == null) {
-                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                                 }
                             }
                             player.openInventory(inv);

@@ -35,7 +35,8 @@ public class ArrestCommand implements CommandExecutor {
                 if (args.length > 0) {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
                     if (targetplayer != null) {
-                        if (!playerManager.canPlayerMove(targetplayer)) {
+                        PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
+                        if (targetPlayerData.isCuffed()) {
                             if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
                                 try {
                                     if (utils.staatUtil.arrestPlayer(targetplayer, player)) {

@@ -70,6 +70,7 @@ public class BankingUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("atm", atm);
         playerData.setVariable("current_inventory", "atm");
+        playerData.setVariable("atm_name", atm.getName());
         Inventory inv = Bukkit.createInventory(player, 45, "§8 » §aBankautomat " + atm.getId());
         inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null));
         inv.setItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
@@ -78,7 +79,7 @@ public class BankingUtils implements Listener {
         inv.setItem(33, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI1MGIzY2NlNzY2MzVlZjRjN2E4OGIyYzU5N2JkMjc0OTg2OGQ3OGY1YWZhNTY2MTU3YzI2MTJhZTQxMjAifX19", 1, 0, "§aAlles einzahlen", null));
         inv.setItem(31, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjc2ZGNiMjc0ZTJlMjMxNDlmNDcyNzgxNjA1YjdjNmY4Mzk5MzFhNGYxZDJlZGJkMWZmNTQ2M2FiN2M0MTI0NiJ9fX0=", 1, 0, "§7Geld überweisen", null));
         for (int i = 0; i < 45; i++) {
-            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
         }
         if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
             inv.setItem(44, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19", 1, 0, "§aFraktionskonto", null));
@@ -99,7 +100,7 @@ public class BankingUtils implements Listener {
             inv.setItem(29, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNmZjkxZGM5OWQ1ODI4MDIzZWVkZjg3Mzc5OWQyNTUzNWRhZGU2NGEyZTE2YTNiNDk4YjQxMTNlYWZkNDk2NiJ9fX0=", 1, 0, "§cAlles auszahlen", null));
         }
         for (int i = 0; i < 45; i++) {
-            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
         }
         inv.setItem(44, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjUzNDc0MjNlZTU1ZGFhNzkyMzY2OGZjYTg1ODE5ODVmZjUzODlhNDU0MzUzMjFlZmFkNTM3YWYyM2QifX19", 1, 0, "§aPrivates Konto", null));
         player.openInventory(inv);
@@ -118,8 +119,8 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (playerManager.money(player) >= amount) {
-                    playerManager.removeMoney(player, amount, "Bankeinzahlung");
-                    playerManager.addBankMoney(player, amount, "Bankeinzahlung");
+                    playerManager.removeMoney(player, amount, "Bankeinzahlung(" + event.getPlayerData().getVariable("atm_name") + ")");
+                    playerManager.addBankMoney(player, amount, "Bankeinzahlung(" + event.getPlayerData().getVariable("atm_name") + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ eingezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
@@ -136,7 +137,7 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (playerManager.bank(player) >= amount) {
-                    playerManager.removeBankMoney(player, amount, "Bankauszahlung");
+                    playerManager.removeBankMoney(player, amount, "Bankauszahlung (" + event.getPlayerData().getVariable("atm_name") + ")");
                     playerManager.addMoney(player, amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
                 } else {

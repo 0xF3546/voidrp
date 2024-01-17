@@ -680,10 +680,10 @@ public class InventoryClickListener implements Listener {
                     if (vehicle != null) {
                         if (event.isLeftClick()) {
                             Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6Tankstelle");
-                            inv.setItem(10, ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5-10 Liter", null));
-                            inv.setItem(11, ItemManager.createItem(Material.MAGENTA_DYE, 1, 0, "§d-1 Liter", null));
-                            inv.setItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§a+1 Liter", null));
-                            inv.setItem(16, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+10 Liter", null));
+                            inv.setItem(10, ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5-10 Liter"));
+                            inv.setItem(11, ItemManager.createItem(Material.MAGENTA_DYE, 1, 0, "§d-1 Liter"));
+                            inv.setItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§a+1 Liter"));
+                            inv.setItem(16, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+10 Liter"));
                             inv.setItem(13, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "§7 ➥ §e" + Math.floor(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT)) + " Liter"));
                             inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", "§7 ➥ §7Kosten: 0$ "));
                             playerData.setIntVariable("plusfuel", 0);
@@ -894,12 +894,12 @@ public class InventoryClickListener implements Listener {
                         playerData.setIntVariable("ffa_maxplayer", 10);
                         itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + playerData.getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§c Nicht vorhanden"));
                         inv.getItem(13).setItemMeta(itemMeta);
-                        inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen", null));
-                        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück", null));
-                        inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen", null));
+                        inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen"));
+                        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück"));
+                        inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen"));
                         for (int i = 0; i < 27; i++) {
                             if (inv.getItem(i) == null) {
-                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                             }
                         }
                         player.openInventory(inv);

@@ -35,7 +35,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
             inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2Werbung schalten", "§8 ➥ §7" + ServerManager.getPayout("werbung") + "$/Zeichen"));
             if (playerData.getFaction().equals("News")) {
                 if (playerData.getFactionGrade() >= 2) {
-                    inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§6Nachricht schalten", null));
+                    inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§6Nachricht schalten"));
                 } else {
                     inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§6§mNachricht schalten", "§8 ➥ §7Du musst mindestens Rang 2 sein."));
                 }
@@ -44,7 +44,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
             }
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                 }
             }
             player.openInventory(inv);

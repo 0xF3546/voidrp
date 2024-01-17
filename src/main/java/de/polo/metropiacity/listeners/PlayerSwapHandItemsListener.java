@@ -67,7 +67,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         ItemMeta meta = inv.getItem(11).getItemMeta();
         meta.setLore(Arrays.asList("§8 ➥ §7" + targetplayerData.getBargeld() + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"));
         inv.getItem(11).setItemMeta(meta);
-        inv.setItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cStabilisieren", null));
+        inv.setItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cStabilisieren"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
                 inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "", ""));

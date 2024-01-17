@@ -13,9 +13,10 @@ import org.bukkit.entity.Villager;
 import org.bukkit.persistence.PersistentDataType;
 
 public class NPC implements CommandExecutor {
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
     public NPC(PlayerManager playerManager) {
         this.playerManager = playerManager;
+        Main.registerCommand("npc", this);
     }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -46,9 +47,6 @@ public class NPC implements CommandExecutor {
         return false;
     }
     private void spawnNPC(Player player, String name, String displayname, String command) {
-        System.out.println("name: " + name);
-        System.out.println("displayname: " + displayname);
-        System.out.println("command: " + command);
         Villager villager = (Villager) player.getWorld().spawnEntity(player.getLocation(), EntityType.VILLAGER);
         NamespacedKey cmd = new NamespacedKey(Main.plugin, "command");
         villager.getPersistentDataContainer().set(cmd, PersistentDataType.STRING, command);

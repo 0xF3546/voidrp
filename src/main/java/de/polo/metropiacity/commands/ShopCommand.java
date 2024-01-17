@@ -47,12 +47,12 @@ public class ShopCommand implements CommandExecutor {
                 }
             }
             if (canAccess) {
-                InventoryManager inventory = new InventoryManager(player, 54, "§8» §c" + locationManager.getShopNameById(shop), true);
+                InventoryManager inventory = new InventoryManager(player, 54, "§8» §c" + locationManager.getShopNameById(shop), true, false);
                 Inventory inv = Bukkit.createInventory(player, 54, "§8» §c" + locationManager.getShopNameById(shop));
                 for (int i = 0; i < 54; i++) {
                     if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
-                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
-                        inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null)) {
+                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                        inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
                             }
@@ -126,7 +126,7 @@ public class ShopCommand implements CommandExecutor {
                     Main.getInstance().vehicles.giveVehicle(player, info);
                 } else {
                     playerManager.removeMoney(player, price, "Kauf von: " + item);
-                    player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName.replace("&", "§"), null));
+                    player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName.replace("&", "§")));
                     player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                 }

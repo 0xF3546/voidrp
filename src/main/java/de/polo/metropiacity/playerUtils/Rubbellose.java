@@ -31,25 +31,25 @@ public class Rubbellose {
         int greenBlocksPlaced = 0;
         for(int i=0; i<54; i++) {
             if(i%9 == 0 || i%9 == 8 || i<9 || i>44) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         for (int i=0; i<54; i++) {
             if (inv.getItem(i) == null) {
                 if (greenBlocksPlaced < 4 && random.nextBoolean()) {
-                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8", null));
+                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8"));
                     ItemMeta meta = inv.getItem(i).getItemMeta();
                     meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER, 1);
                     inv.getItem(i).setItemMeta(meta);
                 } else {
-                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8", null));
+                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8"));
                     ItemMeta meta = inv.getItem(i).getItemMeta();
                     meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER, 0);
                     inv.getItem(i).setItemMeta(meta);
                 }
             }
         }
-        inv.setItem(49, ItemManager.createItem(Material.STRUCTURE_VOID, 1, 0, "§c§lAbbrechen", null));
+        inv.setItem(49, ItemManager.createItem(Material.STRUCTURE_VOID, 1, 0, "§c§lAbbrechen"));
         player.openInventory(inv);
     }
 

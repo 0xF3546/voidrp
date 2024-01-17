@@ -52,15 +52,15 @@ public class AcceptTicketCommand implements CommandExecutor {
             player.sendMessage(Main.support_prefix + "§c" + args[0] + "§7 ist §cnicht §7online.");
             return false;
         }
-        if (!supportManager.isInConnection(player)) {
+        if (supportManager.isInConnection(player)) {
             player.sendMessage(Main.error + "Du bearbeitest bereits ein Ticket.");
             return false;
         }
-        if (supportManager.ticketCreated(targetplayer)) {
+        if (!supportManager.ticketCreated(targetplayer)) {
             player.sendMessage(Main.support_prefix + "§c" + targetplayer.getName() + "§7 hat kein Ticket erstellt.");
             return false;
         }
-        supportManager.createTicketConnection(player, targetplayer);
+        supportManager.createTicketConnection(targetplayer, player);
         targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
         player.sendMessage(Main.support_prefix + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
         adminManager.send_message(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName() + ".", ChatColor.YELLOW);

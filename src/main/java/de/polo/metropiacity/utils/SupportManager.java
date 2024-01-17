@@ -10,10 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class SupportManager {
     public static final HashMap<String, Boolean> ticketIsCreated = new HashMap<>();
@@ -32,7 +29,12 @@ public class SupportManager {
     }
 
     public boolean ticketCreated(Player player) {
-        return ticketIsCreated.get(player.getUniqueId().toString()) != null;
+        for (Ticket ticket : Tickets) {
+            if (ticket.getCreator() == player.getUniqueId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SneakyThrows
@@ -65,6 +67,10 @@ public class SupportManager {
         return ticket;
     }
 
+    public Collection<Ticket> getTickets() {
+        return Tickets;
+    }
+
     @SneakyThrows
     public void deleteTicket(Player player) {
         for (Ticket ticket : Tickets) {
@@ -88,6 +94,7 @@ public class SupportManager {
             }
         }
     }
+
     public boolean deleteTicketConnection(Player player, Player targetplayer) {
         Ticket ticket = getTicket(player);
         Ticket ticket2 = getTicket(targetplayer);

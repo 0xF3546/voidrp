@@ -167,6 +167,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                                             Statement statement = Main.getInstance().mySQL.getStatement();
                                             statement.execute("DELETE FROM blacklist WHERE id = " + blacklistData.getId());
                                             factionManager.removeBlacklist(blacklistData.getId());
+                                            return false;
                                         } catch (SQLException e) {
                                             throw new RuntimeException(e);
                                         }

@@ -38,12 +38,11 @@ public class ChatListener implements Listener {
         event.setCancelled(true);
         if (playerData.getVariable("chatblock") == null) {
             if (supportManager.isInConnection(player)) {
-                for (Player players : Bukkit.getOnlinePlayers()) {
                     Ticket ticket = supportManager.getTicket(player);
                     for (Player p : supportManager.getPlayersInTicket(ticket)) {
                         p.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                     }
-                }
+
             } else {
                 if (!playerData.isDead()) {
                     if (PhoneUtils.isInConnection(player)) {

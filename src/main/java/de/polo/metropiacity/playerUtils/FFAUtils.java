@@ -123,9 +123,9 @@ public class FFAUtils implements CommandExecutor, Listener {
             }
             i++;
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(22, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(22, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
         player.openInventory(inv);
     }
 
@@ -158,10 +158,9 @@ public class FFAUtils implements CommandExecutor, Listener {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
-                            if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "FFA") {
-                                Main.getInstance().weapons.removeWeapon(player, item);
-                            }
+                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        if (weapon.getWeaponType() == WeaponType.FFA) {
+                            Main.getInstance().weapons.removeWeapon(player, item);
                         }
                     }
                 }
@@ -221,12 +220,12 @@ public class FFAUtils implements CommandExecutor, Listener {
             } else {
                 itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + event.getPlayerData().getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§a " + event.getPlayerData().getVariable("ffa_password")));
             }            inv.getItem(13).setItemMeta(itemMeta);
-            inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen", null));
-            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück", null));
-            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen", null));
+            inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen"));
+            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück"));
+            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen"));
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                 }
             }
             player.openInventory(inv);

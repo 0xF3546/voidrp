@@ -74,9 +74,9 @@ public class AdminMenuCommand implements CommandExecutor {
                     inv.setItem(i, ItemManager.createItemHead(result.getString(1), 1, 0, "§8» §6" + result.getString(2), "§8 ➥ §eStatus§8:§7 " + state));
                     i++;
                 }
-                inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-                inv.setItem(22, ItemManager.createItem(Material.DIAMOND, 1, 0, "§cNur Online-Spieler anzeigen", null));
-                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+                inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+                inv.setItem(22, ItemManager.createItem(Material.DIAMOND, 1, 0, "§cNur Online-Spieler anzeigen"));
+                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
             }
             result.close();
             player.openInventory(inv);
@@ -92,9 +92,9 @@ public class AdminMenuCommand implements CommandExecutor {
                     inv.setItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName(), null));
                     i++;
                 }
-                inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-                inv.setItem(22, ItemManager.createItem(Material.DIAMOND, 1, 0, "§aAlle Spieler anzeigen", null));
-                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
+                inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+                inv.setItem(22, ItemManager.createItem(Material.DIAMOND, 1, 0, "§aAlle Spieler anzeigen"));
+                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
                 j++;
             }
             player.openInventory(inv);
@@ -115,13 +115,13 @@ public class AdminMenuCommand implements CommandExecutor {
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §c" + targetplayer.getName());
             if (result.next()) {
                 inv.setItem(4, ItemManager.createItemHead(result.getString(1), 1, 0, "§8» §6" + result.getString(2), "§8 ➥ §eRang§8:§7 " + result.getInt(4)));
-                inv.setItem(11, ItemManager.createItem(Material.SNOWBALL, 1, 0, "§cSpieler Freezen/Unfreezen", null));
-                inv.setItem(15, ItemManager.createItem(Material.DIAMOND_BLOCK, 1, 0, "§aZu Spieler teleportieren", null));
-                inv.setItem(16, ItemManager.createItem(Material.EMERALD_BLOCK, 1, 0, "§aSpieler zu mir teleportieren", null));
-                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück", null));
-                inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cKicken", null));
+                inv.setItem(11, ItemManager.createItem(Material.SNOWBALL, 1, 0, "§cSpieler Freezen/Unfreezen"));
+                inv.setItem(15, ItemManager.createItem(Material.DIAMOND_BLOCK, 1, 0, "§aZu Spieler teleportieren"));
+                inv.setItem(16, ItemManager.createItem(Material.EMERALD_BLOCK, 1, 0, "§aSpieler zu mir teleportieren"));
+                inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück"));
+                inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cKicken"));
                 for (int i = 0; i < 27; i++) {
-                    if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                    if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                 }
             } else {
                 player.closeInventory();

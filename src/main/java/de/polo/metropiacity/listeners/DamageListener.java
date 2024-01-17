@@ -36,13 +36,5 @@ public class DamageListener implements Listener {
                 event.setCancelled(true);
             }
         }
-        if ((event.getEntity().getType() == EntityType.ARMOR_STAND || event.getEntity().getType() == EntityType.ITEM_FRAME || event.getEntity().getType() == EntityType.PAINTING || event.getEntity().getType() == EntityType.MINECART) && !playerManager.getPlayerData(event.getEntity().getUniqueId()).isAduty()) {
-            event.setCancelled(true);
-        }
-        if (event.getEntity().getType() == EntityType.VILLAGER) {
-            String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
-            if (command == null) return;
-            event.setCancelled(true);
-        }
     }
 }

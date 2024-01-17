@@ -46,19 +46,20 @@ public class FactionManager {
         ResultSet locs = statement.executeQuery("SELECT * FROM factions");
         while (locs.next()) {
             FactionData factionData = new FactionData();
-            factionData.setId(locs.getInt(1));
-            factionData.setName(locs.getString(2));
-            factionData.setFullname(locs.getString(3));
-            factionData.setPrimaryColor(locs.getString(4));
-            factionData.setSecondaryColor(locs.getString(5));
-            factionData.setBank(locs.getInt(6));
-            factionData.setMaxMember(locs.getInt(7));
-            factionData.setTeamSpeakID(locs.getInt(8));
-            factionData.setChannelGroupID(locs.getInt(9));
-            factionData.setHasBlacklist(locs.getBoolean(10));
-            factionData.setDoGangwar(locs.getBoolean(11));
+            factionData.setId(locs.getInt("id"));
+            factionData.setName(locs.getString("name"));
+            factionData.setFullname(locs.getString("fullname"));
+            factionData.setPrimaryColor(locs.getString("primaryColor"));
+            factionData.setSecondaryColor(locs.getString("secondaryColor"));
+            factionData.setBank(locs.getInt("bank"));
+            factionData.setMaxMember(locs.getInt("maxMember"));
+            factionData.setTeamSpeakID(locs.getInt("TeamSpeakID"));
+            factionData.setChannelGroupID(locs.getInt("ChannelGroupID"));
+            factionData.setHasBlacklist(locs.getBoolean("hasBlacklist"));
+            factionData.setDoGangwar(locs.getBoolean("doGangwar"));
             factionData.setForumID(locs.getInt("forumID"));
             factionData.setForumID_Leader(locs.getInt("forumID_Leader"));
+            factionData.setHasLaboratory(locs.getBoolean("hasLaboratory"));
             factionDataMap.put(locs.getString(2), factionData);
         }
 
@@ -337,15 +338,15 @@ public class FactionManager {
         return count;
     }
 
-    public FactionData getFactionData(Object factionId) {
-        if (factionId instanceof String) {
-            return factionDataMap.get(factionId);
-        }
+    public FactionData getFactionData(int factionId) {
         for (FactionData data : factionDataMap.values()) {
-            if (data.getId() == (int) factionId) {
+            if (data.getId() == factionId) {
                 return data;
             }
         }
         return null;
+    }
+    public FactionData getFactionData(String faction) {
+        return factionDataMap.get(faction);
     }
 }

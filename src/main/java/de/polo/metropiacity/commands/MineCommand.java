@@ -45,7 +45,7 @@ public class MineCommand implements CommandExecutor {
                             Scoreboard scoreboard = new Scoreboard(player);
                             scoreboard.createMineScoreboard();
                             playerData.setScoreboard("mine", scoreboard);
-                            player.getInventory().addItem(ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§6Spitzhacke", null));
+                            player.getInventory().addItem(ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§6Spitzhacke"));
                         } else {
                             player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Mine§7!");
                         }
@@ -78,7 +78,7 @@ public class MineCommand implements CommandExecutor {
         for (Material material : blocks) {
             if (block.getType() == material) {
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                player.getInventory().addItem(ItemManager.createItem(material, 1, 0, block.getType().name(), null));
+                player.getInventory().addItem(ItemManager.createItem(material, 1, 0, block.getType().name()));
                 block.setType(Material.STONE);
                 Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                     if (block.getType() == Material.STONE) {

@@ -39,7 +39,7 @@ public class MuellmannCommand implements CommandExecutor {
                 playerData.setVariable("current_inventory", "müllmann");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §9Müllmann");
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "müllmann") && playerData.getVariable("job") == null) {
-                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aMüllmann starten", null));
+                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aMüllmann starten"));
                 } else {
                     if (playerData.getVariable("job") == null) {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "müllmann")) + "§7."));
@@ -58,7 +58,7 @@ public class MuellmannCommand implements CommandExecutor {
                 }
                 for (int i = 0; i < 27; i++) {
                     if (inv.getItem(i) == null) {
-                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                     }
                 }
                 player.openInventory(inv);

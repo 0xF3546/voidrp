@@ -77,7 +77,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
         FarmingData farmingData = farmingDataMap.get(type);
         Player player = event.getPlayer();
         if (Main.getInstance().getCooldownManager().isOnCooldown(player, "farming")) return;
-        player.getInventory().addItem(ItemManager.createItem(farmingData.getItem(), farmingData.getAmount(), 0, farmingData.getItemName().replace("&", "§"), null));
+        player.getInventory().addItem(ItemManager.createItem(farmingData.getItem(), farmingData.getAmount(), 0, farmingData.getItemName().replace("&", "§")));
         Main.getInstance().getCooldownManager().setCooldown(player, "farming", farmingData.getDuration());
         utils.sendActionBar(player, farmingData.getItemName().replace("&", "§") + " abgebaut!");
     }
@@ -107,10 +107,10 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             ItemMeta meta = inv.getItem(10).getItemMeta();
             meta.setLore(Arrays.asList("§8 ➥ §6Typ§8:§e " + farmingData.getDrug(), "§8 ➥ §6Benötigtes Item§8: " + farmingData.getNeeded_item().replace("&", "§"), "§8 ➥ §6Hergestelltes Item§8: " + farmingData.getItemName().replace("&", "§"), "§8 ➥ §6Benötigt " + farmingData.getAmount() + " um 1 Stoff herzustellen"));
             inv.getItem(10).setItemMeta(meta);
-            inv.setItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHerstellen", null));
-            inv.setItem(16, ItemManager.createItem(farmingData.getItem(), 1, 0, farmingData.getItemName().replace("&", "§"), null));
+            inv.setItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHerstellen"));
+            inv.setItem(16, ItemManager.createItem(farmingData.getItem(), 1, 0, farmingData.getItemName().replace("&", "§")));
             for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "", null));
+                if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, ""));
             }
             playerData.setVariable("current_inventory", "dealer_" + location.getInfo());
             player.openInventory(inv);
@@ -128,7 +128,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             FarmingData farmingData = farmingDataMap.get(location.getInfo());
             Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eDealer§8 | §e" + farmingData.getDrug());
             for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "", null));
+                if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, ""));
             }
             playerData.setVariable("current_inventory", "dealer_" + location.getInfo());
             player.openInventory(inv);

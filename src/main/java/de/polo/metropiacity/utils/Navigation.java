@@ -60,18 +60,18 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
 
     public void openNavi(Player player, String search) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventory = new InventoryManager(player, 27, "§8 » §6GPS", true);
+        InventoryManager inventory = new InventoryManager(player, 27, "§8 » §6GPS", true, false);
         playerData.setVariable("originClass", this);
         int i = 0;
         for (NaviData naviData : LocationManager.naviDataMap.values()) {
             if (search == null) {
                 if (naviData.isGroup()) {
-                    ItemStack stack = ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null);
+                    ItemStack stack = ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"));
                     inventory.setItem(new CustomItem(i, stack) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             SoundManager.clickSound(player);
-                            InventoryManager naviInventory = new InventoryManager(player, 27, "§8 » " + naviData.getName().replace("&", "§"), true);
+                            InventoryManager naviInventory = new InventoryManager(player, 27, "§8 » " + naviData.getName().replace("&", "§"), true, false);
                             int i = 0;
                             for (NaviData newNavi : LocationManager.naviDataMap.values()) {
                                 if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
@@ -95,7 +95,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
             } else {
                 if (naviData.getName().toLowerCase().contains(search.toLowerCase())) {
                     if (!naviData.isGroup()) {
-                        ItemStack stack = ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"), null);
+                        ItemStack stack = ItemManager.createItem(naviData.getItem(), 1, 0, naviData.getName().replace("&", "§"));
                         inventory.setItem(new CustomItem(i, stack) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
@@ -110,7 +110,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                 }
             }
         }
-        inventory.setItem(new CustomItem(22, ItemManager.createItem(Material.CLOCK, 1, 0, "§7GPS Punkt suchen...", null)) {
+        inventory.setItem(new CustomItem(22, ItemManager.createItem(Material.CLOCK, 1, 0, "§7GPS Punkt suchen...")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("chatblock", "gpssearch");

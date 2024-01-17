@@ -42,29 +42,29 @@ public class EinreiseCommand implements CommandExecutor {
         Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6MetropiaCity Einreiseamt");
         if (locationManager.getDistanceBetweenCoords(player, "einreise") < 10) {
             if (playerData.getVariable("einreise_firstname") == null) {
-                inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§eVorname", null));
+                inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§eVorname"));
             } else {
-                inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_firstname"), null));
+                inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_firstname")));
             }
             if (playerData.getVariable("einreise_lastname") == null) {
-                inv.setItem(2, ItemManager.createItem(Material.PAPER, 1, 0, "§eNachname", null));
+                inv.setItem(2, ItemManager.createItem(Material.PAPER, 1, 0, "§eNachname"));
             } else {
-                inv.setItem(2, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_lastname"), null));
+                inv.setItem(2, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_lastname")));
             }
             if (playerData.getVariable("einreise_gender") == null) {
-                inv.setItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§eGeschlecht", null));
+                inv.setItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§eGeschlecht"));
             } else {
-                inv.setItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_gender"), null));
+                inv.setItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_gender")));
             }
             ItemMeta meta = inv.getItem(4).getItemMeta();
             meta.setLore(Arrays.asList("§7 ➥ §8[§6Linksklick§8]§7 Männlich", "§7 ➥ §8[§6Rechtsklick§8]§7 Weiblich"));
             inv.getItem(4).setItemMeta(meta);
             if (playerData.getVariable("einreise_dob") == null) {
-                inv.setItem(5, ItemManager.createItem(Material.PAPER, 1, 0, "§eGeburtstag", null));
+                inv.setItem(5, ItemManager.createItem(Material.PAPER, 1, 0, "§eGeburtstag"));
             } else {
-                inv.setItem(5, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_dob"), null));
+                inv.setItem(5, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_dob")));
             }
-            inv.setItem(8, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
+            inv.setItem(8, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen"));
             playerData.setVariable("current_inventory", "einreise");
             player.openInventory(inv);
         }

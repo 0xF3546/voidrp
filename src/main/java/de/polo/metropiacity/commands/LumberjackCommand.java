@@ -40,7 +40,7 @@ public class LumberjackCommand implements CommandExecutor {
                 playerData.setVariable("current_inventory", "holzfäller");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Holzfäller");
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller") && playerData.getVariable("job") == null) {
-                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHolzfäller starten", null));
+                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHolzfäller starten"));
                 } else {
                     if (playerData.getVariable("job") == null) {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7."));
@@ -59,7 +59,7 @@ public class LumberjackCommand implements CommandExecutor {
                 }
                 for (int i = 0; i < 27; i++) {
                     if (inv.getItem(i) == null) {
-                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                     }
                 }
                 player.openInventory(inv);
@@ -165,7 +165,7 @@ public class LumberjackCommand implements CommandExecutor {
             Scoreboard scoreboard = new Scoreboard(player);
             scoreboard.createLumberjackScoreboard();
             playerData.setScoreboard("lumberjack", scoreboard);
-            player.getInventory().addItem(ItemManager.createItem(Material.WOODEN_AXE, 1, 0, "§7Holzaxt", null));
+            player.getInventory().addItem(ItemManager.createItem(Material.WOODEN_AXE, 1, 0, "§7Holzaxt"));
         } else {
             player.sendMessage("§8[§7Holzfäller§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7 beginnen.");
         }

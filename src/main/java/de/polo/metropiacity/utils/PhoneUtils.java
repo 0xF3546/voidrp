@@ -68,7 +68,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(16, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZmOGEyMTlmMDgwMzk0MGYxZDI3MzQ5ZmIwNTBjMzJkYzdjMDUwZGIzM2NhMWUwYjM2YzIyZjIxYjA3YmU4NiJ9fX0=", 1, 0, "§bInternet", null));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_inventory", "handy");
@@ -80,14 +80,14 @@ public class PhoneUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §7Einstellungen");
         if (playerData.isFlightmode()) {
-            inv.setItem(10, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten", null));
+            inv.setItem(10, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten"));
         } else {
-            inv.setItem(10, ItemManager.createItem(Material.RED_STAINED_GLASS_PANE, 1, 0, "§cFlugmodus einschalten", null));
+            inv.setItem(10, ItemManager.createItem(Material.RED_STAINED_GLASS_PANE, 1, 0, "§cFlugmodus einschalten"));
         }
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_app", "settings");
@@ -99,10 +99,10 @@ public class PhoneUtils implements Listener {
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §3Banking");
         inv.setItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
         inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bTransaktionen", "§8 ➥ §7Alle Transaktionen der Letzten 7 Tage"));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_app", "banking");
@@ -144,13 +144,13 @@ public class PhoneUtils implements Listener {
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Transaktion suchen...", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
+        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Transaktion suchen..."));
         for (int j = 0; j < 27; j++) {
             if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8", null));
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8"));
             }
         }
         result.close();
@@ -196,13 +196,13 @@ public class PhoneUtils implements Listener {
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Nachricht suchen...", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
+        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Nachricht suchen..."));
         for (int j = 0; j < 27; j++) {
             if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8", null));
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8"));
             }
         }
         result.close();
@@ -239,14 +239,14 @@ public class PhoneUtils implements Listener {
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         inv.setItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjA1NmJjMTI0NGZjZmY5OTM0NGYxMmFiYTQyYWMyM2ZlZTZlZjZlMzM1MWQyN2QyNzNjMTU3MjUzMWYifX19", 1, 0, "§aKontakt hinzufügen", null));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Kontakt suchen...", null));
+        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Kontakt suchen..."));
         for (int j = 0; j < 27; j++) {
             if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8", null));
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8"));
             }
         }
         result.close();
@@ -274,18 +274,18 @@ public class PhoneUtils implements Listener {
                         inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8", null));
                         inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=", 1, 0, "§aAnrufen", null));
                         inv.setItem(16, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachricht schreiben", null));
-                        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+                        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
                         if (!canSave) playerData.setIntVariable("current_contact_number", result.getInt(4));
                         if (!canSave) playerData.setVariable("current_contact_name", result.getString(3));
                         inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§eNummer", "§8 ➥ §7" + playerData.getIntVariable("current_contact_number")));
                         inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").toString().replace("&", "§")));
-                        inv.setItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c§lKontakt löschen", null));
-                        if (canSave) inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
+                        inv.setItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c§lKontakt löschen"));
+                        if (canSave) inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen"));
                         playerData.setIntVariable("current_contact_id", result.getInt(1));
                         playerData.setVariable("current_contact_uuid", targetplayer.getUniqueId().toString());
                         for (int i = 0; i < 27; i++) {
                             if (inv.getItem(i) == null)
-                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                         }
                         player.openInventory(inv);
                     }
@@ -299,14 +299,14 @@ public class PhoneUtils implements Listener {
         } else {
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt erstellen");
             playerData.setIntVariable("current_contact_id", 0);
-            inv.setItem(4, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§8", null));
+            inv.setItem(4, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§8"));
             inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§eNummer", "§8 ➥ §7" + playerData.getIntVariable("current_contact_number")));
             inv.setItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§eName", "§8 ➥ §7" + playerData.getVariable("current_contact_name").toString().replace("&", "§")));
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
-            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
+            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
+            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen"));
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null)
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
             player.openInventory(inv);
         }
@@ -332,10 +332,10 @@ public class PhoneUtils implements Listener {
         inv.setItem(31, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTEwMWQ0YjQ3ZGNjYjc2MTJhYzVlZmRlNWFlMjQ0MWM4MmMzZjBhNjg0MDQxYWVkMzgyNzZkYmRmOTQifX19", 1, 0, "§6§l8", null));
         inv.setItem(32, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE0Njg1NzQ0MWNhYWU2ZTE2YzkyOTZmYjU3MTQ4MmFhNTEzNjI2OGQzOWUzNWI3YWNmYmY1MTM5YTM3ZTAzZCJ9fX0=", 1, 0, "§6§l9", null));
         inv.setItem(40, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJmYTYzYTBhNTQyOGIyNzM0NTNmZmU3ODRkM2U0ODljYmNmNmQxMmI3ODQ1MGEzNTE1NzE2Y2U3MjRmNCJ9fX0=", 1, 0, "§6§l0", null));
-        inv.setItem(45, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
-        inv.setItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnrufen", null));
+        inv.setItem(45, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
+        inv.setItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnrufen"));
         for (int i = 0; i < 54; i++) {
-            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
         }
         player.openInventory(inv);
     }
@@ -568,10 +568,10 @@ public class PhoneUtils implements Listener {
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §bInternet");
         inv.setItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
         inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§6Anwalt", "§8 ➥ §7Anwalt anheuern (§c15-55$/PayDay§7)"));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_app", "internet");

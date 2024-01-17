@@ -49,7 +49,6 @@ public class LocationManager {
             locationData.setType(locs.getString(9));
             locationData.setInfo(locs.getString(10));
             locationDataMap.put(locs.getString(2).toLowerCase(), locationData);
-            System.out.println(locationData.getName());
         }
 
         ResultSet shop = statement.executeQuery("SELECT * FROM shops");
@@ -190,7 +189,6 @@ public class LocationManager {
                     Location location = new Location(world, x, y, z);
                     Block block2 = location.getBlock();
                     if (block2.getType().toString().contains("SIGN")) {
-                        System.out.println("sign found");
                         Sign sign = (Sign) block2.getState();
                         if (sign.getLine(2).contains(player.getName())) {
                             NamespacedKey value = new NamespacedKey(Main.plugin, "value");

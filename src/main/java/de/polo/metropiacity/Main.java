@@ -5,10 +5,7 @@ import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.playerUtils.*;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.commands.*;
-import de.polo.metropiacity.utils.Game.Farming;
-import de.polo.metropiacity.utils.Game.GangwarUtils;
-import de.polo.metropiacity.utils.Game.Housing;
-import de.polo.metropiacity.utils.Game.Streetwar;
+import de.polo.metropiacity.utils.Game.*;
 import de.polo.metropiacity.utils.InventoryManager.InventoryApiRegister;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -59,7 +56,6 @@ public final class Main extends JavaPlugin {
     public SupportManager supportManager;
     public ComputerUtils computerUtils;
     public Housing housing;
-    public GangwarUtils gangwarUtils;
     public BusinessManager businessManager;
     public Vehicles vehicles;
     public Streetwar streetwar;
@@ -85,7 +81,6 @@ public final class Main extends JavaPlugin {
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
         computerUtils = new ComputerUtils(playerManager, factionManager);
-        gangwarUtils = new GangwarUtils(playerManager, factionManager, locationManager);
         businessManager = new BusinessManager(playerManager);
         streetwar = new Streetwar(playerManager, factionManager, utils);
         weapons = new Weapons(utils);
@@ -145,6 +140,7 @@ public final class Main extends JavaPlugin {
         new PlayerSwapHandItemsListener(playerManager);
         new GameModeChangeEvent();
         new EntitySpawnListener();
+        new EntityDamageByEntityListener(playerManager);
     }
 
     public static void registerCommand(String command, CommandExecutor c) {
@@ -491,6 +487,7 @@ public final class Main extends JavaPlugin {
         public NoteCommand noteCommand;
         public RegisterblockCommand registerblockCommand;
         public RegisterATMCommand registerATMCommand;
+        public Laboratory laboratory;
         //public GetSkinCommand getSkinCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
@@ -514,7 +511,7 @@ public final class Main extends JavaPlugin {
             meCommand = new MeCommand();
             broadcastCommand = new BroadcastCommand(playerManager, utils);
             govCommand = new GovCommand(playerManager, factionManager, utils);
-            ticketsCommand = new TicketsCommand(playerManager);
+            ticketsCommand = new TicketsCommand(playerManager, supportManager);
             teamCommand = new TeamCommand(playerManager);
             shopCommand = new ShopCommand(playerManager, locationManager);
             annehmenCommand = new AnnehmenCommand(utils);
@@ -615,6 +612,7 @@ public final class Main extends JavaPlugin {
             //GetSkinCommand getSkinCommand = new GetSkinCommand(playerManager);
             registerblockCommand = new RegisterblockCommand(playerManager, mySQL, blockManager);
             registerATMCommand = new RegisterATMCommand(playerManager, adminManager, mySQL);
+            laboratory = new Laboratory(playerManager, factionManager, locationManager);
 
             main.registerCommands();
             main.registerListener();

@@ -2,6 +2,7 @@ package de.polo.metropiacity.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import de.polo.metropiacity.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +15,16 @@ import java.util.*;
 
 public class ItemManager {
 
+    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname)
+    {
+        short neuesubid = (short)subid;
+        ItemStack i = new ItemStack(material, anzahl, neuesubid);
+        ItemMeta m = i.getItemMeta();
+        m.setDisplayName(displayname);
+        i.setItemMeta(m);
+
+        return i;
+    }
     public static ItemStack createItem(Material material, int anzahl, int subid, String displayname, String lore)
     {
         short neuesubid = (short)subid;
@@ -22,6 +33,20 @@ public class ItemManager {
         m.setDisplayName(displayname);
         if (lore != null) {
             m.setLore(Collections.singletonList(lore));
+        }
+        i.setItemMeta(m);
+
+        return i;
+    }
+
+    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname, List list)
+    {
+        short neuesubid = (short)subid;
+        ItemStack i = new ItemStack(material, anzahl, neuesubid);
+        ItemMeta m = i.getItemMeta();
+        m.setDisplayName(displayname);
+        if (list != null) {
+            m.setLore(list);
         }
         i.setItemMeta(m);
 
@@ -92,10 +117,46 @@ public class ItemManager {
         }
         return count;
     }
+    public static int getCustomItemCount(Player player, RoleplayItem item) {
+        ItemStack[] contents = player.getInventory().getContents();
+        int count = 0;
+        for (ItemStack itemStack : contents) {
+            if (itemStack != null && itemStack.getType() == item.getMaterial() && itemStack.getItemMeta().getDisplayName() == item.getDisplayName()) {
+                count += itemStack.getAmount();
+            }
+        }
+        return count;
+    }
     public static void removeItem(Player player, Material item, Integer count) {
         for (int i = 0; i < count; i++) {
             player.getInventory().removeItem(new ItemStack(item));
         }
     }
+
+    public static void removeCustomItem(Player player, RoleplayItem item, int amount) {
+        ItemStack[] contents = player.getInventory().getContents();
+
+        for (ItemStack itemStack : contents) {
+            if (itemStack != null && itemStack.getType() == item.getMaterial()) {
+                if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName() &&
+                        itemStack.getItemMeta().getDisplayName().equals(item.getDisplayName())) {
+                    if (itemStack.getAmount() >= amount) {
+                        itemStack.setAmount(itemStack.getAmount() - amount);
+                        player.updateInventory();
+                        return;
+                    } else {
+                        player.getInventory().remove(itemStack);
+                        amount -= itemStack.getAmount();
+                    }
+                }
+            }
+        }
+    }
+    public static void addCustomItem(Player player, RoleplayItem item, int amount) {
+        for (int i = 0; i < amount; i++) {
+            player.getInventory().addItem(ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName()));
+        }
+    }
+
 
 }

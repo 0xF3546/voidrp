@@ -96,7 +96,7 @@ public class DeathUtils {
         }
         playerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {
-            Main.getInstance().gangwarUtils.respawnPlayer(player);
+            Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
         }
     }
 
@@ -115,7 +115,7 @@ public class DeathUtils {
             throw new RuntimeException(e);
         }
         if (playerData.getVariable("gangwar") != null) {
-            Main.getInstance().gangwarUtils.respawnPlayer(player);
+            Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
         } else {
             locationManager.useLocation(player, "Krankenhaus");
             player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");

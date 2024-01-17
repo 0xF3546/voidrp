@@ -50,14 +50,14 @@ public class RegisterblockCommand implements CommandExecutor {
 
         Block block = player.getTargetBlock(null, 10);
 
-        player.sendMessage(Main.prefix + "Du hast ein/e/n " + block.getType() + " registriert als " + args[0] + ".");
-
         RegisteredBlock registeredBlock = new RegisteredBlock();
         registeredBlock.setBlock(block);
         registeredBlock.setInfo(args[0]);
         registeredBlock.setLocation(block.getLocation());
 
-        blockManager.addBlock(registeredBlock);
+        int id = blockManager.addBlock(registeredBlock);
+
+        player.sendMessage(Main.prefix + "Du hast ein/e/n " + block.getType() + " registriert als " + args[0] + " (#" + id + ").");
 
         return false;
     }

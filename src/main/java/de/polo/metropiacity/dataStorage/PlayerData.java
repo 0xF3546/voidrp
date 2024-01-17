@@ -5,8 +5,11 @@ import de.polo.metropiacity.playerUtils.Scoreboard;
 import de.polo.metropiacity.utils.enums.EXPType;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -75,6 +78,9 @@ public class PlayerData {
     private boolean hasAnwalt;
     private boolean isAFK;
     private int Coins;
+
+    private boolean cuffed;
+    private PlayerLaboratory laboratory;
 
     public PlayerData() {
     }
@@ -532,6 +538,36 @@ public class PlayerData {
     }
 
     public final AddonXP addonXP = new AddonXP();
+
+    public boolean isCuffed() {
+        return cuffed;
+    }
+
+    public void setCuffed(boolean cuffed) {
+        this.cuffed = cuffed;
+        if (cuffed) {
+                player.setWalkSpeed(0);
+                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+                player.setFlying(false);
+                Main.waitSeconds(2, () -> {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0, true, false));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -12, true, false));
+                });
+        } else {
+            player.setWalkSpeed(0.2F);
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+            player.removePotionEffect(PotionEffectType.JUMP);
+            player.removePotionEffect(PotionEffectType.SLOW);
+        }
+    }
+
+    public PlayerLaboratory getLaboratory() {
+        return laboratory;
+    }
+
+    public void setLaboratory(PlayerLaboratory laboratory) {
+        this.laboratory = laboratory;
+    }
 
     public class AddonXP {
         private int fishingXP;

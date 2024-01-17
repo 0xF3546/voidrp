@@ -43,12 +43,13 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (item.getType() == Material.LEAD) {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
-                        if (!playerManager.canPlayerMove(targetplayer)) {
+                        PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
+                        if (!targetPlayerData.isCuffed()) {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
-                            playerManager.setPlayerMove(targetplayer, false);
+                            targetPlayerData.setCuffed(true);
                         } else {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
-                            playerManager.setPlayerMove(targetplayer, true);
+                            targetPlayerData.setCuffed(false);
                         }
                         Main.getInstance().getCooldownManager().setCooldown(player, "handschellen", 1);
                     }
@@ -96,11 +97,12 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 } else if (item.getType().equals(Material.PAPER) && item.getItemMeta().getDisplayName().equalsIgnoreCase("§c§lIboprofen")) {
                     if (playerData.getFaction().equals("Medic")) {
                         //todo: auf zeit testen
-                        targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12, 1));
-                        targetplayer.addPotionEffect(PotionEffectType.HEAL.createEffect(12, 1));
+                        targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12000, 1));
+                        targetplayer.addPotionEffect(PotionEffectType.HEAL.createEffect(12000, 1));
                         targetplayer.sendMessage("§dMediziner " + player.getName() + " hat dir Iboprofen verabreicht.");
                         player.sendMessage("§dDu hast " + targetplayer.getName() + " Iboprofen verabreicht.");
                         ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Iboprofen verabreicht.");
+                        player.getInventory().remove(event.getPlayer().getItemOnCursor());
                     } else {
                         player.sendMessage(Main.error + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
                     }

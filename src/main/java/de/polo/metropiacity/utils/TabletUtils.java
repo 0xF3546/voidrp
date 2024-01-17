@@ -48,13 +48,13 @@ public class TabletUtils implements Listener {
     public void openTablet(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eTablet");
-        inv.setItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp", null));
-        inv.setItem(1, ItemManager.createItem(Material.MINECART, 1, 0, "§6Fahrzeugübersicht", null));
-        inv.setItem(9, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp", null));
-        inv.setItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp", null));
+        inv.setItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp"));
+        inv.setItem(1, ItemManager.createItem(Material.MINECART, 1, 0, "§6Fahrzeugübersicht"));
+        inv.setItem(9, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp"));
+        inv.setItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_inventory", "tablet");
@@ -90,11 +90,11 @@ public class TabletUtils implements Listener {
         if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei")) {
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §1Aktenapp");
             inv.setItem(0, ItemManager.createItem(Material.DIAMOND, 1, 0, "§9Akten bearbeiten", "§bBearbeite Akten von Spielern"));
-            inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§9Aktenübersicht", null));
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+            inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§9Aktenübersicht"));
+            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                 }
             }
             player.openInventory(inv);
@@ -118,9 +118,9 @@ public class TabletUtils implements Listener {
                 inv.setItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName(), null));
                 i++;
             }
-            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
             j++;
         }
         player.openInventory(inv);
@@ -139,16 +139,16 @@ public class TabletUtils implements Listener {
             playerData.setVariable("current_akte", targetplayer.getUniqueId().toString());
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §c" + targetplayer.getName());
             inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null));
-            inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten", null));
-            inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen", null));
+            inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten"));
+            inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen"));
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
             if (targetplayerData.isJailed()) {
-                inv.setItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen", null));
+                inv.setItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen"));
             }
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
             for (int i = 0; i < 27; i++) {
                 if (inv.getItem(i) == null)
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
             player.openInventory(inv);
         } else {
@@ -187,12 +187,12 @@ public class TabletUtils implements Listener {
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         if (playerData.getFactionGrade() >= 7)
             inv.setItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aAkte einfügen", null));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Akte suchen...", null));
+        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Akte suchen..."));
         result.close();
         player.openInventory(inv);
     }
@@ -220,9 +220,9 @@ public class TabletUtils implements Listener {
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         result.close();
         player.openInventory(inv);
     }
@@ -249,9 +249,9 @@ public class TabletUtils implements Listener {
                 j++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         player.openInventory(inv);
 
     }
@@ -276,12 +276,12 @@ public class TabletUtils implements Listener {
                     }
 
                     if (playerVehicleData.isParked()) {
-                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), null));
+                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName()));
                         ItemMeta meta = inv.getItem(i).getItemMeta();
                         meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §aEingeparkt"));
                         inv.getItem(i).setItemMeta(meta);
                     } else {
-                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), null));
+                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName()));
                         ItemMeta meta = inv.getItem(i).getItemMeta();
                         meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §cAusgeparkt", "", "§8 » §aOrten"));
                         inv.getItem(i).setItemMeta(meta);
@@ -290,9 +290,9 @@ public class TabletUtils implements Listener {
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite", null));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite", null));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück", null));
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         player.openInventory(inv);
 
     }
@@ -309,9 +309,9 @@ public class TabletUtils implements Listener {
         }
         inv.setItem(13, ItemManager.createItem(Material.CHEST, 1, 0, "§aHafteinheiten", "§8 ➥ §e" + playerData.getIntVariable("input_hafteinheiten")));
         inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§aGeldstrafe", "§8 ➥ §e" + playerData.getIntVariable("input_geldstrafe")));
-        inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", null));
+        inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen"));
         for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c", null));
+            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
         }
         player.openInventory(inv);
     }

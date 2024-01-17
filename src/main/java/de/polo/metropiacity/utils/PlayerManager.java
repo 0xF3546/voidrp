@@ -145,7 +145,7 @@ public class PlayerManager implements Listener {
                     playerData.setVariable("current_inventory", "jugendschutz");
                     playerData.setVariable("jugendschutz", "muss");
                     Main.waitSeconds(1, () -> {
-                        InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true);
+                        InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
                         playerData.setVariable("originClass", this);
                         inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7MetropiaCity simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das MetropiaCity Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
                             @Override
@@ -172,7 +172,7 @@ public class PlayerManager implements Listener {
                         });
                         for (int i = 0; i < 27; i++) {
                             if (i != 15 && i != 11) {
-                                inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null)) {
+                                inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
 
@@ -271,6 +271,11 @@ public class PlayerManager implements Listener {
                     statement1.close();
                 }
             }
+
+            if (playerData.getLaboratory() != null) {
+                playerData.getLaboratory().save();
+            }
+
             playerDataMap.remove(uuid);
             statement.close();
         } else {
@@ -508,7 +513,11 @@ public class PlayerManager implements Listener {
                         }
                     }
                 }
-                if (Main.getInstance().utils.getCurrentMinute() == 0) {
+                int currentMinute = Main.getInstance().utils.getCurrentMinute();
+                if (currentMinute % 15 == 0) {
+                    Main.getInstance().commands.laboratory.pushTick();
+                }
+                if (currentMinute == 0) {
                     for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
                         for (PlayerData playerData : playerDataMap.values()) {
                             if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
@@ -572,7 +581,7 @@ public class PlayerManager implements Listener {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         playerData.setExp(playerData.getExp() + exp);
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
-            player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + playerData.getLevel() + 1);
+            player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + (playerData.getLevel() + 1));
             Main.getInstance().utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
             playerData.setLevel(playerData.getLevel() + 1);
             player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
@@ -695,16 +704,16 @@ public class PlayerManager implements Listener {
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
         inv.setItem(20, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§aGeld geben", null));
-        inv.setItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen", null));
-        inv.setItem(38, ItemManager.createItem(Material.IRON_BARS, 1, 0, "§7Durchsuchen", null));
-        inv.setItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen", null));
+        inv.setItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen"));
+        inv.setItem(38, ItemManager.createItem(Material.IRON_BARS, 1, 0, "§7Durchsuchen"));
+        inv.setItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen"));
         if (playerData.getFaction() != null) {
             FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
-            inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü", null));
+            inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü"));
         }
         for (int i = 0; i < 54; i++) {
             if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         player.openInventory(inv);
@@ -721,13 +730,13 @@ public class PlayerManager implements Listener {
         inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
         switch (faction.toLowerCase()) {
             case "medic":
-                inv.setItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen", null));
+                inv.setItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen"));
                 break;
         }
-        inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§7Interaktionsmenü", null));
+        inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§7Interaktionsmenü"));
         for (int i = 0; i < 54; i++) {
             if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         player.openInventory(inv);

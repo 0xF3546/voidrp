@@ -36,13 +36,13 @@ public class ComputerUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §eComputer");
         if (playerData.isDuty()) {
-            inv.setItem(10, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cAus Dienst gehen", null));
+            inv.setItem(10, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cAus Dienst gehen"));
         } else {
-            inv.setItem(10, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§aIn Dienst gehen", null));
+            inv.setItem(10, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§aIn Dienst gehen"));
         }
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_inventory", "computer");

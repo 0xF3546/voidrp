@@ -41,12 +41,12 @@ public class FarmerCommand implements CommandExecutor {
                 playerData.setVariable("current_inventory", "farmer");
                 Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eFarmer");
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "farmer") && playerData.getVariable("job") == null) {
-                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aFarmer starten", null));
-                    inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten", null));
+                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aFarmer starten"));
+                    inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten"));
                 } else {
                     if (playerData.getVariable("job") == null) {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7."));
-                        inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten", null));
+                        inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten"));
                     } else {
                         inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
                         inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
@@ -63,7 +63,7 @@ public class FarmerCommand implements CommandExecutor {
                 }
                 for (int i = 0; i < 27; i++) {
                     if (inv.getItem(i) == null) {
-                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8", null));
+                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                     }
                 }
                 player.openInventory(inv);

@@ -38,6 +38,7 @@ public class Vehicles implements Listener, CommandExecutor {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        Main.registerCommand("car", this);
         try {
             loadVehicles();
             loadPlayerVehicles();
@@ -398,8 +399,8 @@ public class Vehicles implements Listener, CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         GarageData garageData = LocationManager.garageDataMap.get(station);
         Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6" + garageData.getName());
-        inv.setItem(48, ItemManager.createItem(Material.EMERALD, 1, 0, "§aEinparken", null));
-        inv.setItem(50, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAusparken", null));
+        inv.setItem(48, ItemManager.createItem(Material.EMERALD, 1, 0, "§aEinparken"));
+        inv.setItem(50, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAusparken"));
         int i = 0;
         if (isParkin) {
             for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
@@ -409,7 +410,7 @@ public class Vehicles implements Listener, CommandExecutor {
                             int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
                             PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
                             VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                            inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), null));
+                            inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName()));
                             ItemMeta meta = inv.getItem(i).getItemMeta();
                             meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §aEinparken"));
                             meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
@@ -426,7 +427,7 @@ public class Vehicles implements Listener, CommandExecutor {
                 if (playerVehicleData.getGarage() == station && playerVehicleData.isParked() && playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
                     System.out.println("1 gefunden");
                     VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                    inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), null));
+                    inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName()));
                     ItemMeta meta = inv.getItem(i).getItemMeta();
                     meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §cAusparken"));
                     meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, playerVehicleData.getId());

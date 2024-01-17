@@ -127,13 +127,13 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                             meta.setLore(Arrays.asList("§8 ➥ §6Besitzer§8:§e " + ownerData.getFullname(), "§8 ➥ §6Letzter Angriff§8:§e " + date));
                             inv.getItem(13).setItemMeta(meta);
 
-                            inv.setItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren", null));
+                            inv.setItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren"));
                             ItemMeta meta1 = inv.getItem(15).getItemMeta();
                             meta1.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "zone"), PersistentDataType.STRING, gangwarData.getZone());
                             inv.getItem(15).setItemMeta(meta1);
                             for (int i = 0; i < 27; i++) {
                                 if (inv.getItem(i) == null) {
-                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0, "§8", null));
+                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0, "§8"));
                                 }
                             }
                             player.openInventory(inv);
@@ -178,10 +178,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     if (weaponData.getMaterial() != null && item != null) {
                         if (item.getType() == weaponData.getMaterial()) {
                             ItemMeta meta = item.getItemMeta();
-                            if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
-                                if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "Gangwar") {
-                                    Main.getInstance().weapons.removeWeapon(player, item);
-                                }
+                            Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                            if (weapon.getWeaponType() == WeaponType.GANGWAR) {
+                                Main.getInstance().weapons.removeWeapon(player, item);
                             }
                         }
                     }
@@ -203,10 +202,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) != null) {
-                            if (meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) == "Gangwar") {
-                                Main.getInstance().weapons.removeWeapon(player, item);
-                            }
+                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        if (weapon.getWeaponType() == WeaponType.GANGWAR) {
+                            Main.getInstance().weapons.removeWeapon(player, item);
                         }
                     }
                 }

@@ -1,6 +1,8 @@
 package de.polo.metropiacity.utils.InventoryManager;
 
+import de.polo.metropiacity.utils.ItemManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -12,6 +14,7 @@ public class InventoryManager {
     private int size;
     private UUID uuid;
     public boolean canceled;
+    private boolean fillRest;
     private Inventory inv;
 
     /**
@@ -23,13 +26,21 @@ public class InventoryManager {
      * @param canceled If the inventory should be canceled.
      * @since 1.0.0
      */
-    public InventoryManager(Player player, int size, String name, boolean canceled) {
+    public InventoryManager(Player player, int size, String name, boolean canceled, boolean fillRest) {
         this.size = size;
         this.name = name;
         this.uuid = player.getUniqueId();
         this.canceled = canceled;
+        this.fillRest = fillRest;
         this.inv = Bukkit.createInventory(null, size, name);
         InventoryApiRegister.getCustomInventoryCache().addInventory(player, this);
+        if (this.fillRest) {
+            for (int i = 0; i < this.size; i++) {
+                if (inv.getItem(i) == null) {
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
+                }
+            }
+        }
         player.openInventory(inv);
     }
 

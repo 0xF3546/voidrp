@@ -20,6 +20,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -76,7 +77,7 @@ public class Weapons implements Listener {
             weapon.setOwner(UUID.fromString(result.getString("uuid")));
             for (WeaponData weaponData : weaponDataMap.values()) {
                 if (weaponData.getId() == result.getInt("weapon")) {
-                    weapon.setWeaponData(weaponDataMap.get("weapon"));
+                    weapon.setWeaponData(weaponData);
                 }
             }
             weaponList.put(weapon.getId(), weapon);
@@ -139,19 +140,27 @@ public class Weapons implements Listener {
     }
 
     @SneakyThrows
-    public void removeWeapon(Weapon weapon) {
+    private void removeWeapon(Weapon weapon) {
         weaponList.remove(weapon);
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("DELETE FROM player_weapons WHERE id = " + weapon.getId());
         statement.close();
     }
 
+    @SneakyThrows
     public void removeWeapon(Player player, ItemStack stack) {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
         Weapon weapon = weaponList.get(id);
         player.getInventory().remove(stack);
         removeWeapon(weapon);
+    }
+
+    public Weapon getWeaponFromItemStack(ItemStack stack) {
+        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
+        Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
+        Weapon weapon = weaponList.get(id);
+        return weapon;
     }
 
     public HashMap<Integer, Weapon> getWeapons() {
@@ -226,6 +235,7 @@ public class Weapons implements Listener {
 
         event.getItem().setItemMeta(meta);
         weapon.setCanShoot(false);
+        updateWeaponLore(weapon, event.getItem());
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -255,34 +265,39 @@ public class Weapons implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    reload(player, weapon);
+                    reload(player, weapon, id);
                     cancel();
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
             return;
         }
-        if (w.getCurrentAmmo() >= 1) {
+        if (w.getAmmo() >= 1) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    reload(player, weapon);
+                    reload(player, weapon, id);
+                    cancel();
                 }
             }.runTaskLater(Main.getInstance(), (long) (weaponData.getReloadDuration() * 2));
         } else {
-            utils.sendActionBar(player, "§cDu hast eine Munition mehr!");
+            utils.sendActionBar(player, "§cDu hast keine Munition mehr!");
         }
     }
 
-    public void reload(Player player, ItemStack weapon) {
-        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
-        Integer id = weapon.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
+    public void reload(Player player, ItemStack weapon, Integer id) {
         Weapon w = weaponList.get(id);
+        player.sendMessage("Owner: "+ w.getOwner().toString());
+        player.sendMessage("needs: " + w.getWeaponType().isNeedsAmmoToReload());
+        player.sendMessage("Ammo: " + w.getAmmo());
+        player.sendMessage("maxAmmo: " + w.getWeaponData().getMaxAmmo());
+        player.sendMessage("current: " + w.getCurrentAmmo());
         if (!w.getWeaponType().isNeedsAmmoToReload()) {
             w.setCurrentAmmo(w.getWeaponData().getMaxAmmo());
         } else {
             if (w.getAmmo() >= w.getWeaponData().getMaxAmmo()) {
+                int dif = w.getWeaponData().getMaxAmmo() - w.getCurrentAmmo();
                 w.setCurrentAmmo(w.getWeaponData().getMaxAmmo());
-                w.setAmmo(w.getAmmo() - w.getWeaponData().getMaxAmmo());
+                w.setAmmo(w.getAmmo() - dif);
             } else {
                 w.setCurrentAmmo(w.getWeaponData().getMaxAmmo() - w.getAmmo());
                 w.setAmmo(0);
@@ -290,5 +305,12 @@ public class Weapons implements Listener {
         }
         w.setReloading(false);
         utils.sendActionBar(player, w.getWeaponData().getName() + "§7 wurde nachgeladen!");
+        updateWeaponLore(w, weapon);
+    }
+
+    private void updateWeaponLore(Weapon weapon, ItemStack stack) {
+        ItemMeta meta = stack.getItemMeta();
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getWeaponData().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
+        stack.setItemMeta(meta);
     }
 }
