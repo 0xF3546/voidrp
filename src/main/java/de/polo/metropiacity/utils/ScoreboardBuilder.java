@@ -22,7 +22,7 @@ public abstract class ScoreboardBuilder {
     public ScoreboardBuilder(Player player, String displayName) {
         this.player = player;
 
-        if(player.getScoreboard().equals(Bukkit.getScoreboardManager().getMainScoreboard())) {
+        if (player.getScoreboard().equals(Bukkit.getScoreboardManager().getMainScoreboard())) {
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         }
 
@@ -119,5 +119,9 @@ public abstract class ScoreboardBuilder {
         }
 
         scoreboard.resetScores(name.getEntryName());
+    }
+
+    public void clearScoreboard() {
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 }

@@ -2,8 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.listeners.InventoryClickListener;
-import de.polo.metropiacity.playerUtils.Shop;
+import de.polo.metropiacity.utils.playerUtils.Shop;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.utils.InventoryManager.CustomItem;
 import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
@@ -13,12 +12,9 @@ import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.Objects;

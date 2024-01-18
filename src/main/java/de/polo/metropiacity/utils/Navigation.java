@@ -2,7 +2,7 @@ package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.SoundManager;
+import de.polo.metropiacity.utils.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.InventoryManager.CustomItem;
 import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.events.NaviReachEvent;

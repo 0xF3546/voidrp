@@ -1,7 +1,7 @@
 package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.ChatUtils;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 

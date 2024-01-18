@@ -2,7 +2,7 @@ package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.ChatUtils;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

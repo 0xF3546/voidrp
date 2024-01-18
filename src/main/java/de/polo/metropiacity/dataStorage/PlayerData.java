@@ -1,8 +1,7 @@
 package de.polo.metropiacity.dataStorage;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.Scoreboard;
-import de.polo.metropiacity.utils.enums.EXPType;
+import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -11,12 +10,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.UUID;
 

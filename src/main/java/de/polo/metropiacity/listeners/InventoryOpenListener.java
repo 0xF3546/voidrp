@@ -1,7 +1,7 @@
 package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.SoundManager;
+import de.polo.metropiacity.utils.playerUtils.SoundManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

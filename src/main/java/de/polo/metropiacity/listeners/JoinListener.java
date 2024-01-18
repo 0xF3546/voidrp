@@ -2,7 +2,7 @@ package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.RankData;
-import de.polo.metropiacity.playerUtils.DeathUtils;
+import de.polo.metropiacity.utils.playerUtils.DeathUtils;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.*;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package de.polo.metropiacity.playerUtils;
+package de.polo.metropiacity.utils.playerUtils;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;

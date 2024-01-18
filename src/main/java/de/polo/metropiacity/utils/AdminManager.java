@@ -1,10 +1,9 @@
 package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.commands.SpecCommand;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.dataStorage.RankData;
-import de.polo.metropiacity.playerUtils.Scoreboard;
+import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

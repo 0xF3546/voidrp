@@ -3,7 +3,7 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.dataStorage.ShopData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.Progress;
+import de.polo.metropiacity.utils.playerUtils.Progress;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;

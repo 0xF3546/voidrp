@@ -2,8 +2,8 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
-import de.polo.metropiacity.playerUtils.Scoreboard;
-import de.polo.metropiacity.playerUtils.SoundManager;
+import de.polo.metropiacity.utils.playerUtils.Scoreboard;
+import de.polo.metropiacity.utils.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;

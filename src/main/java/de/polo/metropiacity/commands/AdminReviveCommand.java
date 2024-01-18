@@ -1,7 +1,6 @@
 package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;

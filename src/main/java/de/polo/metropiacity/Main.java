@@ -2,11 +2,11 @@ package de.polo.metropiacity;
 
 import de.polo.metropiacity.listeners.*;
 import de.polo.metropiacity.database.MySQL;
-import de.polo.metropiacity.playerUtils.*;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.commands.*;
 import de.polo.metropiacity.utils.Game.*;
 import de.polo.metropiacity.utils.InventoryManager.InventoryApiRegister;
+import de.polo.metropiacity.utils.playerUtils.Shop;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -127,7 +127,7 @@ public final class Main extends JavaPlugin {
         new RespawnListener(playerManager);
         new PlayerMoveListener(playerManager, utils);
         new PlayerLoginListener();
-        new PlayerInteractListener(playerManager, utils, commands);
+        new PlayerInteractListener(playerManager, utils, commands, blockManager);
         new PlayerInteractWithPlayerListener(playerManager);
         new ExpPickupListener();
         new ItemPickUpListener();
@@ -137,7 +137,7 @@ public final class Main extends JavaPlugin {
         new InventoryOpenListener();
         new HungerListener(playerManager);
         new AntiCheat();
-        new PlayerSwapHandItemsListener(playerManager);
+        new PlayerSwapHandItemsListener(playerManager, utils);
         new GameModeChangeEvent();
         new EntitySpawnListener();
         new EntityDamageByEntityListener(playerManager);
@@ -549,7 +549,7 @@ public final class Main extends JavaPlugin {
             einreiseCommand = new EinreiseCommand(playerManager, locationManager);
             registerHouseCommand = new RegisterHouseCommand(playerManager);
             reinforcementCommand = new ReinforcementCommand(playerManager, factionManager);
-            buyHouseCommand = new BuyHouseCommand(playerManager);
+            buyHouseCommand = new BuyHouseCommand(playerManager, blockManager);
             mietersCommand = new MietersCommand(playerManager, utils);
             unrentCommand = new UnrentCommand(utils);
             friskCommand = new FriskCommand(playerManager);

@@ -5,14 +5,13 @@ import de.polo.metropiacity.dataStorage.ATM;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.BankingUtils;
-import de.polo.metropiacity.playerUtils.ChatUtils;
-import de.polo.metropiacity.playerUtils.Rubbellose;
+import de.polo.metropiacity.dataStorage.RegisteredBlock;
+import de.polo.metropiacity.utils.BlockManager;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
+import de.polo.metropiacity.utils.playerUtils.Rubbellose;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.PlayerManager;
-import de.polo.metropiacity.commands.MuellmannCommand;
-import de.polo.metropiacity.commands.PostboteCommand;
 import de.polo.metropiacity.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
@@ -30,6 +29,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -37,10 +37,12 @@ public class PlayerInteractListener implements Listener {
     private final PlayerManager playerManager;
     private final Utils utils;
     private final Main.Commands commands;
-    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands) {
+    private final BlockManager blockManager;
+    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.commands = commands;
+        this.blockManager = blockManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
     @EventHandler
@@ -87,7 +89,55 @@ public class PlayerInteractListener implements Listener {
                         player.sendMessage(Main.error + "Dieser Automat wurde noch nicht registriert.");
                     }
                     PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
-                    for (HouseData houseData : Housing.houseDataMap.values()) {
+                    RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                    if (Objects.equals(block.getInfo(), "house")) {
+                        HouseData houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
+                        Inventory inv = Bukkit.createInventory(player, 45, "");
+                        playerData.setVariable("current_inventory", "haus");
+                        playerData.setIntVariable("current_house", houseData.getNumber());
+                        if (houseData.getOwner() != null) {
+                            OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
+                            inv.setItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName()));
+                            if (houseData.getOwner().equals(player.getUniqueId().toString())) {
+                                inv.setItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$"));
+                            } else {
+                                inv.setItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht."));
+                            }
+                        } else {
+                            inv.setItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer"));
+                            inv.setItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$"));
+                        }
+                        inv.setItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", "Lädt..."));
+                        ItemMeta meta = inv.getItem(29).getItemMeta();
+                        meta.setLore(Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()));
+                        inv.getItem(29).setItemMeta(meta);
+                        if (playerData.getVariable("job") == null) {
+                            inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
+                        } else {
+                            if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
+                            } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
+                                if (commands.postboteCommand.canGive(houseData.getNumber())) {
+                                    inv.setItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben"));
+                                } else {
+                                    inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert"));
+                                }
+                            } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                if (commands.muellmannCommand.canGet(houseData.getNumber())) {
+                                    inv.setItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln"));
+                                } else {
+                                    inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert"));
+                                }
+                            }
+                        }
+                        for (int i = 0; i < 45; i++) {
+                            if (inv.getItem(i) == null) {
+                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                            }
+                        }
+                        player.openInventory(inv);
+                    }
+                    /*for (HouseData houseData : Housing.houseDataMap.values()) {
                         if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {
                             Inventory inv = Bukkit.createInventory(player, 45, "");
                             playerData.setVariable("current_inventory", "haus");
@@ -134,7 +184,7 @@ public class PlayerInteractListener implements Listener {
                             }
                             player.openInventory(inv);
                         }
-                    }
+                    }*/
                 }
             }
 

@@ -2,8 +2,7 @@ package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
-import de.polo.metropiacity.playerUtils.Scoreboard;
+import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

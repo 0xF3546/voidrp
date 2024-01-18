@@ -1,4 +1,4 @@
-package de.polo.metropiacity.playerUtils;
+package de.polo.metropiacity.utils.playerUtils;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
@@ -176,12 +176,7 @@ public class Scoreboard extends ScoreboardBuilder {
         for (int i = 0; i < 15; i++) {
             removeScore(i);
         }
-        isScore = false;
-        isAdminScore = false;
-        isMineScore = false;
-        isCarScore = false;
-        isLebensmittelLieferantScore = false;
-        isFarmerScore = false;
+        clearScoreboard();
         Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).removeScoreboard(this);
     }
 

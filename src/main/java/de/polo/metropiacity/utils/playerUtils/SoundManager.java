@@ -1,4 +1,4 @@
-package de.polo.metropiacity.playerUtils;
+package de.polo.metropiacity.utils.playerUtils;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;

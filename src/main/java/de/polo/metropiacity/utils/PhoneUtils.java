@@ -2,7 +2,7 @@ package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.ChatUtils;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class PhoneUtils implements Listener {
     public static final HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
     public static final HashMap<String, String> phoneCallConnection = new HashMap<>();
     public static final HashMap<String, Boolean> isInCallConnection = new HashMap<>();
-    public static final String error_nophone = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
+    public static final String error_nophone = "§8[§6Handy§8] §cDas kannst du aktuell nicht machen.";
     public static final String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
 
     private final PlayerManager playerManager;
@@ -384,7 +384,7 @@ public class PhoneUtils implements Listener {
     public void callNumber(Player player, Player players) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 if (VertragUtil.setVertrag(player, players, "phonecall", players.getUniqueId().toString())) {
-                    if (PhoneUtils.hasPhone(players)) {
+                    if (!playerManager.getPlayerData(players).isDead()) {
                         ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
                         ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " wählt eine Nummer auf dem Handy.");
                         player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + players.getName() + "§e an.");
@@ -401,7 +401,7 @@ public class PhoneUtils implements Listener {
     }
 
     public void sendSMS(Player player, Player players, StringBuilder message) {
-        if (PhoneUtils.hasPhone(players)) {
+        if (!playerManager.getPlayerData(players).isDead()) {
             players.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
             player.sendMessage("§8[§6SMS§8] §e" + player.getName() + "§8: §7" + message);
             player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
@@ -420,10 +420,10 @@ public class PhoneUtils implements Listener {
 
     public static void acceptCall(Player player, String targetuuid) {
         player.stopSound(Sound.MUSIC_CREATIVE);
-        if (PhoneUtils.hasPhone(player)) {
+        if (!Main.getInstance().playerManager.getPlayerData(player).isDead()) {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
-            if (PhoneUtils.hasPhone(targetplayer)) {
+            if (!Main.getInstance().playerManager.getPlayerData(targetplayer).isDead()) {
                 targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf angenommen");
                 targetplayer.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + player.getName() + " angenommen");
                 isInCallConnection.put(targetuuid, true);

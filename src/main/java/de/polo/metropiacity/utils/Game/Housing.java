@@ -4,7 +4,6 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -53,6 +52,10 @@ public class Housing {
             houseData.setMoney(locs.getInt(6));
             houseDataMap.put(locs.getInt(3), houseData);
         }
+    }
+
+    public HouseData getHouse(int houseNumber) {
+        return houseDataMap.get(houseNumber);
     }
 
     public boolean isPlayerOwner(Player player, int number) {

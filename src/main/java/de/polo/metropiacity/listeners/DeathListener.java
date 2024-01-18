@@ -2,8 +2,6 @@ package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.DeathUtils;
-import de.polo.metropiacity.playerUtils.FFAUtils;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import de.polo.metropiacity.utils.Game.Streetwar;

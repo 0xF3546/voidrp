@@ -2,8 +2,6 @@ package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.database.MySQL;
-import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

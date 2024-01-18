@@ -12,6 +12,8 @@ import de.polo.metropiacity.utils.PlayerManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
+import org.bukkit.block.TileState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,7 +46,7 @@ public class RegisterblockCommand implements CommandExecutor {
         }
 
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /registerblock [Typ]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /registerblock [Typ] [Extra]");
             return false;
         }
 
@@ -54,6 +56,20 @@ public class RegisterblockCommand implements CommandExecutor {
         registeredBlock.setBlock(block);
         registeredBlock.setInfo(args[0]);
         registeredBlock.setLocation(block.getLocation());
+        if (args.length >= 2) {
+            registeredBlock.setInfoValue(args[1]);
+        }
+        TileState state = (TileState) block.getState();
+        if (state instanceof Sign) {
+            Sign sign = (Sign) state;
+            sign.setEditable(false);
+            sign.setLine(1, "== §6Haus " + args[0] + " §0==");
+            sign.setLine(2, "§2Zu Verkaufen");
+            sign.update();
+            registeredBlock.setInfo("house");
+            registeredBlock.setInfoValue(args[0]);
+            player.sendMessage(Main.gamedesign_prefix + "Haus regestriert.");
+        }
 
         int id = blockManager.addBlock(registeredBlock);
 

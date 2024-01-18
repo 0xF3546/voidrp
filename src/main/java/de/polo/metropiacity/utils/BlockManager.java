@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public class BlockManager {
     private final MySQL mySQL;
-    private List<RegisteredBlock> registeredBlocks = new ArrayList<>();
+    private final List<RegisteredBlock> registeredBlocks = new ArrayList<>();
     public BlockManager(MySQL mySQL) {
         this.mySQL = mySQL;
         init();
@@ -47,16 +47,26 @@ public class BlockManager {
         }
     }
 
+    public RegisteredBlock getBlockAtLocation(Location location) {
+        for (RegisteredBlock block : registeredBlocks) {
+            if (block.getLocation().getBlockX() == location.getBlockX() && block.getLocation().getBlockY() == location.getBlockY() && block.getLocation().getBlockZ() == location.getBlockZ()) {
+                return block;
+            }
+        }
+        return null;
+    }
+
     @SneakyThrows
     public int addBlock(RegisteredBlock block) {
         registeredBlocks.add(block);
         Connection connection = mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO blocks (info, x, y, z, world) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO blocks (info, infoValue, x, y, z, world) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, block.getInfo());
-        statement.setDouble(2,block.getLocation().getX());
-        statement.setDouble(3, block.getLocation().getY());
-        statement.setDouble(4, block.getLocation().getZ());
-        statement.setString(5, block.getLocation().getWorld().getName());
+        statement.setString(2, block.getInfoValue());
+        statement.setDouble(3,block.getLocation().getX());
+        statement.setDouble(4, block.getLocation().getY());
+        statement.setDouble(5, block.getLocation().getZ());
+        statement.setString(6, block.getLocation().getWorld().getName());
 
         statement.execute();
 

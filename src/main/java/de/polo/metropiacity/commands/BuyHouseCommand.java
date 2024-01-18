@@ -4,7 +4,9 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.metropiacity.dataStorage.HouseData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.RegisteredBlock;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.BlockManager;
 import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Location;
@@ -24,9 +26,11 @@ import java.sql.Statement;
 import java.util.Objects;
 
 public class BuyHouseCommand implements CommandExecutor {
-    private PlayerManager playerManager;
-    public BuyHouseCommand(PlayerManager playerManager) {
+    private final PlayerManager playerManager;
+    private final BlockManager blockManager;
+    public BuyHouseCommand(PlayerManager playerManager, BlockManager blockManager) {
         this.playerManager = playerManager;
+        this.blockManager = blockManager;
         Main.registerCommand("buyhouse", this);
     }
     @Override
@@ -48,8 +52,8 @@ public class BuyHouseCommand implements CommandExecutor {
                             NamespacedKey value = new NamespacedKey(Main.plugin, "value");
                             PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                             System.out.println(container.get(value, PersistentDataType.INTEGER));
-                            if (container.get(value, PersistentDataType.INTEGER) != null) {
-                                if (Integer.parseInt(args[0]) == Objects.requireNonNull(container.get(value, PersistentDataType.INTEGER))) {
+                            RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(location);
+                                if (Integer.parseInt(args[0]) == Integer.parseInt(registeredBlock.getInfoValue())) {
                                     HouseData houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
                                     if (houseData.getOwner() == null) {
                                         if (playerData.getBargeld() >= houseData.getPrice()) {
@@ -83,7 +87,7 @@ public class BuyHouseCommand implements CommandExecutor {
                                     } else {
                                         player.sendMessage(Main.error + "Dieses Haus ist bereits verkauft.");
                                     }
-                                }
+
                             }
                         }
                     }

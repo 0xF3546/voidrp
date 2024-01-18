@@ -2,13 +2,11 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.DeathUtils;
 import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

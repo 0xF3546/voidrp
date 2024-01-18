@@ -16,6 +16,7 @@ public class WeaponData {
     private String type;
     private Material ammoItem;
     private float soundPitch;
+    private int knockback;
 
     public float getReloadDuration() {
         return reloadDuration;
@@ -111,5 +112,13 @@ public class WeaponData {
 
     public void setSoundPitch(float soundPitch) {
         this.soundPitch = soundPitch;
+    }
+
+    public int getKnockback() {
+        return knockback;
+    }
+
+    public void setKnockback(int knockback) {
+        this.knockback = knockback;
     }
 }

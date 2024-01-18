@@ -4,7 +4,6 @@ import de.polo.metropiacity.dataStorage.Weapon;
 import de.polo.metropiacity.dataStorage.WeaponData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.WeaponType;
-import de.polo.metropiacity.database.MySQL;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.entity.Arrow;
@@ -46,21 +45,22 @@ public class Weapons implements Listener {
 
     private void loadWeapons() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `material`, `name`, `maxAmmo`, `reloadDuration`, `damage`, `weaponSound`, `velocity`, `shootDuration`, `type`, `soundPitch` FROM `weapons`");
+        ResultSet result = statement.executeQuery("SELECT * FROM weapons");
         while (result.next()) {
             WeaponData weaponData = new WeaponData();
-            weaponData.setId(result.getInt(1));
-            weaponData.setMaterial(Material.valueOf(result.getString(2)));
-            weaponData.setName(result.getString(3).replace("&", "§"));
-            weaponData.setMaxAmmo(result.getInt(4));
-            weaponData.setReloadDuration(result.getFloat(5));
-            weaponData.setDamage(result.getFloat(6));
-            weaponData.setWeaponSound(Sound.valueOf(result.getString(7)));
-            weaponData.setArrowVelocity(result.getFloat(8));
-            weaponData.setShootDuration(result.getFloat(9));
-            weaponData.setType(result.getString(10));
-            weaponData.setSoundPitch(result.getFloat(11));
-            weaponDataMap.put(Material.valueOf(result.getString(2)), weaponData);
+            weaponData.setId(result.getInt("id"));
+            weaponData.setMaterial(Material.valueOf(result.getString("material")));
+            weaponData.setName(result.getString("name").replace("&", "§"));
+            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
+            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
+            weaponData.setDamage(result.getFloat("damage"));
+            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
+            weaponData.setArrowVelocity(result.getFloat("velocity"));
+            weaponData.setShootDuration(result.getFloat("shootDuration"));
+            weaponData.setType(result.getString("type"));
+            weaponData.setSoundPitch(result.getFloat("soundPitch"));
+            weaponData.setKnockback(result.getInt("knockback"));
+            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
         }
     }
 
@@ -217,6 +217,7 @@ public class Weapons implements Listener {
             arrow.setShooter(shooter);
             arrow.setDamage(weaponData.getDamage());
             arrow.setGravity(false);
+            arrow.setKnockbackStrength(weaponData.getKnockback());
         }
         Location location = player.getLocation();
         for (Player nearbyPlayer : Bukkit.getOnlinePlayers()) {
@@ -286,11 +287,6 @@ public class Weapons implements Listener {
 
     public void reload(Player player, ItemStack weapon, Integer id) {
         Weapon w = weaponList.get(id);
-        player.sendMessage("Owner: "+ w.getOwner().toString());
-        player.sendMessage("needs: " + w.getWeaponType().isNeedsAmmoToReload());
-        player.sendMessage("Ammo: " + w.getAmmo());
-        player.sendMessage("maxAmmo: " + w.getWeaponData().getMaxAmmo());
-        player.sendMessage("current: " + w.getCurrentAmmo());
         if (!w.getWeaponType().isNeedsAmmoToReload()) {
             w.setCurrentAmmo(w.getWeaponData().getMaxAmmo());
         } else {

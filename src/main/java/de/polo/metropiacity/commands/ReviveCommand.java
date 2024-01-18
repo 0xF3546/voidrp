@@ -2,9 +2,8 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.playerUtils.ChatUtils;
-import de.polo.metropiacity.playerUtils.DeathUtils;
-import de.polo.metropiacity.playerUtils.Progress;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
+import de.polo.metropiacity.utils.playerUtils.Progress;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.ServerManager;

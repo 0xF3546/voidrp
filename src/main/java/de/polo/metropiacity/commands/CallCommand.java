@@ -27,7 +27,7 @@ public class CallCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (PhoneUtils.hasPhone(player)) {
+        if (!playerData.isDead()) {
             if (!playerData.isFlightmode()) {
                 if (args.length >= 1) {
                         if (!Objects.equals(playerData.getVariable("calling"), "Ja")) {
