@@ -43,7 +43,8 @@ public class FactionManager {
 
     public void loadFactions() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet locs = statement.executeQuery("SELECT * FROM factions");
+
+        ResultSet locs = statement.executeQuery("SELECT f.*, fs.* FROM factions AS f LEFT JOIN faction_storage AS fs ON f.id = factionId");
         while (locs.next()) {
             FactionData factionData = new FactionData();
             factionData.setId(locs.getInt("id"));
@@ -60,6 +61,11 @@ public class FactionManager {
             factionData.setForumID(locs.getInt("forumID"));
             factionData.setForumID_Leader(locs.getInt("forumID_Leader"));
             factionData.setHasLaboratory(locs.getBoolean("hasLaboratory"));
+            factionData.setJointsMade(locs.getInt("jointsMade"));
+            factionData.storage.setJoint(locs.getInt("joint"));
+            factionData.storage.setWeed(locs.getInt("weed"));
+            factionData.storage.setCocaine(locs.getInt("cocaine"));
+            factionData.storage.setKevlar(locs.getInt("kevlar"));
             factionDataMap.put(locs.getString(2), factionData);
         }
 

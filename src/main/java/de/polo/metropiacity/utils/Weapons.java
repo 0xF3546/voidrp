@@ -208,12 +208,16 @@ public class Weapons implements Listener {
         Arrow arrow = player.launchProjectile(Arrow.class);
         ProjectileSource shooter = arrow.getShooter();
         ItemMeta meta = event.getItem().getItemMeta();
-        Vector direction = player.getLocation().clone().subtract(player.getEyeLocation()).toVector().normalize();
+        Vector direction = player.getEyeLocation().getDirection().normalize();
+
+// Setze die Position für die Partikelanzeige
         Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(1));
         player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.BLACK, 1));
 
+// Überprüfen, ob der Schütze ein Spieler ist
         if (shooter instanceof Player) {
-            arrow.setVelocity(arrow.getVelocity().multiply(weaponData.getArrowVelocity()));
+            // Setze die Geschwindigkeit des Pfeils entsprechend der Blickrichtung und der konfigurierten Geschwindigkeit
+            arrow.setVelocity(direction.multiply(weaponData.getArrowVelocity()));
             arrow.setShooter(shooter);
             arrow.setDamage(weaponData.getDamage());
             arrow.setGravity(false);

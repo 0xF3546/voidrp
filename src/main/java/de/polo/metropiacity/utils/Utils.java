@@ -409,4 +409,8 @@ public class Utils {
             }
         }
     }
+    public LocalDateTime sqlDateToLocalDateTime(Date date) {
+        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return localDateTime;
+    }
 }

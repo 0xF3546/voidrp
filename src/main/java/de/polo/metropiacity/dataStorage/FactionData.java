@@ -1,5 +1,10 @@
 package de.polo.metropiacity.dataStorage;
 
+import de.polo.metropiacity.Main;
+import lombok.SneakyThrows;
+
+import java.sql.Statement;
+
 public class FactionData {
     private int id;
     private String primaryColor;
@@ -17,6 +22,8 @@ public class FactionData {
     private int forumID;
     private int forumID_Leader;
     private boolean hasLaboratory;
+    private int jointsMade;
+    public Storage storage = new Storage(this);
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -144,5 +151,62 @@ public class FactionData {
 
     public void setHasLaboratory(boolean hasLaboratory) {
         this.hasLaboratory = hasLaboratory;
+    }
+
+    public int getJointsMade() {
+        return jointsMade;
+    }
+
+    public void setJointsMade(int jointsMade) {
+        this.jointsMade = jointsMade;
+    }
+
+    public class Storage {
+        private int weed;
+        private int joint;
+        private int cocaine;
+        private int kevlar;
+        private final FactionData factionData;
+        public Storage(FactionData factionData) {
+            this.factionData = factionData;
+        }
+
+        public int getWeed() {
+            return weed;
+        }
+
+        public void setWeed(int weed) {
+            this.weed = weed;
+        }
+
+        public int getJoint() {
+            return joint;
+        }
+
+        public void setJoint(int joint) {
+            this.joint = joint;
+        }
+
+        public int getCocaine() {
+            return cocaine;
+        }
+
+        public void setCocaine(int cocaine) {
+            this.cocaine = cocaine;
+        }
+
+        public int getKevlar() {
+            return kevlar;
+        }
+
+        public void setKevlar(int kevlar) {
+            this.kevlar = kevlar;
+        }
+
+        @SneakyThrows
+        public void save() {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.execute("UPDATE faction_storage SET weed = " + getWeed() + ", joint = " + getJoint() + ", cocaine = " + getCocaine() + ", kevlar = " + getKevlar() + " WHERE factionId = " + factionData.getId());
+        }
     }
 }

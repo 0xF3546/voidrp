@@ -15,6 +15,10 @@ public class MeCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         StringBuilder message = new StringBuilder(player.getName());
+        if (args.length < 1) {
+            player.sendMessage(Main.error + "Syntax-Fehler: /me [Aktion]");
+            return false;
+        }
         for (String arg : args) {
             message.append(" ").append(arg);
         }

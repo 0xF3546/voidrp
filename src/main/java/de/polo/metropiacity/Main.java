@@ -5,6 +5,7 @@ import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.*;
 import de.polo.metropiacity.commands.*;
 import de.polo.metropiacity.utils.Game.*;
+import de.polo.metropiacity.utils.GamePlay.GamePlay;
 import de.polo.metropiacity.utils.InventoryManager.InventoryApiRegister;
 import de.polo.metropiacity.utils.playerUtils.Shop;
 import lombok.Getter;
@@ -61,6 +62,7 @@ public final class Main extends JavaPlugin {
     public Streetwar streetwar;
     public Weapons weapons;
     public BlockManager blockManager;
+    public GamePlay gamePlay;
 
     public void onLoad() {
         instance = this;
@@ -86,7 +88,8 @@ public final class Main extends JavaPlugin {
         weapons = new Weapons(utils);
         blockManager = new BlockManager(mySQL);
         isOnline = true;
-        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles);
+        gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager);
+        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay);
 
         new InventoryApiRegister(this);
 
@@ -357,13 +360,15 @@ public final class Main extends JavaPlugin {
         private LocationManager locationManager;
         private SupportManager supportManager;
         private Vehicles vehicles;
-        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles) {
+        private GamePlay gamePlay;
+        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay) {
             this.main = main;
             this.playerManager = playerManager;
             this.adminManager = adminManager;
             this.locationManager = locationManager;
             this.supportManager = supportManager;
             this.vehicles = vehicles;
+            this.gamePlay = gamePlay;
             Init();
         }
         public SetTeamCommand setTeamCommand;
@@ -489,6 +494,8 @@ public final class Main extends JavaPlugin {
         public RegisterATMCommand registerATMCommand;
         public Laboratory laboratory;
         //public GetSkinCommand getSkinCommand;
+        public ApothekeCommand apothekeCommand;
+        public ApothekenCommand apothekenCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -613,6 +620,8 @@ public final class Main extends JavaPlugin {
             registerblockCommand = new RegisterblockCommand(playerManager, mySQL, blockManager);
             registerATMCommand = new RegisterATMCommand(playerManager, adminManager, mySQL);
             laboratory = new Laboratory(playerManager, factionManager, locationManager);
+            apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
+            apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
 
             main.registerCommands();
             main.registerListener();

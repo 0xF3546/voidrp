@@ -59,6 +59,14 @@ public class PlayerInteractListener implements Listener {
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
+                if (event.getClickedBlock().getType() == Material.CHEST) {
+                    RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                    if (!registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
+                        return;
+                    }
+                    if (!registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) return;
+                    Main.getInstance().gamePlay.drugstorage.open(player);
+                }
                 if (event.getClickedBlock().getType() == Material.CAULDRON) {
                     Material[] items = {Material.POTATO, Material.POISONOUS_POTATO, Material.GLASS_BOTTLE};
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mülleimer")) {

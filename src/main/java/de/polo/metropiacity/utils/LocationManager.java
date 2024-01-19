@@ -191,11 +191,8 @@ public class LocationManager {
                     if (block2.getType().toString().contains("SIGN")) {
                         Sign sign = (Sign) block2.getState();
                         if (sign.getLine(2).contains(player.getName())) {
-                            NamespacedKey value = new NamespacedKey(Main.plugin, "value");
-                            PersistentDataContainer container = new CustomBlockData(block2, Main.plugin);
-                            if (container.get(value, PersistentDataType.INTEGER) != null) {
-                                return container.get(value, PersistentDataType.INTEGER);
-                            }
+                            RegisteredBlock registeredBlock = Main.getInstance().blockManager.getBlockAtLocation(block2.getLocation());
+                            return Integer.parseInt(registeredBlock.getInfoValue());
                         }
                     }
                 }
