@@ -6,7 +6,7 @@ public class DBPlayerData {
     private String player_rank;
     private String faction;
     private int faction_grade;
-    private String business;
+    private Integer business;
     private int business_grade;
 
     public int getId() {
@@ -49,11 +49,11 @@ public class DBPlayerData {
         this.faction_grade = faction_grade;
     }
 
-    public String getBusiness() {
+    public Integer getBusiness() {
         return business;
     }
 
-    public void setBusiness(String business) {
+    public void setBusiness(Integer business) {
         this.business = business;
     }
 

@@ -27,7 +27,7 @@ public class LeadBusinessCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getPermlevel() < 75) {
+        /*if (playerData.getPermlevel() < 75) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -43,11 +43,13 @@ public class LeadBusinessCommand implements CommandExecutor {
         String frak = args[1];
         try {
             businessManager.setPlayerInBusiness(targetplayer, frak, 8);
+            PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
+            targetPlayerData.setBusiness(Integer.parseInt(args[1]));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 in das Business §c" + frak + "§7 gesetzt.");
-        targetplayer.sendMessage(Main.business_prefix + "Du bist nun Leader des Business §c" + frak + "§7!");
+        targetplayer.sendMessage(Main.business_prefix + "Du bist nun Leader des Business §c" + frak + "§7!");*/
         return false;
     }
 }

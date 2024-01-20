@@ -1,7 +1,9 @@
 package de.polo.metropiacity.commands;
 
+import de.polo.metropiacity.dataStorage.BusinessData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.BusinessManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -10,21 +12,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BusinessChatCommand implements CommandExecutor {
-    private PlayerManager playerManager;
-    public BusinessChatCommand(PlayerManager playerManager) {
+    private final PlayerManager playerManager;
+    private final BusinessManager businessManager;
+    public BusinessChatCommand(PlayerManager playerManager, BusinessManager businessManager) {
         this.playerManager = playerManager;
+        this.businessManager = businessManager;
         Main.registerCommand("businesschat", this);
     }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getBusiness() == null) {
+        if (playerData.getBusiness() == null || playerData.getBusiness() == 0) {
             player.sendMessage(Main.business_prefix + "Du bist in keinem Business.");
             return false;
         }
         if (args.length < 1) {
             player.sendMessage(Main.error + "Syntax-Fehler: /businesschat [Nachricht]");
+            return false;
+        }
+        BusinessData businessData = businessManager.getBusinessData(playerData.getBusiness());
+        if (!businessData.isActive()) {
+            player.sendMessage(Main.error + "Dieses Business ist nicht aktiv.");
             return false;
         }
         StringBuilder msg = new StringBuilder(args[0]);
@@ -35,7 +44,7 @@ public class BusinessChatCommand implements CommandExecutor {
             PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
             if (playersData.getBusiness() != null) {
                 if (playersData.getBusiness().equals(playerData.getBusiness())) {
-                    players.sendMessage("§8[§6" + playerData.getBusiness() + "§8]§e " + player.getName() + "§8:§7 " + msg);
+                    players.sendMessage("§8[§6Business§8]§e " + player.getName() + "§8:§7 " + msg);
                 }
             }
         }

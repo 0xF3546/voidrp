@@ -2,6 +2,8 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import de.polo.metropiacity.utils.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.ItemManager;
@@ -17,6 +19,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -37,32 +40,56 @@ public class LumberjackCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (Main.getInstance().serverManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
-                playerData.setVariable("current_inventory", "holzfäller");
-                Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Holzfäller");
+                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Holzfäller", true, true);
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller") && playerData.getVariable("job") == null) {
-                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHolzfäller starten"));
+                    inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHolzfäller starten")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            Main.getInstance().commands.lumberjackCommand.startJob(player);
+                            player.closeInventory();
+                        }
+                    });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7."));
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     } else {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                            }
+                        });
                     }
                 }
                 if (playerData.getVariable("job") == null) {
-                    inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen"));
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
                 } else {
                     if (!playerData.getVariable("job").equals("Holzfäller")) {
-                        inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen"));
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     } else {
-                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * Main.getInstance().serverManager.getPayout("holz") + "$"));
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * Main.getInstance().serverManager.getPayout("holz") + "$")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                Main.getInstance().commands.lumberjackCommand.quitJob(player, false);
+                                player.closeInventory();
+                            }
+                        });
                     }
                 }
-                for (int i = 0; i < 27; i++) {
-                    if (inv.getItem(i) == null) {
-                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-                    }
-                }
-                player.openInventory(inv);
             } else {
                 player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Holzfällerei§7!");
             }

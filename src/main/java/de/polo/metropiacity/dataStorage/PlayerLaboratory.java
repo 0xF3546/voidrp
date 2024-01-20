@@ -70,7 +70,7 @@ public class PlayerLaboratory {
     }
 
     public void add(int amount) {
-        setJointAmount(jointAmount += amount);
+        setWeedAmount(weedAmount += amount);
     }
 
     public void remove(RoleplayItem item, int amount) {

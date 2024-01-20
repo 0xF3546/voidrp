@@ -66,6 +66,7 @@ public class FactionManager {
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));
             factionData.storage.setKevlar(locs.getInt("kevlar"));
+            factionData.storage.setNoble_joint(locs.getInt("noble_joint"));
             factionDataMap.put(locs.getString(2), factionData);
         }
 

@@ -151,7 +151,10 @@ public class LocationManager {
     }
 
     public Location getLocation(String name) {
-        LocationData locationData = locationDataMap.get(" " + name.toLowerCase());
+        LocationData locationData = locationDataMap.get(name.toLowerCase());
+        if (locationData == null) {
+            return null;
+        }
         World welt = Bukkit.getWorld(locationData.getWelt());
         return new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch());
     }

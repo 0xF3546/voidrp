@@ -4,6 +4,8 @@ import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
 import de.polo.metropiacity.utils.*;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -12,6 +14,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -116,28 +119,26 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         }
                         if (locationManager.getDistanceBetweenCoords(player, "gangwar_attack_" + msg.toString().replace(" ", "")) < 5) {
                             GangwarData gangwarData = gangwarDataMap.get(msg.toString());
-                            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §c" + gangwarData.getZone());
-                            inv.setItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", "Lädt..."));
-                            ItemMeta meta = inv.getItem(13).getItemMeta();
+                            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §c" + gangwarData.getZone(), true, true);
 
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM | HH:mm");
                             String date = gangwarData.getLastAttack().toLocalDateTime().format(formatter);
 
                             FactionData ownerData = factionManager.getFactionData(gangwarData.getOwner());
-                            meta.setLore(Arrays.asList("§8 ➥ §6Besitzer§8:§e " + ownerData.getFullname(), "§8 ➥ §6Letzter Angriff§8:§e " + date));
-                            inv.getItem(13).setItemMeta(meta);
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen",Arrays.asList("§8 ➥ §6Besitzer§8:§e " + ownerData.getFullname(), "§8 ➥ §6Letzter Angriff§8:§e " + date))) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
 
-                            inv.setItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren"));
-                            ItemMeta meta1 = inv.getItem(15).getItemMeta();
-                            meta1.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "zone"), PersistentDataType.STRING, gangwarData.getZone());
-                            inv.getItem(15).setItemMeta(meta1);
-                            for (int i = 0; i < 27; i++) {
-                                if (inv.getItem(i) == null) {
-                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0, "§8"));
                                 }
-                            }
-                            player.openInventory(inv);
-                            playerData.setVariable("current_inventory", "gangwar");
+                            });
+
+                            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+                                    startGangwar(player, gangwarData.getZone());
+                                    player.closeInventory();
+                                }
+                            });
                         }
                     } else {
                         player.sendMessage(Main.error + "Du bist in keienr Fraktion.");

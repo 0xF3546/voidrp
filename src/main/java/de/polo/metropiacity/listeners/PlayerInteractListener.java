@@ -7,6 +7,11 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.RegisteredBlock;
 import de.polo.metropiacity.utils.BlockManager;
+import de.polo.metropiacity.utils.GamePlay.GamePlay;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
+import de.polo.metropiacity.utils.enums.Drug;
+import de.polo.metropiacity.utils.enums.RoleplayItem;
 import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.playerUtils.Rubbellose;
 import de.polo.metropiacity.utils.Game.Housing;
@@ -20,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -100,99 +106,109 @@ public class PlayerInteractListener implements Listener {
                     RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (Objects.equals(block.getInfo(), "house")) {
                         HouseData houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
-                        Inventory inv = Bukkit.createInventory(player, 45, "");
-                        playerData.setVariable("current_inventory", "haus");
                         playerData.setIntVariable("current_house", houseData.getNumber());
+                        InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
                         if (houseData.getOwner() != null) {
                             OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
-                            inv.setItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName()));
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName())) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+
+                                }
+                            });
                             if (houseData.getOwner().equals(player.getUniqueId().toString())) {
-                                inv.setItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$"));
+                                inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        if (utils.housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
+                                            HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                                            playerData.addMoney((int) (houseData.getPrice() * 0.8));
+                                            player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
+                                            player.closeInventory();
+                                        }
+                                    }
+                                });
                             } else {
-                                inv.setItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht."));
+                                inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht.")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+
+                                    }
+                                });
                             }
                         } else {
-                            inv.setItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer"));
-                            inv.setItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$"));
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+
+                                }
+                            });
+                            inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+                                    player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
+                                    player.closeInventory();
+                                }
+                            });
                         }
-                        inv.setItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", "Lädt..."));
-                        ItemMeta meta = inv.getItem(29).getItemMeta();
-                        meta.setLore(Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()));
-                        inv.getItem(29).setItemMeta(meta);
+                        inventoryManager.setItem(new CustomItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()))) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                         if (playerData.getVariable("job") == null) {
-                            inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
+                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+
+                                }
+                            });
                         } else {
                             if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
+                                inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+
+                                    }
+                                });
                             } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
                                 if (commands.postboteCommand.canGive(houseData.getNumber())) {
-                                    inv.setItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben"));
+                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                            player.closeInventory();
+                                        }
+                                    });
                                 } else {
-                                    inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert"));
+                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+
+                                        }
+                                    });
                                 }
                             } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
                                 if (commands.muellmannCommand.canGet(houseData.getNumber())) {
-                                    inv.setItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln"));
+                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                            player.closeInventory();
+                                        }
+                                    });
                                 } else {
-                                    inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert"));
+                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+
+                                        }
+                                    });
                                 }
                             }
                         }
-                        for (int i = 0; i < 45; i++) {
-                            if (inv.getItem(i) == null) {
-                                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-                            }
-                        }
-                        player.openInventory(inv);
                     }
-                    /*for (HouseData houseData : Housing.houseDataMap.values()) {
-                        if (houseData.getNumber() == container.get(new NamespacedKey(Main.plugin, "value"), PersistentDataType.INTEGER)) {
-                            Inventory inv = Bukkit.createInventory(player, 45, "");
-                            playerData.setVariable("current_inventory", "haus");
-                            playerData.setIntVariable("current_house", houseData.getNumber());
-                            if (houseData.getOwner() != null) {
-                                OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
-                                inv.setItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName()));
-                                if (houseData.getOwner().equals(player.getUniqueId().toString())) {
-                                    inv.setItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$"));
-                                } else {
-                                    inv.setItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht."));
-                                }
-                            } else {
-                                inv.setItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer"));
-                                inv.setItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$"));
-                            }
-                            inv.setItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", "Lädt..."));
-                            ItemMeta meta = inv.getItem(29).getItemMeta();
-                            meta.setLore(Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()));
-                            inv.getItem(29).setItemMeta(meta);
-                            if (playerData.getVariable("job") == null) {
-                                inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
-                            } else {
-                                if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                    inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen"));
-                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
-                                    if (commands.postboteCommand.canGive(houseData.getNumber())) {
-                                        inv.setItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben"));
-                                    } else {
-                                        inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert"));
-                                    }
-                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                    if (commands.muellmannCommand.canGet(houseData.getNumber())) {
-                                        inv.setItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln"));
-                                    } else {
-                                        inv.setItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert"));
-                                    }
-                                }
-                            }
-                            for (int i = 0; i < 45; i++) {
-                                if (inv.getItem(i) == null) {
-                                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-                                }
-                            }
-                            player.openInventory(inv);
-                        }
-                    }*/
                 }
             }
 
@@ -214,6 +230,26 @@ public class PlayerInteractListener implements Listener {
                 playerManager.addExp(player, Main.random(50, 200));
             } else if (event.getItem().getItemMeta().getDisplayName().equals("§6§lCase")) {
                 //todo
+            } else if (event.getItem().getItemMeta().getDisplayName().equals(RoleplayItem.JOINT.getDisplayName())) {
+                InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, RoleplayItem.BOX_WITH_JOINTS.getDisplayName(), "§8 ➥ §aVerpacke 3 Joints in einer Kiste.")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) < 3) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Joints.");
+                            return;
+                        }
+                        ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 3);
+                        ItemManager.addCustomItem(player, RoleplayItem.BOX_WITH_JOINTS, 1);
+                        player.sendMessage("§7Du hast eine Kiste hergestellt.");
+                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " stellt eine Kiste mit Joints her");
+                        player.closeInventory();
+                    }
+                });
+            } else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.COCAINE.getItem().getDisplayName())) {
+                GamePlay.useDrug(player, Drug.COCAINE);
+            }else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.JOINT.getItem().getDisplayName())) {
+                GamePlay.useDrug(player, Drug.JOINT);
             }
         }
     }

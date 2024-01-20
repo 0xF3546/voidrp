@@ -3,20 +3,17 @@ package de.polo.metropiacity.utils;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.database.MySQL;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.sql.*;
+import java.util.*;
 
 public class BusinessManager {
-    public static final Map<String, BusinessData> businessDataMap = new HashMap<>();
     private final PlayerManager playerManager;
+    private final List<BusinessData> businesses = new ArrayList<>();
     public BusinessManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
@@ -30,23 +27,15 @@ public class BusinessManager {
         ResultSet locs = statement.executeQuery("SELECT * FROM business");
         while (locs.next()) {
             BusinessData businessData = new BusinessData();
-            businessData.setId(locs.getInt(1));
-            businessData.setName(locs.getString(2));
-            businessData.setFullname(locs.getString(3));
-            businessData.setBank(locs.getInt(4));
+            businessData.setId(locs.getInt("id"));
+            businessData.setOwner(UUID.fromString(locs.getString("owner")));
+            businessData.setName(locs.getString("name"));
+            businessData.setFullname(locs.getString("fullname"));
+            businessData.setBank(locs.getInt("bank"));
             businessData.setMaxMember(25);
-            businessDataMap.put(locs.getString(2), businessData);
+            businessData.setActive(locs.getBoolean("activated"));
+            businesses.add(businessData);
         }
-    }
-
-    public void setPlayerInBusiness(Player player, String frak, Integer rang) throws SQLException {
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setBusiness(frak);
-        playerData.setBusiness_grade(rang);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `business` = '" + frak + "', `business_grade` = " + rang + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-        boolean found = false;
     }
 
     public void removePlayerFromBusiness(Player player) throws SQLException {
@@ -56,6 +45,13 @@ public class BusinessManager {
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `business` = NULL, `business_grade` = 0 WHERE `uuid` = '" + player.getUniqueId() + "'");
+    }
+
+    public BusinessData getBusinessData(int id) {
+        for (BusinessData businessData : businesses) {
+            if (businessData.getId() == id) return businessData;
+        }
+        return null;
     }
 
     public static void removeOfflinePlayerFromBusiness(String playername) throws SQLException {
@@ -77,7 +73,7 @@ public class BusinessManager {
         }
         return val;
     }
-    public static int getMemberCount(String business) {
+    public static int getMemberCount(int business) {
         int count = 0;
         for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
             if (dbPlayerData.getBusiness().equals(business)) {
@@ -86,4 +82,27 @@ public class BusinessManager {
         }
         return count;
     }
+    @SneakyThrows
+    public int createBusiness(BusinessData businessData) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO business (owner, activated) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, businessData.getOwner().toString());
+        statement.setBoolean(2, businessData.isActive());
+        int affectedRows = statement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating business failed, no rows affected.");
+        }
+
+        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                businessData.setId(generatedKeys.getInt(1));
+                businesses.add(businessData);
+                return generatedKeys.getInt(1);
+            } else {
+                throw new SQLException("Creating business failed, no ID obtained.");
+            }
+        }
+    }
+
 }

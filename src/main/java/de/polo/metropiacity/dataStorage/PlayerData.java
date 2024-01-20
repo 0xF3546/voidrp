@@ -3,6 +3,7 @@ package de.polo.metropiacity.dataStorage;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -65,7 +68,7 @@ public class PlayerData {
     private String job;
     private int hours;
     private int minutes;
-    private String business;
+    private Integer business;
     private int business_grade;
     private int warns;
     private Integer forumID;
@@ -421,11 +424,11 @@ public class PlayerData {
         this.minutes = minutes;
     }
 
-    public String getBusiness() {
+    public Integer getBusiness() {
         return business;
     }
 
-    public void setBusiness(String business) {
+    public void setBusiness(Integer business) {
         this.business = business;
     }
 
@@ -563,6 +566,63 @@ public class PlayerData {
 
     public void setLaboratory(PlayerLaboratory laboratory) {
         this.laboratory = laboratory;
+    }
+
+    @SneakyThrows
+    public void addMoney(int amount) {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        setBargeld(getBargeld() + amount);
+        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        }
+    }
+
+    @SneakyThrows
+    public void removeMoney(int amount, String reason) {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        setBargeld(getBargeld() - amount);
+        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        }
+    }
+
+    @SneakyThrows
+    public void addBankMoney(int amount, String reason)  {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        setBank(getBank() + amount);
+        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bank` = " + getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
+        }
+    }
+
+    @SneakyThrows
+    public void removeBankMoney(int amount, String reason) {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        setBank(getBank() - amount);
+        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bank` = " + getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
+        }
+    }
+
+    @SneakyThrows
+    public void save() {
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ? WHERE id = ?");
+        statement.setInt(1, getBusiness());
+        statement.setInt(2, getId());
     }
 
     public class AddonXP {

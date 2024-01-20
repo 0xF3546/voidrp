@@ -121,8 +121,10 @@ public class ItemManager {
         ItemStack[] contents = player.getInventory().getContents();
         int count = 0;
         for (ItemStack itemStack : contents) {
-            if (itemStack != null && itemStack.getType() == item.getMaterial() && itemStack.getItemMeta().getDisplayName() == item.getDisplayName()) {
-                count += itemStack.getAmount();
+            if (itemStack != null) {
+                if (itemStack.getType() == item.getMaterial() && itemStack.getItemMeta().getDisplayName().equals(item.getDisplayName())) {
+                    count += itemStack.getAmount();
+                }
             }
         }
         return count;

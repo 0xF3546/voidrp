@@ -3,6 +3,7 @@ package de.polo.metropiacity.dataStorage;
 import de.polo.metropiacity.Main;
 import lombok.SneakyThrows;
 
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class FactionData {
@@ -161,12 +162,33 @@ public class FactionData {
         this.jointsMade = jointsMade;
     }
 
+    @SneakyThrows
+    public void addBankMoney(Integer amount, String reason) {
+        setBank(getBank() + amount);
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('einzahlung', '" + getName() + "', " + amount + ", '" + reason + "', true)");
+        statement.execute("UPDATE `factions` SET `bank` = " + getBank() + " WHERE `name` = '" + getName() + "'");
+    }
+    @SneakyThrows
+    public boolean removeFactionMoney(Integer amount, String reason)  {
+        boolean returnval = false;
+        if (getBank() >= amount) {
+            setBank(getBank() - amount);
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('auszahlung', '" + getName() + "', " + amount + ", '" + reason + "', false)");
+            statement.execute("UPDATE `factions` SET `bank` = " + getBank() + " WHERE `name` = '" + getName() + "'");
+            returnval = true;
+        }
+        return returnval;
+    }
+
     public class Storage {
         private int weed;
         private int joint;
         private int cocaine;
         private int kevlar;
         private final FactionData factionData;
+        private int noble_joint;
         public Storage(FactionData factionData) {
             this.factionData = factionData;
         }
@@ -206,7 +228,15 @@ public class FactionData {
         @SneakyThrows
         public void save() {
             Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("UPDATE faction_storage SET weed = " + getWeed() + ", joint = " + getJoint() + ", cocaine = " + getCocaine() + ", kevlar = " + getKevlar() + " WHERE factionId = " + factionData.getId());
+            statement.execute("UPDATE faction_storage SET weed = " + getWeed() + ", joint = " + getJoint() + ", cocaine = " + getCocaine() + ", kevlar = " + getKevlar() + ", noble_joint = " + getNoble_joint() + " WHERE factionId = " + factionData.getId());
+        }
+
+        public int getNoble_joint() {
+            return noble_joint;
+        }
+
+        public void setNoble_joint(int noble_joint) {
+            this.noble_joint = noble_joint;
         }
     }
 }

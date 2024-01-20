@@ -88,8 +88,8 @@ public final class Main extends JavaPlugin {
         weapons = new Weapons(utils);
         blockManager = new BlockManager(mySQL);
         isOnline = true;
-        gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager);
-        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay);
+        gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);
+        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager);
 
         new InventoryApiRegister(this);
 
@@ -361,7 +361,8 @@ public final class Main extends JavaPlugin {
         private SupportManager supportManager;
         private Vehicles vehicles;
         private GamePlay gamePlay;
-        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay) {
+        private BusinessManager businessManager;
+        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager) {
             this.main = main;
             this.playerManager = playerManager;
             this.adminManager = adminManager;
@@ -369,6 +370,7 @@ public final class Main extends JavaPlugin {
             this.supportManager = supportManager;
             this.vehicles = vehicles;
             this.gamePlay = gamePlay;
+            this.businessManager = businessManager;
             Init();
         }
         public SetTeamCommand setTeamCommand;
@@ -496,6 +498,9 @@ public final class Main extends JavaPlugin {
         //public GetSkinCommand getSkinCommand;
         public ApothekeCommand apothekeCommand;
         public ApothekenCommand apothekenCommand;
+        public PlantCommand plantCommand;
+        public PlantagenCommand plantagenCommand;
+        public BusinessCommand businessCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -587,7 +592,7 @@ public final class Main extends JavaPlugin {
             contractsCommand = new ContractsCommand(playerManager, factionManager);
             contractCommand = new ContractCommand(playerManager, factionManager);
             nachrichtenCommand = new NachrichtenCommand(playerManager, locationManager);
-            businessChatCommand = new BusinessChatCommand(playerManager);
+            businessChatCommand = new BusinessChatCommand(playerManager, businessManager);
             leadBusinessCommand = new LeadBusinessCommand(playerManager, businessManager);
             frakInfoCommand = new FrakInfoCommand(factionManager);
             beziehungCommand = new BeziehungCommand(playerManager, utils);
@@ -601,10 +606,10 @@ public final class Main extends JavaPlugin {
             leaderChatCommand = new LeaderChatCommand(playerManager, utils);
             frakStatsCommand = new FrakStatsCommand(playerManager, factionManager, utils);
             checkInvCommand = new CheckInvCommand(playerManager);
-            bizInviteCommand = new BizInviteCommand(playerManager, utils);
+            bizInviteCommand = new BizInviteCommand(playerManager, utils, businessManager);
             shopRobCommand = new ShopRobCommand(playerManager, locationManager, factionManager);
             respawnCommand = new RespawnCommand(playerManager, adminManager, utils, locationManager);
-            dealerCommand = new DealerCommand();
+            dealerCommand = new DealerCommand(playerManager, gamePlay, locationManager, factionManager);
             farming = new Farming(playerManager, locationManager, utils);
             getHeadCommand = new GetHeadCommand();
             factionsCommand = new FactionsCommand(playerManager, factionManager);
@@ -622,6 +627,9 @@ public final class Main extends JavaPlugin {
             laboratory = new Laboratory(playerManager, factionManager, locationManager);
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
+            plantCommand = new PlantCommand(playerManager, locationManager, gamePlay);
+            plantagenCommand = new PlantagenCommand(gamePlay, utils, factionManager, locationManager);
+            businessCommand = new BusinessCommand(playerManager, businessManager);
 
             main.registerCommands();
             main.registerListener();

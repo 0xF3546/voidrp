@@ -2,6 +2,8 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import de.polo.metropiacity.utils.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.*;
@@ -11,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.sql.SQLException;
@@ -33,32 +36,57 @@ public class PostboteCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "postbote") <= 5) {
-                playerData.setVariable("current_inventory", "postbote");
-                Inventory inv = Bukkit.createInventory(player, 27, "§8 » §ePostbote");
+                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §ePostbote", true, true);
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "postbote") && playerData.getVariable("job") == null) {
-                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aPostbote starten"));
+                    inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aPostbote starten")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            startTransport(player);
+                            player.closeInventory();
+                        }
+                    });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "postbote")) + "§7."));
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "postbote")) + "§7.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     } else {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     }
                 }
                 if (playerData.getVariable("job") == null) {
-                    inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen"));
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
                 } else {
                     if (!playerData.getVariable("job").equals("Postbote")) {
-                        inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen"));
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     } else {
-                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Postbote beenden"));
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Postbote beenden")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                quitJob(player, false);
+                                player.closeInventory();
+                            }
+                        });
                     }
                 }
-                for (int i = 0; i < 27; i++) {
-                    if (inv.getItem(i) == null) {
-                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-                    }
-                }
-                player.openInventory(inv);
             } else {
                 player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe des Nachrichtengebäudes§7!");
             }

@@ -3,6 +3,8 @@ package de.polo.metropiacity.commands;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.*;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.sql.SQLException;
@@ -30,24 +33,41 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
         Player player = (Player) sender;
         if (locationManager.getDistanceBetweenCoords(player, "nachrichten") < 5) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            playerData.setVariable("current_inventory", "news");
-            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §6Nachrichtengebäude");
-            inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2Werbung schalten", "§8 ➥ §7" + ServerManager.getPayout("werbung") + "$/Zeichen"));
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Nachrichtengebäude", true, true);
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2Werbung schalten", "§8 ➥ §7" + ServerManager.getPayout("werbung") + "$/Zeichen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerData.setVariable("chatblock", "werbung");
+                    player.sendMessage("§8[§2Werbung§8]§7 Gib nun deine Nachricht in den Chat ein.");
+                    player.closeInventory();
+                }
+            });
             if (playerData.getFaction().equals("News")) {
                 if (playerData.getFactionGrade() >= 2) {
-                    inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§6Nachricht schalten"));
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§6Nachricht schalten")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            playerData.setVariable("chatblock", "news");
+                            player.sendMessage("§8[§6News§8]§7 Gib nun deine Nachricht in den Chat ein.");
+                            player.closeInventory();
+                        }
+                    });
                 } else {
-                    inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§6§mNachricht schalten", "§8 ➥ §7Du musst mindestens Rang 2 sein."));
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§6§mNachricht schalten", "§8 ➥ §7Du musst mindestens Rang 2 sein.")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
                 }
             } else {
-                inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§6§mNachricht schalten", "§8 ➥ §7Du bist kein Mitglied des Nachrichtendienstes"));
+                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§6§mNachricht schalten", "§8 ➥ §7Du bist kein Mitglied des Nachrichtendienstes")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+
+                    }
+                });
             }
-            for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-                }
-            }
-            player.openInventory(inv);
         } else {
             player.sendMessage(Main.error + "Du bist nicht am Nachrichtengebäude.");
         }

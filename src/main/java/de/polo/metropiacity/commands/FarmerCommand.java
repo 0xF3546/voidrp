@@ -2,6 +2,8 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import de.polo.metropiacity.utils.playerUtils.SoundManager;
 import de.polo.metropiacity.utils.*;
@@ -13,6 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -38,35 +41,76 @@ public class FarmerCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "farmer") <= 5) {
-                playerData.setVariable("current_inventory", "farmer");
-                Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eFarmer");
+                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eFarmer", true, true);
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "farmer") && playerData.getVariable("job") == null) {
-                    inv.setItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aFarmer starten"));
-                    inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten"));
+                    inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aFarmer starten")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            startJob(player);
+                            player.closeInventory();
+                        }
+                    });
+                    inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            startTransport(player);
+                            player.closeInventory();
+                        }
+                    });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7."));
-                        inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten"));
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
+                        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     } else {
-                        inv.setItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
-                        inv.setItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen."));
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
+                        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     }
                 }
                 if (playerData.getVariable("job") != "farmer" && playerData.getVariable("job") != "weizenlieferant") {
-                    inv.setItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen"));
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
                 } else {
                     if (playerData.getVariable("job") == "farmer") {
-                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen") + "$"));
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen") + "$")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                quitJob(player);
+                                player.closeInventory();
+                            }
+                        });
                     } else {
-                        inv.setItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Weizenlieferant beenden"));
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Weizenlieferant beenden")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     }
                 }
-                for (int i = 0; i < 27; i++) {
-                    if (inv.getItem(i) == null) {
-                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-                    }
-                }
-                player.openInventory(inv);
             } else {
                 player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Farm§7!");
             }

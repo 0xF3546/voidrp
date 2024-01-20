@@ -53,7 +53,7 @@ public class ShopRobCommand implements CommandExecutor {
         }
         player.sendMessage("§8[§cShoprob§8]§7 Du fängst an den Shop auszurauben, warte 60 Sekunden!");
         player.sendMessage("§b   Info:§f Du bekommst dann jede Minute Geld, bis der Shop leer ist.");
-        Main.getInstance().getCooldownManager().setStringCooldown("shop_" + shopId, "shoprob", 3600);
+        Main.getInstance().getCooldownManager().setGlobalCooldown("shop_" + shopId, "shoprob", 3600);
         ServerManager.setVariable("shoprob", "isRob");
         for (ShopData shopData : ServerManager.shopDataMap.values()) {
             if (shopData.getId() == shopId) {

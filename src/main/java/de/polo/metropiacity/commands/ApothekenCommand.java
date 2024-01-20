@@ -35,11 +35,9 @@ public class ApothekenCommand implements CommandExecutor {
                 player.sendMessage("§8 ➥ §eApotheke-" + apotheke.getId() + "§8 | §9Staat");
             } else {
                 FactionData factionData = factionManager.getFactionData(apotheke.getOwner());
-                LocalDateTime now = LocalDateTime.now();
-                Duration duration = Duration.between(apotheke.getLastAttack(), now);
-                long minutesDifference = duration.toMinutes();
                 String attackable = "";
-                if (minutesDifference < 60) {
+                long minutesDifference = gamePlay.apotheke.getMinuteDifference(apotheke);
+                if (minutesDifference < 60 && minutesDifference >= 0) {
                     attackable = "§8 - §c" + minutesDifference + "min";
                 }
                 if (apotheke.isStaat()) {

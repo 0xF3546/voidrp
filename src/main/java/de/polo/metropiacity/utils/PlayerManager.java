@@ -9,6 +9,7 @@ import de.polo.metropiacity.utils.GamePlay.ApothekeFunctions;
 import de.polo.metropiacity.utils.InventoryManager.CustomItem;
 import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.enums.EXPType;
+import de.polo.metropiacity.utils.events.HourTickEvent;
 import de.polo.metropiacity.utils.events.MinuteTickEvent;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import de.polo.metropiacity.utils.playerUtils.ChatUtils;
@@ -142,7 +143,6 @@ public class PlayerManager implements Listener, ServerTiming {
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
                 if (!result.getBoolean("jugendschutz")) {
-                    playerData.setVariable("current_inventory", "jugendschutz");
                     playerData.setVariable("jugendschutz", "muss");
                     Main.waitSeconds(1, () -> {
                         InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
@@ -200,7 +200,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setRelationShip(map);
 
                 playerData.setWarns(result.getInt("warns"));
-                playerData.setBusiness(result.getString("business"));
+                playerData.setBusiness(result.getInt("business"));
                 playerData.setBusiness_grade(result.getInt("business_grade"));
                 playerData.setBloodType(result.getString("bloodtype"));
                 playerData.setForumID(result.getInt("forumID"));
@@ -236,6 +236,13 @@ public class PlayerManager implements Listener, ServerTiming {
                     if (date.isBefore(LocalDateTime.now())) {
                         player.sendMessage(Main.prefix + "Dein " + playerData.getRang() + " ist ausgelaufen.");
                         statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + player.getUniqueId() + "'");
+                        if (playerData.getBusiness() != null) {
+                            BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
+                            if (business.getOwner().equals(player.getUniqueId())) {
+                                business.setActive(false);
+                                business.save();
+                            }
+                        }
                         setRang(uuid, "Spieler");
                     }
                 }
@@ -519,6 +526,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     Main.getInstance().commands.laboratory.pushTick();
                 }
                 if (currentMinute == 0) {
+                    Bukkit.getPluginManager().callEvent(new HourTickEvent(Main.getInstance().utils.getCurrentHour()));
                     serverTiming.PushHourTick();
                     for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
                         double plus = 0;

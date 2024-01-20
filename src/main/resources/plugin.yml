@@ -183,3 +183,7 @@ commands:
   labor:
   apotheke:
   apotheken:
+  plant:
+  plants:
+    aliases: plantagen
+  business:

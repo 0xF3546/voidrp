@@ -35,7 +35,7 @@ public class CooldownManager {
 
     private final Map<String, Long> stringCooldowns = new HashMap<>();
 
-    public boolean isOnStringCooldown(String string, String key) {
+    public boolean isOnStringCooldown(String string, Object key) {
         if (stringCooldowns.containsKey(getStringCooldownKey(string, key))) {
             long cooldownTime = stringCooldowns.get(getStringCooldownKey(string, key));
             return cooldownTime - System.currentTimeMillis() > 0;
@@ -43,11 +43,11 @@ public class CooldownManager {
         return false;
     }
 
-    public void setStringCooldown(String player, String key, int seconds) {
+    public void setGlobalCooldown(String player, Object key, int seconds) {
         stringCooldowns.put(getStringCooldownKey(player, key), System.currentTimeMillis() + (seconds * 1000L));
     }
 
-    public int getRemainingStringTime(String player, String key) {
+    public int getRemainingStringTime(String player, Object key) {
         if (isOnStringCooldown(player, key)) {
             long cooldownTime = stringCooldowns.get(getStringCooldownKey(player, key));
             int remainingTime = (int) Math.ceil((cooldownTime - System.currentTimeMillis()) / 1000.0);
@@ -56,7 +56,7 @@ public class CooldownManager {
         return 0;
     }
 
-    private String getStringCooldownKey(String player, String key) {
+    private String getStringCooldownKey(String player, Object key) {
         return player + ":" + key;
     }
 }

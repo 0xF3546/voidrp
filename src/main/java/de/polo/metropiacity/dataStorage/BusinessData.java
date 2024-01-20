@@ -1,11 +1,20 @@
 package de.polo.metropiacity.dataStorage;
 
+import de.polo.metropiacity.Main;
+import lombok.SneakyThrows;
+
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.UUID;
+
 public class BusinessData {
     private int id;
     private String name;
     private String fullname;
     private int bank;
     private int maxMember;
+    private UUID owner;
+    private boolean active;
 
     public int getId() {
         return id;
@@ -45,5 +54,30 @@ public class BusinessData {
 
     public void setMaxMember(int maxMember) {
         this.maxMember = maxMember;
+    }
+
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    @SneakyThrows
+    public void save() {
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE business SET owner = ?, activated = ? WHERE id = ?");
+        statement.setString(1, getOwner().toString());
+        statement.setBoolean(2, isActive());
+        statement.setInt(3, getId());
+        statement.executeUpdate();
     }
 }

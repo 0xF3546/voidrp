@@ -20,7 +20,7 @@ import java.util.*;
 
 public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
-    public static final HashMap<String, String> current = new HashMap<>();
+    public static final HashMap<String, Object> current = new HashMap<>();
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
@@ -31,7 +31,7 @@ public class VertragUtil {
         this.adminManager = adminManager;
     }
 
-    public static boolean setVertrag(Player player, Player target, String type, String vertrag)  {
+    public static boolean setVertrag(Player player, Player target, String type, Object vertrag)  {
         if (current.get(target.getUniqueId().toString()) == null) {
             current.remove(target.getUniqueId().toString(), vertrag);
             vertrag_type.put(target.getUniqueId().toString(), type);
@@ -69,25 +69,26 @@ public class VertragUtil {
     }
 
     public void acceptVertrag(Player player) throws SQLException {
-        String curr = current.get(player.getUniqueId().toString());
+        Object curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
             Player targetplayer = null;
             try {
-                targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
+                targetplayer = Bukkit.getPlayer(UUID.fromString(curr.toString()));
             } catch (IllegalArgumentException e) {
             }
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
-                    factionManager.setPlayerInFrak(player, curr, 0);
-                    factionManager.sendMessageToFaction(curr, player.getName() + " ist der Fraktion beigetreten");
+                    factionManager.setPlayerInFrak(player, curr.toString(), 0);
+                    factionManager.sendMessageToFaction(curr.toString(), player.getName() + " ist der Fraktion beigetreten");
                     adminManager.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
                     break;
                 case "business_invite":
-                    Main.getInstance().businessManager.setPlayerInBusiness(player, curr, 0);
+                    playerData.setBusiness(Integer.parseInt(curr.toString()));
+                    playerData.save();
                     break;
                 case "rental":
-                    String[] args = curr.split("_");
+                    String[] args = curr.toString().split("_");
                     int haus = Integer.parseInt(args[0]);
                     int preis = Integer.parseInt(args[1]);
                     HouseData houseData = Housing.houseDataMap.get(haus);
@@ -98,7 +99,7 @@ public class VertragUtil {
                     player.sendMessage("§8[§6Haus§8]§a Du mietest nun in Haus " + houseData.getNumber() + " für " + preis + "$/PayDay.");
                     break;
                 case "phonecall":
-                    PhoneUtils.acceptCall(player, curr);
+                    PhoneUtils.acceptCall(player, curr.toString());
                     break;
                 case "beziehung":
                     if (targetplayer.isOnline()) {
@@ -174,7 +175,7 @@ public class VertragUtil {
                     }
                     break;
                 case "streetwar":
-                    Main.getInstance().streetwar.acceptStreetwar(player, curr);
+                    Main.getInstance().streetwar.acceptStreetwar(player, curr.toString());
                     break;
             }
             deleteVertrag(player);
@@ -184,7 +185,7 @@ public class VertragUtil {
     }
 
     public void denyVertrag(Player player) {
-        String curr = current.get(player.getUniqueId().toString());
+        String curr = current.get(player.getUniqueId().toString()).toString();
         if (curr != null) {
             Player targetplayer = null;
             try {

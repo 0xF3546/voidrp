@@ -10,7 +10,8 @@ public enum RoleplayItem {
     JOINT("§2Joint", Material.BAMBOO),
     MARIHUANA("§aMarihuana", Material.KELP),
     BOX_WITH_JOINTS("§7Kiste mit Joints", Material.CHEST),
-    COCAINE("§fKokain", Material.SUGAR);
+    COCAINE("§fKokain", Material.SUGAR),
+    NOBLE_JOINT("§2Veredelter Joint", Material.BAMBOO);
 
     private final String displayName;
     private final Material material;

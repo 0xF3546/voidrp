@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class ServerManager {
     public static final boolean canDoJobsBoolean = true;
@@ -86,13 +87,13 @@ public class ServerManager {
         ResultSet locs = statement.executeQuery("SELECT * FROM players");
         while (locs.next()) {
             DBPlayerData dbPlayerData = new DBPlayerData();
-            dbPlayerData.setId(locs.getInt(1));
-            dbPlayerData.setUuid(locs.getString(2));
-            dbPlayerData.setPlayer_rank(locs.getString(6));
-            dbPlayerData.setFaction(locs.getString(19));
-            dbPlayerData.setFaction_grade(locs.getInt(20));
-            dbPlayerData.setBusiness(locs.getString(41));
-            dbPlayerData.setBusiness_grade(locs.getInt(42));
+            dbPlayerData.setId(locs.getInt("id"));
+            dbPlayerData.setUuid(locs.getString("uuid"));
+            dbPlayerData.setPlayer_rank(locs.getString("player_rank"));
+            dbPlayerData.setFaction(locs.getString("faction"));
+            dbPlayerData.setFaction_grade(locs.getInt("faction_grade"));
+            dbPlayerData.setBusiness(locs.getInt("business"));
+            dbPlayerData.setBusiness_grade(locs.getInt("business_grade"));
             dbPlayerDataMap.put(locs.getString(2), dbPlayerData);
             if (locs.getString(19) != null && !locs.getString(19).equals("Zivilist")) {
                 FactionPlayerData factionPlayerData = new FactionPlayerData();
