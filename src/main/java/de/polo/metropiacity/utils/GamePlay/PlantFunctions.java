@@ -87,7 +87,7 @@ public class PlantFunctions implements Listener {
         Plant plant = getById(id);
         if (plant == null) return;
         FactionData factionData = factionManager.getFactionData(plant.getOwner());
-        String owner = "§" + factionData.getPrimaryColor() + factionData.getName();
+        String owner = "§" + factionData.getPrimaryColor() + factionData.getFullname();
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Plantage (" + plant.getMultiplier() + "x)", true, true);
         if (canAttack(plant)) {

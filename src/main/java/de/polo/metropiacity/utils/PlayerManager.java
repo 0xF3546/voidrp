@@ -42,7 +42,6 @@ public class PlayerManager implements Listener, ServerTiming {
     private final HashMap<String, Boolean> onPlayer = new HashMap<>();
     private final HashMap<String, Boolean> playerMovement = new HashMap<>();
     public final HashMap<String, Integer> player_rent = new HashMap<>();
-    private ServerTiming serverTiming;
 
     private final MySQL mySQL;
 
@@ -527,7 +526,6 @@ public class PlayerManager implements Listener, ServerTiming {
                 }
                 if (currentMinute == 0) {
                     Bukkit.getPluginManager().callEvent(new HourTickEvent(Main.getInstance().utils.getCurrentHour()));
-                    serverTiming.PushHourTick();
                     for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
                         double plus = 0;
                         double zinsen = Math.round(factionData.getBank() * 0.0075);

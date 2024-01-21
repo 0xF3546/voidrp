@@ -80,7 +80,7 @@ public class ApothekeFunctions implements Listener {
         String owner = "§9Staat";
         if (!apotheke.getOwner().equalsIgnoreCase("staat")) {
             FactionData factionData = factionManager.getFactionData(apotheke.getOwner());
-            owner = "§" + factionData.getPrimaryColor() + factionData.getName();
+            owner = "§" + factionData.getPrimaryColor() + factionData.getFullname();
         }
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cApotheke (" + owner + "§c)", true, true);
@@ -148,28 +148,31 @@ public class ApothekeFunctions implements Listener {
                 rob.remove(apotheke);
             } else {
                 rob.replace(apotheke, ++currentTime);
-                utils.sendActionBar(apotheke.getAttacker(), "§cNoch " + (10 - currentTime + 1) + " Minuten!");
+                int remaining = (10 - currentTime + 1);
+                factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Die Angreifer haben noch " + remaining + " Minuten bis der Apotheker aufgibt!");
+                factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Noch " + remaining + " Minuten bis der Apotheker aufgibt!");
             }
         }
-        if (LocalDateTime.now().getHour() < 16 && LocalDateTime.now().getHour() > 22) return;
-        for (FactionData factionData : factionManager.getFactions()) {
-            int plus = 0;
-            for (Apotheke apotheke : getApotheken()) {
-                if (apotheke.getOwner().equalsIgnoreCase(factionData.getName())) {
-                    if (apotheke.getLastAttack().getMinute() == event.getMinute()) {
-                        if (apotheke.isStaat()) plus += ServerManager.getPayout("apotheke_besetzt_staat");
-                        else plus += ServerManager.getPayout("apotheke_besetzt_normal");
+        if ((LocalDateTime.now().getHour() >= 16 && LocalDateTime.now().getHour() <= 22)) {
+            for (FactionData factionData : factionManager.getFactions()) {
+                int plus = 0;
+                for (Apotheke apotheke : getApotheken()) {
+                    if (apotheke.getOwner().equalsIgnoreCase(factionData.getName())) {
+                        if (apotheke.getLastAttack().getMinute() == event.getMinute()) {
+                            if (apotheke.isStaat()) plus += ServerManager.getPayout("apotheke_besetzt_staat");
+                            else plus += ServerManager.getPayout("apotheke_besetzt_normal");
+                        }
                     }
                 }
-            }
-            factionData.setJointsMade(plus);
-            if (plus >= 1) {
-                for (PlayerData playerData : playerManager.getPlayers()) {
-                    if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
-                        Player player = Bukkit.getPlayer(playerData.getUuid());
-                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
-                        factionData.storage.setJoint(factionData.storage.getJoint() + plus);
-                        factionData.storage.save();
+                factionData.setJointsMade(plus);
+                if (plus >= 1) {
+                    for (PlayerData playerData : playerManager.getPlayers()) {
+                        if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                            Player player = Bukkit.getPlayer(playerData.getUuid());
+                            player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
+                            factionData.storage.setJoint(factionData.storage.getJoint() + plus);
+                            factionData.storage.save();
+                        }
                     }
                 }
             }

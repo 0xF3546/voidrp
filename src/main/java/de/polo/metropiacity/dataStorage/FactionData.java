@@ -3,8 +3,10 @@ package de.polo.metropiacity.dataStorage;
 import de.polo.metropiacity.Main;
 import lombok.SneakyThrows;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 
 public class FactionData {
     private int id;
@@ -25,6 +27,7 @@ public class FactionData {
     private boolean hasLaboratory;
     private int jointsMade;
     public Storage storage = new Storage(this);
+    public  Upgrades upgrades = new Upgrades(this);
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -189,6 +192,8 @@ public class FactionData {
         private int kevlar;
         private final FactionData factionData;
         private int noble_joint;
+        private int proceedingAmount;
+        private LocalDateTime proceedingStarted;
         public Storage(FactionData factionData) {
             this.factionData = factionData;
         }
@@ -237,6 +242,99 @@ public class FactionData {
 
         public void setNoble_joint(int noble_joint) {
             this.noble_joint = noble_joint;
+        }
+        public boolean proceedWeed(int amount) {
+            if (getProceedingAmount() != 0) {
+                return false;
+            }
+            setProceedingAmount(amount);
+            setProceedingStarted(LocalDateTime.now());
+            return true;
+        }
+        public int getProceedingAmount() {
+            return proceedingAmount;
+        }
+
+        public void setProceedingAmount(int proceedingAmount) {
+            this.proceedingAmount = proceedingAmount;
+        }
+
+        public LocalDateTime getProceedingStarted() {
+            return proceedingStarted;
+        }
+
+        public void setProceedingStarted(LocalDateTime proceedingStarted) {
+            this.proceedingStarted = proceedingStarted;
+        }
+    }
+
+    public class Upgrades {
+        private final FactionData factionData;
+        public Upgrades(FactionData factionData) {
+            this.factionData = factionData;
+        }
+        private int drugEarningLevel;
+        private int taxLevel;
+        private int weaponLevel;
+        private float drugEarning;
+        private int tax;
+        private float weapon;
+
+        public float getDrugEarning() {
+            return drugEarning;
+        }
+
+        public void setDrugEarning(float drugEarning) {
+            this.drugEarning = drugEarning;
+        }
+
+        public int getTax() {
+            return tax;
+        }
+
+        public void setTax(int tax) {
+            this.tax = tax;
+        }
+
+        public float getWeapon() {
+            return weapon;
+        }
+
+        public void setWeapon(float weapon) {
+            this.weapon = weapon;
+        }
+
+        @SneakyThrows
+        public void save() {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE faction_upgrades SET drug_earning = " + getDrugEarningLevel() + ", tax = " + getTaxLevel() + ", weapon = " + getWeaponLevel() + " WHERE factionId = " + factionData.getId());
+            setDrugEarning(getDrugEarningLevel() * 0.1f);
+            setTax(10000000 + (getTaxLevel() * 2000000));
+            setWeapon(getWeaponLevel() * 2.5f);
+        }
+
+        public int getDrugEarningLevel() {
+            return drugEarningLevel;
+        }
+
+        public void setDrugEarningLevel(int drugEarningLevel) {
+            this.drugEarningLevel = drugEarningLevel;
+        }
+
+        public int getTaxLevel() {
+            return taxLevel;
+        }
+
+        public void setTaxLevel(int taxLevel) {
+            this.taxLevel = taxLevel;
+        }
+
+        public int getWeaponLevel() {
+            return weaponLevel;
+        }
+
+        public void setWeaponLevel(int weaponLevel) {
+            this.weaponLevel = weaponLevel;
         }
     }
 }

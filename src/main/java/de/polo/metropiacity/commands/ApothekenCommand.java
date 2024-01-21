@@ -41,9 +41,9 @@ public class ApothekenCommand implements CommandExecutor {
                     attackable = "§8 - §c" + minutesDifference + "min";
                 }
                 if (apotheke.isStaat()) {
-                    player.sendMessage("§8 ➥ §eApotheke-" + apotheke.getId() + "§8 | §" + factionData.getPrimaryColor() + factionData.getName() + " §8[§9Staatsschutz§8]" + attackable);
+                    player.sendMessage("§8 ➥ §eApotheke-" + apotheke.getId() + "§8 | §" + factionData.getPrimaryColor() + factionData.getFullname() + " §8[§9Staatsschutz§8]" + attackable);
                 } else {
-                    player.sendMessage("§8 ➥ §eApotheke-" + apotheke.getId() + "§8 | §" + factionData.getPrimaryColor() + factionData.getName() + attackable);
+                    player.sendMessage("§8 ➥ §eApotheke-" + apotheke.getId() + "§8 | §" + factionData.getPrimaryColor() + factionData.getFullname() + attackable);
                 }
             }
         }

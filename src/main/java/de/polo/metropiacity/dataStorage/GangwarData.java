@@ -2,9 +2,14 @@ package de.polo.metropiacity.dataStorage;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Game.GangwarUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 
 public class GangwarData {
     private int id;
@@ -17,6 +22,7 @@ public class GangwarData {
     private int defenderPoints;
     private int minutes;
     private int seconds;
+    private final HashMap<Integer, String> captured = new HashMap<>();
 
     public int getId() {
         return id;
@@ -108,6 +114,41 @@ public class GangwarData {
                     Main.getInstance().utils.gangwarUtils.endGangwar(getZone());
                     cancel();
                 }
+                captured.clear();
+                for (int i = 1; i <= 3; i++) {
+                    Location location = Main.getInstance().locationManager.getLocation("gangwar_capture_" + getZone().toLowerCase() + "-" + i);
+                    if (location != null) {
+                        Main.getInstance().utils.summonCircle(location, 2, Particle.REDSTONE);
+
+                        boolean locationCaptured = false;
+
+                        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+                            Player player = Bukkit.getPlayer(playerData.getUuid());
+
+                            if (player != null) {
+                                double distance = player.getLocation().distance(location);
+
+                                if (playerData.getFaction().equalsIgnoreCase(getAttacker()) && distance < 5) {
+                                    captured.computeIfAbsent(i, k -> getAttacker());
+                                    locationCaptured = true;
+                                } else if (playerData.getFaction().equalsIgnoreCase(getOwner()) && distance < 5) {
+                                    captured.computeIfAbsent(i, k -> getOwner());
+                                    locationCaptured = true;
+                                }
+                            }
+                        }
+
+                        if (locationCaptured && getSeconds() % 15 == 0) {
+                            for (String faction : captured.values()) {
+                                if (faction.equalsIgnoreCase(getAttacker())) {
+                                    setAttackerPoints(getAttackerPoints() + 3);
+                                } else if (faction.equalsIgnoreCase(getOwner())) {
+                                    setDefenderPoints(getDefenderPoints() + 3);
+                                }
+                            }
+                        }
+                    }
+                }
                 if (getSeconds() <= 0) {
                     setSeconds(60);
                     setMinutes(getMinutes() - 1);
@@ -115,6 +156,6 @@ public class GangwarData {
                     setSeconds(getSeconds() - 1);
                 }
             }
-        }.runTaskTimer(Main.plugin, 0, 20);
+        }.runTaskTimerAsynchronously(Main.plugin, 0, 20);
     }
 }

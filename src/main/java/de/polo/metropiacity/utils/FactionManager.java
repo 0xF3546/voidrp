@@ -44,7 +44,9 @@ public class FactionManager {
     public void loadFactions() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
 
-        ResultSet locs = statement.executeQuery("SELECT f.*, fs.* FROM factions AS f LEFT JOIN faction_storage AS fs ON f.id = factionId");
+        ResultSet locs = statement.executeQuery("SELECT f.*, fs.*, fu.* FROM factions AS f " +
+                "LEFT JOIN faction_storage AS fs ON f.id = fs.factionId " +
+                "LEFT JOIN faction_upgrades AS fu ON f.id  = fu.factionId");
         while (locs.next()) {
             FactionData factionData = new FactionData();
             factionData.setId(locs.getInt("id"));
@@ -67,6 +69,9 @@ public class FactionManager {
             factionData.storage.setCocaine(locs.getInt("cocaine"));
             factionData.storage.setKevlar(locs.getInt("kevlar"));
             factionData.storage.setNoble_joint(locs.getInt("noble_joint"));
+            factionData.upgrades.setTaxLevel(locs.getInt("tax"));
+            factionData.upgrades.setWeaponLevel(locs.getInt("weapon"));
+            factionData.upgrades.setDrugEarningLevel(locs.getInt("drug_earning"));
             factionDataMap.put(locs.getString(2), factionData);
         }
 
@@ -127,6 +132,13 @@ public class FactionManager {
             factionPlayerData.setId(playerData.getId());
             ServerManager.factionPlayerDataMap.put(player.getUniqueId().toString(), factionPlayerData);
         }
+        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
+            if (offlinePlayer.getUniqueId() == player.getUniqueId()) {
+                dbPlayerData.setFaction_grade(rang);
+                dbPlayerData.setFaction(frak);
+            }
+        }
         /*if (playerData.getTeamSpeakUID() != null) {
             Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
             TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
@@ -149,6 +161,13 @@ public class FactionManager {
             player.setPlayerListName("§7" + player.getName());
             player.setCustomName("§7" + player.getName());
             player.setCustomNameVisible(true);
+        }
+        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
+            if (offlinePlayer.getName().equalsIgnoreCase(player.getName())) {
+                dbPlayerData.setFaction_grade(0);
+                dbPlayerData.setFaction(null);
+            }
         }
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;

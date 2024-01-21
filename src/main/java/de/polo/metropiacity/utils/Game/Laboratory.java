@@ -11,6 +11,9 @@ import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.enums.RoleplayItem;
+import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,10 +22,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.*;
 
 public class Laboratory implements CommandExecutor {
 
@@ -30,6 +34,7 @@ public class Laboratory implements CommandExecutor {
     private final FactionManager factionManager;
     private final LocationManager locationManager;
     private final List<PlayerLaboratory> playerLaboratories = new ArrayList<>();
+    private final List<LaboratoryAttack> attacks = new ArrayList<>();
     public Laboratory(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -66,9 +71,16 @@ public class Laboratory implements CommandExecutor {
             player.sendMessage(Main.error + "Deine Fraktion hat kein Labor.");
             return;
         }
-
         if (locationManager.getDistanceBetweenCoords(player, playerData.getFaction() + "_laboratory") > 5) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe deines Labors.");
+            for (FactionData factions : factionManager.getFactions()) {
+                if (factions.hasLaboratory()) {
+                    Location location = locationManager.getLocation(factions.getName() + "_laboratory");
+                    if (location != null && location.distance(player.getLocation()) < 5) {
+                        openLaboratoryAsAttacker(player, factions);
+                    }
+                }
+            }
+            player.sendMessage(Main.error + "Du bist nicht in der nähe eines Labors.");
             return;
         }
 
@@ -174,16 +186,72 @@ public class Laboratory implements CommandExecutor {
         });
     }
 
+    @SneakyThrows
     public void openLaboratoryAsAttacker(Player player, FactionData defenderFaction) {
         PlayerData playerData = playerManager.getPlayerData(player);
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7 » §" + defenderFaction.getPrimaryColor() + "Labor §8× §cAngriff", true, true);
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus")) {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet res = statement.executeQuery("SELECT * FROM player_laboratory AS pl LEFT JOIN players AS p ON LOWER(p.faction) = '" +  defenderFaction.getName() + "'");
+        int weedAmount = 0;
+        int jointAmount = 0;
+        while (res.next()) {
+            weedAmount += res.getInt("weed");
+            jointAmount += res.getInt("joints");
+        }
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", "§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                attackLaboratory(factionData, defenderFaction);
             }
         });
+    }
+    private LaboratoryAttack getAttack(FactionData data) {
+        for (LaboratoryAttack attack : attacks) {
+            if (attack.defender == data || attack.attacker == data) return attack;
+        }
+        return null;
+    }
+    public void attackLaboratory(FactionData attacker, FactionData defender) {
+        LaboratoryAttack attack = new LaboratoryAttack(attacker, defender);
+        factionManager.sendCustomMessageToFaction(attacker.getName(), "§8[§" + attacker.getPrimaryColor() + attacker.getName() + "§8]§e Ihr fangt an das Labor von " + defender.getFullname() + " auszurauben!");
+        factionManager.sendCustomMessageToFaction(defender.getName(), "§8[§cLabor§8]§e Das Sicherheitssystem deines Labors meldet Alarm.");
+    }
+
+    public void hackLaboratory(FactionData attacker, FactionData defender) {
+        factionManager.sendCustomMessageToFaction(attacker.getName(), "§8[§" + attacker.getPrimaryColor() + attacker.getName() + "§8]§e Ihr fangt an das Labor von " + defender.getFullname() + " auszurauben!");
+        factionManager.sendCustomMessageToFaction(defender.getName(), "§8[§cLabor§8]§e Das Sicherheitssystem deines Labors meldet Alarm.");
+    }
+    @SneakyThrows
+    public void clearLaboratory(FactionData attacker, FactionData defender) {
+        LaboratoryAttack attack = getAttack(attacker);
+        int jointAmount = 0;
+        int weedAmount = 0;
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT pl.* FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = ?");
+        preparedStatement.setString(1, defender.getName().toLowerCase());
+        ResultSet result = preparedStatement.executeQuery();
+        while (result.next()) {
+            jointAmount += result.getInt("joints");
+            weedAmount += result.getInt("weed");
+        }
+        for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction().equalsIgnoreCase(defender.getName())) {
+                if (playerData.getLaboratory() != null) {
+                    removePlayerLaboratory(playerData.getLaboratory());
+                }
+            }
+        }
+        if (defender.storage.getProceedingStarted() != null)  {
+            weedAmount += defender.storage.getProceedingAmount();
+            defender.storage.setProceedingAmount(0);
+            defender.storage.setProceedingStarted(null);
+        }
+        attacker.storage.setWeed(attacker.storage.getWeed() + weedAmount);
+        attacker.storage.setJoint(attacker.storage.getJoint() + jointAmount);
+        PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = ?");
+        deleteStatement.setString(1, defender.getName().toLowerCase());
+        deleteStatement.execute();
     }
 
     public void pushTick() {
@@ -194,6 +262,32 @@ public class Laboratory implements CommandExecutor {
             } else {
                 laboratory.stop();
             }
+        }
+    }
+    private class LaboratoryAttack {
+        public final FactionData attacker;
+        public final FactionData defender;
+        private boolean doorOpened;
+        private boolean hackedLaboratory;
+        public LaboratoryAttack(FactionData attacker, FactionData defender) {
+            this.attacker = attacker;
+            this.defender = defender;
+        }
+
+        public boolean isDoorOpened() {
+            return doorOpened;
+        }
+
+        public void setDoorOpened(boolean doorOpened) {
+            this.doorOpened = doorOpened;
+        }
+
+        public boolean isHackedLaboratory() {
+            return hackedLaboratory;
+        }
+
+        public void setHackedLaboratory(boolean hackedLaboratory) {
+            this.hackedLaboratory = hackedLaboratory;
         }
     }
 }

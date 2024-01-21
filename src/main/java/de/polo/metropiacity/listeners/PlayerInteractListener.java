@@ -44,6 +44,7 @@ public class PlayerInteractListener implements Listener {
     private final Utils utils;
     private final Main.Commands commands;
     private final BlockManager blockManager;
+
     public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager) {
         this.playerManager = playerManager;
         this.utils = utils;
@@ -51,6 +52,7 @@ public class PlayerInteractListener implements Listener {
         this.blockManager = blockManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -66,12 +68,21 @@ public class PlayerInteractListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
                 if (event.getClickedBlock().getType() == Material.CHEST) {
+                    event.setCancelled(true);
                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
-                    if (!registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
-                        return;
+                    if (registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
+                        if (registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
+                            Main.getInstance().gamePlay.drugstorage.open(player);
+                        }
                     }
-                    if (!registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) return;
-                    Main.getInstance().gamePlay.drugstorage.open(player);
+                }
+                RegisteredBlock factionBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                if (factionBlock != null) {
+                    if (factionBlock.getInfo().equalsIgnoreCase("factionupgrade")) {
+                        if (factionBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
+                            Main.getInstance().gamePlay.factionUpgradeGUI.open(player);
+                        }
+                    }
                 }
                 if (event.getClickedBlock().getType() == Material.CAULDRON) {
                     Material[] items = {Material.POTATO, Material.POISONOUS_POTATO, Material.GLASS_BOTTLE};
@@ -248,7 +259,7 @@ public class PlayerInteractListener implements Listener {
                 });
             } else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.COCAINE.getItem().getDisplayName())) {
                 GamePlay.useDrug(player, Drug.COCAINE);
-            }else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.JOINT.getItem().getDisplayName())) {
+            } else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.JOINT.getItem().getDisplayName())) {
                 GamePlay.useDrug(player, Drug.JOINT);
             }
         }
