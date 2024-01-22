@@ -37,9 +37,6 @@ public class JoinListener implements Listener {
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
             PlayerData playerData = playerManager.getPlayerData(uuid);
-            if (DeathUtils.isDead(player)) {
-                utils.deathUtil.killPlayer(player);
-            }
             adminManager.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());

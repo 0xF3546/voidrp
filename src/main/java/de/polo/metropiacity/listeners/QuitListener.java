@@ -54,12 +54,6 @@ public class QuitListener implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if (utils.deathUtil.getDeathSkull(player.getUniqueId().toString()) != null) {
-            Item skull = utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
-            skull.remove();
-            utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
-            playerManager.setPlayerMove(player, true);
-        }
         try {
             if (playerData.getVariable("job") != null) {
                 switch (playerData.getVariable("job").toString()) {

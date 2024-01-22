@@ -620,9 +620,11 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
-        statement.setInt(2, getId());
+        statement.setInt(2, getDeathTime());
+        statement.setBoolean(3, isDead());
+        statement.setInt(4, getId());
     }
 
     public class AddonXP {

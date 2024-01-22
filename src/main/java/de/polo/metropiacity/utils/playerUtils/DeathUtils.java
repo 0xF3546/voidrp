@@ -118,12 +118,15 @@ public class DeathUtils {
         } else {
             locationManager.useLocation(player, "Krankenhaus");
             player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
+            playerData.setDead(false);
+            playerData.setDeathTime(0);
             player.getInventory().clear();
         }
         Item skull = deathSkulls.get(player.getUniqueId().toString());
         skull.remove();
         deathSkulls.remove(player.getUniqueId().toString());
         playerManager.setPlayerMove(player, true);
+        playerData.save();
     }
 
     public static boolean isDead(Player player) throws SQLException {

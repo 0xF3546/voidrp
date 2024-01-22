@@ -162,25 +162,21 @@ public class ServerManager {
                         }
                     }
                 }
-            }
-        }.runTaskTimer(Main.getInstance(), 20, 20);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
-                    if (!playerData.isDead()) return;
-                    playerData.setDeathTime(playerData.getDeathTime() - 1);
-                    if (playerData.getVariable("gangwar") != null) {
-                        GangwarData gangwarData = GangwarUtils.gangwarDataMap.get(playerData.getVariable("gangwar"));
-                        FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
-                        FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
-                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
-                    } else {
-                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
-                    }
-                    if (playerData.getDeathTime() <= 0) {
-                        Main.getInstance().utils.deathUtil.despawnPlayer(players);
+                    if (playerData.isDead()) {
+                        playerData.setDeathTime(playerData.getDeathTime() - 1);
+                        if (playerData.getVariable("gangwar") != null) {
+                            GangwarData gangwarData = GangwarUtils.gangwarDataMap.get(playerData.getVariable("gangwar"));
+                            FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
+                            FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
+                            utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
+                        } else {
+                            utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
+                        }
+                        if (playerData.getDeathTime() <= 0) {
+                            Main.getInstance().utils.deathUtil.despawnPlayer(players);
+                        }
                     }
                 }
             }

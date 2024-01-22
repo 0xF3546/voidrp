@@ -15,6 +15,7 @@ import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -265,7 +266,14 @@ public class PlayerManager implements Listener, ServerTiming {
         if (playerData != null) {
             assert statement != null;
             onPlayer.remove(uuid);
-            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + " WHERE `uuid` = '" + uuid + "'");
+            if (playerData.isDead()) {
+                Item skull = Main.getInstance().utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
+                if (skull != null) {
+                    skull.remove();
+                    Main.getInstance().utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
+                }
+            }
+            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + " WHERE `uuid` = '" + uuid + "'");
             if (playerData.isJailed()) {
                 statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
             }
