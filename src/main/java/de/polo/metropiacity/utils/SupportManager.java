@@ -13,10 +13,6 @@ import java.sql.Statement;
 import java.util.*;
 
 public class SupportManager {
-    public static final HashMap<String, Boolean> ticketIsCreated = new HashMap<>();
-    public static final HashMap<String, String> ticketReason = new HashMap<>();
-    public static final HashMap<String, String> ticketConnection = new HashMap<>();
-    public static final HashMap<String, Boolean> isInConnection = new HashMap<>();
     public static int TicketCount = 0;
     public static final List<String> playerTickets = new ArrayList<>();
 

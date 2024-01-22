@@ -1,5 +1,6 @@
 package de.polo.metropiacity.listeners;
 
+import de.polo.metropiacity.dataStorage.PhoneCall;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.Ticket;
@@ -45,11 +46,10 @@ public class ChatListener implements Listener {
 
             } else {
                 if (!playerData.isDead()) {
-                    if (PhoneUtils.isInConnection(player)) {
-                        for (Player players : Bukkit.getOnlinePlayers()) {
-                            if (PhoneUtils.getConnection(player).equalsIgnoreCase(players.getUniqueId().toString())) {
-                                players.sendMessage("§8[§6Handy§8]§e " + player.getName() + "§8:§7 " + event.getMessage());
-                            }
+                    if (utils.phoneUtils.isInCall(player)) {
+                        PhoneCall call = utils.phoneUtils.getCall(player);
+                        for (Player p : utils.phoneUtils.getPlayersInCall(call)) {
+                            if (p != player) p.sendMessage("§8[§6Handy§8] " + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                         }
                     }
                     String msg = event.getMessage();

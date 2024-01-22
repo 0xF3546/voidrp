@@ -95,13 +95,13 @@ public class PlantFunctions implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
-                    /*plant.setLastAttack(LocalDateTime.now());
-                    factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§cApotheke-" + plant.getId() + "§8]§c Jemand versucht deine Apotheke zu übernehmen.");
-                    factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§cApotheke-" + plant.getId() + "§8]§a Ihr fangt an die Apotheke zu übernehmen!");
-                    player.sendMessage("§8[§cApotheke§8]§7 Warte nun 10 Minuten, verlasse dabei die Apotheke nicht.");
+                    plant.setLastAttack(LocalDateTime.now());
+                    factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§c Jemand versucht deine deine Plantage zu übernehmen.");
+                    factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Plantage§8]§a Ihr fangt an die Plantage von " + plant.getOwner() +" zu übernehmen!");
+                    player.sendMessage("§8[§2Plantage§8]§7 Die nächsten 10 Minuten muss mindestens ein Fraktionmitglied im Umkreis von 30 Metern leben.");
                     plant.setAttacker(player);
                     plant.setAttackerFaction(playerData.getFaction());
-                    rob.put(plant, 0);*/
+                    rob.put(plant, 0);
                 }
             });
         } else {
@@ -147,20 +147,16 @@ public class PlantFunctions implements Listener {
             }
         }
         for (Plant plant : rob.keySet()) {
-            if (!plant.getAttacker().isOnline()) {
-                rob.remove(plant);
-                factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§a Die Angreifer haben aufgehört die Plantage zu übernehmen.");
-                factionManager.sendCustomMessageToFaction(plant.getAttackerFaction(), "§8[§2Plantage§8]§c Ihr habt aufgehört die Plantage zu übernehmen.");
-                return;
-            }
-            PlayerData playerData = playerManager.getPlayerData(plant.getAttacker());
-            if (playerData.isDead()) {
-                rob.remove(plant);
-                factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§a Die Angreifer haben aufgehört die Plantage zu übernehmen.");
-                factionManager.sendCustomMessageToFaction(plant.getAttackerFaction(), "§8[§2Plantage§8]§c Ihr habt aufgehört die Plantage zu übernehmen.");
-                return;
-            }
-            if (locationManager.getDistanceBetweenCoords(plant.getAttacker(), "apotheke-" + plant.getId()) >= 10) {
+            boolean needToStop = true;
+            for (PlayerData playerData : playerManager.getPlayers()) {
+                if (playerData.getFaction().equalsIgnoreCase(plant.getAttackerFaction())) {
+                    if (!playerData.isDead()) {
+                        if (locationManager.getDistanceBetweenCoords(plant.getAttacker(), "apotheke-" + plant.getId()) >= 30) {
+                            needToStop = false;
+                        }
+                    }
+                }
+            }if (needToStop) {
                 rob.remove(plant);
                 factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§a Die Angreifer haben aufgehört die Plantage zu übernehmen.");
                 factionManager.sendCustomMessageToFaction(plant.getAttackerFaction(), "§8[§2Plantage§8]§c Ihr habt aufgehört die Plantage zu übernehmen.");
@@ -181,7 +177,10 @@ public class PlantFunctions implements Listener {
                 rob.remove(plant);
             } else {
                 rob.replace(plant, ++currentTime);
-                utils.sendActionBar(plant.getAttacker(), "§cNoch " + (10 - currentTime + 1) + " Minuten!");
+                int remaining = (10 - currentTime + 1);
+                factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§c Die Angreifer haben noch " + remaining + " Minuten bis die Plantage übernommen ist.");
+                factionManager.sendCustomMessageToFaction(plant.getAttackerFaction(), "§8[§2Plantage§8]§a Noch " + remaining + " Minuten bis die Plantage übernommen ist.");
+
             }
         }
         if (LocalDateTime.now().getHour() < 16 && LocalDateTime.now().getHour() > 22) return;

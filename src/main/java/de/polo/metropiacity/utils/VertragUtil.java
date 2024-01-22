@@ -85,6 +85,7 @@ public class VertragUtil {
                     break;
                 case "business_invite":
                     playerData.setBusiness(Integer.parseInt(curr.toString()));
+                    player.sendMessage("§8[§6Business§8]§a Du bist einem Business beigetreten.");
                     playerData.save();
                     break;
                 case "rental":

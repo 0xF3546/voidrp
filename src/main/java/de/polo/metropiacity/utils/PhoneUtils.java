@@ -1,7 +1,9 @@
 package de.polo.metropiacity.utils;
 
+import de.polo.metropiacity.dataStorage.PhoneCall;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.Ticket;
 import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import org.bukkit.*;
@@ -20,20 +22,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class PhoneUtils implements Listener {
-    public static final HashMap<String, Boolean> phoneCallIsCreated = new HashMap<>();
-    public static final HashMap<String, String> phoneCallConnection = new HashMap<>();
-    public static final HashMap<String, Boolean> isInCallConnection = new HashMap<>();
+    private static final List<PhoneCall> phoneCalls = new ArrayList<>();
     public static final String error_nophone = "§8[§6Handy§8] §cDas kannst du aktuell nicht machen.";
     public static final String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
 
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public PhoneUtils(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
@@ -68,7 +66,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(16, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZmOGEyMTlmMDgwMzk0MGYxZDI3MzQ5ZmIwNTBjMzJkYzdjMDUwZGIzM2NhMWUwYjM2YzIyZjIxYjA3YmU4NiJ9fX0=", 1, 0, "§bInternet", null));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_inventory", "handy");
@@ -87,7 +85,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_app", "settings");
@@ -102,7 +100,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_app", "banking");
@@ -150,7 +148,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Transaktion suchen..."));
         for (int j = 0; j < 27; j++) {
             if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8"));
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         result.close();
@@ -202,7 +200,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Nachricht suchen..."));
         for (int j = 0; j < 27; j++) {
             if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8"));
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         result.close();
@@ -246,7 +244,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Kontakt suchen..."));
         for (int j = 0; j < 27; j++) {
             if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1,0 , "§8"));
+                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         result.close();
@@ -335,43 +333,44 @@ public class PhoneUtils implements Listener {
         inv.setItem(45, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         inv.setItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnrufen"));
         for (int i = 0; i < 54; i++) {
-            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+            if (inv.getItem(i) == null)
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
         }
         player.openInventory(inv);
     }
 
-    public static boolean inPhoneCall(Player player) {
-        return phoneCallIsCreated.get(player.getUniqueId().toString()) != null;
-    }
-    public static void createPhoneConnection(Player player, String reason) {
-        phoneCallIsCreated.put(player.getUniqueId().toString(), true);
+    public Collection<PhoneCall> getCalls() {
+        return phoneCalls;
     }
 
-    public static void deleteTicket(Player player) {
-        if (inPhoneCall(player)) {
-            phoneCallIsCreated.remove(player.getUniqueId().toString());
+    public boolean isInCall(Player player) {
+        return getCall(player) != null;
+    }
+
+    public List<Player> getPlayersInCall(PhoneCall call) {
+        List<Player> players = new ArrayList<>();
+
+        players.add(Bukkit.getPlayer(call.getCaller()));
+
+        for (UUID uuid : call.getParticipants()) {
+            players.add(Bukkit.getPlayer(uuid));
         }
+
+        return players;
     }
 
-    public static void createTicketConnection(Player player, Player targetplayer) {
-        phoneCallConnection.put(player.getUniqueId().toString(), targetplayer.getUniqueId().toString());
-        phoneCallConnection.put(targetplayer.getUniqueId().toString(), player.getUniqueId().toString());
-        isInCallConnection.put(player.getUniqueId().toString(), true);
-        isInCallConnection.put(targetplayer.getUniqueId().toString(), true);
-    }
-    public static void deleteTicketConnection(Player player, Player targetplayer) {
-        phoneCallConnection.remove(player.getUniqueId().toString());
-        phoneCallConnection.remove(targetplayer.getUniqueId().toString());
-        deleteTicket(targetplayer);
-        isInCallConnection.remove(targetplayer.getUniqueId().toString());
-        isInCallConnection.remove(player.getUniqueId().toString());
-    }
-    public static String getConnection(Player player) {
-        return phoneCallConnection.get(player.getUniqueId().toString());
-    }
-
-    public static boolean isInConnection(Player player) {
-        return isInCallConnection.get(player.getUniqueId().toString()) != null;
+    public PhoneCall getCall(Player player) {
+        for (PhoneCall call : getCalls()) {
+            if (call.getCaller() == player.getUniqueId()) {
+                return call;
+            }
+            for (UUID uuid : call.getParticipants()) {
+                if (uuid == player.getUniqueId()) {
+                    return call;
+                }
+            }
+        }
+        return null;
     }
 
     public void addNumberToContacts(Player player, Player targetplayer) throws SQLException {
@@ -383,21 +382,21 @@ public class PhoneUtils implements Listener {
 
     public void callNumber(Player player, Player players) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                if (VertragUtil.setVertrag(player, players, "phonecall", players.getUniqueId().toString())) {
-                    if (!playerManager.getPlayerData(players).isDead()) {
-                        ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
-                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " wählt eine Nummer auf dem Handy.");
-                        player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + players.getName() + "§e an.");
-                        players.sendMessage("§8[§6Handy§8] §eDu wirst von §l" + player.getName() + "§e angerufen.");
-                        playerData.setVariable("calling", players.getUniqueId().toString());
-                        utils.vertragUtil.sendInfoMessage(players);
-                        players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
-                    } else {
-                        player.sendMessage(Main.error + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
-                    }
-                } else {
-                    player.sendMessage(Main.error + "Dein Handy konnte keine Verbindung aufbauen. §o(Systemfehler)");
-                }
+        if (VertragUtil.setVertrag(player, players, "phonecall", player.getUniqueId().toString())) {
+            if (!playerManager.getPlayerData(players).isDead()) {
+                ChatUtils.sendGrayMessageAtPlayer(players, players.getName() + "'s Handy klingelt...");
+                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " wählt eine Nummer auf dem Handy.");
+                player.sendMessage("§8[§6Handy§8] §eDu rufst §l" + players.getName() + "§e an.");
+                players.sendMessage("§8[§6Handy§8] §eDu wirst von §l" + player.getName() + "§e angerufen.");
+                playerData.setVariable("calling", players.getUniqueId().toString());
+                utils.vertragUtil.sendInfoMessage(players);
+                players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
+            } else {
+                player.sendMessage(Main.error + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
+            }
+        } else {
+            player.sendMessage(Main.error + "Dein Handy konnte keine Verbindung aufbauen. §o(Systemfehler)");
+        }
     }
 
     public void sendSMS(Player player, Player players, StringBuilder message) {
@@ -421,18 +420,18 @@ public class PhoneUtils implements Listener {
     public static void acceptCall(Player player, String targetuuid) {
         player.stopSound(Sound.MUSIC_CREATIVE);
         if (!Main.getInstance().playerManager.getPlayerData(player).isDead()) {
+            PhoneCall phoneCall = new PhoneCall();
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
-            if (!Main.getInstance().playerManager.getPlayerData(targetplayer).isDead()) {
-                targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf angenommen");
-                targetplayer.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + player.getName() + " angenommen");
-                isInCallConnection.put(targetuuid, true);
-                isInCallConnection.put(player.getUniqueId().toString(), true);
-                phoneCallConnection.put(player.getUniqueId().toString(), targetuuid);
-                phoneCallConnection.put(targetuuid, player.getUniqueId().toString());
-                player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
-                targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
-            }
+            phoneCall.setCaller(targetplayer.getUniqueId());
+            phoneCall.addParticipant(player.getUniqueId());
+            phoneCalls.add(phoneCall);
+            targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf angenommen");
+            player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + targetplayer.getName() + " angenommen");
+            player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
+            targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
+            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
+            playerData.setVariable("calling", null);
         } else {
             player.sendMessage(PhoneUtils.error_nophone);
         }
@@ -440,15 +439,15 @@ public class PhoneUtils implements Listener {
 
     public static void denyCall(Player player, String targetuuid) {
         player.stopSound(Sound.MUSIC_CREATIVE);
-        if (PhoneUtils.hasPhone(player)) {
+        if (!Main.getInstance().playerManager.getPlayerData(player).isDead()) {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
-            if (PhoneUtils.hasPhone(targetplayer)) {
-                targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf abgelehnt");
-                player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + player.getName() + " abgelehnt");
-                player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
-                targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
-            }
+            targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf abgelehnt");
+            player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + player.getName() + " abgelehnt");
+            player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
+            targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
+            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
+            playerData.setVariable("calling", null);
         } else {
             player.sendMessage(PhoneUtils.error_nophone);
         }
@@ -457,19 +456,19 @@ public class PhoneUtils implements Listener {
     public void closeCall(Player player) {
         player.stopSound(Sound.MUSIC_CREATIVE);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (isInCallConnection.get(player.getUniqueId().toString()) != null) {
-            for (Player player1 : Bukkit.getOnlinePlayers()) {
-                if (Objects.equals(phoneCallConnection.get(player1.getUniqueId().toString()), player.getUniqueId().toString())) {
-                    isInCallConnection.remove(player1.getUniqueId().toString());
-                    isInCallConnection.remove(player.getUniqueId().toString());
-                    phoneCallConnection.remove(player1.getUniqueId().toString());
-                    phoneCallConnection.remove(player.getUniqueId().toString());
-                    player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
-                    player1.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat aufgelegt.");
-                    player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
-                    player1.playSound(player1.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
+        PhoneCall call = getCall(player);
+        if (getCall(player) != null) {
+            for (Player targetPlayers : getPlayersInCall(call)) {
+                if (targetPlayers != player) {
+                    targetPlayers.playSound(targetPlayers.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
+                    targetPlayers.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat aufgelegt.");
                 }
             }
+            player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
+            player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
+            call.setCaller(null);
+            call.setParticipants(null);
+            phoneCalls.remove(call);
         } else if (playerData.getVariable("calling") != null) {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (playerData.getVariable("calling").equals(players.getUniqueId().toString())) {
@@ -477,6 +476,7 @@ public class PhoneUtils implements Listener {
                     VertragUtil.deleteVertrag(players);
                     player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
                     players.sendMessage("§8[§6Handy§8]§7 " + player.getName() + "§7 hat aufgelegt.");
+                    playerData.setVariable("calling", null);
                 }
             }
         } else {
@@ -563,6 +563,7 @@ public class PhoneUtils implements Listener {
             event.end();
         }
     }
+
     public void openInternet(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8» §bInternet");
@@ -571,7 +572,7 @@ public class PhoneUtils implements Listener {
         inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
         for (int i = 0; i < 27; i++) {
             if (inv.getItem(i) == null) {
-                inv .setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
             }
         }
         playerData.setVariable("current_app", "internet");

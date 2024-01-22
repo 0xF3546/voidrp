@@ -34,7 +34,7 @@ public class CallCommand implements CommandExecutor {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData targetplayerData = playerManager.getPlayerData(players.getUniqueId());
                                 if (players.getName().equalsIgnoreCase(args[0])) {
-                                    if (PhoneUtils.getConnection(players) == null) {
+                                    if (utils.phoneUtils.getCall(players) == null) {
                                         if (!targetplayerData.isFlightmode()) {
                                             try {
                                                 utils.phoneUtils.callNumber(player, players);
