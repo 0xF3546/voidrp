@@ -27,7 +27,8 @@ public class FactionData {
     private boolean hasLaboratory;
     private int jointsMade;
     public Storage storage = new Storage(this);
-    public  Upgrades upgrades = new Upgrades(this);
+    public Upgrades upgrades = new Upgrades(this);
+    public factionEquip equip = new factionEquip(this);
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -304,13 +305,17 @@ public class FactionData {
             this.weapon = weapon;
         }
 
+        public void calculate() {
+            setDrugEarning(getDrugEarningLevel() * 0.1f);
+            setTax(10000000 + (getTaxLevel() * 2000000));
+            setWeapon(getWeaponLevel() * 2.5f);
+        }
+
         @SneakyThrows
         public void save() {
             Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE faction_upgrades SET drug_earning = " + getDrugEarningLevel() + ", tax = " + getTaxLevel() + ", weapon = " + getWeaponLevel() + " WHERE factionId = " + factionData.getId());
-            setDrugEarning(getDrugEarningLevel() * 0.1f);
-            setTax(10000000 + (getTaxLevel() * 2000000));
-            setWeapon(getWeaponLevel() * 2.5f);
+            calculate();
         }
 
         public int getDrugEarningLevel() {
@@ -335,6 +340,32 @@ public class FactionData {
 
         public void setWeaponLevel(int weaponLevel) {
             this.weaponLevel = weaponLevel;
+        }
+    }
+
+    public class factionEquip {
+        private final FactionData factionData;
+        public factionEquip(FactionData factionData) {
+            this.factionData = factionData;
+        }
+
+        private int sturmgewehr;
+        private int sturmgewehr_ammo;
+
+        public int getSturmgewehr() {
+            return sturmgewehr;
+        }
+
+        public void setSturmgewehr(int sturmgewehr) {
+            this.sturmgewehr = sturmgewehr;
+        }
+
+        public int getSturmgewehr_ammo() {
+            return sturmgewehr_ammo;
+        }
+
+        public void setSturmgewehr_ammo(int sturmgewehr_ammo) {
+            this.sturmgewehr_ammo = sturmgewehr_ammo;
         }
     }
 }

@@ -187,3 +187,4 @@ commands:
   plants:
     aliases: plantagen
   business:
+  equip:

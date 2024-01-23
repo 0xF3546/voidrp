@@ -44,9 +44,10 @@ public class FactionManager {
     public void loadFactions() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
 
-        ResultSet locs = statement.executeQuery("SELECT f.*, fs.*, fu.* FROM factions AS f " +
+        ResultSet locs = statement.executeQuery("SELECT f.*, fs.*, fu.*, fe.* FROM factions AS f " +
                 "LEFT JOIN faction_storage AS fs ON f.id = fs.factionId " +
-                "LEFT JOIN faction_upgrades AS fu ON f.id  = fu.factionId");
+                "LEFT JOIN faction_upgrades AS fu ON f.id  = fu.factionId " +
+                "LEFT JOIN faction_equip AS fe ON f.id = fe.factionId");
         while (locs.next()) {
             FactionData factionData = new FactionData();
             factionData.setId(locs.getInt("id"));
@@ -72,6 +73,9 @@ public class FactionManager {
             factionData.upgrades.setTaxLevel(locs.getInt("tax"));
             factionData.upgrades.setWeaponLevel(locs.getInt("weapon"));
             factionData.upgrades.setDrugEarningLevel(locs.getInt("drug_earning"));
+            factionData.equip.setSturmgewehr(locs.getInt("sturmgewehr"));
+            factionData.equip.setSturmgewehr_ammo(locs.getInt("sturmgewehr_ammo"));
+            factionData.upgrades.calculate();
             factionDataMap.put(locs.getString(2), factionData);
         }
 

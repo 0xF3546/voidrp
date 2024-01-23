@@ -37,7 +37,6 @@ public class MemberCommand implements CommandExecutor {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(factionPlayerData.getUuid()));
                     if (sort.containsKey(factionPlayerData.getFaction_grade())) {
                         sort.get(factionPlayerData.getFaction_grade()).add(offlinePlayer);
-                        System.out.println(factionPlayerData.getFaction_grade() + " | " + offlinePlayer.getName());
                     } else {
                         sort.put(factionPlayerData.getFaction_grade(), new ArrayList<>());
                         sort.get(factionPlayerData.getFaction_grade()).add(offlinePlayer);
@@ -45,7 +44,7 @@ public class MemberCommand implements CommandExecutor {
                 }
             }
             for (int value = 8; value >= 0; value--) {
-                String message = "§8 » §" + factionData.getSecondaryColor() + factionManager.getRankName(playerData.getFaction(), value) + " - " + factionManager.getPaydayFromFaction(playerData.getFaction(), value) + "$/PayDay";
+                String message = "§8 » §" + factionData.getSecondaryColor() + "[" + value + "] - " + factionManager.getRankName(playerData.getFaction(), value) + " - " + factionManager.getPaydayFromFaction(playerData.getFaction(), value) + "$/PayDay";
                 player.sendMessage(message);
                 if (sort.get(value) != null) {
                     for (int i = 0; i < sort.get(value).size(); i++) {

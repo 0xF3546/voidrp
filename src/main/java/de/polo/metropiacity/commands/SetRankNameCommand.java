@@ -30,13 +30,13 @@ public class SetRankNameCommand implements CommandExecutor {
         if (playerData.getFactionGrade() >= 7) {
             if (args.length >= 2) {
                 try {
-                    String newName = args[1];
+                    StringBuilder newName = new StringBuilder(args[1]);
                     for (int i = 2; i < args.length; i++) {
-                        newName = newName + " " + args[i];
+                        newName.append(" ").append(args[i]);
                     }
-                    if (factionManager.changeRankName(playerData.getFaction(), Integer.parseInt(args[0]), newName)) {
+                    if (factionManager.changeRankName(playerData.getFaction(), Integer.parseInt(args[0]), newName.toString())) {
                         player.sendMessage(Main.faction_prefix + "Rangname von Rang §l" + args[0] + "§7 zu §l" + newName + "§7 geändert.");
-                        adminManager.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + args[1] + " gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
+                        adminManager.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + newName + " gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

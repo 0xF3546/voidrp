@@ -19,9 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
@@ -791,8 +789,15 @@ public class InventoryClickListener implements Listener {
                                     playerData.setLastname(playerData.getVariable("einreise_lastname"));
                                     playerData.setBirthday(playerData.getVariable("einreise_dob"));
                                     playerData.setGender(playerData.getVariable("einreise_gender"));
-                                    Statement statement = Main.getInstance().mySQL.getStatement();
-                                    statement.executeUpdate("UPDATE `players` SET `firstname` = '" + playerData.getVariable("einreise_firstname") + "', `lastname` = '" + playerData.getVariable("einreise_lastname") + "', `birthday` = '" + playerData.getVariable("einreise_dob") + "', `gender` = '" + playerData.getVariable("einreise_gender") + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+                                    Connection connection = Main.getInstance().mySQL.getConnection();
+                                    PreparedStatement statement = connection.prepareStatement("UPDATE `players` SET `firstname` = ?, `lastname` = ?, `birthday` = ?, `gender` = ? WHERE `uuid` = ?");
+                                    statement.setString(1, playerData.getFirstname());
+                                    statement.setString(2, playerData.getLastname());
+                                    statement.setString(3, playerData.getBirthday());
+                                    statement.setString(4, playerData.getGender());
+                                    statement.setString(5, playerData.getUuid().toString());
+                                    statement.executeUpdate();
+                                    statement.close();
                                     player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                                     playerManager.addExp(player, Main.random(100, 200));
                                     utils.tutorial.createdAusweis(player);

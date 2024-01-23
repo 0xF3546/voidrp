@@ -163,6 +163,13 @@ public class Weapons implements Listener {
         return weapon;
     }
 
+    public WeaponData getWeaponData(Material material) {
+        for (WeaponData weaponData : weaponDataMap.values()) {
+            if (weaponData.getMaterial().equals(material)) return weaponData;
+        }
+        return null;
+    }
+
     public HashMap<Integer, Weapon> getWeapons() {
         return weaponList;
     }

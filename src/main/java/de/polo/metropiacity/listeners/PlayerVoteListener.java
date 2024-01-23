@@ -30,6 +30,7 @@ public class PlayerVoteListener implements Listener {
         if (player.isOnline()) {
             player.sendMessage(Main.prefix + "§6§lDanke§7 für deinen Vote!");
             playerManager.addExp(player, Main.random(30, 50));
+            playerManager.addCoins(player, Main.random(10, 13));
         }
     }
 }

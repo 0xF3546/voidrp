@@ -38,21 +38,21 @@ public class TeamSpeak implements CommandExecutor {
         this.utils = utils;
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        //init();
+        init();
     }
     private void init() {
         teamSpeak = this;
         System.out.println("Lade TS3 config...");
         final TS3Config config = new TS3Config();
-        config.setHost("37.221.92.65").setFloodRate(TS3Query.FloodRate.DEFAULT).setQueryPort(10011);
+        config.setHost("metropiacity.de").setFloodRate(TS3Query.FloodRate.DEFAULT).setQueryPort(10011);
         query.connect();
         if (!query.isConnected()) {
             System.out.println("[TS3Bot] Query konnte nicht verbunden werden.");
             return;
         }
         api = query.getApi();
-        api.login("serveradmin", "WrQzPS72");
-        api.selectVirtualServerById(2);
+        api.login("serveradmin", "M7FxPPB5");
+        api.selectVirtualServerById(1);
         api.setNickname("MetropiaCity");
     }
     public static TeamSpeak getTeamSpeak() {
@@ -138,6 +138,7 @@ public class TeamSpeak implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
+        Main.registerCommand("verify", this);
         if (args.length >= 1) {
             Client client = verifyCodes.get(args[0]);
             if (client != null) {

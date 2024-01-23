@@ -820,9 +820,10 @@ public class PlayerManager implements Listener, ServerTiming {
     public void addCoins(Player player, int amount) {
         PlayerData playerData = getPlayerData(player.getUniqueId());
         playerData.setCoins(playerData.getCoins() + amount);
+        player.sendMessage("§e+" + amount + " Coins");
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE players SET coins = " + playerData.getCoins() + " WHERE uuid = '" + player.getUniqueId() + "'");
+            statement.executeUpdate("UPDATE players SET coins = coins + " + amount + " WHERE uuid = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -832,7 +833,7 @@ public class PlayerManager implements Listener, ServerTiming {
         playerData.setCoins(playerData.getCoins() - amount);
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE players SET coins = " + playerData.getCoins() + " WHERE uuid = '" + player.getUniqueId() + "'");
+            statement.executeUpdate("UPDATE players SET coins = coins - " + amount + " WHERE uuid = '" + player.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -89,7 +89,7 @@ public final class Main extends JavaPlugin {
         blockManager = new BlockManager(mySQL);
         isOnline = true;
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);
-        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager);
+        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons);
 
         new InventoryApiRegister(this);
 
@@ -362,7 +362,8 @@ public final class Main extends JavaPlugin {
         private Vehicles vehicles;
         private GamePlay gamePlay;
         private BusinessManager businessManager;
-        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager) {
+        private Weapons weapons;
+        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, Weapons weapons) {
             this.main = main;
             this.playerManager = playerManager;
             this.adminManager = adminManager;
@@ -371,6 +372,7 @@ public final class Main extends JavaPlugin {
             this.vehicles = vehicles;
             this.gamePlay = gamePlay;
             this.businessManager = businessManager;
+            this.weapons = weapons;
             Init();
         }
         public SetTeamCommand setTeamCommand;
@@ -501,6 +503,10 @@ public final class Main extends JavaPlugin {
         public PlantCommand plantCommand;
         public PlantagenCommand plantagenCommand;
         public BusinessCommand businessCommand;
+        public EquipCommand equipCommand;
+        public TSLinkCommand tsLinkCommand;
+        public TSUnlinkCommand tsUnlinkCommand;
+        public TeamSpeak teamSpeak;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -630,6 +636,10 @@ public final class Main extends JavaPlugin {
             plantCommand = new PlantCommand(playerManager, locationManager, gamePlay);
             plantagenCommand = new PlantagenCommand(gamePlay, utils, factionManager, locationManager);
             businessCommand = new BusinessCommand(playerManager, businessManager);
+            equipCommand = new EquipCommand(playerManager, factionManager, locationManager, weapons);
+            tsLinkCommand = new TSLinkCommand(playerManager);
+            tsUnlinkCommand = new TSUnlinkCommand(playerManager);
+            teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
 
             main.registerCommands();
             main.registerListener();

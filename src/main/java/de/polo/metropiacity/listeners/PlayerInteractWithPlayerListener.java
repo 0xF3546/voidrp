@@ -38,8 +38,6 @@ public class PlayerInteractWithPlayerListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                System.out.println(player.getName());
-                System.out.println(targetplayer.getName());
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (item.getType() == Material.LEAD) {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
