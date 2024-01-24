@@ -121,7 +121,7 @@ public class PlantFunctions implements Listener {
                     }
                 });
             } else {
-                int takeOutAmount = Math.round(10 * plant.getMultiplier());
+                int takeOutAmount = Math.round(10 * (plant.getMultiplier() + factionData.upgrades.getDrugEarningLevel()));
                 inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 » §cKlick um dir " + takeOutAmount + " zu entnehmen"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {

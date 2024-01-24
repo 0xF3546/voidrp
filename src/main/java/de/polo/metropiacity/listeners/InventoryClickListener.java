@@ -179,84 +179,8 @@ public class InventoryClickListener implements Listener {
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "tablet")) {
             event.setCancelled(true);
-            if (playerData.getVariable("current_app") == null) {
+            if (Objects.equals(playerData.getVariable("current_app"), "aktenlist")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case PLAYER_HEAD:
-                        utils.tabletUtils.openApp(player, "fraktionsapp");
-                        break;
-                    case BLUE_DYE:
-                        utils.tabletUtils.openApp(player, "aktenapp");
-                        break;
-                    case ORANGE_DYE:
-                        utils.tabletUtils.openApp(player, "gefängnisapp");
-                        break;
-                    case MINECART:
-                        utils.tabletUtils.openApp(player, "vehiclesapp");
-                        break;
-                }
-            } else if (Objects.equals(playerData.getVariable("current_app"), "aktenapp")) {
-                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case DIAMOND:
-                        utils.tabletUtils.openPlayerAktenList(player, 1);
-                        break;
-                    case PAPER:
-                        playerData.setVariable("current_akte", null);
-                        utils.tabletUtils.openAktenList(player, 1, null);
-                        break;
-                    case REDSTONE:
-                        utils.tabletUtils.openTablet(player);
-                        break;
-                }
-            } else if (Objects.equals(playerData.getVariable("current_app"), "playeraktenlist")) {
-                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case NETHER_WART:
-                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
-                        break;
-                    case GOLD_NUGGET:
-                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
-                        break;
-                    case PLAYER_HEAD:
-                        utils.tabletUtils.editPlayerAkte(player, event.getCurrentItem());
-                        break;
-                    case REDSTONE:
-                        utils.tabletUtils.openApp(player, "aktenapp");
-                        break;
-                }
-            } else if (Objects.equals(playerData.getVariable("current_app"), "edit_akte")) {
-                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case BOOK:
-                        utils.tabletUtils.openPlayerAkte(player, 1);
-                        break;
-                    case GREEN_DYE:
-                        utils.tabletUtils.openAktenList(player, 1, null);
-                        break;
-                    case REDSTONE:
-                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page"));
-                        break;
-                    case BARRIER:
-                        if (playerData.getFactionGrade() >= 5) {
-                            Player targetlpayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
-                            utils.staatUtil.unarrestPlayer(targetlpayer);
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                                if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                                    players.sendMessage("§8[§cGefängnis§8] §6" + factionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
-                                }
-                            }
-                            player.closeInventory();
-                        } else {
-                            player.sendMessage(Main.error_nopermission);
-                        }
-                        break;
-                }
-            } else if (Objects.equals(playerData.getVariable("current_app"), "aktenlist")) {
-                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case NETHER_WART:
-                        utils.tabletUtils.openAktenList(player, playerData.getIntVariable("current_page") - 1, null);
-                        break;
-                    case GOLD_NUGGET:
-                        utils.tabletUtils.openAktenList(player, playerData.getIntVariable("current_page") + 1, null);
-                        break;
                     case PAPER:
                         if (playerData.getVariable("current_akte") != null) {
                             ItemMeta meta = event.getCurrentItem().getItemMeta();
@@ -287,35 +211,8 @@ public class InventoryClickListener implements Listener {
                         utils.tabletUtils.createAkte(player);
                         break;
                 }
-            } else if (Objects.equals(playerData.getVariable("current_app"), "player_aktenlist")) {
-                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case NETHER_WART:
-                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") - 1);
-                        break;
-                    case GOLD_NUGGET:
-                        utils.tabletUtils.openPlayerAktenList(player, playerData.getIntVariable("current_page") + 1);
-                        break;
-                    case WRITTEN_BOOK:
-                        if (playerData.getVariable("current_akte") != null) {
-                            ItemMeta meta = event.getCurrentItem().getItemMeta();
-                            NamespacedKey id = new NamespacedKey(Main.plugin, "id");
-                            Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
-                            assert meta != null;
-                            int newId = meta.getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
-                            utils.staatUtil.removeAkteFromPlayer(player, newId);
-                            event.getCurrentItem().setType(Material.BLACK_STAINED_GLASS_PANE);
-                            player.sendMessage("§8[§9Zentrale§8] §7Akte von " + targetplayer.getName() + " entfernt.");
-                        }
-                        break;
-                    case REDSTONE:
-                        utils.tabletUtils.openAktenList(player, 1, null);
-                        break;
-                }
             } else if (Objects.equals(playerData.getVariable("current_app"), "gefängnisapp")) {
                 switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case PLAYER_HEAD:
-                        utils.tabletUtils.editPlayerAkte(player, event.getCurrentItem());
-                        break;
                     case REDSTONE:
                         utils.tabletUtils.openTablet(player);
                         break;

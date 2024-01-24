@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,6 +44,10 @@ public class BlockManager {
             block.setInfoValue(result.getString("infoValue"));
             block.setId(result.getInt("id"));
             block.setLocation(new Location(Bukkit.getWorld(result.getString("world")), result.getDouble("x"), result.getDouble("y"), result.getDouble("z")));
+            String b = result.getString("block");
+            if (b != null) {
+                block.setMaterial(Material.valueOf(b));
+            }
             registeredBlocks.add(block);
         }
     }

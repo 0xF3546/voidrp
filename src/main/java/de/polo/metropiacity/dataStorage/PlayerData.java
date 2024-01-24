@@ -22,6 +22,7 @@ import java.util.UUID;
 public class PlayerData {
     @Getter
     private Player player;
+    private String spawn;
     public PlayerData(Player player) {
         this.player = player;
     }
@@ -625,6 +626,15 @@ public class PlayerData {
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
         statement.setInt(4, getId());
+        statement.executeUpdate();
+    }
+
+    public String getSpawn() {
+        return spawn;
+    }
+
+    public void setSpawn(String spawn) {
+        this.spawn = spawn;
     }
 
     public class AddonXP {

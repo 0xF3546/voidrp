@@ -1,6 +1,7 @@
 package de.polo.metropiacity.dataStorage;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ public class RegisteredBlock {
     private String info;
     private String infoValue;
     private Location location;
+    private Material material;
 
     public Block getBlock() {
         return block;
@@ -50,5 +52,13 @@ public class RegisteredBlock {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 }

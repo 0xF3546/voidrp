@@ -139,6 +139,7 @@ public class PostboteCommand implements CommandExecutor {
                 playerData.getScoreboard("postbote").killScoreboard();
             }
             array.add(house);
+            player.closeInventory();
             Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

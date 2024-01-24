@@ -111,7 +111,7 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    private void registerListener() {
+    private void registerListener(Commands commands) {
         new JoinListener(playerManager, adminManager, utils, locationManager, serverManager);
         new QuitListener(playerManager, adminManager, utils, commands, serverManager, supportManager);
         new DamageListener(playerManager);
@@ -507,6 +507,8 @@ public final class Main extends JavaPlugin {
         public TSLinkCommand tsLinkCommand;
         public TSUnlinkCommand tsUnlinkCommand;
         public TeamSpeak teamSpeak;
+        public FDoorCommand fDoorCommand;
+        public ChangeSpawnCommand changeSpawnCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -640,9 +642,11 @@ public final class Main extends JavaPlugin {
             tsLinkCommand = new TSLinkCommand(playerManager);
             tsUnlinkCommand = new TSUnlinkCommand(playerManager);
             teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
+            fDoorCommand = new FDoorCommand(playerManager, blockManager, locationManager);
+            changeSpawnCommand = new ChangeSpawnCommand(playerManager, utils);
 
             main.registerCommands();
-            main.registerListener();
+            main.registerListener(this);
         }
     }
 }

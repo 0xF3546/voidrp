@@ -18,7 +18,9 @@ import de.polo.metropiacity.utils.Game.Housing;
 import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
+import jdk.vm.ci.code.Register;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.Player;
@@ -33,6 +35,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Objects;
@@ -67,6 +71,34 @@ public class PlayerInteractListener implements Listener {
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
+                if (event.getClickedBlock().getType() == Material.OAK_DOOR) {
+                    RegisteredBlock rBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                    if (rBlock != null) {
+                        if (rBlock.getInfo().equalsIgnoreCase("fdoor")) {
+                            if (!playerData.isAduty() && !playerData.getFaction().equalsIgnoreCase(rBlock.getInfoValue())) {
+                                event.setCancelled(true);
+                            }
+                        }
+                    }
+                    int centerX = event.getClickedBlock().getLocation().getBlockX();
+                    int centerY = event.getClickedBlock().getLocation().getBlockY();
+                    int centerZ = event.getClickedBlock().getLocation().getBlockZ();
+                    World world = event.getClickedBlock().getWorld();
+                    for (int x = centerX - 3; x <= centerX + 3; x++) {
+                        for (int y = centerY - 3; y <= centerY + 3; y++) {
+                            for (int z = centerZ - 3; z <= centerZ + 3; z++) {
+                                Location location = new Location(world, x, y, z);
+                                Block block = location.getBlock();
+                                if (block.getType().toString().contains("SIGN")) {
+                                    RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(block.getLocation());
+                                    if (!playerData.isAduty() && !utils.housing.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
+                                        event.setCancelled(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 if (event.getClickedBlock().getType() == Material.CHEST) {
                     event.setCancelled(true);
                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());

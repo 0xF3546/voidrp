@@ -53,6 +53,7 @@ public class DeathListener implements Listener {
                     playerData.setDead(true);
                     playerData.setDeathTime(300);
                 }
+                event.getEntity().getKiller().sendMessage("§8[§c✟§8]§7 " + event.getEntity().getName());
                 ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) skull.getItemMeta();
                 assert meta != null;

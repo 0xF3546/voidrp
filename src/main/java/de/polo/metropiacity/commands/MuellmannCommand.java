@@ -144,6 +144,7 @@ public class MuellmannCommand implements CommandExecutor {
             }
         }
         array.add(house);
+        player.closeInventory();
         Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

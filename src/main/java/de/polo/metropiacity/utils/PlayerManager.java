@@ -13,6 +13,7 @@ import de.polo.metropiacity.utils.events.HourTickEvent;
 import de.polo.metropiacity.utils.events.MinuteTickEvent;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import de.polo.metropiacity.utils.playerUtils.ChatUtils;
+import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Item;
@@ -138,6 +139,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setBoostDuration(result.getInt("boostDuration"));
                 playerData.setSecondaryTeam(result.getString("secondaryTeam"));
                 playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
+                playerData.setSpawn(result.getString("spawn"));
                 playerData.setJob(result.getString("job"));
                 player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
@@ -538,6 +540,9 @@ public class PlayerManager implements Listener, ServerTiming {
                         double plus = 0;
                         double zinsen = Math.round(factionData.getBank() * 0.0075);
                         double steuern = Math.round(factionData.getBank() * 0.0035);
+                        if (factionData.getBank() >= factionData.upgrades.getTax()) {
+                            steuern += Math.round(factionData.getBank() * 0.015);
+                        }
                         plus += zinsen;
                         plus -= steuern;
                         for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
@@ -847,5 +852,18 @@ public class PlayerManager implements Listener, ServerTiming {
     @Override
     public void PushHourTick() {
 
+    }
+
+    @SneakyThrows
+    public void setPlayerSpawn(PlayerData playerData, String spawn) {
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET spawn = ? WHERE uuid = ?");
+        if (spawn.equalsIgnoreCase("krankenhaus")) {
+            spawn = null;
+        }
+        statement.setString(1, spawn);
+        statement.setString(2, playerData.getUuid().toString());
+        statement.executeUpdate();
+        statement.close();
+        playerData.setSpawn(spawn);
     }
 }

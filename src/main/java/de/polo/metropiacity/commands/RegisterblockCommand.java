@@ -59,16 +59,19 @@ public class RegisterblockCommand implements CommandExecutor {
         if (args.length >= 2) {
             registeredBlock.setInfoValue(args[1]);
         }
-        TileState state = (TileState) block.getState();
-        if (state instanceof Sign) {
-            Sign sign = (Sign) state;
-            sign.setEditable(false);
-            sign.setLine(1, "== §6Haus " + args[0] + " §0==");
-            sign.setLine(2, "§2Zu Verkaufen");
-            sign.update();
-            registeredBlock.setInfo("house");
-            registeredBlock.setInfoValue(args[0]);
-            player.sendMessage(Main.gamedesign_prefix + "Haus regestriert.");
+        try {
+            TileState state = (TileState) block.getState();
+            if (state instanceof Sign) {
+                Sign sign = (Sign) state;
+                sign.setEditable(false);
+                sign.setLine(1, "== §6Haus " + args[0] + " §0==");
+                sign.setLine(2, "§2Zu Verkaufen");
+                sign.update();
+                registeredBlock.setInfo("house");
+                registeredBlock.setInfoValue(args[0]);
+                player.sendMessage(Main.gamedesign_prefix + "Haus regestriert.");
+            }
+        } catch (Exception e) {
         }
 
         int id = blockManager.addBlock(registeredBlock);

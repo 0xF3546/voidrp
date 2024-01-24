@@ -83,7 +83,7 @@ public class BusinessManager {
         return count;
     }
     @SneakyThrows
-    public int createBusiness(BusinessData businessData) {
+    public synchronized int createBusiness(BusinessData businessData) {
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO business (owner, activated) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, businessData.getOwner().toString());

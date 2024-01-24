@@ -46,7 +46,7 @@ public class Utils {
         this.housing = housing;
         payDayUtils = new PayDayUtils(playerManager, factionManager);
         bankingUtils = new BankingUtils(playerManager, factionManager);
-        tabletUtils = new TabletUtils(playerManager, factionManager);
+        tabletUtils = new TabletUtils(playerManager, factionManager, this);
         phoneUtils = new PhoneUtils(playerManager, this);
         ffaUtils = new FFAUtils(playerManager, locationManager);
         gangwarUtils = new GangwarUtils(playerManager, factionManager, locationManager);

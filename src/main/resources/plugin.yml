@@ -188,3 +188,5 @@ commands:
     aliases: plantagen
   business:
   equip:
+  fdoor:
+  changespawn:

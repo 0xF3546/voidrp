@@ -2,6 +2,7 @@ package de.polo.metropiacity.utils.playerUtils;
 
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.RegisteredBlock;
 import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
@@ -10,6 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -116,7 +118,22 @@ public class DeathUtils {
         if (playerData.getVariable("gangwar") != null) {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
         } else {
-            locationManager.useLocation(player, "Krankenhaus");
+            if (playerData.getSpawn() == null) {
+                locationManager.useLocation(player, "Krankenhaus");
+            } else {
+                try {
+                    int id = Integer.parseInt(playerData.getSpawn());
+                    for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                        if (registeredBlock.getInfo().equalsIgnoreCase("house")) {
+                            if (Integer.parseInt(registeredBlock.getInfoValue()) == id) {
+                                player.teleport(registeredBlock.getLocation());
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    locationManager.useLocation(player, playerData.getSpawn());
+                }
+            }
             player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
             playerData.setDead(false);
             playerData.setDeathTime(0);

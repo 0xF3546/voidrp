@@ -253,12 +253,14 @@ public class Weapons implements Listener {
                 if (weapon.getCurrentAmmo() < 1) {
                     reloadWeapon(player, event.getItem());
                 }
+                cancel();
             }
         }.runTaskLater(Main.getInstance(), (long) (weaponData.getShootDuration() * 2));
         new BukkitRunnable() {
             @Override
             public void run() {
                 arrow.remove();
+                cancel();
             }
         }.runTaskLater(Main.getInstance(), 20 * 20);
     }

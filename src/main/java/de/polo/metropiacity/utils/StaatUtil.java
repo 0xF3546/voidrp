@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.JailData;
 import de.polo.metropiacity.dataStorage.ServiceData;
 import de.polo.metropiacity.dataStorage.PlayerData;
+import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -102,7 +103,8 @@ public class StaatUtil {
         }
     }
 
-    public void unarrestPlayer(Player player) throws SQLException {
+    @SneakyThrows
+    public void unarrestPlayer(Player player)  {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setJailed(false);
         playerData.setHafteinheiten(0);
@@ -113,7 +115,8 @@ public class StaatUtil {
         statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
-    public void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) throws SQLException {
+    @SneakyThrows
+    public void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe)  {
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());

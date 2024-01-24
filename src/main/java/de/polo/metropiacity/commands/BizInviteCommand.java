@@ -51,7 +51,7 @@ public class BizInviteCommand implements CommandExecutor {
             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
         }
-        if (playerManager.getPlayerData(targetplayer.getUniqueId()).getBusiness() != null) {
+        if (playerManager.getPlayerData(targetplayer.getUniqueId()).getBusiness() != 0) {
             player.sendMessage("§8[§6Business§8] §c" + targetplayer.getName() + "§7 ist bereits in einem Business.");
             return false;
         }

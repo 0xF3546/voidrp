@@ -84,6 +84,20 @@ public class Housing {
         }
     }
 
+    public List<HouseData> getAccessedHousing(Player player) {
+        List<HouseData> access = new ArrayList<>();
+        for (HouseData houseData : houseDataMap.values()) {
+            if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) {
+                if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
+                    access.add(houseData);
+                }
+            } else {
+                access.add(houseData);
+            }
+        }
+        return access;
+    }
+
     public void addHausSlot(Player player) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         System.out.println("hausslot hinzugefügt");

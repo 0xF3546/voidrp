@@ -3,8 +3,11 @@ package de.polo.metropiacity.utils;
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.database.MySQL;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import de.polo.metropiacity.commands.OpenBossMenuCommand;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -13,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -30,9 +34,12 @@ import java.util.UUID;
 public class TabletUtils implements Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    public TabletUtils(PlayerManager playerManager, FactionManager factionManager) {
+    private final Utils utils;
+
+    public TabletUtils(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
+        this.utils = utils;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -46,41 +53,50 @@ public class TabletUtils implements Listener {
     }
 
     public void openTablet(Player player) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eTablet", true, true);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §eTablet");
-        inv.setItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp"));
-        inv.setItem(1, ItemManager.createItem(Material.MINECART, 1, 0, "§6Fahrzeugübersicht"));
-        inv.setItem(9, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp"));
-        inv.setItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp"));
-        for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
             }
+        });
+        inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(Material.MINECART, 1, 0, "§6Fahrzeugübersicht")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openVehiclesApp(player, 1);
+            }
+        });
+        if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+            inventoryManager.setItem(new CustomItem(9, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openAktenApp(player);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openJailApp(player, 1);
+                }
+            });
         }
-        playerData.setVariable("current_inventory", "tablet");
-        playerData.setVariable("current_app", null);
-        player.openInventory(inv);
     }
 
     public void openApp(Player player, String app) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setVariable("current_app", null);
         switch (app) {
             case "fraktionsapp":
                 Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, 1);
-                playerData.setVariable("current_app", "fraktionsapp");
                 break;
             case "aktenapp":
                 openAktenApp(player);
-                playerData.setVariable("current_app", "aktenapp");
                 break;
             case "gefängnisapp":
                 openJailApp(player, 1);
-                playerData.setVariable("current_app", "gefängnisapp");
                 break;
             case "vehiclesapp":
                 openVehiclesApp(player, 1);
-                playerData.setVariable("current_app", "vehiclesapp");
                 break;
         }
     }
@@ -88,16 +104,26 @@ public class TabletUtils implements Listener {
     public void openAktenApp(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei")) {
-            Inventory inv = Bukkit.createInventory(player, 27, "§8» §1Aktenapp");
-            inv.setItem(0, ItemManager.createItem(Material.DIAMOND, 1, 0, "§9Akten bearbeiten", "§bBearbeite Akten von Spielern"));
-            inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§9Aktenübersicht"));
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-            for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §1Aktenapp", true, true);
+            inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.DIAMOND, 1, 0, "§9Akten bearbeiten", "§bBearbeite Akten von Spielern")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openPlayerAktenList(player, 1);
                 }
-            }
-            player.openInventory(inv);
+            });
+            inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§9Aktenübersicht")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openAktenList(player, 1, null);
+                    playerData.setVariable("targetakte", null);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openTablet(player);
+                }
+            });
         }
     }
 
@@ -105,63 +131,97 @@ public class TabletUtils implements Listener {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        playerData.setVariable("current_inventory", "tablet");
-        playerData.setVariable("current_app", "playeraktenlist");
         playerData.setIntVariable("current_page", page);
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Akten §8- §9Seite§8:§7 " + page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Akten §8- §9Seite§8:§7 " + page, true, false);
         int i = 0;
         int j = 0;
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (i == 26 && i == 18 && i == 22) {
                 i++;
             } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
-                inv.setItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName(), null));
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName(), null)) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        editPlayerAkte(player, players.getUniqueId());
+                    }
+                });
                 i++;
             }
-            inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
+            inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openPlayerAktenList(player, page + 1);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openPlayerAktenList(player, page - 1);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openAktenApp(player);
+                }
+            });
             j++;
         }
-        player.openInventory(inv);
     }
 
-    public void editPlayerAkte(Player player, ItemStack stack) {
+    public void editPlayerAkte(Player player, UUID uuid) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        ItemStack tempItemStack = new ItemStack(stack.getType());
-        tempItemStack.setItemMeta(stack.getItemMeta());
-        if (tempItemStack.getItemMeta() instanceof SkullMeta) {
-            SkullMeta skullMeta = (SkullMeta) tempItemStack.getItemMeta();
-            UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
-            OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
-            playerData.setVariable("current_app", "edit_akte");
-            playerData.setVariable("current_akte", targetplayer.getUniqueId().toString());
-            Inventory inv = Bukkit.createInventory(player, 27, "§8» §c" + targetplayer.getName());
-            inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null));
-            inv.setItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten"));
-            inv.setItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen"));
-            PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-            if (targetplayerData.isJailed()) {
-                inv.setItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen"));
+        OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + targetplayer.getName(), true, true);
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
             }
-            inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-            for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null)
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        });
+        inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§9Offene Akten")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPlayerAkte(player, targetplayer.getUniqueId(), 1);
             }
-            player.openInventory(inv);
-        } else {
-            player.closeInventory();
-            player.sendMessage(Main.error + "Spieler konnte nicht geladen werden.");
+        });
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§9Akte hinzufügen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("targetakte", targetplayer.getUniqueId());
+                openAktenList(player, 1, null);
+            }
+        });
+        PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+        if (targetplayerData.isJailed()) {
+            inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    Player targetlpayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
+                    utils.staatUtil.unarrestPlayer(targetlpayer);
+                    for (Player players : Bukkit.getOnlinePlayers()) {
+                        PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
+                        if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
+                            players.sendMessage("§8[§cGefängnis§8] §6" + factionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
+                        }
+                    }
+                    player.closeInventory();
+                }
+            });
         }
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPlayerAktenList(player, 1);
+            }
+        });
     }
 
-    public void openAktenList(Player player, int page, String search) throws SQLException {
+    @SneakyThrows
+    public void openAktenList(Player player, int page, String search) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setVariable("current_app", "aktenlist");
-        playerData.setIntVariable("current_page", page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = null;
         if (search == null) {
@@ -169,62 +229,111 @@ public class TabletUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten` WHERE LOWER(`akte`) LIKE LOWER('%" + search + "%') ");
         }
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
         int i = 0;
         while (result.next()) {
             if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
-                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + result.getString(2), "Lädt..."));
-                ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
-                NamespacedKey akte = new NamespacedKey(Main.plugin, "akte");
-                NamespacedKey hafteinheiten = new NamespacedKey(Main.plugin, "hafteinheiten");
-                NamespacedKey geldstrafe = new NamespacedKey(Main.plugin, "geldstrafe");
-                assert meta != null;
-                meta.getPersistentDataContainer().set(akte, PersistentDataType.STRING, result.getString(2));
-                meta.getPersistentDataContainer().set(hafteinheiten, PersistentDataType.INTEGER, result.getInt(3));
-                meta.getPersistentDataContainer().set(geldstrafe, PersistentDataType.INTEGER, result.getInt(4));
-                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$"));
-                Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                int value1 = result.getInt(3);
+                String value2 = result.getString(2);
+                int value3 = result.getInt(4);
+
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + value2, Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + value1, "§8 ➥ §bGeldstrafe§8:§7 " + value3 + "$"))) {
+                    @SneakyThrows
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (playerData.getVariable("targetakte") == null) {
+                            return;
+                        }
+                        Player targetPlayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("targetakte").toString()));
+                        utils.staatUtil.addAkteToPlayer(player, targetPlayer, value1, value2, value3);
+                    }
+                });
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openAktenList(player, page + 1, search);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openAktenList(player, page - 1, search);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openAktenApp(player);
+            }
+        });
         if (playerData.getFactionGrade() >= 7)
-            inv.setItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aAkte einfügen", null));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Akte suchen..."));
+            inventoryManager.setItem(new CustomItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aAkte einfügen", null)) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerData.setIntVariable("input_hafteinheiten", 0);
+                    playerData.setIntVariable("input_geldstrafe", 0);
+                    playerData.setVariable("input_akte", null);
+                    createAkte(player);
+                }
+            });
+        inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Akte suchen...")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "aktensearch");
+                player.sendMessage("§8[§9Akte§8]§7 Gib nun die Akte ein.");
+                player.closeInventory();
+            }
+        });
         result.close();
-        player.openInventory(inv);
     }
 
-    public void openPlayerAkte(Player player, int page) throws SQLException {
+    @SneakyThrows
+    public void openPlayerAkte(Player player, UUID target, int page) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setVariable("current_app", "player_aktenlist");
-        playerData.setIntVariable("current_page", page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
         Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch`, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `player_akten` WHERE `uuid` = '" + playerData.getVariable("current_akte") + "'");
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page);
+        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch`, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `player_akten` WHERE `uuid` = '" + target + "'");
+        Player targetplayer = Bukkit.getPlayer(target);
         int i = 0;
         while (result.next()) {
             if (i == 26 && i == 18 && i == 22) {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
-                inv.setItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), "Lädt..."));
-                ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
-                NamespacedKey id = new NamespacedKey(Main.plugin, "id");
-                assert meta != null;
-                meta.setLore(Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5), "§8 ➥ §bDatum§8:§7 " + result.getString("formatted_timestamp")));
-                meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
-                Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                int id = result.getInt("id");
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5), "§8 ➥ §bDatum§8:§7 " + result.getString("formatted_timestamp")))) {
+                    @SneakyThrows
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        utils.staatUtil.removeAkteFromPlayer(player, id);
+                        event.getCurrentItem().setType(Material.BLACK_STAINED_GLASS_PANE);
+                        player.sendMessage("§8[§9Zentrale§8] §7Akte von " + targetplayer.getName() + " entfernt.");
+                    }
+                });
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPlayerAkte(player, target, page + 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPlayerAkte(player, target, page + 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPlayerAktenList(player, 1);
+            }
+        });
         result.close();
-        player.openInventory(inv);
     }
 
     public void openJailApp(Player player, int page) {
@@ -311,10 +420,12 @@ public class TabletUtils implements Listener {
         inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§aGeldstrafe", "§8 ➥ §e" + playerData.getIntVariable("input_geldstrafe")));
         inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen"));
         for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
+            if (inv.getItem(i) == null)
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
         }
         player.openInventory(inv);
     }
+
     public void createNewAkte(Player player) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Statement statement = Main.getInstance().mySQL.getStatement();
