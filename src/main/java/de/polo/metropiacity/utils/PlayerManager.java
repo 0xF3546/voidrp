@@ -184,10 +184,10 @@ public class PlayerManager implements Listener, ServerTiming {
                         }
                     });
                 }
-                if (result.getBoolean("tutorial")) {
+                /*if (result.getBoolean("tutorial")) {
                     playerData.setVariable("tutorial", "muss");
                     Main.getInstance().utils.tutorial.start(player);
-                }
+                }*/
 
                 playerData.setHours(result.getInt("current_hours"));
                 playerData.setMinutes(result.getInt("needed_hours"));
@@ -532,7 +532,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     }
                 }
                 if (currentMinute % 15 == 0) {
-                    Main.getInstance().commands.laboratory.pushTick();
+                    Main.getInstance().laboratory.pushTick();
                 }
                 if (currentMinute == 0) {
                     Bukkit.getPluginManager().callEvent(new HourTickEvent(Main.getInstance().utils.getCurrentHour()));

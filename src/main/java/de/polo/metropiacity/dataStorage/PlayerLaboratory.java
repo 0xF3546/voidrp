@@ -94,7 +94,7 @@ public class PlayerLaboratory {
     public void delete() {
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("DELETE FROM player_laboratory WHERE uuid = '" + getOwner() + "'");
-        Main.getInstance().commands.laboratory.removePlayerLaboratory(this);
+        Main.getInstance().laboratory.removePlayerLaboratory(this);
     }
 
     public boolean isStarted() {

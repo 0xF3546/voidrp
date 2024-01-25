@@ -26,6 +26,7 @@ public class FactionData {
     private int forumID_Leader;
     private boolean hasLaboratory;
     private int jointsMade;
+    private int laboratory;
     public Storage storage = new Storage(this);
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
@@ -184,6 +185,14 @@ public class FactionData {
             returnval = true;
         }
         return returnval;
+    }
+
+    public int getLaboratory() {
+        return laboratory;
+    }
+
+    public void setLaboratory(int laboratory) {
+        this.laboratory = laboratory;
     }
 
     public class Storage {

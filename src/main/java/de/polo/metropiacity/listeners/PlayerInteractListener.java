@@ -1,12 +1,10 @@
 package de.polo.metropiacity.listeners;
 
 import com.jeff_media.customblockdata.CustomBlockData;
-import de.polo.metropiacity.dataStorage.ATM;
-import de.polo.metropiacity.dataStorage.HouseData;
-import de.polo.metropiacity.dataStorage.PlayerData;
+import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.dataStorage.RegisteredBlock;
-import de.polo.metropiacity.utils.BlockManager;
+import de.polo.metropiacity.utils.*;
+import de.polo.metropiacity.utils.Game.Laboratory;
 import de.polo.metropiacity.utils.GamePlay.GamePlay;
 import de.polo.metropiacity.utils.InventoryManager.CustomItem;
 import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
@@ -15,9 +13,6 @@ import de.polo.metropiacity.utils.enums.RoleplayItem;
 import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.playerUtils.Rubbellose;
 import de.polo.metropiacity.utils.Game.Housing;
-import de.polo.metropiacity.utils.ItemManager;
-import de.polo.metropiacity.utils.PlayerManager;
-import de.polo.metropiacity.utils.Utils;
 import jdk.vm.ci.code.Register;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -46,14 +41,18 @@ import java.util.UUID;
 public class PlayerInteractListener implements Listener {
     private final PlayerManager playerManager;
     private final Utils utils;
+    private final Laboratory laboratory;
+    private final FactionManager factionManager;
     private final Main.Commands commands;
     private final BlockManager blockManager;
 
-    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager) {
+    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager, Laboratory laboratory) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.commands = commands;
         this.blockManager = blockManager;
+        this.factionManager = factionManager;
+        this.laboratory = laboratory;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -77,6 +76,20 @@ public class PlayerInteractListener implements Listener {
                         if (rBlock.getInfo().equalsIgnoreCase("fdoor")) {
                             if (!playerData.isAduty() && !playerData.getFaction().equalsIgnoreCase(rBlock.getInfoValue())) {
                                 event.setCancelled(true);
+                            }
+                        } else if (rBlock.getInfo().equalsIgnoreCase("laboratory")) {
+                            int id = Integer.parseInt(rBlock.getInfoValue());
+                            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                            if (!(factionData.getLaboratory() == id) && !laboratory.isDoorOpened(factionData)) {
+                                event.setCancelled(true);
+                                for (FactionData defender : factionManager.getFactions()) {
+                                    if (defender.getLaboratory() == id) {
+                                        if (!laboratory.isDoorOpened(factionData)) {
+                                        laboratory.openLaboratoryAsAttacker(player, defender);
+                                        return;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

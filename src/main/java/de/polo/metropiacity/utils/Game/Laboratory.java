@@ -4,6 +4,7 @@ import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.FactionData;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.dataStorage.PlayerLaboratory;
+import de.polo.metropiacity.dataStorage.RegisteredBlock;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.InventoryManager.CustomItem;
 import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
@@ -11,6 +12,7 @@ import de.polo.metropiacity.utils.ItemManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.enums.RoleplayItem;
+import de.polo.metropiacity.utils.events.MinuteTickEvent;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,6 +21,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,20 +30,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class Laboratory implements CommandExecutor {
+public class Laboratory implements CommandExecutor, Listener {
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
     private final List<PlayerLaboratory> playerLaboratories = new ArrayList<>();
     private final List<LaboratoryAttack> attacks = new ArrayList<>();
+
     public Laboratory(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.locationManager = locationManager;
         Main.registerCommand("labor", this);
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     public Collection<PlayerLaboratory> getPlayerLaboratorries() {
@@ -49,6 +57,7 @@ public class Laboratory implements CommandExecutor {
     public void addPlayerLaboratory(PlayerLaboratory laboratory) {
         playerLaboratories.add(laboratory);
     }
+
     public void removePlayerLaboratory(PlayerLaboratory playerLaboratory) {
         playerLaboratories.remove(playerLaboratory);
     }
@@ -76,7 +85,17 @@ public class Laboratory implements CommandExecutor {
                 if (factions.hasLaboratory()) {
                     Location location = locationManager.getLocation(factions.getName() + "_laboratory");
                     if (location != null && location.distance(player.getLocation()) < 5) {
-                        openLaboratoryAsAttacker(player, factions);
+                        LaboratoryAttack attack = getAttack(factionData);
+                        if (attack == null) {
+                            openLaboratoryAsAttacker(player, factions);
+                        } else {
+                            if (attack.isHackedLaboratory()) {
+                                clearLaboratory(attack.attacker, attack.defender);
+                                factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§b Ihr habt das Labor ausgeraubt!");
+                                factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§c Euer Labor wurde leer geräumt!");
+                                attacks.remove(attack);
+                            }
+                        }
                     }
                 }
             }
@@ -125,6 +144,7 @@ public class Laboratory implements CommandExecutor {
             }
         });
     }
+
     private void openLabotory(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
@@ -192,36 +212,67 @@ public class Laboratory implements CommandExecutor {
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7 » §" + defenderFaction.getPrimaryColor() + "Labor §8× §cAngriff", true, true);
         Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet res = statement.executeQuery("SELECT * FROM player_laboratory AS pl LEFT JOIN players AS p ON LOWER(p.faction) = '" +  defenderFaction.getName() + "'");
+        ResultSet res = statement.executeQuery("SELECT * FROM player_laboratory AS pl LEFT JOIN players AS p ON LOWER(p.faction) = '" + defenderFaction.getName() + "'");
         int weedAmount = 0;
         int jointAmount = 0;
         while (res.next()) {
             weedAmount += res.getInt("weed");
             jointAmount += res.getInt("joints");
         }
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", "§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                attackLaboratory(factionData, defenderFaction);
-            }
-        });
+        LaboratoryAttack attack = getAttack(factionData);
+        if (attack == null) {
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", "§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    attackLaboratory(player, factionData, defenderFaction);
+                }
+            });
+        } else {
+            LocalDateTime now = LocalDateTime.now();
+
+            long remainingMinutes = 5 + ChronoUnit.MINUTES.between(now, attack.getStarted());
+            long remainingSeconds = 60 + ChronoUnit.SECONDS.between(now, attack.getStarted()) % 60;
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0,
+                    "§cRaube das Labor aus",
+                    "§8 ➥ §fNoch " + remainingMinutes + " Minute" + (remainingMinutes != 1 ? "n" : "") +
+                            " & " + remainingSeconds + " Sekunde" + (remainingSeconds != 1 ? "n" : ""))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                }
+            });
+        }
     }
+
     private LaboratoryAttack getAttack(FactionData data) {
         for (LaboratoryAttack attack : attacks) {
-            if (attack.defender == data || attack.attacker == data) return attack;
+            if (attack.defender.getName().equalsIgnoreCase(data.getName()) || attack.attacker.getName().equalsIgnoreCase(data.getName()))
+                return attack;
         }
         return null;
     }
-    public void attackLaboratory(FactionData attacker, FactionData defender) {
+
+    public boolean isDoorOpened(FactionData attacker) {
+        for (LaboratoryAttack attack : attacks) {
+            if ((attack.defender == attacker && attack.isDoorOpened()) || (attack.attacker == attacker && attack.isDoorOpened()))
+                return true;
+        }
+        return false;
+    }
+
+    public void attackLaboratory(Player player, FactionData attacker, FactionData defender) {
         LaboratoryAttack attack = new LaboratoryAttack(attacker, defender);
-        factionManager.sendCustomMessageToFaction(attacker.getName(), "§8[§" + attacker.getPrimaryColor() + attacker.getName() + "§8]§e Ihr fangt an das Labor von " + defender.getFullname() + " auszurauben!");
+        attack.setStarted(LocalDateTime.now());
+        factionManager.sendCustomMessageToFaction(attacker.getName(), "§8[§" + attacker.getPrimaryColor() + attacker.getName() + "§8]§e Ihr fangt an das Labor von " + defender.getFullname() + " auszurauben, bleibt 5 Minuten bei der Tür!");
         factionManager.sendCustomMessageToFaction(defender.getName(), "§8[§cLabor§8]§e Das Sicherheitssystem deines Labors meldet Alarm.");
+        attacks.add(attack);
+        player.closeInventory();
     }
 
     public void hackLaboratory(FactionData attacker, FactionData defender) {
         factionManager.sendCustomMessageToFaction(attacker.getName(), "§8[§" + attacker.getPrimaryColor() + attacker.getName() + "§8]§e Ihr fangt an das Labor von " + defender.getFullname() + " auszurauben!");
         factionManager.sendCustomMessageToFaction(defender.getName(), "§8[§cLabor§8]§e Das Sicherheitssystem deines Labors meldet Alarm.");
     }
+
     @SneakyThrows
     public void clearLaboratory(FactionData attacker, FactionData defender) {
         LaboratoryAttack attack = getAttack(attacker);
@@ -242,14 +293,14 @@ public class Laboratory implements CommandExecutor {
                 }
             }
         }
-        if (defender.storage.getProceedingStarted() != null)  {
+        if (defender.storage.getProceedingStarted() != null) {
             weedAmount += defender.storage.getProceedingAmount();
             defender.storage.setProceedingAmount(0);
             defender.storage.setProceedingStarted(null);
         }
         attacker.storage.setWeed(attacker.storage.getWeed() + weedAmount);
         attacker.storage.setJoint(attacker.storage.getJoint() + jointAmount);
-        PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = ?");
+        PreparedStatement deleteStatement = connection.prepareStatement("DELETE pl FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = ?");
         deleteStatement.setString(1, defender.getName().toLowerCase());
         deleteStatement.execute();
     }
@@ -264,11 +315,86 @@ public class Laboratory implements CommandExecutor {
             }
         }
     }
+
+    @EventHandler
+    public void onMinute(MinuteTickEvent event) {
+        for (LaboratoryAttack attack : attacks) {
+            System.out.println(attack.getStarted());
+            if (!attack.doorOpened) {
+                boolean near = false;
+                RegisteredBlock block;
+                for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                    if (registeredBlock.getInfo().equalsIgnoreCase("laboratory")) {
+                        int id = Integer.parseInt(registeredBlock.getInfoValue());
+                        if (attack.defender.getLaboratory() == id) {
+                            for (PlayerData playerData : playerManager.getPlayers()) {
+                                if (playerData.getFaction() != null) {
+                                    if (playerData.getFaction().equalsIgnoreCase(attack.attacker.getName())) {
+                                        if (registeredBlock.getLocation().distance(playerData.getPlayer().getLocation()) < 5) {
+                                            near = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!near) {
+                    factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§a Die Angreifer haben es nicht geschafft die Tür aufzuschweißen.");
+                    factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr habt es nicht geschafft das Labor von " + attack.defender.getName() + " aufzuschweißen.");
+                    attacks.remove(attack);
+                } else {
+                    LocalDateTime attackStartTime = attack.getStarted();
+                    LocalDateTime after = attack.getStarted().plusMinutes(1);
+                    System.out.println(after);
+                    if (after.isAfter(LocalDateTime.now())) {
+                        attack.setDoorOpened(true);
+                        factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Die Tür ist nun offen, 10 Minuten bis die Inhalte geklaut werden können. (/labor)");
+                        factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§a Eure Tür wurde aufgeschweißt, 10 Minuten bis die Inhalte geklaut werden können.");
+                    }
+                }
+            } else {
+                LocalDateTime attackStartTime = attack.getStarted();
+                boolean near = false;
+                for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                    if (registeredBlock.getInfo().equalsIgnoreCase("laboratory")) {
+                        int id = Integer.parseInt(registeredBlock.getInfoValue());
+                        if (attack.defender.getLaboratory() == id) {
+                            for (PlayerData playerData : playerManager.getPlayers()) {
+                                if (playerData.getFaction() != null) {
+                                    if (playerData.getFaction().equalsIgnoreCase(attack.attacker.getName())) {
+                                        if (registeredBlock.getLocation().distance(playerData.getPlayer().getLocation()) < 15) {
+                                            near = true;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (near) {
+                    LocalDateTime after = attack.getStarted().plusMinutes(3);
+                    if (after.isAfter(LocalDateTime.now())) {
+                        attack.setHackedLaboratory(true);
+                        factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr könnt nun die Inhalte entwenden.");
+                    }
+                } else {
+                    factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§a Die Angreifer haben es nicht das Labor auszurauben.");
+                    factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr habt es nicht geschafft das Labor von " + attack.defender.getName() + " auszurauben.");
+                    attacks.remove(attack);
+                }
+            }
+        }
+    }
+
     private class LaboratoryAttack {
         public final FactionData attacker;
         public final FactionData defender;
+        private LocalDateTime started;
         private boolean doorOpened;
         private boolean hackedLaboratory;
+
         public LaboratoryAttack(FactionData attacker, FactionData defender) {
             this.attacker = attacker;
             this.defender = defender;
@@ -288,6 +414,14 @@ public class Laboratory implements CommandExecutor {
 
         public void setHackedLaboratory(boolean hackedLaboratory) {
             this.hackedLaboratory = hackedLaboratory;
+        }
+
+        public LocalDateTime getStarted() {
+            return started;
+        }
+
+        public void setStarted(LocalDateTime started) {
+            this.started = started;
         }
     }
 }

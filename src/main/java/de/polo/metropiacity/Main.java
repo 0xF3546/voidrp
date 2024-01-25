@@ -63,6 +63,7 @@ public final class Main extends JavaPlugin {
     public Weapons weapons;
     public BlockManager blockManager;
     public GamePlay gamePlay;
+    public Laboratory laboratory;
 
     public void onLoad() {
         instance = this;
@@ -88,6 +89,7 @@ public final class Main extends JavaPlugin {
         weapons = new Weapons(utils);
         blockManager = new BlockManager(mySQL);
         isOnline = true;
+        laboratory = new Laboratory(playerManager, factionManager, locationManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons);
 
@@ -130,7 +132,7 @@ public final class Main extends JavaPlugin {
         new RespawnListener(playerManager);
         new PlayerMoveListener(playerManager, utils);
         new PlayerLoginListener();
-        new PlayerInteractListener(playerManager, utils, commands, blockManager);
+        new PlayerInteractListener(playerManager, utils, commands, blockManager, factionManager, laboratory);
         new PlayerInteractWithPlayerListener(playerManager);
         new ExpPickupListener();
         new ItemPickUpListener();
@@ -496,7 +498,6 @@ public final class Main extends JavaPlugin {
         public NoteCommand noteCommand;
         public RegisterblockCommand registerblockCommand;
         public RegisterATMCommand registerATMCommand;
-        public Laboratory laboratory;
         //public GetSkinCommand getSkinCommand;
         public ApothekeCommand apothekeCommand;
         public ApothekenCommand apothekenCommand;
@@ -632,7 +633,6 @@ public final class Main extends JavaPlugin {
             //GetSkinCommand getSkinCommand = new GetSkinCommand(playerManager);
             registerblockCommand = new RegisterblockCommand(playerManager, mySQL, blockManager);
             registerATMCommand = new RegisterATMCommand(playerManager, adminManager, mySQL);
-            laboratory = new Laboratory(playerManager, factionManager, locationManager);
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
             plantCommand = new PlantCommand(playerManager, locationManager, gamePlay);

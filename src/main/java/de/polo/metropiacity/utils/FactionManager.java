@@ -65,6 +65,7 @@ public class FactionManager {
             factionData.setForumID_Leader(locs.getInt("forumID_Leader"));
             factionData.setHasLaboratory(locs.getBoolean("hasLaboratory"));
             factionData.setJointsMade(locs.getInt("jointsMade"));
+            factionData.setLaboratory(locs.getInt("laboratory"));
             factionData.storage.setJoint(locs.getInt("joint"));
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));
