@@ -3,6 +3,7 @@ package de.polo.metropiacity.utils.playerUtils;
 import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.dataStorage.RegisteredBlock;
+import de.polo.metropiacity.dataStorage.WeaponData;
 import de.polo.metropiacity.utils.AdminManager;
 import de.polo.metropiacity.utils.LocationManager;
 import de.polo.metropiacity.utils.PlayerManager;
@@ -10,6 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -137,7 +140,14 @@ public class DeathUtils {
             player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
             playerData.setDead(false);
             playerData.setDeathTime(0);
+            Inventory inventory = player.getInventory();
             player.getInventory().clear();
+            for (ItemStack itemStack : inventory.getContents()) {
+                WeaponData weaponData = Main.getInstance().weapons.getWeaponData(itemStack.getType());
+                if (weaponData != null) {
+                    Main.getInstance().weapons.removeWeapon(player, itemStack);
+                }
+            }
         }
         Item skull = deathSkulls.get(player.getUniqueId().toString());
         skull.remove();

@@ -25,7 +25,6 @@ public class ServiceCommand implements CommandExecutor {
         if (args.length >= 1) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             if (playerData.getVariable("service") == null) {
-                if (PhoneUtils.hasPhone(player)) {
                     if (!playerData.isFlightmode()) {
                         if (Integer.parseInt(args[0]) == 112 || Integer.parseInt(args[0]) == 110) {
                             StringBuilder msg = new StringBuilder(args[1]);
@@ -41,9 +40,6 @@ public class ServiceCommand implements CommandExecutor {
                     } else {
                         player.sendMessage(PhoneUtils.error_flightmode);
                     }
-                } else {
-                    player.sendMessage(PhoneUtils.error_nophone);
-                }
             } else {
                 player.sendMessage(Main.error + "Du hast bereits einen Service offen.");
             }

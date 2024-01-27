@@ -136,8 +136,6 @@ public class Vehicles implements Listener, CommandExecutor {
 
         VehicleData vehicleData = vehicleDataMap.get(playerVehicleData.getType());
         minecart.setMaxSpeed(vehicleData.getMaxspeed());
-        System.out.println("Vehicle mit ID " + playerVehicleData.getId() + " gespawned.");
-        System.out.println(minecart.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER));
     }
 
     public static void deleteVehicleById(Integer id) throws SQLException {
@@ -274,8 +272,6 @@ public class Vehicles implements Listener, CommandExecutor {
                 if (direction.getY() < 0) {
                     player.getVehicle().setVelocity(newVelocity);
                 }
-                System.out.println(direction.getY());
-
             }
         }
     }
@@ -324,9 +320,9 @@ public class Vehicles implements Listener, CommandExecutor {
     }
     @EventHandler
     public void onVehicleDamage(VehicleDamageEvent event) {
-        if (event.getVehicle().getType() == EntityType.MINECART) {
-            if (event.getVehicle().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.STRING) != null)
-                event.setCancelled(true);
+        if (event.getVehicle() instanceof Minecart) {
+            Minecart minecart = (Minecart) event.getVehicle();
+            event.setCancelled(true);
         }
     }
     @Override
@@ -424,7 +420,6 @@ public class Vehicles implements Listener, CommandExecutor {
         } else {
             for (PlayerVehicleData playerVehicleData : playerVehicleDataMap.values()) {
                 if (playerVehicleData.getGarage() == station && playerVehicleData.isParked() && playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
-                    System.out.println("1 gefunden");
                     VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
                     inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName()));
                     ItemMeta meta = inv.getItem(i).getItemMeta();

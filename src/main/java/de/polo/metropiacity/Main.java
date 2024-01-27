@@ -86,7 +86,7 @@ public final class Main extends JavaPlugin {
         computerUtils = new ComputerUtils(playerManager, factionManager);
         businessManager = new BusinessManager(playerManager);
         streetwar = new Streetwar(playerManager, factionManager, utils);
-        weapons = new Weapons(utils);
+        weapons = new Weapons(utils, playerManager);
         blockManager = new BlockManager(mySQL);
         isOnline = true;
         laboratory = new Laboratory(playerManager, factionManager, locationManager);
@@ -107,7 +107,7 @@ public final class Main extends JavaPlugin {
 
             Shop.loadShopItems();
 
-            teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
+            //teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -473,7 +473,6 @@ public final class Main extends JavaPlugin {
         public BeziehungCommand beziehungCommand;
         public TrennenCommand trennenCommand;
         public AntragCommand antragCommand;
-        public SelfCommand selfCommand;
         public GarageCommand garageCommand;
         public AktenCommand aktenCommand;
         public SpecCommand specCommand;
@@ -510,6 +509,8 @@ public final class Main extends JavaPlugin {
         public TeamSpeak teamSpeak;
         public FDoorCommand fDoorCommand;
         public ChangeSpawnCommand changeSpawnCommand;
+        public FindLaboratoryCommand findLaboratoryCommand;
+        public InvSeeCommand invSeeCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -559,7 +560,7 @@ public final class Main extends JavaPlugin {
             callCommand = new CallCommand(playerManager, utils);
             auflegenCommand = new AuflegenCommand(utils);
             jailtimeCommand = new JailtimeCommand(playerManager);
-            dropCommand = new DropCommand(playerManager, commands);
+            dropCommand = new DropCommand(playerManager);
             lebensmittelLieferantCommand = new LebensmittelLieferantCommand(playerManager, locationManager);
             banCommand = new BanCommand(playerManager);
             unbanCommand = new UnbanCommand(playerManager, adminManager);
@@ -607,7 +608,6 @@ public final class Main extends JavaPlugin {
             beziehungCommand = new BeziehungCommand(playerManager, utils);
             trennenCommand = new TrennenCommand(playerManager);
             antragCommand = new AntragCommand(playerManager, utils);
-            selfCommand = new SelfCommand(playerManager);
             garageCommand = new GarageCommand(locationManager, vehicles);
             aktenCommand = new AktenCommand(playerManager);
             specCommand = new SpecCommand(playerManager, adminManager);
@@ -630,7 +630,6 @@ public final class Main extends JavaPlugin {
             banListCommand = new BanListCommand(playerManager);
             gmCommand = new GMCommand(playerManager);
             noteCommand = new NoteCommand(playerManager, utils);
-            //GetSkinCommand getSkinCommand = new GetSkinCommand(playerManager);
             registerblockCommand = new RegisterblockCommand(playerManager, mySQL, blockManager);
             registerATMCommand = new RegisterATMCommand(playerManager, adminManager, mySQL);
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
@@ -644,6 +643,8 @@ public final class Main extends JavaPlugin {
             teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
             fDoorCommand = new FDoorCommand(playerManager, blockManager, locationManager);
             changeSpawnCommand = new ChangeSpawnCommand(playerManager, utils);
+            findLaboratoryCommand = new FindLaboratoryCommand(playerManager, utils, locationManager);
+            invSeeCommand = new InvSeeCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

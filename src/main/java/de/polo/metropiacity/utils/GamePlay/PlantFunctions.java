@@ -94,6 +94,10 @@ public class PlantFunctions implements Listener {
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", Arrays.asList("§8 ➥ §7Besitzer§8: " + owner, "§8 ➥ §cKlicke zum attackieren"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (plant.getOwner().equalsIgnoreCase(playerData.getFaction())) {
+                        player.sendMessage(Main.error + "Du kannst deine eigene Plantage nicht übernehmen.");
+                        return;
+                    }
                     player.closeInventory();
                     plant.setLastAttack(LocalDateTime.now());
                     factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§c Jemand versucht deine deine Plantage zu übernehmen.");

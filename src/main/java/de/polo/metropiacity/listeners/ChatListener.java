@@ -9,6 +9,7 @@ import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
 import de.polo.metropiacity.utils.events.SubmitChatEvent;
 import de.polo.metropiacity.utils.SupportManager;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -66,11 +67,12 @@ public class ChatListener implements Listener {
                         if (player.getLocation().distance(players.getLocation()) <= 8) {
                             players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + player.getName() + " " + type + ":§f " + msg);
                         } else if (player.getLocation().distance(players.getLocation()) <= 15) {
-                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + player.getName() + " " + type + "§8:§7 " + msg);
+                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + player.getName() + " " + type + "§7:§7 " + msg);
                         } else if (player.getLocation().distance(players.getLocation()) <= 28) {
                             players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §8" + player.getName() + " " + type + "§8:§8 " + msg);
                         }
                     }
+                    ChatUtils.LogMessage(msg, player.getUniqueId());
                 } else {
                     player.sendMessage("§7Du bist bewusstlos.");
                 }

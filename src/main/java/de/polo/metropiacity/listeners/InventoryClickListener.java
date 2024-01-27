@@ -40,6 +40,9 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) throws SQLException {
+        if (event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST)) {
+            event.setCancelled(true);
+        }
         if (event.getCurrentItem() == null || !event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST))
             return;
         Player player = (Player) event.getWhoClicked();
@@ -510,29 +513,6 @@ public class InventoryClickListener implements Listener {
                 }
             }
         }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "computer")) {
-            event.setCancelled(true);
-            if (playerData.getVariable("current_app") == null) {
-                switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                    case RED_DYE:
-                        event.getCurrentItem().setType(Material.GREEN_DYE);
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        meta.setDisplayName("§c§lDienst verlassen!");
-                        event.getCurrentItem().setItemMeta(meta);
-                        factionManager.setDuty(player, false);
-                        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst verlassen.");
-                        break;
-                    case GREEN_DYE:
-                        event.getCurrentItem().setType(Material.RED_DYE);
-                        ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
-                        itemMeta.setDisplayName("§a§lDienst betreten!");
-                        event.getCurrentItem().setItemMeta(itemMeta);
-                        factionManager.setDuty(player, true);
-                        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst betreten.");
-                        break;
-                }
-            }
-        }
         if (Objects.equals(playerData.getVariable("current_inventory"), "carlock")) {
             event.setCancelled(true);
             if (event.getCurrentItem().getType() == Material.MINECART) {
@@ -711,40 +691,6 @@ public class InventoryClickListener implements Listener {
                     } else {
                         player.sendMessage(Main.error + "Bitte gib deinen Vornamen noch an!");
                     }
-            }
-        }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "navi")) {
-            event.setCancelled(true);
-            if (event.getSlot() == 22) {
-                playerData.setVariable("chatblock", "gpssearch");
-                player.sendMessage("§8[§eGPS§8]§7 Gib nun den gesuchten GPS Punkt ein.");
-                player.closeInventory();
-            } else {
-                int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                for (NaviData naviData : LocationManager.naviDataMap.values()) {
-                    if (naviData.getId() == id) {
-                        if (naviData.isGroup()) {
-                            SoundManager.clickSound(player);
-                            Inventory inv = Bukkit.createInventory(player, 27, "§8 » " + naviData.getName().replace("&", "§"));
-                            int i = 0;
-                            for (NaviData newNavi : LocationManager.naviDataMap.values()) {
-                                if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
-                                    inv.setItem(i, ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"), "§7 ➥ §e" + (int) locationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m"));
-                                    ItemMeta meta = inv.getItem(i).getItemMeta();
-                                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, newNavi.getId());
-                                    inv.getItem(i).setItemMeta(meta);
-                                    i++;
-                                }
-                            }
-                            player.openInventory(inv);
-                        } else {
-                            player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
-                            LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
-                            utils.navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
-                            player.closeInventory();
-                        }
-                    }
-                }
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "ffa_menu")) {

@@ -88,6 +88,10 @@ public class ApothekeFunctions implements Listener {
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", Arrays.asList("§8 ➥ §7Besitzer§8: " + owner, "§8 ➥ §cKlicke zum attackieren"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (apotheke.getOwner().equalsIgnoreCase(playerData.getFaction())) {
+                        player.sendMessage(Main.error + "Du kannst deine eigene Apotheken nicht einschüchtern.");
+                        return;
+                    }
                     player.closeInventory();
                     apotheke.setLastAttack(LocalDateTime.now());
                     if (apotheke.isStaat()) {
@@ -133,7 +137,7 @@ public class ApothekeFunctions implements Listener {
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Ihr habt aufgehört die Apotheke einzuschüchtern.");
                 return;
             }
-            if (locationManager.getDistanceBetweenCoords(apotheke.getAttacker(), "apotheke-" + apotheke.getId()) >= 10) {
+            if (locationManager.getDistanceBetweenCoords(apotheke.getAttacker(), "apotheke-" + apotheke.getId()) >= 25) {
                 rob.remove(apotheke);
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Die Angreifer haben aufgehört die Apotheke einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Ihr habt aufgehört die Apotheke einzuschüchtern.");
@@ -143,7 +147,11 @@ public class ApothekeFunctions implements Listener {
             if (currentTime >= 10) {
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Die Angreifer haben es geschafft eure Apotheke einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Ihr habt es geschafft die Apotheke einzuschüchtern.");
-                apotheke.setOwner(apotheke.getAttackerFaction());
+                if (apotheke.getAttacker().getName().equalsIgnoreCase("Polizei") || apotheke.getAttacker().getName().equalsIgnoreCase("FBI")) {
+                 apotheke.setOwner("staat");
+                } else {
+                    apotheke.setOwner(apotheke.getAttackerFaction());
+                }
                 apotheke.save();
                 rob.remove(apotheke);
             } else {
@@ -157,21 +165,27 @@ public class ApothekeFunctions implements Listener {
             for (FactionData factionData : factionManager.getFactions()) {
                 int plus = 0;
                 for (Apotheke apotheke : getApotheken()) {
-                    if (apotheke.getOwner().equalsIgnoreCase(factionData.getName())) {
-                        if (apotheke.getLastAttack().getMinute() == event.getMinute()) {
-                            if (apotheke.isStaat()) plus += ServerManager.getPayout("apotheke_besetzt_staat");
-                            else plus += ServerManager.getPayout("apotheke_besetzt_normal");
+                    if (apotheke.getOwner() != null) {
+                        if (factionData.getName() != null) {
+                            if (apotheke.getOwner().equalsIgnoreCase(factionData.getName())) {
+                                if (apotheke.getLastAttack().getMinute() == event.getMinute()) {
+                                    if (apotheke.isStaat()) plus += ServerManager.getPayout("apotheke_besetzt_staat");
+                                    else plus += ServerManager.getPayout("apotheke_besetzt_normal");
+                                }
+                            }
                         }
                     }
                 }
                 factionData.setJointsMade(plus);
                 if (plus >= 1) {
                     for (PlayerData playerData : playerManager.getPlayers()) {
-                        if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
-                            Player player = Bukkit.getPlayer(playerData.getUuid());
-                            player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
-                            factionData.storage.setJoint(factionData.storage.getJoint() + plus);
-                            factionData.storage.save();
+                        if (playerData.getFaction() != null) {
+                            if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                                Player player = Bukkit.getPlayer(playerData.getUuid());
+                                player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
+                                factionData.storage.setJoint(factionData.storage.getJoint() + plus);
+                                factionData.storage.save();
+                            }
                         }
                     }
                 }

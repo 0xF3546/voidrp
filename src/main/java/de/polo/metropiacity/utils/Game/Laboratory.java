@@ -189,7 +189,8 @@ public class Laboratory implements CommandExecutor, Listener {
         } else {
             amountFor64 = weedAmount;
         }
-        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), amountFor64, 0, "§aAlles einlagern", "§8 ➥ §7" + weedAmount + " Stück")) {
+        int finalAmountFor6 = amountFor64;
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), finalAmountFor6, 0, "§aAlles einlagern", "§8 ➥ §7" + weedAmount + " Stück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 ItemManager.removeCustomItem(player, RoleplayItem.MARIHUANA, weedAmount);
@@ -345,7 +346,7 @@ public class Laboratory implements CommandExecutor, Listener {
                     attacks.remove(attack);
                 } else {
                     LocalDateTime attackStartTime = attack.getStarted();
-                    LocalDateTime after = attack.getStarted().plusMinutes(1);
+                    LocalDateTime after = attack.getStarted().plusMinutes(5);
                     System.out.println(after);
                     if (after.isAfter(LocalDateTime.now())) {
                         attack.setDoorOpened(true);
@@ -374,7 +375,7 @@ public class Laboratory implements CommandExecutor, Listener {
                     }
                 }
                 if (near) {
-                    LocalDateTime after = attack.getStarted().plusMinutes(3);
+                    LocalDateTime after = attack.getStarted().plusMinutes(15);
                     if (after.isAfter(LocalDateTime.now())) {
                         attack.setHackedLaboratory(true);
                         factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr könnt nun die Inhalte entwenden.");

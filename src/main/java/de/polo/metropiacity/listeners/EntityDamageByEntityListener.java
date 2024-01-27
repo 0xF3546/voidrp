@@ -1,6 +1,7 @@
 package de.polo.metropiacity.listeners;
 
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.utils.PlayerManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
@@ -20,14 +21,24 @@ public class EntityDamageByEntityListener implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
+            PlayerData playerData = playerManager.getPlayerData(event.getDamager().getUniqueId());
+            if (playerData.getVisum() <= 2 && playerData.getFaction() == null) {
+                event.setCancelled(true);
+            }
             if ((event.getEntity().getType() == EntityType.ARMOR_STAND
                     || event.getEntity().getType() == EntityType.ITEM_FRAME
                     || event.getEntity().getType() == EntityType.PAINTING
                     || event.getEntity().getType() == EntityType.MINECART)
                     && !playerManager.getPlayerData(event.getDamager().getUniqueId()).isAduty()) {
-                event.getEntity().sendMessage("ANGRIFF ABGEBROCHEN");
                 event.setCancelled(true);
             }
+        }
+        if ((event.getEntity().getType() == EntityType.ARMOR_STAND
+                || event.getEntity().getType() == EntityType.ITEM_FRAME
+                || event.getEntity().getType() == EntityType.PAINTING
+                || event.getEntity().getType() == EntityType.MINECART)
+                && !playerManager.getPlayerData(event.getDamager().getUniqueId()).isAduty()) {
+            event.setCancelled(true);
         }
         if (event.getEntity().getType() == EntityType.VILLAGER) {
             String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);

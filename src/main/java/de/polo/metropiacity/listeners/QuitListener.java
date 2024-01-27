@@ -7,11 +7,13 @@ import de.polo.metropiacity.dataStorage.Ticket;
 import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import de.polo.metropiacity.utils.*;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,6 +50,12 @@ public class QuitListener implements Listener {
         }
         if (player.getVehicle() != null) {
             player.getVehicle().eject();
+        }
+        if (playerData.isCuffed()) {
+            player.setWalkSpeed(0.2F);
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+            player.removePotionEffect(PotionEffectType.JUMP);
+            player.removePotionEffect(PotionEffectType.SLOW);
         }
         try {
             Vehicles.deleteVehicleByUUID(player.getUniqueId().toString());

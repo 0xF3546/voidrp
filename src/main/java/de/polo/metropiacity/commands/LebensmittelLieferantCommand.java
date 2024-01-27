@@ -25,7 +25,6 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
         String prefix = "§8[§aLieferant§8] §7";
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.canInteract()) {
             if (playerData.getVariable("job") == null) {
                 if (locationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
                     playerData.setVariable("job", "lieferant");
@@ -50,9 +49,6 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
                     player.sendMessage(Main.error + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
                 }
             }
-        } else {
-            player.sendMessage(Main.error_cantinteract);
-        }
         return false;
     }
 

@@ -30,6 +30,9 @@ public class ServerReloadCommand implements CommandExecutor {
                         Main.waitSeconds(1,() -> {
                             Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 1 Sekunde!");
                             Main.waitSeconds(1,() -> {
+                                for (Player p : Bukkit.getOnlinePlayers()) {
+                                    p.kickPlayer("Server reloaded jetzt!");
+                                }
                                 Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded jetzt!");
                                 Bukkit.reload();
                             });

@@ -47,6 +47,10 @@ public class AdminUnInviteCommand implements CommandExecutor {
             return false;
         }
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(offlinePlayer.getUniqueId().toString());
+        if (offlinePlayer.getName() == null) {
+            player.sendMessage(Main.error + "Der Spieler wurde nicht gefunden.");
+            return false;
+        }
         if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
             if (offlinePlayer.isOnline()) {
                 try {

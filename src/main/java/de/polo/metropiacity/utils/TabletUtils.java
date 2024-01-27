@@ -197,12 +197,12 @@ public class TabletUtils implements Listener {
             inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(Material.BARRIER, 1, 0, "§cAus Gefängnis entlassen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    Player targetlpayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
-                    utils.staatUtil.unarrestPlayer(targetlpayer);
+                    Player target = Bukkit.getPlayer(targetplayerData.getUuid());
+                    utils.staatUtil.unarrestPlayer(target);
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                         if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                            players.sendMessage("§8[§cGefängnis§8] §6" + factionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + targetlpayer.getName() + "§7 entlassen.");
+                            players.sendMessage("§8[§cGefängnis§8] §6" + factionManager.getTitle(player) + " " + player.getName() + "§7 hat §6" + target.getName() + "§7 entlassen.");
                         }
                     }
                     player.closeInventory();
@@ -232,6 +232,7 @@ public class TabletUtils implements Listener {
         int i = 0;
         while (result.next()) {
             if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
+                int id = result.getInt(1);
                 int value1 = result.getInt(3);
                 String value2 = result.getString(2);
                 int value3 = result.getInt(4);
@@ -240,6 +241,13 @@ public class TabletUtils implements Listener {
                     @SneakyThrows
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        if (playerData.getFactionGrade() >= 7) {
+                            if (event.isRightClick()) {
+                                player.sendMessage("§aDu hast die Akte " + value2 + " gelöscht.");
+                                statement.execute("DELETE FROM akten WHERE id = " + id);
+                                player.closeInventory();
+                            }
+                        }
                         if (playerData.getVariable("targetakte") == null) {
                             return;
                         }

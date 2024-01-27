@@ -69,8 +69,10 @@ public class Utils {
 
     public OfflinePlayer getOfflinePlayer(String player) {
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-            if (offlinePlayer.getName().equalsIgnoreCase(player)) {
-                return offlinePlayer;
+            if (offlinePlayer.getName() != null) {
+                if (offlinePlayer.getName().equalsIgnoreCase(player)) {
+                    return offlinePlayer;
+                }
             }
         }
         return null;
@@ -156,21 +158,35 @@ public class Utils {
                 team.addEntry(player.getName());
                 return;
             }
+            String suffix = "";
+            if (playerData.getPermlevel() >= 40) {
+                suffix = "§c◉";
+            } else if (playerData.getPermlevel() >= 10) {
+                suffix = "§d◈";
+            }
+            String color = "§7";
             if (playerData.isDuty()) {
                 switch (playerData.getFaction().toLowerCase()) {
                     case "polizei":
                         Polizei.addEntry(player.getName());
+                        color = "§9";
                         break;
                     case "fbi":
                         FBI.addEntry(player.getName());
+                        color = "§1";
                     case "medic":
                         Medics.addEntry(player.getName());
+                        color = "§c";
                         break;
                     default:
                         team_offduty.addEntry(player.getName());
                         break;
                 }
             }
+            player.setDisplayName(color + player.getName());
+            player.setPlayerListName(color + player.getName() + " " + suffix);
+            player.setCustomName(color   + player.getName());
+            player.setCustomNameVisible(true);
         }
     }
 
@@ -408,6 +424,7 @@ public class Utils {
             }
         }
     }
+
     public LocalDateTime sqlDateToLocalDateTime(Date date) {
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         return localDateTime;

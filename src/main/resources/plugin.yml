@@ -190,3 +190,7 @@ commands:
   equip:
   fdoor:
   changespawn:
+  findlaboratory:
+    aliases: findlabor
+  tell:
+  invsee:

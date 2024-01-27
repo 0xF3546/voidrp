@@ -18,7 +18,11 @@ public enum Drug {
     )),
     JOINT(RoleplayItem.NOBLE_JOINT, Arrays.asList(
             new PotionEffect(PotionEffectType.ABSORPTION, 2 * 60 * 20, 1),
-            new PotionEffect(PotionEffectType.HEAL, 15 * 20, 1)
+            new PotionEffect(PotionEffectType.REGENERATION, 15 * 20, 1)
+    )),
+    ANTIBIOTIKUM(RoleplayItem.ANTIBIOTIKUM, Arrays.asList(
+            new PotionEffect(PotionEffectType.ABSORPTION, 3 * 60 * 20, 3),
+            new PotionEffect(PotionEffectType.REGENERATION, 15 * 20, 1)
     ));
 
     private final RoleplayItem item;

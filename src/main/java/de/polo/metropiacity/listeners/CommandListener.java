@@ -4,6 +4,7 @@ import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.PlayerManager;
 import de.polo.metropiacity.utils.Utils;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,5 +63,6 @@ public class CommandListener implements Listener {
                 event.setCancelled(true);
             }
         }
+        ChatUtils.LogCommand(msg, player.getUniqueId());
     }
 }

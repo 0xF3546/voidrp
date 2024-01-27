@@ -120,6 +120,7 @@ public class ShopCommand implements CommandExecutor {
                     player.sendMessage(Main.error + "Es konnte keine Waffe zur Munition gefunden werden.");
                 } else if (Objects.equals(type, "car")) {
                     Main.getInstance().vehicles.giveVehicle(player, info);
+                    playerManager.removeMoney(player, price, "Kauf eines Fahrzeuges: " + info);
                 } else {
                     playerManager.removeMoney(player, price, "Kauf von: " + item);
                     player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName.replace("&", "§")));

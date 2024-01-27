@@ -68,7 +68,9 @@ public class FFAUtils implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (args.length >= 1) {
+        player.sendMessage(Main.error + "FFA ist gerade nicht Spielbar.");
+        return false;
+        /*if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("join")) {
                 if (playerManager.getPlayerData(player.getUniqueId()).getVariable("current_lobby") == null) {
                     if (locationManager.getDistanceBetweenCoords(player, "ffa") < 5) {
@@ -92,7 +94,7 @@ public class FFAUtils implements CommandExecutor, Listener {
         } else {
             player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave]");
         }
-        return false;
+        return false;*/
     }
 
     public void openFFAMenu(Player player, int page) {

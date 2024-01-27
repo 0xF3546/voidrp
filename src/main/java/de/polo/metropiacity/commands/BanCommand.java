@@ -130,7 +130,7 @@ public class BanCommand implements CommandExecutor {
             player.sendMessage(syntax_error);
             return false;
         }
-        Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grnd: " + banreason);
+        Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grund: " + banreason);
         Statement statement = null;
         try {
             statement = Main.getInstance().mySQL.getStatement();

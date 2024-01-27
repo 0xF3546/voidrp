@@ -1,5 +1,6 @@
 package de.polo.metropiacity.utils;
 
+import de.polo.metropiacity.dataStorage.PlayerData;
 import de.polo.metropiacity.dataStorage.Weapon;
 import de.polo.metropiacity.dataStorage.WeaponData;
 import de.polo.metropiacity.Main;
@@ -31,9 +32,11 @@ public class Weapons implements Listener {
     private final HashMap<Integer, Weapon> weaponList = new HashMap<>();
 
     private final Utils utils;
+    private final PlayerManager playerManager;
 
-    public Weapons(Utils utils) {
+    public Weapons(Utils utils, PlayerManager playerManager) {
         this.utils = utils;
+        this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         try {
             loadWeapons();
@@ -179,6 +182,10 @@ public class Weapons implements Listener {
         Player player = event.getPlayer();
         Action action = event.getAction();
         WeaponData weaponData = weaponDataMap.get(player.getEquipment().getItemInMainHand().getType());
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.isDead()) {
+            return;
+        }
         if (weaponData == null) {
             return;
         }

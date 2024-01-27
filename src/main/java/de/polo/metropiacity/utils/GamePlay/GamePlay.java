@@ -71,7 +71,9 @@ public class GamePlay implements Listener {
 
     public static void useDrug(Player player, Drug drug) {
         for (PotionEffect effect : drug.getEffects()) {
-            player.addPotionEffect(effect);
+            if (!player.hasPotionEffect(effect.getType())) {
+                player.addPotionEffect(effect);
+            }
         }
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 0);
         ItemManager.removeCustomItem(player, drug.getItem(), 1);
@@ -81,6 +83,9 @@ public class GamePlay implements Listener {
                 break;
             case COCAINE:
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " konsumiert Kokain");
+                break;
+            case ANTIBIOTIKUM:
+                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Antibiotikum");
                 break;
         }
     }
@@ -114,13 +119,13 @@ public class GamePlay implements Listener {
 
                 String timeString = String.format("%02d Stunden, %02d Minuten und %02d Sekunden", hoursRemaining, minutesRemaining, secondsRemaining);
 
-                inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 ➥ §7" + factionData.storage.getWeed(), "", "§8 » §fVerarbeitung endet in " + timeString))) {
+                inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 ➥ §7" + factionData.storage.getWeed() + "g", "", "§8 » §fVerarbeitung endet in " + timeString))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 ➥ §7" + factionData.storage.getWeed(), "", "§8 » §cKlicke zum verarbeiten"))) {
+                inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 ➥ §7" + factionData.storage.getWeed() + "g", "", "§8 » §cKlicke zum verarbeiten"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (playerData.getFactionGrade() < 6) {
@@ -133,7 +138,7 @@ public class GamePlay implements Listener {
                     }
                 });
             }
-            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getJoint())) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getJoint()+ " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int amount = 0;
@@ -190,7 +195,7 @@ public class GamePlay implements Listener {
 
                 }
             });
-            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 1, 0, RoleplayItem.COCAINE.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCocaine())) {
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 1, 0, RoleplayItem.COCAINE.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCocaine() + "g")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int amount = 0;
@@ -247,7 +252,7 @@ public class GamePlay implements Listener {
 
                 }
             });
-            inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 1, 0, RoleplayItem.NOBLE_JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getNoble_joint())) {
+            inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 1, 0, RoleplayItem.NOBLE_JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getNoble_joint() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int amount = 0;

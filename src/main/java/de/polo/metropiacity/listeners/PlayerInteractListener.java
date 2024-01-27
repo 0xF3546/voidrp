@@ -135,132 +135,133 @@ public class PlayerInteractListener implements Listener {
                         Main.getInstance().getCooldownManager().setCooldown(player, "mülleimer", 30);
                         Material random = items[new Random().nextInt(items.length)];
                         player.getInventory().addItem(new ItemStack(random));
-                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " duchwühlt einen Mülleimer.");
+                        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " durchwühlt einen Mülleimer.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                     } else {
                         String actionBarText = "§7Warte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "mülleimer") + " Sekunden!";
                         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     }
                 }
-                if (!(event.getClickedBlock().getState() instanceof TileState)) return;
-                TileState state = (TileState) event.getClickedBlock().getState();
-                if (state instanceof Sign) {
-                    event.setCancelled(true);
-                    Sign sign = (Sign) event.getClickedBlock().getState();
-                    if (sign.getLine(1).contains("Bankautomat")) {
-                        for (ATM atm : utils.bankingUtils.getATMs()) {
-                            if (atm.getLocation().getX() == sign.getLocation().getX()
-                                    && atm.getLocation().getY() == sign.getLocation().getY()
-                                    && atm.getLocation().getZ() == sign.getLocation().getZ()) {
-                                utils.bankingUtils.openBankMenu(player, atm);
-                                return;
-                            }
-                        }
-                        player.sendMessage(Main.error + "Dieser Automat wurde noch nicht registriert.");
-                    }
-                    PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
-                    RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
-                    if (Objects.equals(block.getInfo(), "house")) {
-                        HouseData houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
-                        playerData.setIntVariable("current_house", houseData.getNumber());
-                        InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
-                        if (houseData.getOwner() != null) {
-                            OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
-                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName())) {
-                                @Override
-                                public void onClick(InventoryClickEvent event) {
-
+                if (event.getClickedBlock().getState() instanceof TileState) {
+                    TileState state = (TileState) event.getClickedBlock().getState();
+                    if (state instanceof Sign) {
+                        event.setCancelled(true);
+                        Sign sign = (Sign) event.getClickedBlock().getState();
+                        if (sign.getLine(1).contains("Bankautomat")) {
+                            for (ATM atm : utils.bankingUtils.getATMs()) {
+                                if (atm.getLocation().getX() == sign.getLocation().getX()
+                                        && atm.getLocation().getY() == sign.getLocation().getY()
+                                        && atm.getLocation().getZ() == sign.getLocation().getZ()) {
+                                    utils.bankingUtils.openBankMenu(player, atm);
+                                    return;
                                 }
-                            });
-                            if (houseData.getOwner().equals(player.getUniqueId().toString())) {
-                                inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
+                            }
+                            player.sendMessage(Main.error + "Dieser Automat wurde noch nicht registriert.");
+                        }
+                        PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
+                        RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                        if (Objects.equals(block.getInfo(), "house")) {
+                            HouseData houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
+                            playerData.setIntVariable("current_house", houseData.getNumber());
+                            InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
+                            if (houseData.getOwner() != null) {
+                                OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
+                                inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName())) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
-                                        if (utils.housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
-                                            HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
-                                            playerData.addMoney((int) (houseData.getPrice() * 0.8));
-                                            player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
-                                            player.closeInventory();
+
+                                    }
+                                });
+                                if (houseData.getOwner().equals(player.getUniqueId().toString())) {
+                                    inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            if (utils.housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
+                                                HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                                                playerData.addMoney((int) (houseData.getPrice() * 0.8));
+                                                player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
+                                                player.closeInventory();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                } else {
+                                    inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht.")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+
+                                        }
+                                    });
+                                }
                             } else {
-                                inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht.")) {
+                                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer")) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
 
                                     }
                                 });
+                                inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
+                                        player.closeInventory();
+                                    }
+                                });
                             }
-                        } else {
-                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer")) {
+                            inventoryManager.setItem(new CustomItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()))) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
 
                                 }
                             });
-                            inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$")) {
-                                @Override
-                                public void onClick(InventoryClickEvent event) {
-                                    player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
-                                    player.closeInventory();
-                                }
-                            });
-                        }
-                        inventoryManager.setItem(new CustomItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()))) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-
-                            }
-                        });
-                        if (playerData.getVariable("job") == null) {
-                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
-                                @Override
-                                public void onClick(InventoryClickEvent event) {
-
-                                }
-                            });
-                        } else {
-                            if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                            if (playerData.getVariable("job") == null) {
                                 inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
 
                                     }
                                 });
-                            } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
-                                if (commands.postboteCommand.canGive(houseData.getNumber())) {
-                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
-                                            Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
-                                            player.closeInventory();
-                                        }
-                                    });
-                                } else {
-                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert")) {
+                            } else {
+                                if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
 
                                         }
                                     });
-                                }
-                            } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                if (commands.muellmannCommand.canGet(houseData.getNumber())) {
-                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
-                                            Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
-                                            player.closeInventory();
-                                        }
-                                    });
-                                } else {
-                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert")) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
+                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
+                                    if (commands.postboteCommand.canGive(houseData.getNumber())) {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                player.closeInventory();
+                                            }
+                                        });
+                                    } else {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
 
-                                        }
-                                    });
+                                            }
+                                        });
+                                    }
+                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                    if (commands.muellmannCommand.canGet(houseData.getNumber())) {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                player.closeInventory();
+                                            }
+                                        });
+                                    } else {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -306,6 +307,8 @@ public class PlayerInteractListener implements Listener {
                 GamePlay.useDrug(player, Drug.COCAINE);
             } else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.JOINT.getItem().getDisplayName())) {
                 GamePlay.useDrug(player, Drug.JOINT);
+            } else if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(Drug.ANTIBIOTIKUM.getItem().getDisplayName())) {
+                GamePlay.useDrug(player, Drug.ANTIBIOTIKUM);
             }
         }
     }

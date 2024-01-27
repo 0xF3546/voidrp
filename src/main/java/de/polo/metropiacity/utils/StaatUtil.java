@@ -29,6 +29,7 @@ public class StaatUtil {
     private final FactionManager factionManager;
     private final LocationManager locationManager;
     private final Utils utils;
+
     public StaatUtil(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -104,7 +105,7 @@ public class StaatUtil {
     }
 
     @SneakyThrows
-    public void unarrestPlayer(Player player)  {
+    public void unarrestPlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setJailed(false);
         playerData.setHafteinheiten(0);
@@ -116,7 +117,7 @@ public class StaatUtil {
     }
 
     @SneakyThrows
-    public void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe)  {
+    public void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) {
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
@@ -166,23 +167,29 @@ public class StaatUtil {
         player.sendMessage("§8[§6Notruf§8]§e Du hast einen Notruf abgesetzt.");
         if (service == 110) {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                if (playerManager.getPlayerData(p.getUniqueId()).getFaction().equals("Polizei")) {
-                    p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
-                    TextComponent message = new TextComponent("§8 ➥ §bAnnehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
-                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
-                    message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
-                    p.spigot().sendMessage(message);
+                PlayerData pData = playerManager.getPlayerData(p.getUniqueId());
+                if (pData.getFaction() != null) {
+                    if (pData.getFaction().equals("Polizei")) {
+                        p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
+                        TextComponent message = new TextComponent("§8 ➥ §bAnnehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
+                        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
+                        message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
+                        p.spigot().sendMessage(message);
+                    }
                 }
             }
         }
         if (service == 112) {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                if (playerManager.getPlayerData(p.getUniqueId()).getFaction().equals("Medic")) {
-                    p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
-                    TextComponent message = new TextComponent("§8 ➥ §bAnnehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
-                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
-                    message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
-                    p.spigot().sendMessage(message);
+                PlayerData pData = playerManager.getPlayerData(p.getUniqueId());
+                if (pData.getFaction() != null) {
+                    if (pData.getFaction().equals("Medic")) {
+                        p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat ein Notruf abgesendet: " + reason);
+                        TextComponent message = new TextComponent("§8 ➥ §bAnnehmen [" + (int) p.getLocation().distance(player.getLocation()) + "m]");
+                        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§oNotruf annehmen")));
+                        message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptservice " + player.getName()));
+                        p.spigot().sendMessage(message);
+                    }
                 }
             }
         }

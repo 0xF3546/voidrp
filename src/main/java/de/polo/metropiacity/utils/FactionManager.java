@@ -169,9 +169,11 @@ public class FactionManager {
         }
         for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-            if (offlinePlayer.getName().equalsIgnoreCase(player.getName())) {
-                dbPlayerData.setFaction_grade(0);
-                dbPlayerData.setFaction(null);
+            if (offlinePlayer.getName() != null) {
+                if (offlinePlayer.getName().equalsIgnoreCase(player.getName())) {
+                    dbPlayerData.setFaction_grade(0);
+                    dbPlayerData.setFaction(null);
+                }
             }
         }
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -332,6 +334,7 @@ public class FactionManager {
                 playerData.setDuty(false);
             }
             Utils.Tablist.updatePlayer(player);
+
         } catch (SQLException e) {
             player.sendMessage(Main.error + "Fehler.");
             throw new RuntimeException(e);

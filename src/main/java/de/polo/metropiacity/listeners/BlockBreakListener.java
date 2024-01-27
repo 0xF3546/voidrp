@@ -40,6 +40,9 @@ public class BlockBreakListener implements Listener {
                     case "farmer":
                         commands.farmerCommand.blockBroken(player, event.getBlock(), event);
                         break;
+                    default:
+                        event.setCancelled(true);
+                        break;
                 }
                 PersistentDataContainer container = new CustomBlockData(event.getBlock(), Main.getInstance());
                 Bukkit.getPluginManager().callEvent(new BreakPersistentBlockEvent(player, event.getBlock()));

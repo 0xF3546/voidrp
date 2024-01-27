@@ -106,6 +106,7 @@ public class PostboteCommand implements CommandExecutor {
         SoundManager.successSound(player);
         playerData.getScoreboard("postbote").killScoreboard();
         Main.getInstance().getCooldownManager().setCooldown(player, "postbote", 600);
+        player.closeInventory();
     }
 
     public void startTransport(Player player) {

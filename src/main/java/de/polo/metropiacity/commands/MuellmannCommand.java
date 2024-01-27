@@ -109,6 +109,7 @@ public class MuellmannCommand implements CommandExecutor {
         SoundManager.successSound(player);
         playerData.getScoreboard("müllmann").killScoreboard();
         Main.getInstance().getCooldownManager().setCooldown(player, "müllmann", 600);
+        player.closeInventory();
     }
 
     public void startTransport(Player player) {

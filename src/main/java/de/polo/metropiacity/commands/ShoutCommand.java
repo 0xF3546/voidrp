@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Utils;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +28,7 @@ public class ShoutCommand implements CommandExecutor {
                 players.sendMessage("§8[§2" + range + "§8] §f" + player.getName() + " schreit§8:§f " + utils.stringArrayToString(args) + "!");
             }
         }
+        ChatUtils.LogMessage(utils.stringArrayToString(args), player.getUniqueId());
         return false;
     }
 }

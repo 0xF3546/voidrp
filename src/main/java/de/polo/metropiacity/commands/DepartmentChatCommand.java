@@ -26,8 +26,10 @@ public class DepartmentChatCommand implements CommandExecutor {
                     msg.append(" ").append(args[i]);
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (playerManager.isInStaatsFrak(players)) {
-                        players.sendMessage("§c" + playerData.getFaction() + " " + player.getName() + "§8:§7 " + msg);
+                    if (playerManager.getPlayerData(player).getFaction() != null) {
+                        if (playerManager.isInStaatsFrak(players)) {
+                            players.sendMessage("§c" + playerData.getFaction() + " " + player.getName() + "§8:§7 " + msg);
+                        }
                     }
                 }
             } else {

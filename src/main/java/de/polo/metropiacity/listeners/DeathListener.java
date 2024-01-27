@@ -96,10 +96,12 @@ public class DeathListener implements Listener {
                             }
                         }
                         GangwarData gangwarData = GangwarUtils.gangwarDataMap.get(playerData.getVariable("gangwar"));
-                        if (gangwarData.getAttacker().equals(killerData.getFaction())) {
-                            gangwarData.setAttackerPoints(gangwarData.getAttackerPoints() + 3);
-                        } else {
-                            gangwarData.setDefenderPoints(gangwarData.getDefenderPoints() + 3);
+                        if (!(playerData.getFaction().equals(killerData.getFaction()))) {
+                            if (gangwarData.getAttacker().equals(killerData.getFaction())) {
+                                gangwarData.setAttackerPoints(gangwarData.getAttackerPoints() + 3);
+                            } else {
+                                gangwarData.setDefenderPoints(gangwarData.getDefenderPoints() + 3);
+                            }
                         }
                     } else {
                         if (player.getKiller() == null) return;

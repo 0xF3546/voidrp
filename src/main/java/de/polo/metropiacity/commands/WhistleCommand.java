@@ -2,6 +2,7 @@ package de.polo.metropiacity.commands;
 
 import de.polo.metropiacity.Main;
 import de.polo.metropiacity.utils.Utils;
+import de.polo.metropiacity.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +28,7 @@ public class WhistleCommand implements CommandExecutor {
                 players.sendMessage("§8[§2" + range +"§8] §8" + player.getName() + " flüstert§8:§8 " + utils.stringArrayToString(args));
             }
         }
+        ChatUtils.LogMessage(utils.stringArrayToString(args), player.getUniqueId());
         return false;
     }
 }

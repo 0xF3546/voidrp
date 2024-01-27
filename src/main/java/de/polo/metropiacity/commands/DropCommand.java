@@ -10,10 +10,8 @@ import org.bukkit.entity.Player;
 
 public class DropCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final Main.Commands commands;
-    public DropCommand(PlayerManager playerManager, Main.Commands commands) {
+    public DropCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.commands = commands;
         Main.registerCommand("drop", this);
     }
     @Override
@@ -23,10 +21,10 @@ public class DropCommand implements CommandExecutor {
         if (playerData.getVariable("job") != null) {
             switch (playerData.getVariable("job").toString()) {
                 case "lieferant":
-                    commands.lebensmittelLieferantCommand.dropLieferung(player);
+                    Main.getInstance().commands.lebensmittelLieferantCommand.dropLieferung(player);
                     break;
                 case "weizenlieferant":
-                    commands.farmerCommand.dropTransport(player);
+                    Main.getInstance().commands.farmerCommand.dropTransport(player);
                     break;
             }
         } else {

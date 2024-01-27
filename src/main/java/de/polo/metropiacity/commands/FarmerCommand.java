@@ -141,6 +141,7 @@ public class FarmerCommand implements CommandExecutor {
             throw new RuntimeException(e);
         }
         Main.getInstance().getCooldownManager().setCooldown(player, "farmer", 600);
+        player.closeInventory();
     }
 
     public void blockBroken(Player player, Block block, BlockBreakEvent event) {
@@ -173,7 +174,7 @@ public class FarmerCommand implements CommandExecutor {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.setVariable("job", "farmer");
             player.sendMessage(prefix + "Du bist nun §eFarmer§7.");
-            player.sendMessage(prefix + "Baue §e" + player.getName() + " Heuballen§7 ab.");
+            player.sendMessage(prefix + "Baue §e9 Heuballen§7 ab.");
             playerData.setIntVariable("heuballen_remaining", 9);
             playerData.setIntVariable("heuballen", 0);
             Scoreboard scoreboard = new Scoreboard(player);
@@ -215,6 +216,7 @@ public class FarmerCommand implements CommandExecutor {
                 player.sendMessage("§8[§eLieferant§8]§7 Du hast alles abgegeben. Danke!");
                 playerData.setVariable("job", null);
                 playerData.getScoreboard("weizen").killScoreboard();
+                player.closeInventory();
             }
         } else {
             player.sendMessage(Main.error + "Du bist nicht in der nähe der Mühle.");

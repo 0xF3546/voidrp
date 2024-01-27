@@ -42,31 +42,33 @@ public class UninviteCommand implements CommandExecutor {
         }
         for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-            if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
-                if (dbPlayerData.getFaction().equals(playerData.getFaction())) {
-                    if (dbPlayerData.getFaction_grade() < playerData.getFactionGrade()) {
-                        if (offlinePlayer.isOnline()) {
-                            try {
-                                factionManager.removePlayerFromFrak(offlinePlayer.getPlayer());
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
+            if (offlinePlayer.getName() != null) {
+                if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
+                    if (dbPlayerData.getFaction().equals(playerData.getFaction())) {
+                        if (dbPlayerData.getFaction_grade() < playerData.getFactionGrade()) {
+                            if (offlinePlayer.isOnline()) {
+                                try {
+                                    factionManager.removePlayerFromFrak(offlinePlayer.getPlayer());
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                try {
+                                    factionManager.removeOfflinePlayerFromFrak(offlinePlayer);
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
+                            factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
+                            adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
                         } else {
-                            try {
-                                factionManager.removeOfflinePlayerFromFrak(offlinePlayer);
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
+                            player.sendMessage(Main.error_nopermission);
                         }
-                        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
-                        adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
                     } else {
-                        player.sendMessage(Main.error_nopermission);
+                        player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht in deiner Fraktion.");
                     }
-                } else {
-                    player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht in deiner Fraktion.");
+                    return true;
                 }
-                return true;
             }
         }
         player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
