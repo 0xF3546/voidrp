@@ -1,10 +1,7 @@
 package de.polo.metropiacity.utils.Game;
 
 import de.polo.metropiacity.Main;
-import de.polo.metropiacity.dataStorage.FactionData;
-import de.polo.metropiacity.dataStorage.PlayerData;
-import de.polo.metropiacity.dataStorage.PlayerLaboratory;
-import de.polo.metropiacity.dataStorage.RegisteredBlock;
+import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.utils.FactionManager;
 import de.polo.metropiacity.utils.InventoryManager.CustomItem;
 import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
@@ -163,7 +160,7 @@ public class Laboratory implements CommandExecutor, Listener {
         inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), Arrays.asList("§8 » §7" + playerData.getLaboratory().getJointAmount() + " Stück", "", "§cKlicke zum entfernen"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                ItemManager.addCustomItem(player, RoleplayItem.JOINT, playerData.getLaboratory().getJointAmount());
+                ItemManager.addCustomItem(player, RoleplayItem.JOINT, (int) playerData.getLaboratory().getJointAmount());
                 player.sendMessage("§8[§" + factionData.getPrimaryColor() + "Labor§8]§a Du hast " + playerData.getLaboratory().getJointAmount() + " Joints aus dem Labor genommen.");
                 playerData.getLaboratory().setJointAmount(0);
                 playerData.getLaboratory().save();
@@ -308,11 +305,17 @@ public class Laboratory implements CommandExecutor, Listener {
 
     public void pushTick() {
         for (PlayerLaboratory laboratory : playerLaboratories) {
-            if (laboratory.getWeedAmount() >= 2) {
-                laboratory.setWeedAmount(laboratory.getWeedAmount() - 2);
-                laboratory.setJointAmount(laboratory.getJointAmount() + 1);
-            } else {
-                laboratory.stop();
+            PlayerData playerData = playerManager.getPlayerData(laboratory.getOwner());
+            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            for (Plant plant : Main.getInstance().gamePlay.plant.getPlants()) {
+                if (plant.getOwner().equalsIgnoreCase(factionData.getName())) {
+                    if (laboratory.getWeedAmount() >= (2 * plant.getMultiplier())) {
+                        laboratory.setWeedAmount(laboratory.getWeedAmount() - (int) (2 * plant.getMultiplier()));
+                        laboratory.setJointAmount(laboratory.getJointAmount() + (1 * plant.getMultiplier()));
+                    } else {
+                        laboratory.stop();
+                    }
+                }
             }
         }
     }

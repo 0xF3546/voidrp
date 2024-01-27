@@ -2,6 +2,8 @@ package de.polo.metropiacity.utils;
 
 import de.polo.metropiacity.dataStorage.*;
 import de.polo.metropiacity.Main;
+import de.polo.metropiacity.utils.InventoryManager.CustomItem;
+import de.polo.metropiacity.utils.InventoryManager.InventoryManager;
 import de.polo.metropiacity.utils.playerUtils.Scoreboard;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -10,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
@@ -242,6 +245,12 @@ public class Vehicles implements Listener, CommandExecutor {
             Player player = (Player) event.getExited();
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.getScoreboard("vehicle").killScoreboard();
+            int id = event.getVehicle().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+            PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
+            playerVehicleData.setX((int) event.getVehicle().getLocation().getX());
+            playerVehicleData.setY((int) event.getVehicle().getLocation().getY());
+            playerVehicleData.setZ((int) event.getVehicle().getLocation().getZ());
+            playerVehicleData.save();
         }
     }
     private final HashMap<Player, Double> playerSpeeds = new HashMap<>();
@@ -365,23 +374,20 @@ public class Vehicles implements Listener, CommandExecutor {
                 player.openInventory(inv);
             }
             if (args[0].equalsIgnoreCase("find")) {
-                Inventory inv = Bukkit.createInventory(player, 9, "§8 » §cFahrzeug suchen");
+                InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §cFahrzeug suchen", true, false);
                 int i = 0;
-                for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
-                    if (entity.getType() == EntityType.MINECART) {
-                        NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
-                        if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
-                            String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-                            int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                            ItemMeta meta = inv.getItem(i).getItemMeta();
-                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
-                            inv.getItem(i).setItemMeta(meta);
-                            i++;
-                        }
+                for (PlayerVehicleData data : playerVehicleDataMap.values()) {
+                    if (data.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
+                        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§c" + data.getType())) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                Main.getInstance().utils.navigation.createNaviByCord(player, data.getX(), data.getY(), data.getZ());
+                                player.sendMessage("§aDein Fahrzeug wurde markiert.");
+                            }
+                        });
+                        i++;
                     }
                 }
-                playerData.setVariable("current_inventory", "findcar");
-                player.openInventory(inv);
             }
         } else {
             player.sendMessage(Main.error + "Syntax-Fehler: /car [start/stop/lock/find]");

@@ -68,7 +68,8 @@ public class FarmerCommand implements CommandExecutor {
                         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
-
+                                startTransport(player);
+                                player.closeInventory();
                             }
                         });
                     } else {

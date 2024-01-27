@@ -45,6 +45,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
                             targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
                             targetplayer.sendMessage(" ");
+                            targetplayer.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));
                             if (!playerData.getRelationShip().isEmpty()) {
                                 for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
                                 {
@@ -81,6 +82,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
                 player.sendMessage(" ");
+                player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));
                 if (!playerData.getRelationShip().isEmpty()) {
                     for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
                     {

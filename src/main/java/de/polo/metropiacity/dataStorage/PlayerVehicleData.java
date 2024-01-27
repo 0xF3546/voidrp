@@ -1,6 +1,10 @@
 package de.polo.metropiacity.dataStorage;
 
+import de.polo.metropiacity.Main;
+import lombok.SneakyThrows;
 import org.bukkit.World;
+
+import java.sql.Statement;
 
 public class PlayerVehicleData {
     private int id;
@@ -119,5 +123,12 @@ public class PlayerVehicleData {
 
     public void setGarage(int garage) {
         this.garage = garage;
+    }
+
+    @SneakyThrows
+    public void save() {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + getKm() + ", `fuel` = " + getFuel() + ", `x` = " + getX() + ", `y` = " + getY() + ", `z` = " + getZ() + ", `welt` = '" + getWelt() + "', `yaw` = " + getYaw() + ", `pitch` = " + getPitch() + " WHERE `id` = " + getId());
+
     }
 }

@@ -511,6 +511,8 @@ public final class Main extends JavaPlugin {
         public ChangeSpawnCommand changeSpawnCommand;
         public FindLaboratoryCommand findLaboratoryCommand;
         public InvSeeCommand invSeeCommand;
+        public UseCommand useCommand;
+        public AusziehenCommand ausziehenCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -640,11 +642,13 @@ public final class Main extends JavaPlugin {
             equipCommand = new EquipCommand(playerManager, factionManager, locationManager, weapons);
             tsLinkCommand = new TSLinkCommand(playerManager);
             tsUnlinkCommand = new TSUnlinkCommand(playerManager);
-            teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
+            //teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
             fDoorCommand = new FDoorCommand(playerManager, blockManager, locationManager);
             changeSpawnCommand = new ChangeSpawnCommand(playerManager, utils);
             findLaboratoryCommand = new FindLaboratoryCommand(playerManager, utils, locationManager);
             invSeeCommand = new InvSeeCommand(playerManager);
+            useCommand = new UseCommand(gamePlay);
+            ausziehenCommand = new AusziehenCommand(utils);
 
             main.registerCommands();
             main.registerListener(this);

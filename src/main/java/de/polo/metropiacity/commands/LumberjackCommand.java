@@ -73,7 +73,7 @@ public class LumberjackCommand implements CommandExecutor {
                         }
                     });
                 } else {
-                    if (!playerData.getVariable("job").equals("Holzfäller")) {
+                    if (!playerData.getVariable("job").toString().equalsIgnoreCase("Holzfäller")) {
                         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
@@ -84,7 +84,7 @@ public class LumberjackCommand implements CommandExecutor {
                         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * Main.getInstance().serverManager.getPayout("holz") + "$")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
-                                Main.getInstance().commands.lumberjackCommand.quitJob(player, false);
+                                quitJob(player, false);
                                 player.closeInventory();
                             }
                         });

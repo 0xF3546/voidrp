@@ -73,6 +73,26 @@ public class Housing {
             return true;
         }
     }
+
+    public String getHouseAccessAsString(PlayerData playerData) {
+        StringBuilder returnVal = null;
+        for (HouseData houseData : houseDataMap.values()) {
+            if (houseData.getOwner() != null) {
+                if (houseData.getOwner().equalsIgnoreCase(playerData.getUuid().toString()) || houseData.getRenter().get(playerData.getUuid().toString()) != null) {
+                    if (returnVal == null) {
+                        returnVal = new StringBuilder(String.valueOf(houseData.getNumber()));
+                    } else {
+                        returnVal.append(", ").append(houseData.getNumber());
+                    }
+                }
+            }
+        }
+        if (returnVal == null) {
+            new StringBuilder("");
+        }
+        return returnVal.toString();
+    }
+
     public void updateRenter(int number) {
         HouseData houseData = houseDataMap.get(number);
         try {

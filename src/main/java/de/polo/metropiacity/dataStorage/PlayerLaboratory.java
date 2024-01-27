@@ -12,7 +12,7 @@ import java.util.UUID;
 public class PlayerLaboratory {
     private UUID owner;
     private int weedAmount;
-    private int jointAmount;
+    private float jointAmount;
     private boolean started;
     public UUID getOwner() {
         return owner;
@@ -28,11 +28,11 @@ public class PlayerLaboratory {
         this.owner = owner;
     }
 
-    public int getJointAmount() {
+    public float getJointAmount() {
         return jointAmount;
     }
 
-    public void setJointAmount(int jointAmount) {
+    public void setJointAmount(float jointAmount) {
         this.jointAmount = jointAmount;
     }
 
