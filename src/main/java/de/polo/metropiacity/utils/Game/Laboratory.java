@@ -307,14 +307,19 @@ public class Laboratory implements CommandExecutor, Listener {
         for (PlayerLaboratory laboratory : playerLaboratories) {
             PlayerData playerData = playerManager.getPlayerData(laboratory.getOwner());
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            if (factionData == null) {
+                continue;
+            }
             for (Plant plant : Main.getInstance().gamePlay.plant.getPlants()) {
-                if (plant.getOwner().equalsIgnoreCase(factionData.getName())) {
-                    if (laboratory.getWeedAmount() >= (2 * plant.getMultiplier())) {
-                        laboratory.setWeedAmount(laboratory.getWeedAmount() - (int) (2 * plant.getMultiplier()));
-                        laboratory.setJointAmount(laboratory.getJointAmount() + (1 * plant.getMultiplier()));
-                    } else {
-                        laboratory.stop();
-                    }
+                if (!plant.getOwner().equalsIgnoreCase(factionData.getName())) {
+                    continue;
+                }
+                if (laboratory.getWeedAmount() >= (2 * plant.getMultiplier())) {
+                    laboratory.setWeedAmount(laboratory.getWeedAmount() - (int) (2 * plant.getMultiplier()));
+                    laboratory.setJointAmount(laboratory.getJointAmount() + (1 * plant.getMultiplier()));
+                } else {
+                    laboratory.stop();
+                    break;
                 }
             }
         }

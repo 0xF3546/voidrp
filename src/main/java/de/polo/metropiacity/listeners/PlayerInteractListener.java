@@ -18,6 +18,8 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,6 +72,13 @@ public class PlayerInteractListener implements Listener {
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
+                if (event.getClickedBlock().getType() == Material.OAK_STAIRS) {
+                    Location l = event.getClickedBlock().getLocation();
+                    World w = player.getWorld();
+                    ArmorStand armorStand = w.spawn(l.add(0.5D, -1, 0.5D), ArmorStand.class);
+                    armorStand.setVisible(false);
+                    armorStand.addPassenger(player);
+                }
                 if (event.getClickedBlock().getType() == Material.OAK_DOOR) {
                     RegisteredBlock rBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (rBlock != null) {

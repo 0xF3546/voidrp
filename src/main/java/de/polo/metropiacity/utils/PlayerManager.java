@@ -521,7 +521,7 @@ public class PlayerManager implements Listener, ServerTiming {
         return playerData.getRang();
     }
 
-    public void startTimeTracker() {
+    /*public void startTimeTracker() {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -594,7 +594,101 @@ public class PlayerManager implements Listener, ServerTiming {
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
+    }*/
+
+    public void startTimeTracker() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                int currentMinute = Main.getInstance().utils.getCurrentMinute();
+                Bukkit.getPluginManager().callEvent(new MinuteTickEvent(currentMinute));
+
+                // Batch-Operation für Spielerdaten-Update
+                Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    PlayerData playerData = getPlayerData(player.getUniqueId());
+                    playerDataMap.put(player.getUniqueId(), playerData);
+                    if (!playerData.isAFK()) {
+                        add1MinutePlaytime(player);
+                        int afkCounter = playerData.getIntVariable("afk") + 1;
+                        playerData.setIntVariable("afk", afkCounter);
+                        if (afkCounter >= 2) {
+                            Main.getInstance().utils.setAFK(player, true);
+                        }
+                    }
+                }
+
+                if (currentMinute % 15 == 0) {
+                    Main.getInstance().laboratory.pushTick();
+                }
+
+                if (currentMinute == 0) {
+                    int currentHour = Main.getInstance().utils.getCurrentHour();
+                    Bukkit.getPluginManager().callEvent(new HourTickEvent(currentHour));
+
+                    // Batch-Operation für Fraktionsdaten-Update
+                    for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
+                        double zinsen = Math.round(factionData.getBank() * 0.0075);
+                        double steuern = Math.round(factionData.getBank() * 0.0035);
+                        if (factionData.getBank() >= factionData.upgrades.getTax()) {
+                            steuern += Math.round(factionData.getBank() * 0.015);
+                        }
+                        double plus = zinsen - steuern;
+
+                        // Berechnung der Gebietseinnahmen
+                        for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+                            if (gangwarData.getOwner().equals(factionData.getName())) {
+                                plus += 150;
+                            }
+                        }
+
+                        // Batch-Operation für Fraktionsmitglieder
+                        for (PlayerData playerData : playerDataMap.values()) {
+                            if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
+                                Player player = Bukkit.getPlayer(playerData.getUuid());
+                                sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus);
+                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                            }
+                        }
+
+                        // Datenbank- und Fraktionsaktualisierungen
+                        try {
+                            Main.getInstance().factionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
+                            Statement statement = mySQL.getStatement();
+                            statement.execute("UPDATE factions SET jointsMade = 0 WHERE id = " + factionData.getId());
+                            factionData.setJointsMade(0);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
+
+    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus) {
+        player.sendMessage(" ");
+        player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
+        player.sendMessage(" ");
+        player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
+        player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
+        player.sendMessage(" ");
+        for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+            if (gangwarData.getOwner().equals(factionData.getName())) {
+                player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangwarData.getZone() + ")§8:§a +" + 150 + "$");
+            }
+        }
+        player.sendMessage(" ");
+        player.sendMessage("§8 ➥ §2Joints§8:§a +" + factionData.getJointsMade() + " Stück");
+        player.sendMessage(" ");
+        if (plus >= 0) {
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
+        } else {
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
+        }
+        player.sendMessage(" ");
+    }
+
 
     public void kickPlayer(Player player, String reason) {
         player.kickPlayer("§8• §6§lMetropiaCity §8•\n\n§cDu wurdest vom Server geworfen.\nGrund§8:§7 " + reason + "\n\n§8• §6§lMetropiaCity §8•");

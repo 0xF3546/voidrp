@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -196,17 +197,19 @@ public class ServerManager {
     public void updateTablist(Player player) {
         if (player == null) {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                PlayerData playerData = Main.getInstance().playerManager.getPlayerData((p.getUniqueId()));
-                String loc = LocationManager.naviDataMap.get(locationManager.getNearestLocationId(p)).getName().substring(2);
-                p.setPlayerListHeader("\n§6§lMetropiaCity §8- §cV1.0\n\n§6Bargeld§8: §7" + playerData.getBargeld() + "$\n§6Ping§8:§7 " + p.getPing() + "ms\n§8__________________\n");
-                p.setPlayerListFooter("§8__________________\n\n§6Nächster Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n");
+                setTablist(p);
             }
         } else {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            String loc = LocationManager.naviDataMap.get(locationManager.getNearestLocationId(player)).getName().substring(2);
-            player.setPlayerListHeader("\n§6§lMetropiaCity §8- §cV1.0\n\n§6Bargeld§8: §7" + playerData.getBargeld() + "$\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
-            player.setPlayerListFooter("§8__________________\n\n§6Nächster Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n");
+            setTablist(player);
         }
+    }
+
+    private void setTablist(Player player) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        String loc = LocationManager.naviDataMap.get(locationManager.getNearestLocationId(player)).getName().substring(2);
+        player.setPlayerListHeader("\n§6§lMetropiaCity §8- §cV1.0\n\n§7" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
+        player.setPlayerListFooter("§8__________________\n\n§6Nächster Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n");
+
     }
 
     private void startTabUpdateInterval() {
