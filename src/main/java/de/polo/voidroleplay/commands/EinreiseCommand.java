@@ -38,7 +38,7 @@ public class EinreiseCommand implements CommandExecutor {
 
     public void openEinrese(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6MetropiaCity Einreiseamt");
+        Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6VoidRoleplay Einreiseamt");
         if (locationManager.getDistanceBetweenCoords(player, "einreise") < 10) {
             if (playerData.getVariable("einreise_firstname") == null) {
                 inv.setItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§eVorname"));

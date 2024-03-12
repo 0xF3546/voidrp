@@ -114,7 +114,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
         if (event.getRightClicked() instanceof Villager) {
             Villager villager = (Villager) event.getRightClicked();
             String command = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
-            assert command != null;
+            if (command == null) return;
             if (playerManager.getPlayerData(event.getPlayer().getUniqueId()).isAduty()) {
                 String id_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING);
                 event.getPlayer().sendMessage(Main.gamedesign_prefix + "Befehl§8:§f " + command + "§8 | §7ID-Name§8:§f " + id_name);

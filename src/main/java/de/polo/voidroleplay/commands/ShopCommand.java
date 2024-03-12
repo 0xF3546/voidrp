@@ -14,6 +14,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -90,6 +91,82 @@ public class ShopCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openShop(player, shopData);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.COD, 1, 0, "§fRoher Kabeljau", "§a+4$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                ItemStack cod = new ItemStack(Material.COD, 1);
+                if (player.getInventory().containsAtLeast(cod, 1)) {
+                    // Kabeljau aus dem Inventar entfernen
+                    player.getInventory().removeItem(cod);
+
+                    // Geld dem Spieler hinzufügen
+                    playerData.addMoney(4);
+
+                    // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
+                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Kabeljau verkauft und 4$ erhalten!");
+                } else {
+                    // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
+                    player.sendMessage(Main.error + "Du hast keinen Kabeljau im Inventar!");
+                }
+            }
+        });
+        inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(Material.TROPICAL_FISH, 1, 0, "§fTropenfisch", "§a+25$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                ItemStack cod = new ItemStack(Material.COD, 1);
+                if (player.getInventory().containsAtLeast(cod, 1)) {
+                    // Kabeljau aus dem Inventar entfernen
+                    player.getInventory().removeItem(cod);
+
+                    // Geld dem Spieler hinzufügen
+                    playerData.addMoney(25);
+
+                    // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
+                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Kabeljau verkauft und 25$ erhalten!");
+                } else {
+                    // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
+                    player.sendMessage(Main.error + "Du hast keinen Kabeljau im Inventar!");
+                }
+            }
+        });
+        inventoryManager.setItem(new CustomItem(2, ItemManager.createItem(Material.SALMON, 1, 0, "§fRoher Lachs", "§a+40$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                ItemStack cod = new ItemStack(Material.COD, 1);
+                if (player.getInventory().containsAtLeast(cod, 1)) {
+                    // Kabeljau aus dem Inventar entfernen
+                    player.getInventory().removeItem(cod);
+
+                    // Geld dem Spieler hinzufügen
+                    playerData.addMoney(40);
+
+                    // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
+                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Kabeljau verkauft und 40$ erhalten!");
+                } else {
+                    // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
+                    player.sendMessage(Main.error + "Du hast keinen Kabeljau im Inventar!");
+                }
+            }
+        });
+        inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.PUFFERFISH, 1, 0, "§fKugelfisch", "§a+85$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                ItemStack cod = new ItemStack(Material.COD, 1);
+                if (player.getInventory().containsAtLeast(cod, 1)) {
+                    // Kabeljau aus dem Inventar entfernen
+                    player.getInventory().removeItem(cod);
+
+                    // Geld dem Spieler hinzufügen
+                    playerData.addMoney(85);
+
+                    // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
+                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Kabeljau verkauft und 85$ erhalten!");
+                } else {
+                    // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
+                    player.sendMessage(Main.error + "Du hast keinen Kabeljau im Inventar!");
+                }
             }
         });
     }

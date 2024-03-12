@@ -40,7 +40,7 @@ public class TeamSpeak implements CommandExecutor {
         teamSpeak = this;
         System.out.println("Lade TS3 config...");
         final TS3Config config = new TS3Config();
-        config.setHost("metropiacity.de").setFloodRate(TS3Query.FloodRate.DEFAULT).setQueryPort(10011);
+        config.setHost("voidroleplay.de").setFloodRate(TS3Query.FloodRate.DEFAULT).setQueryPort(10011);
         query.connect();
         if (!query.isConnected()) {
             System.out.println("[TS3Bot] Query konnte nicht verbunden werden.");
@@ -49,7 +49,7 @@ public class TeamSpeak implements CommandExecutor {
         api = query.getApi();
         api.login("serveradmin", "M7FxPPB5");
         api.selectVirtualServerById(1);
-        api.setNickname("MetropiaCity");
+        api.setNickname("VoidRoleplay");
     }
     public static TeamSpeak getTeamSpeak() {
         return teamSpeak;
@@ -67,7 +67,7 @@ public class TeamSpeak implements CommandExecutor {
         api = query.getApi();
         api.login("serveradmin", "WrQzPS72");
         api.selectVirtualServerById(2);
-        api.setNickname("MetropiaCity");
+        api.setNickname("VoidRoleplay");
     }
 
     public TS3Api getAPI() {

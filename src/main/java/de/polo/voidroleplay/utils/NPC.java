@@ -73,6 +73,8 @@ public class NPC implements CommandExecutor {
         for (Entity entity : player.getWorld().getEntities()) {
             if (entity instanceof Villager) {
                 Villager villager = (Villager) entity;
+                String villager_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING);
+                if (villager_name == null) continue;
                 System.out.println("villager: " + villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING));
                 if (villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING).equalsIgnoreCase(name)) {
                     villager.remove();

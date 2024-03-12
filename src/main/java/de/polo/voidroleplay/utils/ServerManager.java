@@ -10,6 +10,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,6 +22,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class ServerManager {
     public static final boolean canDoJobsBoolean = true;
@@ -133,6 +137,11 @@ public class ServerManager {
             shopData.setWelt(Bukkit.getWorld(locs.getString(6)));
             shopData.setYaw(locs.getFloat(7));
             shopData.setPitch(locs.getFloat(8));
+            if (locs.getInt("company") != 0) {
+                Company company = Main.getInstance().companyManager.getCompanyById(locs.getInt("company"));
+                shopData.setCompany(company);
+            }
+
             String typeString = locs.getString(9);
             if (typeString != null) {
                 try {
@@ -219,7 +228,7 @@ public class ServerManager {
     private void setTablist(Player player) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         String loc = LocationManager.naviDataMap.get(locationManager.getNearestLocationId(player)).getName().substring(2);
-        player.setPlayerListHeader("\n§6§lMetropiaCity §8- §cV1.0\n\n§7" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
+        player.setPlayerListHeader("\n§6§lVoidRoleplay §8- §cV1.0\n\n§7" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
         player.setPlayerListFooter("§8__________________\n\n§6Nächster Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n");
 
     }
@@ -239,7 +248,7 @@ public class ServerManager {
                     switch (announceType) {
                         case 1:
                             TextComponent text = new TextComponent("§8[§6Regelwerk§8]§e Unwissenheit schützt vor Strafe nicht!");
-                            text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://metropiacity.de/forum/index.php?thread%2F4-ingame-regelwerk%2F=&postID=4#post4"));
+                            text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/index.php?thread%2F4-ingame-regelwerk%2F=&postID=4#post4"));
                             text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oRegelwerk öffnen")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 player.spigot().sendMessage(text);
@@ -247,11 +256,11 @@ public class ServerManager {
                             break;
                         case 2:
                             TextComponent forum = new TextComponent("§8[§6Forum§8]§e Bist du schon Mitglied in unserem Forum?");
-                            forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://metropiacity.de/forum/"));
+                            forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oForum öffnen")));
                             Bukkit.spigot().broadcast(forum);
                             TextComponent forum2 = new TextComponent("§8[§6Forum§8]§e Fraktionen, Informationen, Spiele - Werde Teil unserer Foren-Community!");
-                            forum2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://metropiacity.de/forum/"));
+                            forum2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/"));
                             forum2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oForum öffnen")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 player.spigot().sendMessage(forum2);
@@ -259,7 +268,7 @@ public class ServerManager {
                             break;
                         case 3:
                             Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Warst du bereits auf unserem TeamSpeak?");
-                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Betritt noch heute unseren TeamSpeak unter §lmetropiacity.de§3!");
+                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Betritt noch heute unseren TeamSpeak unter §lvoidroleplay.de§3!");
                             break;
                     }
                     announceType++;

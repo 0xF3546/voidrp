@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -81,6 +82,8 @@ public class PlayerData {
 
     private boolean cuffed;
     private PlayerLaboratory laboratory;
+    private Company company;
+    private boolean hudEnabled;
 
     public PlayerData() {
     }
@@ -621,11 +624,16 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
-        statement.setInt(4, getId());
+        int companyId = 0;
+        if (company != null) {
+            companyId = company.getId();
+        }
+        statement.setInt(4, companyId);
+        statement.setInt(5, getId());
         statement.executeUpdate();
     }
 
@@ -635,6 +643,22 @@ public class PlayerData {
 
     public void setSpawn(String spawn) {
         this.spawn = spawn;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public boolean isHudEnabled() {
+        return hudEnabled;
+    }
+
+    public void setHudEnabled(boolean hudEnabled) {
+        this.hudEnabled = hudEnabled;
     }
 
     public class AddonXP {

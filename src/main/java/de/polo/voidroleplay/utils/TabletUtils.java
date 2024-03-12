@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
@@ -30,11 +31,13 @@ public class TabletUtils implements Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+    private final CompanyManager companyManager;
 
-    public TabletUtils(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
+    public TabletUtils(PlayerManager playerManager, FactionManager factionManager, Utils utils, CompanyManager companyManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.utils = utils;
+        this.companyManager = companyManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -73,6 +76,14 @@ public class TabletUtils implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openJailApp(player, 1);
+                }
+            });
+        }
+        if (playerData.getCompany() != null) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.EMERALD, 1, 0, "§6Firma")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openCompanyApp(player);
                 }
             });
         }
@@ -437,8 +448,134 @@ public class TabletUtils implements Listener {
         player.closeInventory();
     }
 
+    public void openCompanyApp(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6" + playerData.getCompany().getName(), true, true);
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6Rollen verwalten")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openRoles(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§6Mitarbeiter verwalten")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCompanyMember(player);
+            }
+        });
+    }
+
+    public void openCompanyMember(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter", true, true);
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCompanyApp(player);
+            }
+        });
+    }
+
+    public void openRoles(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Rollen verwalten (" + playerData.getCompany().getRoles().size() + ")", true, true);
+        int i = 0;
+        for (CompanyRole role : playerData.getCompany().getRoles()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6" + role.getName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (event.isLeftClick()) {
+                        editRole(player, role);
+                    } else {
+                        playerData.getCompany().deleteRole(role);
+                        openRoles(player);
+                    }
+                }
+            });
+
+            i++;
+        }
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCompanyApp(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Neu erstellen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                CompanyRole role = new CompanyRole();
+                role.setName("Neue Rolle");
+                role.setPermissions(new ArrayList<>());
+                playerData.getCompany().createRole(role);
+                openRoles(player);
+            }
+        });
+    }
+
+    private void editRole(Player player, CompanyRole role) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Rolle bearbeiten (" + role.getName() + ")", true, true);
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + role.getName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "tablet::company::role::setname");
+                player.closeInventory();
+                player.sendMessage(Main.prefix + "Gib nun den Namen der Rolle an.");
+                playerData.setVariable("temp_role", role);
+            }
+        });
+        int i = 9;
+        for (String permission : role.getPermissions()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§e" + permission)) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    role.removePermission(permission);
+                    editRole(player, role);
+                    role.save();
+                }
+            });
+        }
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openRoles(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Hinzufügen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "tablet::company::role::addpermission");
+                player.closeInventory();
+                player.sendMessage(Main.prefix + "Gib nun die Permission an");
+            }
+        });
+    }
+
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) throws SQLException {
+        if (event.getSubmitTo().equalsIgnoreCase("tablet::company::role::setname")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            CompanyRole role = event.getPlayerData().getVariable("temp_role");
+            role.setName(event.getMessage());
+            editRole(event.getPlayer(), role);
+            role.save();
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("tablet::company::role::addpermission")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            CompanyRole role = event.getPlayerData().getVariable("temp_role");
+            role.addPermission(event.getMessage());
+            editRole(event.getPlayer(), role);
+            role.save();
+        }
         if (event.getSubmitTo().equals("aktensearch")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();

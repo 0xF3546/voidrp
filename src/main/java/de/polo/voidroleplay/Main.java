@@ -25,7 +25,7 @@ public final class Main extends JavaPlugin {
     public boolean isOnline = false;
 
     public static Plugin plugin = null;
-    public static final String prefix = "§8[§Void§8] §7";
+    public static final String prefix = "§8[§6Void§8] §7";
     public static final String admin_prefix = "§8[§cAdmin§8] §7";
     public static final String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
     public static final String PayDay_prefix = "§8[§aPayDay§8] §7";
@@ -64,6 +64,7 @@ public final class Main extends JavaPlugin {
     public BlockManager blockManager;
     public GamePlay gamePlay;
     public Laboratory laboratory;
+    public CompanyManager companyManager;
 
     public void onLoad() {
         instance = this;
@@ -72,6 +73,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         mySQL = new MySQL();
+        companyManager = new CompanyManager(mySQL);
         supportManager = new SupportManager(mySQL);
         playerManager = new PlayerManager(mySQL);
         cooldownManager = new CooldownManager();
@@ -79,7 +81,7 @@ public final class Main extends JavaPlugin {
         adminManager = new AdminManager(playerManager);
         factionManager = new FactionManager(playerManager);
         housing = new Housing(playerManager);
-        utils = new Utils(playerManager, adminManager, factionManager, locationManager, housing, new Navigation(playerManager));
+        utils = new Utils(playerManager, adminManager, factionManager, locationManager, housing, new Navigation(playerManager), companyManager);
         vehicles = new Vehicles(playerManager ,locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
@@ -91,8 +93,7 @@ public final class Main extends JavaPlugin {
         isOnline = true;
         laboratory = new Laboratory(playerManager, factionManager, locationManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);
-        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons);
-
+        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons, companyManager);
         new InventoryApiRegister(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -164,7 +165,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         TeamSpeak.getTeamSpeak().shutdown();
-        System.out.println("Disabling MetroCity Roleplay");
+        System.out.println("Disabling VoidRoleplay");
         isOnline = false;
         try {
             serverManager.savePlayers();
@@ -226,7 +227,8 @@ public final class Main extends JavaPlugin {
         private GamePlay gamePlay;
         private BusinessManager businessManager;
         private Weapons weapons;
-        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, Weapons weapons) {
+        private CompanyManager companyManager;
+        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, Weapons weapons, CompanyManager companyManager) {
             this.main = main;
             this.playerManager = playerManager;
             this.adminManager = adminManager;
@@ -236,6 +238,7 @@ public final class Main extends JavaPlugin {
             this.gamePlay = gamePlay;
             this.businessManager = businessManager;
             this.weapons = weapons;
+            this.companyManager = companyManager;
             Init();
         }
         public SetTeamCommand setTeamCommand;
@@ -374,6 +377,7 @@ public final class Main extends JavaPlugin {
         public InvSeeCommand invSeeCommand;
         public UseCommand useCommand;
         public AusziehenCommand ausziehenCommand;
+        public CompanyCommand companyCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -401,7 +405,7 @@ public final class Main extends JavaPlugin {
             shopCommand = new ShopCommand(playerManager, locationManager);
             annehmenCommand = new AnnehmenCommand(utils);
             ablehnenVertrag = new AblehnenVertrag(utils);
-            inviteCommand = new InviteCommand(playerManager, factionManager, utils);
+            inviteCommand = new InviteCommand(playerManager, factionManager, utils, businessManager);
             rentCommand = new RentCommand(playerManager, locationManager, utils);
             lumberjackCommand = new LumberjackCommand(playerManager, locationManager);
             apfelplantageCommand = new ApfelplantageCommand(playerManager, locationManager);
@@ -510,6 +514,7 @@ public final class Main extends JavaPlugin {
             invSeeCommand = new InvSeeCommand(playerManager);
             useCommand = new UseCommand(gamePlay);
             ausziehenCommand = new AusziehenCommand(utils);
+            companyCommand = new CompanyCommand(playerManager, companyManager, locationManager);
 
             main.registerCommands();
             main.registerListener(this);

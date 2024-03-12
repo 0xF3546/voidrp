@@ -13,7 +13,7 @@ public class DiscordBot {
     public static void runBot() throws InterruptedException {
         bot = JDABuilder.createDefault("MTA2NjExOTE4MTk4MTk3ODY4NA.GYIgqN.1JVKQCshvBoI09PM-C-Z4qufCZpw28SRdH9XYM")
                 .addEventListeners(new ReadyListener())
-                .setActivity(Activity.watching("auf MetropiaCity"))
+                .setActivity(Activity.watching("auf VoidRoleplay"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .enableIntents(GatewayIntent.GUILD_MESSAGES)

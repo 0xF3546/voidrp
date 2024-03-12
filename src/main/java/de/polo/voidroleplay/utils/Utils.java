@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.CompanyRole;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.utils.Game.GangwarUtils;
@@ -34,8 +35,9 @@ public class Utils {
     public final TabletUtils tabletUtils;
     public final FFAUtils ffaUtils;
     public final GangwarUtils gangwarUtils;
+    private final CompanyManager companyManager;
 
-    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, Housing housing, Navigation navigation) {
+    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, Housing housing, Navigation navigation, CompanyManager companyManager) {
         deathUtil = new DeathUtils(playerManager, adminManager, locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         staatUtil = new StaatUtil(playerManager, factionManager, locationManager, this);
@@ -44,7 +46,8 @@ public class Utils {
         this.housing = housing;
         payDayUtils = new PayDayUtils(playerManager, factionManager);
         bankingUtils = new BankingUtils(playerManager, factionManager);
-        tabletUtils = new TabletUtils(playerManager, factionManager, this);
+        this.companyManager = companyManager;
+        tabletUtils = new TabletUtils(playerManager, factionManager, this, companyManager);
         phoneUtils = new PhoneUtils(playerManager, this);
         ffaUtils = new FFAUtils(playerManager, locationManager);
         gangwarUtils = new GangwarUtils(playerManager, factionManager, locationManager);

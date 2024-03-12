@@ -13,6 +13,7 @@ public class ShopData {
     private float yaw;
     private float pitch;
     private ShopType type;
+    private Company company;
 
     public int getId() {
         return id;
@@ -84,5 +85,13 @@ public class ShopData {
 
     public void setType(ShopType type) {
         this.type = type;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

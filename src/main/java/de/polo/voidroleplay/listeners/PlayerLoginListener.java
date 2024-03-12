@@ -34,7 +34,7 @@ public class PlayerLoginListener implements Listener {
                     return;
                 }
                 event.setResult(PlayerLoginEvent.Result.KICK_BANNED);
-                event.setKickMessage("§8 • §6MetropiaCity§8 •\n\n§cDu bist vom Server gesperrt.\nGrund: " + res.getString(4) + "\nGebannt durch: " + res.getString(5) + "\nBan läuft ab: " + res.getString("formatted_timestamp")+ "\n\n§8 • §6MetropiaCity§8 •");
+                event.setKickMessage("§8 • §6VoidRoleplay§8 •\n\n§cDu bist vom Server gesperrt.\nGrund: " + res.getString(4) + "\nGebannt durch: " + res.getString(5) + "\nBan läuft ab: " + res.getString("formatted_timestamp")+ "\n\n§8 • §6VoidRoleplay§8 •");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

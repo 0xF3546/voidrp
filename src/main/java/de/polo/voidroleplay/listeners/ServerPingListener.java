@@ -20,7 +20,7 @@ public class ServerPingListener implements Listener {
     }
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
-        String firstline = "§6§lMetropiaCity §8| §edsc.gg/metropiacity";
+        String firstline = "§6§lVoidRoleplay §8| §ediscord.voidroleplay.de";
         String secondline = "§8➥ §cRoleplay mit Stil. §8 - §bⓘ§a V1.0 bald online!";
         String motd = null;
 

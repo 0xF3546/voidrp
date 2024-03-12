@@ -16,11 +16,11 @@ public class VoteCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         TextComponent mcservereu = new TextComponent("§2Vote §8» §7minecraft-server.eu");
-        mcservereu.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft-server.eu/vote/index/22C3A/" + player.getName()));
+        mcservereu.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft-server.eu/vote/index/22AB8/" + player.getName()));
         player.spigot().sendMessage(mcservereu);
 
         TextComponent mcserverlist = new TextComponent("§2Vote §8» §7minecraft-serverlist.net");
-        mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.minecraft-serverlist.net/vote/57814/" + player.getName()));
+        mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.minecraft-serverlist.net/vote/57619/" + player.getName()));
         player.spigot().sendMessage(mcserverlist);
         return false;
     }

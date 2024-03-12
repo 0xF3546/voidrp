@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.utils;
 
+import de.polo.voidroleplay.dataStorage.Company;
 import de.polo.voidroleplay.dataStorage.HouseData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
@@ -87,6 +88,12 @@ public class VertragUtil {
                     playerData.setBusiness(Integer.parseInt(curr.toString()));
                     player.sendMessage("§8[§6Business§8]§a Du bist einem Business beigetreten.");
                     playerData.save();
+                    break;
+                case "company_invite":
+                    Company company = Main.getInstance().companyManager.getCompanyById(Integer.parseInt(curr.toString()));
+                    playerData.setCompany(company);
+                    playerData.save();
+                    player.sendMessage("§6Du bist " + company.getName() + " beigetreten.");
                     break;
                 case "rental":
                     String[] args = curr.toString().split("_");
@@ -189,6 +196,7 @@ public class VertragUtil {
         String curr = current.get(player.getUniqueId().toString()).toString();
         if (curr != null) {
             Player targetplayer = null;
+            PlayerData playerData = playerManager.getPlayerData(player);
             try {
                 targetplayer = Bukkit.getPlayer(UUID.fromString(curr));
             } catch (IllegalArgumentException e) {
@@ -198,6 +206,11 @@ public class VertragUtil {
                     factionManager.sendMessageToFaction(curr, player.getName() + " wurde eingeladen und ist nicht beigetreten.");
                     break;
                 case "business_invite":
+                    player.sendMessage("§6Du hast die einladung zu abgelehnt.");
+                    break;
+                case "company_invite":
+                    Company company = Main.getInstance().companyManager.getCompanyById(Integer.parseInt(curr.toString()));
+                    player.sendMessage("§6Du hast die einladung zu " + company.getName() + " abgelehnt.");
                     break;
                 case "phonecall":
                     PhoneUtils.denyCall(player, curr);

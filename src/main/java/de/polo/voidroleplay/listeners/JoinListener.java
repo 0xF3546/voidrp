@@ -62,7 +62,7 @@ public class JoinListener implements Listener {
             serverManager.updateTablist(null);
         } else {
             player.sendMessage(" ");
-            player.sendMessage("§6MetropiaCity §8»§7 Herzlich Wilkommen in Metropia - der Stadt mit Zukunft, " + player.getName() + ".");
+            player.sendMessage("§6VoidRoleplay §8»§7 Herzlich Wilkommen auf VoidRoleplay, " + player.getName() + ".");
             player.sendMessage(" ");
             locationManager.useLocation(player, "Spawn");
             adminManager.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);

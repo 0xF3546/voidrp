@@ -148,7 +148,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     Main.waitSeconds(1, () -> {
                         InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
                         playerData.setVariable("originClass", this);
-                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7MetropiaCity simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das MetropiaCity Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
+                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
                                 playerData.setVariable("jugendschutz", null);
@@ -210,6 +210,12 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
                 playerData.setCoins(result.getInt("coins"));
+                playerData.setCompany(null);
+                if (result.getInt("company") != 0) {
+                    Company company = Main.getInstance().companyManager.getCompanyById(result.getInt("company"));
+                    System.out.println(company.getId());
+                    playerData.setCompany(company);
+                }
 
                 player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
                 player.setLevel(result.getInt("level"));
@@ -690,7 +696,7 @@ public class PlayerManager implements Listener, ServerTiming {
 
 
     public void kickPlayer(Player player, String reason) {
-        player.kickPlayer("§8• §6§lMetropiaCity §8•\n\n§cDu wurdest vom Server geworfen.\nGrund§8:§7 " + reason + "\n\n§8• §6§lMetropiaCity §8•");
+        player.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server geworfen.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoidRoleplay §8•");
     }
 
     public void addExp(Player player, Integer exp) {
