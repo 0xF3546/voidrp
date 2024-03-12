@@ -1,0 +1,23 @@
+package de.polo.voidroleplay.utils.InventoryManager;
+
+import de.polo.voidroleplay.Main;
+import org.bukkit.Bukkit;
+
+public class InventoryApiRegister {
+
+    private static CustomInventoryCache customInventoryCache;
+    private CustomItemInventoryCache customItemInventoryCache;
+    private Main plugin;
+
+    public InventoryApiRegister(Main plugin) {
+        this.plugin = plugin;
+        customInventoryCache = new CustomInventoryCache();
+        customItemInventoryCache = new CustomItemInventoryCache();
+        Bukkit.getPluginManager().registerEvents(new InventoryListener(), this.plugin);
+        Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), this.plugin);
+    }
+
+    public static CustomInventoryCache getCustomInventoryCache() {
+        return customInventoryCache;
+    }
+}

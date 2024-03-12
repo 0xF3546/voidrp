@@ -1,0 +1,62 @@
+package de.polo.voidroleplay.commands;
+
+import de.polo.voidroleplay.dataStorage.LocationData;
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.LocationManager;
+import de.polo.voidroleplay.utils.PlayerManager;
+import org.bukkit.Effect;
+import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+public class TPToCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+    public TPToCommand(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.registerCommand("tpto", this);
+    }
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.isAduty()) {
+            if (args.length >= 1) {
+                StringBuilder message = new StringBuilder();
+                for (String arg : args) {
+                    message.append(" ").append(arg);
+                }
+                locationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
+                player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + message + "§7 teleportiert.");
+                player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
+            } else {
+                player.sendMessage(Main.admin_error + "Syntax-Fehler: /tpto [Punkt]");
+            }
+        } else {
+            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+        }
+        return false;
+    }
+    @Nullable
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            for (LocationData locationData : LocationManager.locationDataMap.values()) {
+                suggestions.add(locationData.getName());
+            }
+
+            return suggestions;
+        }
+        return null;
+    }
+}

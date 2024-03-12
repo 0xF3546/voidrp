@@ -1,0 +1,966 @@
+package de.polo.voidroleplay.utils;
+
+import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
+import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.utils.Game.GangwarUtils;
+import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
+import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.EXPType;
+import de.polo.voidroleplay.utils.events.HourTickEvent;
+import de.polo.voidroleplay.utils.events.MinuteTickEvent;
+import de.polo.voidroleplay.utils.events.SubmitChatEvent;
+import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import lombok.SneakyThrows;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.sql.*;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.Date;
+
+public class PlayerManager implements Listener, ServerTiming {
+
+    private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+    private final HashMap<String, Boolean> onPlayer = new HashMap<>();
+    private final HashMap<String, Boolean> playerMovement = new HashMap<>();
+    public final HashMap<String, Integer> player_rent = new HashMap<>();
+
+    private final MySQL mySQL;
+
+    public PlayerManager(MySQL mySQL) {
+        this.mySQL = mySQL;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        startTimeTracker();
+    }
+
+    public boolean isCreated(UUID uuid) {
+
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            assert statement != null;
+            ResultSet result = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            if (result.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+            Date date = new Date();
+            String newDate = formatter.format(date);
+            statement.execute("INSERT INTO `players` (`uuid`, `firstjoin`) VALUES ('" + uuid + "', '" + newDate + "')");
+            statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
+            statement.execute("INSERT INTO `player_addonxp` (`uuid`) VALUES ('" + uuid + "')");
+            Player player = Bukkit.getPlayer(uuid);
+            assert player != null;
+            loadPlayer(player);
+            setPlayerMove(player, true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    public void updatePlayer(String uuid, String name, String adress) {
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            String[] adresse = adress.split(":");
+            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adresse[0] + "' WHERE uuid = '" + uuid + "'");
+            PlayerData playerData = playerDataMap.get(uuid);
+            /*if (playerData.getForumID() != null) {
+                Statement wcfStatement = MySQL.forum.getStatement();
+                wcfStatement.execute("UPDATE wcf1_user SET username = '" + name + "' WHERE userID = " + playerData.getForumID());
+            }*/
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadPlayer(Player player) {
+        UUID uuid = player.getUniqueId();
+        boolean returnval = false;
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            assert statement != null;
+            String query = "SELECT players.*, player_addonxp.* " +
+                    "FROM players " +
+                    "LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid " +
+                    "WHERE players.uuid = '" + uuid + "'";
+
+            ResultSet result = statement.executeQuery(query);
+            if (result.next()) {
+                PlayerData playerData = new PlayerData(player);
+                playerData.setFirstname(result.getString("firstname"));
+                playerData.setLastname(result.getString("lastname"));
+                playerData.setBargeld(result.getInt("bargeld"));
+                playerData.setBank(result.getInt("bank"));
+                playerData.setVisum(result.getInt("visum"));
+                playerData.setPermlevel(result.getInt("player_permlevel"));
+                playerData.setRang(result.getString("player_rank"));
+                playerData.setAduty(false);
+                playerData.setLevel(result.getInt("level"));
+                playerData.setExp(result.getInt("exp"));
+                playerData.setNeeded_exp(result.getInt("needed_exp"));
+                playerData.setDead(result.getBoolean("isDead"));
+                if (result.getBoolean("isDead")) playerData.setDeathTime(result.getInt("deathTime"));
+                playerData.setNumber(result.getInt("number"));
+                playerData.setDuty(result.getBoolean("isDuty"));
+                playerData.setGender(result.getString("gender"));
+                playerData.setBirthday(result.getString("birthday"));
+                playerData.setId(result.getInt("id"));
+                playerData.setHouseSlot(result.getInt("houseSlot"));
+                if (result.getDate("rankDuration") != null) {
+                    java.util.Date utilDate = new java.util.Date(result.getDate("rankDuration").getTime());
+                    LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    playerData.setRankDuration(localDateTime);
+                }
+                playerData.setBoostDuration(result.getInt("boostDuration"));
+                playerData.setSecondaryTeam(result.getString("secondaryTeam"));
+                playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
+                playerData.setSpawn(result.getString("spawn"));
+                playerData.setJob(result.getString("job"));
+                player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));
+                player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
+
+                if (!result.getBoolean("jugendschutz")) {
+                    playerData.setVariable("jugendschutz", "muss");
+                    Main.waitSeconds(1, () -> {
+                        InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
+                        playerData.setVariable("originClass", this);
+                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7MetropiaCity simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das MetropiaCity Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                playerData.setVariable("jugendschutz", null);
+                                player.closeInventory();
+                                player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
+                                Statement statement = null;
+                                try {
+                                    statement = Main.getInstance().mySQL.getStatement();
+                                    statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId() + "'");
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                player.closeInventory();
+                            }
+                        });
+                        inventory.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist", "§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7", "§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt", "§c§l und habe keine Erlaubnis meiner Eltern"))) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                player.closeInventory();
+                                player.kickPlayer("§cDa du den Jugendschutz nicht aktzeptieren konntest, kannst du auf dem Server §lnicht§c Spielen.\n§cBitte deine Erziehungsberechtigten um Erlabunis oder warte bis du 18 bist.");
+                            }
+                        });
+                        for (int i = 0; i < 27; i++) {
+                            if (i != 15 && i != 11) {
+                                inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+                /*if (result.getBoolean("tutorial")) {
+                    playerData.setVariable("tutorial", "muss");
+                    Main.getInstance().utils.tutorial.start(player);
+                }*/
+
+                playerData.setHours(result.getInt("current_hours"));
+                playerData.setMinutes(result.getInt("needed_hours"));
+                playerData.setAFK(false);
+
+                JSONObject object = new JSONObject(result.getString("relationShip"));
+                HashMap<String, String> map = new HashMap<>();
+                for (String key : object.keySet()) {
+                    String value = (String) object.get(key);
+                    map.put(key, value);
+                }
+                playerData.setRelationShip(map);
+
+                playerData.setWarns(result.getInt("warns"));
+                playerData.setBusiness(result.getInt("business"));
+                playerData.setBusiness_grade(result.getInt("business_grade"));
+                playerData.setBloodType(result.getString("bloodtype"));
+                playerData.setForumID(result.getInt("forumID"));
+                playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
+
+                playerData.setCanInteract(true);
+                playerData.setFlightmode(false);
+                playerData.setCoins(result.getInt("coins"));
+
+                player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
+                player.setLevel(result.getInt("level"));
+                if (result.getString("faction") != null) {
+                    playerData.setFaction(result.getString("faction"));
+                    playerData.setFactionGrade(result.getInt("faction_grade"));
+                }
+
+                playerData.addonXP.setFishingXP(result.getInt("fishingXP"));
+                playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
+
+
+                ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+                if (jail.next()) {
+                    playerData.setHafteinheiten(jail.getInt(1));
+                    playerData.setVariable("jail_reason", jail.getString(2));
+                    playerData.setJailed(true);
+                }
+                playerData.setIntVariable("afk", 0);
+
+
+                playerDataMap.put(uuid, playerData);
+                if (playerData.getRankDuration() != null) {
+                    LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    if (date.isBefore(LocalDateTime.now())) {
+                        player.sendMessage(Main.prefix + "Dein " + playerData.getRang() + " ist ausgelaufen.");
+                        statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + player.getUniqueId() + "'");
+                        if (playerData.getBusiness() != null) {
+                            BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
+                            if (business.getOwner().equals(player.getUniqueId())) {
+                                business.setActive(false);
+                                business.save();
+                            }
+                        }
+                        setRang(uuid, "Spieler");
+                    }
+                }
+                if (playerData.isDuty()) {
+                    Main.getInstance().factionManager.setDuty(player, true);
+                }
+                returnval = true;
+                updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
+                if (playerData.isDead()) Main.getInstance().utils.deathUtil.killPlayer(player);
+
+                if (playerData.getPermlevel() >= 20) {
+                    PlayerLaboratory laboratory = new PlayerLaboratory(Main.getInstance().laboratory);
+                    laboratory.create(player.getUniqueId());
+                    playerData.setLaboratory(laboratory);
+                    laboratory.start();
+                }
+            }
+        } catch (SQLException e) {
+            returnval = false;
+            e.printStackTrace();
+        }
+    }
+
+    public void savePlayer(Player player) throws SQLException {
+        UUID uuid = player.getUniqueId();
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        PlayerData playerData = playerDataMap.get(uuid);
+        if (playerData != null) {
+            assert statement != null;
+            onPlayer.remove(uuid);
+            if (playerData.isDead()) {
+                Item skull = Main.getInstance().utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
+                if (skull != null) {
+                    skull.remove();
+                    Main.getInstance().utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
+                }
+            }
+            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + " WHERE `uuid` = '" + uuid + "'");
+            if (playerData.isJailed()) {
+                statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
+            }
+
+            for (Weapon weapon : Main.getInstance().weapons.getWeapons().values()) {
+                if (weapon.getOwner().equals(player.getUniqueId())) {
+                    Statement statement1 = mySQL.getStatement();
+                    statement1.executeUpdate("UPDATE player_weapons SET ammo = " + weapon.getAmmo() + ", current_ammo = " + weapon.getCurrentAmmo() + " WHERE id = " + weapon.getId());
+                    statement1.close();
+                }
+            }
+
+            if (playerData.getLaboratory() != null) {
+                playerData.getLaboratory().save();
+            }
+
+            playerDataMap.remove(uuid);
+            statement.close();
+        } else {
+            System.out.println("Spieler " + player.getName() + "'s playerData konnte nicht gefunden werden.");
+        }
+    }
+
+    public Serializable createCpAccount(String uuid, String email, String password) {
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            assert statement != null;
+            String query = "UPDATE `players` SET `email` = '" + email + "', `password` = '" + password + "' WHERE `uuid` = '" + uuid + "'";
+            PreparedStatement preparedStatement = MySQL.connection.prepareStatement(query);
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, uuid);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void add1MinutePlaytime(Player player) {
+        try {
+            UUID uuid = player.getUniqueId();
+            PlayerData playerData = playerDataMap.get(uuid);
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            assert statement != null;
+            if (playerData.isJailed()) {
+                playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
+                if (playerData.getHafteinheiten() <= 0) {
+                    Main.getInstance().utils.staatUtil.unarrestPlayer(player);
+                }
+            }
+            ResultSet result = statement.executeQuery("SELECT `playtime_hours`, `playtime_minutes`, `current_hours`, `needed_hours`, `visum` FROM `players` WHERE `uuid` = '" + uuid + "'");
+            if (result.next()) {
+                int hours = result.getInt(1) + 1;
+                int minutes = result.getInt(2);
+                int newMinutes = result.getInt(2) + 1;
+                int current_hours = result.getInt(3);
+                int needed_hours = result.getInt(4);
+                int visum = result.getInt(5) + 1;
+                playerData.setMinutes(newMinutes);
+                float value = (float) (needed_hours / player.getExpToLevel());
+                player.setTotalExperience((int) (value * current_hours));
+                if (minutes >= 60) {
+                    if (current_hours >= needed_hours) {
+                        needed_hours = needed_hours + 4;
+                        Main.getInstance().utils.payDayUtils.givePayDay(player);
+                        statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
+                        player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
+                        playerData.setVisum(visum);
+                        playerData.setHours(playerData.getHours() + 1);
+                        player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
+                    } else {
+                        Main.getInstance().utils.payDayUtils.givePayDay(player);
+                        current_hours = current_hours + 1;
+                        playerData.setHours(playerData.getHours() + 1);
+                        statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
+                    }
+                } else {
+                    statement.executeUpdate("UPDATE `players` SET `playtime_minutes` = " + newMinutes + " WHERE `uuid` = '" + uuid + "'");
+                    if (newMinutes == 56) {
+                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
+                    } else if (newMinutes == 58) {
+                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
+                    } else if (newMinutes == 60) {
+                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addMoney(Player player, int amount) throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setBargeld(playerData.getBargeld() + amount);
+        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        }
+    }
+
+    public void removeMoney(Player player, int amount, String reason) throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setBargeld(playerData.getBargeld() - amount);
+        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        }
+    }
+
+    public void addBankMoney(Player player, int amount, String reason) throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setBank(playerData.getBank() + amount);
+        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
+        }
+    }
+
+    public void removeBankMoney(Player player, int amount, String reason) throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setBank(playerData.getBank() - amount);
+        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (result.next()) {
+            int res = result.getInt(1);
+            statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
+        }
+    }
+
+
+    public void setRang(UUID uuid, String rank) {
+        try {
+            for (RankData rankData : ServerManager.rankDataMap.values()) {
+                if (rankData.getRang().equalsIgnoreCase(rank)) {
+                    Statement statement = Main.getInstance().mySQL.getStatement();
+                    statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rankData.getRang() + "', `player_permlevel` = " + rankData.getPermlevel() + " WHERE uuid = '" + uuid + "'");
+                    PlayerData playerData = playerDataMap.get(uuid);
+                    playerData.setRang(rankData.getRang());
+                    playerData.setPermlevel(rankData.getPermlevel());
+                    Player player = Bukkit.getPlayer(uuid);
+                    if (player == null) {
+                        return;
+                    }
+                    Utils.Tablist.setTablist(player, null);
+                    if (playerData.getTeamSpeakUID() != null) {
+                        Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
+                        if (client == null) return;
+                        TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int money(Player player) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        return playerData.getBargeld();
+    }
+
+    public int bank(Player player) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        return playerData.getBank();
+    }
+
+    public String firstname(Player player) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        return playerData.getFirstname();
+    }
+
+    public String lastname(Player player) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        return playerData.getLastname();
+    }
+
+    public int visum(Player player) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        return playerData.getVisum();
+    }
+
+    public int paydayDuration(Player player) {
+        return getPlayerData(player.getUniqueId()).getMinutes();
+    }
+
+    public void setPlayerMove(Player player, Boolean state) {
+        if (!state) {
+            if (playerMovement.get(player.getUniqueId().toString()) == null) {
+                playerMovement.put(player.getUniqueId().toString(), true);
+                player.setWalkSpeed(0);
+                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+                player.setFlying(false);
+                Main.waitSeconds(2, () -> {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0, true, false));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -12, true, false));
+                });
+            }
+        } else {
+            playerMovement.remove(player.getUniqueId().toString());
+            player.setWalkSpeed(0.2F);
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+            player.removePotionEffect(PotionEffectType.JUMP);
+            player.removePotionEffect(PotionEffectType.SLOW);
+        }
+    }
+
+    public boolean canPlayerMove(Player player) {
+        return playerMovement.get(player.getUniqueId().toString()) != null;
+    }
+
+    public boolean isTeam(Player player) {
+        return getPlayerData(player.getUniqueId()).getPermlevel() >= 40;
+    }
+
+    public Integer perms(Player player) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        return playerData.getPermlevel();
+    }
+
+    public String rang(Player player) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        return playerData.getRang();
+    }
+
+    /*public void startTimeTracker() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                int currentMinute = Main.getInstance().utils.getCurrentMinute();
+                Bukkit.getPluginManager().callEvent(new MinuteTickEvent(currentMinute));
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    PlayerData playerData = getPlayerData(player.getUniqueId());
+                    if (!playerData.isAFK()) {
+                        add1MinutePlaytime(player);
+                        if (playerData.getIntVariable("afk") >= 2) {
+                            Main.getInstance().utils.setAFK(player, true);
+                        } else {
+                            playerData.setIntVariable("afk", playerData.getIntVariable("afk") + 1);
+                        }
+                    }
+                }
+                if (currentMinute % 15 == 0) {
+                    Main.getInstance().laboratory.pushTick();
+                }
+                if (currentMinute == 0) {
+                    Bukkit.getPluginManager().callEvent(new HourTickEvent(Main.getInstance().utils.getCurrentHour()));
+                    for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
+                        double zinsen = Math.round(factionData.getBank() * 0.0075);
+                        double steuern = Math.round(factionData.getBank() * 0.0035);
+                        if (factionData.getBank() >= factionData.upgrades.getTax()) {
+                            steuern += Math.round(factionData.getBank() * 0.015);
+                        }
+                        double plus = zinsen - steuern;
+                        for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+                            if (gangwarData.getOwner().equals(factionData.getName())) {
+                                plus += 150;
+                            }
+                        }
+                        factionData.setPayDay(0);
+                        for (PlayerData playerData : playerDataMap.values()) {
+                            if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
+                                Player player = Bukkit.getPlayer(playerData.getUuid());
+                                player.sendMessage(" ");
+                                player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
+                                player.sendMessage(" ");
+                                player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
+                                player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
+                                player.sendMessage(" ");
+                                for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+                                    if (gangwarData.getOwner().equals(factionData.getName())) {
+                                        player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangwarData.getZone() + ")§8:§a +" + 150 + "$");
+                                    }
+                                }
+                                player.sendMessage(" ");
+                                player.sendMessage("§8 ➥ §2Joints§8:§a +" + factionData.getJointsMade() + " Stück");
+                                player.sendMessage(" ");
+                                if (plus >= 0) {
+                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
+                                } else {
+                                    player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
+                                }
+                                player.sendMessage(" ");
+                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                            }
+                        }
+                        try {
+                            Main.getInstance().factionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
+                            Statement statement = mySQL.getStatement();
+                            statement.execute("UPDATE factions SET jointsMade = 0 WHERE id = " + factionData.getId());
+                            factionData.setJointsMade(0);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
+    }*/
+
+    public void startTimeTracker() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                int currentMinute = Main.getInstance().utils.getCurrentMinute();
+                Bukkit.getPluginManager().callEvent(new MinuteTickEvent(currentMinute));
+
+                // Batch-Operation für Spielerdaten-Update
+                Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    PlayerData playerData = getPlayerData(player.getUniqueId());
+                    playerDataMap.put(player.getUniqueId(), playerData);
+                    if (!playerData.isAFK()) {
+                        add1MinutePlaytime(player);
+                        int afkCounter = playerData.getIntVariable("afk") + 1;
+                        playerData.setIntVariable("afk", afkCounter);
+                        if (afkCounter >= 2) {
+                            Main.getInstance().utils.setAFK(player, true);
+                        }
+                    }
+                }
+
+                if (currentMinute % 15 == 0) {
+                    Main.getInstance().laboratory.pushTick();
+                }
+
+                if (currentMinute == 0) {
+                    int currentHour = Main.getInstance().utils.getCurrentHour();
+                    Bukkit.getPluginManager().callEvent(new HourTickEvent(currentHour));
+
+                    // Batch-Operation für Fraktionsdaten-Update
+                    for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
+                        double zinsen = Math.round(factionData.getBank() * 0.0075);
+                        double steuern = Math.round(factionData.getBank() * 0.0035);
+                        if (factionData.getBank() >= factionData.upgrades.getTax()) {
+                            steuern += Math.round(factionData.getBank() * 0.015);
+                        }
+                        double plus = zinsen - steuern;
+
+                        // Berechnung der Gebietseinnahmen
+                        for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+                            if (gangwarData.getOwner().equals(factionData.getName())) {
+                                plus += 150;
+                            }
+                        }
+
+                        // Batch-Operation für Fraktionsmitglieder
+                        for (PlayerData playerData : playerDataMap.values()) {
+                            if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
+                                Player player = Bukkit.getPlayer(playerData.getUuid());
+                                sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus);
+                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                            }
+                        }
+
+                        // Datenbank- und Fraktionsaktualisierungen
+                        try {
+                            Main.getInstance().factionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
+                            Statement statement = mySQL.getStatement();
+                            statement.execute("UPDATE factions SET jointsMade = 0 WHERE id = " + factionData.getId());
+                            factionData.setJointsMade(0);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
+    }
+
+    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus) {
+        player.sendMessage(" ");
+        player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
+        player.sendMessage(" ");
+        player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
+        player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
+        player.sendMessage(" ");
+        for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+            if (gangwarData.getOwner().equals(factionData.getName())) {
+                player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangwarData.getZone() + ")§8:§a +" + 150 + "$");
+            }
+        }
+        player.sendMessage(" ");
+        player.sendMessage("§8 ➥ §2Joints§8:§a +" + factionData.getJointsMade() + " Stück");
+        player.sendMessage(" ");
+        if (plus >= 0) {
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
+        } else {
+            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
+        }
+        player.sendMessage(" ");
+    }
+
+
+    public void kickPlayer(Player player, String reason) {
+        player.kickPlayer("§8• §6§lMetropiaCity §8•\n\n§cDu wurdest vom Server geworfen.\nGrund§8:§7 " + reason + "\n\n§8• §6§lMetropiaCity §8•");
+    }
+
+    public void addExp(Player player, Integer exp) {
+        String characters = "a0b1c2d3e4569";
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setExp(playerData.getExp() + exp);
+        if (playerData.getExp() >= playerData.getNeeded_exp()) {
+            player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + (playerData.getLevel() + 1));
+            Main.getInstance().utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
+            playerData.setLevel(playerData.getLevel() + 1);
+            player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
+            playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
+            playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
+            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
+        } else {
+            player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            Main.getInstance().utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+        }
+        player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
+    }
+
+    public void addExp(Player player, EXPType expType, Integer amount) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        switch (expType.getSkillType()) {
+            case FISHING:
+                playerData.addonXP.addFishingXP(amount);
+        }
+        Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp() + ")");
+    }
+
+    public void addEXPBoost(Player player, int hours) throws SQLException {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setBoostDuration(playerData.getBoostDuration() + hours);
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+    }
+
+    @SneakyThrows
+    public void redeemRank(Player player, String type, int duration, String duration_type) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        switch (type.toLowerCase()) {
+            case "vip":
+                if (playerData.getRang().equals("VIP") || playerData.getRang().equals("Spieler")) {
+                    if (playerData.getRankDuration() != null) {
+                        playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                    } else {
+                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    }
+                } else {
+                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf VIP gestiegen bist, ist der alte Rang verloren gegangen.");
+                }
+                playerData.setPermlevel(30);
+                playerData.setRang("VIP");
+                break;
+            case "premium":
+                if (playerData.getRang().equals("Premium") || playerData.getRang().equals("Spieler")) {
+                    if (playerData.getRankDuration() != null) {
+                        playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                    } else {
+                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    }
+                } else {
+                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf Premium gestiegen bist, ist der alte Rang verloren gegangen.");
+                }
+                playerData.setRang("Premium");
+                playerData.setPermlevel(20);
+                break;
+            case "gold":
+                if (playerData.getRang().equals("Gold") || playerData.getRang().equals("Spieler")) {
+                    if (playerData.getRankDuration() != null) {
+                        playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
+                    } else {
+                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    }
+                } else {
+                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf Gold gestiegen bist, ist der alte Rang verloren gegangen.");
+                }
+                playerData.setRang("Gold");
+                playerData.setPermlevel(10);
+                break;
+            default:
+                player.sendMessage(Main.error + "§cFehler. Bitte einen Administratoren kontaktieren.");
+                break;
+        }
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        System.out.println(playerData.getRankDuration());
+        LocalDateTime localDateTime = playerData.getRankDuration();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = localDateTime.format(formatter);
+        statement.executeUpdate("UPDATE `players` SET `rankDuration` = '" + playerData.getRankDuration() + "', `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+    }
+
+    public void setJob(Player player, String job) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setJob(job);
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE `players` SET `job` = '" + job + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void resetJob(Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        playerData.setJob(null);
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE `players` SET `job` = null WHERE `uuid` = '" + player.getUniqueId() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isInStaatsFrak(Player player) {
+        PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        return playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei");
+    }
+
+    public void openInterActionMenu(Player player, Player targetplayer) {
+        Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        PlayerData targetplayerData = getPlayerData(targetplayer.getUniqueId());
+        playerData.setVariable("current_inventory", "interaktionsmenü");
+        playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
+        inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
+        inv.setItem(20, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§aGeld geben", null));
+        inv.setItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen"));
+        //inv.setItem(38, ItemManager.createItem(Material.IRON_BARS, 1, 0, "§7Durchsuchen"));
+        inv.setItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen"));
+        if (playerData.getFaction() != null) {
+            FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+            inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü"));
+        }
+        for (int i = 0; i < 54; i++) {
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+            }
+        }
+        player.openInventory(inv);
+    }
+
+    public void openFactionInteractionMenu(Player player, String faction) {
+        Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
+        if (targetplayer == null) return;
+        PlayerData targetplayerData = getPlayerData(targetplayer.getUniqueId());
+        playerData.setVariable("current_inventory", "interaktionsmenü_" + faction);
+        playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
+        inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName(), null));
+        switch (faction.toLowerCase()) {
+            case "medic":
+                inv.setItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen"));
+                break;
+        }
+        inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§7Interaktionsmenü"));
+        for (int i = 0; i < 54; i++) {
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+            }
+        }
+        player.openInventory(inv);
+    }
+
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo().equals("givemoney")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            Player targetplayer = Bukkit.getPlayer(UUID.fromString(event.getPlayerData().getVariable("current_player")));
+            if (targetplayer == null) {
+                event.end();
+                return;
+            }
+            if (event.getPlayer().getLocation().distance(targetplayer.getLocation()) < 5) {
+                int amount = Integer.parseInt(event.getMessage());
+                if (amount >= 1) {
+                    if (event.getPlayerData().getBargeld() >= amount) {
+                        try {
+                            removeMoney(event.getPlayer(), amount, "Geld an " + targetplayer.getName() + " übergeben.");
+                            addMoney(targetplayer, amount);
+                            event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
+                            targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
+                            ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
+                            Main.getInstance().adminManager.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        event.getPlayer().sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                    }
+                } else {
+                    event.getPlayer().sendMessage(Main.error + "Der Betrag muss >= 1 sein.");
+                }
+            } else {
+                event.getPlayer().sendMessage(Main.error + "Der Spieler ist nicht in deiner nähe.");
+            }
+            event.end();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (!canPlayerMove(player)) return;
+        player.setFlying(false);
+        //event.setCancelled(true);
+    }
+
+    public PlayerData getPlayerData(UUID uuid) {
+        return playerDataMap.get(uuid);
+    }
+
+    public PlayerData getPlayerData(Player player) {
+        return playerDataMap.get(player.getUniqueId());
+    }
+
+    public Collection<PlayerData> getPlayers() {
+        return playerDataMap.values();
+    }
+    public void addCoins(Player player, int amount) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        playerData.setCoins(playerData.getCoins() + amount);
+        player.sendMessage("§e+" + amount + " Coins");
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE players SET coins = coins + " + amount + " WHERE uuid = '" + player.getUniqueId() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void removeCoins(Player player, int amount) {
+        PlayerData playerData = getPlayerData(player.getUniqueId());
+        playerData.setCoins(playerData.getCoins() - amount);
+        try {
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE players SET coins = coins - " + amount + " WHERE uuid = '" + player.getUniqueId() + "'");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void PushMinuteTick() {
+
+    }
+
+    @Override
+    public void PushHourTick() {
+
+    }
+
+    @SneakyThrows
+    public void setPlayerSpawn(PlayerData playerData, String spawn) {
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET spawn = ? WHERE uuid = ?");
+        if (spawn.equalsIgnoreCase("krankenhaus")) {
+            spawn = null;
+        }
+        statement.setString(1, spawn);
+        statement.setString(2, playerData.getUuid().toString());
+        statement.executeUpdate();
+        statement.close();
+        playerData.setSpawn(spawn);
+    }
+}

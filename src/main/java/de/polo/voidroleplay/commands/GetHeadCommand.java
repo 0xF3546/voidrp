@@ -1,0 +1,28 @@
+package de.polo.voidroleplay.commands;
+
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.ItemManager;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class GetHeadCommand implements CommandExecutor {
+    public GetHeadCommand() {
+        Main.registerCommand("gethead", this);
+    }
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
+        if (player.hasPermission("OP")) {
+            if (!(args.length == 1)) {
+                player.sendMessage(Main.error +"Syntax-Fehler: /gethead [Value]");
+                return false;
+            }
+            player.getInventory().addItem(ItemManager.createCustomHead(args[0], 1, 0, "§6Kopf", null));
+        } else {
+            player.sendMessage(Main.error_nopermission);
+        }
+        return false;
+    }
+}

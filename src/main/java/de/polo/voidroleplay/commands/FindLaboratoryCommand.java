@@ -1,0 +1,43 @@
+package de.polo.voidroleplay.commands;
+
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.LocationManager;
+import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Utils;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+public class FindLaboratoryCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final Utils utils;
+    private final LocationManager locationManager;
+    public FindLaboratoryCommand(PlayerManager playerManager, Utils utils, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.utils = utils;
+        this.locationManager = locationManager;
+        Main.registerCommand("findlaboratory", this);
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        Player player = (Player) sender;
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) {
+            player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        Location location = locationManager.getLocation(playerData.getFaction() + "_laboratory");
+        if (location == null) {
+            player.sendMessage(Main.error + "Deine Fraktion hat kein Labor.");
+            return false;
+        }
+        utils.navigation.createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
+        player.sendMessage("§aDein Labor wurde markiert.");
+        return false;
+    }
+}

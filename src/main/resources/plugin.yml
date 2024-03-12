@@ -1,9 +1,9 @@
-name: MetropiaCity
+name: VoidRoleplay
 version: '${project.version}'
-main: de.polo.metropiacity.Main
+main: de.polo.voidroleplay.Main
 api-version: 1.16
 authors: [ Polo66 ]
-description: MetropiaCity Roleplay
+description: VoidRoleplay Script
 depend: [Votifier]
 
 commands:
