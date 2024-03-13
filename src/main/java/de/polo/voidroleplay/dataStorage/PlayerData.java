@@ -54,6 +54,7 @@ public class PlayerData {
     private int needed_exp;
     private Scoreboard scoreboard;
     private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
+    private final HashMap<String, BossBar> bossBars = new HashMap<>();
     private boolean isDead;
     private int deathTime;
     private int number;
@@ -229,6 +230,17 @@ public class PlayerData {
 
     public void setNeeded_exp(int needed_exp) {
         this.needed_exp = needed_exp;
+    }
+
+    public BossBar getBossBar(String identifier) {
+        return bossBars.get(identifier);
+    }
+
+    public void setBossBar(String identifier, BossBar bossBar) {
+        if (this.bossBars.get(identifier) != null) {
+            this.bossBars.replace(identifier, bossBar);
+        }
+        this.bossBars.put(identifier, bossBar);
     }
 
     public Scoreboard getScoreboard() {
