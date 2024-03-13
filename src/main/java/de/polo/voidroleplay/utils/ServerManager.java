@@ -206,7 +206,11 @@ public class ServerManager {
     }
 
     public static boolean canDoJobs() {
-        return canDoJobsBoolean;
+        boolean canDoJobs = true;
+        if (LocalDateTime.now().getHour() == 1 && LocalDateTime.now().getMinute() >= 55) {
+            canDoJobs = false;
+        }
+        return canDoJobs;
     }
 
     public void savePlayers() throws SQLException {
