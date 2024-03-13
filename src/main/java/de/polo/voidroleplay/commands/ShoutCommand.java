@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -27,7 +29,7 @@ public class ShoutCommand implements CommandExecutor {
         }
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 28) {
-                players.sendMessage("§8[§c" + playerData.getLeve() + "§8] §f" + player.getName() + " schreit§8:§f " + utils.stringArrayToString(args) + "!");
+                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + player.getName() + " schreit§8:§f " + utils.stringArrayToString(args) + "!");
             }
         }
         ChatUtils.LogMessage(utils.stringArrayToString(args), player.getUniqueId());

@@ -99,7 +99,6 @@ public class PlayerManager implements Listener, ServerTiming {
 
     public void loadPlayer(Player player) {
         UUID uuid = player.getUniqueId();
-        boolean returnval = false;
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
@@ -131,9 +130,17 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setId(result.getInt("id"));
                 playerData.setHouseSlot(result.getInt("houseSlot"));
                 if (result.getDate("rankDuration") != null) {
-                    java.util.Date utilDate = new java.util.Date(result.getDate("rankDuration").getTime());
+                    Date utilDate = new Date(result.getDate("rankDuration").getTime());
                     LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     playerData.setRankDuration(localDateTime);
+                }
+                if (result.getDate("dailyBonusRedeemed") != null) {
+                    Date utilDate = new Date(result.getDate("dailyBonusRedeemed").getTime());
+                    playerData.setDailyBonusRedeemed(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                }
+                if (result.getDate("lastPayDay") != null) {
+                    Date utilDate = new Date(result.getDate("lastPayDay").getTime());
+                    playerData.setLastPayDay(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
                 playerData.setBoostDuration(result.getInt("boostDuration"));
                 playerData.setSecondaryTeam(result.getString("secondaryTeam"));
@@ -256,7 +263,6 @@ public class PlayerManager implements Listener, ServerTiming {
                 if (playerData.isDuty()) {
                     Main.getInstance().factionManager.setDuty(player, true);
                 }
-                returnval = true;
                 updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 if (playerData.isDead()) Main.getInstance().utils.deathUtil.killPlayer(player);
 
@@ -268,7 +274,6 @@ public class PlayerManager implements Listener, ServerTiming {
                 }
             }
         } catch (SQLException e) {
-            returnval = false;
             e.printStackTrace();
         }
     }

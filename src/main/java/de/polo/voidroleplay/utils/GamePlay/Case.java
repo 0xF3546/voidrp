@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponType;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.utils.enums.CaseType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -16,14 +17,16 @@ import java.util.*;
 public class Case {
     private final Player player;
     private InventoryManager inventoryManager;
+    private final CaseType caseType;
     boolean spinning = false;
-    public Case(Player player) {
+    public Case(Player player, CaseType caseType) {
         this.player = player;
+        this.caseType = caseType;
         init();
     }
 
     private void init() {
-        inventoryManager = new InventoryManager(player, 27, "§6§lCase", true, true);
+        inventoryManager = new InventoryManager(player, 27, caseType.getDisplayName(), true, true);
         spinWheel();
     }
 
@@ -114,6 +117,7 @@ public class Case {
                     } catch (Exception e) {
                         player.getInventory().addItem(winningItem);
                     }
+                    break;
                 default:
                     player.getInventory().addItem(winningItem);
                     break;

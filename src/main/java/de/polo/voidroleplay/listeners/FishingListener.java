@@ -3,6 +3,7 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.EXPType;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -26,7 +27,7 @@ public class FishingListener implements Listener {
 
         if (event.getCaught() != null && event.getCaught() instanceof Item) {
             Item caughtItem = (Item) event.getCaught();
-           double randomNumber = Math.random() * 100;
+            double randomNumber = Math.random() * 100;
 
             if (randomNumber < 70) {
                 caughtItem.setItemStack(new ItemStack(Material.COD));
@@ -44,13 +45,13 @@ public class FishingListener implements Listener {
                 caughtItem.setItemStack(ItemManager.createItem(Material.CHEST, 1, 0, "§b§lXP-Case", "§8 ➥ §8[§6Rechtsklick§8]§7 Öffnen"));
                 player.sendMessage("§8 » §7Du hast eine §b§lXP-Case§7 geangelt!");
             } else {
-                caughtItem.setItemStack(ItemManager.createItem(Material.CHEST, 1, 0, "§6§lCase", "§8 ➥ §8[§6Rechtsklick§8]§7 Öffnen"));
+                caughtItem.setItemStack(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.BASIC.getDisplayName(), "§8 ➥ §8[§6Rechtsklick§8]§7 Öffnen"));
                 player.sendMessage("§8 » §7Du hast eine §6§lCase§7 geangelt!");
             }
 
             playerManager.addExp(player, EXPType.SKILL_FISHING, Main.random(3, 8));
-
         }
+
     }
 
 }

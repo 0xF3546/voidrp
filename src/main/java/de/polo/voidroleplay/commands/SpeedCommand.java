@@ -43,7 +43,7 @@ public class SpeedCommand implements CommandExecutor {
             return false;
         }
         speed = speed / 10;
-        player.sendMessage(Main.admin_prefix + "Dein Fly-Speed wurde auf §c" + speed + "§7 gestellt.");
+        player.sendMessage(Main.admin_prefix + "Dein Fly-Speed wurde auf §c" + args[0] + "§7 gestellt.");
         player.setFlySpeed(speed);
         return false;
     }

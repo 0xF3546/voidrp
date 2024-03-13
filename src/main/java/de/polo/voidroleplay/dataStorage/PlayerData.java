@@ -85,6 +85,8 @@ public class PlayerData {
     private PlayerLaboratory laboratory;
     private Company company;
     private boolean hudEnabled;
+    private LocalDateTime dailyBonusRedeemed;
+    private LocalDateTime lastPayDay;
 
     public PlayerData() {
     }
@@ -671,6 +673,22 @@ public class PlayerData {
 
     public void setHudEnabled(boolean hudEnabled) {
         this.hudEnabled = hudEnabled;
+    }
+
+    public LocalDateTime getDailyBonusRedeemed() {
+        return dailyBonusRedeemed;
+    }
+
+    public void setDailyBonusRedeemed(LocalDateTime dailyBonusRedeemed) {
+        this.dailyBonusRedeemed = dailyBonusRedeemed;
+    }
+
+    public LocalDateTime getLastPayDay() {
+        return lastPayDay;
+    }
+
+    public void setLastPayDay(LocalDateTime lastPayDay) {
+        this.lastPayDay = lastPayDay;
     }
 
     public class AddonXP {

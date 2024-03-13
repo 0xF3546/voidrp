@@ -10,9 +10,12 @@ import de.polo.voidroleplay.utils.Game.Housing;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 
 public class PayDayUtils {
     private final PlayerManager playerManager;
@@ -101,5 +104,12 @@ public class PayDayUtils {
         playerManager.addBankMoney(player, (int) plus, "PayDay");
         playerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+        playerData.setLastPayDay(LocalDateTime.now());
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE players SET lastPayDay = NOW() WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 }

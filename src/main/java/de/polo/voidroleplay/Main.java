@@ -378,6 +378,7 @@ public final class Main extends JavaPlugin {
         public UseCommand useCommand;
         public AusziehenCommand ausziehenCommand;
         public CompanyCommand companyCommand;
+        public DailyBonusCommand dailyBonusCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -515,6 +516,7 @@ public final class Main extends JavaPlugin {
             useCommand = new UseCommand(gamePlay);
             ausziehenCommand = new AusziehenCommand(utils);
             companyCommand = new CompanyCommand(playerManager, companyManager, locationManager);
+            dailyBonusCommand = new DailyBonusCommand(playerManager, locationManager);
 
             main.registerCommands();
             main.registerListener(this);

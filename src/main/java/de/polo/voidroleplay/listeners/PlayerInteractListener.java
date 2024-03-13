@@ -9,6 +9,7 @@ import de.polo.voidroleplay.utils.GamePlay.Case;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
@@ -288,11 +289,16 @@ public class PlayerInteractListener implements Listener {
                 itemStack.setAmount(itemStack.getAmount() - 1);
                 if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
                 playerManager.addExp(player, Main.random(50,100));
-            } else if (event.getItem().getItemMeta().getDisplayName().equals("§6§lCase")) {
+            } else if (event.getItem().getItemMeta().getDisplayName().equals(CaseType.BASIC.getDisplayName())) {
                 ItemStack itemStack = event.getItem();
                 itemStack.setAmount(itemStack.getAmount() - 1);
                 if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
-                new Case(player);
+                new Case(player, CaseType.BASIC);
+            } else if (event.getItem().getItemMeta().getDisplayName().equals(CaseType.DAILY.getDisplayName())) {
+                ItemStack itemStack = event.getItem();
+                itemStack.setAmount(itemStack.getAmount() - 1);
+                if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
+                new Case(player, CaseType.DAILY);
             } else if (event.getItem().getItemMeta().getDisplayName().equals(RoleplayItem.JOINT.getDisplayName())) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
                 inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, RoleplayItem.BOX_WITH_JOINTS.getDisplayName(), "§8 ➥ §aVerpacke 3 Joints in einer Kiste.")) {
