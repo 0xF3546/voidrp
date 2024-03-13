@@ -108,7 +108,7 @@ public class Case {
                     } else {
                         Main.getInstance().playerManager.redeemRank(player, "premium", 1, "d");
                     }
-                    break;d
+                    break;
                 case GOLD_NUGGET:
                     try {
                         String amountString = winningItem.getItemMeta().getDisplayName().replaceAll("[^0-9]", "");
