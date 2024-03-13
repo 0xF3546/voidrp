@@ -445,8 +445,8 @@ public final class Main extends JavaPlugin {
             blacklistCommand = new BlacklistCommand(playerManager, factionManager);
             npc = new NPC(playerManager);
             redeemCommand = new RedeemCommand(playerManager, utils);
-            whistleCommand = new WhistleCommand(utils);
-            shoutCommand = new ShoutCommand(utils);
+            whistleCommand = new WhistleCommand(utils, playerManager);
+            shoutCommand = new ShoutCommand(utils, playerManager);
             setSecondaryTeamCommand = new SetSecondaryTeamCommand(playerManager);
             bauteamChat = new BauteamChat(playerManager, utils);
             eventTeamChat = new EventTeamChat(playerManager, utils);
