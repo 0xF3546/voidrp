@@ -195,8 +195,8 @@ public class PlayerManager implements Listener, ServerTiming {
                     Main.getInstance().utils.tutorial.start(player);
                 }*/
 
-                playerData.setHours(result.getInt("current_hours"));
-                playerData.setMinutes(result.getInt("needed_hours"));
+                playerData.setHours(result.getInt("playtime_hours"));
+                playerData.setMinutes(result.getInt("playtime_minutes"));
                 playerData.setAFK(false);
 
                 JSONObject object = new JSONObject(result.getString("relationShip"));
@@ -356,18 +356,16 @@ public class PlayerManager implements Listener, ServerTiming {
                 float value = (float) (needed_hours / player.getExpToLevel());
                 player.setTotalExperience((int) (value * current_hours));
                 if (minutes >= 60) {
+                    Main.getInstance().utils.payDayUtils.givePayDay(player);
+                    playerData.setHours(playerData.getHours() + 1);
                     if (current_hours >= needed_hours) {
                         needed_hours = needed_hours + 4;
-                        Main.getInstance().utils.payDayUtils.givePayDay(player);
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
                         player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                         playerData.setVisum(visum);
-                        playerData.setHours(playerData.getHours() + 1);
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                     } else {
-                        Main.getInstance().utils.payDayUtils.givePayDay(player);
                         current_hours = current_hours + 1;
-                        playerData.setHours(playerData.getHours() + 1);
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
                     }
                 } else {

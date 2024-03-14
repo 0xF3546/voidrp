@@ -104,6 +104,10 @@ public class PayDayUtils {
         playerManager.addBankMoney(player, (int) plus, "PayDay");
         playerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+        if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
+            player.sendMessage(" ");
+            player.sendMessage("§8[§6Bonus§8]§7 Du kannst nun deine Daily-Case beim Bonushändler abholen.");
+        }
         playerData.setLastPayDay(LocalDateTime.now());
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE players SET lastPayDay = NOW() WHERE uuid = ?");

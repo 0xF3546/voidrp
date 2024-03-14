@@ -123,7 +123,7 @@ public class Case {
                     break;
             }
         } else {
-            player.sendMessage("Leider ist beim Drehen des Glücksrads ein Fehler aufgetreten.");
+            player.sendMessage("Leider ist beim spinnen der Case ein Fehler aufgetreten.");
         }
         player.closeInventory();
     }
