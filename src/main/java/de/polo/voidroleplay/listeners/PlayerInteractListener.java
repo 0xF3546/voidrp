@@ -137,8 +137,15 @@ public class PlayerInteractListener implements Listener {
                     Material[] items = {Material.POTATO, Material.POISONOUS_POTATO, Material.GLASS_BOTTLE};
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mülleimer")) {
                         Main.getInstance().getCooldownManager().setCooldown(player, "mülleimer", 30);
-                        Material random = items[new Random().nextInt(items.length)];
-                        player.getInventory().addItem(new ItemStack(random));
+                        InventoryManager inventoryManager = new InventoryManager(player, 9, "§7Mülleimer", false, false);
+                        for (int i = 0; i < Main.random(3, 4); i++) {
+                            inventoryManager.setItem(new CustomItem(Main.random(0, 8), ItemManager.createItem(items[new Random().nextInt(items.length)], 1, 0, new ItemStack(items[new Random().nextInt(items.length)]).getItemMeta().getDisplayName())) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+
+                                }
+                            });
+                        }
                         ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " durchwühlt einen Mülleimer.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                     } else {

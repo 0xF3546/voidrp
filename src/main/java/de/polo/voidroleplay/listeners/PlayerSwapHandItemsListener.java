@@ -104,19 +104,19 @@ public class PlayerSwapHandItemsListener implements Listener {
     private void openBag(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Deine Tasche", true, true);
-        inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + utils.toDecimalFormat(playerData.getBargeld()) + "$")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + utils.toDecimalFormat(playerData.getBargeld()) + "$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
             }
         });
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.IRON_NUGGET, 1, 0, "§8 » §bHandy öffnen")) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.IRON_NUGGET, 1, 0, "§8 » §bHandy öffnen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 utils.phoneUtils.openPhone(player);
             }
         });
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§8 » §bTablet öffnen")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§8 » §bTablet öffnen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 utils.tabletUtils.openTablet(player);
@@ -138,12 +138,35 @@ public class PlayerSwapHandItemsListener implements Listener {
 
     private void openStatistics(Player player, PlayerData playerData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eStatistiken", true, true);
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§6" + player.getName(), Arrays.asList("§8 ➥§eLevel§8:§7 " + playerData.getLevel() + " (" + player.getExp() + "/" + player.getExpToLevel() + ")", "§8 ➥ §eVisum§8:§7 " + playerData.getVisum() + " (" + playerData.getCurrentHours() + "/" + (playerData.getLevel() * 4) + ")"))) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§6" + player.getName(), Arrays.asList("§8 ➥ §eLevel§8:§7 " + playerData.getLevel() + " (" + playerData.getExp() + "/" + playerData.getNeeded_exp() + ")", "§8 ➥ §eVisum§8:§7 " + playerData.getVisum() + " (" + playerData.getCurrentHours() + "/" + (playerData.getVisum() * 4) + ")"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
             }
         });
+        String faction = playerData.getFaction() + "(" + playerData.getFactionGrade() + "/8)";
+        if (playerData.getFaction() == null) {
+            faction = "Zivilist";
+        }
+        String bloodType = "§4" + playerData.getBloodType();
+        if (playerData.getBloodType() == null) {
+            bloodType = "Nicht gemessen";
+        }
+        if (playerData.getFirstname() != null) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + playerData.getFirstname() + " " + playerData.getLastname(), Arrays.asList("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender(), "§8 ➥ §eFraktion§8:§7 " + faction, "§8 ➥ §eBlutgruppe§8:§7" + bloodType))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§cDu benötigst einen Personalausweis.")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+        }
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
