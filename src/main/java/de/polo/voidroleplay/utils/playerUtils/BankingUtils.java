@@ -12,10 +12,14 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -122,24 +126,58 @@ public class BankingUtils implements Listener {
                 player.sendMessage("§8[§aATM§8]§7 Gib den Spieler an, an wen das Geld überwiesen werden soll.");
             }
         });
-        if (Duration.between(atm.getLastTimeBlown(), LocalDateTime.now()).toHours() >= 1) {
+        if (atm.getLastTimeBlown() == null || Duration.between(atm.getLastTimeBlown(), LocalDateTime.now()).toHours() >= 1) {
             if (playerData.getAtmBlown() < 3) {
                 inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.TNT, 1, 0, "§cAutomat sprengen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
-
+                        if (!ServerManager.canDoJobs()) {
+                            return;
+                        }
+                        for (Player nearPlayer : Bukkit.getOnlinePlayers()) {
+                            if (nearPlayer.getLocation().distance(player.getLocation()) < 20) {
+                                nearPlayer.playSound(nearPlayer.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+                            }
+                        }
+                        openRobInventory(player, atm);
+                        atm.setLastTimeBlown(LocalDateTime.now());
+                        playerData.setAtmBlown(playerData.getAtmBlown() + 1);
+                        playerData.save();
                     }
                 });
             }
         }
+
         if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
             inventoryManager.setItem(new CustomItem(44, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19", 1, 0, "§aFraktionskonto", null)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFaction() != null && playerData.getFaction() != "Zivilist") {
+                    if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
                         openFactionBankMenu(player);
                         Main.getInstance().getCooldownManager().setCooldown(player, "atm", 1);
                     }
+                }
+            });
+        }
+    }
+
+    private void openRobInventory(Player player, ATM atm) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 54, "§cATM-Raub " + atm.getName(), true, true);
+        for (int i = 0; i  < Main.random(12, 20); i++) {
+            int cash = Main.random(20, 100);
+            inventoryManager.setItem(new CustomItem(Main.random(0, 53), ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+" + cash + "$")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    ItemStack currentItem = event.getCurrentItem();
+                    currentItem.setType(Material.BLACK_STAINED_GLASS_PANE);
+                    ItemMeta meta = currentItem.getItemMeta();
+                    meta.setDisplayName("");
+                    currentItem.setItemMeta(meta);
+                    event.setCurrentItem(currentItem);
+                    playerData.addMoney(cash);
+                    player.sendMessage("§8[§2ATM§8]§a +" + cash + "$");
+                    SoundManager.openSound(player);
                 }
             });
         }
