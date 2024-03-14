@@ -236,7 +236,8 @@ public class PlayerManager implements Listener, ServerTiming {
 
                 playerData.addonXP.setFishingXP(result.getInt("fishingXP"));
                 playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
-
+                playerData.addonXP.setLumberjackLevel(result.getInt("lumberjackLevel"));
+                playerData.addonXP.setLumberjackXP(result.getInt("lumberjackXP"));
 
                 ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
                 if (jail.next()) {
@@ -732,6 +733,10 @@ public class PlayerManager implements Listener, ServerTiming {
         switch (expType.getSkillType()) {
             case FISHING:
                 playerData.addonXP.addFishingXP(amount);
+                break;
+            case LUMBERJACK:
+                playerData.addonXP.addLumberjackXP(amount);
+                break;
         }
         Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp() + ")");
     }

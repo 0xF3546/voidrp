@@ -712,8 +712,9 @@ public class PlayerData {
 
     public class AddonXP {
         private int fishingXP;
-
         private int fishingLevel;
+        private int lumberjackXP;
+        private int lumberjackLevel;
 
         public int getFishingXP() {
             return fishingXP;
@@ -739,6 +740,32 @@ public class PlayerData {
 
         public void setFishingLevel(int fishingLevel) {
             this.fishingLevel = fishingLevel;
+        }
+
+        public int getLumberjackLevel() {
+            return lumberjackLevel;
+        }
+
+        public void setLumberjackLevel(int lumberjackLevel) {
+            this.lumberjackLevel = lumberjackLevel;
+        }
+
+        public int getLumberjackXP() {
+            return lumberjackXP;
+        }
+
+        public void setLumberjackXP(int lumberjackXP) {
+            this.lumberjackXP = lumberjackXP;
+        }
+
+        public void addLumberjackXP(int amount) {
+            lumberjackXP += amount;
+            try {
+                Statement statement = Main.getInstance().mySQL.getStatement();
+                statement.executeUpdate("UPDATE player_addonxp SET lumberjackXP = " + lumberjackXP + " WHERE uuid = '" + player.getUniqueId() + "'");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

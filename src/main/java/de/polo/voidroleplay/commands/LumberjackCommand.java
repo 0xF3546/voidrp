@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.playerUtils.Progress;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
@@ -141,6 +142,7 @@ public class LumberjackCommand implements CommandExecutor {
             }
             removeTree(block.getLocation());
             scheduleTreeRespawn(block.getLocation());
+            playerManager.addExp(player, EXPType.SKILL_LUMBERJACK, Main.random(12, 20));
             /*Main.waitSeconds(120, () -> {
                 block.setType(Material.OAK_LOG);
             });*/
