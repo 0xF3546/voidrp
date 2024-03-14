@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.playerUtils.Progress;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import de.polo.voidroleplay.utils.ItemManager;
@@ -80,14 +81,37 @@ public class LumberjackCommand implements CommandExecutor {
                             }
                         });
                     } else {
-                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * Main.getInstance().serverManager.getPayout("holz") + "$")) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                quitJob(player, false);
-                                player.closeInventory();
-                            }
-                        });
+                        if (playerData.getVariable("lumberjack::hasStripped") != null) {
+                            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * Main.getInstance().serverManager.getPayout("holz") + "$")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+                                    quitJob(player, false);
+                                    player.closeInventory();
+                                }
+                            });
+                        } else {
+                            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §cnichts§7.")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+                                    quitJob(player, false);
+                                    player.closeInventory();
+                                }
+                            });
+                        }
                     }
+                }
+                if (playerData.getVariable("job") != null && playerData.getVariable("job").toString().equalsIgnoreCase("Holzfäller")) {
+                    inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.STRIPPED_OAK_WOOD, 1, 0, "§eHolz entrinden")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            player.closeInventory();
+                            Progress.startWithTitle(player, 12);
+                            Main.waitSeconds(12, () -> {
+                                playerData.setVariable("lumberjack::hasStripped", true);
+                                player.sendMessage("§8[§7Holzfäller§8]§7 Du hast den Baum entrindet und kannst diesen nun Verkaufen.");
+                            });
+                        }
+                    });
                 }
             } else {
                 player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Holzfällerei§7!");
@@ -113,7 +137,7 @@ public class LumberjackCommand implements CommandExecutor {
             player.sendMessage("§8[§7Holzfäller§8]§7 +" + amount + " KG Holz");
             playerData.getScoreboard("lumberjack").updateLumberjackScoreboard();
             if (playerData.getIntVariable("holz") <= 0) {
-                player.sendMessage("§8[§7Holzfäller§8]§7 Du hast genug Bäume gefällt, begib dich wieder zur Holzfällerei.");
+                player.sendMessage("§8[§7Holzfäller§8]§7 Du hast genug Bäume gefällt, begib dich wieder zur Holzfällerei und entrinde das Holz.");
             }
             removeTree(block.getLocation());
             scheduleTreeRespawn(block.getLocation());
@@ -161,6 +185,12 @@ public class LumberjackCommand implements CommandExecutor {
     public void quitJob(Player player, boolean silent) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
+        boolean hasStripped = playerData.getVariable("lumberjack::hasStripped");
+        if (!hasStripped) {
+            player.sendMessage("§8[§7Holzfäller§8]§7 Du hast den Job beendet.");
+            return;
+        }
+        playerData.setVariable("lumberjack::hasStripped", null);
         int payout = Main.getInstance().serverManager.getPayout("holz") * playerData.getIntVariable("holzkg");
         player.sendMessage("§8[§7Holzfäller§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
