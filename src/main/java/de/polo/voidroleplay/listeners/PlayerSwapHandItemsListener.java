@@ -122,10 +122,32 @@ public class PlayerSwapHandItemsListener implements Listener {
                 utils.tabletUtils.openTablet(player);
             }
         });
-        inventoryManager.setItem(new CustomItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§eCoin-Shop", Arrays.asList("§8 ➥ §7Ränge, Cosmetics und vieles mehr!"))) {
+        inventoryManager.setItem(new CustomItem(21, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§eCoin-Shop", Arrays.asList("§8 ➥ §7Ränge, Cosmetics und vieles mehr!"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openCoinShop(player, playerData);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(23, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§bStatistiken", "§8 ➥ §7Übersicht zu Spieler & Character Statistiken")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openStatistics(player, playerData);
+            }
+        });
+    }
+
+    private void openStatistics(Player player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eStatistiken", true, true);
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§6" + player.getName(), Arrays.asList("§8 ➥§eLevel§8:§7 " + playerData.getLevel() + " (" + player.getExp() + "/" + player.getExpToLevel() + ")", "§8 ➥ §eVisum§8:§7 " + playerData.getVisum() + " (" + playerData.getCurrentHours() + "/" + (playerData.getLevel() * 4) + ")"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openBag(player);
             }
         });
     }

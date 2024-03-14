@@ -87,6 +87,7 @@ public class PlayerData {
     private boolean hudEnabled;
     private LocalDateTime dailyBonusRedeemed;
     private LocalDateTime lastPayDay;
+    private int currentHours;
 
     public PlayerData() {
     }
@@ -689,6 +690,14 @@ public class PlayerData {
 
     public void setLastPayDay(LocalDateTime lastPayDay) {
         this.lastPayDay = lastPayDay;
+    }
+
+    public int getCurrentHours() {
+        return currentHours;
+    }
+
+    public void setCurrentHours(int currentHours) {
+        this.currentHours = currentHours;
     }
 
     public class AddonXP {

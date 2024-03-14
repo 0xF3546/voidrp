@@ -129,6 +129,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setBirthday(result.getString("birthday"));
                 playerData.setId(result.getInt("id"));
                 playerData.setHouseSlot(result.getInt("houseSlot"));
+                playerData.setCurrentHours(result.getInt("current_hours"));
                 if (result.getDate("rankDuration") != null) {
                     Date utilDate = new Date(result.getDate("rankDuration").getTime());
                     LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -364,8 +365,10 @@ public class PlayerManager implements Listener, ServerTiming {
                         player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                         playerData.setVisum(visum);
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
+                        playerData.setCurrentHours(0);
                     } else {
                         current_hours = current_hours + 1;
+                        playerData.setCurrentHours(current_hours);
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
                     }
                 } else {
