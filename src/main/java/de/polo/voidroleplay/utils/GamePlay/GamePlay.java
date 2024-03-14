@@ -21,6 +21,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.potion.PotionEffect;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.Duration;
@@ -336,6 +338,7 @@ public class GamePlay implements Listener {
         event.end();
     }
 
+    @SneakyThrows
     @EventHandler
     public void everyMinute(MinuteTickEvent event) {
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -358,6 +361,17 @@ public class GamePlay implements Listener {
                     }
                 }
             }
+        }
+
+        if (currentDateTime.getHour() == 0 && currentDateTime.getMinute() == 0) {
+            for (PlayerData playerData : playerManager.getPlayers()) {
+                playerData.setAtmBlown(0);
+            }
+            Connection connection = mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE players SET atmBlown = 0");
+            statement.execute();
+            statement.close();
+            connection.close();
         }
     }
 

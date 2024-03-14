@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.events.SubmitChatEvent;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -119,6 +122,16 @@ public class BankingUtils implements Listener {
                 player.sendMessage("§8[§aATM§8]§7 Gib den Spieler an, an wen das Geld überwiesen werden soll.");
             }
         });
+        if (Duration.between(atm.getLastTimeBlown(), LocalDateTime.now()).toHours() >= 1) {
+            if (playerData.getAtmBlown() < 3) {
+                inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.TNT, 1, 0, "§cAutomat sprengen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+
+                    }
+                });
+            }
+        }
         if (playerData.getFaction() != null && !playerData.getFaction().equals("Zivilist")) {
             inventoryManager.setItem(new CustomItem(44, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19", 1, 0, "§aFraktionskonto", null)) {
                 @Override

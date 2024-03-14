@@ -88,6 +88,7 @@ public class PlayerData {
     private LocalDateTime dailyBonusRedeemed;
     private LocalDateTime lastPayDay;
     private int currentHours;
+    private int atmBlown;
 
     public PlayerData() {
     }
@@ -698,6 +699,14 @@ public class PlayerData {
 
     public void setCurrentHours(int currentHours) {
         this.currentHours = currentHours;
+    }
+
+    public int getAtmBlown() {
+        return atmBlown;
+    }
+
+    public void setAtmBlown(int atmBlown) {
+        this.atmBlown = atmBlown;
     }
 
     public class AddonXP {

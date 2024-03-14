@@ -151,6 +151,8 @@ public class PlayerManager implements Listener, ServerTiming {
                 player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
+                playerData.setAtmBlown(result.getInt("atmBlown"));
+
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");
                     Main.waitSeconds(1, () -> {

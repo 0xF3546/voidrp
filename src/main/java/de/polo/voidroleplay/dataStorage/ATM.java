@@ -2,10 +2,13 @@ package de.polo.voidroleplay.dataStorage;
 
 import org.bukkit.Location;
 
+import java.time.LocalDateTime;
+
 public class ATM {
     private int id;
     private String name;
     private Location location;
+    private LocalDateTime lastTimeBlown;
 
     public int getId() {
         return id;
@@ -29,5 +32,13 @@ public class ATM {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public LocalDateTime getLastTimeBlown() {
+        return lastTimeBlown;
+    }
+
+    public void setLastTimeBlown(LocalDateTime lastTimeBlown) {
+        this.lastTimeBlown = lastTimeBlown;
     }
 }
