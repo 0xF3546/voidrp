@@ -13,10 +13,12 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -30,6 +32,9 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        Locale locale = new Locale("de", "DE");
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
+        String formattedDate = dateFormat.format(playerData.getBirthday());
         if (playerManager.firstname(player) != null && playerManager.lastname(player) != null) {
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("show")) {
@@ -43,7 +48,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             targetplayer.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
                             targetplayer.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
                             targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
-                            targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
+                            targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                             targetplayer.sendMessage(" ");
                             targetplayer.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));
                             if (!playerData.getRelationShip().isEmpty()) {
@@ -80,7 +85,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
                 player.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
                 player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
-                player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + playerData.getBirthday());
+                player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));
                 if (!playerData.getRelationShip().isEmpty()) {

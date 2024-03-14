@@ -47,6 +47,7 @@ public class InventoryClickListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = null;
+        if (playerData.getVariable("current_inventory") == null) return;
         if (playerData.getFaction() != null) factionData = factionManager.getFactionData(playerData.getFaction());
         if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
             event.setCancelled(true);
@@ -55,8 +56,6 @@ public class InventoryClickListener implements Listener {
                 playerData.setVariable("current_inventory", "rubbellos");
                 int pers = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER);
                 ItemMeta meta = event.getCurrentItem().getItemMeta();
-                System.out.println(playerData.getIntVariable("rubbellose_wins"));
-                System.out.println(playerData.getIntVariable("rubbellose_gemacht"));
                 if (pers == 1 && playerData.getIntVariable("rubbellose_wins") <= 3) {
                     meta.setDisplayName("§aGewonnen!");
                     event.getCurrentItem().setItemMeta(meta);
@@ -623,75 +622,6 @@ public class InventoryClickListener implements Listener {
                 event.getInventory().getItem(26).setItemMeta(nextMeta);
             }
         }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "einreise")) {
-            event.setCancelled(true);
-            switch (event.getSlot()) {
-                case 1:
-                    playerData.setVariable("chatblock", "firstname");
-                    player.sendMessage(Main.prefix + "Gib nun deinen §6Vornamen§7 in den §6Chat§7 ein!");
-                    player.closeInventory();
-                    break;
-                case 2:
-                    playerData.setVariable("chatblock", "lastname");
-                    player.sendMessage(Main.prefix + "Gib nun deinen §6Nachnamen§7 in den §6Chat§7 ein!");
-                    player.closeInventory();
-                    break;
-                case 4:
-                    if (event.getClick().isLeftClick()) {
-                        playerData.setVariable("einreise_gender", "Männlich");
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        meta.setDisplayName("§eMännlich");
-                        event.getCurrentItem().setItemMeta(meta);
-                    } else if (event.getClick().isRightClick()) {
-                        playerData.setVariable("einreise_gender", "Weiblich");
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        meta.setDisplayName("§eWeiblich");
-                        event.getCurrentItem().setItemMeta(meta);
-                    }
-                    break;
-
-                case 5:
-                    playerData.setVariable("chatblock", "dob");
-                    player.sendMessage(Main.prefix + "Gib nun deinen §6Geburtstag§7 in den §6Chat§7 ein!");
-                    player.closeInventory();
-                    break;
-                case 8:
-                    if (playerData.getVariable("einreise_firstname") != null) {
-                        if (playerData.getVariable("einreise_lastname") != null) {
-                            if (playerData.getVariable("einreise_gender") != null) {
-                                if (playerData.getVariable("einreise_dob") != null) {
-                                    player.closeInventory();
-                                    playerData.setFirstname(playerData.getVariable("einreise_firstname"));
-                                    playerData.setLastname(playerData.getVariable("einreise_lastname"));
-                                    playerData.setBirthday(playerData.getVariable("einreise_dob"));
-                                    playerData.setGender(playerData.getVariable("einreise_gender"));
-                                    Connection connection = Main.getInstance().mySQL.getConnection();
-                                    PreparedStatement statement = connection.prepareStatement("UPDATE `players` SET `firstname` = ?, `lastname` = ?, `birthday` = ?, `gender` = ? WHERE `uuid` = ?");
-                                    statement.setString(1, playerData.getFirstname());
-                                    statement.setString(2, playerData.getLastname());
-                                    statement.setString(3, playerData.getBirthday());
-                                    statement.setString(4, playerData.getGender());
-                                    statement.setString(5, playerData.getUuid().toString());
-                                    statement.executeUpdate();
-                                    statement.close();
-                                    player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
-                                    playerManager.addExp(player, Main.random(100, 200));
-                                    utils.tutorial.createdAusweis(player);
-                                    player.playSound(player.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 0);
-                                } else {
-                                    player.sendMessage(Main.error + "Bitte gib deinen Geburtstag noch an!");
-                                }
-                            } else {
-                                player.sendMessage(Main.error + "Bitte gib dein Geschlecht noch an!");
-                            }
-                        } else {
-                            player.sendMessage(Main.error + "Bitte gib deinen Nachnamen noch an!");
-                        }
-                    } else {
-                        player.sendMessage(Main.error + "Bitte gib deinen Vornamen noch an!");
-                    }
-            }
-        }
         if (Objects.equals(playerData.getVariable("current_inventory"), "ffa_menu")) {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
@@ -853,49 +783,6 @@ public class InventoryClickListener implements Listener {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "interaction_cooldown"))
                         playerManager.openInterActionMenu(player, targetplayer);
                     break;
-            }
-        }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "garage")) {
-            event.setCancelled(true);
-            if (playerData.getVariable("current_app").toString().equalsIgnoreCase("parkin")) {
-                switch (event.getCurrentItem().getType()) {
-                    case REDSTONE:
-                        Main.getInstance().vehicles.openGarage(player, playerData.getIntVariable("current_garage"), false);
-                        break;
-                    case MINECART:
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        int id = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                        PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
-                        VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                        playerVehicleData.setParked(true);
-                        Vehicles.deleteVehicleById(id);
-                        utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
-                        SoundManager.successSound(player);
-                        Statement statement = Main.getInstance().mySQL.getStatement();
-                        statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + playerData.getIntVariable("current_garage") + " WHERE id = " + id);
-                        playerVehicleData.setGarage(playerData.getIntVariable("current_garage"));
-                        player.closeInventory();
-                        break;
-                }
-            } else if (playerData.getVariable("current_app").toString().equalsIgnoreCase("parkout")) {
-                switch (event.getCurrentItem().getType()) {
-                    case EMERALD:
-                        Main.getInstance().vehicles.openGarage(player, playerData.getIntVariable("current_garage"), true);
-                        break;
-                    case MINECART:
-                        ItemMeta meta = event.getCurrentItem().getItemMeta();
-                        int id = meta.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                        PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
-                        VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                        playerVehicleData.setParked(false);
-                        utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a ausgeparkt!");
-                        SoundManager.successSound(player);
-                        Statement statement = Main.getInstance().mySQL.getStatement();
-                        statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + id);
-                        Vehicles.spawnVehicle(player, playerVehicleData);
-                        player.closeInventory();
-                        break;
-                }
             }
         }
     }
