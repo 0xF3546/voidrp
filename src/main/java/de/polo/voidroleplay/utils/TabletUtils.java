@@ -145,7 +145,7 @@ public class TabletUtils implements Listener {
             if (i == 26 && i == 18 && i == 22) {
                 i++;
             } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName(), null)) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         editPlayerAkte(player, players.getUniqueId());
@@ -180,7 +180,7 @@ public class TabletUtils implements Listener {
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + targetplayer.getName(), true, true);
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName(), null)) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName())) {
             @Override
             public void onClick(InventoryClickEvent event) {
             }
@@ -366,7 +366,7 @@ public class TabletUtils implements Listener {
                 if (i == 26 && i == 18 && i == 22) {
                     i++;
                 } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
-                    inv.setItem(i, ItemManager.createItemHead(jailData.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName(), null));
+                    inv.setItem(i, ItemManager.createItemHead(jailData.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName()));
                     i++;
                 }
                 j++;

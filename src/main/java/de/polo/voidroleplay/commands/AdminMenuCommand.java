@@ -88,7 +88,7 @@ public class AdminMenuCommand implements CommandExecutor {
                 if (i == 26 && i == 18) {
                     i++;
                 } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
-                    inv.setItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName(), null));
+                    inv.setItem(i, ItemManager.createItemHead(players.getUniqueId().toString(), 1, 0, "§8» §6" + players.getName()));
                     i++;
                 }
                 inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));

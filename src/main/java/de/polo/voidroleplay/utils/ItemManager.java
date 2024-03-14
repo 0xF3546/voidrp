@@ -72,6 +72,22 @@ public class ItemManager {
         return i;
     }
 
+    public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname)
+    {
+        UUID uuid = UUID.fromString(owner);
+        short neuesubid = (short)subid;
+        ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
+        SkullMeta skullMeta = (SkullMeta) i.getItemMeta();
+        assert skullMeta != null;
+        skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+        i.setItemMeta(skullMeta);
+        ItemMeta m = i.getItemMeta();
+        m.setDisplayName(displayname);
+        i.setItemMeta(m);
+
+        return i;
+    }
+
     public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname, List list)
     {
         UUID uuid = UUID.fromString(owner);

@@ -268,7 +268,7 @@ public class PhoneUtils implements Listener {
                     ResultSet result = statement.executeQuery("SELECT * FROM `phone_contacts` WHERE `contact_uuid` = '" + uuid + "' AND `uuid` = '" + player.getUniqueId() + "'");
                     if (result.next()) {
                         Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt§8:§e " + result.getString(3).replace("&", "§"));
-                        inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8", null));
+                        inv.setItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8"));
                         inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=", 1, 0, "§aAnrufen", null));
                         inv.setItem(16, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachricht schreiben", null));
                         inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
@@ -525,7 +525,7 @@ public class PhoneUtils implements Listener {
             if (event.getPlayerData().getIntVariable("current_contact_id") == 0) {
                 editContact(event.getPlayer(), null, true, true);
             } else {
-                editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8", null), false, true);
+                editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8"), false, true);
             }
             event.end();
         }
@@ -539,7 +539,7 @@ public class PhoneUtils implements Listener {
             if (event.getPlayerData().getIntVariable("current_contact_id") == 0) {
                 editContact(event.getPlayer(), null, true, true);
             } else {
-                editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8", null), false, true);
+                editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8"), false, true);
             }
             event.end();
         }
