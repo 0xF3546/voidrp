@@ -27,8 +27,8 @@ public class BlockBreakListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!player.getGameMode().equals(GameMode.CREATIVE)) {
             if (playerData.getVariable("job") != null) {
-                switch (playerData.getVariable("job").toString()) {
-                    case "Holzfäller":
+                switch (playerData.getVariable("job").toString().toLowerCase()) {
+                    case "holzfäller":
                         commands.lumberjackCommand.blockBroken(player, event.getBlock(), event);
                         break;
                     case "mine":
@@ -36,6 +36,9 @@ public class BlockBreakListener implements Listener {
                         break;
                     case "farmer":
                         commands.farmerCommand.blockBroken(player, event.getBlock(), event);
+                        break;
+                    case "winzer":
+                        commands.winzerCommand.blockBroken(player, event.getBlock(), event);
                         break;
                     default:
                         event.setCancelled(true);

@@ -733,12 +733,13 @@ public class PlayerManager implements Listener, ServerTiming {
         switch (expType.getSkillType()) {
             case FISHING:
                 playerData.addonXP.addFishingXP(amount);
+                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp() + ")");
                 break;
             case LUMBERJACK:
                 playerData.addonXP.addLumberjackXP(amount);
+                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getLumberjackXP() + "/" + expType.getLevelUpXp() + ")");
                 break;
         }
-        Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp() + ")");
     }
 
     public void addEXPBoost(Player player, int hours) throws SQLException {

@@ -26,6 +26,7 @@ public final class Main extends JavaPlugin {
 
     public static Plugin plugin = null;
     public static final String prefix = "§8[§6Void§8] §7";
+    public static final String infoPrefix = "§b    Info§f: ";
     public static final String admin_prefix = "§8[§cAdmin§8] §7";
     public static final String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
     public static final String PayDay_prefix = "§8[§aPayDay§8] §7";
@@ -380,6 +381,8 @@ public final class Main extends JavaPlugin {
         public AusziehenCommand ausziehenCommand;
         public CompanyCommand companyCommand;
         public DailyBonusCommand dailyBonusCommand;
+        public WinzerCommand winzerCommand;
+        public RebstockCommand rebstockCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -518,6 +521,8 @@ public final class Main extends JavaPlugin {
             ausziehenCommand = new AusziehenCommand(utils);
             companyCommand = new CompanyCommand(playerManager, companyManager, locationManager);
             dailyBonusCommand = new DailyBonusCommand(playerManager, locationManager);
+            winzerCommand = new WinzerCommand(playerManager, locationManager, navigation);
+            rebstockCommand = new RebstockCommand(playerManager, navigation);
 
             main.registerCommands();
             main.registerListener(this);

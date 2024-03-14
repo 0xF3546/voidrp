@@ -124,6 +124,15 @@ public class Scoreboard extends ScoreboardBuilder {
         setScore("§8 ➥ §7" + playerData.getIntVariable("holz"), 0);
     }
 
+    public void createWinzerScoreboard() {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        setDisplayName("§8» §5Winzer §8«");
+        setScore("§dWeintrauben gesammelt§8:", 3);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("winzer_harvested") + " Stück", 2);
+        setScore("§dVerbleibende Weinreben§8:", 1);
+        setScore("§8 ➥ §7" + playerData.getIntVariable("winzer"), 0);
+    }
+
     public void updateLumberjackScoreboard() {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         setDisplayName("§8» §7Holzfäller §8«");
@@ -216,6 +225,8 @@ public class Scoreboard extends ScoreboardBuilder {
                     setScore("§8 ➥ §7" + (int) kmh * 2, 4);
                     setScore("§8 ➥ §7" + km, 2);
                     setScore("§8 ➥ §7" + fuel + "l", 0);
+                } else if (playerData.getScoreboard("winzer") != null) {
+                    createWinzerScoreboard();
                 } else {
                     cancel();
                 }

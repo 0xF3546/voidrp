@@ -30,11 +30,13 @@ import java.sql.SQLException;
 public class LumberjackCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public LumberjackCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.registerCommand("holzfäller", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -206,24 +208,31 @@ public class LumberjackCommand implements CommandExecutor {
         }
         Main.getInstance().getCooldownManager().setCooldown(player, "holzfäller", 600);
         Inventory inv = player.getInventory();
-            for (ItemStack item : inv.getContents()) {
-                if (item.getType() == Material.WOODEN_AXE) {
-                    inv.removeItem(item);
-                }
+        for (ItemStack item : inv.getContents()) {
+            if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§7Holzfälleraxt")) {
+                inv.removeItem(item);
             }
+        }
     }
+
     public void startJob(Player player) {
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller")) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.setVariable("job", "Holzfäller");
             player.sendMessage("§8[§7Holzfäller§8]§7 Du bist nun Holzfäller.");
-            player.sendMessage("§8[§7Holzfäller§8]§7 Baue §e6 Bäume§7 ab.");
-            playerData.setIntVariable("holz", 6);
+            int trees = 6;
+            trees += (playerData.addonXP.getLumberjackLevel() / 2);
+            player.sendMessage("§8[§7Holzfäller§8]§7 Baue §e" + trees + " Bäume§7 ab.");
+            playerData.setIntVariable("holz", trees);
             playerData.setIntVariable("holzkg", 0);
             Scoreboard scoreboard = new Scoreboard(player);
             scoreboard.createLumberjackScoreboard();
             playerData.setScoreboard("lumberjack", scoreboard);
-            player.getInventory().addItem(ItemManager.createItem(Material.WOODEN_AXE, 1, 0, "§7Holzaxt"));
+            if (playerData.addonXP.getLumberjackLevel() < 5) {
+                player.getInventory().addItem(ItemManager.createItem(Material.WOODEN_AXE, 1, 0, "§7Holzfälleraxt"));
+            } else {
+                player.getInventory().addItem(ItemManager.createItem(Material.STONE_AXE, 1, 0, "§7Holzfälleraxt"));
+            }
         } else {
             player.sendMessage("§8[§7Holzfäller§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7 beginnen.");
         }

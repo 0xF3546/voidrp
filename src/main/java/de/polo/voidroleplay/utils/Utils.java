@@ -8,8 +8,10 @@ import de.polo.voidroleplay.utils.Game.GangwarUtils;
 import de.polo.voidroleplay.utils.Game.Housing;
 import de.polo.voidroleplay.utils.playerUtils.*;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -227,6 +229,20 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public void makeBlockGlow(Block block, Main plugin, int durationSeconds) {
+        // Ändere die Leuchtkraft des Blocks
+        block.getWorld().spawnFallingBlock(block.getLocation(), block.getBlockData()).setGlowing(true);
+
+        // Planen, die Leuchtkraft nach der angegebenen Zeit zurückzusetzen
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Setze die Leuchtkraft des Blocks zurück
+                block.getWorld().spawnFallingBlock(block.getLocation(), block.getBlockData()).setGlowing(false);
+            }
+        }.runTaskLater(plugin, durationSeconds * 20L); // Umrechnung von Sekunden in Tickzeit
     }
 
     /*public interface Skin {
