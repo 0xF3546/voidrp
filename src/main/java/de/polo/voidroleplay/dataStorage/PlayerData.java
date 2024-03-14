@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class PlayerData {
     private boolean isFlightmode;
     private boolean isDuty;
     private String gender;
-    private String birthday;
+    private Date birthday;
     private int houseSlot;
     private LocalDateTime rankDuration;
     private int boostDuration;
@@ -84,6 +85,7 @@ public class PlayerData {
     private boolean cuffed;
     private PlayerLaboratory laboratory;
     private Company company;
+    private CompanyRole companyRole;
     private boolean hudEnabled;
     private LocalDateTime dailyBonusRedeemed;
     private LocalDateTime lastPayDay;
@@ -363,13 +365,6 @@ public class PlayerData {
         this.gender = gender;
     }
 
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
 
     public int getId() {
         return id;
@@ -708,6 +703,22 @@ public class PlayerData {
 
     public void setAtmBlown(int atmBlown) {
         this.atmBlown = atmBlown;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public CompanyRole getCompanyRole() {
+        return companyRole;
+    }
+
+    public void setCompanyRole(CompanyRole companyRole) {
+        this.companyRole = companyRole;
     }
 
     public class AddonXP {

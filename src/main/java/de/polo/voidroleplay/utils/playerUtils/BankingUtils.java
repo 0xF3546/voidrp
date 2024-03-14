@@ -164,20 +164,34 @@ public class BankingUtils implements Listener {
     private void openRobInventory(Player player, ATM atm) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§cATM-Raub " + atm.getName(), true, true);
+        playerData.setVariable("atm::rob::collected", 0);
         for (int i = 0; i  < Main.random(12, 20); i++) {
             int cash = Main.random(20, 100);
             inventoryManager.setItem(new CustomItem(Main.random(0, 53), ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+" + cash + "$")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    ItemStack currentItem = event.getCurrentItem();
-                    currentItem.setType(Material.BLACK_STAINED_GLASS_PANE);
-                    ItemMeta meta = currentItem.getItemMeta();
-                    meta.setDisplayName("");
-                    currentItem.setItemMeta(meta);
-                    event.setCurrentItem(currentItem);
-                    playerData.addMoney(cash);
-                    player.sendMessage("§8[§2ATM§8]§a +" + cash + "$");
-                    SoundManager.openSound(player);
+                    ItemStack item = event.getCurrentItem();
+                    item.setType(Material.BLACK_STAINED_GLASS_PANE);
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName("§2");
+                    item.setItemMeta(meta);
+                    event.setCurrentItem(item);
+                    int amount = 0;
+                    for (ItemStack inventoryItem : event.getInventory().getContents()) {
+                        if (inventoryItem.getType() == Material.GREEN_DYE) {
+                            amount++;
+                        }
+                    }
+                    playerData.setVariable("atm::rob::collected", (int) playerData.getVariable("atm::rob::collected") + cash);
+                    if (amount > 0) {
+                        SoundManager.openSound(player);
+                        return;
+                    }
+                    player.closeInventory();
+                    SoundManager.successSound(player);
+                    int money = playerData.getVariable("atm::rob::collected");
+                    player.sendMessage("§8[§2ATM§8]§a +" + money + "$");
+                    playerData.addMoney(money);
                 }
             });
         }

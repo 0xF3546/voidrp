@@ -126,7 +126,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setNumber(result.getInt("number"));
                 playerData.setDuty(result.getBoolean("isDuty"));
                 playerData.setGender(result.getString("gender"));
-                playerData.setBirthday(result.getString("birthday"));
+                playerData.setBirthday(result.getDate("birthday"));
                 playerData.setId(result.getInt("id"));
                 playerData.setHouseSlot(result.getInt("houseSlot"));
                 playerData.setCurrentHours(result.getInt("current_hours"));
@@ -223,8 +223,17 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setCompany(null);
                 if (result.getInt("company") != 0) {
                     Company company = Main.getInstance().companyManager.getCompanyById(result.getInt("company"));
-                    System.out.println(company.getId());
-                    playerData.setCompany(company);
+                    if (company != null) {
+                        playerData.setCompany(company);
+                        if (company.getRoles() != null) {
+                            for (CompanyRole role : company.getRoles()) {
+                                if (role == null) continue;
+                                if (role.getId() == result.getInt("companyRole")) {
+                                    playerData.setCompanyRole(role);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));

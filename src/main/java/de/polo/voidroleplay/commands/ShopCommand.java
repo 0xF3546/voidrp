@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class ShopCommand implements CommandExecutor {
@@ -41,6 +42,7 @@ public class ShopCommand implements CommandExecutor {
     }
 
     private void openShop(Player player, ShopData shopData) {
+        PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventory = new InventoryManager(player, 54, "§8» §c" + shopData.getName(), true, false);
         for (int i = 0; i < 54; i++) {
             if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
@@ -49,6 +51,16 @@ public class ShopCommand implements CommandExecutor {
                     public void onClick(InventoryClickEvent event) {
                     }
                 });
+                if (i == 45 && playerData.getCompany() != null) {
+                    if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId())) {
+                        inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eBusiness-Übersicht")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                openBusinessOverview(player, shopData);
+                            }
+                        });
+                    }
+                }
                 if (i == 53 && shopData.getType() == ShopType.SUPERMARKET) {
                     inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§6Zum Ankauf")) {
                         @Override
@@ -82,6 +94,60 @@ public class ShopCommand implements CommandExecutor {
                 }
             }
         }
+    }
+
+    private void openBusinessOverview(Player player, ShopData shopData) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (shopData.getCompany() != playerData.getCompany()) {
+            openBusinessBuyOverview(player, shopData);
+            return;
+        }
+        InventoryManager inventoryManager = new InventoryManager(player, 27,"§8» §c" + shopData.getName() + " (Business)", true, true);
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openShop(player, shopData);
+            }
+        });
+    }
+
+    private void openBusinessBuyOverview(Player player, ShopData shopData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + shopData.getName() + " (Business kaufen)", true, true);
+        PlayerData playerData = playerManager.getPlayerData(player);
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PAPER, 1, 0, "§3Statistiken", Arrays.asList("§8 ➥§bTyp§8:§7 " + shopData.getType(), "§8 ➥§bPreis§8:§7 3.250.000$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        if (playerData.getCompanyRole().hasPermission("*")) {
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aKaufen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getCompany().getBank() < 3250000) {
+                        player.sendMessage(Main.error + "Deine Firma hat nicht genug Kapital um sich dieses Business zu leisten.");
+                        return;
+                    }
+                    player.closeInventory();
+                    player.sendMessage("§8[§6" + playerData.getCompany().getName() + "§8]§a Ihr habt das Business \"" + shopData.getType() + " " + shopData.getName() + "\".");
+                    shopData.setCompany(playerData.getCompany().getId());
+                    shopData.save();
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§a§mKaufen", "§8 ➥ §cDafür bist du nicht berechtigt.")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+        }
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openShop(player, shopData);
+            }
+        });
     }
 
     private void openPurchase(Player player, ShopData shopData) {

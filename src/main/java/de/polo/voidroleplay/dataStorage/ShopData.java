@@ -1,7 +1,12 @@
 package de.polo.voidroleplay.dataStorage;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.enums.ShopType;
+import lombok.SneakyThrows;
 import org.bukkit.World;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class ShopData {
     private int id;
@@ -13,7 +18,7 @@ public class ShopData {
     private float yaw;
     private float pitch;
     private ShopType type;
-    private Company company;
+    private int company;
 
     public int getId() {
         return id;
@@ -88,10 +93,21 @@ public class ShopData {
     }
 
     public Company getCompany() {
-        return company;
+        return Main.getInstance().companyManager.getCompanyById(company);
     }
 
-    public void setCompany(Company company) {
+    public void setCompany(int company) {
         this.company = company;
+    }
+
+    @SneakyThrows
+    public void save() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE shops SET company = ? WHERE id = ?");
+        statement.setInt(1, getCompany().getId());
+        statement.setInt(2, getId());
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 }

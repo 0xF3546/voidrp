@@ -29,7 +29,9 @@ public class WhistleCommand implements CommandExecutor {
         }
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 3) {
-                players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §8" + player.getName() + " flüstert§8:§8 " + utils.stringArrayToString(args));
+                players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §7" + player.getName() + " flüstert: " + utils.stringArrayToString(args));
+            } else if (player.getLocation().distance(players.getLocation()) <= 5) {
+                players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §8" + player.getName() + " flüstert: " + utils.stringArrayToString(args));
             }
         }
         ChatUtils.LogMessage(utils.stringArrayToString(args), player.getUniqueId());

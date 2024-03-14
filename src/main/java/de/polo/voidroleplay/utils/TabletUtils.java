@@ -19,9 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -53,6 +51,7 @@ public class TabletUtils implements Listener {
     public void openTablet(Player player) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eTablet", true, true);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        int i = 2;
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -66,26 +65,28 @@ public class TabletUtils implements Listener {
             }
         });
         if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-            inventoryManager.setItem(new CustomItem(9, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§1Aktenapp")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openAktenApp(player);
                 }
             });
-            inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openJailApp(player, 1);
                 }
             });
+            i = i + 2;
         }
         if (playerData.getCompany() != null) {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.EMERALD, 1, 0, "§6Firma")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.EMERALD, 1, 0, "§6Firma")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openCompanyApp(player);
                 }
             });
+            i++;
         }
     }
 
@@ -463,8 +464,57 @@ public class TabletUtils implements Listener {
                 openCompanyMember(player);
             }
         });
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Assets verwalten")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openAssetApp(player, false);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openTablet(player);
+            }
+        });
     }
 
+    public void openAssetApp(Player player, boolean isAddingPermission) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Assets", true, true);
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCompanyApp(player);
+            }
+        });
+        int i = 0;
+        for (ShopData shopData : ServerManager.shopDataMap.values()) {
+            if (shopData.getCompany() == null) continue;
+            if (shopData.getCompany().equals(playerData.getCompany())) {
+                if (!isAddingPermission) {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§6" + shopData.getName(), "§8 ➥ §eID§8:§7 " + shopData.getId())) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
+                } else {
+                    CompanyRole role = playerData.getVariable("tablet::company::role");
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§6" + shopData.getName(), "§8 ➥ §eVerwaltung für  " + role.getName() + " hinzufügen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            role.addPermission("manage_shop_" + shopData.getId());
+                            editRole(player, role);
+                            role.save();
+                        }
+                    });
+                }
+                i++;
+            }
+        }
+    }
+
+    @SneakyThrows
     public void openCompanyMember(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter", true, true);
@@ -474,6 +524,85 @@ public class TabletUtils implements Listener {
                 openCompanyApp(player);
             }
         });
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT player_name, companyRole, uuid FROM players WHERE company = ?");
+        statement.setInt(1, playerData.getCompany().getId());
+        ResultSet resultSet = statement.executeQuery();
+        int i = 0;
+        while (resultSet.next()) {
+            String roleName = "Keine Rolle";
+            CompanyRole role = companyManager.getCompanyRoleById(resultSet.getInt("companyRole"));
+            if (role != null) {
+                roleName = role.getName();
+            }
+            String uuid = resultSet.getString("uuid");
+            String player_name = resultSet.getString("player_name");
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(uuid, 1, 0, "§6" + player_name, "§8 ➥ §e" + roleName)) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    editCompanyPlayer(player, uuid, player_name);
+                }
+            });
+            i++;
+        }
+        statement.close();
+        connection.close();
+    }
+
+    private void editCompanyPlayer(Player player, String uuid, String player_name) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter (" + player_name + ")", true, true);
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCompanyMember(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(uuid, 1, 0, "§6" + player_name)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PAPER, 1, 0, "§eRolle setzen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPlayerSetRole(player, uuid, player_name);
+            }
+        });
+    }
+
+    private void openPlayerSetRole(Player player, String uuid, String player_name) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter Rolle (" + player_name + ")", true, true);
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                editCompanyPlayer(player, uuid, player_name);
+            }
+        });
+        int i = 0;
+        for (CompanyRole role : playerData.getCompany().getRoles()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + role.getName())) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    PreparedStatement statement = connection.prepareStatement("UPDATE players SET companyRole = ? WHERE uuid = ?");
+                    statement.setInt(1, role.getId());
+                    statement.setString(2, uuid);
+                    statement.execute();
+                    statement.close();
+                    connection.close();
+                    for (PlayerData pd : playerManager.getPlayers()) {
+                        if (pd.getUuid().toString().equals(uuid)) {
+                            pd.setCompanyRole(role);
+                        }
+                    }
+                    editCompanyPlayer(player, uuid, player_name);
+                }
+            });
+            i++;
+        }
     }
 
     public void openRoles(Player player) {
@@ -484,6 +613,10 @@ public class TabletUtils implements Listener {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6" + role.getName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (playerData.getCompanyRole() == null) return;
+                    if (!playerData.getCompanyRole().hasPermission("*") && playerData.getCompany().getOwner().equals(player.getUniqueId())) {
+                        return;
+                    }
                     if (event.isLeftClick()) {
                         editRole(player, role);
                     } else {
@@ -501,16 +634,19 @@ public class TabletUtils implements Listener {
                 openCompanyApp(player);
             }
         });
-        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Neu erstellen")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                CompanyRole role = new CompanyRole();
-                role.setName("Neue Rolle");
-                role.setPermissions(new ArrayList<>());
-                playerData.getCompany().createRole(role);
-                openRoles(player);
-            }
-        });
+        if (playerData.getCompanyRole() == null) return;
+        if (playerData.getCompanyRole().hasPermission("*") && !(playerData.getCompany().getOwner().equals(player.getUniqueId()))) {
+            inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Neu erstellen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    CompanyRole role = new CompanyRole();
+                    role.setName("Neue Rolle");
+                    role.setPermissions(new ArrayList<>());
+                    playerData.getCompany().createRole(role);
+                    openRoles(player);
+                }
+            });
+        }
     }
 
     private void editRole(Player player, CompanyRole role) {
@@ -527,14 +663,24 @@ public class TabletUtils implements Listener {
         });
         int i = 9;
         for (String permission : role.getPermissions()) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§e" + permission)) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    role.removePermission(permission);
-                    editRole(player, role);
-                    role.save();
+            if (permission.contains("manage_shop")) {
+                ShopData shop = null;
+                int shopId = Integer.parseInt(permission.replace("manage_shop_", ""));
+                for (ShopData shopData : ServerManager.shopDataMap.values()) {
+                    if (shopData.getId() == shopId) {
+                        shop = shopData;
+                    }
                 }
-            });
+                if (shop == null) continue;
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§eVerwaltung von Shop " + shop.getName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.removePermission(permission);
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            }
         }
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
@@ -545,9 +691,11 @@ public class TabletUtils implements Listener {
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Hinzufügen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                playerData.setVariable("chatblock", "tablet::company::role::addpermission");
+                /*playerData.setVariable("chatblock", "tablet::company::role::addpermission");
                 player.closeInventory();
-                player.sendMessage(Main.prefix + "Gib nun die Permission an");
+                player.sendMessage(Main.prefix + "Gib nun die Permission an");*/
+                playerData.setVariable("tablet::company::role", role);
+                openAssetApp(player, true);
             }
         });
     }

@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Company;
+import de.polo.voidroleplay.dataStorage.CompanyRole;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.CompanyManager;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
@@ -72,6 +73,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
                     player.closeInventory();
                     return;
                 }
+                player.closeInventory();
                 Company company = new Company();
                 company.setOwner(player.getUniqueId());
                 company.setName(playerData.getVariable("company::name"));
@@ -81,6 +83,11 @@ public class CompanyCommand implements CommandExecutor, Listener {
                     playerData.removeBankMoney(250000, "Firmengründung");
                     player.sendMessage("§8[§6" + company.getName() + "§8]§a Die Firma wurde erfolgreich gegründet!");
                     playerData.save();
+                    CompanyRole role = new CompanyRole();
+                    role.addPermission("*");
+                    role.setName("CEO");
+                    company.createRole(role);
+                    companyManager.setPlayerRole(playerData, role);
                 } else {
                     player.sendMessage(Main.error + "Es gibt diese oder eine ähnliche Firma bereits.");
                 }

@@ -67,7 +67,7 @@ public class PlayerInteractListener implements Listener {
         }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
-                if (event.getClickedBlock().getType() == Material.OAK_STAIRS) {
+                if (event.getClickedBlock().getType() == Material.OAK_STAIRS || event.getClickedBlock().getType() == Material.ACACIA_STAIRS || event.getClickedBlock().getType() == Material.SPRUCE_STAIRS || event.getClickedBlock().getType() == Material.BIRCH_STAIRS || event.getClickedBlock().getType() == Material.JUNGLE_STAIRS || event.getClickedBlock().getType() == Material.DARK_OAK_STAIRS) {
                     Location l = event.getClickedBlock().getLocation();
                     World w = player.getWorld();
                     ArmorStand armorStand = w.spawn(l.add(0.5D, -1, 0.5D), ArmorStand.class);
@@ -89,8 +89,8 @@ public class PlayerInteractListener implements Listener {
                                 for (FactionData defender : factionManager.getFactions()) {
                                     if (defender.getLaboratory() == id) {
                                         if (!laboratory.isDoorOpened(factionData)) {
-                                        laboratory.openLaboratoryAsAttacker(player, defender);
-                                        return;
+                                            laboratory.openLaboratoryAsAttacker(player, defender);
+                                            return;
                                         }
                                     }
                                 }
@@ -295,7 +295,7 @@ public class PlayerInteractListener implements Listener {
                 ItemStack itemStack = event.getItem();
                 itemStack.setAmount(itemStack.getAmount() - 1);
                 if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
-                playerManager.addExp(player, Main.random(50,100));
+                playerManager.addExp(player, Main.random(50, 100));
             } else if (event.getItem().getItemMeta().getDisplayName().equals(CaseType.BASIC.getDisplayName())) {
                 ItemStack itemStack = event.getItem();
                 itemStack.setAmount(itemStack.getAmount() - 1);

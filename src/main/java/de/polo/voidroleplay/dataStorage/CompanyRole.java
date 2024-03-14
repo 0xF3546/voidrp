@@ -6,13 +6,14 @@ import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CompanyRole {
     private int id;
     private Company company;
     private String name;
-    private List<String> permissions;
+    private List<String> permissions = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -52,6 +53,14 @@ public class CompanyRole {
 
     public void removePermission(String permission) {
         permissions.remove(permission);
+    }
+    public boolean hasPermission(String permission) {
+        for (String perm : permissions) {
+            if (perm.equalsIgnoreCase(permission)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SneakyThrows

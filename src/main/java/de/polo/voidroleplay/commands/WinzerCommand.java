@@ -122,6 +122,7 @@ public class WinzerCommand implements CommandExecutor {
                     item.setType(Material.BLACK_STAINED_GLASS_PANE);
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName("§5");
+                    item.setItemMeta(meta);
                     event.setCurrentItem(item);
                     int amount = 0;
                     for (ItemStack inventoryItem : event.getInventory().getContents()) {

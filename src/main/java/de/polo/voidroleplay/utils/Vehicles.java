@@ -5,6 +5,8 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
+import de.polo.voidroleplay.utils.playerUtils.SoundManager;
+import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -399,9 +401,19 @@ public class Vehicles implements Listener, CommandExecutor {
         GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         GarageData garageData = LocationManager.garageDataMap.get(station);
-        Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6" + garageData.getName());
-        inv.setItem(48, ItemManager.createItem(Material.EMERALD, 1, 0, "§aEinparken"));
-        inv.setItem(50, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAusparken"));
+        InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6" + garageData.getName(), true, false);
+        inventoryManager.setItem(new CustomItem(48, ItemManager.createItem(Material.EMERALD, 1, 0, "§aEinparken")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openGarage(player, garageData.getId(), true);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(50, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAusparken")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openGarage(player, garageData.getId(), false);
+            }
+        });
         int i = 0;
         if (isParkin) {
             for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
@@ -411,34 +423,45 @@ public class Vehicles implements Listener, CommandExecutor {
                             int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
                             PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
                             VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                            inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName()));
-                            ItemMeta meta = inv.getItem(i).getItemMeta();
-                            meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §aEinparken"));
-                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
-                            inv.getItem(i).setItemMeta(meta);
+                            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §aEinparken"))) {
+                                @SneakyThrows
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+                                    playerVehicleData.setParked(true);
+                                    Vehicles.deleteVehicleById(id);
+                                    Main.getInstance().utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
+                                    SoundManager.successSound(player);
+                                    Statement statement = Main.getInstance().mySQL.getStatement();
+                                    statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + playerData.getIntVariable("current_garage") + " WHERE id = " + id);
+                                    playerVehicleData.setGarage(playerData.getIntVariable("current_garage"));
+                                    player.closeInventory();
+                                }
+                            });
                             i++;
                         }
                     }
                 }
             }
-            playerData.setVariable("current_app", "parkin");
-            playerData.setIntVariable("current_garage", station);
         } else {
             for (PlayerVehicleData playerVehicleData : playerVehicleDataMap.values()) {
                 if (playerVehicleData.getGarage() == station && playerVehicleData.isParked() && playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
                     VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                    inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName()));
-                    ItemMeta meta = inv.getItem(i).getItemMeta();
-                    meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §cAusparken"));
-                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, playerVehicleData.getId());
-                    inv.getItem(i).setItemMeta(meta);
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §cAusparken"))) {
+                        @SneakyThrows
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            playerVehicleData.setParked(false);
+                            Main.getInstance().utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a ausgeparkt!");
+                            SoundManager.successSound(player);
+                            Statement statement = Main.getInstance().mySQL.getStatement();
+                            statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + vehicleData.getId());
+                            Vehicles.spawnVehicle(player, playerVehicleData);
+                            player.closeInventory();
+                        }
+                    });
                 }
+                i++;
             }
-            i++;
-            playerData.setVariable("current_app", "parkout");
-            playerData.setIntVariable("current_garage", station);
         }
-        playerData.setVariable("current_inventory", "garage");
-        player.openInventory(inv);
     }
 }

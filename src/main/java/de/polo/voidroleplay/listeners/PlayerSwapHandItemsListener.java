@@ -10,6 +10,7 @@ import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -19,7 +20,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.util.BlockIterator;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -35,10 +38,23 @@ public class PlayerSwapHandItemsListener implements Listener {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
+    private Block getTargetBlock(Player player) {
+        BlockIterator iterator = new BlockIterator(player, 5);
+        Block block = null;
+        while (iterator.hasNext()) {
+            block = iterator.next();
+            if (block.getType().isSolid()) {
+                break;
+            }
+        }
+        return block;
+    }
+
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         event.setCancelled(true);
+        Block block = getTargetBlock(player);
         if (!player.isSneaking()) {
             return;
         }

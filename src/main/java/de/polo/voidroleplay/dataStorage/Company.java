@@ -62,6 +62,19 @@ public class Company {
     }
 
     @SneakyThrows
+    public void save() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE companies SET bank = ?, name = ?, owner = ? WHERE id = ?");
+        statement.setInt(1, getBank());
+        statement.setString(2, getName());
+        statement.setString(3, getOwner().toString());
+        statement.setInt(4, getId());
+        statement.execute();
+        statement.close();
+        connection.close();
+    }
+
+    @SneakyThrows
     public void createRole(CompanyRole role) {
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO company_roles (companyId, name, permissions) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);

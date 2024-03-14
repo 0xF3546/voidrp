@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Company;
 import de.polo.voidroleplay.dataStorage.CompanyRole;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.database.MySQL;
 import lombok.SneakyThrows;
 
@@ -44,6 +45,7 @@ public class CompanyManager {
                 CompanyRole role = new CompanyRole();
                 role.setCompany(company);
                 role.setName(roleResult.getString("name"));
+                role.setId(roleResult.getInt("id"));
                 String permissionsJson = roleResult.getString("permissions");
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -52,6 +54,7 @@ public class CompanyManager {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                company.addRole(role);
             }
             companies.add(company);
         }
@@ -105,5 +108,27 @@ public class CompanyManager {
             }
         }
         return null;
+    }
+    public CompanyRole getCompanyRoleById(int id) {
+        for (Company c : companies) {
+            for (CompanyRole r : c.getRoles()) {
+                if (r.getId() == id) {
+                    return r;
+                }
+            }
+        }
+        return null;
+    }
+
+    @SneakyThrows
+    public void setPlayerRole(PlayerData playerData, CompanyRole role) {
+        playerData.setCompanyRole(role);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE players SET companyRole = ? WHERE uuid = ?");
+        statement.setInt(1, role.getId());
+        statement.setString(2, playerData.getUuid().toString());
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 }

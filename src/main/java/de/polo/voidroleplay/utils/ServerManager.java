@@ -138,8 +138,7 @@ public class ServerManager {
             shopData.setYaw(locs.getFloat(7));
             shopData.setPitch(locs.getFloat(8));
             if (locs.getInt("company") != 0) {
-                Company company = Main.getInstance().companyManager.getCompanyById(locs.getInt("company"));
-                shopData.setCompany(company);
+                shopData.setCompany(locs.getInt("company"));
             }
 
             String typeString = locs.getString(9);
