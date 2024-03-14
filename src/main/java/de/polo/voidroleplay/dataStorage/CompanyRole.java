@@ -48,7 +48,7 @@ public class CompanyRole {
     }
 
     public void addPermission(String permission) {
-        permissions.add(permission);
+        this.permissions.add(permission);
     }
 
     public void removePermission(String permission) {
@@ -69,8 +69,11 @@ public class CompanyRole {
         PreparedStatement statement = connection.prepareStatement("UPDATE company_roles SET name = ?, permissions = ? WHERE id = ?");
         statement.setString(1, getName());
         ObjectMapper mapper = new ObjectMapper();
-        String permissionsJson = mapper.writeValueAsString(getPermissions());
+        String permissionsJson = mapper.writeValueAsString(permissions);
         statement.setString(2, permissionsJson);
         statement.setInt(3, getId());
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 }

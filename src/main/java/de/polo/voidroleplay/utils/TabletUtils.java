@@ -71,7 +71,7 @@ public class TabletUtils implements Listener {
                     openAktenApp(player);
                 }
             });
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp")) {
+            inventoryManager.setItem(new CustomItem(i + 1, ItemManager.createItem(Material.ORANGE_DYE, 1, 0, "§6Gefängnisapp")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openJailApp(player, 1);
@@ -452,19 +452,19 @@ public class TabletUtils implements Listener {
     public void openCompanyApp(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6" + playerData.getCompany().getName(), true, true);
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6Rollen verwalten")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6Rollen verwalten")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openRoles(player);
             }
         });
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§6Mitarbeiter verwalten")) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§6Mitarbeiter verwalten")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openCompanyMember(player);
             }
         });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Assets verwalten")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Assets verwalten")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openAssetApp(player, false);
@@ -550,6 +550,7 @@ public class TabletUtils implements Listener {
     }
 
     private void editCompanyPlayer(Player player, String uuid, String player_name) {
+        PlayerData pData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter (" + player_name + ")", true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
@@ -569,6 +570,29 @@ public class TabletUtils implements Listener {
                 openPlayerSetRole(player, uuid, player_name);
             }
         });
+        if (pData.getCompanyRole().hasPermission("*") || pData.getCompany().getOwner().equals(player.getUniqueId()) || pData.getCompanyRole().hasPermission("manage_employees")) {
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cEntlassen")) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.sendMessage("§8[§6" + pData.getCompany().getName() + "§8]§c Du wurdest hast " + player_name + " aus der Firma entlassen.");
+                    for (PlayerData playerData : playerManager.getPlayers()) {
+                        if (playerData.getUuid().toString().equals(uuid)) {
+                            playerData.getPlayer().sendMessage("§8[§6" + playerData.getCompany().getName() + "§8]§c Du wurdest von " + player.getName() + " aus der Firma entlassen.");
+                            playerData.setCompany(null);
+                            playerData.setCompanyRole(null);
+                        }
+                    }
+                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    PreparedStatement statement = connection.prepareStatement("UPDATE players SET company = 0, companyRole = 0 WHERE uuid = ?");
+                    statement.setString(1, uuid);
+                    statement.execute();
+                    statement.close();
+                    connection.close();
+                    ;
+                }
+            });
+        }
     }
 
     private void openPlayerSetRole(Player player, String uuid, String player_name) {
@@ -614,7 +638,7 @@ public class TabletUtils implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getCompanyRole() == null) return;
-                    if (!playerData.getCompanyRole().hasPermission("*") && playerData.getCompany().getOwner().equals(player.getUniqueId())) {
+                    if (!playerData.getCompanyRole().hasPermission("*") && !playerData.getCompanyRole().hasPermission("manage_assets") && playerData.getCompany().getOwner().equals(player.getUniqueId())) {
                         return;
                     }
                     if (event.isLeftClick()) {
@@ -635,7 +659,7 @@ public class TabletUtils implements Listener {
             }
         });
         if (playerData.getCompanyRole() == null) return;
-        if (playerData.getCompanyRole().hasPermission("*") && !(playerData.getCompany().getOwner().equals(player.getUniqueId()))) {
+        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId())) {
             inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Neu erstellen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -688,6 +712,65 @@ public class TabletUtils implements Listener {
                 openRoles(player);
             }
         });
+        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId())) {
+            if (role.hasPermission("*")) {
+                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§6Prokura", "§8 ➥ §aAktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.removePermission("*");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§6Prokura", "§8 ➥ §cDeaktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.addPermission("*");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            }
+            if (role.hasPermission("manage_employees")) {
+                inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.PAPER, 1, 0, "§6Rollen verwalten", "§8 ➥ §aAktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.removePermission("manage_employees");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.PAPER, 1, 0, "§6Rollen verwalten", "§8 ➥ §cDeaktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.addPermission("manage_employees");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            }
+            if (role.hasPermission("manage_assets")) {
+                inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.PAPER, 1, 0, "§6Assets verwalten", "§8 ➥ §aAktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.removePermission("manage_assets");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.PAPER, 1, 0, "§6Assets verwalten", "§8 ➥ §cDeaktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.addPermission("manage_assets");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            }
+        }
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Hinzufügen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
