@@ -383,10 +383,7 @@ public class TabletUtils implements Listener {
     public void openVehiclesApp(Player player, int page) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setVariable("current_inventory", "tablet");
-        playerData.setVariable("current_app", "vehiclesapp");
-        playerData.setIntVariable("current_page", page);
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Fahrzeuge §8- §6Seite§8:§7 " + page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §6Fahrzeuge §8- §6Seite§8:§7 " + page, true, false);
         int i = 0;
         int j = 0;
         for (PlayerVehicleData playerVehicleData : Vehicles.playerVehicleDataMap.values()) {
@@ -400,24 +397,44 @@ public class TabletUtils implements Listener {
                     }
 
                     if (playerVehicleData.isParked()) {
-                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName()));
-                        ItemMeta meta = inv.getItem(i).getItemMeta();
-                        meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §aEingeparkt"));
-                        inv.getItem(i).setItemMeta(meta);
+                        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §aEingeparkt"))) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
+                            }
+                        });
                     } else {
-                        inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName()));
-                        ItemMeta meta = inv.getItem(i).getItemMeta();
-                        meta.setLore(Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §cAusgeparkt", "", "§8 » §aOrten"));
-                        inv.getItem(i).setItemMeta(meta);
+                        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §cAusgeparkt", "", "§8 » §aOrten"))) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                player.closeInventory();
+                                Main.getInstance().utils.navigation.createNaviByCord(player, playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ());
+                                player.sendMessage("§8[§3Tablet§8]§7 Der Standort deines Fahrzeuges wurde dir markiert.");
+                            }
+                        });
                     }
                 }
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        player.openInventory(inv);
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openVehiclesApp(player, page + 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openVehiclesApp(player, page - 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openTablet(player);
+            }
+        });
 
     }
 
