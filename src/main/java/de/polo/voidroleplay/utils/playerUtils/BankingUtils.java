@@ -36,6 +36,7 @@ public class BankingUtils implements Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final List<ATM> atmList = new ArrayList<>();
+
     @SneakyThrows
     public BankingUtils(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
@@ -55,6 +56,7 @@ public class BankingUtils implements Listener {
     public Collection<ATM> getATMs() {
         return atmList;
     }
+
     public void sendKontoauszug(Player player) {
         player.sendMessage(" ");
         player.sendMessage("§7     ===§8[§2KONTOAUSZUG§8]§7===");
@@ -159,13 +161,82 @@ public class BankingUtils implements Listener {
                 }
             });
         }
+        if (playerData.getCompany() != null) {
+            inventoryManager.setItem(new CustomItem(35, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19", 1, 0, "§aFirmenkonto", null)) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openCompanyBankMenu(player);
+                    Main.getInstance().getCooldownManager().setCooldown(player, "atm", 1);
+                }
+            });
+        }
+    }
+
+    private void openCompanyBankMenu(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §6Firmenkonto", true, true);
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getCompany().getBank()) + "$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aEinzahlen", null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "atm_company_einzahlen");
+                player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
+                player.closeInventory();
+            }
+        });
+        inventoryManager.setItem(new CustomItem(33, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI1MGIzY2NlNzY2MzVlZjRjN2E4OGIyYzU5N2JkMjc0OTg2OGQ3OGY1YWZhNTY2MTU3YzI2MTJhZTQxMjAifX19", 1, 0, "§aAlles einzahlen", null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBargeld() + "$ eingezahlt.");
+                Main.getInstance().companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getBargeld()) + "$ auf das Firmenkonto eingezahlt.");
+                playerData.getCompany().addBank(playerData.getBargeld());
+                playerData.removeMoney(playerData.getBargeld(), "Bankeinzahlung auf " + playerData.getCompany().getName());
+                player.closeInventory();
+            }
+        });
+        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank")) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null)) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getFactionGrade() >= 7) {
+                        playerData.setVariable("chatblock", "atm_company_auszahlen");
+                        player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
+                        player.closeInventory();
+                    }
+                }
+            });
+            inventoryManager.setItem(new CustomItem(29, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNmZjkxZGM5OWQ1ODI4MDIzZWVkZjg3Mzc5OWQyNTUzNWRhZGU2NGEyZTE2YTNiNDk4YjQxMTNlYWZkNDk2NiJ9fX0=", 1, 0, "§cAlles auszahlen", null)) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getFactionGrade() >= 7) {
+                        Main.getInstance().companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getCompany().getBank()) + "$ vom Firmenkonto ausgezahlt.");
+                        playerData.addMoney(playerData.getCompany().getBank());
+                        playerData.getCompany().removeBank(playerData.getCompany().getBank());
+                        player.closeInventory();
+                    }
+                }
+            });
+        }
+        inventoryManager.setItem(new CustomItem(44, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjUzNDc0MjNlZTU1ZGFhNzkyMzY2OGZjYTg1ODE5ODVmZjUzODlhNDU0MzUzMjFlZmFkNTM3YWYyM2QifX19", 1, 0, "§aPrivates Konto", null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "atm"))
+                    openBankMenu(player, playerData.getVariable("atm"));
+            }
+        });
     }
 
     private void openRobInventory(Player player, ATM atm) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§cATM-Raub " + atm.getName(), true, true);
         playerData.setVariable("atm::rob::collected", 0);
-        for (int i = 0; i  < Main.random(12, 20); i++) {
+        for (int i = 0; i < Main.random(12, 20); i++) {
             int cash = Main.random(20, 100);
             inventoryManager.setItem(new CustomItem(Main.random(0, 53), ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+" + cash + "$")) {
                 @Override
@@ -375,6 +446,45 @@ public class BankingUtils implements Listener {
                     playerManager.addMoney(player, amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
                     factionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
+                } else {
+                    player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
+                }
+            }
+            event.end();
+        }
+
+        if (event.getSubmitTo().equals("atm_company_einzahlen")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            int amount = Integer.parseInt(event.getMessage());
+            if (amount >= 1) {
+                if (playerManager.money(player) >= amount) {
+                    playerManager.removeMoney(player, amount, "Bankauszahlung");
+                    event.getPlayerData().getCompany().addBank(amount);
+                    player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ eingezahlt.");
+                    Main.getInstance().companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Firmenkonto eingezahlt.");
+                } else {
+                    player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                }
+            }
+            event.end();
+        }
+        if (event.getSubmitTo().equals("atm_company_auszahlen")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            int amount = Integer.parseInt(event.getMessage());
+            if (amount >= 1) {
+                if (factionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
+                    event.getPlayerData().getCompany().removeBank(amount);
+                    playerManager.addMoney(player, amount);
+                    player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
+                    Main.getInstance().companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Firmenkonto ausgezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
                 }

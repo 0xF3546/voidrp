@@ -731,7 +731,7 @@ public class TabletUtils implements Listener {
         });
         if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId())) {
             if (role.hasPermission("*")) {
-                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§6Prokura", "§8 ➥ §aAktiviert")) {
+                inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.PAPER, 1, 0, "§6Prokura", "§8 ➥ §aAktiviert")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         role.removePermission("*");
@@ -740,7 +740,7 @@ public class TabletUtils implements Listener {
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§6Prokura", "§8 ➥ §cDeaktiviert")) {
+                inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.PAPER, 1, 0, "§6Prokura", "§8 ➥ §cDeaktiviert")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         role.addPermission("*");
@@ -750,7 +750,7 @@ public class TabletUtils implements Listener {
                 });
             }
             if (role.hasPermission("manage_employees")) {
-                inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.PAPER, 1, 0, "§6Rollen verwalten", "§8 ➥ §aAktiviert")) {
+                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§6Rollen verwalten", "§8 ➥ §aAktiviert")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         role.removePermission("manage_employees");
@@ -759,7 +759,7 @@ public class TabletUtils implements Listener {
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.PAPER, 1, 0, "§6Rollen verwalten", "§8 ➥ §cDeaktiviert")) {
+                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§6Rollen verwalten", "§8 ➥ §cDeaktiviert")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         role.addPermission("manage_employees");
@@ -769,7 +769,7 @@ public class TabletUtils implements Listener {
                 });
             }
             if (role.hasPermission("manage_assets")) {
-                inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.PAPER, 1, 0, "§6Assets verwalten", "§8 ➥ §aAktiviert")) {
+                inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.PAPER, 1, 0, "§6Assets verwalten", "§8 ➥ §aAktiviert")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         role.removePermission("manage_assets");
@@ -778,10 +778,29 @@ public class TabletUtils implements Listener {
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.PAPER, 1, 0, "§6Assets verwalten", "§8 ➥ §cDeaktiviert")) {
+                inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.PAPER, 1, 0, "§6Assets verwalten", "§8 ➥ §cDeaktiviert")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         role.addPermission("manage_assets");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            }
+            if (role.hasPermission("manage_bank")) {
+                inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.PAPER, 1, 0, "§6Vermögen verwalten", "§8 ➥ §aAktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.removePermission("manage_bank");
+                        editRole(player, role);
+                        role.save();
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.PAPER, 1, 0, "§6Vermögen verwalten", "§8 ➥ §cDeaktiviert")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        role.addPermission("manage_bank");
                         editRole(player, role);
                         role.save();
                     }

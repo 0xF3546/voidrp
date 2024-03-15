@@ -23,10 +23,12 @@ import java.util.Objects;
 public class ShopCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+    private final CompanyManager companyManager;
 
-    public ShopCommand(PlayerManager playerManager, LocationManager locationManager) {
+    public ShopCommand(PlayerManager playerManager, LocationManager locationManager, CompanyManager companyManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
+        this.companyManager = companyManager;
         Main.registerCommand("shop", this);
     }
 
@@ -72,7 +74,7 @@ public class ShopCommand implements CommandExecutor {
             }
         }
         int j = 10;
-        for (ShopItem item : Shop.shopItems) {
+        for (ShopItem item : shopData.getItems()) {
             if (item.getShop() == shopData.getId()) {
                 if (inventory.getInventory().getItem(j) == null) {
                     inventory.setItem(new CustomItem(j, ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§"), "§8 ➥ §a" + item.getPrice() + "$")) {
@@ -109,6 +111,36 @@ public class ShopCommand implements CommandExecutor {
                 openShop(player, shopData);
             }
         });
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§3Information", Arrays.asList("§8 ➥ §bKasse§8:§7 " + shopData.getBank() + "$", "§8 ➥ §bProdukte§8:§7 " + shopData.getItems().size()))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId())) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.CHEST, 1, 0, "§6Produkte")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openProductManager(player, shopData);
+                }
+            });
+        }
+        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank")) {
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§3Kasse leeren")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§7 " + player.getName() + " hat §a" + Utils.toDecimalFormat(playerData.getCompany().getBank()) + "$ §7aus dem §eShop " + shopData.getName() + "§7 Business entnommen.");
+                    playerData.addMoney(playerData.getCompany().getBank());
+                    playerData.getCompany().setBank(0);
+                    playerData.getCompany().save();
+                }
+            });
+        }
+    }
+
+    private void openProductManager(Player player, ShopData shopData) {
+        PlayerData playerData = playerManager.getPlayerData(player);
     }
 
     private void openBusinessBuyOverview(Player player, ShopData shopData) {

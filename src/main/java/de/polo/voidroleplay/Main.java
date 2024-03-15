@@ -407,7 +407,7 @@ public final class Main extends JavaPlugin {
             govCommand = new GovCommand(playerManager, factionManager, utils);
             ticketsCommand = new TicketsCommand(playerManager, supportManager);
             teamCommand = new TeamCommand(playerManager);
-            shopCommand = new ShopCommand(playerManager, locationManager);
+            shopCommand = new ShopCommand(playerManager, locationManager, companyManager);
             annehmenCommand = new AnnehmenCommand(utils);
             ablehnenVertrag = new AblehnenVertrag(utils);
             inviteCommand = new InviteCommand(playerManager, factionManager, utils, businessManager);

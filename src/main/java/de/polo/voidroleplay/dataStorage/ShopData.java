@@ -7,6 +7,8 @@ import org.bukkit.World;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopData {
     private int id;
@@ -19,6 +21,8 @@ public class ShopData {
     private float pitch;
     private ShopType type;
     private int company;
+    private int bank;
+    private List<ShopItem> items = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -109,5 +113,28 @@ public class ShopData {
         statement.execute();
         statement.close();
         connection.close();
+    }
+
+    public int getBank() {
+        return bank;
+    }
+
+    public void setBank(int bank) {
+        this.bank = bank;
+    }
+
+    public List<ShopItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ShopItem> items) {
+        this.items = items;
+    }
+    public void removeItem(ShopItem shopItem) {
+        items.remove(shopItem);
+    }
+
+    public void addItem(ShopItem shopItem) {
+        items.add(shopItem);
     }
 }

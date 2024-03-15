@@ -61,6 +61,16 @@ public class Company {
         return roles;
     }
 
+    public void addBank(int amount) {
+        bank += amount;
+        save();
+    }
+
+    public void removeBank(int amount) {
+        bank -= amount;
+        save();
+    }
+
     @SneakyThrows
     public void save() {
         Connection connection = Main.getInstance().mySQL.getConnection();

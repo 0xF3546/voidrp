@@ -261,6 +261,7 @@ public class Vehicles implements Listener, CommandExecutor {
     public void onVehicleMove(VehicleMoveEvent event) {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
             Vehicle vehicle = event.getVehicle();
+            if (vehicle.getPassengers().size() == 0) return;
             if (event.getVehicle().getPassengers().get(0) != null) {
                 Player player = (Player) event.getVehicle().getPassengers().get(0);
                 VehicleData vehicleData = vehicleDataMap.get(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING));

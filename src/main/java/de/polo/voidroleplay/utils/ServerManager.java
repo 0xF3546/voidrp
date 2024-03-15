@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -20,9 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ServerManager {
     public static final boolean canDoJobsBoolean = true;
@@ -137,6 +136,7 @@ public class ServerManager {
             shopData.setWelt(Bukkit.getWorld(locs.getString(6)));
             shopData.setYaw(locs.getFloat(7));
             shopData.setPitch(locs.getFloat(8));
+            shopData.setBank(locs.getInt("bank"));
             if (locs.getInt("company") != 0) {
                 shopData.setCompany(locs.getInt("company"));
             }
@@ -155,6 +155,19 @@ public class ServerManager {
                 continue;
             }
             shopDataMap.put(locs.getInt(1), shopData);
+            Statement nStatement = Main.getInstance().mySQL.getStatement();
+            ResultSet i = nStatement.executeQuery("SELECT * FROM shop_items WHERE shop = " + shopData.getId());
+            while (i.next()) {
+                ShopItem item = new ShopItem();
+                item.setId(i.getInt("id"));
+                item.setShop(i.getInt("shop"));
+                item.setMaterial(Material.valueOf(i.getString("material")));
+                item.setDisplayName(i.getString("name"));
+                item.setPrice(i.getInt("price"));
+                item.setType(i.getString("type"));
+                item.setSecondType(i.getString("type2"));
+                shopData.addItem(item);
+            }
         }
         statement.close();
     }

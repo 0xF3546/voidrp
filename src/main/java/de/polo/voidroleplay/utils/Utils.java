@@ -193,44 +193,6 @@ public class Utils {
         }
     }
 
-    public interface Display {
-        static void setNameBelow(Player player, String name) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            Scoreboard scoreboard = playerData.getScoreboard().scoreboard;
-            if (scoreboard.getObjective(name) != null) scoreboard.getObjective(name).unregister();
-            Objective objective = scoreboard.registerNewObjective(name, "name");
-            objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            player.setScoreboard(scoreboard);
-        }
-
-        static void deleteNameBelow(Player player, String name) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            Scoreboard scoreboard = playerData.getScoreboard().scoreboard;
-            Objective objective = scoreboard.getObjective(name);
-            if (objective != null) objective.unregister();
-        }
-
-        static void adminMode(Player player, boolean state) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            Scoreboard scoreboard = playerData.getScoreboard().scoreboard;
-            if (!state) {
-                Objective objective = scoreboard.getObjective("showhealth");
-                if (objective != null) objective.unregister();
-            } else {
-                if (scoreboard.getObjective("admin") != null) scoreboard.getObjective("admin").unregister();
-                Objective objective = playerData.getScoreboard().scoreboard.registerNewObjective("showhealth", "health");
-                objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-                objective.setDisplayName("/ 20");
-
-                for (Player online : Bukkit.getOnlinePlayers()) {
-
-                    online.setScoreboard(playerData.getScoreboard().scoreboard);
-                    online.setHealth(online.getHealth());
-                }
-            }
-        }
-    }
-
     public void makeBlockGlow(Block block, Main plugin, int durationSeconds) {
         // Ändere die Leuchtkraft des Blocks
         block.getWorld().spawnFallingBlock(block.getLocation(), block.getBlockData()).setGlowing(true);

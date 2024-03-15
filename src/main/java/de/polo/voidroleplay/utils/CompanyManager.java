@@ -120,6 +120,14 @@ public class CompanyManager {
         return null;
     }
 
+    public void sendCompanyMessage(Company company, String message) {
+        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+            if (playerData.getCompany().equals(company)) {
+                playerData.getPlayer().sendMessage(message);
+            }
+        }
+    }
+
     @SneakyThrows
     public void setPlayerRole(PlayerData playerData, CompanyRole role) {
         playerData.setCompanyRole(role);
