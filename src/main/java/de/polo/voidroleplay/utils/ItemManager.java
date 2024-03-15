@@ -163,11 +163,27 @@ public class ItemManager {
         }
         return count;
     }
-    public static void removeItem(Player player, Material item, Integer count) {
-        for (int i = 0; i < count; i++) {
-            player.getInventory().removeItem(new ItemStack(item));
+    public static void removeItem(Player player, Material item, int count) {
+        int remainingCount = count;
+
+        ItemStack[] contents = player.getInventory().getContents();
+        for (ItemStack itemStack : contents) {
+            if (itemStack != null && itemStack.getType() == item) {
+                int stackAmount = itemStack.getAmount();
+                if (stackAmount <= remainingCount) {
+                    remainingCount -= stackAmount;
+                    player.getInventory().removeItem(itemStack);
+                } else {
+                    itemStack.setAmount(stackAmount - remainingCount);
+                    break;
+                }
+                if (remainingCount <= 0) {
+                    break;
+                }
+            }
         }
     }
+
 
     public static void removeCustomItem(Player player, RoleplayItem item, int amount) {
         ItemStack[] contents = player.getInventory().getContents();
@@ -191,6 +207,12 @@ public class ItemManager {
     public static void addCustomItem(Player player, RoleplayItem item, int amount) {
         for (int i = 0; i < amount; i++) {
             player.getInventory().addItem(ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName()));
+        }
+    }
+
+    public static void addItem(Player player, Material item, String displayName, int amount) {
+        for (int i = 0; i < amount; i++) {
+            player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName));
         }
     }
 

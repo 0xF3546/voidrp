@@ -40,6 +40,9 @@ public class BlockBreakListener implements Listener {
                     case "winzer":
                         commands.winzerCommand.blockBroken(player, event.getBlock(), event);
                         break;
+                    case "muschelsammler":
+                        commands.muschelSammlerCommand.blockBroken(player, event.getBlock(), event);
+                        break;
                     default:
                         event.setCancelled(true);
                         break;

@@ -77,6 +77,7 @@ public class ChatListener implements Listener {
         } else {
             Bukkit.getScheduler().runTask(Main.plugin, () -> {
                 Bukkit.getPluginManager().callEvent(new SubmitChatEvent(player, event.getMessage()));
+                if (playerData.getVariable("chatblock") == null) return;
                 switch (playerData.getVariable("chatblock").toString()) {
                     case "firstname":
                         playerData.setVariable("einreise_firstname", event.getMessage());

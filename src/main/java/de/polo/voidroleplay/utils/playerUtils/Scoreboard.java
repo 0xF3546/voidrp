@@ -38,7 +38,7 @@ public class Scoreboard extends ScoreboardBuilder {
         Runtime r = Runtime.getRuntime();
         setDisplayName(ChatColor.RED.toString() + ChatColor.BOLD + "  Administration  ");
         setScore("§6Tickets offen§8:", 5);
-        setScore("§8 ➥ §e" + SupportManager.TicketCount, 4);
+        setScore("§8 ➥ §e" + Main.getInstance().supportManager.getTickets().size(), 4);
         setScore("§6Auslastung§8:", 3);
         setScore("§8 ➥ §e" + (r.totalMemory() - r.freeMemory()) / 1048576, 2);
         setScore("§6Spieler Online§8:", 1);

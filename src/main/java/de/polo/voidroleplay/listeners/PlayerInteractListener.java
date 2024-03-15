@@ -328,6 +328,63 @@ public class PlayerInteractListener implements Listener {
                 GamePlay.useDrug(player, Drug.JOINT);
             } else if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(Drug.ANTIBIOTIKUM.getItem().getDisplayName())) {
                 GamePlay.useDrug(player, Drug.ANTIBIOTIKUM);
+            }else if (event.getItem().getItemMeta().getDisplayName().equals("§eMuschel")) {
+                InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
+                inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel öffnen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (ItemManager.getItem(player, Material.BIRCH_BUTTON) < 1) {
+                            player.sendMessage(Main.error + "Du hast keine Muschel dabei.");
+                            return;
+                        }
+                        double randomNumber = Math.random() * 100;
+                        ItemManager.removeItem(player, Material.BIRCH_BUTTON, 1);
+                        player.sendMessage("§7Du hast eine Muschel geöffnet und erhalten:");
+                        player.closeInventory();
+                        if (randomNumber < 50) {
+                            player.sendMessage("§7 - Nichts");
+                        } else if (randomNumber < 70) {
+                            player.sendMessage("§7 - Perle");
+                            ItemStack perle = ItemManager.createItem(Material.GHAST_TEAR, 1, 0, "§bPerle");
+                            player.getInventory().addItem(perle);
+                        } else if (randomNumber < 94) {
+                            player.sendMessage("§7 - §bDiamant");
+                            ItemStack diamond = ItemManager.createItem(Material.DIAMOND, 1, 0, "§bDiamant");
+                            player.getInventory().addItem(diamond);
+                        }
+                    }
+                });
+                inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.BIRCH_BUTTON, 64, 0, "§eAlle Muscheln öffnen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (ItemManager.getItem(player, Material.BIRCH_BUTTON) < 1) {
+                            player.sendMessage(Main.error + "Du hast keine Muschel dabei.");
+                            return;
+                        }
+                        int itemCount = ItemManager.getItem(player, Material.BIRCH_BUTTON);
+                        int perlen = 0;
+                        int diamanten = 0;
+                        ItemManager.removeItem(player, Material.BIRCH_BUTTON, itemCount);
+                        player.sendMessage("§7Du hast eine Muschel geöffnet und erhalten:");
+                        player.closeInventory();
+                        for (int i = 0; i < itemCount; i++) {
+                            double randomNumber = Math.random() * 100;
+                            if (randomNumber < 30) {
+                                perlen++;
+                            } else if (randomNumber < 36) {
+                                diamanten++;
+                            }
+                        }
+                        if (perlen >= 1) {
+                            player.sendMessage("§7 - " + perlen + "x Perlen");
+                            ItemManager.addItem(player, Material.GHAST_TEAR, "§bPerle", perlen);
+                        }
+                        if (diamanten >= 1) {
+                            player.sendMessage("§7 - §b" + diamanten + "x Diamanten");
+                            ItemManager.addItem(player, Material.DIAMOND, "§bDiamant", diamanten);
+                        }
+                    }
+                });
             }
         }
     }

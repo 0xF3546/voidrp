@@ -428,6 +428,7 @@ public class Vehicles implements Listener, CommandExecutor {
                                 @SneakyThrows
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
+                                    player.closeInventory();
                                     playerVehicleData.setParked(true);
                                     Vehicles.deleteVehicleById(id);
                                     Main.getInstance().utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
