@@ -384,6 +384,7 @@ public final class Main extends JavaPlugin {
         public WinzerCommand winzerCommand;
         public RebstockCommand rebstockCommand;
         public MuschelSammlerCommand muschelSammlerCommand;
+        public GasStationCommand gasStationCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -525,6 +526,7 @@ public final class Main extends JavaPlugin {
             winzerCommand = new WinzerCommand(playerManager, locationManager, navigation);
             rebstockCommand = new RebstockCommand(playerManager, navigation);
             muschelSammlerCommand = new MuschelSammlerCommand(playerManager, locationManager);
+            gasStationCommand = new GasStationCommand(playerManager, locationManager);
 
             main.registerCommands();
             main.registerListener(this);

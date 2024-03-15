@@ -2,12 +2,12 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.ServerManager;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import okhttp3.internal.Util;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class MuschelSammlerCommand implements CommandExecutor {
+public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
     private final HashMap<Block, LocalDateTime> blocksBroken = new HashMap<>();
@@ -91,6 +91,21 @@ public class MuschelSammlerCommand implements CommandExecutor {
                 });
             }
         }
+        int muschelPrice = ServerManager.getPayout("muschel");
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuscheln verkaufen", "§8 ➥ §e" + muschelPrice + "$/Stück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                int amount = ItemManager.getCustomItemCount(player, RoleplayItem.SHELL);
+                if (amount == 0) {
+                    return;
+                }
+                player.closeInventory();
+                ItemManager.removeCustomItem(player, RoleplayItem.SHELL, amount);
+                int payout = amount * muschelPrice;
+                player.sendMessage("§8[§eMuschelsammler§8]§a +" + Utils.toDecimalFormat(payout) + "$");
+                playerData.addMoney(payout);
+            }
+        });
         return false;
     }
 
@@ -123,5 +138,10 @@ public class MuschelSammlerCommand implements CommandExecutor {
         playerData.setVariable("job", null);
         player.sendMessage("§8[§eMuschelsammler§8]§7 Du hast den Job beendet.");
         player.closeInventory();
+    }
+
+    @Override
+    public void playerQuit(Player player) {
+        quitJob(player, true);
     }
 }

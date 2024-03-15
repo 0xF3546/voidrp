@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.dataStorage;
 
+import de.polo.voidroleplay.Main;
 import org.bukkit.World;
 
 public class GasStationData {
@@ -11,10 +12,10 @@ public class GasStationData {
     private World welt;
     private float yaw;
     private float pitch;
-    private String uuid;
     private int price;
     private int literprice;
     private int liter;
+    private int company;
 
     public int getId() {
         return id;
@@ -80,14 +81,6 @@ public class GasStationData {
         this.pitch = pitch;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
     public int getPrice() {
         return price;
     }
@@ -110,5 +103,13 @@ public class GasStationData {
 
     public void setLiter(int liter) {
         this.liter = liter;
+    }
+
+    public Company getCompany() {
+        return Main.getInstance().companyManager.getCompanyById(company);
+    }
+
+    public void setCompany(int company) {
+        this.company = company;
     }
 }

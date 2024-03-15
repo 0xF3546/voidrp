@@ -4,6 +4,7 @@ import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
+import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.*;
 import org.bukkit.ChatColor;
@@ -24,6 +25,7 @@ public class QuitListener implements Listener {
     private final Main.Commands commands;
     private final ServerManager serverManager;
     private final SupportManager supportManager;
+    private PlayerQuit playerQuit;
     public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -36,6 +38,7 @@ public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        playerQuit.playerQuit(player);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
         event.setQuitMessage("");

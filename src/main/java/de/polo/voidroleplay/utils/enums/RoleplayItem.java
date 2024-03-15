@@ -17,7 +17,8 @@ public enum RoleplayItem {
     SWAT_SHIELD("§6Einsatzschild", Material.SHIELD),
     ANTIBIOTIKUM("§cAntibiotikum", Material.RED_DYE),
     DIAMOND("§bDiamant", Material.DIAMOND),
-    PEARL("§bPerle", Material.GHAST_TEAR);
+    PEARL("§bPerle", Material.GHAST_TEAR),
+    SHELL("§eMuschel", Material.BIRCH_BUTTON);
 
     private final String displayName;
     private final Material material;

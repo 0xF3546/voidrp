@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Interfaces.PlayerJoin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ public class JoinListener implements Listener {
     private final Utils utils;
     private final LocationManager locationManager;
     private final ServerManager serverManager;
+    private PlayerJoin playerJoin;
     public JoinListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, LocationManager locationManager, ServerManager serverManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -29,8 +31,9 @@ public class JoinListener implements Listener {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) throws SQLException {
+    public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        playerJoin.playerJoin(player);
         UUID uuid = player.getUniqueId();
         event.setJoinMessage("");
         if (playerManager.isCreated(player.getUniqueId())) {

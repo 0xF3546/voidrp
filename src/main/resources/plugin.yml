@@ -201,3 +201,5 @@ commands:
   winzer:
   rebstock:
   muschelsammler:
+  gasstation:
+    aliases: tanktselle

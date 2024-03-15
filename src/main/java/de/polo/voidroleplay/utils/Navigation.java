@@ -72,6 +72,12 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                         public void onClick(InventoryClickEvent event) {
                             SoundManager.clickSound(player);
                             InventoryManager naviInventory = new InventoryManager(player, 27, "§8 » " + naviData.getName().replace("&", "§"), true, false);
+                            naviInventory.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+                                    openNavi(player, null);
+                                }
+                            });
                             int i = 0;
                             for (NaviData newNavi : LocationManager.naviDataMap.values()) {
                                 if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
@@ -110,14 +116,23 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                 }
             }
         }
-        inventory.setItem(new CustomItem(22, ItemManager.createItem(Material.CLOCK, 1, 0, "§7GPS Punkt suchen...")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                playerData.setVariable("chatblock", "gpssearch");
-                player.sendMessage("§8[§eGPS§8]§7 Gib nun den gesuchten GPS Punkt ein.");
-                player.closeInventory();
-            }
-        });
+        if (search == null) {
+            inventory.setItem(new CustomItem(22, ItemManager.createItem(Material.CLOCK, 1, 0, "§7GPS Punkt suchen...")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerData.setVariable("chatblock", "gpssearch");
+                    player.sendMessage("§8[§eGPS§8]§7 Gib nun den gesuchten GPS Punkt ein.");
+                    player.closeInventory();
+                }
+            });
+        } else {
+            inventory.setItem(new CustomItem(22, ItemManager.createItem(Material.BARRIER, 1, 0, "§cSuche löschen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openNavi(player, null);
+                }
+            });
+        }
     }
 
     public void createNaviByCord(Player player, int x, int y, int z) {
