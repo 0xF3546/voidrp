@@ -82,6 +82,7 @@ public class LocationManager {
             gasStationData.setLiterprice(gas.getInt(10));
             gasStationData.setLiter(gas.getInt(11));
             gasStationData.setCompany(gas.getInt("company"));
+            gasStationData.setBank(gas.getInt("bank"));
             gasStationDataMap.put(gas.getInt(1), gasStationData);
         }
 
@@ -208,6 +209,15 @@ public class LocationManager {
             }
         }
         return 0;
+    }
+
+    public GasStationData getGasStationInRadius(Player player) {
+        for (GasStationData gasStationData : gasStationDataMap.values()) {
+            if (player.getLocation().distance(new Location(gasStationData.getWelt(), gasStationData.getX(), gasStationData.getY(), gasStationData.getZ(), gasStationData.getYaw(), gasStationData.getPitch())) < 25) {
+                return gasStationData;
+            }
+        }
+        return null;
     }
     public Integer isPlayerNearGarage(Player player) {
         for (GarageData garageData : garageDataMap.values()) {

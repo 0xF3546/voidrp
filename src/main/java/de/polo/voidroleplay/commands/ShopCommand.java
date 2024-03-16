@@ -130,8 +130,8 @@ public class ShopCommand implements CommandExecutor {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
-                    companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§7 " + player.getName() + " hat §a" + Utils.toDecimalFormat(playerData.getCompany().getBank()) + "$ §7aus dem §eShop " + shopData.getName() + "§7 Business entnommen.");
-                    playerData.addMoney(playerData.getCompany().getBank());
+                    companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§7 " + player.getName() + " hat §a" + Utils.toDecimalFormat(shopData.getBank()) + "$ §7aus dem §eShop " + shopData.getName() + "§7 Business entnommen.");
+                    playerData.addMoney(shopData.getBank());
                     playerData.getCompany().setBank(0);
                     playerData.getCompany().save();
                 }
