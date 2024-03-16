@@ -529,6 +529,30 @@ public class TabletUtils implements Listener {
                 i++;
             }
         }
+        for (GasStationData gasStationData : LocationManager.gasStationDataMap.values()) {
+            if (gasStationData.getCompany() == null) continue;
+            if (gasStationData.getCompany().equals(playerData.getCompany())) {
+                if (!isAddingPermission) {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§6Tankstelle " + gasStationData.getName(), "§8 ➥ §eID§8:§7 " + gasStationData.getId())) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
+                } else {
+                    CompanyRole role = playerData.getVariable("tablet::company::role");
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§6" + gasStationData.getName(), "§8 ➥ §eVerwaltung für  " + role.getName() + " hinzufügen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            role.addPermission("manage_gas_" + gasStationData.getId());
+                            editRole(player, role);
+                            role.save();
+                        }
+                    });
+                }
+                i++;
+            }
+        }
     }
 
     @SneakyThrows
