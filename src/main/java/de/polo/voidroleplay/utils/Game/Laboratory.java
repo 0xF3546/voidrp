@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -325,8 +326,38 @@ public class Laboratory implements CommandExecutor, Listener {
         }
     }
 
+    @SneakyThrows
     @EventHandler
     public void onMinute(MinuteTickEvent event) {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.getMinute() == 0 && now.getHour() == 0 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
+            List<Integer> laboratories = new ArrayList<>();
+            for (LocationData data : LocationManager.locationDataMap.values()) {
+                if (data.getName().contains("laboratory_")) {
+                    Integer id = Integer.parseInt(data.getName().replace("laboratory_", ""));
+                    laboratories.add(id);
+                }
+            }
+            Collections.shuffle(laboratories); // Mische die Labor-IDs, um die Auswahl zufällig zu machen
+
+            for (FactionData factionData : factionManager.getFactions()) {
+                if (!factionData.hasLaboratory()) continue;
+                Integer labId = laboratories.get(0);
+                laboratories.remove(0);
+                factionData.setLaboratory(labId);
+                factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 Euer Labor-Standort hat sich geändert. Nutze \"/findlabor\" um dieses zu finden.");
+                Connection connection = Main.getInstance().mySQL.getConnection();
+                PreparedStatement statement = connection.prepareStatement("UPDATE factions SET laboratory = ? WHERE id = ?");
+                statement.setInt(1, labId);
+                statement.setInt(2, factionData.getId());
+                statement.execute();
+                statement.close();
+                connection.close();
+                if (laboratories.isEmpty()) {
+                    break;
+                }
+            }
+        }
         for (LaboratoryAttack attack : attacks) {
             System.out.println(attack.getStarted());
             if (!attack.doorOpened) {

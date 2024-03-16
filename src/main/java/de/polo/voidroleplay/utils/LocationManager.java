@@ -78,9 +78,9 @@ public class LocationManager {
             gasStationData.setWelt(Bukkit.getWorld(gas.getString(6)));
             gasStationData.setYaw(gas.getFloat(7));
             gasStationData.setPitch(gas.getFloat(8));
-            gasStationData.setPrice(gas.getInt(10));
-            gasStationData.setLiterprice(gas.getInt(11));
-            gasStationData.setLiter(gas.getInt(12));
+            gasStationData.setPrice(gas.getInt(9));
+            gasStationData.setLiterprice(gas.getInt(10));
+            gasStationData.setLiter(gas.getInt(11));
             gasStationData.setCompany(gas.getInt("company"));
             gasStationDataMap.put(gas.getInt(1), gasStationData);
         }

@@ -33,7 +33,6 @@ public class JoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        playerJoin.playerJoin(player);
         UUID uuid = player.getUniqueId();
         event.setJoinMessage("");
         if (playerManager.isCreated(player.getUniqueId())) {
