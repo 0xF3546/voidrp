@@ -526,7 +526,7 @@ public final class Main extends JavaPlugin {
             winzerCommand = new WinzerCommand(playerManager, locationManager, navigation);
             rebstockCommand = new RebstockCommand(playerManager, navigation);
             muschelSammlerCommand = new MuschelSammlerCommand(playerManager, locationManager);
-            gasStationCommand = new GasStationCommand(playerManager, locationManager);
+            gasStationCommand = new GasStationCommand(playerManager, locationManager, companyManager);
 
             main.registerCommands();
             main.registerListener(this);

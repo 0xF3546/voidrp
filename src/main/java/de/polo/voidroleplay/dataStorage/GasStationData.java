@@ -1,7 +1,11 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import lombok.SneakyThrows;
 import org.bukkit.World;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class GasStationData {
     private int id;
@@ -16,6 +20,7 @@ public class GasStationData {
     private int literprice;
     private int liter;
     private int company;
+    private int bank;
 
     public int getId() {
         return id;
@@ -111,5 +116,27 @@ public class GasStationData {
 
     public void setCompany(int company) {
         this.company = company;
+    }
+
+    @SneakyThrows
+    public void save() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE gasstations SET price = ?, literprice = ?, liter = ?, company = ? WHERE id = ?");
+        statement.setInt(1, getPrice());
+        statement.setInt(2, getLiterprice());
+        statement.setInt(3, getLiter());
+        statement.setInt(4, getCompany().getId());
+        statement.setInt(5, getId());
+        statement.execute();
+        statement.close();
+        connection.close();
+    }
+
+    public int getBank() {
+        return bank;
+    }
+
+    public void setBank(int bank) {
+        this.bank = bank;
     }
 }
