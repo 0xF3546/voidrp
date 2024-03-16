@@ -176,6 +176,11 @@ public class ServerManager {
         new BukkitRunnable() {
             @Override
             public void run() {
+                LocalDateTime now = LocalDateTime.now();
+                if (now.getMinute() == 0 && now.getHour() == 2) {
+                    Bukkit.spigot().restart();
+                    return;
+                }
                 if (utils.getCurrentHour() >= 0 && utils.getCurrentHour() < 22) {
                     for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
                         if (gangwarData.getAttacker() != null) {
