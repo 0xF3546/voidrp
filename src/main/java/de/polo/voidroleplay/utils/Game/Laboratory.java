@@ -338,7 +338,7 @@ public class Laboratory implements CommandExecutor, Listener {
                     laboratories.add(id);
                 }
             }
-            Collections.shuffle(laboratories); // Mische die Labor-IDs, um die Auswahl zufällig zu machen
+            Collections.shuffle(laboratories);
 
             for (FactionData factionData : factionManager.getFactions()) {
                 if (!factionData.hasLaboratory()) continue;

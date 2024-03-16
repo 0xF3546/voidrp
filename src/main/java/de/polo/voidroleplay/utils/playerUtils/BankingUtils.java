@@ -7,6 +7,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.events.SubmitChatEvent;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -130,23 +131,31 @@ public class BankingUtils implements Listener {
         });
         if (atm.getLastTimeBlown() == null || Duration.between(atm.getLastTimeBlown(), LocalDateTime.now()).toHours() >= 1) {
             if (playerData.getAtmBlown() < 3) {
-                inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.TNT, 1, 0, "§cAutomat sprengen")) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        if (!ServerManager.canDoJobs()) {
-                            return;
-                        }
-                        for (Player nearPlayer : Bukkit.getOnlinePlayers()) {
-                            if (nearPlayer.getLocation().distance(player.getLocation()) < 20) {
-                                nearPlayer.playSound(nearPlayer.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.EXPLOSION_DEVICE) >= 1) {
+                    inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.TNT, 1, 0, "§cAutomat sprengen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            if (!ServerManager.canDoJobs()) {
+                                return;
                             }
+                            for (Player nearPlayer : Bukkit.getOnlinePlayers()) {
+                                if (nearPlayer.getLocation().distance(player.getLocation()) < 20) {
+                                    nearPlayer.playSound(nearPlayer.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+                                }
+                            }
+                            openRobInventory(player, atm);
+                            atm.setLastTimeBlown(LocalDateTime.now());
+                            playerData.setAtmBlown(playerData.getAtmBlown() + 1);
+                            playerData.save();
                         }
-                        openRobInventory(player, atm);
-                        atm.setLastTimeBlown(LocalDateTime.now());
-                        playerData.setAtmBlown(playerData.getAtmBlown() + 1);
-                        playerData.save();
-                    }
-                });
+                    });
+                } else {
+                    inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.TNT, 1, 0, "§c§mAutomat sprengen", "§8 ➥ §7Dafür benötigst du einen Sprengsatz.")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                        }
+                    });
+                }
             }
         }
 

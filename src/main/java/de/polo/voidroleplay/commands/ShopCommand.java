@@ -53,7 +53,7 @@ public class ShopCommand implements CommandExecutor {
                     public void onClick(InventoryClickEvent event) {
                     }
                 });
-                if (i == 45 && playerData.getCompany() != null) {
+                if (i == 45 && playerData.getCompany() != null && shopData.getType() != ShopType.BLACKMARKET) {
                     if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId())) {
                         inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eBusiness-Übersicht")) {
                             @Override

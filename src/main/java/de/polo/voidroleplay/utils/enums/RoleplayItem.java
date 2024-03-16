@@ -18,7 +18,8 @@ public enum RoleplayItem {
     ANTIBIOTIKUM("§cAntibiotikum", Material.RED_DYE),
     DIAMOND("§bDiamant", Material.DIAMOND),
     PEARL("§bPerle", Material.GHAST_TEAR),
-    SHELL("§eMuschel", Material.BIRCH_BUTTON);
+    SHELL("§eMuschel", Material.BIRCH_BUTTON),
+    EXPLOSION_DEVICE("§cSprengsatz", Material.TNT);
 
     private final String displayName;
     private final Material material;
