@@ -5,8 +5,11 @@ import de.polo.voidroleplay.dataStorage.Weapon;
 import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.WeaponType;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,8 +19,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BlockIterator;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.sql.ResultSet;
@@ -180,16 +187,55 @@ public class Weapons implements Listener {
     public void onWeaponUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
+        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().equals(new ItemStack(Material.AIR))) return;
+        if (player.getEquipment().getItemInMainHand().getType().equals(RoleplayItem.TAZER.getMaterial()) && player.getEquipment().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.TAZER.getDisplayName())) {
+            if (Main.getInstance().getCooldownManager().isOnCooldown(player, "tazer")) {
+                utils.sendActionBar(player, "§cWarte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "tazer") + " Sekunden.");
+                return;
+            }
+            Main.getInstance().getCooldownManager().setCooldown(player, "tazer", 9);
+            Vector direction = player.getEyeLocation().getDirection().normalize();
+            Location particleLocation = player.getEyeLocation().clone();
+
+            // Anzahl der Partikel, die erzeugt werden sollen
+            int particleCount = 30;
+
+            // Länge des Strahls in Blöcken
+            double beamLength = 3.0;
+
+            // Schrittgröße basierend auf der Länge des Strahls und der Anzahl der Partikel
+            double stepSize = beamLength / particleCount;
+
+            Player target = null;
+
+            for (int i = 0; i < particleCount; i++) {
+                particleLocation.add(direction.clone().multiply(stepSize));
+
+                RayTraceResult result = player.getWorld().rayTraceEntities(player.getLocation(), player.getEyeLocation().getDirection(), 3);
+                if (result != null && result.getHitEntity() instanceof Player) {
+                    target = (Player) result.getHitEntity();
+                }
+                // Erzeuge den Partikel
+                player.spawnParticle(Particle.FIREWORKS_SPARK, particleLocation, 1, 0.0, 0.0, 0.0, 0.0);
+            }
+            if (target == null) return;
+            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + target.getName() + " getazert.");
+            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 12, 2, true, false)); // Slow für 6 Sekunden
+            target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 12, -10, true, false)); // Jump für 6 Sekunden, -10 für eine geringere Sprunghöhe
+            target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 12, 0, true, false)); // Blindness für 6 Sekunden
+            target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false));
+
+        }
+
         WeaponData weaponData = weaponDataMap.get(player.getEquipment().getItemInMainHand().getType());
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.isDead()) {
             return;
         }
         if (weaponData == null) {
-            return;
-        }
-
-        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         /*if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {

@@ -158,7 +158,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
             return;
         }
         try {
-            Integer price = Integer.parseInt(event.getMessage());
+            int price = Integer.parseInt(event.getMessage());
             GasStationData gasStationData = event.getPlayerData().getVariable("gasstation");
             companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§7 " + event.getPlayer().getName() + " hat den Liter-Preis von §eTankstelle " + gasStationData.getName() + "§7 auf §a" + price + "$§7 angepasst.");
             gasStationData.setLiterprice(price);

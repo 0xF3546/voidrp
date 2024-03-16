@@ -19,7 +19,8 @@ public enum RoleplayItem {
     DIAMOND("§bDiamant", Material.DIAMOND),
     PEARL("§bPerle", Material.GHAST_TEAR),
     SHELL("§eMuschel", Material.BIRCH_BUTTON),
-    EXPLOSION_DEVICE("§cSprengsatz", Material.TNT);
+    EXPLOSION_DEVICE("§cSprengsatz", Material.TNT),
+    TAZER("§bTazer", Material.GOLDEN_HOE);
 
     private final String displayName;
     private final Material material;

@@ -76,7 +76,7 @@ public class PayDayUtils {
             plus += playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt");
         }
         if (playerData.getSecondaryTeam() != null) {
-            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getSecondaryTeam() + ")§8: §a" + Main.getInstance().serverManager.getPayout("secondaryteam") + "$");
+            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getSecondaryTeam() + ")§8: §a+" + Main.getInstance().serverManager.getPayout("secondaryteam") + "$");
             plus += Main.getInstance().serverManager.getPayout("secondaryteam");
         }
         for (PlayerVehicleData vehicleData : Vehicles.playerVehicleDataMap.values()) {

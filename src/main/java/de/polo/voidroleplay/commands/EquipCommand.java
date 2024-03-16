@@ -151,7 +151,7 @@ public class EquipCommand implements CommandExecutor, Listener {
     }
 
     private void openExtraShop(Player player, PlayerData playerData, FactionData factionData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cMunition", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cExtra", true, true);
         int sturmgewehrPrice = ServerManager.getPayout("cuffs");
         if (playerData.getFaction().equalsIgnoreCase("Medic")) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§c§lIboprofen")) {
@@ -184,8 +184,8 @@ public class EquipCommand implements CommandExecutor, Listener {
                         return;
                     }
                     factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
-                    factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
-                    playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
+                    factionData.addBankMoney(priceForFaction, "Munitionskauf " + player.getName());
+                    playerData.removeBankMoney(priceForFaction, "Munitionskauf");
                     player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
                 }
             });
@@ -202,13 +202,31 @@ public class EquipCommand implements CommandExecutor, Listener {
                         return;
                     }
                     factionData.removeFactionMoney(priceForFaction, "ANTIBIOTIKUM " + player.getName());
-                    factionData.addBankMoney(sturmgewehrPrice, "ANTIBIOTIKUM " + player.getName());
-                    playerData.removeBankMoney(sturmgewehrPrice, "ANTIBIOTIKUM");
+                    factionData.addBankMoney(priceForFaction, "ANTIBIOTIKUM " + player.getName());
+                    playerData.removeBankMoney(priceForFaction, "ANTIBIOTIKUM");
                     player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName()));
                 }
             });
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("tazer") + "$"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    int priceForFaction = (int) (ServerManager.getPayout("tazer"));
+                    if (factionData.getBank() < priceForFaction) {
+                        player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um einen Tazer zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    factionData.removeFactionMoney(priceForFaction, "TAZER " + player.getName());
+                    factionData.addBankMoney(priceForFaction, "TAZER " + player.getName());
+                    playerData.removeBankMoney(priceForFaction, "TAZER");
+                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName()));
+                }
+            });
             if (playerData.getFactionGrade() >= 5 && playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
+                inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
@@ -237,6 +255,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             if (event.isCancel()) {
                 event.sendCancelMessage();
                 event.end();
+                return;
             }
             FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
             switch (event.getPlayerData().getVariable("type").toString()) {
