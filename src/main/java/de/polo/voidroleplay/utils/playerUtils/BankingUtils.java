@@ -143,6 +143,7 @@ public class BankingUtils implements Listener {
                                     nearPlayer.playSound(nearPlayer.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
                                 }
                             }
+                            ItemManager.removeCustomItem(player, RoleplayItem.EXPLOSION_DEVICE, 1);
                             openRobInventory(player, atm);
                             atm.setLastTimeBlown(LocalDateTime.now());
                             playerData.setAtmBlown(playerData.getAtmBlown() + 1);

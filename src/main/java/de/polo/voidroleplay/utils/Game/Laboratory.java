@@ -219,12 +219,20 @@ public class Laboratory implements CommandExecutor, Listener {
         }
         LaboratoryAttack attack = getAttack(factionData);
         if (attack == null) {
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", "§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana")) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    attackLaboratory(player, factionData, defenderFaction);
-                }
-            });
+            if (ItemManager.getCustomItemCount(player, RoleplayItem.WELDING_MACHINE) >= 1) {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", "§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        attackLaboratory(player, factionData, defenderFaction);
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", Arrays.asList("§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana", "", "§8 ➥ §7Dafür benötigst du einen Sprengsatz."))) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                    }
+                });
+            }
         } else {
             LocalDateTime now = LocalDateTime.now();
 
@@ -258,6 +266,7 @@ public class Laboratory implements CommandExecutor, Listener {
     }
 
     public void attackLaboratory(Player player, FactionData attacker, FactionData defender) {
+        ItemManager.removeCustomItem(player, RoleplayItem.WELDING_MACHINE, 1);
         LaboratoryAttack attack = new LaboratoryAttack(attacker, defender);
         attack.setStarted(LocalDateTime.now());
         factionManager.sendCustomMessageToFaction(attacker.getName(), "§8[§" + attacker.getPrimaryColor() + attacker.getName() + "§8]§e Ihr fangt an das Labor von " + defender.getFullname() + " auszurauben, bleibt 5 Minuten bei der Tür!");
