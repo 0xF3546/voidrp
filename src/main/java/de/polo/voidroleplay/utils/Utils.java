@@ -137,8 +137,24 @@ public class Utils {
             } else {
                 prefix = "";
             }
+            String name = "§7" + player.getName();
+            if (playerData.isDuty()) {
+                switch (playerData.getFaction().toLowerCase()) {
+                    case "polizei":
+                        name = "§9" + player.getName();
+                        break;
+                    case "fbi":
+                        name = "§1" + player.getName();
+                        break;
+                    case "medic":
+                        name = "§c" + player.getName();
+                        break;
+                    default:
+                        break;
+                }
+            }
             player.setDisplayName(Color.GRAY + player.getName());
-            player.setPlayerListName(prefix + "§7" + player.getName() + " " + suffix);
+            player.setPlayerListName(prefix + "§7" + name + " " + suffix);
             player.setCustomName(Color.GRAY + player.getName());
             player.setCustomNameVisible(true);
         }
