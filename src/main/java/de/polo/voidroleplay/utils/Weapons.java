@@ -200,13 +200,8 @@ public class Weapons implements Listener {
             Vector direction = player.getEyeLocation().getDirection().normalize();
             Location particleLocation = player.getEyeLocation().clone();
 
-            // Anzahl der Partikel, die erzeugt werden sollen
             int particleCount = 30;
-
-            // Länge des Strahls in Blöcken
             double beamLength = 3.0;
-
-            // Schrittgröße basierend auf der Länge des Strahls und der Anzahl der Partikel
             double stepSize = beamLength / particleCount;
 
             Player target = null;
@@ -214,14 +209,18 @@ public class Weapons implements Listener {
             for (int i = 0; i < particleCount; i++) {
                 particleLocation.add(direction.clone().multiply(stepSize));
 
-                RayTraceResult result = player.getWorld().rayTraceEntities(player.getLocation(), player.getEyeLocation().getDirection(), 3);
+                RayTraceResult result = player.getWorld().rayTraceEntities(particleLocation, particleLocation.getDirection(), 1);
                 if (result != null && result.getHitEntity() instanceof Player) {
-                    target = (Player) result.getHitEntity();
+                    Player hitPlayer = (Player) result.getHitEntity();
+                    if (target == null || !target.equals(hitPlayer)) {
+                        target = hitPlayer;
+                    }
+                    System.out.println("Getroffener Spieler: " + hitPlayer.getName());
                 }
                 // Erzeuge den Partikel
                 player.spawnParticle(Particle.FIREWORKS_SPARK, particleLocation, 1, 0.0, 0.0, 0.0, 0.0);
             }
-            if (target == null) return;
+            if (target == null || target == player) return;
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + target.getName() + " getazert.");
             target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 12, 2, true, false)); // Slow für 6 Sekunden
             target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 12, -10, true, false)); // Jump für 6 Sekunden, -10 für eine geringere Sprunghöhe
