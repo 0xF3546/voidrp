@@ -20,8 +20,8 @@ public class ServerPingListener implements Listener {
     }
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
-        String firstline = "§6§lVoidRoleplay §8| §ediscord.voidroleplay.de";
-        String secondline = "§8➥ §cRoleplay mit Stil. §8 - §bⓘ§a V1.0 bald online!";
+        String firstline = "§6§lVoidRoleplay §8| §eReallife & Roleplay §8[§e1.16.5§8]";
+        String secondline = "§8➥ §cRoleplay mit Stil. §8 × §bⓘ§adiscord.voidroleplay.de!";
         String motd = null;
 
         try {
@@ -31,9 +31,9 @@ public class ServerPingListener implements Listener {
             if (res.next()) {
                 if (res.getString(3) != null) {
                     FactionData factionData = factionManager.getFactionData(res.getString(3));
-                    secondline = "§8 » §6Level§8: §e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §" + factionData.getPrimaryColor() + factionData.getName();
+                    secondline = "§8 » §6Level§8:§e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §" + factionData.getPrimaryColor() + factionData.getName();
                 } else {
-                    secondline = "§8 » §6Level§8: §e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §7Zivilist";
+                    secondline = "§8 » §6Level§8:§e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §7Zivilist";
                 }
             } else {
                 SQLWarning warning = statement.getWarnings();

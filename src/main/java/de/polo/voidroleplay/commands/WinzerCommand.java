@@ -211,7 +211,7 @@ public class WinzerCommand implements CommandExecutor {
     public void quitJob(Player player, boolean silent) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
-        int payout = Main.getInstance().serverManager.getPayout("holz") * playerData.getIntVariable("winzer_harvested");
+        int payout = Main.getInstance().serverManager.getPayout("winzer") * playerData.getIntVariable("winzer_harvested");
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
         if (playerData.getIntVariable("winzer") <= 0) playerManager.addExp(player, Main.random(12, 20));

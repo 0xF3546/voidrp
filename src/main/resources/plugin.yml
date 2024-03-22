@@ -203,3 +203,5 @@ commands:
   muschelsammler:
   gasstation:
     aliases: tankstelle
+  duty:
+    aliases: dienst

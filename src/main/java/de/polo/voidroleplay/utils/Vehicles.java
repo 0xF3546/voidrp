@@ -21,6 +21,7 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
@@ -50,6 +51,7 @@ public class Vehicles implements Listener, CommandExecutor {
             throw new RuntimeException(e);
         }
     }
+
     private void loadVehicles() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `vehicles`");
@@ -240,6 +242,7 @@ public class Vehicles implements Listener, CommandExecutor {
 
         }
     }
+
     @EventHandler
     public void onVehicleExit(VehicleExitEvent event) {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
@@ -255,6 +258,7 @@ public class Vehicles implements Listener, CommandExecutor {
             playerVehicleData.save();
         }
     }
+
     private final HashMap<Player, Double> playerSpeeds = new HashMap<>();
 
     @EventHandler
@@ -289,7 +293,6 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
 
-
     @EventHandler
     public void onGasStationInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null) {
@@ -303,36 +306,121 @@ public class Vehicles implements Listener, CommandExecutor {
                     GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
                     Player player = event.getPlayer();
                     PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                    Inventory inv = Bukkit.createInventory(player, 9, "§8 » §6Tankstelle");
                     int i = 0;
                     for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
                         if (entity.getType() == EntityType.MINECART) {
                             NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
                             if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
                                 String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-                                int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                                int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                                 float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
-                                int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
                                 VehicleData vehicleData = vehicleDataMap.get(type);
-                                inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "Lädt..."));
-                                ItemMeta meta = inv.getItem(i).getItemMeta();
                                 int dif = vehicleData.getMaxFuel() - (int) fuel;
-                                meta.setLore(Arrays.asList("§7 ➥ §8[§6Linksklick§8]§7 Tankoptionen", "§7 ➥ §8[§6Rechtsklick§8]§7 Volltanken (§a" + dif * gasStationData.getLiterprice() + "$§7)"));
-                                meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
-                                meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING, type);
-                                inv.getItem(i).setItemMeta(meta);
+                                playerData.setIntVariable("current_fuel", (int)fuel);
+                                playerData.setIntVariable("plusfuel", 0);
+                                InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §6Tankstelle", true, false);
+
+                                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, Arrays.asList("§7 ➥ §8[§6Linksklick§8]§7 Tankoptionen", "§7 ➥ §8[§6Rechtsklick§8]§7 Volltanken (§a" + dif * gasStationData.getLiterprice() + "$§7)"))) {
+                                    @SneakyThrows
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        if (event.isLeftClick()) {
+                                            playerData.setIntVariable("plusfuel", 0);
+                                            playerData.setIntVariable("current_fuel", (int) Math.floor(fuel));
+                                            updateGasInventory(player, entity, gasStationData, vehicleData);
+                                        } else if (event.isRightClick()) {
+                                            int price = (int) (vehicleData.getMaxFuel() - fuel) * gasStationData.getLiterprice();
+                                            if (playerData.getBargeld() >= price) {
+                                                player.closeInventory();
+                                                Vehicles.fillVehicle((Vehicle) entity, null);
+                                                playerManager.removeMoney(player, price, "Tankrechnung " + type);
+                                                player.sendMessage(Main.prefix + "Du hast dein §6" + type + "§7 betankt. §c-" + price + "$");
+                                            } else {
+                                                player.sendMessage(Main.error + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
+                                            }
+                                        }
+                                    }
+                                });
                                 i++;
                             }
                         }
                     }
-                    playerData.setVariable("current_inventory", "gasstation");
-                    playerData.setVariable("current_app", null);
-                    player.openInventory(inv);
                 }
             }
         }
     }
+
+    private void updateGasInventory(Player player, Entity entity, GasStationData gasStationData, VehicleData vehicleData) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inv = new InventoryManager(player, 27, "§8 » §6Tankstelle", true, false);
+        inv.setItem(new CustomItem(10, ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5-10 Liter")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                int pFuel = playerData.getIntVariable("plusfuel");
+                if (0 <= pFuel - 10) {
+                    playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") - 10);
+                    playerData.setIntVariable("plusfuel", playerData.getIntVariable("plusfuel") - 10);
+                    updateGasInventory(player, entity, gasStationData, vehicleData);
+                }
+            }
+        });
+        inv.setItem(new CustomItem(11, ItemManager.createItem(Material.MAGENTA_DYE, 1, 0, "§d-1 Liter")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                int pFuel = playerData.getIntVariable("plusfuel");
+                if (0 <= pFuel - 1) {
+                    playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") - 1);
+                    playerData.setIntVariable("plusfuel", playerData.getIntVariable("plusfuel") - 1);
+                    updateGasInventory(player, entity, gasStationData, vehicleData);
+                }
+            }
+        });
+        inv.setItem(new CustomItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§a+1 Liter")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                int pFuel = playerData.getIntVariable("plusfuel");
+                if (0 <= pFuel + 1) {
+                    playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") + 1);
+                    playerData.setIntVariable("plusfuel", playerData.getIntVariable("plusfuel") + 1);
+                    updateGasInventory(player, entity, gasStationData, vehicleData);
+                }
+            }
+        });
+        inv.setItem(new CustomItem(16, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+10 Liter")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                int pFuel = playerData.getIntVariable("plusfuel");
+                if (0 <= pFuel + 10) {
+                    playerData.setIntVariable("current_fuel", playerData.getIntVariable("current_fuel") + 10);
+                    playerData.setIntVariable("plusfuel", playerData.getIntVariable("plusfuel") + 10);
+                    updateGasInventory(player, entity, gasStationData, vehicleData);
+                }
+            }
+        });
+        float f = playerData.getIntVariable("current_fuel");
+        inv.setItem(new CustomItem(13, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), "§7 ➥ §e" + Math.floor(f) + " Liter")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inv.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen", "§7 ➥ §7Kosten: " + gasStationData.getLiterprice() * playerData.getIntVariable("plusfuel") + "$")) {
+            @SneakyThrows
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                int price = gasStationData.getLiterprice() * playerData.getIntVariable("plusfuel");
+                if (playerData.getBargeld() >= price) {
+                    player.closeInventory();
+                    playerManager.removeMoney(player, price, "Tankrechnung " + vehicleData.getName());
+                    Vehicles.fillVehicle((Vehicle) entity, playerData.getIntVariable("plusfuel"));
+                    player.sendMessage(Main.prefix + "Du hast dein §6" + vehicleData.getName() + "§7 betankt. §c-" + price + "$");
+                    SoundManager.successSound(player);
+                } else {
+                    player.sendMessage(Main.error + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
+                }
+            }
+        });
+    }
+
     @EventHandler
     public void onVehicleDamage(VehicleDamageEvent event) {
         if (event.getVehicle() instanceof Minecart) {
@@ -340,6 +428,7 @@ public class Vehicles implements Listener, CommandExecutor {
             event.setCancelled(true);
         }
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -361,8 +450,6 @@ public class Vehicles implements Listener, CommandExecutor {
                         if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
                             String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
                             int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                            int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
-                            float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
                             int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
                             if (lock == 0) {
                                 inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "§7 ➥ §cZuschließen"));

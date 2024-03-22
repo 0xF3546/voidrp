@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.Interfaces.PlayerJoin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,6 +70,10 @@ public class JoinListener implements Listener {
             locationManager.useLocation(player, "Spawn");
             adminManager.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
         }
-        Utils.Tablist.updatePlayer(player);
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            Utils.Tablist.setTablist(player, "§8[§2GM§8]");
+        } else {
+            Utils.Tablist.setTablist(player, null);
+        }
     }
 }
