@@ -26,9 +26,11 @@ public class PlayerData {
     @Getter
     private Player player;
     private String spawn;
+
     public PlayerData(Player player) {
         this.player = player;
     }
+
     private int id;
     private UUID uuid;
     private String firstname;
@@ -101,6 +103,7 @@ public class PlayerData {
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
+
     public String getFirstname() {
         return firstname;
     }
@@ -108,6 +111,7 @@ public class PlayerData {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
+
     public String getLastname() {
         return lastname;
     }
@@ -115,6 +119,7 @@ public class PlayerData {
     public void setBargeld(Integer bargeld) {
         this.bargeld = bargeld;
     }
+
     public Integer getBargeld() {
         return bargeld;
     }
@@ -122,6 +127,7 @@ public class PlayerData {
     public void setBank(Integer bank) {
         this.bank = bank;
     }
+
     public Integer getBank() {
         return bank;
     }
@@ -129,6 +135,7 @@ public class PlayerData {
     public void setRang(String rang) {
         this.rang = rang;
     }
+
     public String getRang() {
         return rang;
     }
@@ -136,6 +143,7 @@ public class PlayerData {
     public void setVisum(int visum) {
         this.visum = visum;
     }
+
     public int getVisum() {
         return visum;
     }
@@ -143,6 +151,7 @@ public class PlayerData {
     public void setPermlevel(int permlevel) {
         this.permlevel = permlevel;
     }
+
     public int getPermlevel() {
         return permlevel;
     }
@@ -150,6 +159,7 @@ public class PlayerData {
     public void setFaction(String faction) {
         this.faction = faction;
     }
+
     public String getFaction() {
         return faction;
     }
@@ -157,6 +167,7 @@ public class PlayerData {
     public void setFactionGrade(Integer faction_grade) {
         this.faction_grade = faction_grade;
     }
+
     public int getFactionGrade() {
         return faction_grade;
     }
@@ -263,6 +274,7 @@ public class PlayerData {
     public void setScoreboard(Scoreboard scoreboard) {
         this.scoreboard = scoreboard;
     }
+
     public void setScoreboard(String scoreboardName, Scoreboard scoreboard) {
         if (this.scoreboards.get(scoreboardName) != null) {
             this.scoreboards.replace(scoreboardName, scoreboard);
@@ -563,13 +575,11 @@ public class PlayerData {
     public void setCuffed(boolean cuffed) {
         this.cuffed = cuffed;
         if (cuffed) {
-                player.setWalkSpeed(0);
-                player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-                player.setFlying(false);
-                Main.waitSeconds(2, () -> {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0, true, false));
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -12, true, false));
-                });
+            player.setWalkSpeed(0);
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+            player.setFlying(false);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -12, true, false));
         } else {
             player.setWalkSpeed(0.2F);
             player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
@@ -611,7 +621,7 @@ public class PlayerData {
     }
 
     @SneakyThrows
-    public void addBankMoney(int amount, String reason)  {
+    public void addBankMoney(int amount, String reason) {
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         setBank(getBank() + amount);

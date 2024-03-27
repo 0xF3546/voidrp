@@ -104,10 +104,6 @@ public class GasStationCommand implements CommandExecutor, Listener {
         }
     }
 
-    private void openProductManager(Player player, ShopData shopData) {
-        PlayerData playerData = playerManager.getPlayerData(player);
-    }
-
     private void openBusinessBuyOverview(Player player, GasStationData gasStationData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + gasStationData.getName() + " (Business kaufen)", true, true);
         PlayerData playerData = playerManager.getPlayerData(player);
