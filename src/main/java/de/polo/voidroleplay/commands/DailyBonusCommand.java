@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.enums.CaseType;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class DailyBonusCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -39,6 +41,31 @@ public class DailyBonusCommand implements CommandExecutor {
             return false;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBonushändler", true, true);
+
+        if (!playerData.hasReceivedBonus()) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aRelease-Bonus erhalten", Arrays.asList("§8 ➥ §b3.000 EXP", "§8 ➥ §a12.500$", "§8 ➥ §f20g Kokain", "§8 ➥ §220 veredelte Joints", "§8 ➥ §e500 Coins"))) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    playerData.setReceivedBonus(true);
+                    player.sendMessage("§8[§6Release§8]§a Du erhälst 3.000 EXP, 12.500$, 20g Kokain, 20g veredelte Joints und 500 Coins.");
+                    playerManager.addExp(player, 3000);
+                    playerData.addMoney(12500);
+                    ItemManager.addCustomItem(player, RoleplayItem.COCAINE, 20);
+                    ItemManager.addCustomItem(player, RoleplayItem.NOBLE_JOINT, 20);
+                    playerManager.addCoins(player, 500);
+                    playerManager.addExp(player, 3000);
+                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    PreparedStatement statement = connection.prepareStatement("UPDATE players SET receivedBonus = true WHERE uuid = ?");
+                    statement.setString(1, player.getUniqueId().toString());
+                    statement.execute();
+                    statement.close();
+                    connection.close();
+                }
+            });
+        }
+
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.CHEST, 1, 0, "§bTäglichen Bonus erhalten")) {
             @Override
             public void onClick(InventoryClickEvent event) {
