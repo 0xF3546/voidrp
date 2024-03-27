@@ -3,6 +3,7 @@ package de.polo.voidroleplay.dataStorage;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -91,6 +92,8 @@ public class PlayerData {
     private LocalDateTime lastPayDay;
     private int currentHours;
     private int atmBlown;
+
+    private boolean receivedBonus;
 
     public PlayerData() {
     }
@@ -719,6 +722,14 @@ public class PlayerData {
 
     public void setCompanyRole(CompanyRole companyRole) {
         this.companyRole = companyRole;
+    }
+
+    public boolean hasReceivedBonus() {
+        return receivedBonus;
+    }
+
+    public void setReceivedBonus(boolean receivedBonus) {
+        this.receivedBonus = receivedBonus;
     }
 
     public class AddonXP {

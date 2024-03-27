@@ -203,3 +203,4 @@ commands:
   muschelsammler:
   gasstation:
     aliases: tankstelle
+  resetbonusentry:

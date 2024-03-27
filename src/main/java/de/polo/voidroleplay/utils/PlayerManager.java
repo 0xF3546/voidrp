@@ -217,6 +217,8 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setForumID(result.getInt("forumID"));
                 playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
 
+                playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
+
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
                 playerData.setCoins(result.getInt("coins"));

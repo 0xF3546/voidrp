@@ -57,7 +57,7 @@ public class DailyBonusCommand implements CommandExecutor {
                     playerManager.addCoins(player, 500);
                     playerManager.addExp(player, 3000);
                     Connection connection = Main.getInstance().mySQL.getConnection();
-                    PreparedStatement statement = connection.prepareStatement("UPDATE players SET receivedBonus = true WHERE uuid = ?");
+                    PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = true WHERE uuid = ?");
                     statement.setString(1, player.getUniqueId().toString());
                     statement.execute();
                     statement.close();
