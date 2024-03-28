@@ -261,6 +261,13 @@ public class PlayerData {
             this.bossBars.replace(identifier, bossBar);
         }
         this.bossBars.put(identifier, bossBar);
+        bossBar.addPlayer(player);
+    }
+
+    public void removeBossBar(String identifier) {
+        BossBar bb = getBossBar(identifier);
+        bb.removeAll();
+        bossBars.remove(identifier);
     }
 
     public Scoreboard getScoreboard() {

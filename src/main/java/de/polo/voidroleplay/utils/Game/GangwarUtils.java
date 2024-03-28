@@ -8,6 +8,9 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,6 +29,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.List;
 
 public class GangwarUtils implements CommandExecutor, TabCompleter {
     public static final HashMap<String, GangwarData> gangwarDataMap = new HashMap<>();
@@ -154,6 +159,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         GangwarData gangwarData = gangwarDataMap.get(zone);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setInventoryVariable("gangwar", player.getInventory());
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        BossBar bossBar = Bukkit.createBossBar("Lade Gangwar...", BarColor.valueOf(factionData.getPrimaryColor()), BarStyle.SOLID);
+        playerData.setBossBar("gangwar", bossBar);
         player.getInventory().clear();
         playerData.setVariable("gangwar", zone);
         if (gangwarData.getAttacker().equals(playerData.getFaction())) {
@@ -164,7 +172,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         equipPlayer(player);
     }
 
-    public static void equipPlayer(Player player) {
+    public void equipPlayer(Player player) {
         Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.GANGWAR);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 5, 0, RoleplayItem.COCAINE.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 5, 0, RoleplayItem.NOBLE_JOINT.getDisplayName()));
@@ -173,6 +181,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
 
     public void leaveGangwar(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        playerData.removeBossBar("gangwar");
         if (playerData.getVariable("gangwar") != null) {
             locationManager.useLocation(player, playerData.getFaction());
             playerData.setVariable("gangwar", null);

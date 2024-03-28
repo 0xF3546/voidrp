@@ -3,6 +3,8 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.dataStorage.PhoneCall;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
+import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.events.SubmitChatEvent;
 import org.bukkit.*;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +20,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.swing.plaf.nimbus.State;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.*;
+
+import static sun.java2d.loops.SurfaceType.Custom;
 
 public class PhoneUtils implements Listener {
     private static final List<PhoneCall> phoneCalls = new ArrayList<>();
@@ -48,7 +52,7 @@ public class PhoneUtils implements Listener {
 
     public void openPhone(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §eHandy");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eHandy", true, true);
         int unreadMessages = 0;
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
@@ -57,60 +61,116 @@ public class PhoneUtils implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        inv.setItem(10, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmViYmJkYmEzNzI5NjNjOWQ2ZDMzMjhjMjliZjEyM2FlMDlkMzBjZTdiYTNhMDU3Y2VkNjA2YzFjODAyOGI3YiJ9fX0=", 1, 0, "§6Kontakte", null));
-        inv.setItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachrichten", Arrays.asList("§8 ➥ §7Du hast §a" + unreadMessages + "§7 ungelesene Nachrichten.")));
-        inv.setItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=", 1, 0, "§aAnrufen", null));
-        inv.setItem(14, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§3Banking", null));
-        inv.setItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTRkNDliYWU5NWM3OTBjM2IxZmY1YjJmMDEwNTJhNzE0ZDYxODU0ODFkNWIxYzg1OTMwYjNmOTlkMjMyMTY3NCJ9fX0=", 1, 0, "§7Einstellungen", null));
-        inv.setItem(16, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZmOGEyMTlmMDgwMzk0MGYxZDI3MzQ5ZmIwNTBjMzJkYzdjMDUwZGIzM2NhMWUwYjM2YzIyZjIxYjA3YmU4NiJ9fX0=", 1, 0, "§bInternet", null));
-        for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        inventoryManager.setItem(new CustomItem(10, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmViYmJkYmEzNzI5NjNjOWQ2ZDMzMjhjMjliZjEyM2FlMDlkMzBjZTdiYTNhMDU3Y2VkNjA2YzFjODAyOGI3YiJ9fX0=", 1, 0, "§6Kontakte")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openContacts(player, 1, null);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
-        playerData.setVariable("current_inventory", "handy");
-        playerData.setVariable("current_app", null);
-        player.openInventory(inv);
+        });
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlN2JmNDUyMmIwM2RmY2M4NjY1MTMzNjNlYWE5MDQ2ZmRkZmQ0YWE2ZjFmMDg4OWYwM2MxZTYyMTZlMGVhMCJ9fX0=", 1, 0, "§eNachrichten", Collections.singletonList("§8 ➥ §7Du hast §a" + unreadMessages + "§7 ungelesene Nachrichten."))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openMessages(player, 1, null);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI0NDJiYmY3MTcxYjVjYWZjYTIxN2M5YmE0NGNlMjc2NDcyMjVkZjc2Y2RhOTY4OWQ2MWE5ZjFjMGE1ZjE3NiJ9fX0=", 1, 0, "§aAnrufen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCallApp(player, true);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§3Banking")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openBanking(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTRkNDliYWU5NWM3OTBjM2IxZmY1YjJmMDEwNTJhNzE0ZDYxODU0ODFkNWIxYzg1OTMwYjNmOTlkMjMyMTY3NCJ9fX0=", 1, 0, "§7Einstellungen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openSettings(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(16, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZmOGEyMTlmMDgwMzk0MGYxZDI3MzQ5ZmIwNTBjMzJkYzdjMDUwZGIzM2NhMWUwYjM2YzIyZjIxYjA3YmU4NiJ9fX0=", 1, 0, "§bInternet")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openInternet(player);
+            }
+        });
     }
 
     public void openSettings(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §7Einstellungen");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §7Einstellungen", true, true);
         if (playerData.isFlightmode()) {
-            inv.setItem(10, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten"));
+            inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    event.getCurrentItem().setType(Material.RED_STAINED_GLASS_PANE);
+                    ItemMeta itemMeta = event.getCurrentItem().getItemMeta();
+                    itemMeta.setDisplayName("§cFlugmodus einschalten");
+                    event.getCurrentItem().setItemMeta(itemMeta);
+                    playerData.setFlightmode(false);
+                }
+            });
         } else {
-            inv.setItem(10, ItemManager.createItem(Material.RED_STAINED_GLASS_PANE, 1, 0, "§cFlugmodus einschalten"));
+            inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.RED_STAINED_GLASS_PANE, 1, 0, "§cFlugmodus einschalten")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    event.getCurrentItem().setType(Material.GREEN_STAINED_GLASS_PANE);
+                    ItemMeta meta = event.getCurrentItem().getItemMeta();
+                    meta.setDisplayName("§aFlugmodus abschalten");
+                    event.getCurrentItem().setItemMeta(meta);
+                    playerData.setFlightmode(true);
+                }
+            });
         }
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPhone(player);
             }
-        }
-        playerData.setVariable("current_app", "settings");
-        player.openInventory(inv);
+        });
     }
 
     public void openBanking(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §3Banking");
-        inv.setItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
-        inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bTransaktionen", "§8 ➥ §7Alle Transaktionen der Letzten 7 Tage"));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §3Banking", true, true);
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
             }
-        }
-        playerData.setVariable("current_app", "banking");
-        player.openInventory(inv);
+        });
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bTransaktionen", "§8 ➥ §7Alle Transaktionen der Letzten 7 Tage")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openTransactions(player, 1, null);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPhone(player);
+            }
+        });
     }
 
     public void openTransactions(Player player, int page, String search) throws SQLException {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setVariable("current_app", "transactions");
-        playerData.setIntVariable("current_page", page);
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = null;
         if (search == null) {
@@ -118,40 +178,91 @@ public class PhoneUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE LOWER(`reason`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
         }
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §bTransaktionen §8- §bSeite§8:§7 " + page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §bTransaktionen §8- §bSeite§8:§7 " + page, true, true);
         int i = 0;
         int rows = 0;
         while (result.next()) {
             rows++;
             if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
                 if (result.getBoolean(2) && result.getInt(4) >= 0) {
-                    inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §aEinzahlung", "Lädt..."));
-                    ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
-                    assert meta != null;
-                    meta.setLore(Arrays.asList("§8 ➥ §7Höhe§8:§a +" + result.getInt(4) + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
-                    Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §aEinzahlung", Arrays.asList("§8 ➥ §7Höhe§8:§a +" + result.getInt(4) + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
                 } else {
-                    inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §cAuszahlung", "Lädt..."));
-                    ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
-                    assert meta != null;
-                    String höhe = String.valueOf(result.getInt(4)).replace("-", "");
-                    meta.setLore(Arrays.asList("§8 ➥ §7Höhe§8:§c -" + höhe + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
-                    Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §cAuszahlung", Arrays.asList("§8 ➥ §7Höhe§8:§c -" + result.getInt(4) + "$", "§8 ➥ §7Grund§8:§6 " + result.getString(5), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
                 }
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Transaktion suchen..."));
-        for (int j = 0; j < 27; j++) {
-            if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openTransactions(player, page + 1, search);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openTransactions(player, page - 1, null);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openBanking(player);
+            }
+        });
+        if (search == null) {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Transaktion suchen...")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    playerData.setVariable("chatblock", "checktransactions");
+                    player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
+                }
+                @EventHandler
+                public void onChatSubmit(SubmitChatEvent event) throws SQLException {
+                    if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
+                        return;
+                    }
+                    if (event.isCancel()) {
+                        event.end();
+                        event.sendCancelMessage();
+                        return;
+                    }
+                    openTransactions(event.getPlayer(), 1, event.getMessage());
+                    event.end();
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche löschen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    try {
+                        openTransactions(player, page, null);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         }
         result.close();
-        player.openInventory(inv);
     }
 
     public void openMessages(Player player, int page, String search) throws SQLException {
@@ -166,44 +277,100 @@ public class PhoneUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `phone_messages` WHERE LOWER(`message`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
         }
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §eNachrichten §8- §eSeite§8:§7 " + page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eNachrichten §8- §eSeite§8:§7 " + page, true, true);
         int i = 0;
         int rows = 0;
         while (result.next()) {
             rows++;
             if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
-                inv.setItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §e" + result.getInt(6), "Lädt..."));
-                ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
-                assert meta != null;
-                NamespacedKey read = new NamespacedKey(Main.plugin, "isRead");
-                NamespacedKey message = new NamespacedKey(Main.plugin, "message");
-                NamespacedKey date = new NamespacedKey(Main.plugin, "date");
-                NamespacedKey id = new NamespacedKey(Main.plugin, "message_id");
+                int id = result.getInt("id");
                 if (result.getBoolean(7)) {
-                    meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")));
-                    meta.getPersistentDataContainer().set(read, PersistentDataType.INTEGER, 1);
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §e" + result.getInt(6), Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
                 } else {
-                    meta.setLore(Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp"), "", "§8» §aAls gelesen markieren"));
-                    meta.getPersistentDataContainer().set(read, PersistentDataType.INTEGER, 0);
-                    meta.getPersistentDataContainer().set(message, PersistentDataType.STRING, result.getString(4));
-                    meta.getPersistentDataContainer().set(date, PersistentDataType.STRING, result.getString("formatted_timestamp"));
-                    meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §e" + result.getInt(6), Arrays.asList("§8 ➥ §7Nachricht§8:§6 " + result.getString(4), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp"), "", "§8» §aAls gelesen markieren"))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            try {
+                                Connection connection = Main.getInstance().mySQL.getConnection();
+                                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE phone_messages SET isRead = true WHERE id = ?");
+                                preparedStatement.setInt(1, id);
+                                preparedStatement.executeUpdate();
+                                openMessages(player, page, search);
+                                preparedStatement.close();
+                                connection.close();
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
                 }
-                Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Nachricht suchen..."));
-        for (int j = 0; j < 27; j++) {
-            if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openTransactions(player, page + 1, search);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openTransactions(player, page - 1, search);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        if (search == null) {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Nachricht suchen...")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    playerData.setVariable("chatblock", "checkmessages");
+                    player.sendMessage("§8[§6SMS§8]§7 Gib nun die Nachricht an.");
+                }
+                @EventHandler
+                public void onChatSubmit(SubmitChatEvent event) {
+                    if (!event.getSubmitTo().equalsIgnoreCase("checkmessages")) {
+                        return;
+                    }
+                    if (event.isCancel()) {
+                        event.end();
+                        event.sendCancelMessage();
+                        return;
+                    }
+                    try {
+                        openMessages(event.getPlayer(), 1, event.getMessage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    event.end();
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche leeren")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    try {
+                        openTransactions(player, page, null);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         }
         result.close();
-        player.openInventory(inv);
     }
 
     public void openContacts(Player player, int page, String search) throws SQLException {
@@ -218,37 +385,88 @@ public class PhoneUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT * FROM `phone_contacts` WHERE LOWER(`contact_name`) LIKE LOWER('%" + search + "%') ");
         }
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakte §8- §6Seite§8:§7 " + page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §6Kontakte §8- §6Seite§8:§7 " + page, true, true);
         int i = 0;
         int rows = 0;
         while (result.next()) {
             rows++;
             if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
-                inv.setItem(i, ItemManager.createItemHead(result.getString(5), 1, 0, "§8» §7" + result.getString(3).replace("&", "§"), "Lädt..."));
-                ItemMeta meta = Objects.requireNonNull(inv.getItem(i)).getItemMeta();
-                NamespacedKey id = new NamespacedKey(Main.plugin, "id");
-                NamespacedKey number = new NamespacedKey(Main.plugin, "number");
-                assert meta != null;
-                meta.getPersistentDataContainer().set(id, PersistentDataType.INTEGER, result.getInt(1));
-                meta.getPersistentDataContainer().set(number, PersistentDataType.INTEGER, result.getInt(4));
-                meta.setLore(Arrays.asList("§8 ➥ §6Nummer§8:§7 " + result.getInt(4), "§8 ➥ §aNeue SMS§8:§7 §cBald verfügbar!"));
-                Objects.requireNonNull(inv.getItem(i)).setItemMeta(meta);
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(result.getString(5), 1, 0, "§8» §7" + result.getString(3).replace("&", "§"), Arrays.asList("§8 ➥ §6Nummer§8:§7 " + result.getInt(4), "§8 ➥ §aNeue SMS§8:§7 §cBald verfügbar!"))) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+
+                    }
+                });
                 i++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-        inv.setItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        inv.setItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjA1NmJjMTI0NGZjZmY5OTM0NGYxMmFiYTQyYWMyM2ZlZTZlZjZlMzM1MWQyN2QyNzNjMTU3MjUzMWYifX19", 1, 0, "§aKontakt hinzufügen", null));
-        inv.setItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Kontakt suchen..."));
-        for (int j = 0; j < 27; j++) {
-            if (inv.getItem(j) == null) {
-                inv.setItem(j, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openContacts(player, page + 1, search);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                try {
+                    openContacts(player, page - 1, search);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjA1NmJjMTI0NGZjZmY5OTM0NGYxMmFiYTQyYWMyM2ZlZTZlZjZlMzM1MWQyN2QyNzNjMTU3MjUzMWYifX19", 1, 0, "§aKontakt hinzufügen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        if (search == null) {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Kontakt suchen...")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerData.setVariable("chatblock", "contactsearch");
+                    player.closeInventory();
+                    player.sendMessage("§8[§6Kontakte§8]§7 Gib nun den Namen des Kontaktes ein.");
+                }
+
+                @EventHandler
+                public void onChatSubmit(SubmitChatEvent event) {
+                    if (!event.getSubmitTo().equals("contactsearch")) {
+                        return;
+                    }
+                    if (event.isCancel()) {
+                        event.end();
+                        event.sendCancelMessage();
+                        return;
+                    }
+                    try {
+                        openContacts(event.getPlayer(), 1, event.getMessage());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    event.end();
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche leeren")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    try {
+                        openContacts(player, page, null);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
         }
         result.close();
         if (search != null) player.sendMessage("§8[§6Kontakte§8]§7 Es gab §a" + rows + " Ergebnisse§7.");
-        player.openInventory(inv);
     }
 
     public void editContact(Player player, ItemStack stack, boolean newContact, boolean canSave) {
@@ -310,32 +528,86 @@ public class PhoneUtils implements Listener {
     }
 
     public void openCallApp(Player player, boolean isNew) {
-        Inventory inv;
+        InventoryManager inventoryManager = new InventoryManager(player, 9, "Lade...", true, true);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (isNew) {
-            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§2 ");
+            inventoryManager = new InventoryManager(player, 54, "§8 » §aAnrufen§8:§2 ", true, true);
             playerData.setVariable("current_phone_callnumber", "");
         } else {
-            inv = Bukkit.createInventory(player, 54, "§8 » §aAnrufen§8:§2 " + playerData.getVariable("current_phone_callnumber"));
+            inventoryManager = new InventoryManager(player, 54, "§8 » §aAnrufen§8:§2 " + playerData.getVariable("current_phone_callnumber"), true, true);
         }
-        playerData.setVariable("current_app", "phonecall");
-        inv.setItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmNmYWZmYThjNmM3ZjYyNjIxNjgyZmU1NjcxMWRjM2I4OTQ0NjVmZGY3YTYyZjQzYjMxYTBkMzQwM2YzNGU3In19fQ==", 1, 0, "§6§l1", null));
-        inv.setItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQxMGRiNjIzNzM1YzE0NmM3YzQ4N2UzNjkyZDFjNWI1ZTIzYmY2OTFlZjA2NjVjMmU5NTQ5NDc5ZDgyOGYifX19", 1, 0, "§6§l2", null));
-        inv.setItem(14, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWY4ZTdhY2Y3MjQyYWZhNTg2YzNkMDk1Zjg3ZmU5ZGU3YjdjYTI0YzRhMjhhNTYwNDAzNDdjNjU3OTYwZTM2In19fQ==", 1, 0, "§6§l3", null));
-        inv.setItem(21, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ3YzczZDdkMmVmMTQ3MTJhZTU5YzU3ZDY0ZTUxMmE3ZjljNTI3NzQ2YjhiYzQyNDI3MGY5ZTM3YzE4MWM3OCJ9fX0=", 1, 0, "§6§l4", null));
-        inv.setItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzVhZmY5MmRlODkyZDU5MjJhZDc1M2RhZDVhZTM0NzlhYjE1MGFmNGVkMjg0YWJmYTc1Y2E3YTk5NWMxODkzIn19fQ==", 1, 0, "§6§l5", null));
-        inv.setItem(23, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjE2ZDQyM2M3ZmQ2NGM1YzdmNDA4NTQ2ZGE0Yjc4N2U5M2RiZWFjMGU3N2IxOWM0OWI5YWQ0ZmY0MThmMmQxIn19fQ==", 1, 0, "§6§l6", null));
-        inv.setItem(30, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQ4N2U5MTJhOGU5YmZjNDkxMjQzNmFmNTZjNDZjMmU2YTE1YTFkMjJkMWFkMThkNDZhMjI5ZDc2NDhlIn19fQ==", 1, 0, "§6§l7", null));
-        inv.setItem(31, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTEwMWQ0YjQ3ZGNjYjc2MTJhYzVlZmRlNWFlMjQ0MWM4MmMzZjBhNjg0MDQxYWVkMzgyNzZkYmRmOTQifX19", 1, 0, "§6§l8", null));
-        inv.setItem(32, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE0Njg1NzQ0MWNhYWU2ZTE2YzkyOTZmYjU3MTQ4MmFhNTEzNjI2OGQzOWUzNWI3YWNmYmY1MTM5YTM3ZTAzZCJ9fX0=", 1, 0, "§6§l9", null));
-        inv.setItem(40, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJmYTYzYTBhNTQyOGIyNzM0NTNmZmU3ODRkM2U0ODljYmNmNmQxMmI3ODQ1MGEzNTE1NzE2Y2U3MjRmNCJ9fX0=", 1, 0, "§6§l0", null));
-        inv.setItem(45, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        inv.setItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnrufen"));
-        for (int i = 0; i < 54; i++) {
-            if (inv.getItem(i) == null)
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-        }
-        player.openInventory(inv);
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmNmYWZmYThjNmM3ZjYyNjIxNjgyZmU1NjcxMWRjM2I4OTQ0NjVmZGY3YTYyZjQzYjMxYTBkMzQwM2YzNGU3In19fQ==", 1, 0, "§6§l1")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQxMGRiNjIzNzM1YzE0NmM3YzQ4N2UzNjkyZDFjNWI1ZTIzYmY2OTFlZjA2NjVjMmU5NTQ5NDc5ZDgyOGYifX19", 1, 0, "§6§l2")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWY4ZTdhY2Y3MjQyYWZhNTg2YzNkMDk1Zjg3ZmU5ZGU3YjdjYTI0YzRhMjhhNTYwNDAzNDdjNjU3OTYwZTM2In19fQ==", 1, 0, "§6§l3")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(21, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTQ3YzczZDdkMmVmMTQ3MTJhZTU5YzU3ZDY0ZTUxMmE3ZjljNTI3NzQ2YjhiYzQyNDI3MGY5ZTM3YzE4MWM3OCJ9fX0=", 1, 0, "§6§l4")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzVhZmY5MmRlODkyZDU5MjJhZDc1M2RhZDVhZTM0NzlhYjE1MGFmNGVkMjg0YWJmYTc1Y2E3YTk5NWMxODkzIn19fQ==", 1, 0, "§6§l5")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(23, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjE2ZDQyM2M3ZmQ2NGM1YzdmNDA4NTQ2ZGE0Yjc4N2U5M2RiZWFjMGU3N2IxOWM0OWI5YWQ0ZmY0MThmMmQxIn19fQ==", 1, 0, "§6§l6")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(30, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzQ4N2U5MTJhOGU5YmZjNDkxMjQzNmFmNTZjNDZjMmU2YTE1YTFkMjJkMWFkMThkNDZhMjI5ZDc2NDhlIn19fQ==", 1, 0, "§6§l7")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(31, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTEwMWQ0YjQ3ZGNjYjc2MTJhYzVlZmRlNWFlMjQ0MWM4MmMzZjBhNjg0MDQxYWVkMzgyNzZkYmRmOTQifX19", 1, 0, "§6§l8")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(32, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmE0Njg1NzQ0MWNhYWU2ZTE2YzkyOTZmYjU3MTQ4MmFhNTEzNjI2OGQzOWUzNWI3YWNmYmY1MTM5YTM3ZTAzZCJ9fX0=", 1, 0, "§6§l9")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(40, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJmYTYzYTBhNTQyOGIyNzM0NTNmZmU3ODRkM2U0ODljYmNmNmQxMmI3ODQ1MGEzNTE1NzE2Y2U3MjRmNCJ9fX0=", 1, 0, "§6§l0")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(45, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPhone(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAnrufen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
     }
 
     public Collection<PhoneCall> getCalls() {
@@ -497,15 +769,6 @@ public class PhoneUtils implements Listener {
 
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) throws SQLException {
-        if (event.getSubmitTo().equals("contactsearch")) {
-            if (event.isCancel()) {
-                event.end();
-                event.sendCancelMessage();
-                return;
-            }
-            openContacts(event.getPlayer(), 1, event.getMessage());
-            event.end();
-        }
         if (event.getSubmitTo().equals("sendsms")) {
             if (event.isCancel()) {
                 event.end();
@@ -541,24 +804,6 @@ public class PhoneUtils implements Listener {
             } else {
                 editContact(event.getPlayer(), ItemManager.createItemHead(event.getPlayerData().getVariable("current_contact_uuid"), 1, 0, "§8"), false, true);
             }
-            event.end();
-        }
-        if (event.getSubmitTo().equals("checktransactions")) {
-            if (event.isCancel()) {
-                event.end();
-                event.sendCancelMessage();
-                return;
-            }
-            openTransactions(event.getPlayer(), 1, event.getMessage());
-            event.end();
-        }
-        if (event.getSubmitTo().equals("checkmessages")) {
-            if (event.isCancel()) {
-                event.end();
-                event.sendCancelMessage();
-                return;
-            }
-            openMessages(event.getPlayer(), 1, event.getMessage());
             event.end();
         }
     }
