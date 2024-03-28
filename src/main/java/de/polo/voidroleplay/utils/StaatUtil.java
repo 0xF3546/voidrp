@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.JailData;
 import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.Game.EvidenceChamber;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -13,9 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +23,8 @@ import java.util.UUID;
 public class StaatUtil {
     public static final Map<String, JailData> jailDataMap = new HashMap<>();
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
+
+    public static EvidenceChamber Asservatemkammer;
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
@@ -36,6 +37,16 @@ public class StaatUtil {
         this.locationManager = locationManager;
         this.utils = utils;
         try {
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM evidenceChamber");
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                Asservatemkammer = new EvidenceChamber(result.getInt("weed"), result.getInt("joints"), result.getInt("cocaine"), result.getInt("noble_joints"));
+                Asservatemkammer.setId(result.getInt("id"));
+            }
+            result.close();
+            statement.close();
+            connection.close();
             loadJail();
         } catch (SQLException e) {
             throw new RuntimeException(e);

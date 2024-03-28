@@ -14,6 +14,7 @@ import de.polo.voidroleplay.utils.events.MinuteTickEvent;
 import de.polo.voidroleplay.utils.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -99,7 +100,121 @@ public class GamePlay implements Listener {
             this.factionManager = factionManager;
         }
 
-        ;
+        public void openEvidence(Player player) {
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Asservatenkammer", true, true);
+            inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getWeed() + "g")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    interactEvidence(player, RoleplayItem.MARIHUANA);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getJoints() + " Stück")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    interactEvidence(player, RoleplayItem.JOINT);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 1, 0, RoleplayItem.COCAINE.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getCocaine() + "g")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    interactEvidence(player, RoleplayItem.COCAINE);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 1, 0, RoleplayItem.NOBLE_JOINT.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getNoble_joints() + " Stück")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    interactEvidence(player, RoleplayItem.NOBLE_JOINT);
+                }
+            });
+        }
+
+        private void interactEvidence(Player player, RoleplayItem item) {
+            PlayerData playerData = playerManager.getPlayerData(player);
+
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Assvervatenkammer (" + item.getDisplayName(), true, true);
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.RED_DYE, 1, 0, "§4Verbrennen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§3Einlagern")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerData.setVariable("chatblock", "evidence::in");
+                    player.sendMessage("§8[§3Asservatenkammer§8]§7 Gib nun an wie viel Gram du einlagern möchtest.");
+                    player.closeInventory();
+                }
+
+                @EventHandler
+                public void onChatSubmit(SubmitChatEvent event) {
+                    if (!event.getSubmitTo().equalsIgnoreCase("evidence::in")) {
+                        return;
+                    }
+                    if (event.isCancel()) {
+                        event.sendCancelMessage();
+                        event.end();
+                        return;
+                    }
+                    try {
+                        int amount = Integer.parseInt(event.getMessage());
+                        if (ItemManager.getCustomItemCount(player, item) < amount) {
+                            player.sendMessage(Main.error + "So viel hast du nicht dabei.");
+                            return;
+                        }
+                        factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + player.getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 in die Asservatenkammer eingelagert", "FBI", "Polizei");
+                        ItemManager.removeCustomItem(player, item, amount);
+                        StaatUtil.Asservatemkammer.addItem(item, amount);
+                        StaatUtil.Asservatemkammer.save();
+                    } catch (Exception e) {
+                        player.sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+                    }
+                }
+            });
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§cAuslagern")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getFactionGrade() < 6) {
+                        player.sendMessage(Main.error + "Das geht erst ab Rang 6.");
+                        return;
+                    }
+                    playerData.setVariable("chatblock", "evidence::out");
+                    player.sendMessage("§8[§3Asservatenkammer§8]§7 Gib nun an wie viel Gram du auslagern möchtest.");
+                    player.closeInventory();
+                }
+
+                @EventHandler
+                public void onChatSubmit(SubmitChatEvent event) {
+                    if (!event.getSubmitTo().equalsIgnoreCase("evidence::out")) {
+                        return;
+                    }
+                    if (event.isCancel()) {
+                        event.sendCancelMessage();
+                        event.end();
+                        return;
+                    }
+                    try {
+                        int amount = Integer.parseInt(event.getMessage());
+                        if (StaatUtil.Asservatemkammer.getAmount(item) < amount) {
+                            player.sendMessage(Main.error + "So viel befindet sich nicht in der Asservatenkammer.");
+                            return;
+                        }
+                        factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + player.getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 aus der Asservatenkammer genommen", "FBI", "Polizei");
+                        ItemManager.addCustomItem(player, item, amount);
+                        StaatUtil.Asservatemkammer.removeItem(item, amount);
+                        StaatUtil.Asservatemkammer.save();
+                    } catch (Exception e) {
+                        player.sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+                    }
+                }
+            });
+            inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openEvidence(player);
+                }
+            });
+        }
 
         public void open(Player player) {
             PlayerData playerData = playerManager.getPlayerData(player);

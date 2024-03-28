@@ -121,7 +121,11 @@ public class PlayerInteractListener implements Listener {
                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
                         if (registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
-                            Main.getInstance().gamePlay.drugstorage.open(player);
+                            if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
+                                Main.getInstance().gamePlay.drugstorage.openEvidence(player);
+                            } else {
+                                Main.getInstance().gamePlay.drugstorage.open(player);
+                            }
                         }
                     }
                 }

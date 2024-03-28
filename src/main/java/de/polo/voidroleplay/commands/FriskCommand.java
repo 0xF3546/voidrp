@@ -3,14 +3,12 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
+import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Game.EvidenceChamber;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.Weapons;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -91,10 +89,23 @@ public class FriskCommand implements CommandExecutor {
                         if (stack.getType().equals(data.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(data.getName())) {
                             weapons.removeWeapon(player, stack);
                         } else {
+                            if (stack.getType().equals(RoleplayItem.JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.JOINT.getDisplayName())) {
+                                StaatUtil.Asservatemkammer.setJoints(StaatUtil.Asservatemkammer.getJoints() + stack.getAmount());
+                            }
+                            if (stack.getType().equals(RoleplayItem.COCAINE.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.COCAINE.getDisplayName())) {
+                                StaatUtil.Asservatemkammer.setCocaine(StaatUtil.Asservatemkammer.getCocaine() + stack.getAmount());
+                            }
+                            if (stack.getType().equals(RoleplayItem.MARIHUANA.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.MARIHUANA.getDisplayName())) {
+                                StaatUtil.Asservatemkammer.setWeed(StaatUtil.Asservatemkammer.getWeed() + stack.getAmount());
+                            }
+                            if (stack.getType().equals(RoleplayItem.NOBLE_JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.NOBLE_JOINT.getDisplayName())) {
+                                StaatUtil.Asservatemkammer.setNoble_joints(StaatUtil.Asservatemkammer.getNoble_joints() + stack.getAmount());
+                            }
                             targetplayer.getInventory().remove(stack);
                         }
                     }
                     openFriskInventory(player, targetplayer);
+                    StaatUtil.Asservatemkammer.save();
                 }
             });
             i++;
