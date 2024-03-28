@@ -137,6 +137,34 @@ public class ItemManager {
         return i;
     }
 
+    public static ItemStack createCustomHead(String texture, int anzahl, int subid, String displayname)
+    {
+        short neuesubid = (short)subid;
+        ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
+        SkullMeta meta = (SkullMeta) i.getItemMeta();
+
+        UUID id = UUID.randomUUID();
+        GameProfile profile = new GameProfile(id, "");
+        profile.getProperties().put("textures", new Property("textures", texture));
+
+        Field profileField = null;
+
+        try {
+            profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(meta, profile);
+        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
+            e1.printStackTrace();
+        }
+        i.setItemMeta(meta);
+
+        ItemMeta m = i.getItemMeta();
+        m.setDisplayName(displayname);
+        i.setItemMeta(m);
+
+        return i;
+    }
+
     private String getURLFromBase64(String base64) {
         return new String(Base64.getDecoder().decode(base64.getBytes())).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "").replace("\"}}}", "");
     }

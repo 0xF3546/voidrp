@@ -261,6 +261,10 @@ public class Utils {
         }
     }*/
 
+    public static int roundUpToMultipleOfNine(int num) {
+        return ((num + 8) / 9) * 9;
+    }
+
     public void setAFK(Player player, boolean state) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         if (state) {

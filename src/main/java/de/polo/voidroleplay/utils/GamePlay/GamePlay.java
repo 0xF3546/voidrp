@@ -314,28 +314,28 @@ public class GamePlay implements Listener {
 
     @EventHandler
     public void onChatMessage(SubmitChatEvent event) {
-        if (!event.getSubmitTo().equalsIgnoreCase("proceedweed")) {
-            return;
-        }
-        if (event.isCancel()) {
-            event.sendCancelMessage();
-            event.end();
-        }
-        try {
-            Integer amount = Integer.parseInt(event.getMessage());
-            PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-            if (amount > factionData.storage.getWeed()) {
-                event.getPlayer().sendMessage(Main.error + "So viel Marihuana hat deine Fraktion nicht.");
+        if (event.getSubmitTo().equalsIgnoreCase("proceedweed")) {
+
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+            }
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
+                FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                if (amount > factionData.storage.getWeed()) {
+                    event.getPlayer().sendMessage(Main.error + "So viel Marihuana hat deine Fraktion nicht.");
+                    return;
+                }
+                factionData.storage.proceedWeed(amount);
+                factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 " + factionManager.getRankName(factionData.getName(), playerData.getFactionGrade()) + " " + event.getPlayer().getName() + " hat die Verarbeitung von " + amount + " Marihuana im Labor gestartet.");
+            } catch (IllegalArgumentException e) {
+                event.getPlayer().sendMessage(Main.error + "Die Zahl ist nicht numerisch");
                 return;
             }
-            factionData.storage.proceedWeed(amount);
-            factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 " + factionManager.getRankName(factionData.getName(), playerData.getFactionGrade()) + " " + event.getPlayer().getName() + " hat die Verarbeitung von " + amount + " Marihuana im Labor gestartet.");
-        } catch (IllegalArgumentException e) {
-            event.getPlayer().sendMessage(Main.error + "Die Zahl ist nicht numerisch");
-            return;
+            event.end();
         }
-        event.end();
     }
 
     @SneakyThrows
