@@ -88,6 +88,12 @@ public class PlayerSwapHandItemsListener implements Listener {
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")");
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")", true, true);
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§7Personalausweis nehmen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", Arrays.asList("§8 ➥ §7" + utils.toDecimalFormat(targetplayerData.getBargeld()) + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"))) {
             @Override
             public void onClick(InventoryClickEvent event) {

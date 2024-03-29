@@ -324,7 +324,7 @@ public class FactionManager {
             case "Polizei":
                 return "Officer";
             case "Medic":
-                return "Arzt";
+                return "Mediziner";
         }
         return null;
     }

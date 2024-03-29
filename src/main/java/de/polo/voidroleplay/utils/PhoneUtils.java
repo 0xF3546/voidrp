@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.events.SubmitChatEvent;
+import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -236,8 +237,8 @@ public class PhoneUtils implements Listener {
                     playerData.setVariable("chatblock", "checktransactions");
                     player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
                 }
-                @EventHandler
-                public void onChatSubmit(SubmitChatEvent event) throws SQLException {
+                @SneakyThrows
+                public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
                         return;
                     }
@@ -340,7 +341,7 @@ public class PhoneUtils implements Listener {
                     playerData.setVariable("chatblock", "checkmessages");
                     player.sendMessage("§8[§6SMS§8]§7 Gib nun die Nachricht an.");
                 }
-                @EventHandler
+
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checkmessages")) {
                         return;
@@ -435,7 +436,6 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§6Kontakte§8]§7 Gib nun den Namen des Kontaktes ein.");
                 }
 
-                @EventHandler
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equals("contactsearch")) {
                         return;

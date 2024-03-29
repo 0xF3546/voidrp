@@ -2,6 +2,7 @@ package de.polo.voidroleplay.utils.Game;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,7 +70,7 @@ public class EvidenceChamber {
                 amount = weed;
                 break;
             case NOBLE_JOINT:
-                amount = noble_joints
+                amount = noble_joints;
                 break;
             case JOINT:
                 amount = joints;
@@ -112,6 +113,7 @@ public class EvidenceChamber {
         }
     }
 
+    @SneakyThrows
     public void save() {
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE evidenceChamber SET weed = ?, joints = ?, cocaine = ?, noble_joints = ? WHERE id = ?");

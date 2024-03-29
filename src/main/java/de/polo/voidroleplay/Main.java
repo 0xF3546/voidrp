@@ -449,7 +449,7 @@ public final class Main extends JavaPlugin {
             buyHouseCommand = new BuyHouseCommand(playerManager, blockManager);
             mietersCommand = new MietersCommand(playerManager, utils);
             unrentCommand = new UnrentCommand(utils);
-            friskCommand = new FriskCommand(playerManager);
+            friskCommand = new FriskCommand(playerManager, weapons, factionManager);
             blacklistCommand = new BlacklistCommand(playerManager, factionManager);
             npc = new NPC(playerManager);
             redeemCommand = new RedeemCommand(playerManager, utils);

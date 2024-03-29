@@ -1,9 +1,12 @@
 package de.polo.voidroleplay.utils.InventoryManager;
 
+import de.polo.voidroleplay.utils.events.SubmitChatEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class CustomItem {
+public abstract class CustomItem implements Listener {
 
     public final int slot;
     public final ItemStack itemStack;
@@ -45,4 +48,8 @@ public abstract class CustomItem {
      * @since 1.0.0
      */
     public abstract void onClick(InventoryClickEvent event);
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) {
+
+    }
 }

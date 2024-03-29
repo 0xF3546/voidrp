@@ -118,14 +118,16 @@ public class PlayerInteractListener implements Listener {
                 }
                 if (event.getClickedBlock().getType() == Material.CHEST) {
                     event.setCancelled(true);
+                    if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
+                        if (Main.getInstance().locationManager.getDistanceBetweenCoords(player, "asservatenkammer") < 20) {
+                            Main.getInstance().gamePlay.drugstorage.openEvidence(player);
+                        }
+                    }
                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
                         if (registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
-                            if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
-                                Main.getInstance().gamePlay.drugstorage.openEvidence(player);
-                            } else {
-                                Main.getInstance().gamePlay.drugstorage.open(player);
-                            }
+                            Main.getInstance().gamePlay.drugstorage.open(player);
+
                         }
                     }
                 }
@@ -332,7 +334,7 @@ public class PlayerInteractListener implements Listener {
                 GamePlay.useDrug(player, Drug.JOINT);
             } else if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(Drug.ANTIBIOTIKUM.getItem().getDisplayName())) {
                 GamePlay.useDrug(player, Drug.ANTIBIOTIKUM);
-            }else if (event.getItem().getItemMeta().getDisplayName().equals("§eMuschel")) {
+            } else if (event.getItem().getItemMeta().getDisplayName().equals("§eMuschel")) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
                 inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel öffnen")) {
                     @Override

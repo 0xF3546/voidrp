@@ -69,7 +69,7 @@ public class PlayerManager implements Listener, ServerTiming {
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
             Date date = new Date();
             String newDate = formatter.format(date);
-            statement.execute("INSERT INTO `players` (`uuid`, `firstjoin`) VALUES ('" + uuid + "', '" + newDate + "')");
+            statement.execute("INSERT INTO `players` (`uuid`) VALUES ('" + uuid + "')");
             statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
             statement.execute("INSERT INTO `player_addonxp` (`uuid`) VALUES ('" + uuid + "')");
             Player player = Bukkit.getPlayer(uuid);
@@ -307,7 +307,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     Main.getInstance().utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
                 }
             }
-            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + " WHERE `uuid` = '" + uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + ", `lastLogin` = NOW() WHERE `uuid` = '" + uuid + "'");
             if (playerData.isJailed()) {
                 statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
             }

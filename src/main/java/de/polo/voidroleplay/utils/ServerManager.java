@@ -97,13 +97,13 @@ public class ServerManager {
             dbPlayerData.setBusiness(locs.getInt("business"));
             dbPlayerData.setBusiness_grade(locs.getInt("business_grade"));
             dbPlayerDataMap.put(locs.getString(2), dbPlayerData);
-            if (locs.getString(19) != null && !locs.getString(19).equals("Zivilist")) {
+            if (locs.getString("faction") != null && !locs.getString("faction").equals("Zivilist")) {
                 FactionPlayerData factionPlayerData = new FactionPlayerData();
-                factionPlayerData.setId(locs.getInt(1));
-                factionPlayerData.setUuid(locs.getString(2));
-                factionPlayerData.setFaction(locs.getString(19));
-                factionPlayerData.setFaction_grade(locs.getInt(20));
-                factionPlayerDataMap.put(locs.getString(2), factionPlayerData);
+                factionPlayerData.setId(locs.getInt("id"));
+                factionPlayerData.setUuid(locs.getString("uuid"));
+                factionPlayerData.setFaction(locs.getString("faction"));
+                factionPlayerData.setFaction_grade(locs.getInt("faction_grade"));
+                factionPlayerDataMap.put(locs.getString("uuid"), factionPlayerData);
             }
         }
         statement.close();
