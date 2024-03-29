@@ -16,6 +16,7 @@ public enum RoleplayItem {
     CUFF("§6Handschellen", Material.LEAD, false),
     SWAT_SHIELD("§6Einsatzschild", Material.SHIELD, false),
     ANTIBIOTIKUM("§cAntibiotikum", Material.RED_DYE, false),
+    SCHMERZMITTEL("§cSchmerzmittel", Material.RED_DYE, false),
     DIAMOND("§bDiamant", Material.DIAMOND, false),
     PEARL("§bPerle", Material.GHAST_TEAR, false),
     SHELL("§eMuschel", Material.BIRCH_BUTTON, false),
