@@ -7,14 +7,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class KickCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+public class KickCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
 
     public KickCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("kick", this);
+        Main.addTabCompeter("kick", this);
     }
 
     @Override
@@ -41,5 +49,14 @@ public class KickCommand implements CommandExecutor {
         playerManager.kickPlayer(targetplayer, String.valueOf(message));
         Bukkit.broadcastMessage("§c" + playerData.getRang() + " " + player.getName() + " hat " + targetplayer.getName() + " gekickt. Grund: " + message);
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        if (args.length == 2) {
+            return Collections.singletonList("[<Grund>]");
+        }
+        return null;
     }
 }

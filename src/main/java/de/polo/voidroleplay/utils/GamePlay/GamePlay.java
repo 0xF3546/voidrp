@@ -131,7 +131,7 @@ public class GamePlay implements Listener {
         private void interactEvidence(Player player, RoleplayItem item) {
             PlayerData playerData = playerManager.getPlayerData(player);
 
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Assvervatenkammer (" + item.getDisplayName() + "§3)", true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3" + item.getDisplayName(), true, true);
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.RED_DYE, 1, 0, "§4Verbrennen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

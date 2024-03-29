@@ -52,6 +52,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
             return false;
         }
         if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
+            adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
             if (offlinePlayer.isOnline()) {
                 try {
                     factionManager.removePlayerFromFrak(offlinePlayer.getPlayer());
@@ -65,7 +66,6 @@ public class AdminUnInviteCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
             }
-            adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
             player.sendMessage(Main.admin_prefix + "Du hast " + offlinePlayer.getName() + " aus der Fraktion geworfen.");
             return true;
         }

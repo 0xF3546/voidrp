@@ -204,3 +204,4 @@ commands:
   gasstation:
     aliases: tankstelle
   resetbonusentry:
+  duty:

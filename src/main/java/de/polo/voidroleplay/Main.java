@@ -386,6 +386,7 @@ public final class Main extends JavaPlugin {
         public MuschelSammlerCommand muschelSammlerCommand;
         public GasStationCommand gasStationCommand;
         public ResetBonusEntryCommand resetBonusEntryCommand;
+        public DutyCommand dutyCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -529,6 +530,7 @@ public final class Main extends JavaPlugin {
             muschelSammlerCommand = new MuschelSammlerCommand(playerManager, locationManager);
             gasStationCommand = new GasStationCommand(playerManager, locationManager, companyManager);
             resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager, adminManager);
+            dutyCommand = new DutyCommand(playerManager, factionManager, locationManager);
 
             main.registerCommands();
             main.registerListener(this);

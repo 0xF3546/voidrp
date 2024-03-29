@@ -9,11 +9,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import java.util.*;
 
-public class FraktionsChatCommand implements CommandExecutor {
+public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
@@ -22,6 +25,7 @@ public class FraktionsChatCommand implements CommandExecutor {
         this.factionManager = factionManager;
         this.utils = utils;
         Main.registerCommand("fraktionschat", this);
+        Main.addTabCompeter("fraktionschat", this);
     }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -44,5 +48,11 @@ public class FraktionsChatCommand implements CommandExecutor {
             player.sendMessage(Main.error_nopermission);
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        return null;
     }
 }

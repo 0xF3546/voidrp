@@ -9,19 +9,26 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
-public class BanCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+public class BanCommand implements CommandExecutor, TabCompleter {
+    private final PlayerManager playerManager;
     public BanCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("ban", this);
+        Main.addTabCompeter("ban", this);
     }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -132,5 +139,20 @@ public class BanCommand implements CommandExecutor {
             throw new RuntimeException(e);
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        if (args.length == 1) {
+            return Arrays.asList("name", "uuid");
+        }
+        if (args.length == 3) {
+            return Collections.singletonList("[<Zeit>]");
+        }
+        if (args.length == 4) {
+            return Collections.singletonList("[<Grund>]");
+        }
+        return null;
     }
 }

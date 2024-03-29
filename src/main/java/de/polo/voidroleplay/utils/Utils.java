@@ -160,21 +160,10 @@ public class Utils {
         }
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        Team team = scoreboard.registerNewTeam("a");
-        Team team_offduty = scoreboard.registerNewTeam("b");
-        Team FBI = scoreboard.registerNewTeam("c");
-        Team Polizei = scoreboard.registerNewTeam("d");
-        Team Medics = scoreboard.registerNewTeam("e");
 
         static void updatePlayer(Player player) {
-            team.removeEntry(player.getName());
-            team_offduty.removeEntry(player.getName());
-            FBI.removeEntry(player.getName());
-            Polizei.removeEntry(player.getName());
-            Medics.removeEntry(player.getName());
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
             if (playerData.isAduty()) {
-                team.addEntry(player.getName());
                 return;
             }
             String suffix = "";
@@ -187,18 +176,14 @@ public class Utils {
             if (playerData.isDuty()) {
                 switch (playerData.getFaction().toLowerCase()) {
                     case "polizei":
-                        Polizei.addEntry(player.getName());
                         color = "§9";
                         break;
                     case "fbi":
-                        FBI.addEntry(player.getName());
                         color = "§1";
                     case "medic":
-                        Medics.addEntry(player.getName());
                         color = "§c";
                         break;
                     default:
-                        team_offduty.addEntry(player.getName());
                         break;
                 }
             }
@@ -208,58 +193,6 @@ public class Utils {
             player.setCustomNameVisible(true);
         }
     }
-
-    public void makeBlockGlow(Block block, Main plugin, int durationSeconds) {
-        // Ändere die Leuchtkraft des Blocks
-        block.getWorld().spawnFallingBlock(block.getLocation(), block.getBlockData()).setGlowing(true);
-
-        // Planen, die Leuchtkraft nach der angegebenen Zeit zurückzusetzen
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                // Setze die Leuchtkraft des Blocks zurück
-                block.getWorld().spawnFallingBlock(block.getLocation(), block.getBlockData()).setGlowing(false);
-            }
-        }.runTaskLater(plugin, durationSeconds * 20L); // Umrechnung von Sekunden in Tickzeit
-    }
-
-    /*public interface Skin {
-        static boolean saveOutfit(Player player, String name) {
-            PlayerProfile profile = player.getPlayerProfile();
-            try {
-                MySQL mySQL = Main.getInstance().mySQL;
-                Statement statement = Main.getInstance().mySQL.getStatement();
-                ResultSet res = statement.executeQuery("SELECT * FROM player_wardrobe WHERE uuid = '" + player.getUniqueId() + "' AND name = '" + name + "'");
-                if (res.next()) {
-                    return false;
-                }
-                String query = "INSERT INTO player_wardrobe (uuid, texture, name) VALUES (?, ?, ?)";
-                try (PreparedStatement preparedStatement = mySQL.getConnection().prepareStatement(query)) {
-                    preparedStatement.setString(1, player.getUniqueId().toString());
-                    preparedStatement.setString(2, profile.getTextures().toString());
-                    preparedStatement.setString(3, name);
-                    return true;
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        static boolean loadOutfit(Player player, String name) {
-            try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
-                ResultSet res = statement.executeQuery("SELECT * FROM player_wardrobe WHERE uuid = '" + player.getUniqueId() + "' and name = '" + name + "'");
-                if (!res.next()) {
-                    return false;
-                }
-                PlayerProfile profile = player.getPlayerProfile();
-                profile.setTextures(profile.getTextures());
-                return true;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }*/
 
     public static int roundUpToMultipleOfNine(int num) {
         return ((num + 8) / 9) * 9;

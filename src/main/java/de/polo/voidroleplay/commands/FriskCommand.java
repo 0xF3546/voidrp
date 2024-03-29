@@ -71,20 +71,24 @@ public class FriskCommand implements CommandExecutor {
     private void openFriskInventory(Player player, Player targetplayer) {
         List<ItemStack> items = new ArrayList<>();
         for (ItemStack stack : targetplayer.getInventory().getContents()) {
+            if (stack == null) continue;
             for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                if (weaponData.getMaterial() == null) continue;
                 if (weaponData.getMaterial().equals(stack.getType())) {
                     items.add(stack);
                 }
             }
-            //todo: check for roleplay items
             for (RoleplayItem item : RoleplayItem.values()) {
-                if (item.isFriskItem()) {
-                    items.add(stack);
+                if (item.getDisplayName().equalsIgnoreCase(stack.getItemMeta().getDisplayName()) && item.getMaterial().equals(stack.getType())) {
+                    if (item.isFriskItem()) {
+                        items.add(stack);
+                    }
                 }
             }
         }
 
         int iCount = Utils.roundUpToMultipleOfNine(items.size());
+        if (iCount == 0) iCount = 9;
 
         InventoryManager inventoryManager = new InventoryManager(player, iCount, "§8 » §b" + targetplayer.getName() + " (" + items.size() + " Gegenstände)", true, true);
         int i = 0;
@@ -92,27 +96,28 @@ public class FriskCommand implements CommandExecutor {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(stack.getType(), stack.getAmount(), 0, stack.getItemMeta().getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    targetplayer.sendMessage("§8 » §7" + factionManager.getTitle(player) + " "  + player.getName() + " hat dir " + stack.getItemMeta().getDisplayName() + " konfisziert.");
-                    player.sendMessage("§8 » §7Du hast " + targetplayer.getName() + " " + stack.getItemMeta().getDisplayName() + " konfisziert.");
+                    targetplayer.sendMessage("§8 » §7" + factionManager.getTitle(player) + " "  + player.getName() + " hat dir " + stack.getItemMeta().getDisplayName() + "§7 konfisziert.");
+                    player.sendMessage("§8 » §7Du hast " + targetplayer.getName() + " " + stack.getItemMeta().getDisplayName() + "§7 konfisziert.");
+                    boolean isWeapon = false;
                     for (WeaponData data : Weapons.weaponDataMap.values()) {
                         if (stack.getType().equals(data.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(data.getName())) {
                             weapons.removeWeapon(player, stack);
-                        } else {
-                            if (stack.getType().equals(RoleplayItem.JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.JOINT.getDisplayName())) {
-                                StaatUtil.Asservatemkammer.setJoints(StaatUtil.Asservatemkammer.getJoints() + stack.getAmount());
-                            }
-                            if (stack.getType().equals(RoleplayItem.COCAINE.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.COCAINE.getDisplayName())) {
-                                StaatUtil.Asservatemkammer.setCocaine(StaatUtil.Asservatemkammer.getCocaine() + stack.getAmount());
-                            }
-                            if (stack.getType().equals(RoleplayItem.MARIHUANA.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.MARIHUANA.getDisplayName())) {
-                                StaatUtil.Asservatemkammer.setWeed(StaatUtil.Asservatemkammer.getWeed() + stack.getAmount());
-                            }
-                            if (stack.getType().equals(RoleplayItem.NOBLE_JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.NOBLE_JOINT.getDisplayName())) {
-                                StaatUtil.Asservatemkammer.setNoble_joints(StaatUtil.Asservatemkammer.getNoble_joints() + stack.getAmount());
-                            }
-                            targetplayer.getInventory().remove(stack);
+                            isWeapon = true;
                         }
                     }
+                    if (stack.getType().equals(RoleplayItem.JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.JOINT.getDisplayName())) {
+                        StaatUtil.Asservatemkammer.setJoints(StaatUtil.Asservatemkammer.getJoints() + stack.getAmount());
+                    }
+                    if (stack.getType().equals(RoleplayItem.COCAINE.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.COCAINE.getDisplayName())) {
+                        StaatUtil.Asservatemkammer.setCocaine(StaatUtil.Asservatemkammer.getCocaine() + stack.getAmount());
+                    }
+                    if (stack.getType().equals(RoleplayItem.MARIHUANA.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.MARIHUANA.getDisplayName())) {
+                        StaatUtil.Asservatemkammer.setWeed(StaatUtil.Asservatemkammer.getWeed() + stack.getAmount());
+                    }
+                    if (stack.getType().equals(RoleplayItem.NOBLE_JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.NOBLE_JOINT.getDisplayName())) {
+                        StaatUtil.Asservatemkammer.setNoble_joints(StaatUtil.Asservatemkammer.getNoble_joints() + stack.getAmount());
+                    }
+                    targetplayer.getInventory().remove(stack);
                     openFriskInventory(player, targetplayer);
                     StaatUtil.Asservatemkammer.save();
                 }

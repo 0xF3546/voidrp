@@ -158,10 +158,10 @@ public class Weapons implements Listener {
 
     @SneakyThrows
     public void removeWeapon(Player player, ItemStack stack) {
+        player.getInventory().remove(stack);
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
         Weapon weapon = weaponList.get(id);
-        player.getInventory().remove(stack);
         removeWeapon(weapon);
     }
 
