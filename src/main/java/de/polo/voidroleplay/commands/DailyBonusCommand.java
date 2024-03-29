@@ -43,25 +43,11 @@ public class DailyBonusCommand implements CommandExecutor {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBonushändler", true, true);
 
         if (!playerData.hasReceivedBonus()) {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aRelease-Bonus erhalten", Arrays.asList("§8 ➥ §b3.000 EXP", "§8 ➥ §a12.500$", "§8 ➥ §f20g Kokain", "§8 ➥ §220 veredelte Joints", "§8 ➥ §e500 Coins"))) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aRelease-Bonus erhalten", Arrays.asList("§8 ➥ §b3.000 EXP", "§8 ➥ §a12.500$", "§8 ➥ §e500 Coins", "", "§8 ➥ §aKlicke um mehr auszuwählen"))) {
                 @SneakyThrows
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    player.closeInventory();
-                    playerData.setReceivedBonus(true);
-                    player.sendMessage("§8[§6Release§8]§a Du erhälst 3.000 EXP, 12.500$, 20g Kokain, 20g veredelte Joints und 500 Coins.");
-                    playerManager.addExp(player, 3000);
-                    playerData.addMoney(12500);
-                    ItemManager.addCustomItem(player, RoleplayItem.COCAINE, 20);
-                    ItemManager.addCustomItem(player, RoleplayItem.NOBLE_JOINT, 20);
-                    playerManager.addCoins(player, 500);
-                    playerManager.addExp(player, 3000);
-                    Connection connection = Main.getInstance().mySQL.getConnection();
-                    PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = true WHERE uuid = ?");
-                    statement.setString(1, player.getUniqueId().toString());
-                    statement.execute();
-                    statement.close();
-                    connection.close();
+                    openSelectDrug(player);
                 }
             });
         }
@@ -86,6 +72,54 @@ public class DailyBonusCommand implements CommandExecutor {
             }
         });
         return false;
+    }
+
+    @SneakyThrows
+    private void openSelectDrug(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Weitere Auswahl", true, true);
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.RED_DYE , 1, 0, "§c+40g Schmerzmittel")) {
+            @SneakyThrows
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                playerData.setReceivedBonus(true);
+                player.sendMessage("§8[§6Release§8]§a Du erhälst 3.000 EXP, 12.500$, 40g Schmerzmittel und 500 Coins.");
+                playerManager.addExp(player, 3000);
+                playerData.addMoney(12500);
+                ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 40);
+                playerManager.addCoins(player, 500);
+                playerManager.addExp(player, 3000);
+                Connection connection = Main.getInstance().mySQL.getConnection();
+                PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = true WHERE uuid = ?");
+                statement.setString(1, player.getUniqueId().toString());
+                statement.execute();
+                statement.close();
+                connection.close();
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE , 1, 0, "§f+20g Kokain §7&§2 +20 veredelte Joints")) {
+            @SneakyThrows
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                playerData.setReceivedBonus(true);
+                player.sendMessage("§8[§6Release§8]§a Du erhälst 3.000 EXP, 12.500$, 20g Kokain, 20g veredelte Joints und 500 Coins.");
+                playerManager.addExp(player, 3000);
+                playerData.addMoney(12500);
+                ItemManager.addCustomItem(player, RoleplayItem.COCAINE, 20);
+                ItemManager.addCustomItem(player, RoleplayItem.NOBLE_JOINT, 20);
+                playerManager.addCoins(player, 500);
+                playerManager.addExp(player, 3000);
+                Connection connection = Main.getInstance().mySQL.getConnection();
+                PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = true WHERE uuid = ?");
+                statement.setString(1, player.getUniqueId().toString());
+                statement.execute();
+                statement.close();
+                connection.close();
+            }
+        });
     }
 
     @SneakyThrows
