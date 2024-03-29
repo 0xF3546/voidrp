@@ -23,9 +23,13 @@ import java.util.List;
 public class FriskCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Weapons weapons;
+    private final FactionManager factionManager;
 
-    public FriskCommand(PlayerManager playerManager) {
+    public FriskCommand(PlayerManager playerManager, Weapons weapons, FactionManager factionManager) {
         this.playerManager = playerManager;
+        this.weapons = weapons;
+        this.factionManager = factionManager;
+
         Main.registerCommand("frisk", this);
     }
 
@@ -69,10 +73,15 @@ public class FriskCommand implements CommandExecutor {
         for (ItemStack stack : targetplayer.getInventory().getContents()) {
             for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
                 if (weaponData.getMaterial().equals(stack.getType())) {
-                    items.add(weaponData);
+                    items.add(stack);
                 }
             }
             //todo: check for roleplay items
+            for (RoleplayItem item : RoleplayItem.values()) {
+                if (item.isFriskItem()) {
+                    items.add(stack);
+                }
+            }
         }
 
         int iCount = Utils.roundUpToMultipleOfNine(items.size());
@@ -83,7 +92,7 @@ public class FriskCommand implements CommandExecutor {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(stack.getType(), stack.getAmount(), 0, stack.getItemMeta().getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    targetplayer.sendMessage("§8 » §7" + player.getName() + " hat dir " + stack.getItemMeta().getDisplayName() + " konfisziert.");
+                    targetplayer.sendMessage("§8 » §7" + factionManager.getTitle(player) + " "  + player.getName() + " hat dir " + stack.getItemMeta().getDisplayName() + " konfisziert.");
                     player.sendMessage("§8 » §7Du hast " + targetplayer.getName() + " " + stack.getItemMeta().getDisplayName() + " konfisziert.");
                     for (WeaponData data : Weapons.weaponDataMap.values()) {
                         if (stack.getType().equals(data.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(data.getName())) {
