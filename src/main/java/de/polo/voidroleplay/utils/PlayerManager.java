@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.Game.GangwarUtils;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.EXPType;
+import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.events.HourTickEvent;
 import de.polo.voidroleplay.utils.events.MinuteTickEvent;
 import de.polo.voidroleplay.utils.events.SubmitChatEvent;
@@ -129,7 +130,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 }
                 playerData.setNumber(result.getInt("number"));
                 playerData.setDuty(result.getBoolean("isDuty"));
-                playerData.setGender(result.getString("gender"));
+                playerData.setGender(Gender.valueOf(result.getString("gender")));
                 playerData.setBirthday(result.getDate("birthday"));
                 playerData.setId(result.getInt("id"));
                 playerData.setHouseSlot(result.getInt("houseSlot"));

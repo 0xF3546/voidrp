@@ -2,6 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Bukkit;
@@ -60,6 +61,10 @@ public class PlayerInteractWithPlayerListener implements Listener {
                                 itemStack.setAmount(1);
                                 player.getInventory().removeItem(itemStack);
                                 if (targetplayer.isOnline()) {
+                                    if (targetplayerData.getGender() == playerData.getGender()) {
+                                        player.sendMessage(Main.error + "Personen mit dem gleichen Geschlecht können nicht heiraten.");
+                                        return;
+                                    }
                                     player.sendMessage("§6Du und " + targetplayer.getName() + " sind jetzt verheiratet.");
                                     targetplayer.sendMessage("§6Du und " + player.getName() + " sind jetzt verheiratet.");
                                     Bukkit.broadcastMessage("§8[§6News§8]§e " + player.getName() + " & " + targetplayer.getName() + " sind jetzt Verheiratet. Herzlichen Glückwunsch!");
@@ -72,13 +77,20 @@ public class PlayerInteractWithPlayerListener implements Listener {
                                     hmap2.put(targetplayer.getUniqueId().toString(), "verheiratet");
                                     playerData.getRelationShip().clear();
                                     playerData.setRelationShip(hmap2);
+                                    if (playerData.getGender().equals(Gender.MALE)) {
+                                        targetplayerData.setLastname(playerData.getLastname());
+                                        targetplayer.sendMessage("§8 » §7Dein Nachname lautet nun \"" + playerData.getLastname() + "\".");
+                                    } else {
+                                        playerData.setLastname(targetplayerData.getLastname());
+                                        player.sendMessage("§8 » §7Dein Nachname lautet nun \"" + playerData.getLastname() + "\".");
+                                    }
                                     try {
                                         Statement statement = Main.getInstance().mySQL.getStatement();
                                         JSONObject object = new JSONObject(playerData.getRelationShip());
-                                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+                                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "', `lastname` = '" + playerData.getLastname() +  "' WHERE `uuid` = '" + player.getUniqueId() + "'");
 
                                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
-                                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "' WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
+                                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "', `lastname` = '" + targetplayerData.getLastname() + "'  WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
                                     } catch (SQLException e) {
                                         throw new RuntimeException(e);
                                     }

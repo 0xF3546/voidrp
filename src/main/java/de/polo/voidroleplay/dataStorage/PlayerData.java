@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import lombok.Getter;
 import lombok.Setter;
@@ -66,7 +67,7 @@ public class PlayerData {
     private int number;
     private boolean isFlightmode;
     private boolean isDuty;
-    private String gender;
+    private Gender gender;
     private Date birthday;
     private int houseSlot;
     private LocalDateTime rankDuration;
@@ -379,14 +380,6 @@ public class PlayerData {
 
     public void setDuty(boolean duty) {
         isDuty = duty;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
 
@@ -765,6 +758,14 @@ public class PlayerData {
 
     public void setStabilized(boolean stabilized) {
         isStabilized = stabilized;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public class AddonXP {

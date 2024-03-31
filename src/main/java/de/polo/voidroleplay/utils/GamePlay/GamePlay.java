@@ -76,7 +76,7 @@ public class GamePlay implements Listener {
                 player.addPotionEffect(effect);
             }
         }
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 0);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 1);
         ItemManager.removeCustomItem(player, drug.getItem(), 1);
         switch (drug) {
             case JOINT:
@@ -87,6 +87,12 @@ public class GamePlay implements Listener {
                 break;
             case ANTIBIOTIKUM:
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Antibiotikum");
+                break;
+            case SCHMERZMITTEL:
+                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Schmerzmittel");
+                break;
+            case ADRENALINE_INJECTION:
+                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " spritzt sich Adrenalin");
                 break;
         }
     }

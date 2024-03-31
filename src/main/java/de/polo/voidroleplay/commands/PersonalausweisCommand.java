@@ -47,7 +47,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             targetplayer.sendMessage(" ");
                             targetplayer.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
                             targetplayer.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
-                            targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
+                            targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation());
                             targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                             targetplayer.sendMessage(" ");
                             targetplayer.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));
@@ -84,7 +84,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
                 player.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
-                player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender());
+                player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));

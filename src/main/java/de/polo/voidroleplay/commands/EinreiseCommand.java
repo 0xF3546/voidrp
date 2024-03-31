@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.enums.Gender;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -82,10 +83,10 @@ public class EinreiseCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (event.getClick().isLeftClick()) {
-                    playerData.setVariable("einreise_gender", "Männlich");
+                    playerData.setVariable("einreise_gender", Gender.MALE);
                     openEinrese(player);
                 } else if (event.getClick().isRightClick()) {
-                    playerData.setVariable("einreise_gender", "Weiblich");
+                    playerData.setVariable("einreise_gender", Gender.FEMALE);
                     openEinrese(player);
                 }
             }
@@ -125,7 +126,7 @@ public class EinreiseCommand implements CommandExecutor {
                 java.util.Date utilDate = playerData.getBirthday();
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 statement.setDate(3, sqlDate);
-                statement.setString(4, playerData.getGender());
+                statement.setString(4, playerData.getGender().toString());
                 statement.setString(5, playerData.getUuid().toString());
                 statement.executeUpdate();
 

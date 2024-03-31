@@ -105,7 +105,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eVorname§8:§7 " + targetplayerData.getFirstname());
                 player.sendMessage("§8 ➥ §eNachname§8:§7 " + targetplayerData.getFirstname());
-                player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + targetplayerData.getGender());
+                player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + targetplayerData.getGender().getTranslation());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(targetplayerData));
@@ -211,7 +211,7 @@ public class PlayerSwapHandItemsListener implements Listener {
             bloodType = "Nicht gemessen";
         }
         if (playerData.getFirstname() != null) {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + playerData.getFirstname() + " " + playerData.getLastname(), Arrays.asList("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender(), "§8 ➥ §eFraktion§8:§7 " + faction, "§8 ➥ §eBlutgruppe§8:§7" + bloodType))) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + playerData.getFirstname() + " " + playerData.getLastname(), Arrays.asList("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation(), "§8 ➥ §eFraktion§8:§7 " + faction, "§8 ➥ §eBlutgruppe§8:§7" + bloodType))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
 

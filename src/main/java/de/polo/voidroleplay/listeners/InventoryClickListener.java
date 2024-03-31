@@ -4,6 +4,7 @@ import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.Server;
+import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.playerUtils.*;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -551,7 +552,7 @@ public class InventoryClickListener implements Listener {
                         return;
                     }
                     player.performCommand("personalausweis show " + targetplayer.getName());
-                    if (playerData.getGender().equals("Männlich")) {
+                    if (playerData.getGender().equals(Gender.MALE)) {
                         ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " seinen Personalausweis.");
                     } else {
                         ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " ihren Personalausweis.");

@@ -20,7 +20,7 @@ public class GMCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getPermlevel() < 100) {
+        if (!player.hasPermission("*")) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
