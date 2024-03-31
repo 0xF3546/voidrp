@@ -331,15 +331,13 @@ public class FactionManager {
 
     public void setDuty(Player player, boolean state) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionDataMap.get(playerData.getFaction());
         try {
+            playerData.setDuty(state);
             Statement statement = Main.getInstance().mySQL.getStatement();
             if (state) {
                 statement.executeUpdate("UPDATE `players` SET `isDuty` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
-                playerData.setDuty(true);
             } else {
                 statement.executeUpdate("UPDATE `players` SET `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
-                playerData.setDuty(false);
             }
             Utils.Tablist.updatePlayer(player);
 

@@ -80,11 +80,13 @@ public class DeathUtils {
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         player.setGameMode(GameMode.SURVIVAL);
+        playerData.setHitmanDead(false);
+        playerData.setStabilized(false);
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
-            statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `isDead` = false, isStabilized = false, isHitmanDead = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

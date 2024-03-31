@@ -77,6 +77,11 @@ public class WorldListener implements Listener {
                 event.setCancelled(true);
             }
         }
+        if (event.getClickedBlock().getType() == Material.HOPPER) {
+            if (!player.getGameMode().equals(GameMode.CREATIVE)) {
+                event.setCancelled(true);
+            }
+        }
     }
     @EventHandler
     public void onVehicleDamage(EntityDamageEvent event) {

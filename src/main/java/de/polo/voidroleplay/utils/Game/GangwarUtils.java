@@ -37,6 +37,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
+
     public GangwarUtils(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -87,8 +88,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                             player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
                         }
                     } else {
-                    player.sendMessage("§8[§cGangwar§8]§c Du bist in keinem Gangwar.");
-                }
+                        player.sendMessage("§8[§cGangwar§8]§c Du bist in keinem Gangwar.");
+                    }
                 } else {
                     player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
                 }
@@ -127,7 +128,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                             String date = gangwarData.getLastAttack().toLocalDateTime().format(formatter);
 
                             FactionData ownerData = factionManager.getFactionData(gangwarData.getOwner());
-                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen",Arrays.asList("§8 ➥ §6Besitzer§8:§e " + ownerData.getFullname(), "§8 ➥ §6Letzter Angriff§8:§e " + date))) {
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", Arrays.asList("§8 ➥ §6Besitzer§8:§e " + ownerData.getFullname(), "§8 ➥ §6Letzter Angriff§8:§e " + date))) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
 
@@ -242,52 +243,52 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         if ((LocalDateTime.now().getHour() >= 18 && LocalDateTime.now().getHour() <= 22) || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
             GangwarData gangwarData = gangwarDataMap.get(zone);
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-            if (factionData.canDoGangwar()) {
-                Timestamp timestamp = Timestamp.valueOf(gangwarData.getLastAttack().toLocalDateTime());
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                LocalDateTime twoDaysAfterTimestamp = timestamp.toLocalDateTime().plusDays(2);
-                boolean isTwoDaysAfter = currentDateTime.isAfter(twoDaysAfterTimestamp);
-                if (isTwoDaysAfter || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
-                    if (factionData.getCurrent_gangwar() == null) {
-                        if (!factionData.getName().equals(gangwarData.getOwner())) {
-                            FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
-                            if (defenderData.getCurrent_gangwar() == null) {
-                                player.closeInventory();
-                                for (Player players : Bukkit.getOnlinePlayers()) {
-                                    String playersFaction = playerManager.getPlayerData(players.getUniqueId()).getFaction();
-                                    if (playersFaction != null) {
-                                        if (playersFaction.equals(gangwarData.getOwner())) {
-                                            players.sendMessage("§8[§cGangwar§8]§c Euer Gebiet §l§n" + gangwarData.getZone() + "§c wird von §l" + factionData.getName() + "§c angegriffen!");
-                                        }
-                                        if (playersFaction.equals(factionData.getName())) {
-                                            players.sendMessage("§8[§cGangwar§8]§c Ihr greift das Gebiet §l§n" + gangwarData.getZone() + "§c von §l" + defenderData.getName() + "§c an!");
-                                        }
-                                    }
-                                }
-                                defenderData.setCurrent_gangwar(gangwarData.getZone());
-                                factionData.setCurrent_gangwar(gangwarData.getZone());
-                                gangwarData.setAttacker(factionData.getName());
-                                gangwarData.setAttackerPoints(0);
-                                gangwarData.setDefenderPoints(0);
-                                gangwarData.setMinutes(25);
-                                gangwarData.setSeconds(0);
-                                gangwarData.startGangwar();
-                                joinGangwar(player, gangwarData.getZone());
-                            } else {
-                                player.sendMessage(Main.error + "Diese Fraktion ist bereits im Gangwar.");
-                            }
-                        } else {
-                            player.sendMessage(Main.error + "Du kannst dein eigenes Gebiet nicht angreifen.");
-                        }
-                    } else {
-                        player.sendMessage(Main.error + "Deine Fraktion ist bereits im Gangwar.");
-                    }
-                } else {
-                    player.sendMessage(Main.error + "Dieses Gebiet kann noch nicht angegriffen werden.");
-                }
-            } else {
+            if (!factionData.canDoGangwar()) {
                 player.sendMessage(Main.error + "Deine Fraktion kann kein Gangwar-Gebiet angreifen.");
+                return;
             }
+            Timestamp timestamp = Timestamp.valueOf(gangwarData.getLastAttack().toLocalDateTime());
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime twoDaysAfterTimestamp = timestamp.toLocalDateTime().plusDays(2);
+            boolean isTwoDaysAfter = currentDateTime.isAfter(twoDaysAfterTimestamp);
+            if (!isTwoDaysAfter || (playerData.isAduty() && playerData.getPermlevel() < 80)) {
+                player.sendMessage(Main.error + "Dieses Gebiet kann noch nicht angegriffen werden.");
+                return;
+            }
+            if (factionData.getCurrent_gangwar() != null) {
+                player.sendMessage(Main.error + "Deine Fraktion ist bereits im Gangwar.");
+                return;
+            }
+            if (factionData.getName().equals(gangwarData.getOwner())) {
+                player.sendMessage(Main.error + "Du kannst dein eigenes Gebiet nicht angreifen.");
+                return;
+            }
+            FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
+            if (defenderData.getCurrent_gangwar() != null) {
+                player.sendMessage(Main.error + "Diese Fraktion ist bereits im Gangwar.");
+                return;
+            }
+            player.closeInventory();
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                String playersFaction = playerManager.getPlayerData(players.getUniqueId()).getFaction();
+                if (playersFaction == null) continue;
+                if (playersFaction.equals(gangwarData.getOwner())) {
+                    players.sendMessage("§8[§cGangwar§8]§c Euer Gebiet §l§n" + gangwarData.getZone() + "§c wird von §l" + factionData.getName() + "§c angegriffen!");
+                    continue;
+                }
+                if (playersFaction.equals(factionData.getName())) {
+                    players.sendMessage("§8[§cGangwar§8]§c Ihr greift das Gebiet §l§n" + gangwarData.getZone() + "§c von §l" + defenderData.getName() + "§c an!");
+                }
+            }
+            defenderData.setCurrent_gangwar(gangwarData.getZone());
+            factionData.setCurrent_gangwar(gangwarData.getZone());
+            gangwarData.setAttacker(factionData.getName());
+            gangwarData.setAttackerPoints(0);
+            gangwarData.setDefenderPoints(0);
+            gangwarData.setMinutes(25);
+            gangwarData.setSeconds(0);
+            gangwarData.startGangwar();
+            joinGangwar(player, gangwarData.getZone());
         } else {
             player.sendMessage(Main.error + "Gangwar ist nur von 18-22 Uhr verfügbar.");
         }
@@ -297,9 +298,6 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         GangwarData gangwarData = gangwarDataMap.get(zone);
         FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
         FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
-        gangwarData.setAttacker(null);
-        attackerData.setCurrent_gangwar(null);
-        defenderData.setCurrent_gangwar(null);
         if (gangwarData.getDefenderPoints() >= gangwarData.getAttackerPoints()) {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 String playersFaction = playerManager.getPlayerData(players.getUniqueId()).getFaction();
@@ -343,6 +341,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 throw new RuntimeException(e);
             }
         }
+        gangwarData.setAttacker(null);
+        attackerData.setCurrent_gangwar(null);
+        defenderData.setCurrent_gangwar(null);
         gangwarData.setLastAttack(new Timestamp(System.currentTimeMillis()));
     }
 

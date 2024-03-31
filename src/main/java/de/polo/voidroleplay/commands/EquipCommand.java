@@ -241,7 +241,27 @@ public class EquipCommand implements CommandExecutor, Listener {
                         factionData.removeFactionMoney(priceForFaction, "Munitionskauf " + player.getName());
                         factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
                         playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName()));
+                    }
+                });
+            }
+            if (playerData.getFactionGrade() >= 5 && playerData.getFaction().equalsIgnoreCase("FBI")) {
+                inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("adrenaline_injection") + "$"))) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        int priceForFaction = (int) (ServerManager.getPayout("adrenaline_injection"));
+                        if (factionData.getBank() < priceForFaction) {
+                            player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        factionData.removeFactionMoney(priceForFaction, "Item-Kauf " + player.getName());
+                        factionData.addBankMoney(sturmgewehrPrice, "Item-Kauf " + player.getName());
+                        playerData.removeBankMoney(sturmgewehrPrice, "Item-Kauf");
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName()));
                     }
                 });
             }

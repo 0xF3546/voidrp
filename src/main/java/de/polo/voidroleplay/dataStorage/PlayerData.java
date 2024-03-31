@@ -60,6 +60,8 @@ public class PlayerData {
     private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
     private final HashMap<String, BossBar> bossBars = new HashMap<>();
     private boolean isDead;
+    private boolean isStabilized;
+    private boolean isHitmanDead;
     private int deathTime;
     private int number;
     private boolean isFlightmode;
@@ -747,6 +749,22 @@ public class PlayerData {
 
     public void setReceivedBonus(boolean receivedBonus) {
         this.receivedBonus = receivedBonus;
+    }
+
+    public boolean isHitmanDead() {
+        return isHitmanDead;
+    }
+
+    public void setHitmanDead(boolean hitmanDead) {
+        isHitmanDead = hitmanDead;
+    }
+
+    public boolean isStabilized() {
+        return isStabilized;
+    }
+
+    public void setStabilized(boolean stabilized) {
+        isStabilized = stabilized;
     }
 
     public class AddonXP {

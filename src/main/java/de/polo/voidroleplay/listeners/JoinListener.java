@@ -45,7 +45,6 @@ public class JoinListener implements Listener {
             Utils.Tablist.setTablist(player, null);
             playerData.setUuid(player.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
-                utils.sendActionBar(player, "§aDeine Account-Daten wurden erfolgreich geladen!");
                 player.sendMessage("§8 ➥ §cEs sind " + SupportManager.playerTickets.size() + " Tickets offen.");
                 int teamCount = 0;
                 int deathCount = 0;
@@ -58,8 +57,6 @@ public class JoinListener implements Listener {
                         deathCount++;
                     }
                 }
-                player.sendMessage("§8 ➥ §cEs sind " + Bukkit.getOnlinePlayers().size() + " Spieler online §7(§c" + (teamCount - 1) + " weitere Teammitglieder§7)§c.");
-                player.sendMessage("§8     ➥ §cEs sind " + deathCount + " Spieler bewusstlos.");
             }
             Vehicles.spawnPlayerVehicles(player);
             serverManager.updateTablist(null);

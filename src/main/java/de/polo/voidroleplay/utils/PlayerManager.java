@@ -122,7 +122,11 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setExp(result.getInt("exp"));
                 playerData.setNeeded_exp(result.getInt("needed_exp"));
                 playerData.setDead(result.getBoolean("isDead"));
-                if (result.getBoolean("isDead")) playerData.setDeathTime(result.getInt("deathTime"));
+                if (result.getBoolean("isDead")) {
+                    playerData.setDeathTime(result.getInt("deathTime"));
+                    playerData.setHitmanDead(result.getBoolean("isHitmanDead"));
+                    playerData.setStabilized(result.getBoolean("isStabilized"));
+                }
                 playerData.setNumber(result.getInt("number"));
                 playerData.setDuty(result.getBoolean("isDuty"));
                 playerData.setGender(result.getString("gender"));
@@ -606,8 +610,16 @@ public class PlayerManager implements Listener, ServerTiming {
         player.sendMessage(" ");
         player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
-        player.sendMessage(" ");
+        List<GangwarData> gangZones = new ArrayList<>();
         for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+            if (gangwarData.getOwner().equals(factionData.getName())) {
+                gangZones.add(gangwarData);
+            }
+        }
+        if (gangZones.size() >= 1) {
+            player.sendMessage(" ");
+        }
+        for (GangwarData gangwarData : gangZones) {
             if (gangwarData.getOwner().equals(factionData.getName())) {
                 player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangwarData.getZone() + ")§8:§a +" + 150 + "$");
             }
@@ -861,6 +873,7 @@ public class PlayerManager implements Listener, ServerTiming {
     public Collection<PlayerData> getPlayers() {
         return playerDataMap.values();
     }
+
     public void addCoins(Player player, int amount) {
         PlayerData playerData = getPlayerData(player.getUniqueId());
         playerData.setCoins(playerData.getCoins() + amount);
@@ -872,6 +885,7 @@ public class PlayerManager implements Listener, ServerTiming {
             throw new RuntimeException(e);
         }
     }
+
     public void removeCoins(Player player, int amount) {
         PlayerData playerData = getPlayerData(player.getUniqueId());
         playerData.setCoins(playerData.getCoins() - amount);

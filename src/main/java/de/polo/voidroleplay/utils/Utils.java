@@ -163,10 +163,11 @@ public class Utils {
 
         static void updatePlayer(Player player) {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            if (playerData.isAduty()) {
-                return;
-            }
             String suffix = "";
+            String prefix = "";
+            if (player.getGameMode().equals(GameMode.CREATIVE)) {
+                prefix = "§8[§2GM§8]";
+            }
             if (playerData.getPermlevel() >= 40) {
                 suffix = "§c◉";
             } else if (playerData.getPermlevel() >= 10) {
@@ -180,16 +181,15 @@ public class Utils {
                         break;
                     case "fbi":
                         color = "§1";
+                        break;
                     case "medic":
                         color = "§c";
                         break;
-                    default:
-                        break;
                 }
             }
-            player.setDisplayName(color + player.getName());
-            player.setPlayerListName(color + player.getName() + " " + suffix);
-            player.setCustomName(color + player.getName());
+            player.setDisplayName(prefix + color + player.getName());
+            player.setPlayerListName(prefix + color + player.getName() + " " + suffix);
+            player.setCustomName(prefix + color + player.getName());
             player.setCustomNameVisible(true);
         }
     }

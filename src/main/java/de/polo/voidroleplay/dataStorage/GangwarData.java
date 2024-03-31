@@ -115,7 +115,7 @@ public class GangwarData {
                 }
                 captured.clear();
                 for (int i = 1; i <= 3; i++) {
-                    Location location = Main.getInstance().locationManager.getLocation("gangwar_capture_" + getZone().toLowerCase() + "-" + i);
+                    Location location = Main.getInstance().locationManager.getLocation("gangwar_capture_" + getZone().toLowerCase().replace(" ", "") + "-" + i);
                     if (location != null) {
                         Main.getInstance().utils.summonCircle(location, 2, Particle.REDSTONE);
 

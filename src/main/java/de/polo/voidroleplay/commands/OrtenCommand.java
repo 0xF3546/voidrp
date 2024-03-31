@@ -14,55 +14,64 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class OrtenCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public OrtenCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("orten", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFaction().equals("FBI")) {
-            if (playerData.getVariable("ortet") == null) {
-                if (args.length >= 1) {
-                    playerData.setIntVariable("ortet", Integer.parseInt(args[0]));
-                    playerData.setVariable("ortet", args[0]);
-                    utils.sendActionBar(player, "§9Orte Handy...");
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            PlayerData playerData1 = playerManager.getPlayerData(player.getUniqueId());
-                            if (playerData1.getVariable("ortet") != null) {
-                                for (Player players : Bukkit.getOnlinePlayers()) {
-                                    if (playerManager.getPlayerData(players.getUniqueId()).getNumber() == playerData1.getIntVariable("ortet")) {
-                                        if (!playerManager.getPlayerData(players.getUniqueId()).isFlightmode()) {
-                                            utils.navigation.createNaviByCord(player, (int) players.getLocation().getX(), (int) players.getLocation().getY(), (int) players.getLocation().getZ());
-                                            player.sendMessage("§8[§9Orten§8]§3 Navi geupdated.");
-                                        } else {
-                                            player.sendMessage("§8[§9Orten§8]§c Das Handy ist nicht mehr erreichbar.");
-                                            playerData.setVariable("ortet", null);
-                                            playerData.setIntVariable("ortet", null);
-                                            this.cancel();
-                                        }
-                                    }
-                                }
-                            } else {
-                                cancel();
-                            }
-                        }
-                    }.runTaskTimer(Main.getInstance(), 20*2, 20*60);
-                } else {
-                    player.sendMessage(Main.error + "Syntax-Fehler: /orten [Nummer]");
-                }
-            } else {
-                playerData.setVariable("ortet", null);
-                playerData.setIntVariable("ortet", null);
-                player.sendMessage("§8[§9Orten§8]§3 Du hast das Orten beendet.");
-            }
-        } else {
+        if (!playerData.getFaction().equals("FBI")) {
             player.sendMessage(Main.error_nopermission);
+            return false;
         }
+        if (playerData.getVariable("ortet") != null) {
+            playerData.setVariable("ortet", null);
+            playerData.setIntVariable("ortet", null);
+            player.sendMessage("§8[§9Orten§8]§3 Du hast das Orten beendet.");
+            return false;
+        }
+        if (args.length < 1) {
+            player.sendMessage(Main.error + "Syntax-Fehler: /orten [Spieler]");
+            return false;
+        }
+        if (player.getName().equalsIgnoreCase(args[0])) {
+            player.sendMessage(Main.error + "Du kannst dich selbst nicht Orten.");
+            return false;
+        }
+        Player targetplayer = Bukkit.getPlayer(args[0]);
+        if (targetplayer == null) {
+            player.sendMessage(Main.error + "Der Spieler wurde nicht gefunden.");
+            return false;
+        }
+        playerData.setVariable("ortet", targetplayer);
+        utils.sendActionBar(player, "§9Orte Handy...");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerData playerData1 = playerManager.getPlayerData(player.getUniqueId());
+                if (playerData1.getVariable("ortet") == null) {
+                    cancel();
+                    return;
+                }
+                if (!targetplayer.isOnline()) {
+                    player.sendMessage(Main.error + "Es konnte keine Verbindung zum Handy hergestellt werden.");
+                    return;
+                }
+                if (playerManager.getPlayerData(targetplayer.getUniqueId()).isFlightmode()) {
+                    player.sendMessage("§8[§9Orten§8]§c Das Handy ist nicht mehr erreichbar.");
+                    playerData.setVariable("ortet", null);
+                    playerData.setIntVariable("ortet", null);
+                    cancel();
+                    return;
+                }
+                utils.navigation.createNaviByCord(player, (int) targetplayer.getLocation().getX(), (int) targetplayer.getLocation().getY(), (int) targetplayer.getLocation().getZ());
+            }
+        }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
         return false;
     }
 }

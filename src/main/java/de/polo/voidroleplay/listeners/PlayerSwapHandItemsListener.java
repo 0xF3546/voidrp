@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.BlockIterator;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Arrays;
@@ -88,12 +91,12 @@ public class PlayerSwapHandItemsListener implements Listener {
         Player targetplayer = Bukkit.getPlayer(skullMeta.getOwningPlayer().getUniqueId());
         System.out.println(targetplayer.getName());
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-        if (targetplayerData.getVariable("gangwar") == null) return;
-        Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")");
+        if (targetplayerData.getVariable("gangwar") != null) return;
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")", true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§7Personalausweis nehmen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
                 Locale locale = new Locale("de", "DE");
                 DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
                 String formattedDate = dateFormat.format(targetplayerData.getBirthday());
@@ -128,13 +131,32 @@ public class PlayerSwapHandItemsListener implements Listener {
 
             }
         });
-        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cStabilisieren")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                player.sendMessage("§cDas Feature ist in Arbeit.");
-                player.closeInventory();
-            }
-        });
+        if (!targetplayerData.isStabilized()) {
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cStabilisieren")) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    targetplayerData.setStabilized(true);
+                    targetplayerData.setDeathTime(targetplayerData.getDeathTime() + 120);
+                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " stabilisiert " + targetplayer.getName());
+                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    PreparedStatement statement = connection.prepareStatement("UPDATE players SET isStabilized = true WHERE uuid = ?");
+                    statement.setString(1, targetplayer.getUniqueId().toString());
+                    statement.execute();
+                    statement.close();
+                    connection.close();
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c§mStabilisieren", "§8 ➥ §7Die Person ist bereits stabilisiert.")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.sendMessage("§cDas Feature ist in Arbeit.");
+                    player.closeInventory();
+                }
+            });
+        }
     }
 
     private void openBag(Player player) {

@@ -291,6 +291,12 @@ public class PlayerInteractListener implements Listener {
 
 
             if (event.getItem() == null) return;
+            for (Drug drug : Drug.values()) {
+                if (event.getItem().getType().equals(drug.getItem().getMaterial()) && event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(drug.getItem().getDisplayName())) {
+                    GamePlay.useDrug(player, drug);
+                    return;
+                }
+            }
             if (event.getItem().getItemMeta().getDisplayName().contains("Rubbellos")) {
                 Rubbellose rubbellose = new Rubbellose(Main.getInstance().playerManager);
                 rubbellose.startGame(player);
@@ -328,12 +334,6 @@ public class PlayerInteractListener implements Listener {
                         player.closeInventory();
                     }
                 });
-            } else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.COCAINE.getItem().getDisplayName())) {
-                GamePlay.useDrug(player, Drug.COCAINE);
-            } else if (event.getItem().getItemMeta().getDisplayName().equals(Drug.JOINT.getItem().getDisplayName())) {
-                GamePlay.useDrug(player, Drug.JOINT);
-            } else if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(Drug.ANTIBIOTIKUM.getItem().getDisplayName())) {
-                GamePlay.useDrug(player, Drug.ANTIBIOTIKUM);
             } else if (event.getItem().getItemMeta().getDisplayName().equals("§eMuschel")) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
                 inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel öffnen")) {
