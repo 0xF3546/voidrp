@@ -21,7 +21,9 @@ public enum RoleplayItem {
     PEARL("§bPerle", Material.GHAST_TEAR, false),
     SHELL("§eMuschel", Material.BIRCH_BUTTON, false),
     EXPLOSION_DEVICE("§cSprengsatz", Material.TNT, true),
-    TAZER("§bTazer", Material.GOLDEN_HOE, false);
+    TAZER("§bTazer", Material.GOLDEN_HOE, false),
+    CROWBAR("§cBrechstange", Material.BLAZE_ROD, true),
+    ADRENALINE_INJECTION("§fAdrenalin Spritze", Material.END_ROD, true);
 
     private final String displayName;
     private final Material material;

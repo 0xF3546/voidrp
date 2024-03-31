@@ -21,7 +21,7 @@ public class UseCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /use [Kokain/Joint]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /use [Kokain/Joint/Schmerzmittel/Spritze]");
             return false;
         }
         int cocaineCount = ItemManager.getCustomItemCount(player, RoleplayItem.COCAINE);
@@ -42,8 +42,22 @@ public class UseCommand implements CommandExecutor {
                     player.sendMessage(errorMsg);
                 }
                 break;
+            case "schmerzmittel":
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.SCHMERZMITTEL) >= 1) {
+                    GamePlay.useDrug(player, Drug.SCHMERZMITTEL);
+                } else {
+                    player.sendMessage(errorMsg);
+                }
+                break;
+            case "spritze":
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.ADRENALINE_INJECTION) >= 1) {
+                    GamePlay.useDrug(player, Drug.ADRENALINE_INJECTION);
+                } else {
+                    player.sendMessage(errorMsg);
+                }
+                break;
             default:
-                player.sendMessage(Main.error + "Syntax-Fehler: /use [Kokain/Joint]");
+                player.sendMessage(Main.error + "Syntax-Fehler: /use [Kokain/Joint/Schmerzmittel/Spritze]");
                 break;
         }
         return false;
