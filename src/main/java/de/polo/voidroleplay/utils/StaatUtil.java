@@ -132,8 +132,10 @@ public class StaatUtil {
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        player.sendMessage("§8[§6Anwalt§8]§7 Die Staatsanwaltschaft hat mich über eine neue Akte deinerseits Informiert.");
-        player.sendMessage("§8[§6Anwalt§8]§7 Tatvorwurf: " + akte);
+        if (playerData.hasAnwalt()) {
+            player.sendMessage("§8[§6Anwalt§8]§7 Die Staatsanwaltschaft hat mich über eine neue Akte deinerseits Informiert.");
+            player.sendMessage("§8[§6Anwalt§8]§7 Tatvorwurf: " + akte);
+        }
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {

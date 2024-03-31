@@ -122,6 +122,7 @@ public class GangwarData {
                         boolean locationCaptured = false;
 
                         for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+                            if (playerData.getVariable("gangwar") == null) continue;
                             Player player = Bukkit.getPlayer(playerData.getUuid());
 
                             if (player != null) {

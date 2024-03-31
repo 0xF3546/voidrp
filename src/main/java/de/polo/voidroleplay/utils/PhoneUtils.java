@@ -810,16 +810,30 @@ public class PhoneUtils implements Listener {
 
     public void openInternet(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §bInternet");
-        inv.setItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$")));
-        inv.setItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§6Anwalt", "§8 ➥ §7Anwalt anheuern (§c15-55$/PayDay§7)"));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §bInternet", true, true);
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bAnwalt", "§8 ➥ §7Anwalt anheuern (§c15-55$/PayDay§7)")) {
+            @SneakyThrows
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                Statement statement = Main.getInstance().mySQL.getStatement();
+                if (playerData.hasAnwalt()) {
+                    playerData.setHasAnwalt(false);
+                    player.closeInventory();
+                    player.sendMessage("§8[§6Anwalt§8]§7 Du hast deinen Anwalt §cabbestellt§7.");
+                    statement.execute("UPDATE players SET hasAnwalt = " + playerData.hasAnwalt() + " WHERE uuid = '" + player.getUniqueId() + "'");
+                } else {
+                    playerData.setHasAnwalt(true);
+                    player.closeInventory();
+                    player.sendMessage("§8[§6Anwalt§8]§7 Du hast deinen Anwalt §aeingestellt§7.");
+                    statement.execute("UPDATE players SET hasAnwalt = " + playerData.hasAnwalt() + " WHERE uuid = '" + player.getUniqueId() + "'");
+                }
             }
-        }
-        playerData.setVariable("current_app", "internet");
-        player.openInventory(inv);
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openInternet(player);
+            }
+        });
     }
 }

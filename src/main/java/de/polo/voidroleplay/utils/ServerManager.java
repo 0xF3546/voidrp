@@ -84,6 +84,7 @@ public class ServerManager {
         }
         statement.close();
     }
+
     private void loadDBPlayer() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM players");
@@ -108,6 +109,7 @@ public class ServerManager {
         }
         statement.close();
     }
+
     private void loadContracts() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM contract");
@@ -121,6 +123,7 @@ public class ServerManager {
         }
         statement.close();
     }
+
     private void loadShops() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM shops");
@@ -200,14 +203,7 @@ public class ServerManager {
                     PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
                     if (playerData.isDead()) {
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
-                        if (playerData.getVariable("gangwar") != null) {
-                            GangwarData gangwarData = GangwarUtils.gangwarDataMap.get(playerData.getVariable("gangwar"));
-                            FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
-                            FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
-                            utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot. §8[§" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints() + "§8]");
-                        } else {
-                            utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
-                        }
+                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
                         if (playerData.getDeathTime() <= 0) {
                             Main.getInstance().utils.deathUtil.despawnPlayer(players);
                         }
@@ -253,6 +249,7 @@ public class ServerManager {
         new BukkitRunnable() {
             int announceTick = 5;
             int announceType = 1;
+
             @Override
             public void run() {
                 //Bukkit.getServer().getWorlds().forEach(world -> world.setFullTime(LocalTime.now().toSecondOfDay()));
@@ -295,7 +292,7 @@ public class ServerManager {
                     announceTick--;
                 }
             }
-        }.runTaskTimer(Main.getInstance(), 20*2, 20*60);
+        }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
 
     public static int getPayout(String type) {

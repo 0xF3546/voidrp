@@ -128,7 +128,7 @@ public final class Main extends JavaPlugin {
         new InventoryClickListener(playerManager, factionManager, utils, locationManager);
         new HouseLockListener(playerManager, utils);
         new InventoryCloseListener(playerManager);
-        new ItemDropListener(weapons);
+        new ItemDropListener(weapons, playerManager);
         new PlayerPickUpArrowListener();
         new PlayerVoteListener(playerManager, adminManager);
         new RespawnListener(playerManager);

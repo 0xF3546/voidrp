@@ -78,7 +78,7 @@ public class ReviveCommand implements CommandExecutor {
                     @Override
                     public void run() {
                         if (skull.getLocation().distance(player.getLocation()) < 3) {
-                            utils.deathUtil.RevivePlayer(targetplayer);
+                            utils.deathUtil.revivePlayer(targetplayer);
                             targetplayer.teleport(player.getLocation());
                             playerManager.addExp(player, Main.random(2, 5));
                             targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");

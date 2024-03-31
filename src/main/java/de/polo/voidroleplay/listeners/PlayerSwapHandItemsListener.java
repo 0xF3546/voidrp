@@ -25,8 +25,10 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.BlockIterator;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 
 public class PlayerSwapHandItemsListener implements Listener {
     private final PlayerManager playerManager;
@@ -86,12 +88,24 @@ public class PlayerSwapHandItemsListener implements Listener {
         Player targetplayer = Bukkit.getPlayer(skullMeta.getOwningPlayer().getUniqueId());
         System.out.println(targetplayer.getName());
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+        if (targetplayerData.getVariable("gangwar") == null) return;
         Inventory inv = Bukkit.createInventory(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")");
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")", true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§7Personalausweis nehmen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                Locale locale = new Locale("de", "DE");
+                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
+                String formattedDate = dateFormat.format(targetplayerData.getBirthday());
+                targetplayer.sendMessage("§8 » §7Jemand hat deinen Ausweis genommen.");
+                player.sendMessage("§7     ===§8[§6PERSONALAUSWEIS§8]§7===");
+                player.sendMessage(" ");
+                player.sendMessage("§8 ➥ §eVorname§8:§7 " + targetplayerData.getFirstname());
+                player.sendMessage("§8 ➥ §eNachname§8:§7 " + targetplayerData.getFirstname());
+                player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + targetplayerData.getGender());
+                player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
+                player.sendMessage(" ");
+                player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(targetplayerData));
             }
         });
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", Arrays.asList("§8 ➥ §7" + utils.toDecimalFormat(targetplayerData.getBargeld()) + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"))) {

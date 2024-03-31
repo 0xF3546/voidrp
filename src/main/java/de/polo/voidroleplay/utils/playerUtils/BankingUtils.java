@@ -10,10 +10,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.events.SubmitChatEvent;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -140,6 +137,7 @@ public class BankingUtils implements Listener {
                             }
                             for (Player nearPlayer : Bukkit.getOnlinePlayers()) {
                                 if (nearPlayer.getLocation().distance(player.getLocation()) < 20) {
+                                    nearPlayer.spawnParticle(Particle.EXPLOSION_HUGE, player.getLocation(), 3);
                                     nearPlayer.playSound(nearPlayer.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
                                 }
                             }

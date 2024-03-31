@@ -26,14 +26,14 @@ public class AdminReviveCommand implements CommandExecutor {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
                 if (targetplayer != null) {
-                    utils.deathUtil.RevivePlayer(targetplayer);
+                    utils.deathUtil.revivePlayer(targetplayer);
                     player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 wiederbelebt.");
                     targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
                 } else {
                     player.sendMessage(Main.admin_error + "§c" + args[0] + "§7 ist nicht online.");
                 }
             } else {
-                utils.deathUtil.RevivePlayer(player);
+                utils.deathUtil.revivePlayer(player);
                 player.sendMessage(Main.admin_prefix + "Du hast dich wiederbelebt.");
             }
         } else {

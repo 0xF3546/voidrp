@@ -43,8 +43,8 @@ public class PayDayUtils {
             plus -= reichensteuer;
         }
         player.sendMessage("§8 ➥ §6Sozialbonus§8:§a +" + visumbonus + "$");
-        player.sendMessage(" ");
         if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
+            player.sendMessage(" ");
             frakpayday = factionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());
             if (factionManager.removeFactionMoney(playerData.getFaction(), frakpayday, "Gehalt " + player.getName())) {
                 player.sendMessage("§8 ➥ §6Gehalt [" + playerData.getFaction() + "]§8: §a+" + frakpayday + "$");

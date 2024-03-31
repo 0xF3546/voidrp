@@ -73,7 +73,7 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length == 3) {
             List<String> grades = new ArrayList<>();
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i <= 8; i++) {
                 grades.add(Integer.toString(i));
             }
             return grades;

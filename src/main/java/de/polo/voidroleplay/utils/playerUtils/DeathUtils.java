@@ -68,7 +68,7 @@ public class DeathUtils {
     public void killPlayer(Player player) {
         player.setHealth(0);
     }
-    public void RevivePlayer(Player player) {
+    public void revivePlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setCanInteract(false);
         playerData.setDead(false);

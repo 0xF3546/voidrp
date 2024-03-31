@@ -156,11 +156,15 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     }
 
     public void joinGangwar(Player player, String zone) {
-        GangwarData gangwarData = gangwarDataMap.get(zone);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.isDead()) {
+            player.sendMessage(Main.error + "Du kannst aktuell keinem Gangwar beitreten.");
+            return;
+        }
+        GangwarData gangwarData = gangwarDataMap.get(zone);
         playerData.setInventoryVariable("gangwar", player.getInventory());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        BossBar bossBar = Bukkit.createBossBar("Lade Gangwar...", BarColor.valueOf(factionData.getPrimaryColor()), BarStyle.SOLID);
+        BossBar bossBar = Bukkit.createBossBar("Lade Gangwar...", BarColor.RED, BarStyle.SOLID);
         playerData.setBossBar("gangwar", bossBar);
         player.getInventory().clear();
         playerData.setVariable("gangwar", zone);
@@ -182,6 +186,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     public void leaveGangwar(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.removeBossBar("gangwar");
+        Main.getInstance().utils.deathUtil.revivePlayer(player);
         if (playerData.getVariable("gangwar") != null) {
             locationManager.useLocation(player, playerData.getFaction());
             playerData.setVariable("gangwar", null);
@@ -247,6 +252,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         if (!factionData.getName().equals(gangwarData.getOwner())) {
                             FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
                             if (defenderData.getCurrent_gangwar() == null) {
+                                player.closeInventory();
                                 for (Player players : Bukkit.getOnlinePlayers()) {
                                     String playersFaction = playerManager.getPlayerData(players.getUniqueId()).getFaction();
                                     if (playersFaction != null) {
