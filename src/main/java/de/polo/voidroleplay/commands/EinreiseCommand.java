@@ -79,6 +79,8 @@ public class EinreiseCommand implements CommandExecutor {
                 player.closeInventory();
             }
         });
+        LocalDate einreiseDob = playerData.getVariable("einreise_dob");
+        Date einreiseDate = Date.from(einreiseDob.atStartOfDay(ZoneId.systemDefault()).toInstant());
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_gender"), Arrays.asList("§7 ➥ §8[§6Linksklick§8]§7 Männlich", "§7 ➥ §8[§6Rechtsklick§8]§7 Weiblich"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -91,10 +93,7 @@ public class EinreiseCommand implements CommandExecutor {
                 }
             }
         });
-        Locale locale = new Locale("de", "DE");
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
-        String formattedDate = dateFormat.format(playerData.getVariable("einreise_dob"));
-        inventoryManager.setItem(new CustomItem(5, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + formattedDate)) {
+        inventoryManager.setItem(new CustomItem(5, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_dob"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openDOBChanger(player);
@@ -126,7 +125,7 @@ public class EinreiseCommand implements CommandExecutor {
                 java.util.Date utilDate = playerData.getBirthday();
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 statement.setDate(3, sqlDate);
-                statement.setString(4, playerData.getGender().toString());
+                statement.setString(4, playerData.getGender().name());
                 statement.setString(5, playerData.getUuid().toString());
                 statement.executeUpdate();
 

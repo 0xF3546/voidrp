@@ -79,6 +79,15 @@ public class TabletUtils implements Listener {
             });
             i = i + 2;
         }
+        if (playerData.getFaction().equalsIgnoreCase("FBI")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.COMPASS, 1, 0, "§3Bürgerdatenbank")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openCitizienDatabase(player, 1, null);
+                }
+            });
+            i++;
+        }
         if (playerData.getCompany() != null) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.EMERALD, 1, 0, "§6Firma")) {
                 @Override
@@ -105,6 +114,68 @@ public class TabletUtils implements Listener {
             case "vehiclesapp":
                 openVehiclesApp(player, 1);
                 break;
+        }
+    }
+
+    private void openCitizienDatabase(Player player, int page, String search) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §3Bürgerdatenbank", true, true);
+        int i = 0;
+        int j = 0;
+        for (PlayerData playersData : playerManager.getPlayers()) {
+            if (i == 26 || i == 18 || i == 22) {
+                i++;
+            } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
+                if (playersData.getLastname() == null || playersData.getFirstname() == null) {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(playersData.getUuid().toString(), 1, 0, "§cZu dieser Person sind keine Daten bekannt")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
+                } else {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(playersData.getUuid().toString(), 1, 0, "§3" + playersData.getFirstname() + " " + playersData.getLastname())) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
+                }
+            }
+            i++;
+        }
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCitizienDatabase(player, page + 1, search);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCitizienDatabase(player, page - 1, search);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openTablet(player);
+            }
+        });
+        if (search == null) {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suchen...")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche leeren")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openCitizienDatabase(player, 1, null);
+                }
+            });
         }
     }
 
@@ -354,11 +425,8 @@ public class TabletUtils implements Listener {
     public void openJailApp(Player player, int page) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (!factionManager.faction(player).equals("FBI") || !factionManager.faction(player).equals("Polizei")) return;
-        playerData.setVariable("current_inventory", "tablet");
-        playerData.setVariable("current_app", "gefängnisapp");
-        playerData.setIntVariable("current_page", page);
-        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Gefängnis §8- §6Seite§8:§7 " + page);
+        if (!playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei")) return;
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §6Gefängnis §8- §6Seite§8:§7 " + page, true, true);
         int i = 0;
         int j = 0;
         for (JailData jailData : StaatUtil.jailDataMap.values()) {
@@ -367,16 +435,35 @@ public class TabletUtils implements Listener {
                 if (i == 26 && i == 18 && i == 22) {
                     i++;
                 } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
-                    inv.setItem(i, ItemManager.createItemHead(jailData.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName()));
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(jailData.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName())) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            editPlayerAkte(player, offlinePlayer.getUniqueId());
+                        }
+                    });
                     i++;
                 }
                 j++;
             }
         }
-        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
-        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
-        inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück"));
-        player.openInventory(inv);
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openJailApp(player, page + 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openJailApp(player, page - 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openTablet(player);
+            }
+        });
 
     }
 

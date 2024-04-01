@@ -130,7 +130,9 @@ public class PlayerManager implements Listener, ServerTiming {
                 }
                 playerData.setNumber(result.getInt("number"));
                 playerData.setDuty(result.getBoolean("isDuty"));
-                playerData.setGender(Gender.valueOf(result.getString("gender")));
+                if (result.getString("gender") != null) {
+                    playerData.setGender(Gender.valueOf(result.getString("gender")));
+                }
                 playerData.setBirthday(result.getDate("birthday"));
                 playerData.setId(result.getInt("id"));
                 playerData.setHouseSlot(result.getInt("houseSlot"));

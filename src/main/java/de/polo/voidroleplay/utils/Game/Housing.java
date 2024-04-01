@@ -89,9 +89,9 @@ public class Housing {
             }
         }
         if (returnVal == null) {
-            new StringBuilder("");
+            new StringBuilder();
         }
-        return returnVal.toString();
+        return Objects.requireNonNull(returnVal).toString();
     }
 
     public void updateRenter(int number) {
