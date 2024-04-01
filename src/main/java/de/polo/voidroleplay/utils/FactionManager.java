@@ -143,10 +143,7 @@ public class FactionManager {
                 dbPlayerData.setFaction(frak);
             }
         }
-        /*if (playerData.getTeamSpeakUID() != null) {
-            Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
-            TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
-        }*/
+        TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
     public void removePlayerFromFrak(Player player) throws SQLException {

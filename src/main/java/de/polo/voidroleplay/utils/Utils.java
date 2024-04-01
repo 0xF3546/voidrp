@@ -165,9 +165,12 @@ public class Utils {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
             String suffix = "";
             String prefix = "";
-            if (player.getGameMode().equals(GameMode.CREATIVE)) {
+            if (playerData.isAFK()) {
+                prefix = "§8[§5AFK§8]";
+            } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
                 prefix = "§8[§2GM§8]";
             }
+
             if (playerData.getPermlevel() >= 40) {
                 suffix = "§c◉";
             } else if (playerData.getPermlevel() >= 10) {
@@ -200,19 +203,17 @@ public class Utils {
 
     public void setAFK(Player player, boolean state) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        Tablist.updatePlayer(player);
         if (state) {
             player.sendMessage("§5Du bist nun abwesend.");
             playerData.setAFK(true);
             player.setCollidable(false);
-            if (playerData.isAduty()) return;
-            Tablist.setTablist(player, "§8[§5AFK§8]");
         } else {
             player.sendMessage("§5Du bist nicht mehr abwesend.");
             playerData.setAFK(false);
             playerData.setIntVariable("afk", 0);
             if (!playerData.isAduty()) {
                 player.setCollidable(true);
-                Tablist.setTablist(player, null);
             }
         }
     }

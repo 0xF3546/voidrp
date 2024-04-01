@@ -166,7 +166,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        TeamSpeak.getTeamSpeak().shutdown();
+        teamSpeak.shutdown();
         System.out.println("Disabling VoidRoleplay");
         isOnline = false;
         try {

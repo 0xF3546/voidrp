@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

@@ -240,6 +240,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         if (args.length >= 3) {
                             Location loc = new Location(player.getWorld(), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                             String type = args[5];
+                            Main.getInstance().utils.navigation.createNaviByCord(player, (int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
                             if (!type.equals("dep")) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
                                     PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
