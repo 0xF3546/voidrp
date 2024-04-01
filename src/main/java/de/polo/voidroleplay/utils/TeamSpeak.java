@@ -25,10 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -57,10 +54,14 @@ public class TeamSpeak implements CommandExecutor {
     public static void reloadPlayer(UUID uuid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(uuid);
         System.out.println("RELOADING " + uuid);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT teamSpeakUID FROM players WHERE uuid = ?");
+        statement.setString(1, uuid.toString());
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
 
-        if (playerData != null && playerData.getTeamSpeakUID() != null) {
             try {
-                String jsonInputString = "{\"uid\": \"" + playerData.getTeamSpeakUID() + "\"}";
+                String jsonInputString = "{\"uid\": \"" + result.getString("teamSpeakUID") + "\"}";
                 byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
@@ -96,7 +97,7 @@ public class TeamSpeak implements CommandExecutor {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
 
         try {
-            String jsonInputString = "{\"uid\": \"" + uid + "\", \"name\": \"" + player.getName() + "\"}";
+            String jsonInputString = "{\"uid\": \"" + uid + "\", \"name\": \"" + player.getName() + "\", \"uuid\": \"" + player.getUniqueId() + "\"}";
             byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 

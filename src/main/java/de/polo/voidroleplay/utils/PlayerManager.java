@@ -742,6 +742,7 @@ public class PlayerManager implements Listener, ServerTiming {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = localDateTime.format(formatter);
         statement.executeUpdate("UPDATE `players` SET `rankDuration` = '" + playerData.getRankDuration() + "', `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
     public void setJob(Player player, String job) {

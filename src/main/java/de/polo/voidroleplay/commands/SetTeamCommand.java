@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.ServerManager;
+import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,6 +49,7 @@ public class SetTeamCommand implements CommandExecutor {
                 }
                 playerManager.setRang(targetplayer.getUniqueId(), rank);
                 adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
+                TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }
