@@ -574,7 +574,7 @@ public class TabletUtils implements Listener {
                 openAssetApp(player, false);
             }
         });
-        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openTablet(player);

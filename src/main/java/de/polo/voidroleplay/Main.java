@@ -387,6 +387,7 @@ public final class Main extends JavaPlugin {
         public GasStationCommand gasStationCommand;
         public ResetBonusEntryCommand resetBonusEntryCommand;
         public DutyCommand dutyCommand;
+        public DeleteBrokenEntitiesCommand deleteBrokenEntitiesCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -531,6 +532,7 @@ public final class Main extends JavaPlugin {
             gasStationCommand = new GasStationCommand(playerManager, locationManager, companyManager);
             resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager, adminManager);
             dutyCommand = new DutyCommand(playerManager, factionManager, locationManager);
+            deleteBrokenEntitiesCommand = new DeleteBrokenEntitiesCommand();
 
             main.registerCommands();
             main.registerListener(this);

@@ -205,3 +205,5 @@ commands:
     aliases: tankstelle
   resetbonusentry:
   duty:
+    aliases: dienst
+  deletebrokenentities:
