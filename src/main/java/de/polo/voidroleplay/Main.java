@@ -388,6 +388,7 @@ public final class Main extends JavaPlugin {
         public ResetBonusEntryCommand resetBonusEntryCommand;
         public DutyCommand dutyCommand;
         public DeleteBrokenEntitiesCommand deleteBrokenEntitiesCommand;
+        public AdminGiveRankCommand adminGiveRankCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -533,6 +534,7 @@ public final class Main extends JavaPlugin {
             resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager, adminManager);
             dutyCommand = new DutyCommand(playerManager, factionManager, locationManager);
             deleteBrokenEntitiesCommand = new DeleteBrokenEntitiesCommand();
+            adminGiveRankCommand = new AdminGiveRankCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

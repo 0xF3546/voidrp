@@ -207,3 +207,5 @@ commands:
   duty:
     aliases: dienst
   deletebrokenentities:
+  admingiverank:
+    aliases: agiverank
