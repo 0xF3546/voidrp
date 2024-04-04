@@ -457,11 +457,7 @@ public class PlayerManager implements Listener, ServerTiming {
                         return;
                     }
                     Utils.Tablist.setTablist(player, null);
-                    if (playerData.getTeamSpeakUID() != null) {
-                        Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
-                        if (client == null) return;
-                        TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
-                    }
+                    TeamSpeak.reloadPlayer(player.getUniqueId());
                 }
             }
         } catch (SQLException e) {

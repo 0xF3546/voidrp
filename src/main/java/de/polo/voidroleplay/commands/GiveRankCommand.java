@@ -8,6 +8,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.ServerManager;
+import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -77,7 +78,15 @@ public class GiveRankCommand implements CommandExecutor {
         if (targetplayer.isOnline()) {
             Player target = Bukkit.getPlayer(args[0]);
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+            if (targetplayerData.getFactionGrade() >= 7) {
+                if (rang < 7) {
+                    TeamSpeak.reloadPlayer(targetplayerData.getUuid());
+                }
+            }
             targetplayerData.setFactionGrade(rang);
+            if (targetplayerData.getFactionGrade() >= 7) {
+                TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
+            }
             target.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 " + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat dir Rang " + rang + " gegeben!");
         }
         return false;

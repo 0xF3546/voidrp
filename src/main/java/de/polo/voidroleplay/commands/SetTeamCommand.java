@@ -49,7 +49,6 @@ public class SetTeamCommand implements CommandExecutor {
                 }
                 playerManager.setRang(targetplayer.getUniqueId(), rank);
                 adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
-                TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }
