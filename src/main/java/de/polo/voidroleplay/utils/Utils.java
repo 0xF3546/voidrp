@@ -203,7 +203,6 @@ public class Utils {
 
     public void setAFK(Player player, boolean state) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        Tablist.updatePlayer(player);
         if (state) {
             player.sendMessage("§5Du bist nun abwesend.");
             playerData.setAFK(true);
@@ -216,6 +215,7 @@ public class Utils {
                 player.setCollidable(true);
             }
         }
+        Tablist.updatePlayer(player);
     }
 
     public final Shop shop = new Shop();

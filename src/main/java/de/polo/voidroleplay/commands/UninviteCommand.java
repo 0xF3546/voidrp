@@ -55,7 +55,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
             if (offlinePlayer.getName() != null) {
                 if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
                     if (dbPlayerData.getFaction().equals(playerData.getFaction())) {
-                        if (dbPlayerData.getFaction_grade() < playerData.getFactionGrade()) {
+                        if (dbPlayerData.getFaction_grade() <= playerData.getFactionGrade()) {
                             adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
                             if (offlinePlayer.isOnline()) {
                                 try {

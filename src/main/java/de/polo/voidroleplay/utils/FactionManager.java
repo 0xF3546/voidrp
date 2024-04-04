@@ -176,10 +176,7 @@ public class FactionManager {
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
-        /*if (playerData.getTeamSpeakUID() != null) {
-            Client client = TeamSpeak.getTeamSpeak().getAPI().getClientByUId(playerData.getTeamSpeakUID());
-            TeamSpeak.getTeamSpeak().updateClientGroup(player, client);
-        }*/
+        TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
     public void removeOfflinePlayerFromFrak(OfflinePlayer player) throws SQLException {
@@ -188,28 +185,7 @@ public class FactionManager {
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-    }
-
-    public String faction_offlinePlayer(String playername) {
-        String val = null;
-        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-            if (player.getName().equalsIgnoreCase(playername)) {
-                val = dbPlayerData.getFaction();
-            }
-        }
-        return val;
-    }
-
-    public Integer faction_grade_offlinePlayer(String playername) {
-        int val = 0;
-        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-            if (player.getName().equalsIgnoreCase(playername)) {
-                val = dbPlayerData.getFaction_grade();
-            }
-        }
-        return val;
+        TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
     public String getFactionPrimaryColor(String faction) {
