@@ -2,13 +2,12 @@ package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class FactionManager {
@@ -16,6 +15,7 @@ public class FactionManager {
     private final Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
     private final Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
     private final PlayerManager playerManager;
+    public final SubGroups subGroups;
     public FactionManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
@@ -23,6 +23,7 @@ public class FactionManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        subGroups = new SubGroups(this);
     }
 
     public Collection<FactionData> getFactions() {
@@ -65,6 +66,7 @@ public class FactionManager {
             factionData.setHasLaboratory(locs.getBoolean("hasLaboratory"));
             factionData.setJointsMade(locs.getInt("jointsMade"));
             factionData.setLaboratory(locs.getInt("laboratory"));
+            factionData.setBadFrak(locs.getBoolean("isBadFrak"));
             factionData.storage.setJoint(locs.getInt("joint"));
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));

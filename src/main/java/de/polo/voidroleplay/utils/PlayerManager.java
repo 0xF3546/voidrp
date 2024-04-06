@@ -159,6 +159,8 @@ public class PlayerManager implements Listener, ServerTiming {
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
                 playerData.setAtmBlown(result.getInt("atmBlown"));
+                playerData.setSubGroupGrade(result.getInt("subGroup_grade"));
+                playerData.setSubGroupId(result.getInt("subGroup"));
 
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");

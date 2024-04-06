@@ -99,6 +99,8 @@ public class PlayerData {
     private int atmBlown;
 
     private boolean receivedBonus;
+    private int subGroupId;
+    private int subGroupGrade;
 
     public PlayerData() {
     }
@@ -650,7 +652,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -660,7 +662,9 @@ public class PlayerData {
         }
         statement.setInt(4, companyId);
         statement.setInt(5, getAtmBlown());
-        statement.setInt(6, getId());
+        statement.setInt(6, subGroupId);
+        statement.setInt(7, subGroupGrade);
+        statement.setInt(8, getId());
         statement.executeUpdate();
     }
 
@@ -766,6 +770,26 @@ public class PlayerData {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public int getSubGroupId() {
+        return subGroupId;
+    }
+
+    public void setSubGroupId(int subGroupId) {
+        this.subGroupId = subGroupId;
+    }
+
+    public int getSubGroupGrade() {
+        return subGroupGrade;
+    }
+
+    public void setSubGroupGrade(int subGroupGrade) {
+        this.subGroupGrade = subGroupGrade;
+    }
+
+    public SubGroup getSubGroup() {
+        return Main.getInstance().factionManager.subGroups.getSubGroup(subGroupId);
     }
 
     public class AddonXP {

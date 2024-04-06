@@ -209,3 +209,6 @@ commands:
   deletebrokenentities:
   admingiverank:
     aliases: agiverank
+  subgroup:
+  subgroupchat:
+    aliases: sc

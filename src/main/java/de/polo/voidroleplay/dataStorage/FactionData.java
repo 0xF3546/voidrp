@@ -3,6 +3,8 @@ package de.polo.voidroleplay.dataStorage;
 import de.polo.voidroleplay.Main;
 import lombok.SneakyThrows;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 
@@ -25,6 +27,8 @@ public class FactionData {
     private boolean hasLaboratory;
     private int jointsMade;
     private int laboratory;
+    private boolean isBadFrak;
+    private int subGroupId;
     public Storage storage = new Storage(this);
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
@@ -191,6 +195,37 @@ public class FactionData {
 
     public void setLaboratory(int laboratory) {
         this.laboratory = laboratory;
+    }
+
+    public boolean isBadFrak() {
+        return isBadFrak;
+    }
+
+    public void setBadFrak(boolean badFrak) {
+        isBadFrak = badFrak;
+    }
+
+    public int getSubGroupId() {
+        return subGroupId;
+    }
+
+    public void setSubGroupId(int subGroupId) {
+        this.subGroupId = subGroupId;
+    }
+
+    public SubGroup getSubGroup() {
+        return Main.getInstance().factionManager.subGroups.getSubGroup(subGroupId);
+    }
+
+    @SneakyThrows
+    public void save() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET subGroup = ? WHERE id = ?");
+        statement.setInt(1, subGroupId);
+        statement.setInt(2, id);
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 
     public class Storage {
