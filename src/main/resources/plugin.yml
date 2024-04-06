@@ -212,3 +212,4 @@ commands:
   subgroup:
   subgroupchat:
     aliases: sc
+  permban:

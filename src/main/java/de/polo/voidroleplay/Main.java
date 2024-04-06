@@ -391,6 +391,8 @@ public final class Main extends JavaPlugin {
         public AdminGiveRankCommand adminGiveRankCommand;
         public SubGroupCommand subGroupCommand;
         public SubGroupChatCommand subGroupChatCommand;
+        public PermbanCommand permbanCommand;
+        public FlyCommand flyCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -539,6 +541,8 @@ public final class Main extends JavaPlugin {
             adminGiveRankCommand = new AdminGiveRankCommand(playerManager);
             subGroupCommand = new SubGroupCommand(playerManager, factionManager, locationManager);
             subGroupChatCommand = new SubGroupChatCommand(playerManager, factionManager);
+            permbanCommand = new PermbanCommand(playerManager, adminManager);
+            flyCommand = new FlyCommand(playerManager, adminManager);
 
             main.registerCommands();
             main.registerListener(this);
