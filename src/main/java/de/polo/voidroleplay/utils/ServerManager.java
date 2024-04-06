@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class ServerManager {
@@ -235,9 +236,9 @@ public class ServerManager {
 
     private void setTablist(Player player) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        String loc = LocationManager.naviDataMap.get(locationManager.getNearestLocationId(player)).getName().substring(2);
-        player.setPlayerListHeader("\n§6§lVoidRoleplay §8- §cV1.0\n\n§7" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
-        player.setPlayerListFooter("§8__________________\n\n§6Nächster Ort§8:§7 " + loc + "\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n");
+        LocalDateTime time = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
+        player.setPlayerListHeader("\n§8▍ §6§lVoidRoleplay §8× §eReallife & Roleplay §8▍\n\n§7" + time.getHour() + ":" + time.getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
+        player.setPlayerListFooter("§8__________________\n\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n§8» §9discord.gg/voidrp §8«");
 
     }
 

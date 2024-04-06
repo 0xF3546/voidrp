@@ -48,8 +48,8 @@ public class FlyCommand implements CommandExecutor {
             target.sendMessage(Main.admin_prefix + player.getName() + " hat dir Fly entfernt.");
             adminManager.send_message(player.getName() + " hat " + target.getName() + " Fly entfernt.", null);
         } else {
-            target.setFlying(true);
             target.setAllowFlight(true);
+            target.setFlying(true);
             target.sendMessage(Main.admin_prefix + player.getName() + " hat dir Fly gegeben.");
             adminManager.send_message(player.getName() + " hat " + target.getName() + " Fly gegeben.", null);
         }
