@@ -33,6 +33,9 @@ public class StatsCommand implements CommandExecutor {
         }
         player.sendMessage(" §8- §eRang§8:§7 " + playerData.getRang());
         player.sendMessage(" §8- §eNummer§8:§7 " + playerData.getNumber());
+        if (playerData.getSubGroupId() != 0) {
+            player.sendMessage(" §8- §eGruppierung§8:§7 " + playerData.getSubGroup().getName());
+        }
         return false;
     }
 }

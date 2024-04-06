@@ -25,12 +25,12 @@ public class AssistentchatCommand implements CommandExecutor {
         Player player = (Player) sender;
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getPermlevel() < 400) {
+        if (playerData.getPermlevel() < 40) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.admin_error + "Syntax-Error: /assistentchat [Nachricht]");
+            player.sendMessage(Main.admin_error + "Syntax-Error: /guidechat [Nachricht]");
             return false;
         }
 

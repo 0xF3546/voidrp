@@ -44,6 +44,24 @@ public class InventoryManager {
         player.openInventory(inv);
     }
 
+    public InventoryManager(Player player, int size, String name) {
+        this.size = size;
+        this.name = name;
+        this.uuid = player.getUniqueId();
+        this.canceled = true;
+        this.fillRest = true;
+        this.inv = Bukkit.createInventory(null, size, name);
+        InventoryApiRegister.getCustomInventoryCache().addInventory(player, this);
+        if (this.fillRest) {
+            for (int i = 0; i < this.size; i++) {
+                if (inv.getItem(i) == null) {
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
+                }
+            }
+        }
+        player.openInventory(inv);
+    }
+
     /**
      * Returns the player who has the {@link Inventory}.
      *

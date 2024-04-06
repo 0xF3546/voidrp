@@ -81,7 +81,7 @@ public class Utils {
         return null;
     }
 
-    public String stringArrayToString(String[] args) {
+    public static String stringArrayToString(String[] args) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < args.length; i++) {
             stringBuilder.append(args[i]);

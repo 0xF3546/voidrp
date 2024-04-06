@@ -25,7 +25,7 @@ public final class Main extends JavaPlugin {
     public boolean isOnline = false;
 
     public static Plugin plugin = null;
-    public static final String prefix = "§8[§6Void§8] §7";
+    public static final String prefix = "§8 » §7";
     public static final String infoPrefix = "§b    Info§f: ";
     public static final String admin_prefix = "§8[§cAdmin§8] §7";
     public static final String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
@@ -389,6 +389,8 @@ public final class Main extends JavaPlugin {
         public DutyCommand dutyCommand;
         public DeleteBrokenEntitiesCommand deleteBrokenEntitiesCommand;
         public AdminGiveRankCommand adminGiveRankCommand;
+        public SubGroupCommand subGroupCommand;
+        public SubGroupChatCommand subGroupChatCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -535,6 +537,8 @@ public final class Main extends JavaPlugin {
             dutyCommand = new DutyCommand(playerManager, factionManager, locationManager);
             deleteBrokenEntitiesCommand = new DeleteBrokenEntitiesCommand();
             adminGiveRankCommand = new AdminGiveRankCommand(playerManager);
+            subGroupCommand = new SubGroupCommand(playerManager, factionManager, locationManager);
+            subGroupChatCommand = new SubGroupChatCommand(playerManager, factionManager);
 
             main.registerCommands();
             main.registerListener(this);
