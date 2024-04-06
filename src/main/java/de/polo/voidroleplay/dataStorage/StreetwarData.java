@@ -1,5 +1,10 @@
 package de.polo.voidroleplay.dataStorage;
 
+import de.polo.voidroleplay.Main;
+import lombok.SneakyThrows;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 
 public class StreetwarData {
@@ -56,5 +61,19 @@ public class StreetwarData {
 
     public void setStarted(LocalDateTime started) {
         this.started = started;
+    }
+
+    @SneakyThrows
+    public void save() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE streetwar SET attacker = ?, defender = ?, attacker_points = ?, defender_points = ? WHERE id = ?");
+        statement.setString(1, attacker);
+        statement.setString(2, defender);
+        statement.setInt(3, attacker_points);
+        statement.setInt(4, defender_points);
+        statement.setInt(5, id);
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 }

@@ -31,6 +31,7 @@ public class Streetwar implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public Streetwar(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -46,6 +47,7 @@ public class Streetwar implements CommandExecutor {
         ResultSet res = statement.executeQuery("SELECT * FROM streetwar");
         while (res.next()) {
             StreetwarData streetwarData = new StreetwarData();
+            streetwarData.setId(res.getInt("id"));
             streetwarData.setAttacker(res.getString("attacker"));
             streetwarData.setDefender(res.getString("defender"));
             streetwarData.setAttacker_points(res.getInt("attacker_points"));
@@ -59,20 +61,29 @@ public class Streetwar implements CommandExecutor {
         for (StreetwarData streetwarData : streetwarDataMap.values()) {
             if (streetwarData.getAttacker().equalsIgnoreCase(faction)) {
                 streetwarData.setAttacker_points(streetwarData.getAttacker_points() + points);
-                factionManager.sendCustomMessageToFaction(streetwarData.getAttacker(), "§8[§6Streetwar§8]§e +" + points + " Punkte §8→§e" + reason + "§8[§e" + streetwarData.getAttacker_points() + "§7/§6450§8]");
+                factionManager.sendCustomMessageToFaction(streetwarData.getAttacker(), "§8[§6Streetwar§8]§e +" + points + " Punkte §8→ §e" + reason + "§8[§e" + streetwarData.getAttacker_points() + "§7/§6450§8]");
             }
             if (streetwarData.getDefender().equalsIgnoreCase(faction)) {
                 streetwarData.setDefender_points(streetwarData.getDefender_points() + points);
-                factionManager.sendCustomMessageToFaction(streetwarData.getDefender(), "§8[§6Streetwar§8]§e +" + points + " Punkte §8→§e" + reason + "§8[§e" + streetwarData.getDefender_points() + "§7/§6450§8]");
+                factionManager.sendCustomMessageToFaction(streetwarData.getDefender(), "§8[§6Streetwar§8]§e +" + points + " Punkte §8→ §e" + reason + "§8[§e" + streetwarData.getDefender_points() + "§7/§6450§8]");
             }
             if (streetwarData.getAttacker_points() >= 450 || streetwarData.getDefender_points() >= 450) {
                 endStreetwar(streetwarData.getId());
+            } else {
+                streetwarData.save();
             }
         }
     }
 
+    @SneakyThrows
     public void endStreetwar(int id) {
-        StreetwarData streetwarData = streetwarDataMap.get(id);
+        StreetwarData streetwarData = null;
+        for (StreetwarData sd : streetwarDataMap.values()) {
+            if (sd.getId() == id) {
+                streetwarData = sd;
+            }
+        }
+        if (streetwarData == null) return;
         String winner = null;
         Bukkit.broadcastMessage("");
         if (streetwarData.getDefender_points() >= 450) {
@@ -87,13 +98,9 @@ public class Streetwar implements CommandExecutor {
             Bukkit.broadcastMessage("§8[§6§lSTREETWAR§8]§e Die Fraktion §6" + loserFaction.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + factionData.getFullname() + "§e mit §6" + streetwarData.getAttacker_points() + " zu " + streetwarData.getDefender_points() + "§e gewonnen!");
         }
         Bukkit.broadcastMessage("");
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("DELETE FROM streetwar WHERE id = " + streetwarData.getId());
-            streetwarDataMap.remove(streetwarData.getId());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.execute("DELETE FROM streetwar WHERE id = " + id);
+        streetwarDataMap.remove(id);
     }
 
     public void acceptStreetwar(Player player, String attackerFaction) {
@@ -104,9 +111,10 @@ public class Streetwar implements CommandExecutor {
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§a Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag angenommen.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§a " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " angenommen.");
         String query = "INSERT INTO streetwar (attacker, defender) VALUES (?, ?)";
-        try (PreparedStatement statement = mySQL.getConnection().prepareStatement(query)) {
+        try (PreparedStatement statement = mySQL.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, attackerData.getName());
             statement.setString(2, factionData.getName());
+            statement.execute();
 
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -127,13 +135,14 @@ public class Streetwar implements CommandExecutor {
         Bukkit.broadcastMessage("");
     }
 
-    public  void denyStreetwar(Player player, String attackerFaction) {
+    public void denyStreetwar(Player player, String attackerFaction) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         FactionData attackerData = factionManager.getFactionData(attackerFaction);
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§c Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag abgelehnt.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§c " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " abgelehnt.");
     }
+
     public static boolean isInStreetwar(String faction) {
         for (StreetwarData streetwarData : streetwarDataMap.values()) {
             if (streetwarData.getAttacker().equalsIgnoreCase(faction) || streetwarData.getDefender().equalsIgnoreCase(faction)) {

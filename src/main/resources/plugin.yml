@@ -213,3 +213,4 @@ commands:
   subgroupchat:
     aliases: sc
   permban:
+  fly:

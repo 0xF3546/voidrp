@@ -169,6 +169,8 @@ public class Utils {
                 prefix = "§8[§5AFK§8]";
             } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
                 prefix = "§8[§2GM§8]";
+            } else if (player.getAllowFlight()) {
+                prefix = "§8[§5Fly§8]";
             }
 
             if (playerData.getPermlevel() >= 40) {
