@@ -31,7 +31,9 @@ public class Gangwar extends GangwarData {
             @Override
             public void run() {
                 if (getMinutes() <= 0 && getSeconds() <= 1) {
-                    Main.getInstance().utils.gangwarUtils.endGangwar(gangZone.getName());
+                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                        Main.getInstance().utils.gangwarUtils.endGangwar(gangZone.getName());
+                    });
                     cancel();
                 }
                 captured.clear();

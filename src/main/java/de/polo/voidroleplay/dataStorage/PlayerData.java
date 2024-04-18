@@ -271,6 +271,7 @@ public class PlayerData {
 
     public void removeBossBar(String identifier) {
         BossBar bb = getBossBar(identifier);
+        if (bb == null) return;
         bb.removeAll();
         bossBars.remove(identifier);
     }

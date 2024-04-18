@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -196,6 +197,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
 
     public void leaveGangwar(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.getFaction() == null) return;
         playerData.removeBossBar("gangwar");
         Main.getInstance().utils.deathUtil.revivePlayer(player);
         if (playerData.getVariable("gangwar") != null) {
@@ -298,7 +300,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             gangwar.setAttacker(factionData.getName());
             gangwar.setAttackerPoints(0);
             gangwar.setDefenderPoints(0);
-            gangwar.setMinutes(25);
+            gangwar.setMinutes(1);
             gangwar.setSeconds(0);
             gangwar.start();
             gangWars.add(gangwar);
@@ -322,7 +324,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         return null;
     }
 
-    public void endGangwar(String zone) {
+    public synchronized void endGangwar(String zone) {
         Gangwar gangwarData = getGangwarByZone(zone);
         FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
         FactionData defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
