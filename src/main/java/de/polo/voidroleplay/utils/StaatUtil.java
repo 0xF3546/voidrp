@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.JailData;
 import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.Game.EvidenceChamber;
+import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

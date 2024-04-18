@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.ShopItem;
+import de.polo.voidroleplay.game.base.shops.ShopItem;
 import org.bukkit.Material;
 
 import java.sql.ResultSet;

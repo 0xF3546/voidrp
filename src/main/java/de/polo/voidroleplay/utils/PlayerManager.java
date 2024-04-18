@@ -1,17 +1,19 @@
 package de.polo.voidroleplay.utils;
 
-import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
+import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.MySQL;
-import de.polo.voidroleplay.utils.Game.GangwarUtils;
+import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
+import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
+import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.Gender;
-import de.polo.voidroleplay.utils.events.HourTickEvent;
-import de.polo.voidroleplay.utils.events.MinuteTickEvent;
-import de.polo.voidroleplay.utils.events.SubmitChatEvent;
+import de.polo.voidroleplay.game.events.HourTickEvent;
+import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
 import org.bukkit.*;
@@ -28,7 +30,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -575,8 +576,8 @@ public class PlayerManager implements Listener, ServerTiming {
                         double plus = zinsen - steuern;
 
                         // Berechnung der Gebietseinnahmen
-                        for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
-                            if (gangwarData.getOwner().equals(factionData.getName())) {
+                        for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {
+                            if (gangwarData.getGangZone().getOwner().equals(factionData.getName())) {
                                 plus += 150;
                             }
                         }
@@ -611,18 +612,18 @@ public class PlayerManager implements Listener, ServerTiming {
         player.sendMessage(" ");
         player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
-        List<GangwarData> gangZones = new ArrayList<>();
-        for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
-            if (gangwarData.getOwner().equals(factionData.getName())) {
-                gangZones.add(gangwarData);
+        List<IGangzone> gangZones = new ArrayList<>();
+        for (IGangzone gangzone : Main.getInstance().utils.gangwarUtils.getGangzones()) {
+            if (gangzone.getOwner().equals(factionData.getName())) {
+                gangZones.add(gangzone);
             }
         }
         if (gangZones.size() >= 1) {
             player.sendMessage(" ");
         }
-        for (GangwarData gangwarData : gangZones) {
-            if (gangwarData.getOwner().equals(factionData.getName())) {
-                player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangwarData.getZone() + ")§8:§a +" + 150 + "$");
+        for (IGangzone gangzone : gangZones) {
+            if (gangzone.getOwner().equals(factionData.getName())) {
+                player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangzone.getName() + ")§8:§a +" + 150 + "$");
             }
         }
         if (factionData.hasLaboratory()) {

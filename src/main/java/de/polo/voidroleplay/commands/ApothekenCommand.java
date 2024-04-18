@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.Apotheke;
+import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;

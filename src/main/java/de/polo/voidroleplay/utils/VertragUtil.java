@@ -1,11 +1,11 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.dataStorage.Company;
-import de.polo.voidroleplay.dataStorage.HouseData;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.utils.Game.Housing;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -99,7 +99,7 @@ public class VertragUtil {
                     String[] args = curr.toString().split("_");
                     int haus = Integer.parseInt(args[0]);
                     int preis = Integer.parseInt(args[1]);
-                    HouseData houseData = Housing.houseDataMap.get(haus);
+                    House houseData = Housing.houseDataMap.get(haus);
                     houseData.addRenter(player.getUniqueId().toString(), preis);
                     Main.getInstance().utils.housing.updateRenter(haus);
                     Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
@@ -219,7 +219,7 @@ public class VertragUtil {
                     String[] args = curr.split("_");
                     Integer haus = Integer.valueOf(args[0]);
                     Integer preis = Integer.valueOf(args[1]);
-                    HouseData houseData = Housing.houseDataMap.get(haus);
+                    House houseData = Housing.houseDataMap.get(haus);
                     Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
                     player1.sendMessage("§8[§6Haus§8]§a " + player.getName() + " hat den Mietvertrag für Haus " + houseData.getNumber() + " abgelehnt.");
                     player.sendMessage("§8[§6Haus§8]§c Du hast den Mietvertrag abgelehnt.");

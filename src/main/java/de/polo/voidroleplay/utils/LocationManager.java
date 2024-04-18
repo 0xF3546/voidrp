@@ -3,6 +3,7 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.base.shops.ShopData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;

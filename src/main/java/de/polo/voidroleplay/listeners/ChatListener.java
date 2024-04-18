@@ -6,7 +6,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.events.SubmitChatEvent;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.SupportManager;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;

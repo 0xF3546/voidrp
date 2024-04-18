@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.HouseData;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.Game.Housing;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -24,7 +24,7 @@ public class UnrentCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length >= 2) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
-            HouseData houseData = Housing.houseDataMap.get(Integer.parseInt(args[1]));
+            House houseData = Housing.houseDataMap.get(Integer.parseInt(args[1]));
             if (houseData != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                     if (houseData.getRenter().get(offlinePlayer.getUniqueId().toString()) != null) {

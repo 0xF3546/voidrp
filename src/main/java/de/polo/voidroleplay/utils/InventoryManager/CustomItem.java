@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.utils.InventoryManager;
 
-import de.polo.voidroleplay.utils.events.SubmitChatEvent;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;

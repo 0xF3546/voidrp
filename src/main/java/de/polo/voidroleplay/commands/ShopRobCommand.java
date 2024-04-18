@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.ShopData;
+import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.playerUtils.Progress;
 import de.polo.voidroleplay.utils.FactionManager;

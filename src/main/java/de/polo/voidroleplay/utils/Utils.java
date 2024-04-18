@@ -1,18 +1,14 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.CompanyRole;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
-import de.polo.voidroleplay.utils.Game.GangwarUtils;
-import de.polo.voidroleplay.utils.Game.Housing;
+import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.utils.playerUtils.*;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.sql.*;

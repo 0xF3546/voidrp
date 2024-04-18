@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.HouseData;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
@@ -42,7 +42,7 @@ public class ChangeSpawnCommand implements CommandExecutor {
                 player.sendMessage("§aDu hast deinen Spawn auf Krankenhaus geändert.");
             }
         });
-        List<HouseData> access = utils.housing.getAccessedHousing(player);
+        List<House> access = utils.housing.getAccessedHousing(player);
         if (playerData.getFaction() != null) {
             inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§bFraktion")) {
                 @Override
@@ -52,7 +52,7 @@ public class ChangeSpawnCommand implements CommandExecutor {
                 }
             });
             int i = 2;
-            for (HouseData houseData : access) {
+            for (House houseData : access) {
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§aHaus " + houseData.getNumber())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -64,7 +64,7 @@ public class ChangeSpawnCommand implements CommandExecutor {
             }
         } else {
             int i = 1;
-            for (HouseData houseData : access) {
+            for (House houseData : access) {
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§aHaus " + houseData.getNumber())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {

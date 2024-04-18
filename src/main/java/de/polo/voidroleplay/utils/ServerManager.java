@@ -2,7 +2,10 @@ package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.Game.GangwarUtils;
+import de.polo.voidroleplay.game.base.shops.ShopData;
+import de.polo.voidroleplay.game.base.shops.ShopItem;
+import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
+import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -184,16 +187,16 @@ public class ServerManager {
                     return;
                 }
                 if (utils.getCurrentHour() >= 0 && utils.getCurrentHour() < 22) {
-                    for (GangwarData gangwarData : GangwarUtils.gangwarDataMap.values()) {
+                    for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {
                         if (gangwarData.getAttacker() != null) {
                             FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
-                            FactionData defenderData = factionManager.getFactionData(gangwarData.getOwner());
+                            FactionData defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
-                                if (playerData.getFaction().equals(gangwarData.getAttacker()) || playerData.getFaction().equals(gangwarData.getOwner())) {
+                                if (playerData.getFaction().equals(gangwarData.getAttacker()) || playerData.getFaction().equals(gangwarData.getGangZone().getOwner())) {
                                     if (playerData.getVariable("gangwar") != null) {
                                         BossBar bossBar = playerData.getBossBar("gangwar");
-                                        bossBar.setTitle("§5" + gangwarData.getZone() + "§8 | §5" + gangwarData.getMinutes() + "§8:§5" + gangwarData.getSeconds() + "§8 | §" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints());
+                                        bossBar.setTitle("§5" + gangwarData.getGangZone().getName() + "§8 | §5" + gangwarData.getMinutes() + "§8:§5" + gangwarData.getSeconds() + "§8 | §" + attackerData.getPrimaryColor() + gangwarData.getAttackerPoints() + "§8 - §" + defenderData.getPrimaryColor() + gangwarData.getDefenderPoints());
                                     }
                                 }
                             }

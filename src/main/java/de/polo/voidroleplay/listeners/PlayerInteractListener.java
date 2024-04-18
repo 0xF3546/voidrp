@@ -3,8 +3,9 @@ package de.polo.voidroleplay.listeners;
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.Game.Laboratory;
+import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.utils.GamePlay.Case;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
@@ -14,7 +15,7 @@ import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
-import de.polo.voidroleplay.utils.Game.Housing;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -178,7 +179,7 @@ public class PlayerInteractListener implements Listener {
                         PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
                         RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                         if (Objects.equals(block.getInfo(), "house")) {
-                            HouseData houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
+                            House houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
                             playerData.setIntVariable("current_house", houseData.getNumber());
                             InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
                             if (houseData.getOwner() != null) {
@@ -194,7 +195,7 @@ public class PlayerInteractListener implements Listener {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             if (utils.housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
-                                                HouseData houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                                                House houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
                                                 playerData.addMoney((int) (houseData.getPrice() * 0.8));
                                                 player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
                                                 player.closeInventory();

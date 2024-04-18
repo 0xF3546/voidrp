@@ -1,12 +1,12 @@
 package de.polo.voidroleplay.commands;
 
 import com.jeff_media.customblockdata.CustomBlockData;
-import de.polo.voidroleplay.dataStorage.HouseData;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.utils.BlockManager;
-import de.polo.voidroleplay.utils.Game.Housing;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -52,11 +52,11 @@ public class BuyHouseCommand implements CommandExecutor {
                             System.out.println(container.get(value, PersistentDataType.INTEGER));
                             RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(location);
                                 if (Integer.parseInt(args[0]) == Integer.parseInt(registeredBlock.getInfoValue())) {
-                                    HouseData houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
+                                    House houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
                                     if (houseData.getOwner() == null) {
                                         if (playerData.getBargeld() >= houseData.getPrice()) {
                                             int houes = 0;
-                                            for (HouseData houseData1 : Housing.houseDataMap.values()) {
+                                            for (House houseData1 : Housing.houseDataMap.values()) {
                                                 if (houseData1.getOwner() != null) {
                                                     if (houseData1.getOwner().equals(player.getUniqueId().toString())) {
                                                         houes++;

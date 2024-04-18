@@ -1,9 +1,9 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.HouseData;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.Game.Housing;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -33,7 +33,7 @@ public class MietersCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (args.length >= 1) {
-            HouseData houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
+            House houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
             if (houseData != null) {
                 if (utils.housing.canPlayerInteract(player, Integer.parseInt(args[0]))) {
                     player.sendMessage("§7   ===§8[§6Haus " + args[0] + "§8]§7===");

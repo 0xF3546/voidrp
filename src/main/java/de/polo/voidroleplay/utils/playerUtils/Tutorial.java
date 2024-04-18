@@ -2,7 +2,7 @@ package de.polo.voidroleplay.utils.playerUtils;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.events.NaviReachEvent;
+import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.utils.Navigation;
 import de.polo.voidroleplay.utils.PlayerManager;
 import net.md_5.bungee.api.chat.ClickEvent;

@@ -6,7 +6,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.utils.events.SubmitChatEvent;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -19,14 +19,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataType;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.*;
-
-import static sun.java2d.loops.SurfaceType.Custom;
 
 public class PhoneUtils implements Listener {
     private static final List<PhoneCall> phoneCalls = new ArrayList<>();

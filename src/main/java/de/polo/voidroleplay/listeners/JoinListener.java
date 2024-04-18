@@ -3,6 +3,7 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.Interfaces.PlayerJoin;
 import org.bukkit.Bukkit;
@@ -13,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
 public class JoinListener implements Listener {

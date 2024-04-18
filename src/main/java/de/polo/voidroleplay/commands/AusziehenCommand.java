@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.HouseData;
-import de.polo.voidroleplay.utils.Game.Housing;
+import de.polo.voidroleplay.game.base.housing.House;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,7 +29,7 @@ public class AusziehenCommand implements CommandExecutor {
         }
         try {
             int houseNumber = Integer.parseInt(args[0]);
-            HouseData houseData = Housing.houseDataMap.get(houseNumber);
+            House houseData = Housing.houseDataMap.get(houseNumber);
             if (houseData == null) {
                 player.sendMessage(Main.error + "Dieses Haus wurde nicht gefunden.");
                 return false;

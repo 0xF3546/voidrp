@@ -2,8 +2,9 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.shops.ShopData;
+import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.utils.enums.ShopType;
-import de.polo.voidroleplay.utils.playerUtils.Shop;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;

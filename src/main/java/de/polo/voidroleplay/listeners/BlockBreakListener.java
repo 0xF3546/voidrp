@@ -3,7 +3,7 @@ package de.polo.voidroleplay.listeners;
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.events.BreakPersistentBlockEvent;
+import de.polo.voidroleplay.game.events.BreakPersistentBlockEvent;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

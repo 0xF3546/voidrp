@@ -2,9 +2,11 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
+import de.polo.voidroleplay.game.faction.streetwar.StreetwarData;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.Game.GangwarUtils;
-import de.polo.voidroleplay.utils.Game.Streetwar;
+import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
+import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -95,7 +97,7 @@ public class DeathListener implements Listener {
                                 players.sendMessage("§8[§cGangwar§8]§7 +3 Punkte für das Töten eines Gegners (" + player.getKiller().getName() + "§8 » §7" + player.getName() + ").");
                             }
                         }
-                        GangwarData gangwarData = GangwarUtils.gangwarDataMap.get(playerData.getVariable("gangwar"));
+                        Gangwar gangwarData = Main.getInstance().utils.gangwarUtils.getGangwarByZone(playerData.getVariable("gangwar"));
                         if (!(playerData.getFaction().equals(killerData.getFaction()))) {
                             if (gangwarData.getAttacker().equals(killerData.getFaction())) {
                                 gangwarData.setAttackerPoints(gangwarData.getAttackerPoints() + 3);
