@@ -300,7 +300,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             gangwar.setAttacker(factionData.getName());
             gangwar.setAttackerPoints(0);
             gangwar.setDefenderPoints(0);
-            gangwar.setMinutes(1);
+            gangwar.setMinutes(25);
             gangwar.setSeconds(0);
             gangwar.start();
             gangWars.add(gangwar);
