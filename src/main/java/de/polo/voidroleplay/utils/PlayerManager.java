@@ -4,6 +4,8 @@ import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.base.housing.House;
+import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
@@ -18,6 +20,9 @@ import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
+import org.bukkit.block.TileState;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -111,6 +116,24 @@ public class PlayerManager implements Listener, ServerTiming {
 
             ResultSet result = statement.executeQuery(query);
             if (result.next()) {
+                if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
+                    List<Integer> houses = new ArrayList<>();
+                    for (House house : Housing.houseDataMap.values()) {
+                        if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
+                            houses.add(house.getId());
+                        }
+                    }
+                    for (int house : houses) {
+                        for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
+                            if (block.getInfo().equalsIgnoreCase("house") && Integer.parseInt(block.getInfoValue()) == house) {
+                                Block b = block.getLocation().getBlock();
+                                Sign sign = (Sign) b.getState();
+                                sign.setLine(2, "§0" + player.getName());
+                                sign.update();
+                            }
+                        }
+                    }
+                }
                 PlayerData playerData = new PlayerData(player);
                 playerData.setFirstname(result.getString("firstname"));
                 playerData.setLastname(result.getString("lastname"));

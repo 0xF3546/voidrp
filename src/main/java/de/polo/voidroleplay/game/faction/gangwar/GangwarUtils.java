@@ -23,17 +23,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
 public class GangwarUtils implements CommandExecutor, TabCompleter {
-    //public static final HashMap<String, Gangwar> gangwarDataMap = new HashMap<>();
     private final List<Gangwar> gangWars = new ArrayList<>();
     private final List<IGangzone> gangZones = new ArrayList<>();
 
@@ -344,8 +340,12 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 }
             }
             try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
-                statement.executeUpdate("UPDATE `gangwar` SET `lastAttack` = NOW() WHERE `zone` = '" + gangwarData.getGangZone().getName() + "'");
+                Connection connection = Main.getInstance().mySQL.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE gangwar SET lastAttack = NOW() WHERE zone = ?");
+                preparedStatement.setString(1, gangwarData.getGangZone().getName());
+                preparedStatement.execute();
+                preparedStatement.close();
+                connection.close();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -365,8 +365,13 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             }
             gangwarData.getGangZone().setOwner(attackerData.getName());
             try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
-                statement.executeUpdate("UPDATE `gangwar` SET `lastAttack` = NOW(), `owner` = '" + attackerData.getName() + "' WHERE `zone` = '" + gangwarData.getGangZone().getName() + "'");
+                Connection connection = Main.getInstance().mySQL.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE gangwar SET lastAttack = NOW(), owner = ? WHERE zone = ?");
+                preparedStatement.setString(1, attackerData.getName());
+                preparedStatement.setString(2, gangwarData.getGangZone().getName());
+                preparedStatement.execute();
+                preparedStatement.close();
+                connection.close();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
