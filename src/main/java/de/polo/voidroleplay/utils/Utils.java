@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Random;
 
 public class Utils {
     static int minutes = 1;
@@ -354,5 +355,16 @@ public class Utils {
             particleLoc.setZ(location.getZ() + Math.sin(d) * size);
             location.getWorld().spawnParticle(particle, particleLoc, 1, new Particle.DustOptions(Color.WHITE, 5));
         }
+    }
+
+    public static boolean isRandom(int chance) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(100);
+
+        return randomNumber < chance;
+    }
+
+    public static LocalDateTime getTime() {
+        return LocalDateTime.now(ZoneId.of("Berlin/Europe"));
     }
 }

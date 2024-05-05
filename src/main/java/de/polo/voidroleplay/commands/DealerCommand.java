@@ -10,6 +10,10 @@ import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -76,14 +80,20 @@ public class DealerCommand implements CommandExecutor {
                     return;
                 }
                 FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-                int amount = ServerManager.getPayout("box_dealer");
+                double amount = ServerManager.getPayout("box_dealer");
+                if (Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() < 22) {
+                    amount = amount * 0.08;
+                }
                 long percentage = Math.round(amount * 0.1);
                 factionData.addBankMoney((int) percentage, "Verkauf (Dealer - " + player.getName() + ")");
                 amount = amount - (int) percentage;
+                int cashOutAmount = (int) amount;
                 ItemManager.removeCustomItem(player, RoleplayItem.BOX_WITH_JOINTS, 1);
-                player.sendMessage("§8[§cDealer§8]§7 Aus dem Verkauf einer Box erhälst du §a" + amount + "$§7. Es gehen §a" + percentage + "$§7 an deine Fraktion.");
-                playerData.addMoney(amount);
+                player.sendMessage("§8[§cDealer§8]§7 Aus dem Verkauf einer Box erhälst du §a" + cashOutAmount + "$§7. Es gehen §a" + percentage + "$§7 an deine Fraktion.");
+                playerData.addMoney(cashOutAmount);
                 player.closeInventory();
+                dealer.setLocation(player.getLocation());
+                soldAtDealer(dealer);
             }
         });
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§6Ankauf")) {
@@ -132,5 +142,18 @@ public class DealerCommand implements CommandExecutor {
                 playerManager.addMoney(player, diamondPrice);
             }
         });
+    }
+
+    private void soldAtDealer(Dealer dealer) {
+        boolean isSnitch = Utils.isRandom(7);
+        if (!isSnitch) return;
+        TextComponent message = new TextComponent("§8[§cInformant§8]§7 Jemand hat mir hier gerade Drogen verkauft. §8[§7Klick§8]");
+        message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) dealer.getLocation().getX() + " " + (int) dealer.getLocation().getX() + " " + (int) dealer.getLocation().getX()));
+        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
+        for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction().equalsIgnoreCase("FBI")) {
+                playerData.getPlayer().spigot().sendMessage(message);
+            }
+        }
     }
 }
