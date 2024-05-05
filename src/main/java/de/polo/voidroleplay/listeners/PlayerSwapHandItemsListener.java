@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.LocationData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
@@ -83,6 +84,15 @@ public class PlayerSwapHandItemsListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_inventory", null);
         if (nearestSkull == null) {
+            for (LocationData locationData : Main.getInstance().locationManager.getLocations()) {
+                if (locationData.getType() == null) continue;
+                if (locationData.getInfo() == null) continue;
+                if (!locationData.getType().equalsIgnoreCase("storage")) {
+                    continue;
+                }
+                openFactionStorage(player);
+                return;
+            }
             openBag(player);
             return;
         }
@@ -152,11 +162,14 @@ public class PlayerSwapHandItemsListener implements Listener {
             inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c§mStabilisieren", "§8 ➥ §7Die Person ist bereits stabilisiert.")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    player.sendMessage("§cDas Feature ist in Arbeit.");
                     player.closeInventory();
                 }
             });
         }
+    }
+    private void openFactionStorage(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Fraktionslager");
     }
 
     private void openBag(Player player) {
