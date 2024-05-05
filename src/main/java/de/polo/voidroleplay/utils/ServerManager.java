@@ -11,9 +11,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -185,6 +183,24 @@ public class ServerManager {
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
                     return;
+                }
+                for (LocationData locationData : locationManager.getLocations()) {
+                    if (locationData.getType() == null) continue;
+                    if (locationData.getInfo() == null) continue;
+                    if (!locationData.getType().equalsIgnoreCase("storage")) {
+                        continue;
+                    }
+                    for (PlayerData playerData : playerManager.getPlayers()) {
+                        if (!playerData.getFaction().equalsIgnoreCase(locationData.getInfo())) {
+                            continue;
+                        }
+                        for (int d = 0; d <= 90; d += 1) {
+                            Location particleLoc = new Location(playerData.getPlayer().getWorld(), locationData.getX(), locationData.getY(), locationData.getZ());
+                            particleLoc.setX(locationData.getX() + Math.cos(d) * 1);
+                            particleLoc.setZ(locationData.getZ() + Math.sin(d) * 1);
+                            playerData.getPlayer().spawnParticle(Particle.REDSTONE, particleLoc, 1, new Particle.DustOptions(Color.WHITE, 2));
+                        }
+                    }
                 }
                 if (utils.getCurrentHour() >= 0 && utils.getCurrentHour() < 22) {
                     for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {

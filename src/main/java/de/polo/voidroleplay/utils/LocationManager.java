@@ -269,4 +269,8 @@ public class LocationManager {
         }
         return spot;
     }
+
+    public Collection<LocationData> getLocations() {
+        return locationDataMap.values();
+    }
 }
