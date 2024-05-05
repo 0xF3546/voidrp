@@ -34,6 +34,7 @@ public class ServerManager {
     public static final Map<String, ContractData> contractDataMap = new HashMap<>();
     public static final Map<Integer, ShopData> shopDataMap = new HashMap<>();
     public static final Map<String, String> serverVariables = new HashMap<>();
+    public static final List<UUID> factionStorageWeaponsTookout = new ArrayList<>();
 
     public static Object[][] faction_grades;
 

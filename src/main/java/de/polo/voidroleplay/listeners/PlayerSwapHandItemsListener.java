@@ -1,14 +1,13 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.LocationData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
+import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,9 +29,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Locale;
+import java.util.*;
 
 public class PlayerSwapHandItemsListener implements Listener {
     private final PlayerManager playerManager;
@@ -167,9 +164,71 @@ public class PlayerSwapHandItemsListener implements Listener {
             });
         }
     }
+
     private void openFactionStorage(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Fraktionslager");
+        boolean canTakeout = true;
+        for (UUID uuid : ServerManager.factionStorageWeaponsTookout) {
+            if (player.getUniqueId().equals(uuid)) canTakeout = false;
+        }
+        if (canTakeout) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§cTägliche Waffe nehmen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    player.sendMessage(Prefix.MAIN + "Du hast deine Tägliche Waffe entnommen");
+                    Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.NORMAL);
+                    ServerManager.factionStorageWeaponsTookout.add(player.getUniqueId());
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§c§mTägliche Waffe nehmen", "§8 ➥ §cDu hast deine Waffe bereits abgeholt")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                }
+            });
+        }
+        Gangwar gangwar = null;
+        for (Gangwar gw : Main.getInstance().utils.gangwarUtils.getGangwars()) {
+            if (gw.getAttacker().equals(playerData.getFaction()) || gw.getDefender().equals(playerData.getFaction()))
+                gangwar = gw;
+        }
+        if (gangwar != null) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6Gangwar betreten", Arrays.asList("§8 ➥ §eGebiet§8:§7 " + gangwar.getGangZone().getName(), "§8 ➥ §eZeit§8:§7 " + gangwar.getMinutes() + "m & " + gangwar.getSeconds() + "s verbleibend", "§8 ➥ §eAngreifer§8:§7 " + gangwar.getAttacker() + "(" + gangwar.getAttackerPoints() + ")", "§8 ➥ §eVerteitiger§8:§7 " + gangwar.getDefender() + "(" + gangwar.getDefenderPoints() + ")"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    GangwarUtils gangwarUtils = Main.getInstance().utils.gangwarUtils;
+                    FactionManager factionManager = Main.getInstance().factionManager;
+                    ;
+                    if (playerData.getFaction() == null || Objects.equals(playerData.getFaction(), "Zivilist")) {
+                        player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
+                        return;
+                    }
+                    if (playerData.getVariable("gangwar") != null) {
+                        player.sendMessage("§8[§cGangwar§8]§c Du bist bereits im Gangwar.");
+                        player.closeInventory();
+                        return;
+                    }
+                    FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                    if (factionData.getCurrent_gangwar() != null) {
+                        gangwarUtils.joinGangwar(player, factionData.getCurrent_gangwar());
+                        Gangwar gangwarData = gangwarUtils.getGangwarByZone(factionData.getCurrent_gangwar());
+                        player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar §c" + gangwarData.getGangZone().getName() + "§7 betreten.");
+                        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " ist dem Gangwar beigetreten.");
+                    } else {
+                        player.sendMessage("§8[§cGangwar§8]§c Deine Fraktion befindet sich aktuell in keinem Gangwar.");
+                    }
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6§mGangwar betreten", "§8 ➥ §cDeine Fraktion befindet sich in keinem Gangwar!")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+        }
     }
 
     private void openBag(Player player) {

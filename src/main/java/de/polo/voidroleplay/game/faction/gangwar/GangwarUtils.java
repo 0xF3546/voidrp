@@ -101,7 +101,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
                 }
             }
-            if (args[0].equalsIgnoreCase("join")) {
+            /*if (args[0].equalsIgnoreCase("join")) {
                 if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
                     if (playerData.getVariable("gangwar") == null) {
                         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
@@ -119,7 +119,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 } else {
                     player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
                 }
-            }
+            }*/
             if (args[0].equalsIgnoreCase("attack")) {
                 if (args.length >= 2) {
                     if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
@@ -390,7 +390,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             List<String> suggestions = new ArrayList<>();
             suggestions.add("info");
             suggestions.add("attack");
-            suggestions.add("join");
+            //suggestions.add("join");
             suggestions.add("leave");
 
             return suggestions;
