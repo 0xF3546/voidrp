@@ -10,7 +10,9 @@ import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -87,8 +89,10 @@ public class PlayerSwapHandItemsListener implements Listener {
                 if (!locationData.getType().equalsIgnoreCase("storage")) {
                     continue;
                 }
-                openFactionStorage(player);
-                return;
+                if (player.getLocation().distance(new Location(player.getWorld(), locationData.getX(), locationData.getY(), locationData.getZ())) < 2) {
+                    openFactionStorage(player);
+                    return;
+                }
             }
             openBag(player);
             return;
