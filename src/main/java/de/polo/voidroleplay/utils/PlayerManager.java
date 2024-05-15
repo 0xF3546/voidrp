@@ -76,11 +76,10 @@ public class PlayerManager implements Listener, ServerTiming {
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
             Date date = new Date();
             String newDate = formatter.format(date);
-            statement.execute("INSERT INTO `players` (`uuid`) VALUES ('" + uuid + "')");
+            Player player = Bukkit.getPlayer(uuid);
+            statement.execute("INSERT INTO `players` (`uuid`, `player_name`, `adress`) VALUES ('" + uuid + "', '" + player.getName() + "', '" + player.getAddress() + "')");
             statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
             statement.execute("INSERT INTO `player_addonxp` (`uuid`) VALUES ('" + uuid + "')");
-            Player player = Bukkit.getPlayer(uuid);
-            assert player != null;
             loadPlayer(player);
             setPlayerMove(player, true);
         } catch (SQLException e) {
@@ -116,20 +115,22 @@ public class PlayerManager implements Listener, ServerTiming {
 
             ResultSet result = statement.executeQuery(query);
             if (result.next()) {
-                if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
-                    List<Integer> houses = new ArrayList<>();
-                    for (House house : Housing.houseDataMap.values()) {
-                        if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
-                            houses.add(house.getId());
+                if (result.getString("player_name") != null) {
+                    if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
+                        List<Integer> houses = new ArrayList<>();
+                        for (House house : Housing.houseDataMap.values()) {
+                            if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
+                                houses.add(house.getId());
+                            }
                         }
-                    }
-                    for (int house : houses) {
-                        for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
-                            if (block.getInfo().equalsIgnoreCase("house") && Integer.parseInt(block.getInfoValue()) == house) {
-                                Block b = block.getLocation().getBlock();
-                                Sign sign = (Sign) b.getState();
-                                sign.setLine(2, "§0" + player.getName());
-                                sign.update();
+                        for (int house : houses) {
+                            for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
+                                if (block.getInfo().equalsIgnoreCase("house") && Integer.parseInt(block.getInfoValue()) == house) {
+                                    Block b = block.getLocation().getBlock();
+                                    Sign sign = (Sign) b.getState();
+                                    sign.setLine(2, "§0" + player.getName());
+                                    sign.update();
+                                }
                             }
                         }
                     }

@@ -60,13 +60,13 @@ public class PlayerData {
     private Scoreboard scoreboard;
     private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
     private final HashMap<String, BossBar> bossBars = new HashMap<>();
-    private boolean isDead;
-    private boolean isStabilized;
-    private boolean isHitmanDead;
-    private int deathTime;
-    private int number;
-    private boolean isFlightmode;
-    private boolean isDuty;
+    private boolean isDead = false;
+    private boolean isStabilized = false;
+    private boolean isHitmanDead = false;
+    private int deathTime = 300;
+    private int number = 0;
+    private boolean isFlightmode = false;
+    private boolean isDuty = false;
     private Gender gender;
     private Date birthday;
     private int houseSlot;
@@ -80,13 +80,13 @@ public class PlayerData {
     private int minutes;
     private Integer business;
     private int business_grade;
-    private int warns;
+    private int warns = 0;
     private Integer forumID;
     private HashMap<String, String> relationShip = new HashMap<>();
     private String bloodType;
     private boolean hasAnwalt;
-    private boolean isAFK;
-    private int Coins;
+    private boolean isAFK = false;
+    private int Coins = 0;
 
     private boolean cuffed;
     private PlayerLaboratory laboratory;

@@ -192,6 +192,7 @@ public class ServerManager {
                         continue;
                     }
                     for (PlayerData playerData : playerManager.getPlayers()) {
+                        if (playerData.getFaction() == null) continue;
                         if (!playerData.getFaction().equalsIgnoreCase(locationData.getInfo())) {
                             continue;
                         }
