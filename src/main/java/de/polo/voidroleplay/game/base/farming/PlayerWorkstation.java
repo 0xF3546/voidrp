@@ -57,6 +57,7 @@ public class PlayerWorkstation {
     public void doTick() {
         if (input < Workstation.getTickInput()) return;
         setOutput(output + Workstation.getTickOutput());
+        setInput(input - Workstation.getTickInput());
     }
 
     @SneakyThrows
@@ -135,7 +136,7 @@ public class PlayerWorkstation {
 
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Workstation (" + this.Workstation.getName() + ")");
 
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Workstation.getInputItem().getMaterial(), 1, 0, Workstation.getInputItem().getDisplayName(), "§8 » §eKlicke um " + input + " auszulagern.")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Workstation.getInputItem().getMaterial(), 1, 0, Workstation.getInputItem().getDisplayName(), "§8 » §eKlicke um " + input + " Stück auszulagern.")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (input <= 0) return;
@@ -147,12 +148,12 @@ public class PlayerWorkstation {
             }
         });
 
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Workstation.getInputItem().getMaterial(), 1, 0, Workstation.getInputItem().getDisplayName(), "§8 » §eKlicke um " + newInputCount + " einzulagern.")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Workstation.getInputItem().getMaterial(), 1, 0, Workstation.getInputItem().getDisplayName(), "§8 » §eKlicke um " + newInputCount + " Stück einzulagern.")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (newInputCount <= 0) return;
                 player.closeInventory();
-                ItemManager.removeCustomItem(player, Workstation.getOutputItem(), newInputCount);
+                ItemManager.removeCustomItem(player, Workstation.getInputItem(), newInputCount);
                 player.sendMessage("§8[§7Workstation§8]§7 Du hast " + newInputCount + " " + Workstation.getInputItem().getDisplayName() + "§7 eingelagert.");
                 setInput(input + newInputCount);
                 save();

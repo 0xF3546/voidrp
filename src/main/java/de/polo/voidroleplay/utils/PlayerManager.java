@@ -585,6 +585,14 @@ public class PlayerManager implements Listener, ServerTiming {
                     }
                 }
 
+                if (currentMinute % 5 == 0) {
+                    for (PlayerData playerData : getPlayers()) {
+                        for (PlayerWorkstation playerWorkstation : playerData.getWorkstations()) {
+                            playerWorkstation.doTick();
+                        }
+                    }
+                }
+
                 if (currentMinute % 15 == 0) {
                     Main.getInstance().laboratory.pushTick();
                 }

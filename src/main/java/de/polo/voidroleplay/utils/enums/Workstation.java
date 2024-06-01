@@ -13,8 +13,8 @@ import org.bukkit.Location;
 @AllArgsConstructor
 @Getter
 public enum Workstation {
-    BULLETPROOF("Schutzwesten", new Location(Bukkit.getWorld("World"), 1, 1, 1), RoleplayItem.KEVLAR, RoleplayItem.BULLETPROOF, 2, 1),
-    KEVLAR("Kevlar", new Location(Bukkit.getWorld("World"), 1, 1, 1), RoleplayItem.ARAMID, RoleplayItem.KEVLAR, 2, 1);
+    BULLETPROOF("Schutzwesten", new Location(Bukkit.getWorld("World"), 388, 73, -278), RoleplayItem.KEVLAR, RoleplayItem.BULLETPROOF, 5, 1),
+    KEVLAR("Kevlar", new Location(Bukkit.getWorld("World"), 515, 69, -284), RoleplayItem.ARAMID, RoleplayItem.KEVLAR, 50, 1);
 
     private final String name;
     private final Location location;

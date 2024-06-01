@@ -42,11 +42,28 @@ public class WorkstationCommand implements CommandExecutor {
 
         switch (args[0].toLowerCase()) {
             case "bulletproof":
+                if (player.getLocation().distance(Workstation.BULLETPROOF.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Westenverarbeiters.");
+                    break;
+                }
                 if (PlayerWorkstation.hasWorkstation(player, Workstation.BULLETPROOF)) {
                     playerData.getWorkStation(Workstation.BULLETPROOF).open();
                 } else {
                     openRentRequest(player, Workstation.BULLETPROOF);
                 }
+                break;
+            case "kevlar":
+                if (player.getLocation().distance(Workstation.KEVLAR.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Kevlarverarbeiters.");
+                    break;
+                }
+                if (PlayerWorkstation.hasWorkstation(player, Workstation.KEVLAR)) {
+                    playerData.getWorkStation(Workstation.KEVLAR).open();
+                } else {
+                    openRentRequest(player, Workstation.KEVLAR);
+                }
+                break;
+            default:
                 break;
         }
         return false;
