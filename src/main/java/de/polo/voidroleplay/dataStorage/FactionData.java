@@ -29,6 +29,7 @@ public class FactionData {
     private int laboratory;
     private boolean isBadFrak;
     private int subGroupId;
+    private int cooperationPartner;
     public Storage storage = new Storage(this);
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
@@ -226,6 +227,14 @@ public class FactionData {
         statement.execute();
         statement.close();
         connection.close();
+    }
+
+    public int getCooperationPartner() {
+        return cooperationPartner;
+    }
+
+    public void setCooperationPartner(int cooperationPartner) {
+        this.cooperationPartner = cooperationPartner;
     }
 
     public class Storage {

@@ -23,7 +23,10 @@ public enum RoleplayItem {
     EXPLOSION_DEVICE("§cSprengsatz", Material.TNT, true),
     TAZER("§bTazer", Material.GOLDEN_HOE, false),
     CROWBAR("§cBrechstange", Material.BLAZE_ROD, true),
-    ADRENALINE_INJECTION("§fAdrenalin Spritze", Material.END_ROD, true);
+    ADRENALINE_INJECTION("§fAdrenalin Spritze", Material.END_ROD, true),
+    BULLETPROOF("§7Schutzweste", Material.LEATHER_CHESTPLATE, false),
+    KEVLAR("§7Kevlar", Material.LEATHER, false),
+    ARAMID("§7Aramidfaser", Material.DEAD_BUSH, false);
 
     private final String displayName;
     private final Material material;

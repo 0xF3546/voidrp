@@ -214,3 +214,4 @@ commands:
     aliases: sc
   permban:
   fly:
+  workstation:

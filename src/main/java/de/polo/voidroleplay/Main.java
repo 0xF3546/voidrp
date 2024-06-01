@@ -397,6 +397,7 @@ public final class Main extends JavaPlugin {
         public SubGroupChatCommand subGroupChatCommand;
         public PermbanCommand permbanCommand;
         public FlyCommand flyCommand;
+        public WorkstationCommand workstationCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -547,6 +548,7 @@ public final class Main extends JavaPlugin {
             subGroupChatCommand = new SubGroupChatCommand(playerManager, factionManager);
             permbanCommand = new PermbanCommand(playerManager, adminManager);
             flyCommand = new FlyCommand(playerManager, adminManager);
+            workstationCommand = new WorkstationCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

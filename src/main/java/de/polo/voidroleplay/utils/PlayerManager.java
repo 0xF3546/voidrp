@@ -4,10 +4,10 @@ import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
-import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
@@ -22,7 +22,6 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.block.TileState;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -270,6 +269,10 @@ public class PlayerManager implements Listener, ServerTiming {
                             }
                         }
                     }
+                }
+
+                for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
+                    playerData.addWorkstation(workstation);
                 }
 
                 player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));

@@ -1,8 +1,10 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.utils.enums.Gender;
+import de.polo.voidroleplay.utils.enums.Workstation;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -19,9 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerData {
     @Getter
@@ -101,6 +101,7 @@ public class PlayerData {
     private boolean receivedBonus;
     private int subGroupId;
     private int subGroupGrade;
+    private List<PlayerWorkstation> workstations = new ArrayList<>();
 
     public PlayerData() {
     }
@@ -791,6 +792,30 @@ public class PlayerData {
 
     public SubGroup getSubGroup() {
         return Main.getInstance().factionManager.subGroups.getSubGroup(subGroupId);
+    }
+
+    public Collection<PlayerWorkstation> getWorkstations() {
+        return workstations;
+    }
+
+    public PlayerWorkstation getWorkStation(Workstation workstation) {
+        for (PlayerWorkstation w : workstations) {
+            if (w.Workstation == workstation) {
+                return w;
+            }
+        }
+        return null;
+    }
+
+    public void setWorkstations(List<PlayerWorkstation> workstations) {
+        this.workstations = workstations;
+    }
+    public void addWorkstation(PlayerWorkstation workstation) {
+        workstations.add(workstation);
+    }
+
+    public void removeWorkstation(PlayerWorkstation playerWorkstation) {
+        workstations.remove(playerWorkstation);
     }
 
     public class AddonXP {
