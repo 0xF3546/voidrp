@@ -40,9 +40,11 @@ public class WeaponcrafterCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getSubGroup() == null) {
             player.sendMessage(Prefix.ERROR + "Nur Untergruppierungen von Fraktionen können hier was herstellen!");
+            return false;
         }
         if (playerData.getSubGroup().getFaction() == null) {
             player.sendMessage(Prefix.ERROR + "Nur Untergruppierungen von Fraktionen können hier was herstellen!");
+            return false;
         }
         open(player);
         return false;
@@ -50,7 +52,7 @@ public class WeaponcrafterCommand implements CommandExecutor {
 
     private void open(Player player) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Waffenhersteller");
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cMarksman", "§8 ➥ §c200 Waffenteile")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cMarksman", "§8 ➥ §c200 Waffenteile")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
@@ -65,7 +67,7 @@ public class WeaponcrafterCommand implements CommandExecutor {
             }
         });
 
-        inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cMarksman-Magazin", "§8 ➥ §c30 Waffenteile")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cMarksman-Magazin", "§8 ➥ §c30 Waffenteile")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();

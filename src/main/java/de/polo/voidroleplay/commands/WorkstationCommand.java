@@ -63,6 +63,28 @@ public class WorkstationCommand implements CommandExecutor {
                     openRentRequest(player, Workstation.KEVLAR);
                 }
                 break;
+            case "eisen":
+                if (player.getLocation().distance(Workstation.IRON.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Eisenverarbeiters.");
+                    break;
+                }
+                if (PlayerWorkstation.hasWorkstation(player, Workstation.IRON)) {
+                    playerData.getWorkStation(Workstation.IRON).open();
+                } else {
+                    openRentRequest(player, Workstation.IRON);
+                }
+                break;
+            case "waffenteile":
+                if (player.getLocation().distance(Workstation.WAFFENTEILE.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Waffenteilverarbeiters.");
+                    break;
+                }
+                if (PlayerWorkstation.hasWorkstation(player, Workstation.WAFFENTEILE)) {
+                    playerData.getWorkStation(Workstation.WAFFENTEILE).open();
+                } else {
+                    openRentRequest(player, Workstation.WAFFENTEILE);
+                }
+                break;
             default:
                 break;
         }
