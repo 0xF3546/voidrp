@@ -398,6 +398,7 @@ public final class Main extends JavaPlugin {
         public PermbanCommand permbanCommand;
         public FlyCommand flyCommand;
         public WorkstationCommand workstationCommand;
+        public WeaponcrafterCommand weaponcrafterCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -549,6 +550,7 @@ public final class Main extends JavaPlugin {
             permbanCommand = new PermbanCommand(playerManager, adminManager);
             flyCommand = new FlyCommand(playerManager, adminManager);
             workstationCommand = new WorkstationCommand(playerManager);
+            weaponcrafterCommand = new WeaponcrafterCommand(locationManager, playerManager);
 
             main.registerCommands();
             main.registerListener(this);

@@ -34,7 +34,7 @@ public class Storage implements Listener {
     private StorageType storageType;
     private Inventory inventory;
     private Storages extra;
-    private boolean canOpen;
+    private boolean canOpen = true;
 
     public Storage(StorageType storageType) {
         this.storageType = storageType;

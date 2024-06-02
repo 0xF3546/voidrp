@@ -13,6 +13,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,6 +76,9 @@ public class DeathUtils {
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
         adminManager.send_message( player.getName() + " wurde wiederbelebt.", null);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
         player.setFlySpeed(0.1F);
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());

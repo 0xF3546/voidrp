@@ -27,7 +27,8 @@ public enum RoleplayItem {
     BULLETPROOF("§7Schutzweste", Material.LEATHER_CHESTPLATE, false),
     KEVLAR("§7Kevlar", Material.LEATHER, false),
     ARAMID("§7Aramidfaser", Material.DEAD_BUSH, false),
-    MAGAZIN("§7Magazin", Material.CLAY_BALL, true);
+    MAGAZIN("§7Magazin", Material.CLAY_BALL, true),
+    WAFFENTEIL("§8Waffenteil", Material.NETHERITE_INGOT, true);
 
     private final String displayName;
     private final Material material;

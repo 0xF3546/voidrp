@@ -22,7 +22,7 @@ public class ItemDropListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         if (playerData.getVariable("gangwar") != null) event.setCancelled(true);
         WeaponData weaponData = Weapons.weaponDataMap.get(event.getItemDrop().getItemStack().getType());
-        if (weaponData != null) {
+        if (weaponData != null && event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(weaponData.getName())) {
             event.setCancelled(true);
             weapons.reloadWeapon(event.getPlayer(), event.getItemDrop().getItemStack());
         }

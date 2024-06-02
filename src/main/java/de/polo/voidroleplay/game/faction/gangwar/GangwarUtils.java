@@ -188,7 +188,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.GANGWAR);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 5, 0, RoleplayItem.COCAINE.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 5, 0, RoleplayItem.NOBLE_JOINT.getDisplayName()));
-        player.getInventory().addItem(ItemManager.createItem(Material.COOKED_BEEF, 60, 0, "§6Nahrung"));
+        player.getInventory().addItem(ItemManager.createItem(Material.COOKED_BEEF, 16, 0, "§6Nahrung"));
     }
 
     public void leaveGangwar(Player player) {
