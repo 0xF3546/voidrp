@@ -8,6 +8,7 @@ import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
 import de.polo.voidroleplay.utils.enums.Storages;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
@@ -67,6 +68,57 @@ public class PlayerSwapHandItemsListener implements Listener {
         Block block = getTargetBlock(player);
         if (!player.isSneaking()) {
             return;
+        }
+        for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+            if (player.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
+                InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » " + weaponData.getName());
+                inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(weaponData.getMaterial(), 1, 0, weaponData.getName(), "§8 ➥ §7Klicke um Waffe zu packen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        player.closeInventory();
+                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(player.getInventory().getItemInMainHand());
+                        int ammoCount = weapon.getAmmo();
+                        if (weapon.getCurrentAmmo() >= weaponData.getMaxAmmo()) {
+                            ammoCount += weaponData.getMaxAmmo();
+                        }
+                        ammoCount = ammoCount / weaponData.getMaxAmmo();
+                        Main.getInstance().weapons.removeWeapon(player, player.getInventory().getItemInMainHand());
+                        if (ammoCount >= 1) {
+                            player.getInventory().addItem(ItemManager.createItem(RoleplayItem.MAGAZIN.getMaterial(), ammoCount, 0, "§7Magazin", "§8 ➥ " + weaponData.getName()));
+                        }
+                        player.getInventory().addItem(ItemManager.createItem(weaponData.getMaterial(), 1, 0, "§7Gepackte Waffe", "§8 ➥ " + weaponData.getName()));
+                        player.sendMessage(Prefix.MAIN + "Du hast deine Waffe gepackt.");
+                    }
+                });
+                int count = ItemManager.getCustomItemCount(player, RoleplayItem.MAGAZIN);
+                inventoryManager.setItem(new CustomItem(5, ItemManager.createItem(Material.CLAY_BALL, 1, 0, "§7Magazin benutzen", "§8 ➥ §7Du hast " + count + " Magazine")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        player.closeInventory();
+                        player.sendMessage(Prefix.MAIN + "Du hast " + count + " Magazine benutzt.");
+                        int remainingCount = count;
+
+                        ItemStack[] contents = player.getInventory().getContents();
+                        for (ItemStack itemStack : contents) {
+                            if (itemStack != null && itemStack.getType() == RoleplayItem.MAGAZIN.getMaterial() && itemStack.getItemMeta().getLore().get(0).replace("§8 ➥ ", "").equalsIgnoreCase(weaponData.getName())) {
+                                int stackAmount = itemStack.getAmount();
+                                if (stackAmount <= remainingCount) {
+                                    remainingCount -= stackAmount;
+                                    player.getInventory().removeItem(itemStack);
+                                } else {
+                                    itemStack.setAmount(stackAmount - remainingCount);
+                                    break;
+                                }
+                                if (remainingCount <= 0) {
+                                    break;
+                                }
+                            }
+                        }
+                        Main.getInstance().weapons.giveWeaponAmmoToPlayer(player, player.getInventory().getItemInMainHand(), count * weaponData.getMaxAmmo());
+                    }
+                });
+                return;
+            }
         }
         for (Storages storage : Storages.values()) {
             if (player.getLocation().distance(storage.getLocation()) < 5) {

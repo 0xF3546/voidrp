@@ -34,6 +34,7 @@ public class Storage implements Listener {
     private StorageType storageType;
     private Inventory inventory;
     private Storages extra;
+    private boolean canOpen;
 
     public Storage(StorageType storageType) {
         this.storageType = storageType;
@@ -73,6 +74,7 @@ public class Storage implements Listener {
     }
 
     public void open(Player p) {
+        if (!canOpen) return;
         String name = "§7Lager";
         switch (storageType) {
             case VEHICLE:
@@ -92,11 +94,13 @@ public class Storage implements Listener {
         newInv.setContents(inventory.getContents());
         this.inventory = newInv;
         p.openInventory(inventory);
+        setCanOpen(false);
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getInventory() == inventory) {
+            setCanOpen(true);
             save();
         }
     }
@@ -225,5 +229,13 @@ public class Storage implements Listener {
             return storage;
         }
         return null;
+    }
+
+    public boolean isCanOpen() {
+        return canOpen;
+    }
+
+    public void setCanOpen(boolean canOpen) {
+        this.canOpen = canOpen;
     }
 }

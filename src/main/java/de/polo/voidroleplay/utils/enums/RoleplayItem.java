@@ -26,7 +26,8 @@ public enum RoleplayItem {
     ADRENALINE_INJECTION("§fAdrenalin Spritze", Material.END_ROD, true),
     BULLETPROOF("§7Schutzweste", Material.LEATHER_CHESTPLATE, false),
     KEVLAR("§7Kevlar", Material.LEATHER, false),
-    ARAMID("§7Aramidfaser", Material.DEAD_BUSH, false);
+    ARAMID("§7Aramidfaser", Material.DEAD_BUSH, false),
+    MAGAZIN("§7Magazin", Material.CLAY_BALL, true);
 
     private final String displayName;
     private final Material material;

@@ -14,7 +14,8 @@ import org.bukkit.Location;
 @AllArgsConstructor
 @Getter
 public enum Storages {
-    STADTHALLE("Stadthalle", new Location(Bukkit.getWorld("World"), 133, 72, 157));
+    STADTHALLE("Stadthalle", new Location(Bukkit.getWorld("World"), 133, 72, 157)),
+    BANK("Zentralbank", new Location(Bukkit.getWorld("World"), -53, 69, -355));
 
     private final String name;
     private final Location location;
