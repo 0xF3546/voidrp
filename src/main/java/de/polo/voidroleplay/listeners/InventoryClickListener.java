@@ -37,8 +37,8 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) throws SQLException {
-        if (event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST)) {
-            event.setCancelled(true);
+        if (event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST) && event.getView().getTitle().equalsIgnoreCase("§7Lager")) {
+            // event.setCancelled(true);
         }
         if (event.getCurrentItem() == null || !event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST))
             return;

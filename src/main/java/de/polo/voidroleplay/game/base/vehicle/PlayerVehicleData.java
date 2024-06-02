@@ -2,6 +2,8 @@ package de.polo.voidroleplay.game.base.vehicle;
 
 import de.polo.voidroleplay.Main;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.sql.Statement;
@@ -20,6 +22,7 @@ public class PlayerVehicleData {
     private float yaw;
     private float pitch;
     private int garage;
+    private boolean locked;
 
     public int getId() {
         return id;
@@ -125,10 +128,22 @@ public class PlayerVehicleData {
         this.garage = garage;
     }
 
+    public Location getLocation() {
+        return new Location(Bukkit.getWorld("World"), getX(), getY(), getZ());
+    }
+
     @SneakyThrows
     public void save() {
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + getKm() + ", `fuel` = " + getFuel() + ", `x` = " + getX() + ", `y` = " + getY() + ", `z` = " + getZ() + ", `welt` = '" + getWelt() + "', `yaw` = " + getYaw() + ", `pitch` = " + getPitch() + " WHERE `id` = " + getId());
 
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

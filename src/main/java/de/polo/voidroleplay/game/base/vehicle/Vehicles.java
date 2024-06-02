@@ -140,6 +140,7 @@ public class Vehicles implements Listener, CommandExecutor {
         minecart.getPersistentDataContainer().set(key_fuel, PersistentDataType.FLOAT, playerVehicleData.getFuel());
         NamespacedKey key_lock = new NamespacedKey(Main.plugin, "lock");
         minecart.getPersistentDataContainer().set(key_lock, PersistentDataType.INTEGER, 1);
+        playerVehicleData.setLocked(true);
         NamespacedKey key_type = new NamespacedKey(Main.plugin, "type");
         minecart.getPersistentDataContainer().set(key_type, PersistentDataType.STRING, playerVehicleData.getType());
 
@@ -201,10 +202,13 @@ public class Vehicles implements Listener, CommandExecutor {
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
                     player.playSound(entity.getLocation(), Sound.UI_BUTTON_CLICK, 1, 0);
                     int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
+                    PlayerVehicleData vehicle = playerVehicleDataMap.get(id);
                     if (lock == 1) {
+                        vehicle.setLocked(false);
                         entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 0);
                         player.sendMessage(Main.prefix + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §aaufgeschlossen§7!");
                     } else {
+                        vehicle.setLocked(true);
                         entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 1);
                         player.sendMessage(Main.prefix + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §czugeschlossen§7!");
                     }
@@ -557,5 +561,22 @@ public class Vehicles implements Listener, CommandExecutor {
                 i++;
             }
         }
+    }
+
+    public static PlayerVehicleData getNearestVehicle(Location location) {
+        PlayerVehicleData nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+
+        for (PlayerVehicleData data : playerVehicleDataMap.values()) {
+            Location dataLocation = new Location(Bukkit.getWorld("World"), data.getX(), data.getY(), data.getZ());
+            double distance = dataLocation.distance(location);
+
+            if (nearest == null || distance < nearestDistance) {
+                nearest = data;
+                nearestDistance = distance;
+            }
+        }
+
+        return nearest;
     }
 }

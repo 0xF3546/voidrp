@@ -2,9 +2,14 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.game.base.extra.Storage;
+import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
+import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.enums.StorageType;
+import de.polo.voidroleplay.utils.enums.Storages;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
@@ -62,6 +67,36 @@ public class PlayerSwapHandItemsListener implements Listener {
         Block block = getTargetBlock(player);
         if (!player.isSneaking()) {
             return;
+        }
+        for (Storages storage : Storages.values()) {
+            if (player.getLocation().distance(storage.getLocation()) < 5) {
+                Storage s = Storage.getStorageByTypeAndPlayer(StorageType.EXTRA, player, storage);
+                if (s == null) {
+                    s = new Storage(StorageType.EXTRA);
+                    s.setExtra(storage);
+                    s.setPlayer(player.getUniqueId().toString());
+                    s.create();
+                };
+                s.open(player);
+                return;
+            }
+        }
+        PlayerVehicleData playerVehicleData = Vehicles.getNearestVehicle(player.getLocation());
+        if (playerVehicleData != null) {
+            if (!playerVehicleData.isLocked()) {
+                if (player.getLocation().distance(playerVehicleData.getLocation()) < 2) {
+                    Storage s = Storage.getStorageByTypeAndPlayer(StorageType.VEHICLE, player, playerVehicleData.getId());
+                    if (s == null) {
+                        s = new Storage(StorageType.VEHICLE);
+                        s.setVehicleId(playerVehicleData.getId());
+                        s.setPlayer(player.getUniqueId().toString());
+                        s.create();
+                    }
+                    ;
+                    s.open(player);
+                    return;
+                }
+            }
         }
         Collection<Entity> entities = player.getWorld().getNearbyEntities(player.getLocation(), 3, 3, 3);
         Item nearestSkull = null;
