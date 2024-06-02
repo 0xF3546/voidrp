@@ -33,6 +33,23 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
         Main.registerCommand("navi", this);
         Main.addTabCompeter("navi", this);
     }
+
+    public static NaviData getNearestNaviPoint(Location location) {
+        NaviData nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (NaviData data : LocationManager.naviDataMap.values()) {
+            if (data.getLocation() == null) continue;
+            Location dataLocation = Main.getInstance().locationManager.getLocation(data.getLocation());
+            double distance = dataLocation.distance(location);
+
+            if (nearest == null || distance < nearestDistance) {
+                nearest = data;
+                nearestDistance = distance;
+            }
+        }
+        return nearest;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -172,6 +189,17 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
     public void createNavi(Player player, String nav, boolean silent) {
         for (LocationData locationData : LocationManager.locationDataMap.values()) {
             if (locationData.getName().equalsIgnoreCase(nav)) {
+                boolean isNavi = false;
+                for (NaviData naviData : LocationManager.naviDataMap.values()) {
+                    if (naviData.getLocation() == null) continue;
+                    if (naviData.getLocation().equalsIgnoreCase(locationData.getName())) {
+                        isNavi = true;
+                    }
+                }
+                if (!isNavi) {
+                    player.sendMessage(Prefix.ERROR + "Der Navipunkt wurde nicht gefunden.");
+                    return;
+                };
                 playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", nav);
                 if (!silent) player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
                 final double length = 5.0;

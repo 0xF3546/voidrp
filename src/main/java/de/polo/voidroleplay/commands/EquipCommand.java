@@ -109,6 +109,26 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
             }
         });
+        if (playerData.getFaction().equalsIgnoreCase("FBI") && playerData.getFactionGrade() >= 6) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.STONE_HOE, 1, 0, "§7Sniper", "§8 ➥ §a" + (ServerManager.getPayout("equip_sniper") + "$"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    int priceForFaction = (int) (ServerManager.getPayout("equip_sniper"));
+                    if (factionData.getBank() < priceForFaction) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um diese Waffe zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < factionData.equip.getSturmgewehr()) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
+                    factionData.addBankMoney(sturmgewehrPrice, "Waffenkauf " + player.getName());
+                    playerData.removeBankMoney(sturmgewehrPrice, "Waffenkauf");
+                    weapons.giveWeaponToPlayer(player, Material.STONE_HOE, WeaponType.NORMAL);
+                }
+            });
+        }
     }
 
     private void openAmmoShop(Player player, PlayerData playerData, FactionData factionData) {
@@ -148,6 +168,31 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
             }
         });
+        if (playerData.getFaction().equalsIgnoreCase("FBI") && playerData.getFactionGrade() >= 6) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cSniper-Munition", "§8 ➥ §a" + ServerManager.getPayout("equip_sniper_ammo") + "$")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    int priceForFaction = (int) ServerManager.getPayout("equip_sniper_ammo");
+                    if (factionData.getBank() < priceForFaction) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < priceForFaction) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    WeaponData weaponData = weapons.getWeaponData(player.getEquipment().getItemInMainHand().getType());
+                    if (weaponData == null) {
+                        player.sendMessage(Main.error + "Halte die Waffe in der Hand.");
+                        return;
+                    }
+                    weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
+                    factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
+                    factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
+                    playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
+                }
+            });
+        }
     }
 
     private void openExtraShop(Player player, PlayerData playerData, FactionData factionData) {
@@ -165,7 +210,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
-                    playerData.removeBankMoney(75, "Munitionskauf");
+                    playerData.removeBankMoney(75, "Iboprofen-Kauf");
                     player.getInventory().addItem(ItemManager.createItem(Material.PAPER, 1, 0, "§c§lIboprofen"));
                 }
             });
@@ -245,7 +290,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     }
                 });
             }
-            if (playerData.getFactionGrade() >= 5 && playerData.getFaction().equalsIgnoreCase("FBI")) {
+            if (playerData.getFaction().equalsIgnoreCase("FBI")) {
                 inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("adrenaline_injection") + "$"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -264,6 +309,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName()));
                     }
                 });
+
             }
         }
     }
