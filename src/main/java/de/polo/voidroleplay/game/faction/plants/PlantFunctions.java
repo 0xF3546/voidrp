@@ -83,8 +83,10 @@ public class PlantFunctions implements Listener {
         Plant plant = getById(id);
         if (plant == null) return;
         FactionData factionData = factionManager.getFactionData(plant.getOwner());
-        String owner = "§" + factionData.getPrimaryColor() + factionData.getFullname();
         PlayerData playerData = playerManager.getPlayerData(player);
+        FactionData playerFactionData = factionManager.getFactionData(playerData.getFaction());
+        if (!playerFactionData.isBadFrak()) return;
+        String owner = "§" + factionData.getPrimaryColor() + factionData.getFullname();
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Plantage (" + plant.getMultiplier() + "x)", true, true);
         if (canAttack(plant)) {
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", Arrays.asList("§8 ➥ §7Besitzer§8: " + owner, "§8 ➥ §cKlicke zum attackieren"))) {

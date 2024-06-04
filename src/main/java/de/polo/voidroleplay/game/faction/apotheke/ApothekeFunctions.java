@@ -76,13 +76,20 @@ public class ApothekeFunctions implements Listener {
     public void openApotheke(Player player, int id) {
         Apotheke apotheke = getById(id);
         if (apotheke == null) return;
+        boolean canAttack = false;
+        PlayerData playerData = playerManager.getPlayerData(player);
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        if (factionData.isBadFrak()) canAttack = true;
         String owner = "§9Staat";
+        if (apotheke.isStaat()) {
+            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) canAttack = true;
+        }
         if (!apotheke.getOwner().equalsIgnoreCase("staat")) {
-            FactionData factionData = factionManager.getFactionData(apotheke.getOwner());
+            factionData = factionManager.getFactionData(apotheke.getOwner());
             owner = "§" + factionData.getPrimaryColor() + factionData.getFullname();
         }
-        PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cApotheke (" + owner + "§c)", true, true);
+        if (!canAttack) return;
         if (canAttack(apotheke)) {
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", Arrays.asList("§8 ➥ §7Besitzer§8: " + owner, "§8 ➥ §cKlicke zum attackieren"))) {
                 @Override

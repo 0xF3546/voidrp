@@ -365,6 +365,6 @@ public class Utils {
     }
 
     public static LocalDateTime getTime() {
-        return LocalDateTime.now(ZoneId.of("Berlin/Europe"));
+        return LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     }
 }

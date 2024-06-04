@@ -85,7 +85,8 @@ public final class Main extends JavaPlugin {
         locationManager = new LocationManager(mySQL);
         adminManager = new AdminManager(playerManager);
         factionManager = new FactionManager(playerManager);
-        housing = new Housing(playerManager);
+        blockManager = new BlockManager(mySQL);
+        housing = new Housing(playerManager, blockManager);
         utils = new Utils(playerManager, adminManager, factionManager, locationManager, housing, new Navigation(playerManager), companyManager);
         vehicles = new Vehicles(playerManager ,locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
@@ -94,7 +95,6 @@ public final class Main extends JavaPlugin {
         businessManager = new BusinessManager(playerManager);
         streetwar = new Streetwar(playerManager, factionManager, utils);
         weapons = new Weapons(utils, playerManager);
-        blockManager = new BlockManager(mySQL);
         isOnline = true;
         laboratory = new Laboratory(playerManager, factionManager, locationManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);

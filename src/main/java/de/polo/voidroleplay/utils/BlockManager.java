@@ -45,6 +45,7 @@ public class BlockManager {
 
     public RegisteredBlock getBlockAtLocation(Location location) {
         for (RegisteredBlock block : registeredBlocks) {
+            if (block == null) continue;
             if (block.getLocation().getBlockX() == location.getBlockX() && block.getLocation().getBlockY() == location.getBlockY() && block.getLocation().getBlockZ() == location.getBlockZ()) {
                 return block;
             }

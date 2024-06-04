@@ -3,6 +3,8 @@ package de.polo.voidroleplay.game.base.housing;
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.RegisteredBlock;
+import de.polo.voidroleplay.utils.BlockManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
@@ -23,14 +25,18 @@ import java.util.*;
 public class Housing {
     public static final Map<Integer, House> houseDataMap = new HashMap<>();
     private final PlayerManager playerManager;
-    public Housing(PlayerManager playerManager) {
+    private final BlockManager blockManager;
+
+    public Housing(PlayerManager playerManager, BlockManager blockManager) {
         this.playerManager = playerManager;
+        this.blockManager = blockManager;
         try {
             loadHousing();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     private void loadHousing() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
@@ -128,42 +134,35 @@ public class Housing {
     }
 
     public boolean resetHouse(Player player, int house) {
-        for (House houseData : houseDataMap.values()) {
-            int centerX = player.getLocation().getBlockX();
-            int centerY = player.getLocation().getBlockY();
-            int centerZ = player.getLocation().getBlockZ();
-            World world = player.getWorld();
-            for (int x = centerX - 6; x <= centerX + 6; x++) {
-                for (int y = centerY - 6; y <= centerY + 6; y++) {
-                    for (int z = centerZ - 6; z <= centerZ + 6; z++) {
-                        Location location = new Location(world, x, y, z);
-                        Block block = location.getBlock();
-                        if (block.getType().toString().contains("SIGN")) {
-                            Sign sign = (Sign) block.getState();
-                            NamespacedKey value = new NamespacedKey(Main.plugin, "value");
-                            PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
-                            System.out.println(container.get(value, PersistentDataType.INTEGER));
-                            if (container.get(value, PersistentDataType.INTEGER) != null) {
-                                if (house == Objects.requireNonNull(container.get(value, PersistentDataType.INTEGER))) {
-                                    if (houseData.getNumber() == house) {
-                                        houseData.setOwner(null);
-                                        sign.setLine(2, "§aZu Verkaufen");
-                                        sign.update();
-                                        try {
-                                            Statement statement = Main.getInstance().mySQL.getStatement();
-                                            statement.executeUpdate("UPDATE `housing` SET `owner` = null WHERE `number` = " + house);
-                                        } catch (SQLException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
+        for (RegisteredBlock rBlock : blockManager.getBlocks()) {
+            if (rBlock.getInfo() == null) continue;
+            if (rBlock.getInfoValue() == null) continue;
+
+            if (!rBlock.getInfo().equalsIgnoreCase("house")) continue;
+            if (!rBlock.getInfoValue().equalsIgnoreCase(String.valueOf(house))) continue;
+
+            System.out.println("Haus: " + house);
+            System.out.println(rBlock.getInfo() + " - " + rBlock.getInfoValue());
+
+            Block block = rBlock.getLocation().getBlock();
+            System.out.println(block.getType().toString());
+            if (block.getType().toString().contains("SIGN")) {
+                Sign sign = (Sign) block.getState();
+                try {
+                    House houseData = Housing.houseDataMap.get(house);
+                    System.out.println("HOUSE: " + houseData.getOwner());
+                    houseData.setOwner(null);
+                    sign.setLine(2, "§aZu Verkaufen");
+                    sign.update();
+                    Statement statement = Main.getInstance().mySQL.getStatement();
+                    statement.executeUpdate("UPDATE `housing` SET `owner` = null WHERE `number` = " + house);
+                    return true;
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
+
         return false;
     }
 }

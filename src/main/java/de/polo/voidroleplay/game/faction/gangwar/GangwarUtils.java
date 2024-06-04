@@ -141,14 +141,30 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
 
                                 }
                             });
-
-                            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren")) {
-                                @Override
-                                public void onClick(InventoryClickEvent event) {
-                                    startGangwar(player, gangwarData.getName());
-                                    player.closeInventory();
-                                }
-                            });
+                            if (playerData.getFaction() == null) {
+                                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§a§mAttackieren", "§8 ➥ §7Du bist in keiner Fraktion.")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                    }
+                                });
+                                return false;
+                            }
+                            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                            if (factionData.canDoGangwar()) {
+                                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        startGangwar(player, gangwarData.getName());
+                                        player.closeInventory();
+                                    }
+                                });
+                            } else {
+                                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§a§mAttackieren", "§8 ➥ §7Deine Fraktion kann keinen Gangwar starten.")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                    }
+                                });
+                            }
                         }
                     } else {
                         player.sendMessage(Main.error + "Du bist in keienr Fraktion.");
@@ -248,7 +264,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             player.sendMessage(Main.error_nopermission);
             return;
         }
-        if ((LocalDateTime.now().getHour() >= 18 && LocalDateTime.now().getHour() <= 22) || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
+        if ((Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() <= 22) || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
             IGangzone gangzone = getGangzoneByName(zone);
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.canDoGangwar()) {

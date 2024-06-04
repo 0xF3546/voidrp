@@ -26,11 +26,13 @@ import java.sql.Statement;
 public class BuyHouseCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final BlockManager blockManager;
+
     public BuyHouseCommand(PlayerManager playerManager, BlockManager blockManager) {
         this.playerManager = playerManager;
         this.blockManager = blockManager;
         Main.registerCommand("buyhouse", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -47,44 +49,45 @@ public class BuyHouseCommand implements CommandExecutor {
                         Block block = location.getBlock();
                         if (block.getType().toString().contains("SIGN")) {
                             Sign sign = (Sign) block.getState();
-                            NamespacedKey value = new NamespacedKey(Main.plugin, "value");
-                            PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
-                            System.out.println(container.get(value, PersistentDataType.INTEGER));
                             RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(location);
-                                if (Integer.parseInt(args[0]) == Integer.parseInt(registeredBlock.getInfoValue())) {
-                                    House houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
-                                    if (houseData.getOwner() == null) {
-                                        if (playerData.getBargeld() >= houseData.getPrice()) {
-                                            int houes = 0;
-                                            for (House houseData1 : Housing.houseDataMap.values()) {
-                                                if (houseData1.getOwner() != null) {
-                                                    if (houseData1.getOwner().equals(player.getUniqueId().toString())) {
-                                                        houes++;
-                                                    }
+                            if (registeredBlock == null) continue;
+                            if (registeredBlock.getInfoValue() == null) continue;
+                            if (!registeredBlock.getInfo().equalsIgnoreCase("house")) continue;
+
+                            if (Integer.parseInt(args[0]) == Integer.parseInt(registeredBlock.getInfoValue())) {
+                                House houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
+                                if (houseData.getOwner() == null) {
+                                    if (playerData.getBargeld() >= houseData.getPrice()) {
+                                        int houes = 0;
+                                        for (House houseData1 : Housing.houseDataMap.values()) {
+                                            if (houseData1.getOwner() != null) {
+                                                if (houseData1.getOwner().equals(player.getUniqueId().toString())) {
+                                                    houes++;
                                                 }
                                             }
-                                            try {
-                                                if (playerData.getHouseSlot() > houes) {
-                                                    playerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
-                                                    Statement statement = Main.getInstance().mySQL.getStatement();
-                                                    statement.executeUpdate("UPDATE `housing` SET `owner` = '" + player.getUniqueId() + "' WHERE `number` = " + houseData.getNumber());
-                                                    houseData.setOwner(player.getUniqueId().toString());
-                                                    sign.setLine(2, "§0" + player.getName());
-                                                    sign.update();
-                                                    player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ gekauft!");
-                                                } else {
-                                                    player.sendMessage(Main.error + "Du hast nicht genug Haus-Slots.");
-                                                }
-                                            } catch (SQLException e) {
-                                                player.sendMessage(Main.error + "Ein Fehler ist unterlaufen, versuche es später erneut.");
-                                                throw new RuntimeException(e);
+                                        }
+                                        try {
+                                            if (playerData.getHouseSlot() > houes) {
+                                                playerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
+                                                Statement statement = Main.getInstance().mySQL.getStatement();
+                                                statement.executeUpdate("UPDATE `housing` SET `owner` = '" + player.getUniqueId() + "' WHERE `number` = " + houseData.getNumber());
+                                                houseData.setOwner(player.getUniqueId().toString());
+                                                sign.setLine(2, "§0" + player.getName());
+                                                sign.update();
+                                                player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ gekauft!");
+                                            } else {
+                                                player.sendMessage(Main.error + "Du hast nicht genug Haus-Slots.");
                                             }
-                                        } else {
-                                            player.sendMessage(Main.error + "Du hast nicht genug Bargeld (" + houseData.getPrice() + "$).");
+                                        } catch (SQLException e) {
+                                            player.sendMessage(Main.error + "Ein Fehler ist unterlaufen, versuche es später erneut.");
+                                            throw new RuntimeException(e);
                                         }
                                     } else {
-                                        player.sendMessage(Main.error + "Dieses Haus ist bereits verkauft.");
+                                        player.sendMessage(Main.error + "Du hast nicht genug Bargeld (" + houseData.getPrice() + "$).");
                                     }
+                                } else {
+                                    player.sendMessage(Main.error + "Dieses Haus ist bereits verkauft.");
+                                }
 
                             }
                         }

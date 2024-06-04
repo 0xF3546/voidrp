@@ -194,8 +194,8 @@ public class PlayerInteractListener implements Listener {
                                     inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
-                                            if (utils.housing.resetHouse(player, playerData.getIntVariable("current_house"))) {
-                                                House houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                                            // House houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                                            if (utils.housing.resetHouse(player, houseData.getNumber())) {
                                                 playerData.addMoney((int) (houseData.getPrice() * 0.8));
                                                 player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
                                                 player.closeInventory();
@@ -220,8 +220,8 @@ public class PlayerInteractListener implements Listener {
                                 inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$")) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
-                                        player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
                                         player.closeInventory();
+                                        player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
                                     }
                                 });
                             }
