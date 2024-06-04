@@ -50,7 +50,11 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
                     Statement statement = Main.getInstance().mySQL.getStatement();
                     ResultSet res = statement.executeQuery("SELECT * FROM banreasons WHERE LOWER(reason) = '" + args[1].toLowerCase() + "'");
                     if (res.next()) {
-                        player.performCommand("ban name " + args[0] + " " + res.getInt(3) + res.getString(4) + " " + res.getString(2));
+                        if (res.getInt("amount") == -1) {
+                            player.performCommand("permban " + args[0] + " " + res.getString("reason"));
+                        } else {
+                            player.performCommand("ban name " + args[0] + " " + res.getInt(3) + res.getString(4) + " " + res.getString(2));
+                        }
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

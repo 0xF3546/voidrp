@@ -38,7 +38,7 @@ public class FDoorCommand implements CommandExecutor {
             return false;
         }
         if (locationManager.getLocation("fdoor_" + playerData.getFaction()) == null) {
-            player.sendMessage(Main.error + "Deine Fraktion hat keine Fraktionstür");
+            player.sendMessage(Main.error + "Deine Fraktion hat keine Fraktionstür.");
             return false;
         }
         if (locationManager.getDistanceBetweenCoords(player, "fdoor_" + playerData.getFaction()) > 5) {

@@ -59,7 +59,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-                    players.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server gebannt.\nGrund§8:§7 " + banreason + "\n\n§8• §6§lVoidRoleplay §8•");
+                    players.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server gebannt.\nGrund§8:§7 " + banreason.toString().replace("-", " ") + "\n\n§8• §6§lVoidRoleplay §8•");
                 }
             }
             try {
@@ -97,7 +97,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-                    players.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server gebannt.\nGrund§8:§7 " + banreason + "\n\n§8• §6§lVoidRoleplay §8•");
+                    players.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server gebannt.\nGrund§8:§7 " + banreason.toString().replace("-", " ") + "\n\n§8• §6§lVoidRoleplay §8•");
                 }
             }
             try {
@@ -130,7 +130,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(syntax_error);
             return false;
         }
-        Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grund: " + banreason);
+        Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grund: " + banreason.toString().replace("-", " "));
         Statement statement = null;
         try {
             statement = Main.getInstance().mySQL.getStatement();
