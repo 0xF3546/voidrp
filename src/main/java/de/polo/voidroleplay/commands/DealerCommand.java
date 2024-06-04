@@ -82,7 +82,7 @@ public class DealerCommand implements CommandExecutor {
                 FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                 double amount = ServerManager.getPayout("box_dealer");
                 if (Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() < 22) {
-                    amount = amount * 0.08;
+                    amount = amount * 1.08;
                 }
                 long percentage = Math.round(amount * 0.1);
                 factionData.addBankMoney((int) percentage, "Verkauf (Dealer - " + player.getName() + ")");

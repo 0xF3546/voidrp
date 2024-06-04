@@ -19,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
@@ -186,7 +187,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             return;
         }
         Gangwar gangwarData = getGangwarByZone(zone);
-        playerData.setInventoryVariable("gangwar", player.getInventory());
+        playerData.setVariable("inventory::gangwar", player.getInventory().getContents());
+        // playerData.setVariable("inventory::gangwar", InventoryUtils.serializeInventory(player.getInventory()));
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         BossBar bossBar = Bukkit.createBossBar("Lade Gangwar...", BarColor.RED, BarStyle.SOLID);
         playerData.setBossBar("gangwar", bossBar);
@@ -229,7 +231,10 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 }
             }
             player.getInventory().clear();
-            player.getInventory().setContents(playerData.getInventoryVariable("gangwar").getContents());
+            player.getInventory().setContents(playerData.getVariable("inventory::gangwar"));
+            //Inventory inventory = InventoryUtils.deserializeInventory(playerData.getVariable("inventory::gangwar"));
+            //if (inventory == null) return;
+            //player.getInventory().setContents(inventory.getContents());
         }
     }
 
