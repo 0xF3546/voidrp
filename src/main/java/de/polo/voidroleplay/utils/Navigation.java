@@ -175,7 +175,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                     player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     if (player.getLocation().distance(targetLocation) <= 5) {
                         this.cancel();
-                        Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi")));
+                        Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
                         player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
                         playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", null);
                     }
@@ -224,7 +224,45 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
                                 player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
-                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi")));
+                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
+                                playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", null);
+                            }
+                        } else {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(Main.getInstance(), 0L, 1L);
+            }
+        }
+    }
+
+    public void createNaviByLocation(Player player, String nav) {
+        for (LocationData locationData : LocationManager.locationDataMap.values()) {
+            if (locationData.getName().equalsIgnoreCase(nav)) {
+                playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", nav);
+                final double length = 5.0;
+                final double increment = 0.5;
+                final Location targetLocation = new Location(Bukkit.getWorld(locationData.getWelt()), locationData.getX(), locationData.getY(), locationData.getZ());
+                BukkitTask particleTask = new BukkitRunnable() {
+                    double progress = 0.0;
+
+                    @Override
+                    public void run() {
+                        if (!player.isOnline()) this.cancel();
+                        if (playerManager.getPlayerData(player.getUniqueId()).getVariable("navi") != null) {
+                            Vector direction = targetLocation.clone().subtract(player.getEyeLocation()).toVector().normalize();
+                            Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(progress));
+                            player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.ORANGE, 1));
+                            progress += increment;
+                            if (progress >= length) {
+                                progress = 0.0;
+                            }
+                            String actionBarText = "§8 » §6Noch " + (int) Math.floor(player.getLocation().distance(targetLocation)) + " Meter§8 « ";
+                            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+                            if (player.getLocation().distance(targetLocation) <= 5) {
+                                this.cancel();
+                                player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
+                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
                                 playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", null);
                             }
                         } else {

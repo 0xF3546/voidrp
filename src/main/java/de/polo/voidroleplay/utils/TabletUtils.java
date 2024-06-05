@@ -234,7 +234,7 @@ public class TabletUtils implements Listener {
                     openPlayerAktenList(player, page + 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cLetzte Seite")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openPlayerAktenList(player, page - 1);

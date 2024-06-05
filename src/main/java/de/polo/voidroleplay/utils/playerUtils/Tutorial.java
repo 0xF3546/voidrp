@@ -17,48 +17,70 @@ import java.sql.Statement;
 public class Tutorial implements Listener {
     private final PlayerManager playerManager;
     private final Navigation navigation;
+
     public Tutorial(PlayerManager playerManager, Navigation navigation) {
         this.playerManager = playerManager;
         this.navigation = navigation;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     public void start(Player player) {
         player.sendMessage("§8[§9Tutorial§8]§7 Willkommen im Tutorial.");
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFirstname() != null && playerData.getLastname() != null) {
+            createdAusweis(player);
+            return;
+        }
+        ;
+        PlayerTutorial playerTutorial = PlayerTutorial.getPlayerTutorial(playerData);
+        if (playerTutorial == null) return;
+        playerTutorial.setStage(1);
         Main.waitSeconds(4, () -> {
-            player.sendMessage("§8[§9Tutorial§8]§7 Als erstes musst du dir einen Personalausweis erstellen. Gehe dazu ins Rathaus, folge dazu einfach der Route!");
-            navigation.createNavi(player, "einreise", true);
+            player.sendMessage("§8[§9Tutorial§8]§7 Als erstes musst du dir einen Personalausweis erstellen. Gehe dazu in die Stadthalle, folge dazu einfach der Route!");
+            navigation.createNaviByCord(player, 133, 72, 157);
         });
-    }
-    public boolean isInTutorial(Player player) {
-        return playerManager.getPlayerData(player.getUniqueId()).getVariable("tutorial") != null;
     }
 
     public void createdAusweis(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getVariable("tutorial") != null) {
-            player.sendMessage("§8[§9Tutorial§8]§7 Sehr gut gemacht!");
-            Main.waitSeconds(1, () -> player.sendMessage("§8[§9Tutorial§8]§7 Nutze §8/§epersonalausweis§7 um deinen Personalausweis anzusehen."));
-        }
+        PlayerTutorial playerTutorial = PlayerTutorial.getPlayerTutorial(playerData);
+        if (playerTutorial == null) return;
+        if (playerTutorial.getStage() != 1) {
+            usedAusweis(player);
+            return;
+        };
+        playerTutorial.setStage(2);
+        player.sendMessage("§8[§9Tutorial§8]§7 Sehr gut gemacht!");
+        Main.waitSeconds(1, () -> player.sendMessage("§8[§9Tutorial§8]§7 Nutze §8/§epersonalausweis§7 um deinen Personalausweis anzusehen."));
     }
 
     public void usedAusweis(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getVariable("tutorial") != null) {
-            player.sendMessage("§8[§9Tutorial§8]§7 Ich denke es ist alles verständlich, außer die §eVisumstufe§7?");
+        PlayerTutorial playerTutorial = PlayerTutorial.getPlayerTutorial(playerData);
+        if (playerTutorial == null) return;
+        if (playerTutorial.getStage() != 2) {
+            supportMessage(player);
+            return;
+        }
+        playerTutorial.setStage(3);
+        player.sendMessage("§8[§9Tutorial§8]§7 Ich denke es ist alles verständlich, außer die §eVisumstufe§7?");
+        Main.waitSeconds(4, () -> {
+            player.sendMessage("§8[§9Tutorial§8]§7 Dein §eVisum§7 gibt an wie lang du schon auf Void Roleplay bist.");
             Main.waitSeconds(4, () -> {
-                player.sendMessage("§8[§9Tutorial§8]§7 Dein §eVisum§7 gibt an wie lang du schon auf Void Roleplay bist.");
-                Main.waitSeconds(4, () -> {
-                    TextComponent one = new TextComponent("§8[§9Tutorial§8]§7 Mehr über das §eVisumsystem§7 findest du ");
-                    TextComponent mcserverlist = new TextComponent("§ehier§7.");
-                    mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/main/index.php?thread/4-visum-levelsystem/"));
-                    player.spigot().sendMessage(one, mcserverlist);
+                TextComponent one = new TextComponent("§8[§9Tutorial§8]§7 Mehr über das §eVisumsystem§7 findest du ");
+                TextComponent mcserverlist = new TextComponent("§ehier§7.");
+                mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/main/index.php?thread/4-visum-levelsystem/"));
+                player.spigot().sendMessage(one, mcserverlist);
+                Main.waitSeconds(3, () -> {
+                    player.sendMessage("§b   Info:§f Wenn du nun Shift + F drückst an der Stadthalle (Sneak und Item-Wechsel), öffnet sich ein Lager in welchem du Wertgegenstände lagern kannst.");
                     Main.waitSeconds(3, () -> {
-                        navigation.createNavi(player, "Shop-1", true);
-                        player.sendMessage("§8[§9Tutorial§8]§7 Begib dich nun zum Shop.");
+                        navigation.createNaviByLocation(player, "Shop-1");
+                        player.sendMessage("§8[§9Tutorial§8]§7 Begib dich nun zum Shop. (/navi [Shop] Stadthalle)");
                     });
                 });
             });
-        }
+        });
+
     }
 
     public void supportMessage(Player player) {
@@ -67,6 +89,15 @@ public class Tutorial implements Listener {
         TextComponent two = new TextComponent("§7durchliest.");
         mcserverlist.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/main/index.php?thread/3-ingame-regelwerk/&postID=3#post3"));
         player.spigot().sendMessage(one, mcserverlist);
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        PlayerTutorial playerTutorial = PlayerTutorial.getPlayerTutorial(playerData);
+        if (playerTutorial == null) return;
+        if (playerTutorial.getStage() != 3) {
+            endTutorial(player);
+            return;
+        }
+        ;
+        playerTutorial.setStage(4);
         Main.waitSeconds(4, () -> {
             player.sendMessage("§8[§9Tutorial§8]§7 Solltest du noch §eFragen §7oder andere §eAnliegen§7 haben, nutze §8/§esupport [Anliegen]§7.");
             Main.waitSeconds(4, () -> {
@@ -76,7 +107,7 @@ public class Tutorial implements Listener {
                     TextComponent b = new TextComponent("§eForum§7 ");
                     TextComponent c = new TextComponent("§7ein.");
                     b.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/main/"));
-                    player.spigot().sendMessage(a,b,c);
+                    player.spigot().sendMessage(a, b, c);
                     Main.waitSeconds(4, () -> endTutorial(player));
                 });
             });
@@ -85,17 +116,14 @@ public class Tutorial implements Listener {
 
     public void endTutorial(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        PlayerTutorial playerTutorial = PlayerTutorial.getPlayerTutorial(playerData);
         playerData.setVariable("tutorial", null);
         player.sendMessage("§8[§9Tutorial§8]§7 Du hast das §9Tutorial§a erfolgreich§7 beendeet.");
         player.sendMessage("§8[§bInfo§8]§7 Solltest du noch mehr über den Server wissen wollen, komm auf unseren §9Discord§7 oder schau auf §cYouTube§7 vorbei.");
         player.sendMessage("§8       ➥ §8/§9discord§7 & §8/§cyoutube");
         playerManager.addExp(player, 30);
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `tutorial` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        if (playerTutorial == null) return;
+        playerTutorial.end();
     }
 
     @EventHandler
@@ -106,14 +134,17 @@ public class Tutorial implements Listener {
                 player.sendMessage("§8[§9Tutorial§8]§7 Erstelle dir nun einen Personalausweis!");
             }
             if (event.getNavi().equals("Shop-1")) {
-                player.sendMessage("§8[§9Tutorial§8]§7 Kaufe dir nun ein Handy und schau dich ein bisschen um. Das Tutorial geht in 15 Sekunden weiter");
-                Main.waitSeconds(15, () -> {
-                    player.sendMessage("§8[§9Tutorial§8]§7 Deine Nummer lautet §e" + event.getPlayerData().getNumber() + "§7, mit §8/§esms§7 kannst du SMS an Freunde schreiben.");
-                    Main.waitSeconds(4, () -> {
-                        player.sendMessage("§8[§9Tutorial§8]§7 Mit §8/§ecall§7 kannst du Sie auch Anrufen.");
-                        Main.waitSeconds(6, () -> {
-                            player.sendMessage("§8[§9Tutorial§8]§7 Das Tutorial ist fast durch, nur noch ein bisschen was um zu vermeiden, dass du gebannt wirst.");
-                            Main.waitSeconds(4, () -> supportMessage(player));
+                player.sendMessage("§8[§9Tutorial§8]§7 Hier kannst du Gegenstände kaufen oder Verkaufen.");
+                Main.waitSeconds(2, () -> {
+                    player.sendMessage("§8[§9Tutorial§8]§7 Wenn du eine §6Firma§7 besitzt, kannst du diese Läden kaufen und verwalten. Firmen kannst du in der §eStadthalle gründen.");
+                    Main.waitSeconds(3, () -> {
+                        player.sendMessage("§8[§9Tutorial§8]§7 Du kannst dir ein Handy & Tablet kaufen oder mit Shift + F deine Tasche öffnen und darüber diese benutzen.");
+                        Main.waitSeconds(4, () -> {
+                            player.sendMessage("§8[§9Tutorial§8]§7 Mit §8/§ecall§7 kannst du Sie auch Anrufen.");
+                            Main.waitSeconds(6, () -> {
+                                player.sendMessage("§8[§9Tutorial§8]§7 Das Tutorial ist fast durch, nur noch ein bisschen was um zu vermeiden, dass du gebannt wirst.");
+                                Main.waitSeconds(4, () -> supportMessage(player));
+                            });
                         });
                     });
                 });

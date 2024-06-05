@@ -17,6 +17,7 @@ import de.polo.voidroleplay.game.events.HourTickEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import de.polo.voidroleplay.utils.playerUtils.PlayerTutorial;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -226,11 +227,7 @@ public class PlayerManager implements Listener, ServerTiming {
                         }
                     });
                 }
-                /*if (result.getBoolean("tutorial")) {
-                    playerData.setVariable("tutorial", "muss");
-                    Main.getInstance().utils.tutorial.start(player);
-                }*/
-
+                int tutorial = result.getInt("tutorial");
                 playerData.setHours(result.getInt("playtime_hours"));
                 playerData.setMinutes(result.getInt("playtime_minutes"));
                 playerData.setAFK(false);
@@ -297,6 +294,10 @@ public class PlayerManager implements Listener, ServerTiming {
 
 
                 playerDataMap.put(uuid, playerData);
+                if (tutorial != 0) {
+                    playerData.setVariable("tutorial", new PlayerTutorial(player, playerData, tutorial));
+                    Main.getInstance().utils.tutorial.start(player);
+                }
                 if (playerData.getRankDuration() != null) {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     if (date.isBefore(LocalDateTime.now())) {
