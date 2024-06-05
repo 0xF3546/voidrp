@@ -401,6 +401,7 @@ public final class Main extends JavaPlugin {
         public WeaponcrafterCommand weaponcrafterCommand;
         public SperrzoneCommand sperrzoneCommand;
         public SperrzonenCommand sperrzonenCommand;
+        public FAQCommand faqCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -555,6 +556,7 @@ public final class Main extends JavaPlugin {
             weaponcrafterCommand = new WeaponcrafterCommand(locationManager, playerManager);
             sperrzoneCommand = new SperrzoneCommand(playerManager, locationManager);
             sperrzonenCommand = new SperrzonenCommand(playerManager);
+            faqCommand = new FAQCommand();
 
             main.registerCommands();
             main.registerListener(this);
