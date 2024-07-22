@@ -38,9 +38,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                     if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                        players.sendMessage("§c§lHilfe! §3" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                        TextComponent start = new TextComponent("§8 ➥ ");
-                        TextComponent route = new TextComponent("§aRoute");
+                        players.sendMessage("§c§lHilfe! §b" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                        TextComponent start = new TextComponent("§8 » ");
+                        TextComponent route = new TextComponent("§cRoute Anzeigen");
                         TextComponent mid = new TextComponent("§8 | ");
                         TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                         route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -59,9 +59,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§c§lDRINGEND HILFE! §3" + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                TextComponent start = new TextComponent("§8 ➥ ");
-                                TextComponent route = new TextComponent("§aRoute");
+                                players.sendMessage("§c§lDRINGEND HILFE! §b" + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                TextComponent start = new TextComponent("§8 » ");
+                                TextComponent route = new TextComponent("§cRoute Anzeigen");
                                 TextComponent mid = new TextComponent("§8 | ");
                                 TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                 route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -79,9 +79,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§e§lGPS geteilt! §3" + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                TextComponent start = new TextComponent("§8 ➥ ");
-                                TextComponent route = new TextComponent("§aRoute");
+                                players.sendMessage("§e§lGPS geteilt! §b" + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                TextComponent start = new TextComponent("§8 » ");
+                                TextComponent route = new TextComponent("§cRoute Anzeigen");
                                 TextComponent mid = new TextComponent("§8 | ");
                                 TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                 route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -99,9 +99,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         if (playerManager.isInStaatsFrak(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§c§lDRINGEND HILFE! §3" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 ➥ ");
-                                    TextComponent route = new TextComponent("§aRoute");
+                                    players.sendMessage("§c§lDRINGEND HILFE! §b" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                    TextComponent start = new TextComponent("§8 » ");
+                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
                                     TextComponent mid = new TextComponent("§8 | ");
                                     TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                     route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -117,9 +117,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         } else if (factionManager.isInBündnis(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
-                                    players.sendMessage("§c§lDRINGEND HILFE! §3" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 ➥ ");
-                                    TextComponent route = new TextComponent("§aRoute");
+                                    players.sendMessage("§c§lDRINGEND HILFE! §b" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                    TextComponent start = new TextComponent("§8 » ");
+                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
                                     TextComponent mid = new TextComponent("§8 | ");
                                     TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                     route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -139,9 +139,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                                 if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§e§lGPS geteilt! §3" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 ➥ ");
-                                    TextComponent route = new TextComponent("§aRoute");
+                                    players.sendMessage("§e§lGPS geteilt! §b" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                    TextComponent start = new TextComponent("§8 » ");
+                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
                                     TextComponent mid = new TextComponent("§8 | ");
                                     TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                     route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -157,9 +157,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         } else if (factionManager.isInBündnis(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
-                                    players.sendMessage("§e§lGPS geteilt! §3" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 ➥ ");
-                                    TextComponent route = new TextComponent("§aRoute");
+                                    players.sendMessage("§e§lGPS geteilt! §b" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                    TextComponent start = new TextComponent("§8 » ");
+                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
                                     TextComponent mid = new TextComponent("§8 | ");
                                     TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                     route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -179,9 +179,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                                 if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§c§lHilfe! §3" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 ➥ ");
-                                    TextComponent route = new TextComponent("§aRoute");
+                                    players.sendMessage("§c§lHilfe! §b" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                    TextComponent start = new TextComponent("§8 » ");
+                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
                                     TextComponent mid = new TextComponent("§8 | ");
                                     TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                     route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -197,9 +197,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         } else if (factionManager.isInBündnis(player)) {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
-                                    players.sendMessage("§c§lHilfe! §3" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 ➥ ");
-                                    TextComponent route = new TextComponent("§aRoute");
+                                    players.sendMessage("§c§lHilfe! §b" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                    TextComponent start = new TextComponent("§8 » ");
+                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
                                     TextComponent mid = new TextComponent("§8 | ");
                                     TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                     route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -219,9 +219,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                                 if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§c§lMediziner benötigt! §3" + playerData.getFaction() + " " + player.getName() + " benöge einen Mediziner! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 ➥ ");
-                                    TextComponent route = new TextComponent("§aRoute");
+                                    players.sendMessage("§c§lMediziner benötigt! §b" + playerData.getFaction() + " " + player.getName() + " benöge einen Mediziner! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                    TextComponent start = new TextComponent("§8 » ");
+                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
                                     TextComponent mid = new TextComponent("§8 | ");
                                     TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                     route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
@@ -245,18 +245,18 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
                                     PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                                     if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                        players.sendMessage("§8 ➥ §b" + player.getName() + " §7➡ §3" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
+                                        players.sendMessage("§8 » §b" + player.getName() + " §7➡ §b" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
                                     }
                                 }
                             } else {
                                 if (playerManager.isInStaatsFrak(player)) {
                                     for (Player players : Bukkit.getOnlinePlayers()) {
-                                        players.sendMessage("§8 ➥ §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §3" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
+                                        players.sendMessage("§8 » §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §b" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
                                     }
                                 } else if (factionManager.isInBündnis(player)) {
                                     for (Player players : Bukkit.getOnlinePlayers()) {
                                         if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
-                                            players.sendMessage("§8 ➥ §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §3" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
+                                            players.sendMessage("§8 » §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §b" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
                                         }
                                     }
                                 }
@@ -267,9 +267,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                             if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§c§lHilfe! §3" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                TextComponent start = new TextComponent("§8 ➥ ");
-                                TextComponent route = new TextComponent("§aRoute");
+                                players.sendMessage("§c§lHilfe! §b" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                                TextComponent start = new TextComponent("§8 » ");
+                                TextComponent route = new TextComponent("§cRoute Anzeigen");
                                 TextComponent mid = new TextComponent("§8 | ");
                                 TextComponent toPlayer = new TextComponent("§aUnterwegs!");
                                 route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
