@@ -3,8 +3,10 @@ package de.polo.voidroleplay.utils.GamePlay;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Dealer;
 import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.dataStorage.LocationData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.faction.apotheke.ApothekeFunctions;
 import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
 import de.polo.voidroleplay.utils.*;
@@ -16,6 +18,8 @@ import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -46,6 +50,8 @@ public class GamePlay implements Listener {
     private final LocationManager locationManager;
     private final List<Dealer> dealers = new ArrayList<>();
     public final FactionUpgradeGUI factionUpgradeGUI;
+    public Drop activeDrop = null;
+    public LocalDateTime lastDrop = Utils.getTime();
 
     @SneakyThrows
     public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager) {
@@ -455,10 +461,37 @@ public class GamePlay implements Listener {
         }
     }
 
+    public Drop spawnDrop() {
+        if (activeDrop != null) activeDrop.cleanup();
+        List<LocationData> dropLocations = new ArrayList<>();
+        for (LocationData locationData : locationManager.getLocations()) {
+            if (locationData.getType() == null) continue;
+            if (locationData.getType().equalsIgnoreCase("drop")) {
+                dropLocations.add(locationData);
+            }
+        }
+        if (!dropLocations.isEmpty()) {
+            int randomLocation = (int) (Math.random() * dropLocations.size());
+            LocationData location = dropLocations.get(randomLocation);
+            activeDrop = new Drop(new Location(Bukkit.getWorld("World"), location.getX(), location.getY(), location.getZ()));
+        }
+        return activeDrop;
+    }
+
     @SneakyThrows
     @EventHandler
     public void everyMinute(MinuteTickEvent event) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = Utils.getTime();
+
+        if (Duration.between(currentDateTime, lastDrop).toMinutes() >= 90) {
+            double randomNumber = Math.random() * 100;
+            if (randomNumber < 97) {
+                spawnDrop();
+            }
+        } else if (activeDrop != null) {
+            activeDrop.setMinutes(activeDrop.getMinutes() - 1);
+        }
+
 
         for (FactionData factionData : factionManager.getFactions()) {
             LocalDateTime proceedingStarted = factionData.storage.getProceedingStarted();

@@ -118,6 +118,11 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
                 if (event.getClickedBlock().getType() == Material.CHEST) {
+                    if (Main.getInstance().gamePlay.activeDrop != null) {
+                        if (Main.getInstance().gamePlay.activeDrop.location == event.getClickedBlock().getLocation()) {
+                            return;
+                        }
+                    }
                     event.setCancelled(true);
                     if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
                         if (Main.getInstance().locationManager.getDistanceBetweenCoords(player, "asservatenkammer") < 20) {

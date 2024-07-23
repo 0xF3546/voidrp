@@ -1,5 +1,6 @@
 package de.polo.voidroleplay;
 
+import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
 import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
@@ -70,6 +71,7 @@ public final class Main extends JavaPlugin {
     public GamePlay gamePlay;
     public Laboratory laboratory;
     public CompanyManager companyManager;
+    public Seasonpass seasonpass;
 
     public void onLoad() {
         instance = this;
@@ -99,6 +101,7 @@ public final class Main extends JavaPlugin {
         laboratory = new Laboratory(playerManager, factionManager, locationManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons, companyManager);
+        seasonpass = new Seasonpass(playerManager, factionManager);
         new InventoryApiRegister(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -171,6 +174,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         teamSpeak.shutdown();
+        gamePlay.activeDrop.cleanup();
         System.out.println("Disabling VoidRoleplay");
         isOnline = false;
         try {
@@ -403,6 +407,7 @@ public final class Main extends JavaPlugin {
         public SperrzonenCommand sperrzonenCommand;
         public FAQCommand faqCommand;
         public KarmaCommand karmaCommand;
+        public ForceDropCommand forceDropCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -559,6 +564,7 @@ public final class Main extends JavaPlugin {
             sperrzonenCommand = new SperrzonenCommand(playerManager);
             faqCommand = new FAQCommand();
             karmaCommand = new KarmaCommand(playerManager);
+            forceDropCommand = new ForceDropCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

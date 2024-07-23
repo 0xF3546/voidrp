@@ -1,0 +1,116 @@
+package de.polo.voidroleplay.game.base.extra.Drop;
+
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.NaviData;
+import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.utils.Navigation;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class Drop {
+
+    List<ItemStack> items = Arrays.asList(
+            ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 4, 0, "§7Gepackte Waffe", "§8 ➥ §cSturmgewehr"),
+            ItemManager.createItem(Material.CHEST, 50, 0, "§7Magazin", "§8 ➥ §cSturmgewehr"),
+            ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§7Gepackte Waffe", "§8 ➥ §cMarksman"),
+            ItemManager.createItem(Material.CHEST, 10, 0, "§7Magazin", "§8 ➥ §cMarksman"),
+            ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 4, 0, "§7Gepackte Waffe", "§8 ➥ §cFlinte"),
+            ItemManager.createItem(Material.CHEST, 15, 0, "§7Magazin", "§8 ➥ §cFlinte"),
+            ItemManager.createItem(Material.IRON_CHESTPLATE, 5, 0, "§7Schwere Schutzweste"),
+            ItemManager.createItem(RoleplayItem.WAFFENTEIL.getMaterial(), 85, 0, RoleplayItem.WAFFENTEIL.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.WAFFENTEIL.getMaterial(), 45, 0, RoleplayItem.WAFFENTEIL.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 20, 0, RoleplayItem.COCAINE.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 100, 0, RoleplayItem.MARIHUANA.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 28, 0, RoleplayItem.COCAINE.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 130, 0, RoleplayItem.MARIHUANA.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 27, 0, RoleplayItem.JOINT.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 20, 0, RoleplayItem.JOINT.getDisplayName())
+    );
+    private Block lastBlock = null;
+    private int minutes;
+    private ArmorStand hologram = null;
+    public Location location;
+    public boolean isDropOpen = false;
+    public Chest chest = null;
+
+    public Drop(Location location) {
+        lastBlock = location.getBlock();
+        this.location = location;
+        NaviData naviData = Navigation.getNearestNaviPoint(location);
+        Location naviLocation = Main.getInstance().locationManager.getLocation(naviData.getLocation());
+        if (location.distance(naviLocation) > 100) {
+            Bukkit.broadcastMessage("§cSchmuggler haben eine Kiste verloren. Informanten haben die Koordinaten X: " + location.getX() + " Y: " + location.getY() + " Z: " + location.getZ() + " übermittelt.");
+        } else {
+            Bukkit.broadcastMessage("§cSchmuggler haben eine Kiste in der nähe von " + naviData.getName() + " §cverloren.");
+        }
+        location.getBlock().setType(Material.CHEST);
+        Location hologramLocation = location.clone().add(0.5, 2.5, 0.5);
+        hologram = (ArmorStand) location.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
+        hologram.setVisible(false);
+        hologram.setCustomNameVisible(true);
+        hologram.setGravity(false);
+        hologram.setMarker(true);
+        setMinutes(8);
+        chest = (Chest) location.getBlock().getState();
+
+        Collections.shuffle(items);
+        addItemsToChest();
+    }
+
+    public void setMinutes(int minutes) {
+        if (isDropOpen) return;
+        if (minutes == 0) {
+            isDropOpen = true;
+            hologram.setCustomName("§6Kiste offen");
+            Bukkit.broadcastMessage("§cDie von Schmugglern fallen gelassene Kiste ist nun offen.");
+            return;
+        }
+        this.minutes = minutes;
+        if (hologram != null) {
+            hologram.setCustomName("§c" + minutes + " Minuten verbleibend");
+        }
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public void cleanup() {
+        if (lastBlock != null) {
+            lastBlock.getLocation().getBlock().setType(lastBlock.getType());
+        }
+        if (hologram != null) {
+            hologram.remove();
+        }
+    }
+
+    private void addItemsToChest() {
+        if (chest != null) {
+            Inventory inventory = chest.getInventory();
+            Random random = new Random();
+            int numberOfItems = random.nextInt(4) + 2;
+            for (int i = 0; i < numberOfItems; i++) {
+                inventory.addItem(items.get(i));
+            }
+        }
+    }
+}
