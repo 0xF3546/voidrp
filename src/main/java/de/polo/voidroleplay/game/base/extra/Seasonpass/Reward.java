@@ -10,6 +10,7 @@ public class Reward {
     private String type;
     private int amount;
     private String info;
+    private String name;
 
     public Reward(int id, String type, int amount) {
         this.id = id;
@@ -47,5 +48,13 @@ public class Reward {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

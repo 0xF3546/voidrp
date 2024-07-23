@@ -59,6 +59,7 @@ public class Seasonpass implements CommandExecutor {
         while (result.next()) {
             Reward reward = new Reward(result.getInt("id"), result.getString("type"), result.getInt("amount"));
             reward.setInfo(result.getString("info"));
+            reward.setName(result.getString("name"));
             rewards.add(reward);
         }
         statement.close();
@@ -123,8 +124,9 @@ public class Seasonpass implements CommandExecutor {
             if (playerQuest.getState() >= quest.getReachedAt()) {
                 state = "§2Abgeschlossen!";
             }
+            Reward reward = getRewardById(quest.getRewardId());
             if (playerQuest.getState() >= quest.getReachedAt()) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BARRIER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state))) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BARRIER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
@@ -133,14 +135,14 @@ public class Seasonpass implements CommandExecutor {
                 continue;
             }
             if (quest.getItem() == null) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state))) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(quest.getItem(), 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state))) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(quest.getItem(), 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
@@ -154,6 +156,13 @@ public class Seasonpass implements CommandExecutor {
     public Quest getQuestById(int id) {
         for (Quest quest : quests) {
             if (quest.getId() == id) return quest;
+        }
+        return null;
+    }
+
+    public Reward getRewardById(int id) {
+        for (Reward reward : rewards) {
+            if (reward.getId() == id) return reward;
         }
         return null;
     }
