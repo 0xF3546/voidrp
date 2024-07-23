@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.extra.Seasonpass.PlayerQuest;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.utils.enums.Gender;
@@ -25,6 +26,8 @@ public class PlayerData {
     @Getter
     private Player player;
     private String spawn;
+
+    private List<PlayerQuest> quests = new ArrayList<>();
 
     public PlayerData(Player player) {
         this.player = player;
@@ -850,6 +853,14 @@ public class PlayerData {
 
     public void setKarma(int karma) {
         this.karma = karma;
+    }
+
+    public void addQuest(PlayerQuest playerQuest) {
+        quests.add(playerQuest);
+    }
+
+    public Collection<PlayerQuest> getQuests() {
+        return quests;
     }
 
     public class AddonXP {

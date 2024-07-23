@@ -1,8 +1,10 @@
 package de.polo.voidroleplay.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.base.housing.House;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -75,6 +77,22 @@ public class BlockManager {
         statement.close();
         connection.close();
         return -1;
+    }
+
+    public RegisteredBlock getNearestBlockOfType(Location location, String type) {
+        RegisteredBlock nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (RegisteredBlock data : registeredBlocks) {
+            if (!data.getInfo().equalsIgnoreCase(type)) continue;
+            if (data.getLocation() == null) continue;
+            double distance = data.getLocation().distance(location);
+
+            if (nearest == null || distance < nearestDistance) {
+                nearest = data;
+                nearestDistance = distance;
+            }
+        }
+        return nearest;
     }
 
     @SneakyThrows

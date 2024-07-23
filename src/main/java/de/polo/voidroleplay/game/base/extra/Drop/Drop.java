@@ -2,6 +2,8 @@ package de.polo.voidroleplay.game.base.extra.Drop;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.NaviData;
+import de.polo.voidroleplay.dataStorage.RegisteredBlock;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.Navigation;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -50,6 +52,7 @@ public class Drop {
     private ArmorStand hologram = null;
     public Location location;
     public boolean isDropOpen = false;
+    public boolean dropEnded = false;
     public Chest chest = null;
 
     public Drop(Location location) {
@@ -58,9 +61,15 @@ public class Drop {
         NaviData naviData = Navigation.getNearestNaviPoint(location);
         Location naviLocation = Main.getInstance().locationManager.getLocation(naviData.getLocation());
         if (location.distance(naviLocation) > 100) {
-            Bukkit.broadcastMessage("§cSchmuggler haben eine Kiste verloren. Informanten haben die Koordinaten X: " + location.getX() + " Y: " + location.getY() + " Z: " + location.getZ() + " übermittelt.");
+            Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste verloren. Informanten haben die Koordinaten X: " + location.getX() + " Y: " + location.getY() + " Z: " + location.getZ() + " übermittelt.");
         } else {
-            Bukkit.broadcastMessage("§cSchmuggler haben eine Kiste in der nähe von " + naviData.getName() + " §cverloren.");
+            RegisteredBlock block = Main.getInstance().blockManager.getNearestBlockOfType(location, "house");
+            if (block.getLocation().distance(location) < 30) {
+                House house = Main.getInstance().housing.getHouse(Integer.parseInt(block.getInfoValue()));
+                Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der nähe von Haus " + house.getNumber() + " verloren.");
+            } else {
+                Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der nähe von " + naviData.getName().replace("&", "§") + " §cverloren.");
+            }
         }
         location.getBlock().setType(Material.CHEST);
         Location hologramLocation = location.clone().add(0.5, 2.5, 0.5);
@@ -77,15 +86,18 @@ public class Drop {
     }
 
     public void setMinutes(int minutes) {
-        if (isDropOpen) return;
         if (minutes == 0) {
-            isDropOpen = true;
-            hologram.setCustomName("§6Kiste offen");
-            Bukkit.broadcastMessage("§cDie von Schmugglern fallen gelassene Kiste ist nun offen.");
+            if (!isDropOpen) {
+                isDropOpen = true;
+                hologram.setCustomName("§6Kiste offen");
+                Bukkit.broadcastMessage("§8[§cDrop§8] §cDie von Schmugglern fallen gelassene Kiste ist nun offen.");
+                this.minutes = 10;
+            } else {
+                cleanup();
+            }
             return;
         }
-        this.minutes = minutes;
-        if (hologram != null) {
+        if (hologram != null && !isDropOpen) {
             hologram.setCustomName("§c" + minutes + " Minuten verbleibend");
         }
     }
@@ -101,6 +113,7 @@ public class Drop {
         if (hologram != null) {
             hologram.remove();
         }
+        dropEnded = true;
     }
 
     private void addItemsToChest() {

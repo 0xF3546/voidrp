@@ -462,6 +462,10 @@ public class GamePlay implements Listener {
     }
 
     public Drop spawnDrop() {
+        if (ServerManager.minutesBeforeServerRestart() < 30) {
+            return null;
+        }
+        lastDrop = Utils.getTime();
         if (activeDrop != null) activeDrop.cleanup();
         List<LocationData> dropLocations = new ArrayList<>();
         for (LocationData locationData : locationManager.getLocations()) {
@@ -489,7 +493,11 @@ public class GamePlay implements Listener {
                 spawnDrop();
             }
         } else if (activeDrop != null) {
-            activeDrop.setMinutes(activeDrop.getMinutes() - 1);
+            if (activeDrop.dropEnded) {
+                activeDrop = null;
+            } else {
+                activeDrop.setMinutes(activeDrop.getMinutes() - 1);
+            }
         }
 
 

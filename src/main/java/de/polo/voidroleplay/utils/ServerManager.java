@@ -19,7 +19,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -237,6 +239,15 @@ public class ServerManager {
 
     public static boolean canDoJobs() {
         return LocalDateTime.now().getHour() != 1 || LocalDateTime.now().getMinute() < 55;
+    }
+
+    public static int minutesBeforeServerRestart() {
+        LocalTime now = LocalTime.from(Utils.getTime());
+        LocalTime nextRestart = now.isBefore(LocalTime.of(2, 0)) ?
+                LocalTime.of(2, 0) :
+                LocalTime.of(2, 0).plusHours(24);
+
+        return (int) Duration.between(now, nextRestart).toMinutes();
     }
 
     public void savePlayers() throws SQLException {

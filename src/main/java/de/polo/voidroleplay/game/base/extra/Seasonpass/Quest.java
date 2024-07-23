@@ -1,5 +1,7 @@
 package de.polo.voidroleplay.game.base.extra.Seasonpass;
 
+import org.bukkit.Material;
+
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -11,12 +13,15 @@ public class Quest {
     private String name;
     private String description;
     private int rewardId;
+    private Material item;
+    private int reachedAt;
 
-    public Quest(int id, int points, String name, String description) {
+    public Quest(int id, int points, String name, String description, int reachedAt) {
         this.id = id;
         this.points = points;
         this.name = name;
         this.description = description;
+        this.reachedAt = reachedAt;
     }
 
     public int getId() {
@@ -57,5 +62,21 @@ public class Quest {
 
     public void setRewardId(int rewardId) {
         this.rewardId = rewardId;
+    }
+
+    public Material getItem() {
+        return item;
+    }
+
+    public void setItem(Material item) {
+        this.item = item;
+    }
+
+    public int getReachedAt() {
+        return reachedAt;
+    }
+
+    public void setReachedAt(int reachedAt) {
+        this.reachedAt = reachedAt;
     }
 }
