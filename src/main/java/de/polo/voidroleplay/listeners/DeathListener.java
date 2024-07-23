@@ -40,6 +40,7 @@ public class DeathListener implements Listener {
             Player player = event.getEntity().getPlayer();
             assert player != null;
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+            boolean removeKarma = true;
             event.setKeepInventory(true);
             if (playerData.getVariable("current_lobby") != null) {
                 utils.ffaUtils.useSpawn(player, playerData.getIntVariable("current_lobby"));
@@ -55,7 +56,7 @@ public class DeathListener implements Listener {
                     playerData.setDead(true);
                     playerData.setDeathTime(300);
                 }
-                event.getEntity().getKiller().sendMessage("§8[§c✟§8]§7 " + event.getEntity().getName());
+                // event.getEntity().getKiller().sendMessage("§8[§c✟§8]§7 " + event.getEntity().getName());
                 ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) skull.getItemMeta();
                 assert meta != null;
@@ -72,6 +73,9 @@ public class DeathListener implements Listener {
                             players.sendMessage("§8[§cKopfgeld§8]§e " + factionManager.getPlayerFactionRankName(player.getKiller()) + " " + player.getKiller().getName() + " §7hat sich das Kopfgeld von §e" + player.getName() + " §7geholt. §8(§a+" + contractData.getAmount() + "$§8)");
                         }
                     }
+                    PlayerData killerData = playerManager.getPlayerData(player.getKiller());
+                    killerData.addKarma(Main.random(1, 3), false);
+                    removeKarma = false;
                     playerManager.addExp(player.getKiller(), Main.random(10, 30));
                     ServerManager.contractDataMap.remove(player.getUniqueId().toString());
                     try {
@@ -121,6 +125,8 @@ public class DeathListener implements Listener {
                                 if (killerData.getFaction().equals(blacklistData.getFaction())) {
                                     FactionData factionData = factionManager.getFactionData(blacklistData.getFaction());
                                     player.sendMessage("§8[§cBlacklist§8]§7 Du wurdest getötet, weil du auf der Blacklist der " + factionData.getFullname() + " bist.");
+                                    killerData.addKarma(Main.random(1, 3), false);
+                                    removeKarma = false;
                                     playerManager.addExp(player.getKiller(), Main.random(3, 9));
                                     if (blacklistData.getKills() > 1) {
                                         blacklistData.setKills(blacklistData.getKills() - 1);
@@ -146,6 +152,8 @@ public class DeathListener implements Listener {
                         }
                     }
                 }
+                PlayerData killerData = playerManager.getPlayerData(player.getKiller());
+                killerData.removeKarma(Main.random(1, 3), false);
             }
         }
 }

@@ -16,12 +16,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.Date;
 
 public class PlayerData {
     @Getter
@@ -101,6 +99,7 @@ public class PlayerData {
     private boolean receivedBonus;
     private int subGroupId;
     private int subGroupGrade;
+    private int karma;
     private List<PlayerWorkstation> workstations = new ArrayList<>();
 
     public PlayerData() {
@@ -653,8 +652,34 @@ public class PlayerData {
     }
 
     @SneakyThrows
+    public void addKarma(int amount, boolean silent) {
+        if (!silent) {
+            player.sendMessage("§8[§3Karma§8]§b +" + amount + " Karma.");
+        }
+        karma += amount;
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE players SET karma = ? WHERE uuid = ?");
+        statement.setInt(1, karma);
+        statement.setString(2, uuid.toString());
+        statement.executeUpdate();
+    }
+
+    @SneakyThrows
+    public void removeKarma(int amount, boolean silent) {
+        if (!silent) {
+            player.sendMessage("§8[§3Karma§8]§b +" + amount + " Karma.");
+        }
+        karma -= amount;
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE players SET karma = ? WHERE uuid = ?");
+        statement.setInt(1, karma);
+        statement.setString(2, uuid.toString());
+        statement.executeUpdate();
+    }
+
+    @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -666,7 +691,8 @@ public class PlayerData {
         statement.setInt(5, getAtmBlown());
         statement.setInt(6, subGroupId);
         statement.setInt(7, subGroupGrade);
-        statement.setInt(8, getId());
+        statement.setInt(8, karma);
+        statement.setInt(9, getId());
         statement.executeUpdate();
     }
 
@@ -816,6 +842,14 @@ public class PlayerData {
 
     public void removeWorkstation(PlayerWorkstation playerWorkstation) {
         workstations.remove(playerWorkstation);
+    }
+
+    public int getKarma() {
+        return karma;
+    }
+
+    public void setKarma(int karma) {
+        this.karma = karma;
     }
 
     public class AddonXP {

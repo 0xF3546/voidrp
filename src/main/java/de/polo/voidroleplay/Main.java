@@ -402,6 +402,7 @@ public final class Main extends JavaPlugin {
         public SperrzoneCommand sperrzoneCommand;
         public SperrzonenCommand sperrzonenCommand;
         public FAQCommand faqCommand;
+        public KarmaCommand karmaCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -557,6 +558,7 @@ public final class Main extends JavaPlugin {
             sperrzoneCommand = new SperrzoneCommand(playerManager, locationManager);
             sperrzonenCommand = new SperrzonenCommand(playerManager);
             faqCommand = new FAQCommand();
+            karmaCommand = new KarmaCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);
