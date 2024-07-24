@@ -74,6 +74,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("drinks", null);
         playerData.setIntVariable("snacks", null);

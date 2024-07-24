@@ -209,6 +209,7 @@ public class WinzerCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player, boolean silent) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         int payout = Main.getInstance().serverManager.getPayout("winzer") * playerData.getIntVariable("winzer_harvested");

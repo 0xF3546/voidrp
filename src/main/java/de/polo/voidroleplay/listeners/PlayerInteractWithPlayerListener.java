@@ -75,6 +75,8 @@ public class PlayerInteractWithPlayerListener implements Listener {
 
                                     HashMap<String, String> hmap2 = new HashMap<>();
                                     hmap2.put(targetplayer.getUniqueId().toString(), "verheiratet");
+                                    Main.getInstance().beginnerpass.didQuest(player, 20);
+                                    Main.getInstance().beginnerpass.didQuest(targetplayer, 20);
                                     playerData.getRelationShip().clear();
                                     playerData.setRelationShip(hmap2);
                                     if (playerData.getGender().equals(Gender.MALE)) {

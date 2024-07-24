@@ -187,6 +187,7 @@ public class LumberjackCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player, boolean silent) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         boolean hasStripped = playerData.getVariable("lumberjack::hasStripped");

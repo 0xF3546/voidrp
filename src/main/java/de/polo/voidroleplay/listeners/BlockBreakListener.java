@@ -43,6 +43,7 @@ public class BlockBreakListener implements Listener {
                 if (player.getLocation().distance(farmer.getLocation()) < 50 && event.getBlock().getType() == farmer.getFarmingItem()) {
                     event.setCancelled(true);
                     event.getBlock().setType(Material.AIR);
+                    Main.getInstance().seasonpass.didQuest(player, 1);
                     ItemManager.addCustomItem(player, RoleplayItem.ARAMID, 1);
                     Main.waitSeconds(120, () -> {
                         event.getBlock().setType(Material.DEAD_BUSH);

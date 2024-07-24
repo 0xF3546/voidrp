@@ -90,6 +90,7 @@ public class MineCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.getScoreboard("mine").killScoreboard();
         int iron = ItemManager.getItem(player, Material.IRON_ORE);

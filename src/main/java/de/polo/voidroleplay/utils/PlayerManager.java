@@ -394,6 +394,8 @@ public class PlayerManager implements Listener, ServerTiming {
                 float value = (float) (needed_hours / player.getExpToLevel());
                 player.setTotalExperience((int) (value * current_hours));
                 if (minutes >= 60) {
+                    Main.getInstance().beginnerpass.didQuest(player, 7);
+                    Main.getInstance().seasonpass.didQuest(player, 7);
                     Main.getInstance().utils.payDayUtils.givePayDay(player);
                     playerData.setHours(playerData.getHours() + 1);
                     if (current_hours >= needed_hours) {
@@ -401,6 +403,7 @@ public class PlayerManager implements Listener, ServerTiming {
                         statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
                         player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                         playerData.setVisum(visum);
+                        Main.getInstance().beginnerpass.didQuest(player, 3);
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                         playerData.setCurrentHours(0);
                     } else {
@@ -425,6 +428,7 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void addMoney(Player player, int amount) throws SQLException {
+        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
@@ -449,6 +453,7 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void addBankMoney(Player player, int amount, String reason) throws SQLException {
+        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
@@ -689,6 +694,7 @@ public class PlayerManager implements Listener, ServerTiming {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + (playerData.getLevel() + 1));
             Main.getInstance().utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
             playerData.setLevel(playerData.getLevel() + 1);
+            Main.getInstance().beginnerpass.didQuest(player, 3);
             player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
@@ -810,6 +816,7 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void openInterActionMenu(Player player, Player targetplayer) {
+        Main.getInstance().beginnerpass.didQuest(player, 12);
         Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
         PlayerData playerData = getPlayerData(player.getUniqueId());
         PlayerData targetplayerData = getPlayerData(targetplayer.getUniqueId());

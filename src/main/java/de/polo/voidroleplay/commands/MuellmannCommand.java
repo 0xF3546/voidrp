@@ -101,6 +101,8 @@ public class MuellmannCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player, boolean silent) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
+        Main.getInstance().seasonpass.didQuest(player, 2);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         if (!silent) player.sendMessage("§8[§9Müllmann§8]§7 Vielen Dank für die geleistete Arbeit.");

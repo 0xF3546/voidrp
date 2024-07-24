@@ -1,5 +1,6 @@
 package de.polo.voidroleplay;
 
+import de.polo.voidroleplay.game.base.extra.Beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
 import de.polo.voidroleplay.game.base.housing.Housing;
@@ -72,6 +73,7 @@ public final class Main extends JavaPlugin {
     public Laboratory laboratory;
     public CompanyManager companyManager;
     public Seasonpass seasonpass;
+    public Beginnerpass beginnerpass;
 
     public void onLoad() {
         instance = this;
@@ -102,6 +104,7 @@ public final class Main extends JavaPlugin {
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
+        beginnerpass = new Beginnerpass(playerManager, factionManager);
         new InventoryApiRegister(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {

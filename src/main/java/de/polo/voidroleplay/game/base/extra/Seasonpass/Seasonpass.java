@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.game.base.extra.Seasonpass;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
@@ -50,6 +51,8 @@ public class Seasonpass implements CommandExecutor {
         while (result.next()) {
             Quest quest = new Quest(result.getInt("id"), result.getInt("points"), result.getString("name"), result.getString("description"), result.getInt("reachedAt"));
             quest.setRewardId(result.getInt("rewardId"));
+            quest.setBadFaction(result.getBoolean("isBadFaction"));
+            quest.setStaatFaction(result.getBoolean("isStaatFaction"));
             if (result.getString("item") != null) quest.setItem(Material.valueOf(result.getString("item")));
             quests.add(quest);
         }
@@ -183,7 +186,53 @@ public class Seasonpass implements CommandExecutor {
 
         Random random = new Random();
         int randomIndex = random.nextInt(availableQuests.size());
-        return availableQuests.get(randomIndex);
+        Quest quest = availableQuests.get(randomIndex);
+        if (quest.isBadFaction()) {
+            if (playerData.getFaction() == null) return getRandomQuest(playerData);
+            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            if (factionData.isBadFrak()) {
+                return quest;
+            } else {
+                return getRandomQuest(playerData);
+            }
+        }
+        if (quest.isStaatFaction()) {
+            if (playerData.getFaction() == null) return getRandomQuest(playerData);
+            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei")) {
+                return quest;
+            } else {
+                return getRandomQuest(playerData);
+            }
+        }
+        return quest;
+    }
+
+    public void didQuest(Player player, int questId) {
+        didQuest(player, questId, 1);
+    }
+
+    @SneakyThrows
+    public void didQuest(Player player, int questId, int amount) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        for (PlayerQuest playerQuest : playerData.getQuests()) {
+            if (!(playerQuest.getQuestId() == questId)) continue;
+            Quest quest = getQuestById(questId);
+            if (playerQuest.getState() >= quest.getReachedAt()) continue;
+            playerQuest.setState(playerQuest.getState() + amount);
+            if (playerQuest.getState() >= quest.getReachedAt()) {
+                Reward reward = getRewardById(quest.getRewardId());
+                player.sendMessage("§8[§6Beginnerpass§8]§a Du hast die Aufgabe " + quest.getName().replace("&", "§") + " §aabgeschlossen!");
+                Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
+            }
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?");
+            statement.setInt(1, playerQuest.getState());
+            statement.setInt(2, playerQuest.getId());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+        }
     }
 
 }

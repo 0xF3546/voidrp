@@ -116,7 +116,7 @@ public class PlantFunctions implements Listener {
         }
         if (plant.getOwner().equalsIgnoreCase(playerData.getFaction())) {
             if (plant.hasTookout(player.getUniqueId())) {
-                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), "§8 » §cKlick um dir " + getTakeOutDifference(plant) + " zu entnehmen")) {
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), "§8 » §cDu kannst in " + getTakeOutDifference(plant) + " wieder Marihuana entnehmen!")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
@@ -127,6 +127,8 @@ public class PlantFunctions implements Listener {
                 inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 » §cKlick um dir " + takeOutAmount + " zu entnehmen"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        Main.getInstance().beginnerpass.didQuest(player, 5, takeOutAmount);
+                        Main.getInstance().seasonpass.didQuest(player, 18, takeOutAmount);
                         player.closeInventory();
                         ItemManager.addCustomItem(player, RoleplayItem.MARIHUANA, takeOutAmount);
                         plant.addTookout(player.getUniqueId());

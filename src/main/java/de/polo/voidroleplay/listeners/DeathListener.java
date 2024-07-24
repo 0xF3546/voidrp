@@ -128,6 +128,7 @@ public class DeathListener implements Listener {
                                     killerData.addKarma(Main.random(1, 3), false);
                                     removeKarma = false;
                                     playerManager.addExp(player.getKiller(), Main.random(3, 9));
+                                    Main.getInstance().seasonpass.didQuest(player.getKiller(), 17);
                                     if (blacklistData.getKills() > 1) {
                                         blacklistData.setKills(blacklistData.getKills() - 1);
                                         try {
@@ -154,6 +155,7 @@ public class DeathListener implements Listener {
                 }
                 PlayerData killerData = playerManager.getPlayerData(player.getKiller());
                 killerData.removeKarma(Main.random(1, 3), false);
+                Main.getInstance().seasonpass.didQuest(player.getKiller(), 5);
             }
         }
 }

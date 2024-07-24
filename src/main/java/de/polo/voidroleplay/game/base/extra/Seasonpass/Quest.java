@@ -15,6 +15,8 @@ public class Quest {
     private int rewardId;
     private Material item;
     private int reachedAt;
+    private boolean isBadFaction = false;
+    private boolean isStaatFaction = false;
 
     public Quest(int id, int points, String name, String description, int reachedAt) {
         this.id = id;
@@ -78,5 +80,21 @@ public class Quest {
 
     public void setReachedAt(int reachedAt) {
         this.reachedAt = reachedAt;
+    }
+
+    public boolean isBadFaction() {
+        return isBadFaction;
+    }
+
+    public void setBadFaction(boolean badFaction) {
+        isBadFaction = badFaction;
+    }
+
+    public boolean isStaatFaction() {
+        return isStaatFaction;
+    }
+
+    public void setStaatFaction(boolean staatFaction) {
+        isStaatFaction = staatFaction;
     }
 }

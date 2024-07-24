@@ -134,6 +134,7 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
     }
 
     public void quitJob(Player player, boolean silent) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         player.sendMessage("§8[§eMuschelsammler§8]§7 Du hast den Job beendet.");

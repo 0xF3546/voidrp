@@ -241,13 +241,8 @@ public class ServerManager {
         return LocalDateTime.now().getHour() != 1 || LocalDateTime.now().getMinute() < 55;
     }
 
-    public static int minutesBeforeServerRestart() {
-        LocalTime now = LocalTime.from(Utils.getTime());
-        LocalTime nextRestart = now.isBefore(LocalTime.of(2, 0)) ?
-                LocalTime.of(2, 0) :
-                LocalTime.of(2, 0).plusHours(24);
-
-        return (int) Duration.between(now, nextRestart).toMinutes();
+    public static boolean canSpawnDrop() {
+        return Utils.getTime().getHour() != 1;
     }
 
     public void savePlayers() throws SQLException {

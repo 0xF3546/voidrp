@@ -83,6 +83,7 @@ public class VertragUtil {
                     factionManager.setPlayerInFrak(player, curr.toString(), 0);
                     factionManager.sendMessageToFaction(curr.toString(), player.getName() + " ist der Fraktion beigetreten");
                     adminManager.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
+                    Main.getInstance().beginnerpass.didQuest(player, 1);
                     break;
                 case "business_invite":
                     playerData.setBusiness(Integer.parseInt(curr.toString()));
@@ -105,6 +106,7 @@ public class VertragUtil {
                     Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
                     player1.sendMessage("§8[§6Haus§8]§a " + player.getName() + " Mietet nun in Haus " + houseData.getNumber() + " für " + preis + "$.");
                     player.sendMessage("§8[§6Haus§8]§a Du mietest nun in Haus " + houseData.getNumber() + " für " + preis + "$/PayDay.");
+                    Main.getInstance().beginnerpass.didQuest(player, 10);
                     break;
                 case "phonecall":
                     PhoneUtils.acceptCall(player, curr.toString());
@@ -169,6 +171,7 @@ public class VertragUtil {
                             finalTargetplayer.sendMessage("§8[§cLabor§8]§e Die Blutgruppe ist " + random + "!");
                             player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
                             playerData.setBloodType(random);
+                            Main.getInstance().beginnerpass.didQuest(player, 21);
                             try {
                                 Statement statement = Main.getInstance().mySQL.getStatement();
                                 statement.executeUpdate("UPDATE players SET bloodtype = '" + random + "' WHERE uuid = '" + player.getUniqueId() + "'");

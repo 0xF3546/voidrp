@@ -121,6 +121,7 @@ public class FarmerCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("job") == "weizenlieferant") {
             playerData.setVariable("job", null);
@@ -147,6 +148,7 @@ public class FarmerCommand implements CommandExecutor {
     public void blockBroken(Player player, Block block, BlockBreakEvent event) {
         event.setCancelled(true);
         if (block.getType() == Material.HAY_BLOCK) {
+            Main.getInstance().seasonpass.didQuest(player, 4);
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             if (playerData.getIntVariable("heuballen_remaining") <= 0) {
                 player.sendMessage("§8[§eFarmer§8]§7 Du hast alle heuballen abgebaut, begib dich wieder zum Farmer.");

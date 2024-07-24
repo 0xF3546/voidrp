@@ -98,6 +98,7 @@ public class PostboteCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player, boolean silent) {
+        Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         if (!silent) player.sendMessage("§8[§ePostbote§8]§7 Vielen Dank für die geleistete Arbeit.");
@@ -125,6 +126,7 @@ public class PostboteCommand implements CommandExecutor {
             SoundManager.successSound(player);
             playerManager.addExp(player, Main.random(1, 3));
             playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
+            Main.getInstance().seasonpass.didQuest(player, 3);
             playerData.getScoreboard("postbote").updatePostboteScoreboard();
             try {
                 playerManager.addBankMoney(player, payout, "Auszahlung Postbote");

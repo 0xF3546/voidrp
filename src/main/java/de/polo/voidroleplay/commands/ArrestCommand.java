@@ -42,6 +42,7 @@ public class ArrestCommand implements CommandExecutor {
                                         player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
                                         playerManager.addExp(player, Main.random(15, 44));
                                         playerManager.setPlayerMove(targetplayer, true);
+                                        Main.getInstance().seasonpass.didQuest(targetplayer, 8);
                                     } else {
                                         player.sendMessage(Main.error + targetplayer.getName() + " hat keine offene Akte mit Hafteinheiten.");
                                     }

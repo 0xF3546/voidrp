@@ -380,6 +380,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     }
                     if (playersFaction.equals(attackerData.getName())) {
                         players.sendMessage("§8[§cGangwar§8]§a Ihr habt den Angriff des Gebietes §l§n" + gangwarData.getGangZone().getName() + "§a gegen §l" + defenderData.getName() + "§a gewonnen!");
+                        Main.getInstance().seasonpass.didQuest(players, 19);
                         leaveGangwar(players);
                     }
                 }

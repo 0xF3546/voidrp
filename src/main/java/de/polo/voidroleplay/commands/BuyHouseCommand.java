@@ -75,6 +75,7 @@ public class BuyHouseCommand implements CommandExecutor {
                                                 sign.setLine(2, "§0" + player.getName());
                                                 sign.update();
                                                 player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ gekauft!");
+                                                Main.getInstance().beginnerpass.didQuest(player, 11);
                                             } else {
                                                 player.sendMessage(Main.error + "Du hast nicht genug Haus-Slots.");
                                             }

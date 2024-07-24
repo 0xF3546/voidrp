@@ -222,3 +222,5 @@ commands:
   karma:
   seasonpass:
   forcedrop:
+  beginnerpass:
+    aliases: neulingspass

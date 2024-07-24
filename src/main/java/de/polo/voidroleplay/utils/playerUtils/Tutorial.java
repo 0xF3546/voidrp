@@ -121,6 +121,7 @@ public class Tutorial implements Listener {
         player.sendMessage("§8[§9Tutorial§8]§7 Du hast das §9Tutorial§a erfolgreich§7 beendeet.");
         player.sendMessage("§8[§bInfo§8]§7 Solltest du noch mehr über den Server wissen wollen, komm auf unseren §9Discord§7 oder schau auf §cYouTube§7 vorbei.");
         player.sendMessage("§8       ➥ §8/§9discord§7 & §8/§cyoutube");
+        player.sendMessage("§b   Info:§f Nutze §e/neulingspass§f um mehr Einblick in den Server zu erhalten!");
         playerManager.addExp(player, 30);
         if (playerTutorial == null) return;
         playerTutorial.end();

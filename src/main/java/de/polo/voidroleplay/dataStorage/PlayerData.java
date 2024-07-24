@@ -28,6 +28,7 @@ public class PlayerData {
     private String spawn;
 
     private List<PlayerQuest> quests = new ArrayList<>();
+    private List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
 
     public PlayerData(Player player) {
         this.player = player;
@@ -606,6 +607,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void addMoney(int amount) {
+        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         setBargeld(getBargeld() + amount);
@@ -630,6 +632,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void addBankMoney(int amount, String reason) {
+        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         setBank(getBank() + amount);
@@ -861,6 +864,14 @@ public class PlayerData {
 
     public Collection<PlayerQuest> getQuests() {
         return quests;
+    }
+
+    public void addBeginnerQuest(de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest playerQuest) {
+        beginnerQuests.add(playerQuest);
+    }
+
+    public Collection<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> getBeginnerQuests() {
+        return beginnerQuests;
     }
 
     public class AddonXP {
