@@ -2,7 +2,9 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.enums.Gender;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Bukkit;
@@ -106,7 +108,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                             player.sendMessage(Main.error + player.getName() + " & du seid nicht verlobt.");
                         }
                     }
-                } else if (item.getType().equals(Material.PAPER) && item.getItemMeta().getDisplayName().equalsIgnoreCase("§c§lIboprofen")) {
+                } else if (item.getType().equals(RoleplayItem.IBOPROFEN.getMaterial()) && item.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.IBOPROFEN.getDisplayName())) {
                     if (playerData.getFaction().equals("Medic")) {
                         //todo: auf zeit testen
                         targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12000, 1));
@@ -114,7 +116,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                         targetplayer.sendMessage("§dMediziner " + player.getName() + " hat dir Iboprofen verabreicht.");
                         player.sendMessage("§dDu hast " + targetplayer.getName() + " Iboprofen verabreicht.");
                         ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Iboprofen verabreicht.");
-                        player.getInventory().remove(event.getPlayer().getItemOnCursor());
+                        ItemManager.removeCustomItem(player, RoleplayItem.IBOPROFEN, 1);
                     } else {
                         player.sendMessage(Main.error + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
                     }

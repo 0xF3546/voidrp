@@ -148,7 +148,7 @@ public class DealerCommand implements CommandExecutor {
         boolean isSnitch = Utils.isRandom(7);
         if (!isSnitch) return;
         TextComponent message = new TextComponent("§8[§cInformant§8]§7 Jemand hat mir hier gerade Drogen verkauft. §8[§7Klick§8]");
-        message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) dealer.getLocation().getX() + " " + (int) dealer.getLocation().getX() + " " + (int) dealer.getLocation().getX()));
+        message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) dealer.getLocation().getX() + " " + (int) dealer.getLocation().getY() + " " + (int) dealer.getLocation().getZ()));
         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
         for (PlayerData playerData : playerManager.getPlayers()) {
             if (playerData.getFaction().equalsIgnoreCase("FBI")) {

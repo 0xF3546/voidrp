@@ -30,7 +30,8 @@ public enum RoleplayItem {
     MAGAZIN("§7Magazin", Material.CLAY_BALL, true),
     WAFFENTEIL("§8Waffenteil", Material.NETHERITE_INGOT, true),
     EISENERZ("§fEisenerz", Material.IRON_ORE, false),
-    EISEN("§fEisen", Material.IRON_INGOT, false);
+    EISEN("§fEisen", Material.IRON_INGOT, false),
+    IBOPROFEN("§c§lIboprofen", Material.PAPER, false);
 
     private final String displayName;
     private final Material material;

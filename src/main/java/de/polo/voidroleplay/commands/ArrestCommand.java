@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -39,6 +40,10 @@ public class ArrestCommand implements CommandExecutor {
                             if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
                                 try {
                                     if (utils.staatUtil.arrestPlayer(targetplayer, player)) {
+                                        if (targetPlayerData.isAduty()) {
+                                            player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
+                                            return false;
+                                        }
                                         player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
                                         playerManager.addExp(player, Main.random(15, 44));
                                         playerManager.setPlayerMove(targetplayer, true);
