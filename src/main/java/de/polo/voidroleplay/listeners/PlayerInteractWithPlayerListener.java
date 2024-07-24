@@ -3,6 +3,7 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
@@ -45,6 +46,10 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 if (item.getType() == Material.LEAD) {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
                         PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
+                        if (targetPlayerData.isAduty()) {
+                            player.sendMessage(Prefix.ERROR + "Du Spieler im Aduty nicht fesseln.");
+                            return;
+                        }
                         if (!targetPlayerData.isCuffed()) {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
                             targetPlayerData.setCuffed(true);

@@ -607,7 +607,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void addMoney(int amount) {
-        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
+        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         setBargeld(getBargeld() + amount);
@@ -632,7 +632,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void addBankMoney(int amount, String reason) {
-        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
+        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         setBank(getBank() + amount);

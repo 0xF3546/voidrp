@@ -233,7 +233,7 @@ public class GamePlay implements Listener {
                                 player.closeInventory();
                                 return;
                             }
-                            ItemManager.addCustomItem(player, RoleplayItem.JOINT, 5);
+                            ItemManager.addCustomItem(player, RoleplayItem.FACTION_JOINT, 5);
                             factionData.storage.setJoint(factionData.storage.getJoint() - 5);
                             factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5 Joints ausgelagert. (" + factionData.storage.getJoint() + "g)");
                             factionData.storage.save();
@@ -243,29 +243,29 @@ public class GamePlay implements Listener {
                                 player.closeInventory();
                                 return;
                             }
-                            ItemManager.addCustomItem(player, RoleplayItem.JOINT, 1);
+                            ItemManager.addCustomItem(player, RoleplayItem.FACTION_JOINT, 1);
                             factionData.storage.setJoint(factionData.storage.getJoint() - 1);
                             factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1 Joint ausgelagert. (" + factionData.storage.getJoint() + "g)");
                             factionData.storage.save();
                         }
                     } else {
                         if (event.isShiftClick()) {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) < 5) {
+                            if (ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_JOINT) < 5) {
                                 player.sendMessage(Main.error + "Du hast nicht genug Joints.");
                                 player.closeInventory();
                                 return;
                             }
-                            ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 5);
+                            ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 5);
                             factionData.storage.setJoint(factionData.storage.getJoint() + 5);
                             factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5 Joints eingelagert. (" + factionData.storage.getJoint() + "g)");
                             factionData.storage.save();
                         } else {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) < 1) {
+                            if (ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_JOINT) < 1) {
                                 player.sendMessage(Main.error + "Du hast nicht genug Joints.");
                                 player.closeInventory();
                                 return;
                             }
-                            ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 1);
+                            ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 1);
                             factionData.storage.setJoint(factionData.storage.getJoint() + 1);
                             factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1 Joint eingelagert. (" + factionData.storage.getJoint() + "g)");
                             factionData.storage.save();
@@ -559,6 +559,20 @@ public class GamePlay implements Listener {
                 }
                 break;
         }
+    }
+
+    public boolean isFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath) {
+        for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction() == null) continue;
+            if (playerData.getFaction().equalsIgnoreCase(faction)) {
+                if (playerData.getPlayer().getLocation().distance(location) <= range) {
+                    if (!playerData.isDead() || ignoreDeath) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

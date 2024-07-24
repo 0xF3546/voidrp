@@ -8,6 +8,7 @@ import org.bukkit.Material;
 @AllArgsConstructor
 public enum RoleplayItem {
     JOINT("§2Joint", Material.BAMBOO, true),
+    FACTION_JOINT("§2Joint (F)", Material.BAMBOO, true),
     MARIHUANA("§aMarihuana", Material.KELP, true),
     BOX_WITH_JOINTS("§7Kiste mit Joints", Material.CHEST, true),
     COCAINE("§fKokain", Material.SUGAR, true),

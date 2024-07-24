@@ -431,7 +431,7 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void addMoney(Player player, int amount) throws SQLException {
-        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
+        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
@@ -456,7 +456,7 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void addBankMoney(Player player, int amount, String reason) throws SQLException {
-        Main.getInstance().beginnerpass.didQuest(player, 6, amount);
+        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());

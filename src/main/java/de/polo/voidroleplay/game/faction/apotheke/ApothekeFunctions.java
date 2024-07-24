@@ -10,6 +10,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -130,20 +131,8 @@ public class ApothekeFunctions implements Listener {
     @EventHandler
     public void MinuteTick(MinuteTickEvent event) {
         for (Apotheke apotheke : rob.keySet()) {
-            if (!apotheke.getAttacker().isOnline()) {
-                rob.remove(apotheke);
-                factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Die Angreifer haben aufgehört die Apotheke einzuschüchtern.");
-                factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Ihr habt aufgehört die Apotheke einzuschüchtern.");
-                return;
-            }
-            PlayerData playerData = playerManager.getPlayerData(apotheke.getAttacker());
-            if (playerData.isDead()) {
-                rob.remove(apotheke);
-                factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Die Angreifer haben aufgehört die Apotheke einzuschüchtern.");
-                factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Ihr habt aufgehört die Apotheke einzuschüchtern.");
-                return;
-            }
-            if (locationManager.getDistanceBetweenCoords(apotheke.getAttacker(), "apotheke-" + apotheke.getId()) >= 25) {
+            Location location = locationManager.getLocation("apotheke-" + apotheke.getId());
+            if (!Main.getInstance().gamePlay.isFactionMemberInRange(apotheke.getAttackerFaction(), location, 30, false)) {
                 rob.remove(apotheke);
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Die Angreifer haben aufgehört die Apotheke einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Ihr habt aufgehört die Apotheke einzuschüchtern.");

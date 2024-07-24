@@ -10,6 +10,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import lombok.SneakyThrows;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -151,16 +152,8 @@ public class PlantFunctions implements Listener {
             }
         }
         for (Plant plant : rob.keySet()) {
-            boolean needToStop = true;
-            for (PlayerData playerData : playerManager.getPlayers()) {
-                if (playerData.getFaction().equalsIgnoreCase(plant.getAttackerFaction())) {
-                    if (!playerData.isDead()) {
-                        if (locationManager.getDistanceBetweenCoords(plant.getAttacker(), "apotheke-" + plant.getId()) >= 30) {
-                            needToStop = false;
-                        }
-                    }
-                }
-            }if (needToStop) {
+            Location location = locationManager.getLocation("plant-" + plant.getId());
+            if (!Main.getInstance().gamePlay.isFactionMemberInRange(plant.getAttackerFaction(), location, 30, false)) {
                 rob.remove(plant);
                 factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§a Die Angreifer haben aufgehört die Plantage zu übernehmen.");
                 factionManager.sendCustomMessageToFaction(plant.getAttackerFaction(), "§8[§2Plantage§8]§c Ihr habt aufgehört die Plantage zu übernehmen.");
