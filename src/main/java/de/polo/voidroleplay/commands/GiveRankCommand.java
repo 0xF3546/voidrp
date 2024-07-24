@@ -5,10 +5,7 @@ import de.polo.voidroleplay.dataStorage.DBPlayerData;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.FactionPlayerData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.ServerManager;
-import de.polo.voidroleplay.utils.TeamSpeak;
+import de.polo.voidroleplay.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -57,13 +54,17 @@ public class GiveRankCommand implements CommandExecutor {
         }
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
         FactionPlayerData factionPlayerData = ServerManager.factionPlayerDataMap.get(targetplayer.getUniqueId().toString());
-        if (!factionPlayerData.getFaction().equals(playerData.getFaction()) || dbPlayerData.getFaction() == null) {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner Fraktion.");
-            return false;
-        }
-        if (factionPlayerData.getFaction_grade() >= playerData.getFactionGrade()) {
-            player.sendMessage(Main.error_nopermission);
-            return false;
+        try {
+            if (!factionPlayerData.getFaction().equals(playerData.getFaction()) || dbPlayerData.getFaction() == null) {
+                player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner Fraktion.");
+                return false;
+            }
+            if (factionPlayerData.getFaction_grade() >= playerData.getFactionGrade()) {
+                player.sendMessage(Main.error_nopermission);
+                return false;
+            }
+        } catch (Exception ex) {
+            player.sendMessage(Prefix.ERROR + "Fehler beim setzen der Ränge, bitte warte bis der Server neugestartet wurde.");
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");

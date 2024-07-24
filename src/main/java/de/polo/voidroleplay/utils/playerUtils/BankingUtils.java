@@ -468,7 +468,7 @@ public class BankingUtils implements Listener {
             }
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
-                if (playerManager.money(player) >= amount) {
+                if (event.getPlayerData().getBargeld() >= amount) {
                     playerManager.removeMoney(player, amount, "Bankauszahlung");
                     event.getPlayerData().getCompany().addBank(amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ eingezahlt.");
@@ -487,7 +487,7 @@ public class BankingUtils implements Listener {
             }
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
-                if (factionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
+                if (event.getPlayerData().getCompany().getBank() >= amount) {
                     event.getPlayerData().getCompany().removeBank(amount);
                     playerManager.addMoney(player, amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");

@@ -56,8 +56,12 @@ public class AdminGiveRankCommand implements CommandExecutor {
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
         FactionPlayerData factionPlayerData = ServerManager.factionPlayerDataMap.get(targetplayer.getUniqueId().toString());
         player.sendMessage("§8[§cAdmin§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
-        factionPlayerData.setFaction_grade(rang);
-        dbPlayerData.setFaction_grade(rang);
+        if (factionPlayerData != null)  {
+            factionPlayerData.setFaction_grade(rang);
+        }
+        if (dbPlayerData != null) {
+            dbPlayerData.setFaction_grade(rang);
+        }
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE players SET faction_grade = " + rang + " WHERE uuid = '" + targetplayer.getUniqueId() + "'");

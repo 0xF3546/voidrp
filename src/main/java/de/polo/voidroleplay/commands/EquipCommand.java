@@ -324,6 +324,16 @@ public class EquipCommand implements CommandExecutor, Listener {
                 return;
             }
             FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+            try {
+                int money = Integer.parseInt(event.getMessage());
+                if (money < 1) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Du kannst das Equip nicht auf weniger als 1$ setzen.");
+                    return;
+                }
+            } catch (Exception ex) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Es ist ein Fehler unterlaufen.");
+                return;
+            }
             switch (event.getPlayerData().getVariable("type").toString()) {
                 case "sturmgewehr":
                     try {
