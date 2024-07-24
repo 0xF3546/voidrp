@@ -329,6 +329,9 @@ public class PlayerManager implements Listener, ServerTiming {
                     playerData.setLaboratory(laboratory);
                     laboratory.start();
                 }
+
+                Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
+                Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -788,7 +791,6 @@ public class PlayerManager implements Listener, ServerTiming {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = localDateTime.format(formatter);
         statement.executeUpdate("UPDATE `players` SET `rankDuration` = '" + playerData.getRankDuration() + "', `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-        Main.getInstance().seasonpass.loadPlayerQuests(playerData);
         TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 

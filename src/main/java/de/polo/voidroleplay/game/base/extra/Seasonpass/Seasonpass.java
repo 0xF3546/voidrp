@@ -20,10 +20,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Mayson1337
@@ -71,10 +68,11 @@ public class Seasonpass implements CommandExecutor {
     }
 
     @SneakyThrows
-    public void loadPlayerQuests(PlayerData playerData) {
+    public void loadPlayerQuests(UUID uuid) {
+        PlayerData playerData = playerManager.getPlayerData(uuid);
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM seasonpass_player_quests WHERE uuid = ?");
-        statement.setString(1, playerData.getUuid().toString());
+        statement.setString(1, uuid.toString());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             PlayerQuest playerQuest = new PlayerQuest(result.getInt("id"), result.getInt("questId"), result.getInt("state"));
