@@ -65,7 +65,7 @@ public class TeamSpeak implements CommandExecutor {
                 byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
-                URL url = new URL("http://localhost:3010/teamspeak/reloaduser");
+                URL url = new URL("https://api.voidroleplay.de/teamspeak/reloaduser");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setDoOutput(true);
                 con.setRequestMethod("POST");
@@ -101,7 +101,7 @@ public class TeamSpeak implements CommandExecutor {
             byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 
-            URL url = new URL("http://localhost:3010/teamspeak/verify");
+            URL url = new URL("https://api.voidroleplay.de/teamspeak/verify");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setDoOutput(true);
             con.setRequestMethod("POST");
