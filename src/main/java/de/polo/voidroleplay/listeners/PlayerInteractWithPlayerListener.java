@@ -47,7 +47,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
                         PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
                         if (targetPlayerData.isAduty()) {
-                            player.sendMessage(Prefix.ERROR + "Du Spieler im Aduty nicht fesseln.");
+                            player.sendMessage(Prefix.ERROR + "Du kannst Spieler im Aduty nicht fesseln.");
                             return;
                         }
                         if (!targetPlayerData.isCuffed()) {
