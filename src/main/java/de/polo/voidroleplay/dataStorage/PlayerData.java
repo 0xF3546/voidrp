@@ -673,7 +673,7 @@ public class PlayerData {
     @SneakyThrows
     public void removeKarma(int amount, boolean silent) {
         if (!silent) {
-            player.sendMessage("§8[§3Karma§8]§b +" + amount + " Karma.");
+            player.sendMessage("§8[§3Karma§8]§b -" + amount + " Karma.");
         }
         karma -= amount;
         Connection connection = Main.getInstance().mySQL.getConnection();

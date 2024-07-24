@@ -352,7 +352,7 @@ public class GamePlay implements Listener {
                             factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5 veredelte Joints ausgelagert. (" + factionData.storage.getNoble_joint() + "g)");
                             factionData.storage.save();
                         } else {
-                            if (factionData.storage.getCocaine() < 1) {
+                            if (factionData.storage.getNoble_joint() < 1) {
                                 player.sendMessage(Main.error + "Deine Fraktion hat nicht genug veredelte Joints.");
                                 player.closeInventory();
                                 return;

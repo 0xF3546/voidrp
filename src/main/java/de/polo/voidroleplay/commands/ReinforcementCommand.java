@@ -251,7 +251,9 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                             } else {
                                 if (playerManager.isInStaatsFrak(player)) {
                                     for (Player players : Bukkit.getOnlinePlayers()) {
-                                        players.sendMessage("§8 » §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §b" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
+                                        if (playerManager.isInStaatsFrak(players)) {
+                                            players.sendMessage("§8 » §b" + playerData.getFaction() + " " + player.getName() + " §7➡ §b" + args[4] + " §8[§b" + (int) player.getLocation().distance(loc) + "m§8]");
+                                        }
                                     }
                                 } else if (factionManager.isInBündnis(player)) {
                                     for (Player players : Bukkit.getOnlinePlayers()) {

@@ -316,6 +316,7 @@ public class Laboratory implements CommandExecutor, Listener {
 
     public void pushTick() {
         for (PlayerLaboratory laboratory : playerLaboratories) {
+            if (laboratory == null) continue;
             PlayerData playerData = playerManager.getPlayerData(laboratory.getOwner());
             if (playerData == null) continue;
             if (playerData.getFaction() == null) continue;

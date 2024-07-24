@@ -668,6 +668,7 @@ public class PlayerManager implements Listener, ServerTiming {
         }
         for (IGangzone gangzone : gangZones) {
             if (gangzone.getOwner().equals(factionData.getName())) {
+                plus += 150;
                 player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangzone.getName() + ")§8:§a +" + 150 + "$");
             }
         }

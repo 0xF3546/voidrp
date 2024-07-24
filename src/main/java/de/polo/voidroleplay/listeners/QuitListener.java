@@ -39,9 +39,9 @@ public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        event.setQuitMessage("");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
-        event.setQuitMessage("");
         adminManager.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
         serverManager.updateTablist(null);
         if (playerData.getVariable("current_lobby") != null) {
