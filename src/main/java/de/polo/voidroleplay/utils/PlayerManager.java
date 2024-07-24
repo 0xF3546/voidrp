@@ -119,12 +119,15 @@ public class PlayerManager implements Listener, ServerTiming {
                     if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
                         List<Integer> houses = new ArrayList<>();
                         for (House house : Housing.houseDataMap.values()) {
+                            if (house.getOwner() == null) continue;
                             if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
                                 houses.add(house.getId());
                             }
                         }
                         for (int house : houses) {
                             for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
+                                if (block.getInfo() == null) continue;
+                                if (block.getInfoValue() == null) continue;
                                 if (block.getInfo().equalsIgnoreCase("house") && Integer.parseInt(block.getInfoValue()) == house) {
                                     Block b = block.getLocation().getBlock();
                                     Sign sign = (Sign) b.getState();
@@ -812,6 +815,7 @@ public class PlayerManager implements Listener, ServerTiming {
 
     public boolean isInStaatsFrak(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData.getFaction() == null) return false;
         return playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Medic") || playerData.getFaction().equals("Polizei");
     }
 

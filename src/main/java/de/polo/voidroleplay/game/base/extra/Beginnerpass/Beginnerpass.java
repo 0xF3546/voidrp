@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -196,6 +197,7 @@ public class Beginnerpass implements CommandExecutor {
                 Reward reward = getRewardById(quest.getRewardId());
                 player.sendMessage("§8[§6Beginnerpass§8]§a Du hast die Aufgabe " + quest.getName().replace("&", "§") + " §aabgeschlossen!");
                 Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
+                SoundManager.successSound(player);
             }
             Connection connection = Main.getInstance().mySQL.getConnection();
             PreparedStatement statement = connection.prepareStatement("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?");

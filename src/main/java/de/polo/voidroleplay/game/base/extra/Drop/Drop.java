@@ -48,7 +48,7 @@ public class Drop {
             ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 20, 0, RoleplayItem.JOINT.getDisplayName())
     );
     private Block lastBlock = null;
-    private int minutes;
+    private int minutes = 8;
     private ArmorStand hologram = null;
     public Location location;
     public boolean isDropOpen = false;

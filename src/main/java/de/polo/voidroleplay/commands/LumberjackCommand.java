@@ -107,8 +107,15 @@ public class LumberjackCommand implements CommandExecutor {
                     inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.STRIPPED_OAK_WOOD, 1, 0, "§eHolz entrinden")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
+                            if (playerData.getVariable("lumberjack::stripping") != null) {
+                                boolean isStripping = playerData.getVariable("lumberjack::stripping");
+                                if (isStripping) {
+                                    return;
+                                }
+                            }
                             player.closeInventory();
                             Progress.startWithTitle(player, 12);
+                            playerData.setVariable("lumberjack::stripping", true);
                             Main.waitSeconds(12, () -> {
                                 playerData.setVariable("lumberjack::hasStripped", true);
                                 player.sendMessage("§8[§7Holzfäller§8]§7 Du hast den Baum entrindet und kannst diesen nun Verkaufen.");
