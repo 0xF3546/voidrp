@@ -1,10 +1,7 @@
 package de.polo.voidroleplay.utils.GamePlay;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.Dealer;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.LocationData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.faction.apotheke.ApothekeFunctions;
@@ -12,6 +9,7 @@ import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
@@ -462,7 +460,7 @@ public class GamePlay implements Listener {
     }
 
     public Drop spawnDrop() {
-        if (ServerManager.minutesBeforeServerRestart() < 30) {
+        if (!ServerManager.canSpawnDrop()) {
             return null;
         }
         lastDrop = Utils.getTime();
@@ -530,6 +528,36 @@ public class GamePlay implements Listener {
             statement.execute();
             statement.close();
             connection.close();
+        }
+    }
+
+    public void addQuestReward(Player player, String type, int amount, String info) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        switch (type) {
+            case "money":
+                playerData.addMoney(amount);
+                break;
+            case "case":
+                if (info == "case") {
+                    player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.DAILY.getDisplayName()));
+                } else if (info == "xp-case") {
+                    player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, "§b§lXP-Case", "§8 ➥ §8[§6Rechtsklick§8]§7 Öffnen"));
+                }
+                break;
+            case "ammo":
+                for (WeaponData weapon : Weapons.weaponDataMap.values()) {
+                    if (weapon.getName().equalsIgnoreCase(info)) {
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.MAGAZIN.getMaterial(), amount, 0, "§7Magazin", "§8 ➥ " + weapon.getName()));
+                    }
+                }
+                break;
+            case "gun":
+                for (WeaponData weapon : Weapons.weaponDataMap.values()) {
+                    if (weapon.getName().equalsIgnoreCase(info)) {
+                        player.getInventory().addItem(ItemManager.createItem(weapon.getMaterial(), amount, 0, "§7Gepackte Waffe", "§8 ➥ " + weapon.getName()));
+                    }
+                }
+                break;
         }
     }
 
