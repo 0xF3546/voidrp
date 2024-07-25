@@ -113,9 +113,9 @@ public class PlayerInteractWithPlayerListener implements Listener {
                             player.sendMessage(Main.error + player.getName() + " & du seid nicht verlobt.");
                         }
                     }
-                } else if (item.getType().equals(RoleplayItem.IBOPROFEN.getMaterial()) && item.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.IBOPROFEN.getDisplayName())) {
+                } else if (item.getType().equals(RoleplayItem.IBOPROFEN.getMaterial()) && item.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.IBOPROFEN.getDisplayName()) && !Main.getInstance().getCooldownManager().isOnCooldown(player, "ibo")) {
                     if (playerData.getFaction().equals("Medic")) {
-                        //todo: auf zeit testen
+                        Main.getInstance().getCooldownManager().setCooldown(player, "ibo", 1);
                         targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12000, 1));
                         targetplayer.addPotionEffect(PotionEffectType.HEAL.createEffect(12000, 1));
                         targetplayer.sendMessage("§dMediziner " + player.getName() + " hat dir Iboprofen verabreicht.");
