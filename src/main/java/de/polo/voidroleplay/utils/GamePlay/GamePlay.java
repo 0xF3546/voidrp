@@ -217,7 +217,7 @@ public class GamePlay implements Listener {
                     }
                 });
             }
-            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getJoint()+ " Stück")) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getJoint() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int amount = 0;
@@ -490,7 +490,9 @@ public class GamePlay implements Listener {
             if (randomNumber < 97) {
                 spawnDrop();
             }
-        } else if (activeDrop != null) {
+        }
+
+        if (activeDrop != null) {
             if (activeDrop.dropEnded) {
                 activeDrop = null;
             } else {

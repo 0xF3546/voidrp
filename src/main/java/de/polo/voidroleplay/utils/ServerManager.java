@@ -19,10 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.*;
 
 public class ServerManager {
@@ -238,7 +235,7 @@ public class ServerManager {
     }
 
     public static boolean canDoJobs() {
-        return LocalDateTime.now().getHour() != 1 || LocalDateTime.now().getMinute() < 55;
+        return Utils.getTime().getHour() != 1 || Utils.getTime().getMinute() < 55;
     }
 
     public static boolean canSpawnDrop() {
@@ -263,7 +260,7 @@ public class ServerManager {
 
     private void setTablist(Player player) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        LocalDateTime time = LocalDateTime.now(ZoneId.of("Europe/Berlin"));
+        LocalDateTime time = Utils.getTime();
         player.setPlayerListHeader("\n§8▍ §6§lVoidRoleplay §8× §eReallife & Roleplay §8▍\n\n§7" + time.getHour() + ":" + time.getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
         player.setPlayerListFooter("§8__________________\n\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n§8» §9discord.gg/voidrp §8«");
 

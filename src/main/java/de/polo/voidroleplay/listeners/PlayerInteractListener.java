@@ -120,6 +120,7 @@ public class PlayerInteractListener implements Listener {
                 if (event.getClickedBlock().getType() == Material.CHEST) {
                     if (Main.getInstance().gamePlay.activeDrop != null) {
                         if (Main.getInstance().gamePlay.activeDrop.location == event.getClickedBlock().getLocation()) {
+                            player.sendMessage("§8[§cDrop§8]§7 Der Drop ist noch nicht offen!");
                             return;
                         }
                     }
