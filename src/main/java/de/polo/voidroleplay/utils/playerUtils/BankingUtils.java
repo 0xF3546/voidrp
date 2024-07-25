@@ -134,17 +134,19 @@ public class BankingUtils implements Listener {
                             if (!ServerManager.canDoJobs()) {
                                 return;
                             }
-                            for (Player nearPlayer : Bukkit.getOnlinePlayers()) {
-                                if (nearPlayer.getLocation().distance(player.getLocation()) < 20) {
-                                    nearPlayer.spawnParticle(Particle.EXPLOSION_HUGE, player.getLocation(), 3);
-                                    nearPlayer.playSound(nearPlayer.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-                                }
-                            }
+                            Bukkit.getWorld("world").spawnParticle(Particle.EXPLOSION_HUGE, player.getLocation(), 3);
+                            Bukkit.getWorld("world").playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
                             ItemManager.removeCustomItem(player, RoleplayItem.EXPLOSION_DEVICE, 1);
                             openRobInventory(player, atm);
                             atm.setLastTimeBlown(LocalDateTime.now());
                             playerData.setAtmBlown(playerData.getAtmBlown() + 1);
                             playerData.save();
+                            boolean isRandom = Utils.isRandom(2);
+                            if (isRandom) {
+                                factionManager.sendCustomMessageToFaction("Polizei", "§8[§cATM-Sicherheitssystem§8]§c Der Bankautomat " + atm.getName() + " meldet Alarm aufgrund einer Sprengung. Die Kameras zeigen " + player.getName() + " als Täter.");
+                            } else {
+                                factionManager.sendCustomMessageToFaction("Polizei", "§8[§cATM-Sicherheitssystem§8]§c Der Bankautomat " + atm.getName() + " meldet Alarm aufgrund einer Sprengung.");
+                            }
                         }
                     });
                 } else {

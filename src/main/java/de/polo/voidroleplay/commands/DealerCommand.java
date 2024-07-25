@@ -55,7 +55,7 @@ public class DealerCommand implements CommandExecutor {
                     player.closeInventory();
                     return;
                 }
-                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) <1) {
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) >= 1) {
                     ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 1);
                 } else {
                     ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 1);
@@ -71,7 +71,7 @@ public class DealerCommand implements CommandExecutor {
                     player.closeInventory();
                     return;
                 }
-                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) <1) {
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) >= 1) {
                     ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 1);
                 } else {
                     ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 1);

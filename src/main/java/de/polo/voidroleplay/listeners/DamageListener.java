@@ -29,12 +29,12 @@ public class DamageListener implements Listener {
             Player player = ((Player) event.getEntity()).getPlayer();
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             ItemStack chestplate = player.getInventory().getArmorContents()[2];
-            if (chestplate == null) return;
             if (!playerData.isAduty()) {
                 player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     PlayerData playerData1 = playerManager.getPlayerData(player.getUniqueId());
                     event.setCancelled(playerData1.getVisum() <= 2 && playerData1.getFaction() == null);
+                    if (chestplate == null) return;
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
                         event.setDamage(event.getDamage() / 1.2);
                     }

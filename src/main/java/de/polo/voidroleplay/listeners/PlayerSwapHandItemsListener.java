@@ -209,7 +209,8 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(targetplayerData));
             }
         });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", Arrays.asList("§8 ➥ §7" + utils.toDecimalFormat(targetplayerData.getBargeld()) + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"))) {
+        int bargeldAmount = targetplayerData.getBargeld() / 4;
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", Arrays.asList("§8 ➥ §7" + utils.toDecimalFormat(bargeldAmount) + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
@@ -217,11 +218,14 @@ public class PlayerSwapHandItemsListener implements Listener {
                     player.sendMessage(Main.error + targetplayer.getName() + " hat kein Bargeld dabei.");
                     return;
                 }
-                player.sendMessage("§8[§cAusraub§8]§c Du hast " + targetplayer.getName() + " §a" + targetplayerData.getBargeld() + "$§c geklaut.");
-                targetplayer.sendMessage("§8[§cAusraub§8]§c " + player.getName() + " hat dir §4" + targetplayerData.getBargeld() + "$§c geklaut.");
+                if (targetplayerData.getBargeld() < bargeldAmount) {
+                    return;
+                }
+                player.sendMessage("§8[§cAusraub§8]§c Du hast " + targetplayer.getName() + " §a" + bargeldAmount + "$§c geklaut.");
+                targetplayer.sendMessage("§8[§cAusraub§8]§c " + player.getName() + " hat dir §4" + bargeldAmount + "$§c geklaut.");
                 try {
-                    playerManager.addMoney(player, targetplayerData.getBargeld());
-                    playerManager.removeMoney(targetplayer, targetplayerData.getBargeld(), "Raub (" + player.getName() + ")");
+                    playerManager.addMoney(player, bargeldAmount);
+                    playerManager.removeMoney(targetplayer, bargeldAmount, "Raub (" + player.getName() + ")");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

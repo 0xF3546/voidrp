@@ -39,9 +39,16 @@ public class GetVehCommand implements CommandExecutor {
         }
         for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
-                if (Integer.parseInt(args[0]) == (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER))) {
-                    entity.teleport(player.getLocation());
-                    player.sendMessage(Main.admin_prefix + "Du hast das Fahrzeug mit der ID §l" + args[0] + "§7 zu dir teleportiert.");
+                try {
+                    if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER) != null) {
+                        int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                        if (Integer.parseInt(args[0]) == (id)) {
+                            entity.teleport(player.getLocation());
+                            player.sendMessage(Main.admin_prefix + "Du hast das Fahrzeug mit der ID §l" + args[0] + "§7 zu dir teleportiert.");
+                        }
+                    }
+                } catch (Exception ex) {
+                    continue;
                 }
             }
         }

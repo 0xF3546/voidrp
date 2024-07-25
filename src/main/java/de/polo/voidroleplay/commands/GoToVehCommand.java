@@ -39,9 +39,16 @@ public class GoToVehCommand implements CommandExecutor {
         }
         for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
-                if (Integer.parseInt(args[0]) == (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER))) {
-                    player.teleport(entity.getLocation());
-                    player.sendMessage(Main.admin_prefix + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");
+                try {
+                    if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER) != null) {
+                        int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                        if (Integer.parseInt(args[0]) == id) {
+                            player.teleport(entity.getLocation());
+                            player.sendMessage(Main.admin_prefix + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");
+                        }
+                    }
+                } catch (Exception ex) {
+                    continue;
                 }
             }
         }
