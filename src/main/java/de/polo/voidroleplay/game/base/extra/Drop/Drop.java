@@ -47,7 +47,7 @@ public class Drop {
             ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 20, 0, RoleplayItem.JOINT.getDisplayName())
     );
     private Block lastBlock = null;
-    private int minutes = 1;
+    private int minutes = 8;
     private ArmorStand hologram = null;
     public Location location;
     public boolean isDropOpen = false;
@@ -77,7 +77,7 @@ public class Drop {
         hologram.setCustomNameVisible(true);
         hologram.setGravity(false);
         hologram.setMarker(true);
-        setMinutes(1);
+        setMinutes(8);
         chest = (Chest) location.getBlock().getState();
 
         Collections.shuffle(items);
@@ -90,7 +90,7 @@ public class Drop {
                 isDropOpen = true;
                 hologram.setCustomName("§6Kiste offen");
                 Bukkit.broadcastMessage("§8[§cDrop§8] §cDie von Schmugglern fallen gelassene Kiste ist nun offen.");
-                this.minutes = 2;
+                this.minutes = 10;
             } else {
                 cleanup();
                 Bukkit.broadcastMessage("§8[§cDrop§8] §cDie Kiste ist explodiert.");
