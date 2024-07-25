@@ -7,13 +7,12 @@ import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.Navigation;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,7 +47,7 @@ public class Drop {
             ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 20, 0, RoleplayItem.JOINT.getDisplayName())
     );
     private Block lastBlock = null;
-    private int minutes = 8;
+    private int minutes = 1;
     private ArmorStand hologram = null;
     public Location location;
     public boolean isDropOpen = false;
@@ -78,7 +77,7 @@ public class Drop {
         hologram.setCustomNameVisible(true);
         hologram.setGravity(false);
         hologram.setMarker(true);
-        setMinutes(8);
+        setMinutes(1);
         chest = (Chest) location.getBlock().getState();
 
         Collections.shuffle(items);
@@ -91,9 +90,12 @@ public class Drop {
                 isDropOpen = true;
                 hologram.setCustomName("§6Kiste offen");
                 Bukkit.broadcastMessage("§8[§cDrop§8] §cDie von Schmugglern fallen gelassene Kiste ist nun offen.");
-                this.minutes = 10;
+                this.minutes = 2;
             } else {
                 cleanup();
+                Bukkit.broadcastMessage("§8[§cDrop§8] §cDie Kiste ist explodiert.");
+                Bukkit.getWorld("world").spawnParticle(Particle.EXPLOSION_HUGE, location, 3);
+                Bukkit.getWorld("world").playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
             }
             return;
         }

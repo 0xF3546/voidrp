@@ -126,16 +126,16 @@ public class PlayerInteractListener implements Listener {
                         if (drop.location.distance(event.getClickedBlock().getLocation()) < 1) {
                             if (!drop.isDropOpen) {
                                 player.sendMessage("§8[§cDrop§8]§7 Der Drop ist noch nicht offen!");
+                                event.setCancelled(true);
                                 return;
                             } else {
                                 if (event.getClickedBlock().getState() instanceof Chest && drop.isDropOpen) {
                                     Chest chest = (Chest) event.getClickedBlock().getState();
                                     Inventory chestInventory = chest.getInventory();
                                     player.openInventory(chestInventory);
-                                }                            }
+                                }                           }
                         }
                     }
-                    event.setCancelled(true);
                     if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
                         if (Main.getInstance().locationManager.getDistanceBetweenCoords(player, "asservatenkammer") < 20) {
                             Main.getInstance().gamePlay.drugstorage.openEvidence(player);
