@@ -52,6 +52,11 @@ public class ChatListener implements Listener {
                     }
                     String msg = event.getMessage();
                     String type = "sagt";
+
+                    if (checkUppercasePercentage(msg)) {
+                        msg = msg.toLowerCase();
+                    }
+
                     if (msg.charAt(msg.length() - 1) == '?') {
                         type = "fragt";
                     }
@@ -100,5 +105,15 @@ public class ChatListener implements Listener {
                 }
             });
         }
+    }
+
+    private boolean checkUppercasePercentage(String msg) {
+        int uppercaseCount = 0;
+        for (char c : msg.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                uppercaseCount++;
+            }
+        }
+        return ((double) uppercaseCount / msg.length()) >= 0.75;
     }
 }
