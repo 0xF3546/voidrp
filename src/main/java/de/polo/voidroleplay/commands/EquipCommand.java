@@ -203,15 +203,30 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getBank() < 75) {
-                        player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
+                        player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Iboprofen zu kaufen.");
                         return;
                     }
-                    if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
+                    if (playerData.getBank() < 75) {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
                     playerData.removeBankMoney(75, "Iboprofen-Kauf");
                     player.getInventory().addItem(ItemManager.createItem(Material.PAPER, 1, 0, "§c§lIboprofen"));
+                }
+            });
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (factionData.getBank() < 75) {
+                        player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Schmerzmittel zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < 75) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    playerData.removeBankMoney(75, "Schmerzmittel-Kauf");
+                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName()));
                 }
             });
         }
