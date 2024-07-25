@@ -97,18 +97,19 @@ public class Drop {
             }
             return;
         }
+        this.minutes = minutes;
         if (hologram != null && !isDropOpen) {
             hologram.setCustomName("§c" + minutes + " Minuten verbleibend");
         }
     }
 
     public int getMinutes() {
-        return minutes;
+        return this.minutes;
     }
 
     public void cleanup() {
         if (lastBlock != null) {
-            lastBlock.getLocation().getBlock().setType(lastBlock.getType());
+            lastBlock.getLocation().getBlock().setType(Material.AIR);
         }
         if (hologram != null) {
             hologram.remove();

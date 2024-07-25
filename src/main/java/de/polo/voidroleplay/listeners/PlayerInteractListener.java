@@ -3,6 +3,7 @@ package de.polo.voidroleplay.listeners;
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
@@ -18,6 +19,7 @@ import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
 import de.polo.voidroleplay.game.base.housing.Housing;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.ArmorStand;
@@ -27,6 +29,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 
@@ -119,9 +122,17 @@ public class PlayerInteractListener implements Listener {
                 }
                 if (event.getClickedBlock().getType() == Material.CHEST) {
                     if (Main.getInstance().gamePlay.activeDrop != null) {
-                        if (Main.getInstance().gamePlay.activeDrop.location == event.getClickedBlock().getLocation()) {
-                            player.sendMessage("§8[§cDrop§8]§7 Der Drop ist noch nicht offen!");
-                            return;
+                        Drop drop = Main.getInstance().gamePlay.activeDrop;
+                        if (drop.location.distance(event.getClickedBlock().getLocation()) < 1) {
+                            if (!drop.isDropOpen) {
+                                player.sendMessage("§8[§cDrop§8]§7 Der Drop ist noch nicht offen!");
+                                return;
+                            } else {
+                                if (event.getClickedBlock().getState() instanceof Chest && drop.isDropOpen) {
+                                    Chest chest = (Chest) event.getClickedBlock().getState();
+                                    Inventory chestInventory = chest.getInventory();
+                                    player.openInventory(chestInventory);
+                                }                            }
                         }
                     }
                     event.setCancelled(true);
@@ -131,10 +142,9 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
-                    if (registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
-                        if (registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
+                    if (registeredBlock != null && registeredBlock.getInfo() != null && registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
+                        if (registeredBlock.getInfoValue() != null && registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
                             Main.getInstance().gamePlay.drugstorage.open(player);
-
                         }
                     }
                 }

@@ -530,8 +530,8 @@ public class Vehicles implements Listener, CommandExecutor {
                                     Main.getInstance().utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
                                     SoundManager.successSound(player);
                                     Statement statement = Main.getInstance().mySQL.getStatement();
-                                    statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + playerData.getIntVariable("current_garage") + " WHERE id = " + id);
-                                    playerVehicleData.setGarage(playerData.getIntVariable("current_garage"));
+                                    statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + garageData.getId() + " WHERE id = " + id);
+                                    playerVehicleData.setGarage(garageData.getId());
                                     player.closeInventory();
                                 }
                             });
