@@ -373,6 +373,24 @@ public class Laboratory implements CommandExecutor, Listener {
         }
         for (LaboratoryAttack attack : attacks) {
             System.out.println(attack.getStarted());
+            if (attack.isHackedLaboratory()) {
+                for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                    if (registeredBlock.getInfo().equalsIgnoreCase("laboratory")) {
+                        int id = Integer.parseInt(registeredBlock.getInfoValue());
+                        if (attack.defender.getLaboratory() == id) {
+                            int attackerFactionNear = factionManager.getFactionMemberInRange(attack.attacker.getName(), registeredBlock.getLocation(), 100, true).size();
+                            int defenderFactionNear = factionManager.getFactionMemberInRange(attack.defender.getName(), registeredBlock.getLocation(), 100, true).size();
+
+                            if (attackerFactionNear < defenderFactionNear / 4) {
+                                clearLaboratory(attack.attacker, attack.defender);
+                                factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§a Die Gegnerische Fraktion hat das Labor erfolgreich ausgeraubt, da weniger als 1/4 deiner Fraktion am leben ist..");
+                                factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr habt es geschafft das Labor von " + attack.defender.getName() + " auszurauben.");
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
             if (!attack.doorOpened) {
                 boolean near = false;
                 RegisteredBlock block;

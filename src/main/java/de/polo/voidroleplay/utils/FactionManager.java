@@ -4,6 +4,7 @@ import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -364,5 +365,34 @@ public class FactionManager {
     }
     public FactionData getFactionData(String faction) {
         return factionDataMap.get(faction);
+    }
+
+    public boolean isFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath) {
+        for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction() == null) continue;
+            if (playerData.getFaction().equalsIgnoreCase(faction)) {
+                if (playerData.getPlayer().getLocation().distance(location) <= range) {
+                    if (!playerData.isDead() || ignoreDeath) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public Collection<PlayerData> getFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath) {
+        List<PlayerData> players = new ArrayList<>();
+        for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction() == null) continue;
+            if (playerData.getFaction().equalsIgnoreCase(faction)) {
+                if (playerData.getPlayer().getLocation().distance(location) <= range) {
+                    if (!playerData.isDead() || ignoreDeath) {
+                        players.add(playerData);
+                    }
+                }
+            }
+        }
+        return players;
     }
 }

@@ -561,18 +561,4 @@ public class GamePlay implements Listener {
         }
     }
 
-    public boolean isFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath) {
-        for (PlayerData playerData : playerManager.getPlayers()) {
-            if (playerData.getFaction() == null) continue;
-            if (playerData.getFaction().equalsIgnoreCase(faction)) {
-                if (playerData.getPlayer().getLocation().distance(location) <= range) {
-                    if (!playerData.isDead() || ignoreDeath) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
 }

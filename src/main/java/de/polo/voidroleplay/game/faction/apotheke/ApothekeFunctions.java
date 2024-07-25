@@ -132,7 +132,7 @@ public class ApothekeFunctions implements Listener {
     public void MinuteTick(MinuteTickEvent event) {
         for (Apotheke apotheke : rob.keySet()) {
             Location location = locationManager.getLocation("apotheke-" + apotheke.getId());
-            if (!Main.getInstance().gamePlay.isFactionMemberInRange(apotheke.getAttackerFaction(), location, 30, false)) {
+            if (!factionManager.isFactionMemberInRange(apotheke.getAttackerFaction(), location, 30, false)) {
                 rob.remove(apotheke);
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Die Angreifer haben aufgehört die Apotheke einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Ihr habt aufgehört die Apotheke einzuschüchtern.");

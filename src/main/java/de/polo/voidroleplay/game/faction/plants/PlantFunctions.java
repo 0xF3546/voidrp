@@ -153,7 +153,7 @@ public class PlantFunctions implements Listener {
         }
         for (Plant plant : rob.keySet()) {
             Location location = locationManager.getLocation("plant-" + plant.getId());
-            if (!Main.getInstance().gamePlay.isFactionMemberInRange(plant.getAttackerFaction(), location, 30, false)) {
+            if (!factionManager.isFactionMemberInRange(plant.getAttackerFaction(), location, 30, false)) {
                 rob.remove(plant);
                 factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§a Die Angreifer haben aufgehört die Plantage zu übernehmen.");
                 factionManager.sendCustomMessageToFaction(plant.getAttackerFaction(), "§8[§2Plantage§8]§c Ihr habt aufgehört die Plantage zu übernehmen.");
