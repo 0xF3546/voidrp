@@ -81,22 +81,29 @@ public class StaatUtil {
             geldstrafe += result.getInt(3);
         }
         if (hafteinheiten > 0) {
+            if (hafteinheiten >= 40) {
+                hafteinheiten = 40;
+            }
             JailData jailData = new JailData();
             locationManager.useLocation(player, "gefaengnis");
             player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + hafteinheiten + " Hafteinheiten§7 inhaftiert.");
             player.sendMessage("§8[§cGefängnis§8] §7Tatvorwürfe§8:§7 " + reason.substring(0, reason.length() - 2) + ".");
             playerData.setJailed(true);
-            playerData.setHafteinheiten(hafteinheiten);
             factionManager.addFactionMoney(arresterData.getFaction(), Main.getInstance().serverManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
             if (geldstrafe > 0) {
+                if (geldstrafe >= 5000) {
+                    geldstrafe = 5000;
+                }
                 if (playerData.getBank() >= geldstrafe) {
                     playerManager.removeBankMoney(player, geldstrafe, "Gefängnis Geldstrafe");
                     player.sendMessage("§8[§cGefängnis§8] §7Strafzahlung§8:§7 " + geldstrafe + "$.");
                 } else if (playerData.getBank() > 0) {
-                    playerManager.removeBankMoney(player, playerData.getBank(), "Gefängnis Geldstrafe");
-                    player.sendMessage("§8[§cGefängnis§8] §7Strafzahlung§8:§7 " + geldstrafe + "$.");
+                    int moreJailTime = geldstrafe / 500;
+                    hafteinheiten += moreJailTime;
+                    player.sendMessage("§8[§cGefängnis§8] §7Strafzahlung§8:§7 Da du die Strafzahlung in höhe von " + geldstrafe + "$ nicht begleichen konntest, bist du " + moreJailTime + " Hafteinheiten länger im Gefängnis.");
                 }
             }
+            playerData.setHafteinheiten(hafteinheiten);
             statement.execute("DELETE FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
