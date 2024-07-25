@@ -182,7 +182,7 @@ public class ServerManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = Utils.getTime();
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
                     return;
