@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
@@ -317,6 +318,59 @@ public class FactionData {
 
         public void setProceedingStarted(LocalDateTime proceedingStarted) {
             this.proceedingStarted = proceedingStarted;
+        }
+
+        public int getAmount(RoleplayItem item) {
+            int amount = 0;
+            switch (item) {
+                case COCAINE:
+                    amount = cocaine;
+                    break;
+                case MARIHUANA:
+                    amount = weed;
+                    break;
+                case NOBLE_JOINT:
+                    amount = noble_joint;
+                    break;
+                case JOINT:
+                    amount = joint;
+                    break;
+            }
+            return amount;
+        }
+
+        public void removeItem(RoleplayItem item, int amount) {
+            switch (item) {
+                case COCAINE:
+                    setCocaine(cocaine - amount);
+                    break;
+                case MARIHUANA:
+                    setWeed(weed - amount);
+                    break;
+                case NOBLE_JOINT:
+                    setNoble_joint(noble_joint - amount);
+                    break;
+                case JOINT:
+                    setJoint(joint - amount);
+                    break;
+            }
+        }
+
+        public void addItem(RoleplayItem item, int amount) {
+            switch (item) {
+                case COCAINE:
+                    setCocaine(cocaine + amount);
+                    break;
+                case MARIHUANA:
+                    setWeed(weed + amount);
+                    break;
+                case NOBLE_JOINT:
+                    setNoble_joint(noble_joint + amount);
+                    break;
+                case JOINT:
+                    setJoint(joint + amount);
+                    break;
+            }
         }
     }
 

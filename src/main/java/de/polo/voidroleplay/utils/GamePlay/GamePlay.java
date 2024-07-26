@@ -140,6 +140,40 @@ public class GamePlay implements Listener {
             });
         }
 
+        private void interactDrugStorage(Player player, RoleplayItem item) {
+            PlayerData playerData = playerManager.getPlayerData(player);
+
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3" + item.getDisplayName(), true, true);
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§3Einlagern")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerData.setVariable("chatblock", "drugstorage::in");
+                    playerData.setVariable("drugstorage::roleplayitem", item);
+                    player.sendMessage("§8[§2Lager§8]§7 Gib nun an wie viel Gram du einlagern möchtest.");
+                    player.closeInventory();
+                }
+            });
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§cAuslagern")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getFactionGrade() < 6) {
+                        player.sendMessage(Main.error + "Das geht erst ab Rang 6.");
+                        return;
+                    }
+                    playerData.setVariable("chatblock", "drugstorage::out");
+                    playerData.setVariable("drugstorage::roleplayitem", item);
+                    player.sendMessage("§8[§2Lager§8]§7 Gib nun an wie viel Gram du auslagern möchtest.");
+                    player.closeInventory();
+                }
+            });
+            inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    open(player);
+                }
+            });
+        }
+
         private void interactEvidence(Player player, RoleplayItem item) {
             PlayerData playerData = playerManager.getPlayerData(player);
 
@@ -220,172 +254,19 @@ public class GamePlay implements Listener {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getJoint() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int amount = 0;
-                    if (event.isLeftClick()) {
-                        if (playerData.getFactionGrade() < 5) {
-                            player.sendMessage(Main.error + "Das geht erst ab Rang 5!");
-                            player.closeInventory();
-                            return;
-                        }
-                        if (event.isShiftClick()) {
-                            if (factionData.storage.getWeed() < 5) {
-                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.addCustomItem(player, RoleplayItem.FACTION_JOINT, 5);
-                            factionData.storage.setJoint(factionData.storage.getJoint() - 5);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5 Joints ausgelagert. (" + factionData.storage.getJoint() + "g)");
-                            factionData.storage.save();
-                        } else {
-                            if (factionData.storage.getJoint() < 1) {
-                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.addCustomItem(player, RoleplayItem.FACTION_JOINT, 1);
-                            factionData.storage.setJoint(factionData.storage.getJoint() - 1);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1 Joint ausgelagert. (" + factionData.storage.getJoint() + "g)");
-                            factionData.storage.save();
-                        }
-                    } else {
-                        if (event.isShiftClick()) {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_JOINT) < 5) {
-                                player.sendMessage(Main.error + "Du hast nicht genug Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 5);
-                            factionData.storage.setJoint(factionData.storage.getJoint() + 5);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5 Joints eingelagert. (" + factionData.storage.getJoint() + "g)");
-                            factionData.storage.save();
-                        } else {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_JOINT) < 1) {
-                                player.sendMessage(Main.error + "Du hast nicht genug Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 1);
-                            factionData.storage.setJoint(factionData.storage.getJoint() + 1);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1 Joint eingelagert. (" + factionData.storage.getJoint() + "g)");
-                            factionData.storage.save();
-                        }
-                    }
-
+                    interactDrugStorage(player, RoleplayItem.JOINT);
                 }
             });
             inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 1, 0, RoleplayItem.COCAINE.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCocaine() + "g")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int amount = 0;
-                    if (event.isLeftClick()) {
-                        if (playerData.getFactionGrade() < 5) {
-                            player.sendMessage(Main.error + "Das geht erst ab Rang 5!");
-                            player.closeInventory();
-                            return;
-                        }
-                        if (event.isShiftClick()) {
-                            if (factionData.storage.getCocaine() < 5) {
-                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Kokain.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.addCustomItem(player, RoleplayItem.COCAINE, 5);
-                            factionData.storage.setCocaine(factionData.storage.getCocaine() - 5);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5g Kokain ausgelagert. (" + factionData.storage.getCocaine() + "g)");
-                            factionData.storage.save();
-                        } else {
-                            if (factionData.storage.getCocaine() < 1) {
-                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Kokain.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.addCustomItem(player, RoleplayItem.COCAINE, 1);
-                            factionData.storage.setCocaine(factionData.storage.getCocaine() - 1);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1g Kokain ausgelagert. (" + factionData.storage.getCocaine() + "g)");
-                            factionData.storage.save();
-                        }
-                    } else {
-                        if (event.isShiftClick()) {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) < 5) {
-                                player.sendMessage(Main.error + "Du hast nicht genug Kokain.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.removeCustomItem(player, RoleplayItem.COCAINE, 5);
-                            factionData.storage.setCocaine(factionData.storage.getCocaine() + 5);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5g Kokain eingelagert. (" + factionData.storage.getCocaine() + "g)");
-                            factionData.storage.save();
-                        } else {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.COCAINE) < 1) {
-                                player.sendMessage(Main.error + "Du hast nicht genug Kokain.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.removeCustomItem(player, RoleplayItem.COCAINE, 1);
-                            factionData.storage.setCocaine(factionData.storage.getCocaine() + 1);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1g Kokain eingelagert. (" + factionData.storage.getCocaine() + "g)");
-                            factionData.storage.save();
-                        }
-                    }
-
+                    interactDrugStorage(player, RoleplayItem.COCAINE);
                 }
             });
             inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 1, 0, RoleplayItem.NOBLE_JOINT.getDisplayName(), "§8 ➥ §7" + factionData.storage.getNoble_joint() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int amount = 0;
-                    if (event.isLeftClick()) {
-                        if (playerData.getFactionGrade() < 5) {
-                            player.sendMessage(Main.error + "Das geht erst ab Rang 5!");
-                            player.closeInventory();
-                            return;
-                        }
-                        if (event.isShiftClick()) {
-                            if (factionData.storage.getNoble_joint() < 5) {
-                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug veredelte Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.addCustomItem(player, RoleplayItem.NOBLE_JOINT, 5);
-                            factionData.storage.setNoble_joint(factionData.storage.getNoble_joint() - 5);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5 veredelte Joints ausgelagert. (" + factionData.storage.getNoble_joint() + "g)");
-                            factionData.storage.save();
-                        } else {
-                            if (factionData.storage.getNoble_joint() < 1) {
-                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug veredelte Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.addCustomItem(player, RoleplayItem.NOBLE_JOINT, 1);
-                            factionData.storage.setNoble_joint(factionData.storage.getNoble_joint() - 1);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1 veredelten Joint ausgelagert. (" + factionData.storage.getNoble_joint() + "g)");
-                            factionData.storage.save();
-                        }
-                    } else {
-                        if (event.isShiftClick()) {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.NOBLE_JOINT) < 5) {
-                                player.sendMessage(Main.error + "Du hast nicht genug veredelte Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.removeCustomItem(player, RoleplayItem.NOBLE_JOINT, 5);
-                            factionData.storage.setNoble_joint(factionData.storage.getNoble_joint() + 5);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 5 veredelte Joints eingelagert. (" + factionData.storage.getNoble_joint() + "g)");
-                            factionData.storage.save();
-                        } else {
-                            if (ItemManager.getCustomItemCount(player, RoleplayItem.NOBLE_JOINT) < 1) {
-                                player.sendMessage(Main.error + "Du hast nicht genug Veredelte Joints.");
-                                player.closeInventory();
-                                return;
-                            }
-                            ItemManager.removeCustomItem(player, RoleplayItem.NOBLE_JOINT, 1);
-                            factionData.storage.setNoble_joint(factionData.storage.getNoble_joint() + 1);
-                            factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Lager§8]§7 " + player.getName() + " hat 1 veredelten Joint eingelagert. (" + factionData.storage.getNoble_joint() + "g)");
-                            factionData.storage.save();
-                        }
-                    }
-
+                    interactDrugStorage(player, RoleplayItem.NOBLE_JOINT);
                 }
             });
         }
@@ -393,6 +274,64 @@ public class GamePlay implements Listener {
 
     @EventHandler
     public void onChatMessage(SubmitChatEvent event) {
+        if (event.getSubmitTo().equalsIgnoreCase("drugstorage::out")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                if (amount < 1) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss größer als 1 sein.");
+                    event.end();
+                    return;
+                }
+                RoleplayItem item = event.getPlayerData().getVariable("drugstorage::roleplayitem");
+                FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+                if (item == RoleplayItem.JOINT) {
+                    item = RoleplayItem.FACTION_JOINT;
+                }
+                if (factionData.storage.getAmount(item) < amount) {
+                    event.getPlayer().sendMessage(Main.error + "So viel befindet sich nicht im Lager.");
+                    return;
+                }
+                factionData.storage.removeItem(item, amount);
+                factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 aus der ausgelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
+                factionData.storage.save();
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+            }
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("drugstorage::in")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                if (amount < 1) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss größer als 1 sein.");
+                    event.end();
+                    return;
+                }
+                RoleplayItem item = event.getPlayerData().getVariable("drugstorage::roleplayitem");
+                if (item == RoleplayItem.JOINT) {
+                    item = RoleplayItem.FACTION_JOINT;
+                }
+                FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+                if (ItemManager.getCustomItemCount(event.getPlayer(), item) < amount) {
+                    event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
+                    return;
+                }
+                factionData.storage.addItem(item, amount);
+                factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 aus der eingelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
+                factionData.storage.save();
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+            }
+        }
         if (event.getSubmitTo().equalsIgnoreCase("evidence::out")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();
@@ -401,6 +340,11 @@ public class GamePlay implements Listener {
             }
             try {
                 int amount = Integer.parseInt(event.getMessage());
+                if (amount < 1) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss größer als 1 sein.");
+                    event.end();
+                    return;
+                }
                 RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
                 if (StaatUtil.Asservatemkammer.getAmount(item) < amount) {
                     event.getPlayer().sendMessage(Main.error + "So viel befindet sich nicht in der Asservatenkammer.");
@@ -422,6 +366,11 @@ public class GamePlay implements Listener {
             }
             try {
                 int amount = Integer.parseInt(event.getMessage());
+                if (amount < 1) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss größer als 1 sein.");
+                    event.end();
+                    return;
+                }
                 RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
                 if (ItemManager.getCustomItemCount(event.getPlayer(), item) < amount) {
                     event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
@@ -443,6 +392,11 @@ public class GamePlay implements Listener {
             }
             try {
                 int amount = Integer.parseInt(event.getMessage());
+                if (amount < 1) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss größer als 1 sein.");
+                    event.end();
+                    return;
+                }
                 PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
                 FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                 if (amount > factionData.storage.getWeed()) {
