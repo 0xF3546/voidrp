@@ -297,7 +297,7 @@ public class GamePlay implements Listener {
                     return;
                 }
                 factionData.storage.removeItem(item, amount);
-                factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 aus der ausgelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
+                factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 ausgelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
@@ -326,7 +326,7 @@ public class GamePlay implements Listener {
                     return;
                 }
                 factionData.storage.addItem(item, amount);
-                factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 aus der eingelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
+                factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 eingelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");

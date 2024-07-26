@@ -79,18 +79,18 @@ public class SperrzoneCommand implements CommandExecutor {
     private void removeSperrzone(String point) {
         Bukkit.broadcastMessage("§7§m===§8[§9Sperrzone§8]§7§m===");
         Bukkit.broadcastMessage("");
-        Bukkit.broadcastMessage("§8 ➥ §bDie Sperrzone um " + point.replace("&", "§") + " §bwurde hiermit aufgehoben. Das Gebiet kann nun wieder betreten werden.");
+        Bukkit.broadcastMessage("§8 ➥ §bDie Sperrzone um " + point.replace("&", "§").replace("_", " ") + " §bwurde hiermit aufgehoben. Das Gebiet kann nun wieder betreten werden.");
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage("§7§m===§8[§9Sperrzone§8]§7§m===");
         sperrzonen.remove(point.replace(" ", "_").replace("&", "§"));
     }
 
     private void addSperrzone(String point, int range) {
+        Bukkit.broadcastMessage("§7§m===§8[§9Sperrzone§8]§7§m===");
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage("§8 ➥ §bEs wurde eine Sperrzone um " + point.replace("&", "§").replace("_", " ") + " §bim Umkreis von " + range + " Metern ausgerufen. Jegliches betreten dieser Sperrzone ist ein Straftatbestand und wird geahndet.");
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage("§7§m===§8[§9Sperrzone§8]§7§m===");
         sperrzonen.add(point.replace(" ", "_").replace("&", "§"));
-        Bukkit.broadcastMessage("§7§m===§8[§9Sperrzone§8]§7§m===");
-        Bukkit.broadcastMessage("");
-        Bukkit.broadcastMessage("§8 ➥ §bEs wurde eine Sperrzone um " + point.replace("&", "§") + " §bim Umkreis von " + range + " Metern ausgerufen. Jegliches betreten dieser Sperrzone ist ein Straftatbestand und wird geahndet.");
-        Bukkit.broadcastMessage("");
-        Bukkit.broadcastMessage("§7§m===§8[§9Sperrzone§8]§7§m===");
     }
 }

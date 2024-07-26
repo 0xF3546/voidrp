@@ -333,6 +333,7 @@ public class FactionData {
                     amount = noble_joint;
                     break;
                 case JOINT:
+                case FACTION_JOINT:
                     amount = joint;
                     break;
             }
@@ -350,6 +351,7 @@ public class FactionData {
                 case NOBLE_JOINT:
                     setNoble_joint(noble_joint - amount);
                     break;
+                case FACTION_JOINT:
                 case JOINT:
                     setJoint(joint - amount);
                     break;
@@ -367,6 +369,7 @@ public class FactionData {
                 case NOBLE_JOINT:
                     setNoble_joint(noble_joint + amount);
                     break;
+                case FACTION_JOINT:
                 case JOINT:
                     setJoint(joint + amount);
                     break;
