@@ -36,12 +36,12 @@ public class SperrzonenCommand implements CommandExecutor {
         player.sendMessage("§7   ===§8[§9Sperrzonen§8]§7===");
         for (String point : SperrzoneCommand.sperrzonen) {
             if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                TextComponent message = new TextComponent("§8 ➥ §b" + point.replace("&", "§"));
+                TextComponent message = new TextComponent("§8 ➥ §b" + point.replace("&", "§").replace("_", " "));
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sperrzone " + point.replace(" ", "_").replace("§", "&")));
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§b§oSperrzone löschen")));
                 player.spigot().sendMessage(message);
             } else {
-                player.sendMessage("§8 ➥ §b" + point.replace("&", "§"));
+                player.sendMessage("§8 ➥ §b" + point.replace("&", "§").replace("_", " "));
             }
         }
         return false;
