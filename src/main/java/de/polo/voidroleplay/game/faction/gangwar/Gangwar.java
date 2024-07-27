@@ -48,7 +48,7 @@ public class Gangwar extends GangwarData {
                             if (playerData.getVariable("gangwar") == null) continue;
                             Player player = Bukkit.getPlayer(playerData.getUuid());
 
-                            if (player != null) {
+                            if (player != null && !playerData.isDead()) {
                                 double distance = player.getLocation().distance(location);
 
                                 if (playerData.getFaction().equalsIgnoreCase(getAttacker()) && distance < 5) {
