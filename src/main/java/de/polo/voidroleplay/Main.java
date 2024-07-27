@@ -576,7 +576,7 @@ public final class Main extends JavaPlugin {
             karmaCommand = new KarmaCommand(playerManager);
             forceDropCommand = new ForceDropCommand(playerManager);
             blacklistsCommand = new BlacklistsCommand(factionManager);
-            jailCommand = new JailCommand(playerManager, Main.getInstance().utils);
+            jailCommand = new JailCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

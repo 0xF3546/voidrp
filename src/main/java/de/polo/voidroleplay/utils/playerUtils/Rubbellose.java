@@ -27,7 +27,7 @@ public class Rubbellose {
     public void startGame(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.closeInventory();
-        InventoryManager inventoryManager = new InventoryManager(player, 54, "§6§lRubbellos");
+        InventoryManager inventoryManager = new InventoryManager(player, 54, "§6§lRubbellos", true, false);
         playerData.setIntVariable("rubbellose_gemacht", 0);
         playerData.setIntVariable("rubbellose_wins", 0);
         Random random = new Random();

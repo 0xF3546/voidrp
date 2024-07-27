@@ -28,10 +28,8 @@ import java.util.Collections;
  */
 public class JailCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final Utils utils;
-    public JailCommand(PlayerManager playerManager, Utils utils) {
+    public JailCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.utils = utils;
 
         Main.registerCommand("jail", this);
     }
@@ -67,7 +65,7 @@ public class JailCommand implements CommandExecutor {
                     return;
                 }
                 playerData.removeBankMoney(playerData.getHafteinheiten() * 500, "Kaution Gefängnis");
-                utils.staatUtil.unarrestPlayer(player);
+                Main.getInstance().utils.staatUtil.unarrestPlayer(player);
             }
         });
         return false;
