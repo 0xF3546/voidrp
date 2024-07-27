@@ -17,7 +17,7 @@ public class Dealer implements IDealer {
 
     @Override
     public Location getLocation() {
-        return null;
+        return this.location;
     }
 
     @Override
