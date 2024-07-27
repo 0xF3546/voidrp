@@ -274,8 +274,11 @@ public class FactionManager {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
             factionGradeData.setPayday(payday);
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE `faction_grades` SET `payday` = " + payday + " WHERE `faction` = '" + faction + "' AND `grade` = " + rank);
+            PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE faction_grades SET payday = ? WHERE faction = ? AND grade = ?");
+            statement.setInt(1, payday);
+            statement.setString(2, faction);
+            statement.setInt(3, rank);
+            statement.executeUpdate();
             return true;
         } else {
             return false;
@@ -286,8 +289,10 @@ public class FactionManager {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
             factionGradeData.setName(name);
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE `faction_grades` SET `name` = '" + name + "' WHERE `faction` = '" + faction + "' AND `grade` = " + rank);
+            PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE faction_grades SET name = ? WHERE faction = ? AND grade = ?");
+            statement.setString(1, name);
+            statement.setString(2, faction);
+            statement.setInt(3, rank);
             return true;
         } else {
             return false;

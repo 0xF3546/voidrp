@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.enums.ShopType;
+import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -16,9 +17,11 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -177,9 +180,20 @@ public class ServerManager {
 
     private void everySecond() {
         new BukkitRunnable() {
+            @SneakyThrows
             @Override
             public void run() {
                 LocalDateTime now = Utils.getTime();
+                if (now.getHour() == 0 && now.getMinute() == 1 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
+                    // clear everything
+                    PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM seasonpass_player_quests");
+                    statement.execute();
+                    for (PlayerData playerData : playerManager.getPlayers()) {
+                        playerData.clearQuests();
+                    }
+                    Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der Seasonpass wurde zurückgesetzt!");
+
+                }
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
                     return;

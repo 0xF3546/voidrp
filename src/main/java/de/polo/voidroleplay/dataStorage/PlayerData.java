@@ -862,6 +862,10 @@ public class PlayerData {
         quests.add(playerQuest);
     }
 
+    public void clearQuests() {
+        quests.clear();
+    }
+
     public Collection<PlayerQuest> getQuests() {
         return quests;
     }
