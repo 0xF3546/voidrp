@@ -56,6 +56,9 @@ public class PlayerData {
     private boolean canInteract = true;
     private boolean isJailed;
     private int hafteinheiten = 0;
+    @Getter
+    @Setter
+    private int jailParole = 0;
     private boolean isAduty = false;
     private int level;
     private int exp;

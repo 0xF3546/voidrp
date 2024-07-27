@@ -334,6 +334,7 @@ public class PlayerManager implements Listener, ServerTiming {
 
                 Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
+                Main.getInstance().utils.staatUtil.loadParole(player);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -357,6 +358,21 @@ public class PlayerManager implements Listener, ServerTiming {
             statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + ", `lastLogin` = NOW() WHERE `uuid` = '" + uuid + "'");
             if (playerData.isJailed()) {
                 statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
+            } else if (playerData.getJailParole() >= 0) {
+                playerData.setJailParole(playerData.getJailParole() - 1);
+                PreparedStatement preparedStatement;
+                if (playerData.getJailParole() == 0) {
+                    preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE Jail_Parole SET minutes_remaining = ? WHERE uuid = ?");
+                    preparedStatement.setInt(1, playerData.getJailParole());
+                    preparedStatement.setString(2, player.getUniqueId().toString());
+                    preparedStatement.executeUpdate();
+                } else {
+                    preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM Jail_Parole WHERE uuid = ?");
+                    preparedStatement.setString(1, player.getUniqueId().toString());
+                    preparedStatement.execute();
+                    player.sendMessage("§8[§cGefängnis§8]§7 Deine Bewährung ist abgelaufen.");
+                }
+                preparedStatement.close();
             }
 
             for (Weapon weapon : Main.getInstance().weapons.getWeapons().values()) {

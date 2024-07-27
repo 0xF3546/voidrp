@@ -134,6 +134,38 @@ public class StaatUtil {
         Statement statement = Main.getInstance().mySQL.getStatement();
         player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
         statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        loadParole(player);
+    }
+
+    @SneakyThrows
+    public void loadParole(Player player) {
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            PlayerData playerData = playerManager.getPlayerData(player);
+            playerData.setJailParole(result.getInt("minutes_remaining"));
+        }
+        statement.close();
+    }
+
+    @SneakyThrows
+    public void setParole(Player player, int hafteinheiten) {
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO Jail_Parole (uuid, hafteinheiten, minutes_remaining) VALUES (?, ?, ?)");
+        statement.setString(1, player.getUniqueId().toString());
+        statement.setInt(2, hafteinheiten);
+        statement.setInt(3, hafteinheiten);
+        statement.execute();
+        statement.close();
+    }
+
+    @SneakyThrows
+    public boolean hasParole(Player player) {
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        statement.close();
+        return result.next();
     }
 
     @SneakyThrows

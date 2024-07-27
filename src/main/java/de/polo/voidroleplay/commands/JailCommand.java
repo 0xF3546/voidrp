@@ -47,6 +47,11 @@ public class JailCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (!playerData.isJailed()) return;
+                if (Main.getInstance().utils.staatUtil.hasParole(player)) {
+                    player.sendMessage(Prefix.ERROR + "Du hast bist bereits auf Bewährung.");
+                    return;
+                }
+                Main.getInstance().utils.staatUtil.setParole(player, playerData.getHafteinheiten() * 2);
                 playerData.setHafteinheiten(playerData.getHafteinheiten() / 2);
                 player.sendMessage("§8[§cGefängnis§8]§7 Du hast nun " + playerData.getHafteinheiten() + " Hafteinheiten und " + playerData.getHafteinheiten() * 2 + " Minuten bewährung.");
                 PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE Jail SET hafteinheiten_verbleibend = ? WHERE uuid = ?");
