@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -101,8 +102,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                 }
                 try {
                     SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyy '|' HH:mm:ss ");
-                    Date date = new Date();
-                    String newDate = formatter.format(date);
+                    String newDate = formatter.format(Utils.getTime());
                     Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.execute("INSERT INTO `blacklist` (`uuid`, `faction`, `kills`, `price`, `date`, `reason`) VALUES ('" + player1.getUniqueId() + "', '" + factionData.getName() + "', " + kills + ", " + price + ", '" + newDate + "', '" + reason + "')");
                     ResultSet checkId = statement.executeQuery("SELECT `id` FROM `blacklist` WHERE `uuid` = '" + player1.getUniqueId() + "' AND `date` = '" + newDate + "'");
