@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.Workstation;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -103,8 +104,15 @@ public class PlayerData {
     private boolean receivedBonus;
     private int subGroupId;
     private int subGroupGrade;
+
+    @Getter
+    @Setter
     private int karma;
     private List<PlayerWorkstation> workstations = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private int votes;
 
     public PlayerData() {
     }
@@ -848,14 +856,6 @@ public class PlayerData {
 
     public void removeWorkstation(PlayerWorkstation playerWorkstation) {
         workstations.remove(playerWorkstation);
-    }
-
-    public int getKarma() {
-        return karma;
-    }
-
-    public void setKarma(int karma) {
-        this.karma = karma;
     }
 
     public void addQuest(PlayerQuest playerQuest) {

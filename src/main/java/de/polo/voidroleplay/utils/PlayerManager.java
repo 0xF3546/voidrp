@@ -190,6 +190,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setSubGroupGrade(result.getInt("subGroup_grade"));
                 playerData.setSubGroupId(result.getInt("subGroup"));
                 playerData.setKarma(result.getInt("karma"));
+                playerData.setVotes(result.getInt("votes"));
 
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");
