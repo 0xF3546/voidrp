@@ -225,3 +225,4 @@ commands:
   forcedrop:
   beginnerpass:
     aliases: neulingspass
+  blacklists:

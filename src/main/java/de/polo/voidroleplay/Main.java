@@ -416,6 +416,7 @@ public final class Main extends JavaPlugin {
         public FAQCommand faqCommand;
         public KarmaCommand karmaCommand;
         public ForceDropCommand forceDropCommand;
+        public BlacklistsCommand blacklistsCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -573,6 +574,7 @@ public final class Main extends JavaPlugin {
             faqCommand = new FAQCommand();
             karmaCommand = new KarmaCommand(playerManager);
             forceDropCommand = new ForceDropCommand(playerManager);
+            blacklistsCommand = new BlacklistsCommand(factionManager);
 
             main.registerCommands();
             main.registerListener(this);

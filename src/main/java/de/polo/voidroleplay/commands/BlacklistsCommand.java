@@ -1,0 +1,38 @@
+package de.polo.voidroleplay.commands;
+
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.BlacklistData;
+import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.utils.FactionManager;
+import de.polo.voidroleplay.utils.ServerManager;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class BlacklistsCommand implements CommandExecutor {
+    private final FactionManager factionManager;
+    public BlacklistsCommand(FactionManager factionManager) {
+        this.factionManager = factionManager;
+        Main.registerCommand("blacklists", this);
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        Player player = (Player) sender;
+        player.sendMessage("§7   ===§8[§cBlacklists§8]§7===");
+        for (BlacklistData blacklistData : factionManager.getBlacklists()) {
+            if (blacklistData.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
+                FactionData factionData = factionManager.getFactionData(blacklistData.getFaction());
+                player.sendMessage("§8 - " + factionData.getPrimaryColor() + factionData.getFullname() + "§8: §a" + blacklistData.getPrice() + "$ §7| §c" + blacklistData.getKills() + "Kills §8| §7"  + blacklistData.getReason());
+            }
+        }
+        return false;
+    }
+}
