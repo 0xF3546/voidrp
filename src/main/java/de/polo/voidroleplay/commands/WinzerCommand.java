@@ -142,6 +142,7 @@ public class WinzerCommand implements CommandExecutor {
 
     private void checked(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
+        Main.getInstance().seasonpass.didQuest(player, 9);
         playerData.setIntVariable("winzer", playerData.getIntVariable("winzer") - 1);
         playerData.setIntVariable("winzer_harvested", playerData.getIntVariable("winzer_harvested") + Main.random(1, 3));
         if (playerData.getIntVariable("winzer") == 0) {

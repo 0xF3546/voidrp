@@ -42,11 +42,18 @@ public class PlayerVoteListener implements Listener {
             preparedStatement.setInt(1, playerData.getVotes());
             preparedStatement.setString(2, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
-            preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO vote_log (uuid, page) VALUES (?, ?)");
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.setString(2, vote.getServiceName());
-            preparedStatement.execute();
             preparedStatement.close();
+
+            LogVote(player.getUniqueId().toString(), vote.getServiceName());
         }
+    }
+
+    @SneakyThrows
+    private void LogVote(String uuid, String page) {
+        PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO vote_log (uuid, page) VALUES (?, ?)");
+        preparedStatement.setString(1, uuid);
+        preparedStatement.setString(2, page);
+        preparedStatement.execute();
+        preparedStatement.close();
     }
 }

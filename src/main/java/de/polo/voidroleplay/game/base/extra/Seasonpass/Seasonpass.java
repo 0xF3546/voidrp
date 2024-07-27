@@ -221,7 +221,7 @@ public class Seasonpass implements CommandExecutor {
             playerQuest.setState(playerQuest.getState() + amount);
             if (playerQuest.getState() >= quest.getReachedAt()) {
                 Reward reward = getRewardById(quest.getRewardId());
-                player.sendMessage("§8[§6Beginnerpass§8]§a Du hast die Aufgabe " + quest.getName().replace("&", "§") + " §aabgeschlossen!");
+                player.sendMessage("§8[§6Seasonpass§8]§a Du hast die Aufgabe " + quest.getName().replace("&", "§") + " §aabgeschlossen!");
                 Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
                 SoundManager.successSound(player);
             }

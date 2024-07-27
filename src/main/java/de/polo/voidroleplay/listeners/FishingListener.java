@@ -49,6 +49,7 @@ public class FishingListener implements Listener {
                 player.sendMessage("§8 » §7Du hast eine §6§lCase§7 geangelt!");
             }
 
+            Main.getInstance().seasonpass.didQuest(player, 20);
             playerManager.addExp(player, EXPType.SKILL_FISHING, Main.random(3, 8));
         }
 
