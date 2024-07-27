@@ -73,7 +73,6 @@ public class Beginnerpass implements CommandExecutor {
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             PlayerQuest playerQuest = new PlayerQuest(result.getInt("id"), result.getInt("questId"), result.getInt("state"));
-            System.out.println("Quest geladen: " + playerQuest.getQuestId());
             playerData.addBeginnerQuest(playerQuest);
         }
     }

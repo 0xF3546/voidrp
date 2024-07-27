@@ -289,6 +289,10 @@ public class EquipCommand implements CommandExecutor, Listener {
                 inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1) {
+                            player.sendMessage(Prefix.ERROR + "Du hast bereits ein Schild");
+                            return;
+                        }
                         int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
                         if (factionData.getBank() < priceForFaction) {
                             player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");

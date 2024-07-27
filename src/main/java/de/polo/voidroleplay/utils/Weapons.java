@@ -174,6 +174,7 @@ public class Weapons implements Listener {
 
     public WeaponData getWeaponData(Material material) {
         for (WeaponData weaponData : weaponDataMap.values()) {
+            if (weaponData.getMaterial() == null) continue;
             if (weaponData.getMaterial().equals(material)) return weaponData;
         }
         return null;
