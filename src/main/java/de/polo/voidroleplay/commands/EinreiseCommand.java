@@ -126,7 +126,7 @@ public class EinreiseCommand implements CommandExecutor {
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 statement.setDate(3, sqlDate);
                 statement.setString(4, playerData.getGender().name());
-                statement.setString(5, playerData.getUuid().toString());
+                statement.setString(5, player.getUniqueId().toString());
                 statement.executeUpdate();
 
                 player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");

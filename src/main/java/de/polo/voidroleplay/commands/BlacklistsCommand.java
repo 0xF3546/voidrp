@@ -5,6 +5,10 @@ import de.polo.voidroleplay.dataStorage.BlacklistData;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.ServerManager;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +34,10 @@ public class BlacklistsCommand implements CommandExecutor {
         for (BlacklistData blacklistData : factionManager.getBlacklists()) {
             if (blacklistData.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
                 FactionData factionData = factionManager.getFactionData(blacklistData.getFaction());
-                player.sendMessage("§8 - " + factionData.getPrimaryColor() + factionData.getFullname() + "§8: §a" + blacklistData.getPrice() + "$ §7| §c" + blacklistData.getKills() + "Kills §8| §7"  + blacklistData.getReason());
+                TextComponent message = new TextComponent("§8 - " + factionData.getPrimaryColor() + factionData.getFullname() + "§8: §a" + blacklistData.getPrice() + "$ §7| §c" + blacklistData.getKills() + "Kills §8| §7"  + blacklistData.getReason());
+                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/blacklist pay " + blacklistData.getFaction()));
+                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oBezahlen")));
+                player.spigot().sendMessage(message);
             }
         }
         return false;
