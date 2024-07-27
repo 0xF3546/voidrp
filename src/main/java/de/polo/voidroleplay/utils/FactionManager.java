@@ -220,7 +220,8 @@ public class FactionManager {
         return factionGradeData.getPayday();
     }
     public boolean isPlayerInGoodFaction(Player player) {
-        return faction(player) == "FBI" || faction(player) == "Polizei" || faction(player) == "Medics";
+        PlayerData playerData = playerManager.getPlayerData(player);
+        return playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Medic") || playerData.getFaction().equalsIgnoreCase("Polizei");
     }
 
     public Integer factionBank(String faction) {

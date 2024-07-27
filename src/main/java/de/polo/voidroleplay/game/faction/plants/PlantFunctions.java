@@ -75,9 +75,13 @@ public class PlantFunctions implements Listener {
         return 360 - minutesDifference;
     }
     public long getTakeOutDifference(Plant plant) {
-        Duration duration = Duration.between(plant.getLastAttack(), Utils.getTime());
-        long minutesDifference = duration.toMinutes();
-        return 60 - minutesDifference;
+        LocalDateTime now = Utils.getTime();
+        LocalDateTime lastAttack = plant.getLastAttack();
+
+        int nowMinutes = now.getMinute();
+        int lastAttackMinutes = lastAttack.getMinute();
+
+        return Math.abs(nowMinutes - lastAttackMinutes);
     }
 
     public void openPlant(Player player, int id) {

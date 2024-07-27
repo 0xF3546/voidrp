@@ -36,7 +36,7 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Syntax-Fehler: /giverank [Spieler] [Rang]");
             return false;
         }
-        OfflinePlayer targetplayer = Bukkit.getPlayer(args[0]);
+        OfflinePlayer targetplayer = Utils.getOfflinePlayer(args[0]);
         if (targetplayer == null) {
             player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
             return false;

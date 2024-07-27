@@ -15,6 +15,7 @@ import java.sql.*;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Random;
@@ -65,17 +66,6 @@ public class Utils {
 
     public int getCurrentHour() {
         return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-    }
-
-    public OfflinePlayer getOfflinePlayer(String player) {
-        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-            if (offlinePlayer.getName() != null) {
-                if (offlinePlayer.getName().equalsIgnoreCase(player)) {
-                    return offlinePlayer;
-                }
-            }
-        }
-        return null;
     }
 
     public static String stringArrayToString(String[] args) {
@@ -364,7 +354,25 @@ public class Utils {
         return randomNumber < chance;
     }
 
+    public static String localDateTimeToString(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return localDateTime.format(formatter);
+    }
+
+    public static String localDateTimeToReadableString(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM | HH:mm");
+        return localDateTime.format(formatter);
+    }
+
     public static LocalDateTime getTime() {
         return LocalDateTime.now(ZoneId.of("Europe/Berlin"));
+    }
+
+    public static OfflinePlayer getOfflinePlayer(String name) {
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            if (player.getName() == null) continue;
+            if (player.getName().equalsIgnoreCase(name)) return player;
+        }
+        return null;
     }
 }
