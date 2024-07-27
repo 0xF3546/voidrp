@@ -125,11 +125,13 @@ public class StaatUtil {
     @SneakyThrows
     public void unarrestPlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (locationManager.getDistanceBetweenCoords(player, "gefaengnis") < 200) {
+            locationManager.useLocation(player, "gefaengnis_out");
+        }
         playerData.setJailed(false);
         playerData.setHafteinheiten(0);
         jailDataMap.remove(player.getUniqueId().toString());
         Statement statement = Main.getInstance().mySQL.getStatement();
-        locationManager.useLocation(player, "gefaengnis_out");
         player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
         statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
