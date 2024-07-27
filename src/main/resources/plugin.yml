@@ -226,3 +226,5 @@ commands:
   beginnerpass:
     aliases: neulingspass
   blacklists:
+  houseban:
+    aliases: hausverbot

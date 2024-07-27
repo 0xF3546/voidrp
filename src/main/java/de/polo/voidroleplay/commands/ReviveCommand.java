@@ -2,12 +2,9 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Progress;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.ServerManager;
-import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -66,6 +63,9 @@ public class ReviveCommand implements CommandExecutor {
                 if (skull.getOwner() == player.getUniqueId()) {
                     player.sendMessage(Main.error + "Du kannst dich nicht selbst wiederbeleben.");
                     return false;
+                }
+                if (!playerData.isDuty()) {
+                    player.sendMessage(Prefix.ERROR + "Du bist nicht im Dienst.");
                 }
                 UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
                 Player targetplayer = Bukkit.getPlayer(uuid);

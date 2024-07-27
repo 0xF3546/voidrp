@@ -31,6 +31,9 @@ public class ArrestCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei")) {
+            if (!playerData.isDuty()) {
+                player.sendMessage(Prefix.ERROR + "Du bist nicht im Dienst.");
+            }
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                 if (args.length > 0) {
                     Player targetplayer = Bukkit.getPlayer(args[0]);
