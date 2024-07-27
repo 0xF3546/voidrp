@@ -535,64 +535,6 @@ public class InventoryClickListener implements Listener {
                     break;
             }
         }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "interaktionsmenü")) {
-            event.setCancelled(true);
-            switch (event.getSlot()) {
-                case 20:
-                    playerData.setVariable("chatblock", "givemoney");
-                    player.sendMessage("§8[§6Interaktion§8]§7 Gib nun einen Wert ein.");
-                    player.closeInventory();
-                    break;
-                case 24:
-                    Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
-                    if (targetplayer == null) {
-                        return;
-                    }
-                    player.performCommand("personalausweis show " + targetplayer.getName());
-                    if (playerData.getGender().equals(Gender.MALE)) {
-                        ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " seinen Personalausweis.");
-                    } else {
-                        ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " ihren Personalausweis.");
-                    }
-                    player.closeInventory();
-                    break;
-                case 38:
-                    player.closeInventory();
-                    Player targetplayer3 = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
-                    if (targetplayer3.getLocation().distance(player.getLocation()) < 3) {
-                        if (!playerManager.canPlayerMove(targetplayer3)) {
-                            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " versucht " + targetplayer3.getName() + " zu durchsuchen.");
-                            Progress.start(player, 5);
-                            Main.waitSeconds(5, () -> {
-                                if (targetplayer3.getLocation().distance(player.getLocation()) < 3) {
-                                    player.openInventory(targetplayer3.getInventory());
-                                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " durchsucht " + targetplayer3.getName());
-                                } else {
-                                    player.sendMessage("§8[§6Interaktion§8]§7 " + targetplayer3.getName() + " ist nicht in deiner nähe.");
-                                }
-                            });
-                        } else {
-                            player.openInventory(targetplayer3.getInventory());
-                            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " durchsucht " + targetplayer3.getName());
-                        }
-                    } else {
-                        player.sendMessage("§8[§6Interaktion§8]§7 " + targetplayer3.getName() + " ist nicht in deiner nähe.");
-                    }
-                    break;
-                case 40:
-                    Player targetplayer2 = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
-                    if (targetplayer2 == null) {
-                        return;
-                    }
-                    Server.Utils.kissPlayer(player, targetplayer2);
-                    player.closeInventory();
-                    break;
-                case 53:
-                    Main.getInstance().getCooldownManager().setCooldown(player, "interaction_cooldown", 1);
-                    playerManager.openFactionInteractionMenu(player, playerData.getFaction());
-                    break;
-            }
-        }
         if (playerData.getVariable("current_inventory").toString().startsWith("interaktionsmenü_")) {
             event.setCancelled(true);
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));

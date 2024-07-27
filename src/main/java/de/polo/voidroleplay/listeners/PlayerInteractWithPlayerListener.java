@@ -47,15 +47,17 @@ public class PlayerInteractWithPlayerListener implements Listener {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
                         PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
                         if (targetPlayerData.isAduty()) {
-                            player.sendMessage(Prefix.ERROR + "Du kannst Spieler im Aduty nicht fesseln.");
+                            player.sendMessage(Prefix.ERROR + "Du kannst Spieler im Admindienst nicht fesseln.");
                             return;
                         }
                         if (!targetPlayerData.isCuffed()) {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
                             targetPlayerData.setCuffed(true);
+                            ItemManager.removeCustomItem(player, RoleplayItem.CUFF, 1);
                         } else {
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
                             targetPlayerData.setCuffed(false);
+                            ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                         }
                         Main.getInstance().getCooldownManager().setCooldown(player, "handschellen", 1);
                     }

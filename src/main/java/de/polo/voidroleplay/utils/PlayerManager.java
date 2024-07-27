@@ -16,6 +16,7 @@ import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.game.events.HourTickEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.PlayerTutorial;
 import lombok.SneakyThrows;
@@ -825,49 +826,102 @@ public class PlayerManager implements Listener, ServerTiming {
 
     public void openInterActionMenu(Player player, Player targetplayer) {
         Main.getInstance().beginnerpass.didQuest(player, 12);
-        Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
-        PlayerData playerData = getPlayerData(player.getUniqueId());
-        PlayerData targetplayerData = getPlayerData(targetplayer.getUniqueId());
-        playerData.setVariable("current_inventory", "interaktionsmenü");
-        playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
-        inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName()));
-        inv.setItem(20, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§aGeld geben", null));
-        inv.setItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen"));
-        //inv.setItem(38, ItemManager.createItem(Material.IRON_BARS, 1, 0, "§7Durchsuchen"));
-        inv.setItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen"));
+        PlayerData playerData = getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(20, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§aGeld geben", null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "givemoney");
+                player.sendMessage("§8[§6Interaktion§8]§7 Gib nun einen Wert ein.");
+                player.closeInventory();
+            }
+        });
+        inventoryManager.setItem(new CustomItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.performCommand("personalausweis show " + targetplayer.getName());
+                if (playerData.getGender().equals(Gender.MALE)) {
+                    ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " seinen Personalausweis.");
+                } else {
+                    ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " ihren Personalausweis.");
+                }
+                player.closeInventory();
+            }
+        });
+        inventoryManager.setItem(new CustomItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                Server.Utils.kissPlayer(player, targetplayer);
+                player.closeInventory();
+            }
+        });
         if (playerData.getFaction() != null) {
             FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
-            inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü"));
+            inventoryManager.setItem(new CustomItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    Main.getInstance().getCooldownManager().setCooldown(player, "interaction_cooldown", 1);
+                    openFactionInteractionMenu(player, targetplayer, playerData.getFaction());
+                }
+            });
         }
-        for (int i = 0; i < 54; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
-            }
-        }
-        player.openInventory(inv);
     }
 
-    public void openFactionInteractionMenu(Player player, String faction) {
-        Inventory inv = Bukkit.createInventory(player, 54, "§8 » §6Interaktionsmenü");
+    public void openFactionInteractionMenu(Player player, Player targetplayer, String faction) {
+        InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
         PlayerData playerData = getPlayerData(player.getUniqueId());
-        Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_player")));
         if (targetplayer == null) return;
         PlayerData targetplayerData = getPlayerData(targetplayer.getUniqueId());
         playerData.setVariable("current_inventory", "interaktionsmenü_" + faction);
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
-        inv.setItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName()));
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
         switch (faction.toLowerCase()) {
             case "medic":
-                inv.setItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen"));
+                inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        Main.getInstance().utils.staatUtil.checkBloodGroup(player, targetplayer);
+                        player.closeInventory();
+                    }
+                });
+                break;
+            case "fbi":
+            case "polizei":
+                if (targetplayerData.isCuffed()) {
+                    inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.LEAD, 1, 0, "§3Handschellen abnehmen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            targetplayerData.setCuffed(false);
+                            ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
+                            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
+                        }
+                    });
+                } else {
+                    inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.LEAD, 1, 0, "§3§mHandschellen abnehmen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                        }
+                    });
+                }
                 break;
         }
-        inv.setItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§7Interaktionsmenü"));
-        for (int i = 0; i < 54; i++) {
-            if (inv.getItem(i) == null) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+        inventoryManager.setItem(new CustomItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§7Interaktionsmenü")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openInterActionMenu(player, targetplayer);
             }
-        }
-        player.openInventory(inv);
+        });
     }
 
     @EventHandler

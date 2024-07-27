@@ -72,6 +72,11 @@ public class PlayerInteractListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
                 if (event.getClickedBlock().getType() == Material.OAK_STAIRS || event.getClickedBlock().getType() == Material.ACACIA_STAIRS || event.getClickedBlock().getType() == Material.SPRUCE_STAIRS || event.getClickedBlock().getType() == Material.BIRCH_STAIRS || event.getClickedBlock().getType() == Material.JUNGLE_STAIRS || event.getClickedBlock().getType() == Material.DARK_OAK_STAIRS) {
+                    for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                        if (player.getInventory().getItemInMainHand().getType() == weaponData.getMaterial()) {
+                            return;
+                        }
+                    }
                     Location l = event.getClickedBlock().getLocation();
                     World w = player.getWorld();
                     ArmorStand armorStand = w.spawn(l.add(0.5D, -1, 0.5D), ArmorStand.class);
