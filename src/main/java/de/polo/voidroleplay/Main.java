@@ -417,6 +417,7 @@ public final class Main extends JavaPlugin {
         public KarmaCommand karmaCommand;
         public ForceDropCommand forceDropCommand;
         public BlacklistsCommand blacklistsCommand;
+        public JailCommand jailCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -575,6 +576,7 @@ public final class Main extends JavaPlugin {
             karmaCommand = new KarmaCommand(playerManager);
             forceDropCommand = new ForceDropCommand(playerManager);
             blacklistsCommand = new BlacklistsCommand(factionManager);
+            jailCommand = new JailCommand(playerManager, Main.getInstance().utils);
 
             main.registerCommands();
             main.registerListener(this);
