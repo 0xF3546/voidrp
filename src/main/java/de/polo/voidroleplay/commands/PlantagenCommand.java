@@ -45,7 +45,7 @@ public class PlantagenCommand implements CommandExecutor {
             Location location = locationManager.getLocation("plant-" + plant.getId());
             if (location != null) {
                 TextComponent message = new TextComponent("§8 ➥ §2Plantage-" + plant.getId() + " (" + plant.getMultiplier() + "x) §8 | §" + factionData.getPrimaryColor() + factionData.getFullname() + attackable);
-                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) location.getX() + " " + (int) location.getY() + " " + (int) location.getY()));
+                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) location.getX() + " " + (int) location.getY() + " " + (int) location.getZ()));
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
                 player.spigot().sendMessage(message);
             } else {
