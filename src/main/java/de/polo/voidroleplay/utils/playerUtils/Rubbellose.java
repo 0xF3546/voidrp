@@ -2,6 +2,8 @@ package de.polo.voidroleplay.utils.playerUtils;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
+import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Bukkit;
@@ -9,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -24,33 +27,64 @@ public class Rubbellose {
     public void startGame(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.closeInventory();
-        Inventory inv = Bukkit.createInventory(player, 54, "§6§lRubbellos");
+        InventoryManager inventoryManager = new InventoryManager(player, 54, "§6§lRubbellos");
         playerData.setIntVariable("rubbellose_gemacht", 0);
         playerData.setIntVariable("rubbellose_wins", 0);
         Random random = new Random();
         int greenBlocksPlaced = 0;
         for(int i=0; i<54; i++) {
             if(i%9 == 0 || i%9 == 8 || i<9 || i>44) {
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+
+                    }
+                });
             }
         }
         for (int i=0; i<54; i++) {
-            if (inv.getItem(i) == null) {
+            if (inventoryManager.getInventory().getItem(i) == null) {
                 if (greenBlocksPlaced < 4 && random.nextBoolean()) {
-                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8"));
-                    ItemMeta meta = inv.getItem(i).getItemMeta();
-                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER, 1);
-                    inv.getItem(i).setItemMeta(meta);
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            ItemMeta meta = event.getCurrentItem().getItemMeta();
+                            meta.setDisplayName("§aGewonnen!");
+                            event.getCurrentItem().setItemMeta(meta);
+                            event.getCurrentItem().setType(Material.LIME_DYE);
+                            playerData.setIntVariable("rubbellose_wins", playerData.getIntVariable("rubbellose_wins") + 1);
+                            playerData.setIntVariable("rubbellose_gemacht", playerData.getIntVariable("rubbellose_gemacht") + 1);
+                            if (playerData.getIntVariable("rubbellose_gemacht") >= 5) {
+                                endGame(player);
+                                player.closeInventory();
+                            }
+                        }
+                    });
                 } else {
-                    inv.setItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8"));
-                    ItemMeta meta = inv.getItem(i).getItemMeta();
-                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER, 0);
-                    inv.getItem(i).setItemMeta(meta);
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            ItemMeta meta = event.getCurrentItem().getItemMeta();;
+                            meta.setDisplayName("§cVerloren!");
+                            event.getCurrentItem().setItemMeta(meta);
+                            event.getCurrentItem().setType(Material.RED_DYE);
+                            playerData.setIntVariable("rubbellose_gemacht", playerData.getIntVariable("rubbellose_gemacht") + 1);
+                            if (playerData.getIntVariable("rubbellose_gemacht") >= 5) {
+                                endGame(player);
+                                player.closeInventory();
+                            }
+                        }
+                    });
                 }
             }
         }
-        inv.setItem(49, ItemManager.createItem(Material.STRUCTURE_VOID, 1, 0, "§c§lAbbrechen"));
-        player.openInventory(inv);
+        inventoryManager.setItem(new CustomItem(49, ItemManager.createItem(Material.STRUCTURE_VOID, 1, 0, "§c§lAbbrechen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                player.sendMessage("§8[§6Rubbellos§8]§c Du hast das Spiel abgebrochen!");
+            }
+        });
     }
 
     public void endGame(Player player) {
