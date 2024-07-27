@@ -11,6 +11,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CommandListener implements Listener {
     private final PlayerManager playerManager;
     private final Utils utils;
@@ -24,7 +27,7 @@ public class CommandListener implements Listener {
         String msg = event.getMessage();
         String[] args = msg.split(" ");
         Player player = event.getPlayer();
-        String[] nonBlockedCommands = {"support", "report", "help", "vote", "jailtime", "ad", "aduty"};
+        List<String> nonBlockedCommands = Arrays.asList("support", "report", "help", "vote", "jailtime", "ad", "aduty");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
@@ -49,15 +52,11 @@ public class CommandListener implements Listener {
             return;
         }
         if (playerData.isDead() && !playerData.isAduty()) {
-            boolean performCommand = false;
-            for (int i = 0; i < nonBlockedCommands.length; i++) {
-                if (!Bukkit.getServer().getHelpMap().getHelpTopic(args[0]).toString().equalsIgnoreCase(nonBlockedCommands[i])) {
-                    performCommand = true;
-                }
-            }
-            if (!performCommand) {
-                player.sendMessage("§7Du kannst diesen  Befehl aktuell nicht nutzen.");
+            String command = args[0].substring(1); // Entferne das führende '/'
+            if (!nonBlockedCommands.contains(command)) {
+                player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
                 event.setCancelled(true);
+                return;
             }
         }
         ChatUtils.LogCommand(msg, player.getUniqueId());

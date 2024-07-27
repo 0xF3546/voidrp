@@ -47,35 +47,6 @@ public class InventoryClickListener implements Listener {
         FactionData factionData = null;
         if (playerData.getVariable("current_inventory") == null) return;
         if (playerData.getFaction() != null) factionData = factionManager.getFactionData(playerData.getFaction());
-        if (event.getView().getTitle().equalsIgnoreCase("§6§lRubbellos")) {
-            event.setCancelled(true);
-            playerData.setVariable("current_inventory", null);
-            if (event.getCurrentItem().getType() == Material.GRAY_DYE) {
-                playerData.setVariable("current_inventory", "rubbellos");
-                int pers = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "isWin"), PersistentDataType.INTEGER);
-                ItemMeta meta = event.getCurrentItem().getItemMeta();
-                if (pers == 1 && playerData.getIntVariable("rubbellose_wins") <= 3) {
-                    meta.setDisplayName("§aGewonnen!");
-                    event.getCurrentItem().setItemMeta(meta);
-                    event.getCurrentItem().setType(Material.LIME_DYE);
-                    playerData.setIntVariable("rubbellose_wins", playerData.getIntVariable("rubbellose_wins") + 1);
-                } else {
-                    meta.setDisplayName("§cVerloren!");
-                    event.getCurrentItem().setItemMeta(meta);
-                    event.getCurrentItem().setType(Material.RED_DYE);
-                }
-                playerData.setIntVariable("rubbellose_gemacht", playerData.getIntVariable("rubbellose_gemacht") + 1);
-                if (playerData.getIntVariable("rubbellose_gemacht") >= 5) {
-                    new Rubbellose(playerManager).endGame(player);
-                    player.closeInventory();
-                }
-            } else if (event.getCurrentItem().getType() == Material.STRUCTURE_VOID) {
-                if (playerData.getIntVariable("rubbellose_gemacht") == 0) {
-                    player.closeInventory();
-                    player.sendMessage("§8[§6Rubbellos§8]§c Du hast das Spiel abgebrochen!");
-                }
-            }
-        }
         if (Objects.equals(playerData.getVariable("current_inventory"), "bossmenu_" + playerData.getFaction())) {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
