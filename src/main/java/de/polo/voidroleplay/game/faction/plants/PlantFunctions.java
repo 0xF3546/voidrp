@@ -75,7 +75,7 @@ public class PlantFunctions implements Listener {
         return 360 - minutesDifference;
     }
     public long getTakeOutDifference(Plant plant) {
-        Duration duration = Duration.between(plant.getLastAttack(), LocalDateTime.now());
+        Duration duration = Duration.between(plant.getLastAttack(), Utils.getTime());
         long minutesDifference = duration.toMinutes();
         return 60 - minutesDifference;
     }
@@ -117,7 +117,7 @@ public class PlantFunctions implements Listener {
         }
         if (plant.getOwner().equalsIgnoreCase(playerData.getFaction())) {
             if (plant.hasTookout(player.getUniqueId())) {
-                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), "§8 » §cDu kannst in " + getTakeOutDifference(plant) + " wieder Marihuana entnehmen!")) {
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), "§8 » §cDu kannst in " + getTakeOutDifference(plant) + "min wieder Marihuana entnehmen!")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
