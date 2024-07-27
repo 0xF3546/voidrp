@@ -226,7 +226,7 @@ public class Seasonpass implements CommandExecutor {
                 SoundManager.successSound(player);
             }
             Connection connection = Main.getInstance().mySQL.getConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE seasonpass_player_quests SET state = ? WHERE id = ?");
             statement.setInt(1, playerQuest.getState());
             statement.setInt(2, playerQuest.getId());
             statement.executeUpdate();

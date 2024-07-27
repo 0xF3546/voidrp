@@ -296,6 +296,7 @@ public class GamePlay implements Listener {
                     event.getPlayer().sendMessage(Main.error + "So viel befindet sich nicht im Lager.");
                     return;
                 }
+                ItemManager.addCustomItem(event.getPlayer(), item, amount);
                 factionData.storage.removeItem(item, amount);
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 ausgelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
@@ -325,6 +326,7 @@ public class GamePlay implements Listener {
                     event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
                     return;
                 }
+                ItemManager.removeCustomItem(event.getPlayer(), item, amount);
                 factionData.storage.addItem(item, amount);
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 eingelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
@@ -463,14 +465,12 @@ public class GamePlay implements Listener {
                 long hoursElapsed = duration.toHours();
 
                 if (hoursElapsed >= 2 && proceedingStarted.getMinute() == event.getMinute()) {
-                    if (true) {
-                        factionData.storage.setProceedingStarted(null);
-                        factionData.storage.setWeed(factionData.storage.getWeed() - factionData.storage.getProceedingAmount());
-                        factionData.storage.setJoint(factionData.storage.getJoint() + (factionData.storage.getProceedingAmount() / 2));
-                        factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 Es wurden " + factionData.storage.getProceedingAmount() + " Marihuana zu " + (factionData.storage.getProceedingAmount() / 2) + " Joints verarbeitet.");
-                        factionData.storage.setProceedingAmount(0);
-                        factionData.storage.save();
-                    }
+                    factionData.storage.setProceedingStarted(null);
+                    factionData.storage.setWeed(factionData.storage.getWeed() - factionData.storage.getProceedingAmount());
+                    factionData.storage.setJoint(factionData.storage.getJoint() + (factionData.storage.getProceedingAmount() / 2));
+                    factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 Es wurden " + factionData.storage.getProceedingAmount() + " Marihuana zu " + (factionData.storage.getProceedingAmount() / 2) + " Joints verarbeitet.");
+                    factionData.storage.setProceedingAmount(0);
+                    factionData.storage.save();
                 }
             }
         }
