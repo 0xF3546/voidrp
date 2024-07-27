@@ -117,6 +117,7 @@ public class PlayerInteractListener implements Listener {
                                 Block block = location.getBlock();
                                 if (block.getType().toString().contains("SIGN")) {
                                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(block.getLocation());
+                                    if (registeredBlock.getInfoValue() == null) continue;
                                     if (!playerData.isAduty() && !utils.housing.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
                                         event.setCancelled(true);
                                     }
@@ -199,7 +200,7 @@ public class PlayerInteractListener implements Listener {
                         }
                         PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
                         RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
-                        if (Objects.equals(block.getInfo(), "house")) {
+                        if (block != null && block.getInfo() != null && Objects.equals(block.getInfo(), "house")) {
                             House houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
                             playerData.setIntVariable("current_house", houseData.getNumber());
                             InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
