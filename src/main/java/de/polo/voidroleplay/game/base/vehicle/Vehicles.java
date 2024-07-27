@@ -75,19 +75,19 @@ public class Vehicles implements Listener, CommandExecutor {
         ResultSet result = statement.executeQuery("SELECT * FROM `player_vehicles`");
         while (result.next()) {
             PlayerVehicleData playerVehicleData = new PlayerVehicleData();
-            playerVehicleData.setId(result.getInt(1));
-            playerVehicleData.setUuid(result.getString(2));
-            playerVehicleData.setType(result.getString(3));
-            playerVehicleData.setKm(result.getInt(4));
-            playerVehicleData.setFuel(result.getFloat(5));
-            playerVehicleData.setParked(result.getBoolean(6));
-            playerVehicleData.setX(result.getInt(7));
-            playerVehicleData.setY(result.getInt(8));
-            playerVehicleData.setZ(result.getInt(9));
+            playerVehicleData.setId(result.getInt("id"));
+            playerVehicleData.setUuid(result.getString("uuid"));
+            playerVehicleData.setType(result.getString("type"));
+            playerVehicleData.setKm(result.getInt("km"));
+            playerVehicleData.setFuel(result.getFloat("fuel"));
+            playerVehicleData.setParked(result.getBoolean("parked"));
+            playerVehicleData.setX(result.getInt("x"));
+            playerVehicleData.setY(result.getInt("y"));
+            playerVehicleData.setZ(result.getInt("z"));
             playerVehicleData.setWelt(Bukkit.getWorld(result.getString(10)));
-            playerVehicleData.setYaw(result.getFloat(11));
-            playerVehicleData.setPitch(result.getFloat(12));
-            playerVehicleData.setGarage(result.getInt(13));
+            playerVehicleData.setYaw(result.getFloat("yaw"));
+            playerVehicleData.setPitch(result.getFloat("pitch"));
+            playerVehicleData.setGarage(result.getInt("garage"));
             playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
             vehicleIDByUUid.put(result.getString(2), result.getInt(1));
         }
@@ -476,7 +476,7 @@ public class Vehicles implements Listener, CommandExecutor {
                 InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §cFahrzeug suchen", true, false);
                 int i = 0;
                 for (PlayerVehicleData data : playerVehicleDataMap.values()) {
-                    if (data.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
+                    if (data.getUuid().equalsIgnoreCase(player.getUniqueId().toString()) && !data.isParked()) {
                         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§c" + data.getType())) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
@@ -553,7 +553,7 @@ public class Vehicles implements Listener, CommandExecutor {
                             SoundManager.successSound(player);
                             Statement statement = Main.getInstance().mySQL.getStatement();
                             statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + vehicleData.getId());
-                            Vehicles.spawnVehicle(player, playerVehicleData);
+                            spawnVehicle(player, playerVehicleData);
                             player.closeInventory();
                         }
                     });
