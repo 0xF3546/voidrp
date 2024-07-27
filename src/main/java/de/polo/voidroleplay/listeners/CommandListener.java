@@ -36,6 +36,7 @@ public class CommandListener implements Listener {
 
         for (PlayerData playerData2 : playerManager.getPlayers()) {
             if (playerData2.getVariable("isSpec") != null) {
+                if (playerData.getVariable("isSpec") == null) continue;
                 if (playerData.getVariable("isSpec").equals(player.getUniqueId().toString())) {
                     Player targetplayer = Bukkit.getPlayer(playerData2.getUuid());
                     if (targetplayer == null) {
