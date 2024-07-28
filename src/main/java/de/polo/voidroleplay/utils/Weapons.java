@@ -191,6 +191,11 @@ public class Weapons implements Listener {
         if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.isCuffed()) return;
+        if (playerData.isDead()) {
+            return;
+        }
         if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().equals(new ItemStack(Material.AIR))) return;
         if (player.getEquipment().getItemInMainHand().getType().equals(RoleplayItem.TAZER.getMaterial()) && player.getEquipment().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.TAZER.getDisplayName())) {
             if (Main.getInstance().getCooldownManager().isOnCooldown(player, "tazer")) {
@@ -223,18 +228,14 @@ public class Weapons implements Listener {
             }
             if (target == null || target == player) return;
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + target.getName() + " getazert.");
-            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 12, 2, true, false)); // Slow für 6 Sekunden
-            target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 12, -10, true, false)); // Jump für 6 Sekunden, -10 für eine geringere Sprunghöhe
-            target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 12, 0, true, false)); // Blindness für 6 Sekunden
+            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false)); // Slow für 6 Sekunden
+            target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false)); // Jump für 6 Sekunden, -10 für eine geringere Sprunghöhe
+            target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 6, 0, true, false)); // Blindness für 6 Sekunden
             target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false));
 
         }
 
         WeaponData weaponData = weaponDataMap.get(player.getEquipment().getItemInMainHand().getType());
-        PlayerData playerData = playerManager.getPlayerData(player);
-        if (playerData.isDead()) {
-            return;
-        }
         if (weaponData == null) {
             return;
         }
