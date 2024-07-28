@@ -194,6 +194,18 @@ public class ServerManager {
                     Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der Seasonpass wurde zurückgesetzt!");
 
                 }
+                if (now.getMinute() == 45 && now.getHour() == 1) {
+                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 15 Minuten neu!");
+                }
+                if (now.getMinute() == 55 && now.getHour() == 1) {
+                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 5 Minuten neu!");
+                }
+                if (now.getMinute() == 57 && now.getHour() == 1) {
+                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 3 Minuten neu!");
+                }
+                if (now.getMinute() == 59 && now.getHour() == 1) {
+                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 1 Minute neu!");
+                }
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
                     return;
@@ -316,7 +328,7 @@ public class ServerManager {
                             break;
                         case 3:
                             Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Warst du bereits auf unserem TeamSpeak?");
-                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Betritt noch heute unseren TeamSpeak unter §lvoidrp§3!");
+                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Betritt noch heute unseren TeamSpeak unter §lvoidroleplay.de§3!");
                             break;
                     }
                     announceType++;
