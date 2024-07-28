@@ -41,6 +41,7 @@ public class PermbanCommand implements CommandExecutor {
         }
         OfflinePlayer target = null;
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            if (offlinePlayer.getName() == null) continue;
             if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
                 target = offlinePlayer;
                 break;
