@@ -46,6 +46,7 @@ public class Gangwar extends GangwarData {
 
                         for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
                             if (playerData.getVariable("gangwar") == null) continue;
+                            if (playerData.getFaction() == null) continue;
                             Player player = Bukkit.getPlayer(playerData.getUuid());
 
                             if (player != null && !playerData.isDead()) {
