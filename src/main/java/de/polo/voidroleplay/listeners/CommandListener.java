@@ -28,7 +28,12 @@ public class CommandListener implements Listener {
         String[] args = msg.split(" ");
         Player player = event.getPlayer();
         List<String> nonBlockedCommands = Arrays.asList("support", "report", "help", "vote", "jailtime", "ad", "aduty");
+        String command = args[0].substring(1);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (command.equalsIgnoreCase("minecraft:me")) {
+            event.setCancelled(true);
+        }
+
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
             utils.setAFK(player, false);
@@ -53,7 +58,6 @@ public class CommandListener implements Listener {
             return;
         }
         if (playerData.isDead() && !playerData.isAduty()) {
-            String command = args[0].substring(1); // Entferne das führende '/'
             if (!nonBlockedCommands.contains(command)) {
                 player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
                 event.setCancelled(true);
