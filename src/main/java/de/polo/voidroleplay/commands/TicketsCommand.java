@@ -29,6 +29,7 @@ public class TicketsCommand implements CommandExecutor {
             player.sendMessage("§6§lTicketübersicht§8:");
             for (Ticket ticket : supportManager.getTickets()) {
                 Player targetPlayer = Bukkit.getPlayer(ticket.getCreator());
+                if (targetPlayer == null) continue;
                 TextComponent message = new TextComponent("§8 ➥ §e" + targetPlayer.getName());
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§e" + targetPlayer.getName() + "'s Ticket annehmen")));
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptsupport " + targetPlayer.getName()));
