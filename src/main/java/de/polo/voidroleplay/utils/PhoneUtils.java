@@ -828,7 +828,7 @@ public class PhoneUtils implements Listener {
         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                openInternet(player);
+                openPhone(player);
             }
         });
     }
