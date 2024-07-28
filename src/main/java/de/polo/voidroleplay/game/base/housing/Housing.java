@@ -83,10 +83,15 @@ public class Housing {
     }
 
     public String getHouseAccessAsString(PlayerData playerData) {
+        if (playerData == null || playerData.getUuid() == null) {
+            return "";
+        }
+
         StringBuilder returnVal = null;
         for (House houseData : houseDataMap.values()) {
-            if (houseData.getOwner() != null) {
-                if (houseData.getOwner().equalsIgnoreCase(playerData.getUuid().toString()) || houseData.getRenter().get(playerData.getUuid().toString()) != null) {
+            if (houseData != null && houseData.getOwner() != null) {
+                String playerUuid = playerData.getUuid().toString();
+                if (houseData.getOwner().equalsIgnoreCase(playerUuid) || (houseData.getRenter() != null && houseData.getRenter().get(playerUuid) != null)) {
                     if (returnVal == null) {
                         returnVal = new StringBuilder(String.valueOf(houseData.getNumber()));
                     } else {
