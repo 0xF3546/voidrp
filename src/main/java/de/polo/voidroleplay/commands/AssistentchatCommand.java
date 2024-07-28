@@ -34,10 +34,10 @@ public class AssistentchatCommand implements CommandExecutor {
             return false;
         }
 
-        String msg = utils.stringArrayToString(args);
+        String msg = Utils.stringArrayToString(args);
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
-            if (playersData.getPermlevel() < 400) {
+            if (playersData.getPermlevel() >= 40) {
                 players.sendMessage(Main.support_prefix + "§b" + playerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);
             }
         }
