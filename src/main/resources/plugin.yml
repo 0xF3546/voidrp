@@ -66,8 +66,6 @@ commands:
   ooc:
   plugins:
     aliases: pl
-  adminmenu:
-    aliases: amenu
   vote:
   setrankname:
   setrankpayday:
