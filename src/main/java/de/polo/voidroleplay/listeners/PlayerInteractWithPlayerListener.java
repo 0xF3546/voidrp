@@ -2,8 +2,10 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Weapons;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
@@ -55,6 +57,11 @@ public class PlayerInteractWithPlayerListener implements Listener {
                             targetPlayerData.setCuffed(true);
                             ItemManager.removeCustomItem(player, RoleplayItem.CUFF, 1);
                         } else {
+                            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                                if (player.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
+                                    return;
+                                }
+                            }
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
                             targetPlayerData.setCuffed(false);
                             ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
