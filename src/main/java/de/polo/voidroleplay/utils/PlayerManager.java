@@ -844,6 +844,7 @@ public class PlayerManager implements Listener, ServerTiming {
         Main.getInstance().beginnerpass.didQuest(player, 12);
         PlayerData playerData = getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
+        playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName())) {
             @Override
             public void onClick(InventoryClickEvent event) {
