@@ -3,10 +3,8 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,6 +49,7 @@ public class ArrestCommand implements CommandExecutor {
                                         playerManager.addExp(player, Main.random(15, 44));
                                         playerManager.setPlayerMove(targetplayer, true);
                                         targetPlayerData.setCuffed(false);
+                                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.KEVLAR.getDisplayName()));
                                         Main.getInstance().seasonpass.didQuest(targetplayer, 8);
                                     } else {
                                         player.sendMessage(Main.error + targetplayer.getName() + " hat keine offene Akte mit Hafteinheiten.");
