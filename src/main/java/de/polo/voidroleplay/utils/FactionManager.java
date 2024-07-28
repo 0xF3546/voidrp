@@ -294,6 +294,8 @@ public class FactionManager {
             statement.setString(1, name);
             statement.setString(2, faction);
             statement.setInt(3, rank);
+            statement.executeUpdate();
+            statement.close();
             return true;
         } else {
             return false;
