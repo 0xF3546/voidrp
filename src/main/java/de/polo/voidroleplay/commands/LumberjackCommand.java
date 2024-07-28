@@ -226,6 +226,8 @@ public class LumberjackCommand implements CommandExecutor {
     public void startJob(Player player) {
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller")) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+            playerData.setVariable("lumberjack::stripping", false);
+            playerData.setVariable("lumberjack::hasStripped", false);
             playerData.setVariable("job", "Holzfäller");
             player.sendMessage("§8[§7Holzfäller§8]§7 Du bist nun Holzfäller.");
             int trees = 6;
