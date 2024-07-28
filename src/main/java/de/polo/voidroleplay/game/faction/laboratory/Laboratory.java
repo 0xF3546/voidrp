@@ -3,12 +3,9 @@ package de.polo.voidroleplay.game.faction.laboratory;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.faction.plants.Plant;
-import de.polo.voidroleplay.utils.FactionManager;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import lombok.SneakyThrows;
@@ -236,7 +233,7 @@ public class Laboratory implements CommandExecutor, Listener {
                 });
             }
         } else {
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = Utils.getTime();
 
             long remainingMinutes = 5 + ChronoUnit.MINUTES.between(now, attack.getStarted());
             long remainingSeconds = 60 + ChronoUnit.SECONDS.between(now, attack.getStarted()) % 60;
@@ -296,6 +293,7 @@ public class Laboratory implements CommandExecutor, Listener {
             weedAmount += result.getInt("weed");
         }
         for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction() == null) continue;
             if (playerData.getFaction().equalsIgnoreCase(defender.getName())) {
                 if (playerData.getLaboratory() != null) {
                     removePlayerLaboratory(playerData.getLaboratory());
@@ -375,7 +373,9 @@ public class Laboratory implements CommandExecutor, Listener {
             System.out.println(attack.getStarted());
             if (attack.isHackedLaboratory()) {
                 for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                    if (registeredBlock.getInfo() == null) continue;
                     if (registeredBlock.getInfo().equalsIgnoreCase("laboratory")) {
+                        if (registeredBlock.getInfoValue() == null) continue;
                         int id = Integer.parseInt(registeredBlock.getInfoValue());
                         if (attack.defender.getLaboratory() == id) {
                             int attackerFactionNear = factionManager.getFactionMemberInRange(attack.attacker.getName(), registeredBlock.getLocation(), 100, true).size();
@@ -395,7 +395,9 @@ public class Laboratory implements CommandExecutor, Listener {
                 boolean near = false;
                 RegisteredBlock block;
                 for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                    if (registeredBlock.getInfo() == null) continue;
                     if (registeredBlock.getInfo().equalsIgnoreCase("laboratory")) {
+                        if (registeredBlock.getInfoValue() == null) continue;
                         int id = Integer.parseInt(registeredBlock.getInfoValue());
                         if (attack.defender.getLaboratory() == id) {
                             for (PlayerData playerData : playerManager.getPlayers()) {
@@ -418,7 +420,7 @@ public class Laboratory implements CommandExecutor, Listener {
                     LocalDateTime attackStartTime = attack.getStarted();
                     LocalDateTime after = attack.getStarted().plusMinutes(5);
                     System.out.println(after);
-                    if (after.isAfter(LocalDateTime.now())) {
+                    if (Utils.getTime().isAfter(after)) {
                         attack.setDoorOpened(true);
                         factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Die Tür ist nun offen, 10 Minuten bis die Inhalte geklaut werden können. (/labor)");
                         factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§a Eure Tür wurde aufgeschweißt, 10 Minuten bis die Inhalte geklaut werden können.");
@@ -446,7 +448,7 @@ public class Laboratory implements CommandExecutor, Listener {
                 }
                 if (near) {
                     LocalDateTime after = attack.getStarted().plusMinutes(15);
-                    if (after.isAfter(LocalDateTime.now())) {
+                    if (Utils.getTime().isAfter(after)) {
                         attack.setHackedLaboratory(true);
                         factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr könnt nun die Inhalte entwenden.");
                     }
