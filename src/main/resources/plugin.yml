@@ -4,7 +4,7 @@ main: de.polo.voidroleplay.Main
 api-version: 1.16
 authors: [ Polo66 ]
 description: VoidRoleplay Script
-depend: [Votifier]
+depend: [Votifier, dynmap]
 
 commands:
   aduty:

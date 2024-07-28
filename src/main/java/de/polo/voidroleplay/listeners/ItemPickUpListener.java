@@ -22,7 +22,7 @@ public class ItemPickUpListener implements Listener {
         }
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1) {
+            if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1 && event.getItem().getItemStack().getType().equals(RoleplayItem.SWAT_SHIELD.getMaterial())) {
                 event.setCancelled(true);
             }
         }

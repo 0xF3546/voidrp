@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.Navigation;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -82,6 +83,9 @@ public class Drop {
 
         Collections.shuffle(items);
         addItemsToChest();
+        double[] x = {location.getX() - 50, location.getX() + 50, location.getX() + 50, location.getX() - 50};
+        double[] z = {location.getZ() - 50, location.getZ() - 50, location.getZ() + 50, location.getZ() + 50};
+        Utils.createWebAreaMarker("", "Schmugglerkiste", "world", x, z);
     }
 
     public void setMinutes(int minutes) {
@@ -110,6 +114,7 @@ public class Drop {
     }
 
     public void cleanup() {
+        Utils.removeAreaMarker("Schmugglerkiste");
         if (lastBlock != null) {
             lastBlock.getLocation().getBlock().setType(Material.AIR);
         }

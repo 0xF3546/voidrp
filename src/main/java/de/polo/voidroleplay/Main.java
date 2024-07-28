@@ -1,5 +1,6 @@
 package de.polo.voidroleplay;
 
+import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.game.base.extra.Beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
@@ -16,12 +17,15 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryApiRegister;
 import de.polo.voidroleplay.utils.playerUtils.Shop;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.dynmap.DynmapAPI;
+import org.dynmap.markers.MarkerAPI;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -75,6 +79,12 @@ public final class Main extends JavaPlugin {
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
 
+    @Getter
+    private DynmapAPI dynmapAPI;
+
+    @Getter
+    private MarkerAPI markerAPI;
+
     public void onLoad() {
         instance = this;
     }
@@ -106,6 +116,19 @@ public final class Main extends JavaPlugin {
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
         new InventoryApiRegister(this);
+
+        dynmapAPI = (DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin("dynmap");
+        if (dynmapAPI == null) {
+            getLogger().severe("Dynmap plugin not found!");
+            return;
+        }
+        markerAPI = dynmapAPI.getMarkerAPI();
+        if (markerAPI == null) {
+            getLogger().severe("Error loading Dynmap marker API!");
+            return;
+        }
+
+        loadMarker();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
@@ -233,6 +256,14 @@ public final class Main extends JavaPlugin {
         int minutes = seconds / 60;
         int sec = seconds % 60;
         return minutes + " Minuten & " + sec + " Sekunden";
+    }
+
+    private void loadMarker() {
+        for (FactionData factionData : factionManager.getFactions()) {
+            Location location = locationManager.getLocation(factionData.getName());
+            if (location == null) continue;
+            Utils.createMarker("sign", factionData.getFullname(), "world", location.getX(), location.getY(), location.getZ());
+        }
     }
 
     public class Commands {
