@@ -29,6 +29,7 @@ public class DamageListener implements Listener {
         }
         if (event.getEntity() instanceof Player) {
             Player player = ((Player) event.getEntity()).getPlayer();
+            if (player == null) return;
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             ItemStack chestplate = player.getInventory().getArmorContents()[2];
             if (!playerData.isAduty()) {
@@ -38,10 +39,8 @@ public class DamageListener implements Listener {
                     event.setCancelled(playerData1.getVisum() <= 2 && playerData1.getFaction() == null);
                     if (chestplate == null) return;
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
-                        event.setDamage(event.getDamage() / 2);
-                        if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
-                            event.setDamage(event.getDamage() / 3);
-                        }
+                        event.setDamage(event.getDamage() / 3);
+                        chestplate.setDurability((short) (chestplate.getDurability() - 10));
                     }
                 }
             } else {
