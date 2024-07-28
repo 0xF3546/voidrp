@@ -444,7 +444,8 @@ public class GamePlay implements Listener {
     public void everyMinute(MinuteTickEvent event) {
         LocalDateTime currentDateTime = Utils.getTime();
 
-        if (Duration.between(currentDateTime, lastDrop).toMinutes() >= 90) {
+        long minutesBetween = Duration.between(currentDateTime, lastDrop).toMinutes();
+        if (minutesBetween <= -90) {
             double randomNumber = Math.random() * 100;
             if (randomNumber < 97) {
                 spawnDrop();
