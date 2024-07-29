@@ -329,7 +329,6 @@ public final class Main extends JavaPlugin {
         public KickCommand kickCommand;
         public OOCCommand oocCommand;
         public PluginCommand pluginCommand;
-        public AdminMenuCommand adminMenuCommand;
         public VoteCommand voteCommand;
         public SetRankNameCommand setRankNameCommand;
         public SetRankPayDayCommand setRankPayDayCommand;
@@ -489,7 +488,6 @@ public final class Main extends JavaPlugin {
             kickCommand = new KickCommand(playerManager);
             oocCommand = new OOCCommand();
             pluginCommand = new PluginCommand(playerManager);
-            adminMenuCommand = new AdminMenuCommand(playerManager, factionManager);
             voteCommand = new VoteCommand();
             setRankNameCommand = new SetRankNameCommand(playerManager, adminManager, factionManager);
             setRankPayDayCommand = new SetRankPayDayCommand(playerManager, adminManager, factionManager);
