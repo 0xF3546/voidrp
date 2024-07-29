@@ -227,3 +227,4 @@ commands:
   houseban:
     aliases: hausverbot
   jail:
+  ticket:
