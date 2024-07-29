@@ -132,7 +132,7 @@ public class DealerCommand implements CommandExecutor {
                 }
                 player.sendMessage("§8[§cDealer§8]§a +" + pearlPrice + "$");
                 ItemManager.removeCustomItem(player, RoleplayItem.PEARL, 1);
-                playerManager.addMoney(player, pearlPrice);
+                playerManager.addMoney(player, pearlPrice, "Verkauf Perle");
             }
         });
         int diamondPrice = ServerManager.getPayout("dealer_diamond");
@@ -147,7 +147,7 @@ public class DealerCommand implements CommandExecutor {
                 }
                 player.sendMessage("§8[§cDealer§8]§a +" + diamondPrice + "$");
                 ItemManager.removeCustomItem(player, RoleplayItem.DIAMOND, 1);
-                playerManager.addMoney(player, diamondPrice);
+                playerManager.addMoney(player, diamondPrice, "Verkauf Diamant");
             }
         });
     }

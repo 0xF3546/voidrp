@@ -1,10 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.VertragUtil;
+import de.polo.voidroleplay.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,6 +36,15 @@ public class RentCommand implements CommandExecutor {
         }
         if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
             player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+            return false;
+        }
+        try {
+            int amount = Integer.parseInt(args[1]);
+            if (amount >= 5000 || amount < 1) {
+                player.sendMessage(Prefix.ERROR + "Der Betrag muss zwischen 1-5.000$ liegen.");
+            }
+        }  catch (Exception ex) {
+            player.sendMessage(Prefix.ERROR + "Der Betrag muss numerisch sein.");
             return false;
         }
             if (VertragUtil.setVertrag(player, targetplayer, "rental", haus + "_" + args[1])) {
