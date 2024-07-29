@@ -8,6 +8,8 @@ import de.polo.voidroleplay.utils.Weapons;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 public class ItemDropListener implements Listener {
     private final Weapons weapons;
@@ -19,6 +21,11 @@ public class ItemDropListener implements Listener {
     }
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
+        ItemStack droppedItem = event.getItemDrop().getItemStack();
+        if (event.getPlayer().getEquipment().getItem(EquipmentSlot.OFF_HAND).equals(droppedItem)) {
+            event.setCancelled(true);
+            return;
+        }
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         if (playerData.getVariable("gangwar") != null) event.setCancelled(true);
         WeaponData weaponData = Weapons.weaponDataMap.get(event.getItemDrop().getItemStack().getType());

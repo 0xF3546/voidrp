@@ -62,6 +62,10 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
+        if (event.getHand() != null && event.getHand().equals(org.bukkit.inventory.EquipmentSlot.OFF_HAND)) {
+            event.setCancelled(true);
+            return;
+        }
         if (playerData.isAFK()) {
             utils.setAFK(player, false);
         }
