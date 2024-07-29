@@ -47,7 +47,7 @@ public class EinreiseCommand implements CommandExecutor {
             LocalDate date = LocalDate.of(2000, 1, 1);
             if (playerData.getVariable("einreise_firstname") == null) playerData.setVariable("einreise_firstname", "Vorname");
             if(playerData.getVariable("einreise_lastname") == null) playerData.setVariable("einreise_lastname", "Nachname");
-            if(playerData.getVariable("einreise_gender") == null) playerData.setVariable("einreise_gender", "Männlich");
+            if(playerData.getVariable("einreise_gender") == null) playerData.setVariable("einreise_gender", Gender.MALE);
             if(playerData.getVariable("einreise_dob") == null) playerData.setVariable("einreise_dob", date);
             openEinrese(player);
         } else {
