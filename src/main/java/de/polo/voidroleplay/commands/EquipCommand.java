@@ -109,7 +109,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
             }
         });
-        if (playerData.getFaction().equalsIgnoreCase("FBI") && playerData.getFactionGrade() >= 6) {
+        if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 6) {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.STONE_HOE, 1, 0, "§7Sniper", "§8 ➥ §a" + (ServerManager.getPayout("equip_sniper") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -168,7 +168,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
             }
         });
-        if (playerData.getFaction().equalsIgnoreCase("FBI") && playerData.getFactionGrade() >= 6) {
+        if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 6) {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cSniper-Munition", "§8 ➥ §a" + ServerManager.getPayout("equip_sniper_ammo") + "$")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
