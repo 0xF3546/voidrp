@@ -71,6 +71,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 } else if (item.getType() == Material.DIAMOND) {
                     if (item.getItemMeta().getDisplayName().contains("Ehering")) {
                         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+                        if (playerData.getRelationShip() == null) return;
                         if (playerData.getRelationShip().get(targetplayer.getUniqueId().toString()).equals("verlobt")) {
                             if (targetplayerData.getRelationShip().get(player.getUniqueId().toString()).equals("verlobt")) {
                                 ItemStack itemStack = item.clone();

@@ -98,7 +98,7 @@ public class DealerCommand implements CommandExecutor {
                 int cashOutAmount = (int) amount;
                 ItemManager.removeCustomItem(player, RoleplayItem.BOX_WITH_JOINTS, 1);
                 player.sendMessage("§8[§cDealer§8]§7 Aus dem Verkauf einer Box erhälst du §a" + cashOutAmount + "$§7. Es gehen §a" + percentage + "$§7 an deine Fraktion.");
-                playerData.addMoney(cashOutAmount);
+                playerData.addMoney(cashOutAmount, "Verkauf-Dealer");
                 player.closeInventory();
                 dealer.setLocation(player.getLocation());
                 soldAtDealer(dealer);

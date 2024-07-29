@@ -617,7 +617,7 @@ public class PlayerData {
     }
 
     @SneakyThrows
-    public void addMoney(int amount) {
+    public void addMoney(int amount, String reason) {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
@@ -626,6 +626,7 @@ public class PlayerData {
         if (result.next()) {
             int res = result.getInt(1);
             statement.executeUpdate("UPDATE `players` SET `bargeld` = " + getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
         }
     }
 
@@ -638,6 +639,7 @@ public class PlayerData {
         if (result.next()) {
             int res = result.getInt(1);
             statement.executeUpdate("UPDATE `players` SET `bargeld` = " + getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
         }
     }
 

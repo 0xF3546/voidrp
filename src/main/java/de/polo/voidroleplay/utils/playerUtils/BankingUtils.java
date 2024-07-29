@@ -103,7 +103,7 @@ public class BankingUtils implements Listener {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBank() + "$ ausgezahlt.");
-                playerData.addMoney(playerData.getBank());
+                playerData.addMoney(playerData.getBank(), "Bankauszahlung");
                 playerData.removeBankMoney(playerData.getBank(), "Bankauszahlung");
                 player.closeInventory();
             }
@@ -225,7 +225,7 @@ public class BankingUtils implements Listener {
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() >= 7) {
                         Main.getInstance().companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getCompany().getBank()) + "$ vom Firmenkonto ausgezahlt.");
-                        playerData.addMoney(playerData.getCompany().getBank());
+                        playerData.addMoney(playerData.getCompany().getBank(), "Company-Auszwahlung - " + playerData.getCompany().getId());
                         playerData.getCompany().removeBank(playerData.getCompany().getBank());
                         player.closeInventory();
                     }
@@ -271,7 +271,7 @@ public class BankingUtils implements Listener {
                     SoundManager.successSound(player);
                     int money = playerData.getVariable("atm::rob::collected");
                     player.sendMessage("§8[§2ATM§8]§a +" + money + "$");
-                    playerData.addMoney(money);
+                    playerData.addMoney(money, "ATM-Sprengung");
                 }
             });
         }
@@ -322,7 +322,7 @@ public class BankingUtils implements Listener {
                     if (playerData.getFactionGrade() >= 7) {
                         player.sendMessage("§8[§aATM§8]§a Du hast " + factionData.getBank() + "$ ausgezahlt.");
                         factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + factionData.getBank() + "$ vom Fraktionskonto ausgezahlt.");
-                        playerData.addMoney(factionData.getBank());
+                        playerData.addMoney(factionData.getBank(), "Fraktionsbank-Auszahlung - " + factionData.getName());
                         factionData.removeFactionMoney(factionData.getBank(), "Bankauszahlung " + player.getName());
                         player.closeInventory();
                     }
@@ -370,7 +370,7 @@ public class BankingUtils implements Listener {
             if (amount >= 1) {
                 if (playerManager.bank(player) >= amount) {
                     playerManager.removeBankMoney(player, amount, "Bankauszahlung (" + event.getPlayerData().getVariable("atm_name") + ")");
-                    playerManager.addMoney(player, amount);
+                    playerManager.addMoney(player, amount, "Bankauszahlung (" + event.getPlayerData().getVariable("atm_name") + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
                 } else {
                     player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
@@ -413,7 +413,7 @@ public class BankingUtils implements Listener {
                 if (amount >= 1) {
                     if (playerManager.bank(player) >= amount) {
                         playerManager.removeBankMoney(player, amount, "Überweisung an " + targetplayer.getName());
-                        playerManager.addMoney(targetplayer, amount);
+                        playerManager.addBankMoney(targetplayer, amount, "Überweisung von " + player.getName());
                         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ an " + targetplayer.getName() + " überwiesen.");
                         targetplayer.sendMessage("§8[§6Bank§8]§a " + player.getName() + " hat dir " + amount + "$ überwiesen.");
                     } else {
@@ -452,7 +452,7 @@ public class BankingUtils implements Listener {
             if (amount >= 1) {
                 if (factionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
                     factionManager.removeFactionMoney(event.getPlayerData().getFaction(), amount, "Bankauszahlung " + player.getName());
-                    playerManager.addMoney(player, amount);
+                    playerManager.addMoney(player, amount, "Bankauszahlung " + event.getPlayerData().getFaction());
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
                     factionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
                 } else {
@@ -491,7 +491,7 @@ public class BankingUtils implements Listener {
             if (amount >= 1) {
                 if (event.getPlayerData().getCompany().getBank() >= amount) {
                     event.getPlayerData().getCompany().removeBank(amount);
-                    playerManager.addMoney(player, amount);
+                    playerManager.addMoney(player, amount, "Bankauszahlung (Company-" + event.getPlayerData().getCompany().getId() + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
                     Main.getInstance().companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Firmenkonto ausgezahlt.");
                 } else {

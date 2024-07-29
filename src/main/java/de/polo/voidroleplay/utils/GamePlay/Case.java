@@ -113,7 +113,7 @@ public class Case {
                     try {
                         String amountString = winningItem.getItemMeta().getDisplayName().replaceAll("[^0-9]", "");
                         int amount = Integer.parseInt(amountString);
-                        playerData.addMoney(amount * winningItem.getAmount());
+                        playerData.addMoney(amount * winningItem.getAmount(), "Gewinn Case");
                     } catch (Exception e) {
                         player.getInventory().addItem(winningItem);
                     }

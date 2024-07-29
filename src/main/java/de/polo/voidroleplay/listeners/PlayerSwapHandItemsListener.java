@@ -224,7 +224,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.sendMessage("§8[§cAusraub§8]§c Du hast " + targetplayer.getName() + " §a" + bargeldAmount + "$§c geklaut.");
                 targetplayer.sendMessage("§8[§cAusraub§8]§c " + player.getName() + " hat dir §4" + bargeldAmount + "$§c geklaut.");
                 try {
-                    playerManager.addMoney(player, bargeldAmount);
+                    playerManager.addMoney(player, bargeldAmount, "Raub von Spieler (" + targetplayer.getName() + ")");
                     playerManager.removeMoney(targetplayer, bargeldAmount, "Raub (" + player.getName() + ")");
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

@@ -103,7 +103,7 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
                 ItemManager.removeCustomItem(player, RoleplayItem.SHELL, amount);
                 int payout = amount * muschelPrice;
                 player.sendMessage("§8[§eMuschelsammler§8]§a +" + Utils.toDecimalFormat(payout) + "$");
-                playerData.addMoney(payout);
+                playerData.addMoney(payout, "Muschelsammler");
             }
         });
         return false;

@@ -223,7 +223,7 @@ public class PlayerInteractListener implements Listener {
                                         public void onClick(InventoryClickEvent event) {
                                             // House houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
                                             if (utils.housing.resetHouse(player, houseData.getNumber())) {
-                                                playerData.addMoney((int) (houseData.getPrice() * 0.8));
+                                                playerData.addMoney((int) (houseData.getPrice() * 0.8), "Haus-Verkauf (" + houseData.getNumber() + ")");
                                                 player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
                                                 player.closeInventory();
                                             }

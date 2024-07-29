@@ -495,7 +495,7 @@ public class GamePlay implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         switch (type.toLowerCase()) {
             case "money":
-                playerData.addMoney(amount);
+                playerData.addMoney(amount, "Reward Quest");
                 break;
             case "case":
                 if (info.equalsIgnoreCase("case")) {

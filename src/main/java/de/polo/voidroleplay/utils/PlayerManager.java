@@ -451,7 +451,7 @@ public class PlayerManager implements Listener, ServerTiming {
         }
     }
 
-    public void addMoney(Player player, int amount) throws SQLException {
+    public void addMoney(Player player, int amount, String reason) throws SQLException {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
@@ -461,6 +461,7 @@ public class PlayerManager implements Listener, ServerTiming {
         if (result.next()) {
             int res = result.getInt(1);
             statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
         }
     }
 
@@ -473,6 +474,7 @@ public class PlayerManager implements Listener, ServerTiming {
         if (result.next()) {
             int res = result.getInt(1);
             statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
         }
     }
 
@@ -960,7 +962,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     if (event.getPlayerData().getBargeld() >= amount) {
                         try {
                             removeMoney(event.getPlayer(), amount, "Geld an " + targetplayer.getName() + " übergeben.");
-                            addMoney(targetplayer, amount);
+                            addMoney(targetplayer, amount, event.getPlayer().getName() + " gab " + targetplayer.getName() + " Geld");
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");

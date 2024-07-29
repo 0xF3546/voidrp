@@ -46,7 +46,7 @@ public class CloseTicketCommand implements CommandExecutor {
             targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
             utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
             player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
-            adminManager.send_message(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.", ChatColor.YELLOW);
+            adminManager.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.", ChatColor.YELLOW);
         } else {
             player.sendMessage(Main.error_nopermission);
         }

@@ -63,7 +63,7 @@ public class AcceptTicketCommand implements CommandExecutor {
         supportManager.createTicketConnection(targetplayer, player);
         targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
         player.sendMessage(Main.support_prefix + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
-        adminManager.send_message(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName() + ".", ChatColor.YELLOW);
+        adminManager.sendGuideMessage(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName() + ".", ChatColor.YELLOW);
         utils.sendActionBar(targetplayer, "§a§lDein Ticket wurde angenommen!");
 
         Ticket ticket = supportManager.getTicket(player);

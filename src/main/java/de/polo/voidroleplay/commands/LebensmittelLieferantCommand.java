@@ -63,7 +63,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
             playerManager.addExp(player, exp);
             quitJob(player);
             try {
-                playerManager.addMoney(player, payout);
+                playerManager.addMoney(player, payout, "Lieferant");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

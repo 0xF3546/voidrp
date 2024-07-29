@@ -84,7 +84,7 @@ public class ShopRobCommand implements CommandExecutor {
                                         try {
                                             Progress.start(player, 60);
                                             int payout = Main.random(80, 120);
-                                            playerManager.addMoney(player, payout);
+                                            playerManager.addMoney(player, payout, "Shoprob");
                                             player.sendMessage("§8[§cShoprob§8]§a +" + payout + "$");
                                             ServerManager.setVariable("shoprob_payout", String.valueOf(Integer.parseInt(ServerManager.getVariable("shoprob_payout")) + payout));
                                         } catch (SQLException e) {

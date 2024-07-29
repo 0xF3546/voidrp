@@ -94,6 +94,18 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         }
     }
 
+    public void sendGuideMessage(String msg, ChatColor color) {
+        if (color == null) {
+            color = ChatColor.AQUA;
+        }
+        for (Player player1 : Bukkit.getOnlinePlayers()) {
+            PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
+            if (playerData.getPermlevel() >= 40) {
+                player1.sendMessage("§8[§c§lGuide§8] " + color + msg);
+            }
+        }
+    }
+
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {

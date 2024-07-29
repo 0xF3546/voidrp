@@ -102,7 +102,7 @@ public class Rubbellose {
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0);
         playerManager.addExp(player, Main.random(1, 3));
         try {
-            playerManager.addMoney(player, payout);
+            playerManager.addMoney(player, payout, "Rubellos");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

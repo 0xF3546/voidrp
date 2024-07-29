@@ -132,7 +132,7 @@ public class ShopCommand implements CommandExecutor {
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
                     companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§7 " + player.getName() + " hat §a" + Utils.toDecimalFormat(shopData.getBank()) + "$ §7aus dem §eShop " + shopData.getName() + "§7 Business entnommen.");
-                    playerData.addMoney(shopData.getBank());
+                    playerData.addMoney(shopData.getBank(), "Kasse Shop - " + shopData.getId());
                     playerData.getCompany().setBank(0);
                     playerData.getCompany().save();
                 }
@@ -198,7 +198,7 @@ public class ShopCommand implements CommandExecutor {
                 ItemStack cod = new ItemStack(Material.COD, 1);
                 if (player.getInventory().containsAtLeast(cod, 1)) {
                     player.getInventory().removeItem(cod);
-                    playerData.addMoney(4);
+                    playerData.addMoney(4, "Verkauf Kabeljau");
 
                     player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Kabeljau verkauft und 4$ erhalten!");
                 } else {
@@ -212,7 +212,7 @@ public class ShopCommand implements CommandExecutor {
                 ItemStack cod = new ItemStack(Material.TROPICAL_FISH, 1);
                 if (player.getInventory().containsAtLeast(cod, 1)) {
                     player.getInventory().removeItem(cod);
-                    playerData.addMoney(25);
+                    playerData.addMoney(25, "Verkauf Tropenfisch");
 
                     player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Tropenfisch verkauft und 25$ erhalten!");
                 } else {
@@ -230,7 +230,7 @@ public class ShopCommand implements CommandExecutor {
                     player.getInventory().removeItem(cod);
 
                     // Geld dem Spieler hinzufügen
-                    playerData.addMoney(40);
+                    playerData.addMoney(40, "Verkauf Roher Lachs");
 
                     // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
                     player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Rohen Lachs verkauft und 40$ erhalten!");
@@ -249,7 +249,7 @@ public class ShopCommand implements CommandExecutor {
                     player.getInventory().removeItem(cod);
 
                     // Geld dem Spieler hinzufügen
-                    playerData.addMoney(85);
+                    playerData.addMoney(85, "Verkauf Pufferfisch");
 
                     // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
                     player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Pufferfisch verkauft und 85$ erhalten!");

@@ -93,7 +93,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
                     companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§7 " + player.getName() + " hat §a" + Utils.toDecimalFormat(gasStationData.getBank()) + "$ §7aus dem §eTankstelle " + gasStationData.getName() + "§7 Business entnommen.");
-                    playerData.addMoney(gasStationData.getBank());
+                    playerData.addMoney(gasStationData.getBank(), "Kasse Tankstelle-" + gasStationData.getId());
                     playerData.getCompany().setBank(0);
                     playerData.getCompany().save();
                 }
