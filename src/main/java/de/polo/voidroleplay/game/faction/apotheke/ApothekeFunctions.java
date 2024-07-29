@@ -128,6 +128,7 @@ public class ApothekeFunctions implements Listener {
         return apotheken;
     }
 
+    @SneakyThrows
     @EventHandler
     public void MinuteTick(MinuteTickEvent event) {
         for (Apotheke apotheke : rob.keySet()) {
@@ -173,13 +174,25 @@ public class ApothekeFunctions implements Listener {
                 }
                 factionData.setJointsMade(plus);
                 if (plus >= 1) {
-                    for (PlayerData playerData : playerManager.getPlayers()) {
-                        if (playerData.getFaction() != null) {
-                            if (playerData.getFaction().equalsIgnoreCase(factionData.getName()) && !playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                                Player player = Bukkit.getPlayer(playerData.getUuid());
-                                player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
-                                factionData.storage.setJoint(factionData.storage.getJoint() + plus);
-                                factionData.storage.save();
+                    if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei")) {
+                        factionManager.addFactionMoney(factionData.getName(), 2000, "Apotheke");
+                        for (PlayerData playerData : playerManager.getPlayers()) {
+                            if (playerData.getFaction() != null) {
+                                if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                                    player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2200$ Steuern aus Apotheken erhalten .");
+                                }
+                            }
+                        }
+                    } else {
+                        factionData.storage.setJoint(factionData.storage.getJoint() + plus);
+                        factionData.storage.save();
+                        for (PlayerData playerData : playerManager.getPlayers()) {
+                            if (playerData.getFaction() != null) {
+                                if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                                    player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
+                                }
                             }
                         }
                     }
