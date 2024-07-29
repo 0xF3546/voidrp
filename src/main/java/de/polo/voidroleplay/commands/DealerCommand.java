@@ -159,6 +159,7 @@ public class DealerCommand implements CommandExecutor {
         message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) dealer.getLocation().getX() + " " + (int) dealer.getLocation().getY() + " " + (int) dealer.getLocation().getZ()));
         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
         for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction() == null) continue;
             if (playerData.getFaction().equalsIgnoreCase("FBI")) {
                 playerData.getPlayer().spigot().sendMessage(message);
             }
