@@ -101,7 +101,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         for (Player player1 : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
-                player1.sendMessage("§8[§c§lGuide§8] " + color + msg);
+                player1.sendMessage("§8[§eGuide§8] " + color + msg);
             }
         }
     }
