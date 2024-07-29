@@ -49,7 +49,9 @@ public class ContractCommand implements CommandExecutor {
             try {
                 factionManager.addFactionMoney("ICA", price, "Versuchtes Kopfgeld auf Mitarbeiter");
                 for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (factionManager.faction(players).equals("ICA")) {
+                    PlayerData playersData = playerManager.getPlayerData(player);
+                    if (playersData.getFaction() == null) continue;
+                    if (playersData.getFaction().equals("ICA")) {
                         players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde versucht ein Kopfgeld auf einen Mitarbeiter der ICA zu setzen. Das Kopfgeld wurde auf das Fraktionskonto überschrieben.");
                     }
                 }
@@ -64,7 +66,9 @@ public class ContractCommand implements CommandExecutor {
             ContractData contractData = ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString());
             contractData.setAmount(contractData.getAmount() + price);
             for (Player players : Bukkit.getOnlinePlayers()) {
-                if (factionManager.faction(players).equals("ICA")) {
+                PlayerData playersData = playerManager.getPlayerData(player);
+                if (playersData.getFaction() == null) continue;
+                if (playersData.getFaction().equals("ICA")) {
                     players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
                 }
             }
@@ -83,7 +87,9 @@ public class ContractCommand implements CommandExecutor {
             contractData.setSetter(player.getUniqueId().toString());
             ServerManager.contractDataMap.put(targetplayer.getUniqueId().toString(), contractData);
             for (Player players : Bukkit.getOnlinePlayers()) {
-                if (factionManager.faction(players).equals("ICA")) {
+                PlayerData playersData = playerManager.getPlayerData(player);
+                if (playersData.getFaction() == null) continue;
+                if (playersData.getFaction().equals("ICA")) {
                     players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
                 }
             }
