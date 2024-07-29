@@ -164,8 +164,9 @@ public class StaatUtil {
         PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
+        boolean hasParole = result.next();
         statement.close();
-        return result.next();
+        return hasParole;
     }
 
     @SneakyThrows
