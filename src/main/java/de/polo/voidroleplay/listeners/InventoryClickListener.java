@@ -110,30 +110,12 @@ public class InventoryClickListener implements Listener {
                     break;
             }
         }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "adminmenu")) {
-            event.setCancelled(true);
-            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                case NETHER_WART:
-                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") - 1, playerData.getVariable("offlinePLayers") != "nein");
-                    break;
-                case GOLD_NUGGET:
-                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, playerData.getIntVariable("current_page") + 1, playerData.getVariable("offlinePLayers") != "nein");
-                    break;
-                case PLAYER_HEAD:
-                    Main.getInstance().commands.adminMenuCommand.editPlayerViaAdmin(player, event.getCurrentItem());
-                    break;
-                case DIAMOND:
-                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") == "nein");
-                    break;
-            }
-        }
         if (playerData.getVariable("current_inventory").toString().contains("edit_player_")) {
             event.setCancelled(true);
             UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_player_", ""));
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
                 case NETHER_WART:
-                    Main.getInstance().commands.adminMenuCommand.openAdminMenu(player, 1, playerData.getVariable("offlinePLayers") != "nein");
                     break;
                 case REDSTONE:
                     if (!offlinePlayer.isOnline()) return;

@@ -37,6 +37,7 @@ public class BlockBreakListener implements Listener {
         if (!player.getGameMode().equals(GameMode.CREATIVE)) {
             if (!ServerManager.canDoJobs()) {
                 player.sendMessage(Prefix.ERROR + "Vor dem Restart kannst du keine Jobs ausführen, bei welchen du Blöcke ab baust.");
+                event.setCancelled(true);
                 return;
             }
             for (Farmer farmer : Farmer.values()) {
