@@ -175,7 +175,7 @@ public class ApothekeFunctions implements Listener {
                 if (plus >= 1) {
                     for (PlayerData playerData : playerManager.getPlayers()) {
                         if (playerData.getFaction() != null) {
-                            if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                            if (playerData.getFaction().equalsIgnoreCase(factionData.getName()) && !playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei")) {
                                 Player player = Bukkit.getPlayer(playerData.getUuid());
                                 player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
                                 factionData.storage.setJoint(factionData.storage.getJoint() + plus);
