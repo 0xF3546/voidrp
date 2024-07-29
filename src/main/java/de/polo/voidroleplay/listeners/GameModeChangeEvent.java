@@ -18,9 +18,9 @@ public class GameModeChangeEvent implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         if (event.getNewGameMode() == GameMode.SURVIVAL) {
-            if (playerData.getVariable("inventory::gangwar") == null) return;
-            player.getInventory().setContents(playerData.getVariable("inventory::gangwar"));
-            playerData.setVariable("inventory::gangwar", null);
+            if (playerData.getVariable("inventory::build") == null) return;
+            player.getInventory().setContents(playerData.getVariable("inventory::build"));
+            playerData.setVariable("inventory::build", null);
         }
         if (event.getNewGameMode() == GameMode.CREATIVE) {
             playerData.setVariable("inventory::build", player.getInventory().getContents());
