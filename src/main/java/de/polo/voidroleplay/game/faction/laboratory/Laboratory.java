@@ -85,9 +85,9 @@ public class Laboratory implements CommandExecutor, Listener {
                             openLaboratoryAsAttacker(player, factions);
                         } else {
                             if (attack.isHackedLaboratory()) {
-                                clearLaboratory(attack.attacker, attack.defender);
                                 factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§b Ihr habt das Labor ausgeraubt!");
                                 factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§c Euer Labor wurde leer geräumt!");
+                                clearLaboratory(attack.attacker, attack.defender);
                                 attacks.remove(attack);
                             }
                         }
