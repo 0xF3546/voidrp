@@ -236,6 +236,7 @@ public class ServerManager {
                             FactionData defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
+                                if (playerData.getFaction() == null) continue;
                                 if (playerData.getFaction().equals(gangwarData.getAttacker()) || playerData.getFaction().equals(gangwarData.getGangZone().getOwner())) {
                                     if (playerData.getVariable("gangwar") != null) {
                                         BossBar bossBar = playerData.getBossBar("gangwar");
