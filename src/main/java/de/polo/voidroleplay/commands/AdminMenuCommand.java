@@ -29,7 +29,6 @@ public class AdminMenuCommand implements CommandExecutor {
     public AdminMenuCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        Main.registerCommand("adminmenu", this);
     }
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
