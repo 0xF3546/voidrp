@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -15,8 +16,14 @@ public class GameModeChangeEvent implements Listener {
     @EventHandler
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            player.getInventory().setContents(playerData.getVariable("inventory::gangwar"));
+        }
         if (event.getNewGameMode() == GameMode.CREATIVE) {
+            playerData.setVariable("inventory::build", player.getInventory().getContents());
             Utils.Tablist.setTablist(player, "§8[§2GM§8]");
+            player.getInventory().clear();
             return;
         }
         Utils.Tablist.setTablist(player, null);

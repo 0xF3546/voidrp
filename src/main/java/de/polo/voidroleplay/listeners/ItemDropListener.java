@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Weapons;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -23,6 +24,10 @@ public class ItemDropListener implements Listener {
     public void onItemDrop(PlayerDropItemEvent event) {
         ItemStack droppedItem = event.getItemDrop().getItemStack();
         if (event.getPlayer().getEquipment().getItem(EquipmentSlot.OFF_HAND).equals(droppedItem)) {
+            event.setCancelled(true);
+            return;
+        }
+        if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
             event.setCancelled(true);
             return;
         }

@@ -36,6 +36,7 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         event.setJoinMessage("");
+        player.setGameMode(GameMode.SURVIVAL);
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
             PlayerData playerData = playerManager.getPlayerData(uuid);

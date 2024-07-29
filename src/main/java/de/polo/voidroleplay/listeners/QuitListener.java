@@ -9,6 +9,7 @@ import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.*;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,6 +45,9 @@ public class QuitListener implements Listener {
         if (playerData == null) return;
         adminManager.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
         serverManager.updateTablist(null);
+        if (player.getGameMode().equals(GameMode.CREATIVE)) {
+            playerData.setVariable("inventory::build", player.getInventory().getContents());
+        }
         if (playerData.getVariable("current_lobby") != null) {
             utils.ffaUtils.leaveFFA(player);
         }
