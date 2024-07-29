@@ -29,7 +29,9 @@ public class CloseServiceCommand implements CommandExecutor {
                     if (serviceData != null) {
                         if (serviceData.getAcceptedByUuid().equals(player.getUniqueId().toString())) {
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (playerManager.getPlayerData(p.getUniqueId()).getFaction().equals(playerData.getFaction())) {
+                                PlayerData playersData = playerManager.getPlayerData(p);
+                                if (playersData.getFaction() == null) continue;
+                                if (playersData.getFaction().equals(playerData.getFaction())) {
                                     p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat den Service von " + targetplayer.getName() + " geschlossen.");
                                 }
                             }

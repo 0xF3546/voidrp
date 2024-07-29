@@ -34,7 +34,9 @@ public class AcceptServiceCommand implements CommandExecutor {
                             serviceData.setAcceptedByUuid(player.getUniqueId().toString());
                             utils.navigation.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
                             for (Player p : Bukkit.getOnlinePlayers()) {
-                                if (playerManager.getPlayerData(p.getUniqueId()).getFaction().equals(playerData.getFaction())) {
+                                PlayerData playersData = playerManager.getPlayerData(p);
+                                if (playersData.getFaction() == null) continue;
+                                if (playersData.getFaction().equals(playerData.getFaction())) {
                                     p.sendMessage("§8[§9Zentrale§8]§3 " + player.getName() + " hat den Service von " + targetplayer.getName() + " angenommen [" + (int) player.getLocation().distance(targetplayer.getLocation()) + "m].");
                                 }
                             }
