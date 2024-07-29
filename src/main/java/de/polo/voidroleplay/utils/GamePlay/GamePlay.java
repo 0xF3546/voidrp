@@ -493,14 +493,14 @@ public class GamePlay implements Listener {
 
     public void addQuestReward(Player player, String type, int amount, String info) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        switch (type) {
+        switch (type.toLowerCase()) {
             case "money":
                 playerData.addMoney(amount);
                 break;
             case "case":
-                if (info == "case") {
+                if (info.equalsIgnoreCase("case")) {
                     player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.DAILY.getDisplayName()));
-                } else if (info == "xp-case") {
+                } else if (info.equalsIgnoreCase("xp-case")) {
                     player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, "§b§lXP-Case", "§8 ➥ §8[§6Rechtsklick§8]§7 Öffnen"));
                 }
                 break;
