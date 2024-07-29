@@ -25,7 +25,7 @@ public class OrtenCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (!playerData.getFaction().equals("FBI")) {
+        if (!playerData.getFaction().equals("FBI") && !playerData.getFaction().equalsIgnoreCase("ICA")) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
