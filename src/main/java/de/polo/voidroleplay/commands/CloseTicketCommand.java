@@ -35,6 +35,9 @@ public class CloseTicketCommand implements CommandExecutor {
                 if (supportManager.getTicket(player).getCreator() == players.getUniqueId()) {
                     targetplayer = players;
                 }
+                if (supportManager.getTicket(player).getEditors().contains(players.getUniqueId()) && player != players) {
+                    players.sendMessage(Main.support_prefix + "§aDas Ticket wurde von §2" + player.getName() + "§a geschlossen.");
+                }
             }
             if (!supportManager.deleteTicketConnection(player, targetplayer)) {
                 player.sendMessage(Main.support_prefix + "Du bearbeitest kein Ticket.");
