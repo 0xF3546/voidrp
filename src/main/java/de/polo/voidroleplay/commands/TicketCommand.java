@@ -66,7 +66,7 @@ public class TicketCommand implements CommandExecutor {
         int i = 1;
         for (Player p : Bukkit.getOnlinePlayers()) {
             PlayerData pData = playerManager.getPlayerData(p);
-            if (pData.getPermlevel() >= 40) {
+            if (pData.getPermlevel() >= 40 && ticket.getEditors().contains(p.getUniqueId())) {
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(p.getUniqueId().toString(), 1, 0, "§6" + p.getName(), "§8 ➥ §e" + pData.getRang())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -76,13 +76,13 @@ public class TicketCommand implements CommandExecutor {
                 i++;
             }
         }
-        inventoryManager.setItem(new CustomItem(25, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cTicket schließen")) {
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cTicket schließen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.performCommand("closesupport");
             }
         });
-        inventoryManager.setItem(new CustomItem(24, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§cTicket verlassen")) {
+        inventoryManager.setItem(new CustomItem(25, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§cTicket verlassen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (playerData.getPermlevel() < 40) {
@@ -98,7 +98,7 @@ public class TicketCommand implements CommandExecutor {
                 ticket.setEditors(editors);
                 for (Player editor : Bukkit.getOnlinePlayers()) {
                     if (ticket.getEditors().contains(editor.getUniqueId()) || ticket.getCreator().equals(editor.getUniqueId())) {
-                        player.sendMessage(Main.support_prefix + player.getName() + " hat das Ticket verlassen.");
+                        editor.sendMessage(Main.support_prefix + player.getName() + " hat das Ticket verlassen.");
                     }
                 }
             }
