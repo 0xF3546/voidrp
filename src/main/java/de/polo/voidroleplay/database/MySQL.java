@@ -14,7 +14,7 @@ public class MySQL {
     public MySQL() {
         loadDBData();
     }
-    static final String url = "jdbc:mysql://45.13.227.171/minecraft?autoReconnect=true&useSSL=false";
+    static final String url = "jdbc:mysql://176.96.136.158/minecraft?autoReconnect=true&useSSL=false";
     static String user = null;
     static String password = null;
     static int port = 3306;
@@ -65,7 +65,7 @@ public class MySQL {
         MySQL.connection.close();
     }
     public interface forum {
-        String url = "jdbc:mysql://localhost/wcf?autoReconnect=true&useSSL=false";
+        String url = "jdbc:mysql://176.96.136.158/wcf?autoReconnect=true&useSSL=false";
         int port = 3306;
         static Connection getConnection() throws SQLException {
             if(connection != null) {

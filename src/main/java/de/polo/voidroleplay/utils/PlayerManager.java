@@ -925,6 +925,7 @@ public class PlayerManager implements Listener, ServerTiming {
                             targetplayerData.setCuffed(false);
                             ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
+                            player.closeInventory();
                         }
                     });
                 } else {

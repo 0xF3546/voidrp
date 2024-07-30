@@ -97,6 +97,7 @@ public class StaatUtil {
                 if (playerData.getBank() >= geldstrafe) {
                     playerManager.removeBankMoney(player, geldstrafe, "Gefängnis Geldstrafe");
                     player.sendMessage("§8[§cGefängnis§8] §7Strafzahlung§8:§7 " + geldstrafe + "$.");
+                    factionManager.addFactionMoney(arresterData.getFaction(), geldstrafe, "Geldstrafe " + player.getName());
                 } else if (playerData.getBank() > 0) {
                     int moreJailTime = geldstrafe / 500;
                     hafteinheiten += moreJailTime;
