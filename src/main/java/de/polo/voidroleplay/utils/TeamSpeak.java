@@ -13,15 +13,18 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.Main;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -144,34 +147,44 @@ public class TeamSpeak implements CommandExecutor {
     public static void verifyUser(Player player, String uid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
 
-        try {
-            String jsonInputString = "{\"uid\": \"" + uid + "\", \"name\": \"" + player.getName() + "\", \"uuid\": \"" + player.getUniqueId() + "\"}";
-            byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
-            int postDataLength = postData.length;
+        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getProvidingPlugin(TeamSpeak.class), () -> {
+            try {
+                String jsonInputString = "{\"uid\": \"" + uid + "\", \"name\": \"" + player.getName() + "\", \"uuid\": \"" + player.getUniqueId() + "\"}";
+                byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
+                int postDataLength = postData.length;
 
-            URL url = new URL("https://api.voidroleplay.de/teamspeak/verify");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setDoOutput(true);
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("charset", "utf-8");
-            con.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-            con.setUseCaches(false);
+                URL url = new URL("https://api.voidroleplay.de/teamspeak/verify");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setDoOutput(true);
+                con.setRequestMethod("POST");
+                con.setRequestProperty("Content-Type", "application/json; utf-8");
+                con.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                con.setUseCaches(false);
 
-            try (OutputStream os = con.getOutputStream()) {
-                os.write(postData);
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                int responseCode = con.getResponseCode();
+                System.out.println("Response Code: " + responseCode);
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    System.out.println("Reloaded user successfully.");
+                } else {
+                    System.out.println("Failed to reload user. Response Code: " + responseCode);
+                }
+            } catch (MalformedURLException e) {
+                System.err.println("URL is malformed: " + e.getMessage());
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.err.println("IOException occurred: " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Unexpected exception: " + e.getMessage());
+                e.printStackTrace();
             }
+        });
 
-            int responseCode = con.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                System.out.println("Reloaded user successfully.");
-            } else {
-                System.out.println("Failed to reload user.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void init() {
