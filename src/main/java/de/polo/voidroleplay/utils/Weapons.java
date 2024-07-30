@@ -30,6 +30,7 @@ import org.bukkit.util.Vector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Weapons implements Listener {
@@ -39,6 +40,7 @@ public class Weapons implements Listener {
 
     private final Utils utils;
     private final PlayerManager playerManager;
+    public HashMap<Player, LocalDateTime> weaponUsages = new HashMap<>();
 
     public Weapons(Utils utils, PlayerManager playerManager) {
         this.utils = utils;
@@ -195,6 +197,14 @@ public class Weapons implements Listener {
         if (playerData.isCuffed()) return;
         if (playerData.isDead()) {
             return;
+        }
+        if (weaponUsages.get(player) != null) {
+            if (weaponUsages.get(player).isAfter(Utils.getTime())) {
+                weaponUsages.remove(player);
+            } else {
+                utils.sendActionBar(player, "§cDu hast keine Kraft um die Waffe zu benutzen!");
+                return;
+            }
         }
         if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().equals(new ItemStack(Material.AIR))) return;
         if (player.getEquipment().getItemInMainHand().getType().equals(RoleplayItem.TAZER.getMaterial()) && player.getEquipment().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.TAZER.getDisplayName())) {

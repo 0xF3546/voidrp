@@ -7,6 +7,7 @@ import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
@@ -106,6 +107,7 @@ public class DeathUtils {
         playerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
+            Main.getInstance().weapons.weaponUsages.put(player, Utils.getTime().plusMinutes(3));
         }
     }
 
