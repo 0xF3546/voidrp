@@ -1,9 +1,11 @@
 package de.polo.voidroleplay.utils.GamePlay;
 
+import de.polo.voidroleplay.dataStorage.BlacklistData;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.ServerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -36,14 +38,38 @@ public class DisplayNameManager {
 
             for (PlayerData p : playerManager.getPlayers()) {
                 if (p.getFaction() == null) continue;
+                FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                 if (p.getFaction().equalsIgnoreCase(playerData.getFaction())) {
                     Team team = scoreboard.getTeam(p.getPlayer().getName());
                     if (team == null) {
                         team = scoreboard.registerNewTeam(p.getPlayer().getName());
                     }
-                    FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                     team.setPrefix("§" + factionData.getPrimaryColor());
                     team.addEntry(p.getPlayer().getName());
+                }
+                if (playerData.getFaction().equalsIgnoreCase("ICA")) {
+                    if (ServerManager.contractDataMap.get(p.getPlayer().getUniqueId().toString()) != null) {
+                        Team team = scoreboard.getTeam(p.getPlayer().getName());
+                        if (team == null) {
+                            team = scoreboard.registerNewTeam(p.getPlayer().getName());
+                        }
+                        team.setPrefix("§c");
+                        team.addEntry(p.getPlayer().getName());
+                    }
+                }
+                if (factionData.hasBlacklist()) {
+                    for (BlacklistData blacklistData : factionManager.getBlacklists()) {
+                        if (blacklistData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                            if (blacklistData.getUuid().equalsIgnoreCase(p.getPlayer().getUniqueId().toString())) {
+                                Team team = scoreboard.getTeam(p.getPlayer().getName());
+                                if (team == null) {
+                                    team = scoreboard.registerNewTeam(p.getPlayer().getName());
+                                }
+                                team.setPrefix("§c");
+                                team.addEntry(p.getPlayer().getName());
+                            }
+                        }
+                    }
                 }
             }
 
