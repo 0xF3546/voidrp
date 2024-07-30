@@ -32,6 +32,7 @@ public class DisplayNameManager {
     }
 
     public void reloadDisplayNames(Player player) {
+        clearPlayerScoreboard(player);
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() != null) {
             Scoreboard scoreboard = playerScoreboards.computeIfAbsent(player, k -> Bukkit.getScoreboardManager().getNewScoreboard());

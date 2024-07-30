@@ -83,7 +83,8 @@ public class ApothekeFunctions implements Listener {
         if (factionData.isBadFrak()) canAttack = true;
         String owner = "§9Staat";
         if (apotheke.isStaat()) {
-            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) canAttack = true;
+            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei"))
+                canAttack = true;
         }
         if (!apotheke.getOwner().equalsIgnoreCase("staat")) {
             factionData = factionManager.getFactionData(apotheke.getOwner());
@@ -144,7 +145,7 @@ public class ApothekeFunctions implements Listener {
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Die Angreifer haben es geschafft eure Apotheke einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Ihr habt es geschafft die Apotheke einzuschüchtern.");
                 if (apotheke.getAttacker().getName().equalsIgnoreCase("Polizei") || apotheke.getAttacker().getName().equalsIgnoreCase("FBI")) {
-                 apotheke.setOwner("staat");
+                    apotheke.setOwner("staat");
                 } else {
                     apotheke.setOwner(apotheke.getAttackerFaction());
                 }
@@ -165,33 +166,38 @@ public class ApothekeFunctions implements Listener {
                         if (factionData.getName() != null) {
                             if (apotheke.getOwner().equalsIgnoreCase(factionData.getName())) {
                                 if (apotheke.getLastAttack().getMinute() == event.getMinute()) {
-                                    if (apotheke.isStaat()) plus += ServerManager.getPayout("apotheke_besetzt_staat");
+                                    if (apotheke.getOwner().equalsIgnoreCase("FBI") || apotheke.getOwner().equalsIgnoreCase("Polizei")) {
+                                        factionManager.addFactionMoney(factionData.getName(), 2000, "Apotheke");
+                                        for (PlayerData playerData : playerManager.getPlayers()) {
+                                            if (playerData.getFaction() != null) {
+                                                if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                                                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                                                    if (player == null) continue;
+                                                    player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2200$ Steuern aus Apotheken erhalten .");
+                                                }
+                                            }
+                                        }
+                                        continue;
+                                    }
+                                    if (apotheke.isStaat())
+                                        plus += ServerManager.getPayout("apotheke_besetzt_staat");
                                     else plus += ServerManager.getPayout("apotheke_besetzt_normal");
                                 }
                             }
                         }
                     }
-                }
-                factionData.setJointsMade(plus);
-                if (plus >= 1) {
-                    if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei")) {
-                        factionManager.addFactionMoney(factionData.getName(), 2000, "Apotheke");
-                        for (PlayerData playerData : playerManager.getPlayers()) {
-                            if (playerData.getFaction() != null) {
-                                if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
-                                    Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2200$ Steuern aus Apotheken erhalten .");
-                                }
-                            }
-                        }
-                    } else {
-                        factionData.storage.setJoint(factionData.storage.getJoint() + plus);
-                        factionData.storage.save();
-                        for (PlayerData playerData : playerManager.getPlayers()) {
-                            if (playerData.getFaction() != null) {
-                                if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
-                                    Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
+                    factionData.setJointsMade(plus);
+                    if (plus >= 1) {
+                        if (factionData.isBadFrak())
+                            factionData.storage.setJoint(factionData.storage.getJoint() + plus);
+                            factionData.storage.save();
+                            for (PlayerData playerData : playerManager.getPlayers()) {
+                                if (playerData.getFaction() != null) {
+                                    if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                                        Player player = Bukkit.getPlayer(playerData.getUuid());
+                                        if (player == null) continue;
+                                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
+                                    }
                                 }
                             }
                         }
@@ -200,4 +206,3 @@ public class ApothekeFunctions implements Listener {
             }
         }
     }
-}
