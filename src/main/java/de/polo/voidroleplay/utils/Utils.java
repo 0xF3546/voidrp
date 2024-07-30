@@ -163,7 +163,7 @@ public class Utils {
                 prefix = "§8[§5AFK§8]";
             } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
                 prefix = "§8[§2GM§8]";
-            } else if (player.getAllowFlight() && !playerData.isAduty()) {
+            } else if (player.getAllowFlight() && !player.getGameMode().equals(GameMode.SPECTATOR) && !playerData.isAduty()) {
                 prefix = "§8[§5Fly§8]";
             }
 
