@@ -125,6 +125,7 @@ public class FactionManager {
         assert statement != null;
         statement.executeUpdate("UPDATE `players` SET `faction` = '" + frak + "', `faction_grade` = " + rang + " WHERE `uuid` = '" + player.getUniqueId() + "'");
         boolean found = false;
+        Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
         for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
             if (factionPlayerData.getUuid().equals(player.getUniqueId().toString())) {
                 found = true;
@@ -156,10 +157,9 @@ public class FactionManager {
         playerData.setFaction(null);
         playerData.setFactionGrade(0);
         playerData.setDuty(false);
+        Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
         if (playerData.getPermlevel() >= 60) {
-            player.setDisplayName("§8[§7Team§8]§7 " + player.getName());
-            player.setPlayerListName("§8[§7Team§8]§7 " + player.getName());
-            player.setCustomName("§8[§7Team§8]§7 " + player.getName());
+            Utils.Tablist.updatePlayer(player);
             player.setCustomNameVisible(true);
         } else {
             player.setDisplayName("§7" + player.getName());

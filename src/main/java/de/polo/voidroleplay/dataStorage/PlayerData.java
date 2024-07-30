@@ -63,7 +63,6 @@ public class PlayerData {
     private int level;
     private int exp;
     private int needed_exp;
-    private Scoreboard scoreboard;
     private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
     private final HashMap<String, BossBar> bossBars = new HashMap<>();
     private boolean isDead = false;
@@ -291,16 +290,8 @@ public class PlayerData {
         bossBars.remove(identifier);
     }
 
-    public Scoreboard getScoreboard() {
-        return scoreboard;
-    }
-
     public Scoreboard getScoreboard(String scoreboard) {
         return scoreboards.get(scoreboard);
-    }
-
-    public void setScoreboard(Scoreboard scoreboard) {
-        this.scoreboard = scoreboard;
     }
 
     public void setScoreboard(String scoreboardName, Scoreboard scoreboard) {

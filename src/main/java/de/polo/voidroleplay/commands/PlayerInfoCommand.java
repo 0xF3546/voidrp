@@ -54,7 +54,7 @@ public class PlayerInfoCommand implements CommandExecutor {
                     if (targetplayerdata.isAduty()) {
                         player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7Level: " + targetplayerdata.getLevel() + "§8 | §7Fraktion: " + faction + " (Rang " + targetplayerdata.getFactionGrade() + ")§8 | §7Ping: " + targetplayer.getPing() + "ms §8 | §7§oAdmindienst");
                     } else {
-                        player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7Level: " + targetplayerdata.getLevel() + "§8 | §7Fraktion: " + faction + "(Rang " + targetplayerdata.getFactionGrade() + ")§8 | §7Ping: " + targetplayer.getPing() + "ms");
+                        player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7Level: " + targetplayerdata.getLevel() + "§8 | §7Fraktion: " + faction + " (Rang " + targetplayerdata.getFactionGrade() + ")§8 | §7Ping: " + targetplayer.getPing() + "ms");
                     }
                 }
             } else {

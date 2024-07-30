@@ -10,6 +10,7 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class ScoreboardBuilder {
 
@@ -122,6 +123,21 @@ public abstract class ScoreboardBuilder {
     }
 
     public void clearScoreboard() {
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+        for (String teamName : scoreboard.getTeams().stream().map(Team::getName).collect(Collectors.toList())) {
+            scoreboard.getTeam(teamName).unregister();
+        }
+
+        for (String entry : scoreboard.getEntries()) {
+            scoreboard.resetScores(entry);
+        }
+
+        if (objective != null) {
+            objective.unregister();
+        }
+
+        if (player.getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null) {
+            player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
+        }
     }
+
 }

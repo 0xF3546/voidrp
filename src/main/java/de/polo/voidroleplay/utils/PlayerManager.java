@@ -335,6 +335,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().utils.staatUtil.loadParole(player);
+                Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
             }
         } catch (SQLException e) {
             e.printStackTrace();

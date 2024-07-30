@@ -52,6 +52,7 @@ public class GamePlay implements Listener {
     public Drop activeDrop = null;
     public LocalDateTime lastDrop = Utils.getTime();
     public Houseban houseban;
+    public DisplayNameManager displayNameManager;
 
     @SneakyThrows
     public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager) {
@@ -65,6 +66,7 @@ public class GamePlay implements Listener {
         plant = new PlantFunctions(mySQL, utils, factionManager, playerManager, locationManager);
         factionUpgradeGUI = new FactionUpgradeGUI(factionManager, playerManager, utils);
         houseban = new Houseban(playerManager, factionManager);
+        displayNameManager = new DisplayNameManager(playerManager, factionManager);
         Statement statement = mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM dealer");
         while (result.next()) {
