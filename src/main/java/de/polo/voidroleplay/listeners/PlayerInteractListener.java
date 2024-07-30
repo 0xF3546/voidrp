@@ -92,6 +92,10 @@ public class PlayerInteractListener implements Listener {
                     RegisteredBlock rBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (rBlock != null && rBlock.getInfo() != null) {
                         if (rBlock.getInfo().equalsIgnoreCase("fdoor")) {
+                            if (playerData.getFaction() == null) {
+                                event.setCancelled(true);
+                                return;
+                            }
                             if (!playerData.isAduty() && !playerData.getFaction().equalsIgnoreCase(rBlock.getInfoValue())) {
                                 event.setCancelled(true);
                             }
