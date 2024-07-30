@@ -148,13 +148,13 @@ public class DeathUtils {
             playerData.setDead(false);
             playerData.setDeathTime(0);
             Inventory inventory = player.getInventory();
-            player.getInventory().clear();
             for (ItemStack itemStack : inventory.getContents()) {
                 WeaponData weaponData = Main.getInstance().weapons.getWeaponData(itemStack.getType());
                 if (weaponData != null) {
                     Main.getInstance().weapons.removeWeapon(player, itemStack);
                 }
             }
+            player.getInventory().clear();
         }
         Item skull = deathSkulls.get(player.getUniqueId().toString());
         skull.remove();
