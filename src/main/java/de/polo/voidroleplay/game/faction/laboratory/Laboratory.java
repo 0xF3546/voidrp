@@ -340,8 +340,8 @@ public class Laboratory implements CommandExecutor, Listener {
     @SneakyThrows
     @EventHandler
     public void onMinute(MinuteTickEvent event) {
-        LocalDateTime now = LocalDateTime.now();
-        if (now.getMinute() == 0 && now.getHour() == 0 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
+        LocalDateTime now = Utils.getTime();
+        /*if (now.getMinute() == 0 && now.getHour() == 0 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
             List<Integer> laboratories = new ArrayList<>();
             for (LocationData data : LocationManager.locationDataMap.values()) {
                 if (data.getName().contains("laboratory_")) {
@@ -368,7 +368,7 @@ public class Laboratory implements CommandExecutor, Listener {
                     break;
                 }
             }
-        }
+        }*/
         for (LaboratoryAttack attack : attacks) {
             System.out.println(attack.getStarted());
             if (attack.isHackedLaboratory()) {
@@ -453,7 +453,7 @@ public class Laboratory implements CommandExecutor, Listener {
                         factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr könnt nun die Inhalte entwenden.");
                     }
                 } else {
-                    factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§a Die Angreifer haben es nicht das Labor auszurauben.");
+                    factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§a Die Angreifer haben es nicht geschafft das Labor auszurauben.");
                     factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§a Ihr habt es nicht geschafft das Labor von " + attack.defender.getName() + " auszurauben.");
                     attacks.remove(attack);
                 }
