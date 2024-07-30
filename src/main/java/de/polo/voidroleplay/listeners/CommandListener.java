@@ -30,7 +30,7 @@ public class CommandListener implements Listener {
         List<String> nonBlockedCommands = Arrays.asList("support", "report", "help", "vote", "jailtime", "ad", "aduty");
         String command = args[0].substring(1);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (command.equalsIgnoreCase("minecraft:me") || command .equalsIgnoreCase("say") || command.equalsIgnoreCase("tell") || command.equalsIgnoreCase("minecraft:tell") || command.equalsIgnoreCase("minecraft:say")) {
+        if (command.equalsIgnoreCase("minecraft:me") || command .equalsIgnoreCase("say") || command.equalsIgnoreCase("tell") || command.equalsIgnoreCase("minecraft:tell") || command.equalsIgnoreCase("minecraft:say") || command.equalsIgnoreCase("minecraft:msg") || command.equalsIgnoreCase("minecraft:teammsg")) {
             event.setCancelled(true);
         }
 

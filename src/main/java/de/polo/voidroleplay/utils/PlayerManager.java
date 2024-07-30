@@ -311,9 +311,11 @@ public class PlayerManager implements Listener, ServerTiming {
                         statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + player.getUniqueId() + "'");
                         if (playerData.getBusiness() != null) {
                             BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
-                            if (business.getOwner().equals(player.getUniqueId())) {
-                                business.setActive(false);
-                                business.save();
+                            if (business != null) {
+                                if (business.getOwner().equals(player.getUniqueId())) {
+                                    business.setActive(false);
+                                    business.save();
+                                }
                             }
                         }
                         setRang(uuid, "Spieler");
