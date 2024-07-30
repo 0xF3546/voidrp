@@ -63,12 +63,10 @@ public class Gangwar extends GangwarData {
                         }
 
                         if (locationCaptured && getSeconds() % 15 == 0) {
-                            for (String faction : captured.values()) {
-                                if (faction.equalsIgnoreCase(getAttacker())) {
-                                    setAttackerPoints(getAttackerPoints() + 1);
-                                } else if (faction.equalsIgnoreCase(gangZone.getOwner())) {
-                                    setDefenderPoints(getDefenderPoints() + 1);
-                                }
+                            if (captured.get(i).equalsIgnoreCase(getAttacker())) {
+                                setAttackerPoints(getAttackerPoints() + 1);
+                            } else if (captured.get(i).equalsIgnoreCase(gangZone.getOwner())) {
+                                setDefenderPoints(getDefenderPoints() + 1);
                             }
                         }
                     }
