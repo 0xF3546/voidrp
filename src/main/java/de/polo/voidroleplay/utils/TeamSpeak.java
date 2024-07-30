@@ -93,6 +93,54 @@ public class TeamSpeak implements CommandExecutor {
         }
     }
 
+    @SneakyThrows
+    public static void unlinkPlayer(UUID uuid) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(uuid);
+        System.out.println("RELOADING " + uuid);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT teamSpeakUID FROM players WHERE uuid = ?");
+        statement.setString(1, uuid.toString());
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+
+            try {
+                String jsonInputString = "{\"uid\": \"" + result.getString("teamSpeakUID") + "\"}";
+                byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
+                int postDataLength = postData.length;
+
+                URL url = new URL("https://api.voidroleplay.de/teamspeak/unlink");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setDoOutput(true);
+                con.setRequestMethod("POST");
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setRequestProperty("charset", "utf-8");
+                con.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                con.setUseCaches(false);
+
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(postData);
+                }
+
+                int responseCode = con.getResponseCode();
+                System.out.println("Response Code: " + responseCode);
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    playerData.setTeamSpeakUID(null);
+                    PreparedStatement removeal = connection.prepareStatement("UPDATE players SET teamSpeakUID = NULL WHERE uuid = ?");
+                    removeal.setString(1, uuid.toString());
+                    removeal.executeUpdate();
+                    removeal.close();
+                    System.out.println("Unlink user successfully.");
+                } else {
+                    System.out.println("Failed to reload user.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("PlayerData or TeamSpeakUID is null");
+        }
+    }
+
     public static void verifyUser(Player player, String uid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
 
