@@ -41,7 +41,7 @@ public class BlockBreakListener implements Listener {
                 return;
             }
             for (Farmer farmer : Farmer.values()) {
-                if (player.getLocation().distance(farmer.getLocation()) < 50 && event.getBlock().getType() == farmer.getFarmingItem()) {
+                if (player.getLocation().distance(farmer.getLocation()) < farmer.getRange() && event.getBlock().getType() == farmer.getFarmingItem()) {
                     event.setCancelled(true);
                     event.getBlock().setType(Material.AIR);
                     Main.getInstance().seasonpass.didQuest(player, 1);
