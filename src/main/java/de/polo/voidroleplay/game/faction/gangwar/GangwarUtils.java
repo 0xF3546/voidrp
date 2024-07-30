@@ -278,7 +278,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             }
             Timestamp timestamp = Timestamp.valueOf(gangzone.getLastAttack().toLocalDateTime());
             LocalDateTime currentDateTime = LocalDateTime.now();
-            LocalDateTime twoDaysAfterTimestamp = timestamp.toLocalDateTime().plusDays(2);
+            LocalDateTime twoDaysAfterTimestamp = timestamp.toLocalDateTime().plusHours(40);
             boolean isTwoDaysAfter = currentDateTime.isAfter(twoDaysAfterTimestamp);
             if (!isTwoDaysAfter || (playerData.isAduty() && playerData.getPermlevel() < 80)) {
                 player.sendMessage(Main.error + "Dieses Gebiet kann noch nicht angegriffen werden.");
