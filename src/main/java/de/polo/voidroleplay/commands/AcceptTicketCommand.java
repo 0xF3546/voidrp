@@ -65,7 +65,8 @@ public class AcceptTicketCommand implements CommandExecutor {
         player.sendMessage(Main.support_prefix + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
         adminManager.sendGuideMessage(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName() + ".", ChatColor.YELLOW);
         utils.sendActionBar(targetplayer, "§a§lDein Ticket wurde angenommen!");
-
+        Utils.Tablist.setTablist(player, "§8[§6R§8]");
+        Utils.Tablist.setTablist(targetplayer, "§8[§6R§8]");
         Ticket ticket = supportManager.getTicket(player);
         Statement statement = mySQL.getStatement();
         statement.execute("UPDATE tickets SET editor = '" + player.getUniqueId() + "', editedAt = NOW() WHERE id = " + ticket.getId());

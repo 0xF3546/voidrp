@@ -3,12 +3,9 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.SupportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -101,6 +98,7 @@ public class TicketCommand implements CommandExecutor {
                         editor.sendMessage(Main.support_prefix + player.getName() + " hat das Ticket verlassen.");
                     }
                 }
+                Utils.Tablist.updatePlayer(player);
             }
         });
         return false;

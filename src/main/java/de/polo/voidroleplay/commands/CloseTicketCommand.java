@@ -34,15 +34,18 @@ public class CloseTicketCommand implements CommandExecutor {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (supportManager.getTicket(player).getCreator() == players.getUniqueId()) {
                     targetplayer = players;
+                    Utils.Tablist.updatePlayer(players);
                 }
                 if (supportManager.getTicket(player).getEditors().contains(players.getUniqueId()) && player != players) {
                     players.sendMessage(Main.support_prefix + "§aDas Ticket wurde von §2" + player.getName() + "§a geschlossen.");
+                    Utils.Tablist.updatePlayer(players);
                 }
             }
             if (!supportManager.deleteTicketConnection(player, targetplayer)) {
                 player.sendMessage(Main.support_prefix + "Du bearbeitest kein Ticket.");
                 return false;
             }
+            Utils.Tablist.updatePlayer(player);
             targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
             utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
             player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
