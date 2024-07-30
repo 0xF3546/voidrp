@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,8 +26,10 @@ import java.util.UUID;
 
 public class BanCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
-    public BanCommand(PlayerManager playerManager) {
+    private final AdminManager adminManager;
+    public BanCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
+        this.adminManager = adminManager;
         Main.registerCommand("ban", this);
         Main.addTabCompeter("ban", this);
     }
@@ -131,13 +134,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + targetName + " gebannt. Grund: " + banreason.toString().replace("-", " "));
-        Statement statement = null;
-        try {
-            statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("INSERT INTO notes (uuid, target, note) VALUES ('System', '" + targetUUID + "', 'Spieler wurde gebannt (" + banreason + ")')");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        adminManager.insertNote("System", targetUUID.toString(), "Spieler wurde gebannt (" + banreason.toString().replace("-", " ") + ")");
         return false;
     }
 

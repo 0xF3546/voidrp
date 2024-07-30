@@ -55,6 +55,7 @@ public class PermbanCommand implements CommandExecutor {
         for (int i = 2; i < args.length; i++) {
             reason.append(" ").append(args[i]);
         }
+        Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + target.getName() + " permanent gebannt. Grund: " + reason);
         adminManager.send_message(player.getName() + " hat " + target.getName() + " Permanent gebannt.", ChatColor.RED);
         if (target.isOnline()) {
             Player targetOnPlayer = Bukkit.getPlayer(target.getUniqueId());
@@ -69,7 +70,8 @@ public class PermbanCommand implements CommandExecutor {
         statement.setInt(5, 1);
         statement.execute();
         statement.close();
-        connection.close();
+
+        adminManager.insertNote("System", target.getUniqueId().toString(), "Spieler wurde gebannt (" + reason.toString() + ")");
         return false;
     }
 }

@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -14,6 +15,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +107,19 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 player1.sendMessage("§8[§eGuide§8] " + color + msg);
             }
         }
+    }
+
+
+    @SneakyThrows
+    public void insertNote(String punisher, String target, String note) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO notes (uuid, target, note) VALUES (?, ?, ?)");
+        statement.setString(1, punisher);
+        statement.setString(2, target);
+        statement.setString(3, note);
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 
     @Nullable
