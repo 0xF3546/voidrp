@@ -93,6 +93,17 @@ public class EquipCommand implements CommandExecutor, Listener {
                 player.getInventory().addItem(ItemManager.createItem(Material.BREAD, 16, 0, "§fLeib Christi"));
             }
         });
+        inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bEhering")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 1000) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 1000$!");
+                    return;
+                }
+                playerData.removeMoney(1000, "Kauf Ehering");
+                player.getInventory().addItem(ItemManager.createItem(Material.DIAMOND, 1, 0, "§bEhering"));
+            }
+        });
     }
 
     private void openMain(Player player, PlayerData playerData) {

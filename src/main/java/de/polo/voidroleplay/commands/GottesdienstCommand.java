@@ -37,7 +37,7 @@ public class GottesdienstCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Dieser Befehl geht erst ab Rang 4!");
             return false;
         }
-        Bukkit.broadcastMessage("§8[§6Gottesdienst§8]§e " + factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()) + " " + playerData.getFirstname() + " " + playerData.getLastname() + " ruft zum Gottesdienst in der Kirche auf!");
+        Bukkit.broadcastMessage("§8[§6Gottesdienst§8]§e " + factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()) + " " + playerData.getFirstname() + " " + playerData.getLastname() + " ruft die Bürger der Stadt zum Gottesdienst in der Kirche auf!");
         return false;
     }
 }
