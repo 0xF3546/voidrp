@@ -129,7 +129,7 @@ public class Vehicles implements Listener, CommandExecutor {
 
     public static void spawnVehicle(Player player, PlayerVehicleData playerVehicleData) {
         Location location = new Location(Bukkit.getWorld("world"), playerVehicleData.getX(), playerVehicleData.getY() + 1, playerVehicleData.getZ(), playerVehicleData.getYaw(), playerVehicleData.getPitch());
-        Minecart minecart = (Minecart) playerVehicleData.getWelt().spawnEntity(location, EntityType.MINECART);
+        Minecart minecart = (Minecart) Bukkit.getWorld("world").spawnEntity(location, EntityType.MINECART);
         NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
         minecart.getPersistentDataContainer().set(key_id, PersistentDataType.INTEGER, playerVehicleData.getId());
         NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
