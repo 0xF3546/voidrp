@@ -78,7 +78,7 @@ public class DeathListener implements Listener {
                     PlayerData killerData = playerManager.getPlayerData(player.getKiller());
                     killerData.addKarma(Main.random(1, 3), false);
                     removeKarma = false;
-                    playerManager.addExp(player.getKiller(), Main.random(10, 30));
+                    playerManager.addExp(player.getKiller(), Main.random(30, 90));
                     ServerManager.contractDataMap.remove(player.getUniqueId().toString());
                     try {
                         Statement statement = Main.getInstance().mySQL.getStatement();
