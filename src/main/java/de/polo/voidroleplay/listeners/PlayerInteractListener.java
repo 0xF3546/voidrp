@@ -96,9 +96,17 @@ public class PlayerInteractListener implements Listener {
                                 event.setCancelled(true);
                                 return;
                             }
-                            if (!playerData.isAduty() && !playerData.getFaction().equalsIgnoreCase(rBlock.getInfoValue())) {
-                                event.setCancelled(true);
+
+                            String playerFaction = playerData.getFaction().toLowerCase();
+                            String blockFaction = rBlock.getInfoValue().toLowerCase();
+
+                            if (!playerData.isAduty() && !playerFaction.equals(blockFaction)) {
+                                if (!((blockFaction.equals("fbi") && playerFaction.equals("polizei")) ||
+                                        (blockFaction.equals("polizei") && playerFaction.equals("fbi")))) {
+                                    event.setCancelled(true);
+                                }
                             }
+
                         } else if (rBlock.getInfo().equalsIgnoreCase("laboratory")) {
                             int id = Integer.parseInt(rBlock.getInfoValue());
                             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
@@ -148,7 +156,8 @@ public class PlayerInteractListener implements Listener {
                                     Chest chest = (Chest) event.getClickedBlock().getState();
                                     Inventory chestInventory = chest.getInventory();
                                     player.openInventory(chestInventory);
-                                }                           }
+                                }
+                            }
                         }
                     }
                     if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
