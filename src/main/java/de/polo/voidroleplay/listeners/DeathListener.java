@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.faction.streetwar.StreetwarData;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
@@ -35,6 +37,7 @@ public class DeathListener implements Listener {
         this.streetwar = streetwar;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+    @SneakyThrows
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
             Player player = event.getEntity().getPlayer();
@@ -161,6 +164,8 @@ public class DeathListener implements Listener {
                 PlayerData killerData = playerManager.getPlayerData(player.getKiller());
                 killerData.removeKarma(Main.random(1, 3), false);
                 Main.getInstance().seasonpass.didQuest(player.getKiller(), 5);
+                PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO death_logs (uuid, killer) VALUES (?, ?)");
+
             }
         }
 }
