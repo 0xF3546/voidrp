@@ -53,8 +53,19 @@ public class PlayerInteractWithPlayerListener implements Listener {
                             return;
                         }
                         if (!targetPlayerData.isCuffed()) {
+                            if (playerData.getVariable("wantsToCuff") == null) {
+                                Main.getInstance().getCooldownManager().setCooldown(player, "handschellen_anlegen", 5);
+                                playerData.setVariable("wantsToCuff", true);
+                                return;
+                            } else {
+                                if (Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen_anlegen")) {
+                                    player.sendMessage(Prefix.MAIN + "Warte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "handschellen_anlegen") + " Sekunden.");
+                                    return;
+                                }
+                            }
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
                             targetPlayerData.setCuffed(true);
+                            playerData.setVariable("wantsToCuff", null);
                             ItemManager.removeCustomItem(player, RoleplayItem.CUFF, 1);
                         } else {
                             for (WeaponData weaponData : Weapons.weaponDataMap.values()) {

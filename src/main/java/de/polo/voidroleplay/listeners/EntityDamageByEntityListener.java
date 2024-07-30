@@ -21,7 +21,7 @@ public class EntityDamageByEntityListener implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             PlayerData playerData = playerManager.getPlayerData(event.getDamager().getUniqueId());
-            if (playerData.getVisum() <= 2 && playerData.getFaction() == null) {
+            if ((playerData.getVisum() <= 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
                 event.setCancelled(true);
             }
             if ((event.getEntity().getType() == EntityType.ARMOR_STAND

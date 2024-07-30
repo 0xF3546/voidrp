@@ -35,8 +35,7 @@ public class DamageListener implements Listener {
             if (!playerData.isAduty()) {
                 player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                    PlayerData playerData1 = playerManager.getPlayerData(player.getUniqueId());
-                    event.setCancelled(playerData1.getVisum() <= 2 && playerData1.getFaction() == null);
+                    event.setCancelled(playerData.getVisum() <= 2 && playerData.getFaction() == null);
                     if (chestplate == null) return;
                     if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
                         event.setDamage(event.getDamage() / 3);
