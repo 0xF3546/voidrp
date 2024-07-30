@@ -24,6 +24,14 @@ public class EntityDamageByEntityListener implements Listener {
             if ((playerData.getVisum() <= 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
                 event.setCancelled(true);
             }
+            if (event.getEntity() instanceof Player) {
+                PlayerData ownPlayerData = playerManager.getPlayerData((Player) event.getEntity());
+                if (ownPlayerData != null) {
+                    if (ownPlayerData.getVisum() <= 2 && playerData.getFaction() == null) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
             if ((event.getEntity().getType() == EntityType.ARMOR_STAND
                     || event.getEntity().getType() == EntityType.ITEM_FRAME
                     || event.getEntity().getType() == EntityType.PAINTING
