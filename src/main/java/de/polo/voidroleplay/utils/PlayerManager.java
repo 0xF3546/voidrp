@@ -129,11 +129,15 @@ public class PlayerManager implements Listener, ServerTiming {
                             for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
                                 if (block.getInfo() == null) continue;
                                 if (block.getInfoValue() == null) continue;
-                                if (block.getInfo().equalsIgnoreCase("house") && Integer.parseInt(block.getInfoValue()) == house) {
-                                    Block b = block.getLocation().getBlock();
-                                    Sign sign = (Sign) b.getState();
-                                    sign.setLine(2, "§0" + player.getName());
-                                    sign.update();
+                                try {
+                                    if (block.getInfo().equalsIgnoreCase("house") && Integer.parseInt(block.getInfoValue()) == house) {
+                                        Block b = block.getLocation().getBlock();
+                                        Sign sign = (Sign) b.getState();
+                                        sign.setLine(2, "§0" + player.getName());
+                                        sign.update();
+                                    }
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();  // Oder eine andere Form der Fehlermeldung
                                 }
                             }
                         }
