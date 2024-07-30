@@ -32,7 +32,9 @@ public enum RoleplayItem {
     WAFFENTEIL("§8Waffenteil", Material.NETHERITE_INGOT, true),
     EISENERZ("§fEisenerz", Material.IRON_ORE, false),
     EISEN("§fEisen", Material.IRON_INGOT, false),
-    IBOPROFEN("§c§lIboprofen", Material.PAPER, false);
+    IBOPROFEN("§c§lIboprofen", Material.PAPER, false),
+    JESUSKREUZ("§6Jesuskreuz", Material.TOTEM_OF_UNDYING, false),
+    MASK("§7Maske", Material.WITHER_SKELETON_SKULL, true);
 
     private final String displayName;
     private final Material material;

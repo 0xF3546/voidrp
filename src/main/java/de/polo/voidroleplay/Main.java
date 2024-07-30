@@ -450,6 +450,9 @@ public final class Main extends JavaPlugin {
         public JailCommand jailCommand;
         public TicketCommand ticketCommand;
         public AkteCommand akteCommand;
+        public GottesdienstCommand gottesdienstCommand;
+        public ChurchEventCommand eventCommand;
+        public JesusKreuzCommand jesusKreuzCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -500,7 +503,7 @@ public final class Main extends JavaPlugin {
             jailtimeCommand = new JailtimeCommand(playerManager);
             dropCommand = new DropCommand(playerManager);
             lebensmittelLieferantCommand = new LebensmittelLieferantCommand(playerManager, locationManager);
-            banCommand = new BanCommand(playerManager);
+            banCommand = new BanCommand(playerManager, adminManager);
             unbanCommand = new UnbanCommand(playerManager, adminManager);
             setBlockValueCommand = new SetBlockValueCommand(playerManager);
             getVehCommand = new GetVehCommand(playerManager);
@@ -610,6 +613,10 @@ public final class Main extends JavaPlugin {
             jailCommand = new JailCommand(playerManager);
             ticketCommand = new TicketCommand(playerManager, supportManager);
             akteCommand = new AkteCommand(playerManager);
+            gottesdienstCommand = new GottesdienstCommand(playerManager, factionManager);
+            eventCommand = new ChurchEventCommand(playerManager, factionManager);
+            jesusKreuzCommand = new JesusKreuzCommand(playerManager, factionManager);
+
 
             main.registerCommands();
             main.registerListener(this);

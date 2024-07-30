@@ -115,6 +115,7 @@ commands:
     aliases: bt
   setsecondaryteam:
   stats:
+    aliases: money
   revive:
   service:
   acceptservice:
@@ -229,3 +230,6 @@ commands:
   jail:
   ticket:
   akte:
+  gottesdienst:
+  event:
+  jesuskreuz:

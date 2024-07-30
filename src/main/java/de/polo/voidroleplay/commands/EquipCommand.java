@@ -50,8 +50,49 @@ public class EquipCommand implements CommandExecutor, Listener {
             player.sendMessage(Main.error + "Du bist nicht in der nähe deines Equip-Punktes.");
             return false;
         }
+        if (playerData.getFaction().equalsIgnoreCase("Kirche")) {
+            openChurch(player, playerData);
+            return false;
+        }
         openMain(player, playerData);
         return false;
+    }
+
+    private void openChurch(Player player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Equip (Kirche)", true, true);
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.WATER, 1, 0, "§fKirchquell Wasser")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 3) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 3$!");
+                    return;
+                }
+                playerData.removeMoney(3, "Kauf Kirchquell Wasser");
+                player.getInventory().addItem(ItemManager.createItem(Material.WATER, 1, 0, "§fKirchquell Wasser"));
+            }
+        });
+        inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(Material.LINGERING_POTION, 1, 0, "§cRoter Wein")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 3) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 3$!");
+                    return;
+                }
+                playerData.removeMoney(3, "Kauf Roter Wein");
+                player.getInventory().addItem(ItemManager.createItem(Material.LINGERING_POTION, 1, 0, "§cRoter Wein"));
+            }
+        });
+        inventoryManager.setItem(new CustomItem(2, ItemManager.createItem(Material.BREAD, 16, 0, "§fLeib Christi")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 3) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 15$!");
+                    return;
+                }
+                playerData.removeMoney(15, "Kauf Leib Christi");
+                player.getInventory().addItem(ItemManager.createItem(Material.BREAD, 16, 0, "§fLeib Christi"));
+            }
+        });
     }
 
     private void openMain(Player player, PlayerData playerData) {
