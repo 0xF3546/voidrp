@@ -96,7 +96,7 @@ public class Weapons implements Listener {
     }
 
     @SneakyThrows
-    public void giveWeaponToPlayer(Player player, Material material, WeaponType type) {
+    public ItemStack giveWeaponToPlayer(Player player, Material material, WeaponType type) {
         WeaponData weaponData = weaponDataMap.get(material);
         ItemStack item = new ItemStack(weaponData.getMaterial());
         ItemMeta meta = item.getItemMeta();
@@ -117,7 +117,7 @@ public class Weapons implements Listener {
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
-
+        return item;
     }
 
     public void giveWeaponAmmoToPlayer(Player player, ItemStack weapon, Integer amount) {
@@ -238,10 +238,10 @@ public class Weapons implements Listener {
             }
             if (target == null || target == player) return;
             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + target.getName() + " getazert.");
-            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false)); // Slow für 6 Sekunden
-            target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false)); // Jump für 6 Sekunden, -10 für eine geringere Sprunghöhe
-            target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 6, 0, true, false)); // Blindness für 6 Sekunden
-            target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false));
+            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 9, 2, true, false)); // Slow für 6 Sekunden
+            target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 9, -10, true, false)); // Jump für 6 Sekunden, -10 für eine geringere Sprunghöhe
+            target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 9, 0, true, false)); // Blindness für 6 Sekunden
+            target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 1, true, false));
 
         }
 
