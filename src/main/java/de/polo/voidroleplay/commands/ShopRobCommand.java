@@ -32,7 +32,7 @@ public class ShopRobCommand implements CommandExecutor {
         int shopId = locationManager.isNearShop(player);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVisum() < 3) {
-            player.sendMessage(Main.error + "Du kannst erst mit Visum 2 Shops ausrauben!");
+            player.sendMessage(Main.error + "Du kannst erst mit Visum 3 Shops ausrauben!");
             return false;
         }
         if (shopId == 0) {
