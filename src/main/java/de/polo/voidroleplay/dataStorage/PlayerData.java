@@ -692,7 +692,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -705,7 +705,8 @@ public class PlayerData {
         statement.setInt(6, subGroupId);
         statement.setInt(7, subGroupGrade);
         statement.setInt(8, karma);
-        statement.setInt(9, getId());
+        statement.setBoolean(9, isChurch);
+        statement.setInt(10, getId());
         statement.executeUpdate();
     }
 
