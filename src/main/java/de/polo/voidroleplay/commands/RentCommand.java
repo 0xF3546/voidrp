@@ -42,6 +42,7 @@ public class RentCommand implements CommandExecutor {
             int amount = Integer.parseInt(args[1]);
             if (amount >= 5000 || amount < 1) {
                 player.sendMessage(Prefix.ERROR + "Der Betrag muss zwischen 1-5.000$ liegen.");
+                return false;
             }
         }  catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Der Betrag muss numerisch sein.");
