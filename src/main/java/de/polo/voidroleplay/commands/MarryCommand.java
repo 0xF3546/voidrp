@@ -25,11 +25,9 @@ import java.util.HashMap;
  */
 public class MarryCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final FactionManager factionManager;
 
-    public MarryCommand(PlayerManager playerManager, FactionManager factionManager) {
+    public MarryCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.factionManager = factionManager;
         Main.registerCommand("marry", this);
     }
 
