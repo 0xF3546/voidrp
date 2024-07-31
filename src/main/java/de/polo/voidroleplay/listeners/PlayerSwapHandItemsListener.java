@@ -273,7 +273,8 @@ public class PlayerSwapHandItemsListener implements Listener {
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
                     player.sendMessage(Prefix.MAIN + "Du hast deine Tägliche Waffe entnommen");
-                    Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.NORMAL);
+                    ItemStack weapon = Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.NORMAL);
+                    Main.getInstance().weapons.giveWeaponAmmoToPlayer(player, weapon, 100);
                     ServerManager.factionStorageWeaponsTookout.add(player.getUniqueId());
                 }
             });
@@ -503,6 +504,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         });
     }
 
+    @SneakyThrows
     private void buy(Player player, String type) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         switch (type) {
@@ -546,6 +548,17 @@ public class PlayerSwapHandItemsListener implements Listener {
                 utils.housing.addHausSlot(player);
                 player.closeInventory();
                 player.sendMessage("§8[§eCoin-Shop§8]§a Du hast einen Hausslot eingelöst!");
+                break;
+            case "gameboost_3":
+                if (playerData.getCoins() < 2000) {
+                    player.sendMessage(Main.error + "Du hast nicht genug Coins (4.000).");
+                    player.closeInventory();
+                    return;
+                }
+                playerManager.removeCoins(player, 2000);
+                playerManager.addEXPBoost(player, 3);
+                player.closeInventory();
+                player.sendMessage("§8[§eCoin-Shop§8]§a Du hast einen EXP-Boost eingelöst!");
                 break;
         }
     }

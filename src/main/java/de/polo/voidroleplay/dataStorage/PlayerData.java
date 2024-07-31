@@ -76,7 +76,7 @@ public class PlayerData {
     private Date birthday;
     private int houseSlot;
     private LocalDateTime rankDuration;
-    private int boostDuration;
+    private LocalDateTime boostDuration;
     private Location deathLocation;
     private String secondaryTeam;
     private String teamSpeakUID;
@@ -409,11 +409,11 @@ public class PlayerData {
     }
 
 
-    public int getBoostDuration() {
+    public LocalDateTime getBoostDuration() {
         return boostDuration;
     }
 
-    public void setBoostDuration(int boostDuration) {
+    public void setBoostDuration(LocalDateTime boostDuration) {
         this.boostDuration = boostDuration;
     }
 

@@ -183,7 +183,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     Date utilDate = new Date(result.getDate("lastPayDay").getTime());
                     playerData.setLastPayDay(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
-                playerData.setBoostDuration(result.getInt("boostDuration"));
+                if (result.getDate("boostDuration") != null) playerData.setBoostDuration(Utils.toLocalDateTime(result.getDate("boostDuration")));
                 playerData.setSecondaryTeam(result.getString("secondaryTeam"));
                 playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
                 playerData.setSpawn(result.getString("spawn"));
@@ -615,6 +615,11 @@ public class PlayerManager implements Listener, ServerTiming {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = getPlayerData(player.getUniqueId());
                     playerDataMap.put(player.getUniqueId(), playerData);
+                    if (playerData.getBoostDuration() == null) {
+                        if (playerData.getBoostDuration().isAfter(Utils.getTime())) {
+                            clearExpBoost(player);
+                        }
+                    }
                     if (!playerData.isAFK()) {
                         add1MinutePlaytime(player);
                         int afkCounter = playerData.getIntVariable("afk") + 1;
@@ -659,6 +664,7 @@ public class PlayerManager implements Listener, ServerTiming {
 
                         // Batch-Operation für Fraktionsmitglieder
                         for (PlayerData playerData : playerDataMap.values()) {
+                            if (playerData.getFaction() == null) continue;
                             if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                 Player player = Bukkit.getPlayer(playerData.getUuid());
                                 sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus);
@@ -720,9 +726,27 @@ public class PlayerManager implements Listener, ServerTiming {
         player.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server geworfen.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoidRoleplay §8•");
     }
 
+    @SneakyThrows
+    public void clearExpBoost(Player player) {
+        PlayerData playerData = getPlayerData(player);
+        player.sendMessage("§8[§bEXP-Boost§8]§c Dein EXP-Boost ist ausgelaufen!");
+        playerData.setBoostDuration(null);
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET boostDuration = NULL WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        statement.executeUpdate();
+        statement.close();
+    }
+
     public void addExp(Player player, Integer exp) {
         String characters = "a0b1c2d3e4569";
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData.getBoostDuration() != null) {
+            if (playerData.getBoostDuration().isAfter(Utils.getTime())) {
+                clearExpBoost(player);
+            } else {
+                exp = exp * 2;
+            }
+        }
         playerData.setExp(playerData.getExp() + exp);
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + (playerData.getLevel() + 1));
@@ -734,8 +758,13 @@ public class PlayerManager implements Listener, ServerTiming {
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
         } else {
-            player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
-            Main.getInstance().utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            if (playerData.getBoostDuration() == null) {
+                player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+                Main.getInstance().utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+            } else {
+                player.sendMessage("§" + Main.getRandomChar(characters) + "§l+" + exp + " EXP (2x)");
+                Main.getInstance().utils.sendActionBar(player, "§l+" + exp + " EXP (2x)");
+            }
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         }
         player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
@@ -757,7 +786,11 @@ public class PlayerManager implements Listener, ServerTiming {
 
     public void addEXPBoost(Player player, int hours) throws SQLException {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setBoostDuration(playerData.getBoostDuration() + hours);
+        if (playerData.getBoostDuration() == null) {
+            playerData.setBoostDuration(Utils.getTime().plusHours(hours));
+        } else {
+            playerData.setBoostDuration(playerData.getBoostDuration().plusHours(hours));
+        }
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
@@ -880,6 +913,15 @@ public class PlayerManager implements Listener, ServerTiming {
                 player.closeInventory();
             }
         });
+        inventoryManager.setItem(new CustomItem(25, ItemManager.createItem(Material.PAPER, 1, 0, "§6Finanzen zeigen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                targetplayer.sendMessage("§7   ===§8[§6" + player.getName() + "'s Finanzen§8]§7===");
+                targetplayer.sendMessage("§8 ➥§eBargeld§8: §a" + playerData.getBargeld() + "$");
+                targetplayer.sendMessage("§8 ➥§eBank§8: §a" + playerData.getBank() + "$");
+            }
+        });
         inventoryManager.setItem(new CustomItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -941,6 +983,13 @@ public class PlayerManager implements Listener, ServerTiming {
                         }
                     });
                 }
+                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.LEAD, 1, 0, "§3Dienstmarke zeigen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        targetplayer.sendMessage("§7   ===§8[§3Dienstmarke§8]§7===");
+                        targetplayer.sendMessage("§8 ➥ §bRang§8: §7" + Main.getInstance().factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()));
+                    }
+                });
                 break;
         }
         inventoryManager.setItem(new CustomItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§7Interaktionsmenü")) {
