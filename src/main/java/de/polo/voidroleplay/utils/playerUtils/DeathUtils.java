@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -108,6 +109,9 @@ public class DeathUtils {
         if (playerData.getVariable("gangwar") != null) {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
             Main.getInstance().weapons.weaponUsages.put(player, Utils.getTime().plusMinutes(3));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 *6, 0, true, false));
         }
     }
 
@@ -134,6 +138,8 @@ public class DeathUtils {
                 try {
                     int id = Integer.parseInt(playerData.getSpawn());
                     for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                        if (registeredBlock.getInfo() == null) continue;
+                        if (registeredBlock.getInfoValue() == null) continue;
                         if (registeredBlock.getInfo().equalsIgnoreCase("house")) {
                             if (Integer.parseInt(registeredBlock.getInfoValue()) == id) {
                                 player.teleport(registeredBlock.getLocation());
@@ -149,6 +155,7 @@ public class DeathUtils {
             playerData.setDeathTime(0);
             Inventory inventory = player.getInventory();
             for (ItemStack itemStack : inventory.getContents()) {
+                if (itemStack == null) continue;
                 WeaponData weaponData = Main.getInstance().weapons.getWeaponData(itemStack.getType());
                 if (weaponData != null) {
                     Main.getInstance().weapons.removeWeapon(player, itemStack);
