@@ -56,6 +56,72 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("navi") == null) {
             if (args.length >= 1) {
+                if (args[0].contains("haus:")) {
+                    try {
+                        int number = Integer.parseInt(args[0].replace("haus:", "").replace(" ", ""));
+                        for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                            if (registeredBlock.getInfo() == null) {
+                                System.out.println("Info is null");
+                                continue;
+                            }
+                            if (!registeredBlock.getInfo().equalsIgnoreCase("house")) {
+                                continue;
+                            }
+                            if (registeredBlock.getInfoValue() == null) {
+                                System.out.println("InfoValue is null");
+                                continue;
+                            }
+                            try {
+                                if (Integer.parseInt(registeredBlock.getInfoValue()) != number) {
+                                    System.out.println("InfoValue does not equal number");
+                                    continue;
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("InfoValue is not a valid number");
+                                continue;
+                            }
+                            createNaviByCord(player, (int) registeredBlock.getLocation().getX(), (int) registeredBlock.getLocation().getY(), (int) registeredBlock.getLocation().getZ());
+                            player.sendMessage("§8[§eGPS§8]§7 Du hast ein Navi zu Haus " + number + " gemacht");
+                            return false;
+                        }
+                        player.sendMessage(Prefix.ERROR + "Hausnummer nicht gefunden");
+                    } catch (NumberFormatException ex) {
+                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /navi haus:[NUMMER]");
+                    }
+                }
+
+                if (args[0].contains("atm")) {
+                    try {
+                        double closestDistance = Double.MAX_VALUE;  // Initialisiert mit einem sehr großen Wert
+                        RegisteredBlock closestAtm = null;
+
+                        for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                            if (registeredBlock.getInfo() == null) {
+                                continue;
+                            }
+                            if (!registeredBlock.getInfo().equalsIgnoreCase("atm")) {
+                                continue;
+                            }
+
+                            double distance = player.getLocation().distance(registeredBlock.getLocation());
+
+                            if (distance < closestDistance) {
+                                closestDistance = distance;
+                                closestAtm = registeredBlock;
+                            }
+                        }
+
+                        if (closestAtm != null) {
+                            createNaviByCord(player, (int) closestAtm.getLocation().getX(), (int) closestAtm.getLocation().getY(), (int) closestAtm.getLocation().getZ());
+                            player.sendMessage("§8[§eGPS§8]§7 Du hast den nächsten ATM markiert");
+                        } else {
+                            player.sendMessage(Prefix.ERROR + "Kein ATM gefunden.");
+                        }
+                    } catch (NumberFormatException ex) {
+                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /navi haus:[NUMMER]");
+                    }
+                }
+
                 if (args.length >= 3) {
                     createNaviByCord(player, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
                 } else {
