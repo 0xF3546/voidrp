@@ -29,7 +29,12 @@ public class PayDayUtils {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         double plus = 0;
         double zinsen = Math.round(playerManager.bank(player) * 0.0075);
-        double steuern = Math.round(playerManager.bank(player) * 0.0035);
+        double steuern = 0;
+        if (playerData.getRelationShip().containsValue("verheiratet")) {
+            steuern = Math.round(playerManager.bank(player) * 0.0020);
+        } else {
+            steuern = Math.round(playerManager.bank(player) * 0.0035);
+        }
         int visumbonus = playerManager.visum(player) * 10;
         int frakpayday = 0;
         plus = plus + zinsen - steuern + visumbonus;
@@ -78,6 +83,11 @@ public class PayDayUtils {
                     houseData.setMoney(0);
                 }
             }
+        }
+        if (playerData.isChurch()) {
+            player.sendMessage("§8 ➥ §6Kirchensteuer §8: §c-" + Main.getInstance().serverManager.getPayout("kirchensteuer") + "$");
+            plus -= Main.getInstance().serverManager.getPayout("kirchensteuer");
+            factionManager.addFactionMoney("Kirche", Main.getInstance().serverManager.getPayout("kirchensteuer"), "Kirchensteuer " + player.getName());
         }
         if (playerData.getPermlevel() >= 40) {
             player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getRang() + ")§8: §a" + playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt") + "$");
