@@ -146,8 +146,8 @@ public class TeamSpeak implements CommandExecutor {
 
     public static void verifyUser(Player player, String uid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
 
-        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getProvidingPlugin(TeamSpeak.class), () -> {
             try {
                 String jsonInputString = "{\"uid\": \"" + uid + "\", \"name\": \"" + player.getName() + "\", \"uuid\": \"" + player.getUniqueId() + "\"}";
                 byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
@@ -157,7 +157,8 @@ public class TeamSpeak implements CommandExecutor {
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setDoOutput(true);
                 con.setRequestMethod("POST");
-                con.setRequestProperty("Content-Type", "application/json; utf-8");
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setRequestProperty("charset", "utf-8");
                 con.setRequestProperty("Content-Length", Integer.toString(postDataLength));
                 con.setUseCaches(false);
 
@@ -167,24 +168,15 @@ public class TeamSpeak implements CommandExecutor {
 
                 int responseCode = con.getResponseCode();
                 System.out.println("Response Code: " + responseCode);
-
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     System.out.println("Reloaded user successfully.");
                 } else {
-                    System.out.println("Failed to reload user. Response Code: " + responseCode);
+                    System.out.println("Failed to reload user.");
                 }
-            } catch (MalformedURLException e) {
-                System.err.println("URL is malformed: " + e.getMessage());
-                e.printStackTrace();
             } catch (IOException e) {
-                System.err.println("IOException occurred: " + e.getMessage());
-                e.printStackTrace();
-            } catch (Exception e) {
-                System.err.println("Unexpected exception: " + e.getMessage());
                 e.printStackTrace();
             }
         });
-
     }
 
     private void init() {
