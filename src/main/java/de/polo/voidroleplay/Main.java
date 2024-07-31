@@ -456,6 +456,7 @@ public final class Main extends JavaPlugin {
         public MarryCommand marryCommand;
         public SegenCommand segenCommand;
         public KirchensteuerCommand kirchensteuerCommand;
+        public TaufeCommand taufeCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -622,6 +623,7 @@ public final class Main extends JavaPlugin {
             marryCommand = new MarryCommand(playerManager);
             segenCommand = new SegenCommand(playerManager, factionManager);
             kirchensteuerCommand = new KirchensteuerCommand(playerManager);
+            taufeCommand = new TaufeCommand(playerManager, factionManager);
 
 
             main.registerCommands();

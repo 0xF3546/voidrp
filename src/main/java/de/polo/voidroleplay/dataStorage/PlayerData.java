@@ -112,6 +112,10 @@ public class PlayerData {
 
     @Getter
     @Setter
+    private boolean isBaptized;
+
+    @Getter
+    @Setter
     private int karma;
     private List<PlayerWorkstation> workstations = new ArrayList<>();
 
@@ -692,7 +696,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -706,7 +710,8 @@ public class PlayerData {
         statement.setInt(7, subGroupGrade);
         statement.setInt(8, karma);
         statement.setBoolean(9, isChurch);
-        statement.setInt(10, getId());
+        statement.setBoolean(10, isBaptized);
+        statement.setInt(11, getId());
         statement.executeUpdate();
     }
 
