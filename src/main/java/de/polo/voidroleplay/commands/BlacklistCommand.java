@@ -167,9 +167,13 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                                         playerManager.removeMoney(player, blacklistData.getPrice(), "Blacklist bezahlt - " + factionData1.getName());
                                         player.sendMessage("§8[§cBlacklist§8]§7 Du hast dich von der Blacklist von §" + factionData1.getPrimaryColor() + factionData1.getFullname() + "§7 freigekauft. §c-" + blacklistData.getPrice());
                                         for (PlayerData playerData1 : playerManager.getPlayers()) {
-                                            if (playerData1.getFaction().equals(factionData1.getName())) {
-                                                Player player1 = Bukkit.getPlayer(UUID.fromString(playerData1.getUuid().toString()));
-                                                player1.sendMessage("§8[§cBlacklist§8] §" + factionData1.getPrimaryColor() + player.getName() + " hat sich freigekauft (§a" + blacklistData.getPrice() + "$§" + factionData1.getPrimaryColor() + ").");
+                                            if (playerData1.getFaction() != null) {
+                                                if (playerData1.getFaction().equals(factionData1.getName())) {
+                                                    Player player1 = Bukkit.getPlayer(UUID.fromString(playerData1.getUuid().toString()));
+                                                    if (player1 != null) {
+                                                        player1.sendMessage("§8[§cBlacklist§8] §" + factionData1.getPrimaryColor() + player.getName() + " hat sich freigekauft (§a" + blacklistData.getPrice() + "$§" + factionData1.getPrimaryColor() + ").");
+                                                    }
+                                                    }
                                             }
                                         }
                                         factionManager.addFactionMoney(factionData1.getName(), blacklistData.getPrice(), "Blacklist-Zahlung " + player.getName());
