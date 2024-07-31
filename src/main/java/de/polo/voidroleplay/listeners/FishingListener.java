@@ -26,6 +26,7 @@ public class FishingListener implements Listener {
         event.setExpToDrop(0);
 
         if (event.getCaught() != null && event.getCaught() instanceof Item) {
+            event.setCancelled(true);
             Item caughtItem = (Item) event.getCaught();
             double randomNumber = Math.random() * 100;
 
@@ -48,6 +49,7 @@ public class FishingListener implements Listener {
                 caughtItem.setItemStack(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.BASIC.getDisplayName(), "§8 ➥ §8[§6Rechtsklick§8]§7 Öffnen"));
                 player.sendMessage("§8 » §7Du hast eine §6§lCase§7 geangelt!");
             }
+            player.getInventory().addItem(caughtItem.getItemStack());
 
             Main.getInstance().seasonpass.didQuest(player, 20);
             playerManager.addExp(player, EXPType.SKILL_FISHING, Main.random(3, 8));
