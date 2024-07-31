@@ -57,7 +57,7 @@ public class PayDayUtils {
             if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
                 rent += houseData.getRenter().get(player.getUniqueId().toString());
                 if (rent >= plus) {
-                    if (rent >= playerData.getBank()) {
+                    if (rent > playerData.getBank()) {
                         player.sendMessage("§8 ➥ §6Du konntest deine Miete für Haus " + houseData.getNumber() + " nicht begleichen.");
                         continue;
                     }
