@@ -250,7 +250,9 @@ public class FactionManager {
     }
     public void sendMessageToFaction(String faction, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (Objects.equals(faction(player), faction)) {
+            PlayerData playerData = playerManager.getPlayerData(player);
+            if (playerData.getFaction() == null) continue;
+            if (playerData.getFaction().equalsIgnoreCase(faction)) {
                 player.sendMessage("§8[§" + getFactionPrimaryColor(faction) + faction + "§8]§" + getFactionSecondaryColor(faction) + " " + message);
             }
         }
@@ -258,7 +260,9 @@ public class FactionManager {
     public void sendCustomMessageToFactions(String message, String... factions) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (String faction : factions) {
-                if (Objects.equals(faction(player), faction)) {
+                PlayerData playerData = playerManager.getPlayerData(player);
+                if (playerData.getFaction() == null) continue;
+                if (playerData.getFaction().equalsIgnoreCase(faction)) {
                     player.sendMessage(message);
                 }
             }
@@ -266,7 +270,9 @@ public class FactionManager {
     }
     public void sendCustomMessageToFaction(String faction, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (Objects.equals(faction(player), faction)) {
+            PlayerData playerData = playerManager.getPlayerData(player);
+            if (playerData.getFaction() == null) continue;
+            if (playerData.getFaction().equalsIgnoreCase(faction)) {
                 player.sendMessage(message);
             }
         }
