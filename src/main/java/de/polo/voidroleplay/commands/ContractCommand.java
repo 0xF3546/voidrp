@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.ServerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,6 +30,10 @@ public class ContractCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!(args.length >= 2)) {
             player.sendMessage(Main.error + "Syntax-Fehler: /contract [Spieler] [Kopfgeld]");
+            return false;
+        }
+        if (playerData.getFaction().equalsIgnoreCase("ICA")) {
+            player.sendMessage(Prefix.error_nopermission);
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
