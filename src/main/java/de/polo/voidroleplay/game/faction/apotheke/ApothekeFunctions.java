@@ -79,6 +79,7 @@ public class ApothekeFunctions implements Listener {
         if (apotheke == null) return;
         boolean canAttack = false;
         PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) return;
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         if (factionData.isBadFrak()) canAttack = true;
         String owner = "§9Staat";
