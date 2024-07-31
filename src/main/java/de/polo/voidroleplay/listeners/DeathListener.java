@@ -69,7 +69,7 @@ public class DeathListener implements Listener {
 
                 Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
                 utils.deathUtil.addDeathSkull(player.getUniqueId().toString(), item);
-                if (ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null && Objects.equals(factionManager.faction(Objects.requireNonNull(player.getKiller())), "ICA")) {
+                if ((ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null && Objects.equals(factionManager.faction(Objects.requireNonNull(player.getKiller())), "ICA")) || playerData.isHitmanDead()) {
                     ContractData contractData = ServerManager.contractDataMap.get(player.getUniqueId().toString());
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         PlayerData playersData = playerManager.getPlayerData(player);
