@@ -84,8 +84,8 @@ public class WinzerCommand implements CommandExecutor {
                         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("winzer_harvested") * Main.getInstance().serverManager.getPayout("winzer") + "$")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
-                                quitJob(player, false);
                                 player.closeInventory();
+                                quitJob(player, false);
                             }
                         });
                     }

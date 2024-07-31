@@ -106,6 +106,9 @@ public class PlayerData {
     private boolean receivedBonus;
     private int subGroupId;
     private int subGroupGrade;
+    @Getter
+    @Setter
+    private boolean isChurch;
 
     @Getter
     @Setter

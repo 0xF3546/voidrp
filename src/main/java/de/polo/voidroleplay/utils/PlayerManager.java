@@ -196,6 +196,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setSubGroupId(result.getInt("subGroup"));
                 playerData.setKarma(result.getInt("karma"));
                 playerData.setVotes(result.getInt("votes"));
+                playerData.setChurch(result.getBoolean("isChurch"));
 
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");

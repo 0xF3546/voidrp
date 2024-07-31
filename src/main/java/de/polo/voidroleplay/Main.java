@@ -453,6 +453,7 @@ public final class Main extends JavaPlugin {
         public GottesdienstCommand gottesdienstCommand;
         public ChurchEventCommand eventCommand;
         public JesusKreuzCommand jesusKreuzCommand;
+        public MarryCommand marryCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -616,6 +617,7 @@ public final class Main extends JavaPlugin {
             gottesdienstCommand = new GottesdienstCommand(playerManager, factionManager);
             eventCommand = new ChurchEventCommand(playerManager, factionManager);
             jesusKreuzCommand = new JesusKreuzCommand(playerManager, factionManager);
+            marryCommand = new MarryCommand(playerManager, factionManager);
 
 
             main.registerCommands();
