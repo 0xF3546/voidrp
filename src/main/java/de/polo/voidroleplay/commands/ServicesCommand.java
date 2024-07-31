@@ -31,6 +31,10 @@ public class ServicesCommand implements CommandExecutor {
             player.sendMessage("§7   ===§8[§9Notrufe§8]§7===");
             if (playerData.getFaction().equals("Medic")) {
                 for (ServiceData serviceData : StaatUtil.serviceDataMap.values()) {
+                    if (Bukkit.getPlayer(UUID.fromString(serviceData.getUuid())) == null) {
+                        StaatUtil.serviceDataMap.remove(serviceData.getUuid());
+                        continue;
+                    }
                     if (serviceData.getNumber() == 112) {
                         TextComponent message = new TextComponent("§8 ➥ §3" + Bukkit.getPlayer(UUID.fromString(serviceData.getUuid())).getName() + " §8|§3 " + serviceData.getReason());
                         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§3§lNotruf annehmen")));
