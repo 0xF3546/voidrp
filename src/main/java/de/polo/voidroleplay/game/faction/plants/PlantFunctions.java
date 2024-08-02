@@ -167,6 +167,9 @@ public class PlantFunctions implements Listener {
             if (currentTime >= 10) {
                 factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§c Die Angreifer haben es geschafft eure Plantage zu übernehmen.");
                 factionManager.sendCustomMessageToFaction(plant.getAttackerFaction(), "§8[§2Plantage§8]§a Ihr habt es geschafft die Plantage zu übernehmen.");
+                for (PlayerData playerData1 : factionManager.getFactionMemberInRange(plant.getAttackerFaction(), location, 30, true)) {
+                    playerManager.addExp(playerData1.getPlayer(), Main.random(15, 30));
+                }
                 for (Plant p : getPlants()) {
                     if (p.getOwner().equalsIgnoreCase(plant.getAttackerFaction())) {
                         p.setOwner(plant.getOwner());
