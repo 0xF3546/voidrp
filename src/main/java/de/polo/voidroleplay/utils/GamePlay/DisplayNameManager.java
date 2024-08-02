@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Mayson1337
- * @version 1.0.0
+ * Verwaltet die Anzeige von Spielernamen in der Tab-Liste und über dem Kopf der Spieler.
+ * @version 1.0.1
  * @since 1.0.0
  */
 public class DisplayNameManager {
@@ -26,6 +26,7 @@ public class DisplayNameManager {
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public DisplayNameManager(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -40,38 +41,25 @@ public class DisplayNameManager {
             for (PlayerData p : playerManager.getPlayers()) {
                 if (p.getFaction() == null) continue;
                 FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                Team team = scoreboard.getTeam(p.getPlayer().getName());
+                if (team == null) {
+                    team = scoreboard.registerNewTeam(p.getPlayer().getName());
+                }
+
                 if (p.getFaction().equalsIgnoreCase(playerData.getFaction())) {
-                    Team team = scoreboard.getTeam(p.getPlayer().getName());
-                    if (team == null) {
-                        team = scoreboard.registerNewTeam(p.getPlayer().getName());
-                    }
                     team.setPrefix("§" + factionData.getPrimaryColor());
-                    team.addEntry(p.getPlayer().getName());
-                }
-                if (playerData.getFaction().equalsIgnoreCase("ICA")) {
-                    if (ServerManager.contractDataMap.get(p.getPlayer().getUniqueId().toString()) != null) {
-                        Team team = scoreboard.getTeam(p.getPlayer().getName());
-                        if (team == null) {
-                            team = scoreboard.registerNewTeam(p.getPlayer().getName());
-                        }
-                        team.setPrefix("§c");
-                        team.addEntry(p.getPlayer().getName());
-                    }
-                }
-                if (factionData.hasBlacklist()) {
+                } else if (playerData.getFaction().equalsIgnoreCase("ICA") && ServerManager.contractDataMap.get(p.getPlayer().getUniqueId().toString()) != null) {
+                    team.setPrefix("§c");
+                } else if (factionData.hasBlacklist()) {
                     for (BlacklistData blacklistData : factionManager.getBlacklists()) {
-                        if (blacklistData.getFaction().equalsIgnoreCase(factionData.getName())) {
-                            if (blacklistData.getUuid().equalsIgnoreCase(p.getPlayer().getUniqueId().toString())) {
-                                Team team = scoreboard.getTeam(p.getPlayer().getName());
-                                if (team == null) {
-                                    team = scoreboard.registerNewTeam(p.getPlayer().getName());
-                                }
-                                team.setPrefix("§c");
-                                team.addEntry(p.getPlayer().getName());
-                            }
+                        if (blacklistData.getFaction().equalsIgnoreCase(factionData.getName()) &&
+                                blacklistData.getUuid().equalsIgnoreCase(p.getPlayer().getUniqueId().toString())) {
+                            team.setPrefix("§c");
                         }
                     }
                 }
+
+                team.addEntry(p.getPlayer().getName());
             }
 
             player.setScoreboard(scoreboard);
