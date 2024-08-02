@@ -1,7 +1,9 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.faction.alliance.Alliance;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -35,206 +37,26 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
             if (args.length == 0) {
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                    if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                        players.sendMessage("§c§lHilfe! §b" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                        TextComponent start = new TextComponent("§8 » ");
-                        TextComponent route = new TextComponent("§cRoute Anzeigen");
-                        TextComponent mid = new TextComponent("§8 | ");
-                        TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                        route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                        route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                        toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " normal"));
-                        toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                        players.spigot().sendMessage(start, route, mid, toPlayer);
-                        players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                    }
-                }
+                sendReinforcement(player, "§cHilfe!", false);
             } else {
                 switch (args[0]) {
                     case "-d":
-                        for (Player players : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                            if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§c§lDRINGEND HILFE! §b" + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                TextComponent start = new TextComponent("§8 » ");
-                                TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                TextComponent mid = new TextComponent("§8 | ");
-                                TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " d"));
-                                toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                players.spigot().sendMessage(start, route, mid, toPlayer);
-                                players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                            }
-                        }
+                        sendReinforcement(player, "§cHilfe!", true);
                         break;
                     case "-p":
-                        for (Player players : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                            if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§e§lGPS geteilt! §b" + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                TextComponent start = new TextComponent("§8 » ");
-                                TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                TextComponent mid = new TextComponent("§8 | ");
-                                TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " p"));
-                                toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                players.spigot().sendMessage(start, route, mid, toPlayer);
-                                players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                            }
-                        }
+                        sendReinforcement(player, "§eGPS!", false);
                         break;
                     case "-ed":
-                        if (playerManager.isInStaatsFrak(player)) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§c§lDRINGEND HILFE! §b" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 » ");
-                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                    TextComponent mid = new TextComponent("§8 | ");
-                                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
-                                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                    players.spigot().sendMessage(start, route, mid, toPlayer);
-                                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                                }
-                            }
-                        } else if (factionManager.isInBündnis(player)) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
-                                    players.sendMessage("§c§lDRINGEND HILFE! §b" + playerData.getFaction() + " " + player.getName() + " benötige Dringend Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 » ");
-                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                    TextComponent mid = new TextComponent("§8 | ");
-                                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
-                                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                    players.spigot().sendMessage(start, route, mid, toPlayer);
-                                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                                }
-                            }
-                        }
+                        sendReinforcement(player, "§4Dringend!", true);
                         break;
                     case "-ep":
-                        if (playerManager.isInStaatsFrak(player)) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                                if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§e§lGPS geteilt! §b" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 » ");
-                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                    TextComponent mid = new TextComponent("§8 | ");
-                                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
-                                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                    players.spigot().sendMessage(start, route, mid, toPlayer);
-                                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                                }
-                            }
-                        } else if (factionManager.isInBündnis(player)) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
-                                    players.sendMessage("§e§lGPS geteilt! §b" + playerData.getFaction() + " " + player.getName() + " teile meine Position! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 » ");
-                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                    TextComponent mid = new TextComponent("§8 | ");
-                                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
-                                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                    players.spigot().sendMessage(start, route, mid, toPlayer);
-                                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                                }
-                            }
-                        }
+                        sendReinforcement(player, "§eGPS!", true);
                         break;
                     case "-e":
-                        if (playerManager.isInStaatsFrak(player)) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                                if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§c§lHilfe! §b" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 » ");
-                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                    TextComponent mid = new TextComponent("§8 | ");
-                                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
-                                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                    players.spigot().sendMessage(start, route, mid, toPlayer);
-                                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                                }
-                            }
-                        } else if (factionManager.isInBündnis(player)) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                if (factionManager.isInBündnisWith(players, playerData.getFaction())) {
-                                    players.sendMessage("§c§lHilfe! §b" + playerData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 » ");
-                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                    TextComponent mid = new TextComponent("§8 | ");
-                                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
-                                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                    players.spigot().sendMessage(start, route, mid, toPlayer);
-                                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                                }
-                            }
-                        }
+                        sendReinforcement(player, "§4Dringend!", false);
                         break;
                     case "-m":
-                        if (playerManager.isInStaatsFrak(player)) {
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                                if (playerManager.isInStaatsFrak(players)) {
-                                    players.sendMessage("§c§lMediziner benötigt! §b" + playerData.getFaction() + " " + player.getName() + " benöge einen Mediziner! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                    TextComponent start = new TextComponent("§8 » ");
-                                    TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                    TextComponent mid = new TextComponent("§8 | ");
-                                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
-                                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                    players.spigot().sendMessage(start, route, mid, toPlayer);
-                                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                                }
-                            }
-                        }
+                        sendReinforcement(player, "§cMedic!", true);
                         break;
                     case "gotoreinf":
                         if (args.length >= 3) {
@@ -266,29 +88,75 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         }
                         break;
                     default:
-                        for (Player players : Bukkit.getOnlinePlayers()) {
-                            PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                            if (Objects.equals(playerData.getFaction(), playerData1.getFaction())) {
-                                players.sendMessage("§c§lHilfe! §b" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
-                                TextComponent start = new TextComponent("§8 » ");
-                                TextComponent route = new TextComponent("§cRoute Anzeigen");
-                                TextComponent mid = new TextComponent("§8 | ");
-                                TextComponent toPlayer = new TextComponent("§aUnterwegs!");
-                                route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
-                                route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
-
-                                toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " normal"));
-                                toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
-
-                                players.spigot().sendMessage(start, route, mid, toPlayer);
-                                players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-                            }
-                        }
+                        sendReinforcement(player, "§cHilfe!", false);
                         break;
                 }
             }
         }
         return false;
+    }
+
+    private void sendReinforcement(Player player, String variation, boolean isBündnis) {
+        PlayerData pData = playerManager.getPlayerData(player);
+        for (Player players : Bukkit.getOnlinePlayers()) {
+            PlayerData playerData = playerManager.getPlayerData(players);
+            if (playerData.getFaction() == null) continue;
+            if (isBündnis) {
+                if (playerManager.isInStaatsFrak(player)) {
+                    if (playerManager.isInStaatsFrak(players)) {
+                        players.sendMessage(variation + " §b" + pData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                        TextComponent start = new TextComponent("§8 » ");
+                        TextComponent route = new TextComponent("§cRoute Anzeigen");
+                        TextComponent mid = new TextComponent("§8 | ");
+                        TextComponent toPlayer = new TextComponent("§aUnterwegs!");
+                        route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
+                        route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
+
+                        toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
+                        toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
+
+                        players.spigot().sendMessage(start, route, mid, toPlayer);
+                        players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+                        continue;
+                    }
+                }
+                FactionData alliance = Main.getInstance().gamePlay.alliance.getAlliance(pData.getFaction());
+                if (alliance == null) continue;
+                System.out.println(alliance.getName());
+                if (playerData.getFaction().equalsIgnoreCase(alliance.getName()) || playerData.getFaction().equalsIgnoreCase(pData.getFaction())) {
+                    players.sendMessage(variation + " §b" + pData.getFaction() + " " + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                    TextComponent start = new TextComponent("§8 » ");
+                    TextComponent route = new TextComponent("§cRoute Anzeigen");
+                    TextComponent mid = new TextComponent("§8 | ");
+                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
+                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
+                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
+
+                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " dep"));
+                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
+
+                    players.spigot().sendMessage(start, route, mid, toPlayer);
+                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+                    continue;
+                }
+            } else {
+                if (playerData.getFaction().equalsIgnoreCase(pData.getFaction())) {
+                    players.sendMessage(variation + " §b" + player.getName() + " benötige Unterstützung! [" + (int) player.getLocation().distance(players.getLocation()) + "m]");
+                    TextComponent start = new TextComponent("§8 » ");
+                    TextComponent route = new TextComponent("§cRoute Anzeigen");
+                    TextComponent mid = new TextComponent("§8 | ");
+                    TextComponent toPlayer = new TextComponent("§aUnterwegs!");
+                    route.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ()));
+                    route.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oRoute verfolgen")));
+
+                    toPlayer.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/reinforcement gotoreinf " + (int) player.getLocation().getX() + " " + (int) player.getLocation().getY() + " " + (int) player.getLocation().getZ() + " " + player.getName() + " normal"));
+                    toPlayer.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oIch bin unterwegs!")));
+
+                    players.spigot().sendMessage(start, route, mid, toPlayer);
+                    players.playSound(players.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+                }
+            }
+        }
     }
 
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
