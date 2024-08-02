@@ -24,7 +24,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -87,6 +86,9 @@ public class Laboratory implements CommandExecutor, Listener {
                             if (attack.isHackedLaboratory()) {
                                 factionManager.sendCustomMessageToFaction(attack.attacker.getName(), "§8[§" + attack.attacker.getPrimaryColor() + "Labor§8]§b Ihr habt das Labor ausgeraubt!");
                                 factionManager.sendCustomMessageToFaction(attack.defender.getName(), "§8[§" + attack.defender.getPrimaryColor() + "Labor§8]§c Euer Labor wurde leer geräumt!");
+                                for (PlayerData playerData1 : factionManager.getFactionMemberInRange(attack.attacker.getName(), location, 30, true)) {
+                                    playerManager.addExp(playerData1.getPlayer(), Main.random(30, 60));
+                                }
                                 clearLaboratory(attack.attacker, attack.defender);
                                 attacks.remove(attack);
                             }
@@ -226,7 +228,7 @@ public class Laboratory implements CommandExecutor, Listener {
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", Arrays.asList("§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana", "", "§8 ➥ §7Dafür benötigst du einen Sprengsatz."))) {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", Arrays.asList("§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana", "", "§8 ➥ §7Dafür benötigst du ein Schweißgerät."))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                     }
@@ -313,24 +315,23 @@ public class Laboratory implements CommandExecutor, Listener {
     }
 
     public void pushTick() {
-        for (PlayerLaboratory laboratory : playerLaboratories) {
+        Iterator<PlayerLaboratory> iterator = playerLaboratories.iterator();
+        while (iterator.hasNext()) {
+            PlayerLaboratory laboratory = iterator.next();
             if (laboratory == null) continue;
             PlayerData playerData = playerManager.getPlayerData(laboratory.getOwner());
             if (playerData == null) continue;
             if (playerData.getFaction() == null) continue;
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-            if (factionData == null) {
-                continue;
-            }
+            if (factionData == null) continue;
             for (Plant plant : Main.getInstance().gamePlay.plant.getPlants()) {
-                if (!plant.getOwner().equalsIgnoreCase(factionData.getName())) {
-                    continue;
-                }
+                if (!plant.getOwner().equalsIgnoreCase(factionData.getName())) continue;
                 if (laboratory.getWeedAmount() >= (2 * plant.getMultiplier())) {
                     laboratory.setWeedAmount(laboratory.getWeedAmount() - (int) (2 * plant.getMultiplier()));
                     laboratory.setJointAmount(laboratory.getJointAmount() + (1 * plant.getMultiplier()));
                 } else {
                     laboratory.stop();
+                    iterator.remove();
                     break;
                 }
             }
