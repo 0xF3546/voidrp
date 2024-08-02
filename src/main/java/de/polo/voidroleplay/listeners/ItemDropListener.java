@@ -5,12 +5,17 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Weapons;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDropListener implements Listener {
     private final Weapons weapons;
@@ -23,11 +28,19 @@ public class ItemDropListener implements Listener {
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         ItemStack droppedItem = event.getItemDrop().getItemStack();
+        List<Material> blockedItems = new ArrayList<>();
+        blockedItems.add(RoleplayItem.CUFF.getMaterial());
+        blockedItems.add(RoleplayItem.SWAT_SHIELD.getMaterial());
+        blockedItems.add(RoleplayItem.TAZER.getMaterial());
         if (event.getPlayer().getEquipment().getItem(EquipmentSlot.OFF_HAND).equals(droppedItem)) {
             event.setCancelled(true);
             return;
         }
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            event.setCancelled(true);
+            return;
+        }
+        if (blockedItems.contains(event.getItemDrop().getItemStack().getType())) {
             event.setCancelled(true);
             return;
         }
