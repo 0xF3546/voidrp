@@ -49,7 +49,7 @@ public class ArrestCommand implements CommandExecutor {
                                         playerManager.addExp(player, Main.random(15, 44));
                                         playerManager.setPlayerMove(targetplayer, true);
                                         targetPlayerData.setCuffed(false);
-                                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.KEVLAR.getDisplayName()));
+                                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
                                         Main.getInstance().seasonpass.didQuest(targetplayer, 8);
                                     } else {
                                         player.sendMessage(Main.error + targetplayer.getName() + " hat keine offene Akte mit Hafteinheiten.");
