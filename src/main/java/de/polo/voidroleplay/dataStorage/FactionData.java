@@ -2,6 +2,8 @@ package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
@@ -31,6 +33,11 @@ public class FactionData {
     private boolean isBadFrak;
     private int subGroupId;
     private int cooperationPartner;
+
+    @Getter
+    @Setter
+    private int allianceFaction;
+
     public Storage storage = new Storage(this);
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
@@ -222,9 +229,10 @@ public class FactionData {
     @SneakyThrows
     public void save() {
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET subGroup = ? WHERE id = ?");
+        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET subGroup = ?, alliance = ? WHERE id = ?");
         statement.setInt(1, subGroupId);
-        statement.setInt(2, id);
+        statement.setInt(2, allianceFaction);
+        statement.setInt(3, id);
         statement.execute();
         statement.close();
         connection.close();

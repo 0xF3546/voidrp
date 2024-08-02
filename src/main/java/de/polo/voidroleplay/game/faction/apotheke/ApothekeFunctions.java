@@ -144,6 +144,9 @@ public class ApothekeFunctions implements Listener {
             if (currentTime >= 10) {
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Die Angreifer haben es geschafft eure Apotheke einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Ihr habt es geschafft die Apotheke einzuschüchtern.");
+                for (PlayerData playerData1 : factionManager.getFactionMemberInRange(apotheke.getAttackerFaction(), location, 30, true)) {
+                    playerManager.addExp(playerData1.getPlayer(), Main.random(5, 10));
+                }
                 if (apotheke.getAttacker().getName().equalsIgnoreCase("Polizei") || apotheke.getAttacker().getName().equalsIgnoreCase("FBI")) {
                  apotheke.setOwner("staat");
                 } else {
