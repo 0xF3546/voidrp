@@ -72,9 +72,9 @@ public class DeathListener implements Listener {
                 if ((ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null && Objects.equals(factionManager.faction(Objects.requireNonNull(player.getKiller())), "ICA")) || playerData.isHitmanDead()) {
                     ContractData contractData = ServerManager.contractDataMap.get(player.getUniqueId().toString());
                     for (Player players : Bukkit.getOnlinePlayers()) {
-                        PlayerData playersData = playerManager.getPlayerData(player);
+                        PlayerData playersData = playerManager.getPlayerData(players);
                         if (playersData.getFaction() == null) continue;
-                        if (playersData.getFaction().equals("ICA")) {
+                        if (playersData.getFaction().equalsIgnoreCase("ICA")) {
                             players.sendMessage("§8[§cKopfgeld§8]§e " + factionManager.getPlayerFactionRankName(player.getKiller()) + " " + player.getKiller().getName() + " §7hat sich das Kopfgeld von §e" + player.getName() + " §7geholt. §8(§a+" + contractData.getAmount() + "$§8)");
                         }
                     }
