@@ -367,21 +367,6 @@ public class PlayerManager implements Listener, ServerTiming {
             statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + ", `lastLogin` = NOW() WHERE `uuid` = '" + uuid + "'");
             if (playerData.isJailed()) {
                 statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
-            } else if (playerData.getJailParole() >= 0) {
-                playerData.setJailParole(playerData.getJailParole() - 1);
-                PreparedStatement preparedStatement;
-                if (playerData.getJailParole() == 0) {
-                    preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE Jail_Parole SET minutes_remaining = ? WHERE uuid = ?");
-                    preparedStatement.setInt(1, playerData.getJailParole());
-                    preparedStatement.setString(2, player.getUniqueId().toString());
-                    preparedStatement.executeUpdate();
-                } else {
-                    preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM Jail_Parole WHERE uuid = ?");
-                    preparedStatement.setString(1, player.getUniqueId().toString());
-                    preparedStatement.execute();
-                    player.sendMessage("§8[§cGefängnis§8]§7 Deine Bewährung ist abgelaufen.");
-                }
-                preparedStatement.close();
             }
 
             for (Weapon weapon : Main.getInstance().weapons.getWeapons().values()) {
@@ -607,6 +592,7 @@ public class PlayerManager implements Listener, ServerTiming {
 
     public void startTimeTracker() {
         new BukkitRunnable() {
+            @SneakyThrows
             @Override
             public void run() {
                 int currentMinute = Main.getInstance().utils.getCurrentMinute();
@@ -617,7 +603,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = getPlayerData(player.getUniqueId());
                     playerDataMap.put(player.getUniqueId(), playerData);
-                    if (playerData.getBoostDuration() == null) {
+                    if (playerData.getBoostDuration() != null) {
                         if (playerData.getBoostDuration().isAfter(Utils.getTime())) {
                             clearExpBoost(player);
                         }
@@ -630,6 +616,22 @@ public class PlayerManager implements Listener, ServerTiming {
                             Main.getInstance().utils.setAFK(player, true);
                         }
                     }
+                    if (playerData.getJailParole() >= 0) {
+                        playerData.setJailParole(playerData.getJailParole() - 1);
+                        PreparedStatement preparedStatement;
+                        if (playerData.getJailParole() == 0) {
+                            preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE Jail_Parole SET minutes_remaining = ? WHERE uuid = ?");
+                            preparedStatement.setInt(1, playerData.getJailParole());
+                            preparedStatement.setString(2, player.getUniqueId().toString());
+                            preparedStatement.executeUpdate();
+                        } else {
+                            preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM Jail_Parole WHERE uuid = ?");
+                            preparedStatement.setString(1, player.getUniqueId().toString());
+                            preparedStatement.execute();
+                            player.sendMessage("§8[§cGefängnis§8]§7 Deine Bewährung ist abgelaufen.");
+                        }
+                        preparedStatement.close();
+                        }
                 }
 
                 if (currentMinute % 5 == 0) {
@@ -669,6 +671,7 @@ public class PlayerManager implements Listener, ServerTiming {
                             if (playerData.getFaction() == null) continue;
                             if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                 Player player = Bukkit.getPlayer(playerData.getUuid());
+                                if (player == null) continue;
                                 sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus);
                                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                             }
@@ -788,13 +791,23 @@ public class PlayerManager implements Listener, ServerTiming {
 
     public void addEXPBoost(Player player, int hours) throws SQLException {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
+
         if (playerData.getBoostDuration() == null) {
             playerData.setBoostDuration(Utils.getTime().plusHours(hours));
         } else {
             playerData.setBoostDuration(playerData.getBoostDuration().plusHours(hours));
         }
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.executeUpdate("UPDATE `players` SET `boostDuration` = " + playerData.getBoostDuration() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+
+        // Format the boostDuration as a string
+        String formattedBoostDuration = playerData.getBoostDuration().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        // Use PreparedStatement to prevent SQL injection and handle SQL syntax properly
+        String query = "UPDATE `players` SET `boostDuration` = ? WHERE `uuid` = ?";
+        try (PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement(query)) {
+            preparedStatement.setString(1, formattedBoostDuration);
+            preparedStatement.setString(2, player.getUniqueId().toString());
+            preparedStatement.executeUpdate();
+        }
     }
 
     @SneakyThrows
@@ -806,10 +819,10 @@ public class PlayerManager implements Listener, ServerTiming {
                     if (playerData.getRankDuration() != null) {
                         playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
                     } else {
-                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                        playerData.setRankDuration(Utils.getTime().plusDays(duration));
                     }
                 } else {
-                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    playerData.setRankDuration(Utils.getTime().plusDays(duration));
                     player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf VIP gestiegen bist, ist der alte Rang verloren gegangen.");
                 }
                 playerData.setPermlevel(30);
@@ -820,10 +833,10 @@ public class PlayerManager implements Listener, ServerTiming {
                     if (playerData.getRankDuration() != null) {
                         playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
                     } else {
-                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                        playerData.setRankDuration(Utils.getTime().plusDays(duration));
                     }
                 } else {
-                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    playerData.setRankDuration(Utils.getTime().plusDays(duration));
                     player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf Premium gestiegen bist, ist der alte Rang verloren gegangen.");
                 }
                 playerData.setRang("Premium");
@@ -834,10 +847,10 @@ public class PlayerManager implements Listener, ServerTiming {
                     if (playerData.getRankDuration() != null) {
                         playerData.setRankDuration(playerData.getRankDuration().plusDays(duration));
                     } else {
-                        playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                        playerData.setRankDuration(Utils.getTime().plusDays(duration));
                     }
                 } else {
-                    playerData.setRankDuration(LocalDateTime.now().plusDays(duration));
+                    playerData.setRankDuration(Utils.getTime().plusDays(duration));
                     player.sendMessage("§b   Info§8:§f Da du vom Rang " + playerData.getRang() + " auf Gold gestiegen bist, ist der alte Rang verloren gegangen.");
                 }
                 playerData.setRang("Gold");
@@ -849,9 +862,6 @@ public class PlayerManager implements Listener, ServerTiming {
         }
         Statement statement = Main.getInstance().mySQL.getStatement();
         System.out.println(playerData.getRankDuration());
-        LocalDateTime localDateTime = playerData.getRankDuration();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = localDateTime.format(formatter);
         statement.executeUpdate("UPDATE `players` SET `rankDuration` = '" + playerData.getRankDuration() + "', `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
         TeamSpeak.reloadPlayer(player.getUniqueId());
     }

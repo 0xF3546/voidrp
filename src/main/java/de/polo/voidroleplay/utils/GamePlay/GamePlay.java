@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
+import de.polo.voidroleplay.game.faction.alliance.Alliance;
 import de.polo.voidroleplay.game.faction.apotheke.ApothekeFunctions;
 import de.polo.voidroleplay.game.faction.houseban.Houseban;
 import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
@@ -17,10 +18,7 @@ import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,6 +51,7 @@ public class GamePlay implements Listener {
     public LocalDateTime lastDrop = Utils.getTime();
     public Houseban houseban;
     public DisplayNameManager displayNameManager;
+    public final Alliance alliance;
 
     @SneakyThrows
     public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager) {
@@ -67,6 +66,7 @@ public class GamePlay implements Listener {
         factionUpgradeGUI = new FactionUpgradeGUI(factionManager, playerManager, utils);
         houseban = new Houseban(playerManager, factionManager);
         displayNameManager = new DisplayNameManager(playerManager, factionManager);
+        alliance = new Alliance(playerManager, factionManager, utils);
         Statement statement = mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM dealer");
         while (result.next()) {
@@ -186,7 +186,14 @@ public class GamePlay implements Listener {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.RED_DYE, 1, 0, "§4Verbrennen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-
+                    if (playerData.getFactionGrade() < 6) {
+                        player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 6!");
+                        return;
+                    }
+                    playerData.setVariable("chatblock", "evidence::burn");
+                    playerData.setVariable("evidence::roleplayitem", item);
+                    player.sendMessage("§8[§3Asservatenkammer§8]§7 Gib nun an wie viel Gram du verbrennen möchtest.");
+                    player.closeInventory();
                 }
             });
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§3Einlagern")) {
@@ -365,6 +372,32 @@ public class GamePlay implements Listener {
                 event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
             }
         }
+        if (event.getSubmitTo().equalsIgnoreCase("evidence::burn")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                if (amount < 1) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss größer als 1 sein.");
+                    event.end();
+                    return;
+                }
+                RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
+                if (ItemManager.getCustomItemCount(event.getPlayer(), item) < amount) {
+                    event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
+                    return;
+                }
+                factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 verbrannt.", "FBI", "Polizei");
+                StaatUtil.Asservatemkammer.removeItem(item, amount);
+                StaatUtil.Asservatemkammer.save();
+                playerManager.addExp(event.getPlayer(), amount);
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+            }
+        }
         if (event.getSubmitTo().equalsIgnoreCase("evidence::in")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();
@@ -445,6 +478,14 @@ public class GamePlay implements Listener {
     @EventHandler
     public void everyMinute(MinuteTickEvent event) {
         LocalDateTime currentDateTime = Utils.getTime();
+        int hour = currentDateTime.getHour();
+        int minute = currentDateTime.getMinute();
+
+        long minecraftTime = ((hour - 6 + 24) % 24) * 1000 + (long) (minute * 16.6667);
+
+        for (World world : Bukkit.getWorlds()) {
+            world.setTime((long) minecraftTime);
+        }
 
         long minutesBetween = Duration.between(currentDateTime, lastDrop).toMinutes();
         if (minutesBetween <= -90) {

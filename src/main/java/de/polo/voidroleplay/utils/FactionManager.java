@@ -68,7 +68,7 @@ public class FactionManager {
             factionData.setJointsMade(locs.getInt("jointsMade"));
             factionData.setLaboratory(locs.getInt("laboratory"));
             factionData.setBadFrak(locs.getBoolean("isBadFrak"));
-            factionData.setCooperationPartner(locs.getInt("cooperationPartner"));
+            factionData.setAllianceFaction(locs.getInt("alliance"));
             factionData.storage.setJoint(locs.getInt("joint"));
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));
@@ -339,11 +339,21 @@ public class FactionManager {
     }
 
     public boolean isInBündnis(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) return false;
+        if (playerManager.isInStaatsFrak(player)) return true;
+        if (Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction()) != null) return true;
         return false;
     }
 
     public boolean isInBündnisWith(Player player, String faction) {
-        return false;
+        PlayerData playerData = playerManager.getPlayerData(player);
+        FactionData factionData = Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction());
+        if (factionData == null) return false;
+        FactionData val = getFactionData(faction);
+        System.out.println("VAL: " + val.getName());
+        System.out.println("FACTIONDATA: " + factionData.getName());
+        return val.getId() == factionData.getAllianceFaction() || val.getId() == factionData.getId();
     }
 
     public int getMemberCount(String faction) {

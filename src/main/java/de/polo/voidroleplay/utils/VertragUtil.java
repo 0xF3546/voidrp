@@ -188,6 +188,9 @@ public class VertragUtil {
                 case "streetwar":
                     Main.getInstance().streetwar.acceptStreetwar(player, curr.toString());
                     break;
+                case "alliance":
+                    Main.getInstance().gamePlay.alliance.accept(player, curr.toString());
+                    break;
             }
             deleteVertrag(player);
         } else {
@@ -245,6 +248,9 @@ public class VertragUtil {
                     }
                 case "streetwar":
                     Main.getInstance().streetwar.denyStreetwar(player, curr);
+                    break;
+                case "alliance":
+                    Main.getInstance().gamePlay.alliance.deny(player, curr);
                     break;
             }
             deleteVertrag(player);
