@@ -60,11 +60,11 @@ public class ChatListener implements Listener {
                     if (msg.charAt(msg.length() - 1) == '?') {
                         type = "fragt";
                     }
-                    if (msg.length() >= 4) {
+                    /*if (msg.length() >= 4) {
                         String firstChar = String.valueOf(msg.charAt(0)).toUpperCase();
                         String restOfString = msg.substring(1).toLowerCase();
                         msg = firstChar + restOfString;
-                    }
+                    }*/
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         if (player.getLocation().distance(players.getLocation()) <= 8) {
                             players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + player.getName() + " " + type + ":§f " + msg);
