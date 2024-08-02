@@ -154,6 +154,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo() == null) return;
         if (!event.getSubmitTo().equalsIgnoreCase("subgroup::name")) return;
         if (event.isCancel()) {
             event.sendCancelMessage();
