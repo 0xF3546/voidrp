@@ -108,11 +108,12 @@ public class DeathUtils {
         playerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
-            Main.getInstance().weapons.weaponUsages.put(player, Utils.getTime().plusMinutes(3));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 *6, 0, true, false));
+            return;
         }
+        Main.getInstance().weapons.weaponUsages.put(player, Utils.getTime().plusMinutes(3));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 *6, 0, true, false));
     }
 
     public void despawnPlayer(Player player) {
