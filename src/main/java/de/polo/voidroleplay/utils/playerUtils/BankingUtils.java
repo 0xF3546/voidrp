@@ -342,6 +342,7 @@ public class BankingUtils implements Listener {
     public void onSubmit(SubmitChatEvent event) throws SQLException {
         System.out.println("submit event trigger");
         Player player = event.getPlayer();
+        if (event.getSubmitTo() == null) return;
         if (event.getSubmitTo().equals("atm_einzahlen")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();
