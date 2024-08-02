@@ -46,7 +46,7 @@ public class JoinListener implements Listener {
             Utils.Tablist.setTablist(player, null);
             playerData.setUuid(player.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
-                player.sendMessage("§8 ➥ §cEs sind " + SupportManager.playerTickets.size() + " Tickets offen.");
+                player.sendMessage("§8 ➥ §cEs sind " + Main.getInstance().supportManager.getTickets().size() + " Tickets offen.");
                 int teamCount = 0;
                 int deathCount = 0;
                 for (Player player1 : Bukkit.getOnlinePlayers()) {
