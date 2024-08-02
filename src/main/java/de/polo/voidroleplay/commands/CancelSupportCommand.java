@@ -17,7 +17,7 @@ public class CancelSupportCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (supportManager.ticketCreated(player)) {
-            if (!supportManager.isInConnection(player)) {
+            if (supportManager.isInConnection(player)) {
                 supportManager.deleteTicket(player);
                 player.sendMessage(Main.support_prefix + "Du hast dein Ticket §cgelöscht§7.");
             } else {
