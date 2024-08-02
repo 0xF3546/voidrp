@@ -24,8 +24,13 @@ public class FishingListener implements Listener {
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
         event.setExpToDrop(0);
-
         if (event.getCaught() != null && event.getCaught() instanceof Item) {
+            if (((Item) event.getCaught()).getItemStack().getType().equals(Material.PLAYER_HEAD)) {
+                event.setCancelled(true);
+            }
+        }
+
+        /*if (event.getCaught() != null && event.getCaught() instanceof Item) {
             event.setCancelled(true);
             Item caughtItem = (Item) event.getCaught();
             double randomNumber = Math.random() * 100;
@@ -53,7 +58,7 @@ public class FishingListener implements Listener {
 
             Main.getInstance().seasonpass.didQuest(player, 20);
             playerManager.addExp(player, EXPType.SKILL_FISHING, Main.random(3, 8));
-        }
+        }*/
 
     }
 
