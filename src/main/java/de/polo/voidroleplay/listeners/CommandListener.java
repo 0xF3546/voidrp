@@ -17,21 +17,61 @@ import java.util.List;
 public class CommandListener implements Listener {
     private final PlayerManager playerManager;
     private final Utils utils;
+    private final List<String> nonBlockedCommands;
+    private final List<String> blockedStarts;
+    private final List<String> blockedContains;
+
     public CommandListener(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
+        this.nonBlockedCommands = Arrays.asList("support", "report", "help", "vote", "jailtime", "ad", "aduty");
+        this.blockedStarts = Arrays.asList("/to", "//to", "minecraft:msg", "minecraft:advancement", "minecraft:attribute",
+                "minecraft:ban", "minecraft:ban-ip", "minecraft:banlist", "minecraft:bossbar",
+                "minecraft:clear", "minecraft:clone", "minecraft:data", "minecraft:datapack",
+                "minecraft:debug", "minecraft:defaultgamemode", "minecraft:deop", "minecraft:difficulty",
+                "minecraft:effect", "minecraft:enchant", "minecraft:execute", "minecraft:experience",
+                "minecraft:fill", "minecraft:forceload", "minecraft:function", "minecraft:gamemode",
+                "minecraft:give", "minecraft:help", "minecraft:kick", "minecraft:kill", "minecraft:list",
+                "minecraft:loot", "minecraft:locate", "minecraft:locatebiome", "minecraft:message",
+                "minecraft:me", "minecraft:op", "minecraft:pardon", "minecraft:pardon-ip",
+                "minecraft:particle", "minecraft:playsound", "minecraft:recipe", "minecraft:reload",
+                "minecraft:replaceitem", "minecraft:say", "minecraft:schedule", "minecraft:scoreboard",
+                "minecraft:seed", "minecraft:setblock", "minecraft:setidletimeout", "minecraft:setworldspawn",
+                "minecraft:spawnpoint", "minecraft:spectate", "minecraft:spreadplayers", "minecraft:stop",
+                "minecraft:stopsound", "minecraft:summon", "minecraft:tag", "minecraft:team",
+                "minecraft:teammsg", "minecraft:tell", "minecraft:tellraw", "minecraft:teleport",
+                "minecraft:time", "minecraft:tp", "minecraft:trigger", "minecraft:weather",
+                "minecraft:whitelist", "minecraft:worldborder", "minecraft:w", "minecraft:xp", "minecraft:title",
+                "minecraft:tm");
+        this.blockedContains = Arrays.asList("while", "targetoffset", "for(", "^(.", "*.", "@a", "@e", "@p", "@s", "@r");
+
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         String msg = event.getMessage();
         String[] args = msg.split(" ");
         Player player = event.getPlayer();
-        List<String> nonBlockedCommands = Arrays.asList("support", "report", "help", "vote", "jailtime", "ad", "aduty");
         String command = args[0].substring(1);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (command.equalsIgnoreCase("minecraft:me") || command .equalsIgnoreCase("say") || command.equalsIgnoreCase("tell") || command.equalsIgnoreCase("minecraft:tell") || command.equalsIgnoreCase("minecraft:say") || command.equalsIgnoreCase("minecraft:msg") || command.equalsIgnoreCase("minecraft:teammsg")) {
-            event.setCancelled(true);
+
+        // Check if the command starts with any blocked start
+        for (String blockedStart : blockedStarts) {
+            if (command.startsWith(blockedStart)) {
+                event.setCancelled(true);
+                player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 ist nicht erlaubt.");
+                return;
+            }
+        }
+
+        // Check if the command contains any blocked substring
+        for (String blockedContain : blockedContains) {
+            if (msg.contains(blockedContain)) {
+                event.setCancelled(true);
+                player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 ist nicht erlaubt.");
+                return;
+            }
         }
 
         playerData.setIntVariable("afk", 0);
