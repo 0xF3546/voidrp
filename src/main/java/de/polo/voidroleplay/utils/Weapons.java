@@ -199,7 +199,9 @@ public class Weapons implements Listener {
             return;
         }
         if (weaponUsages.get(player) != null) {
-            if (weaponUsages.get(player).isAfter(Utils.getTime())) {
+            System.out.println(weaponUsages.get(player));
+            System.out.println(Utils.getTime());
+            if (Utils.getTime().isAfter(weaponUsages.get(player))) {
                 weaponUsages.remove(player);
             } else {
                 utils.sendActionBar(player, "§cDu hast keine Kraft um die Waffe zu benutzen!");

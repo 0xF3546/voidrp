@@ -60,7 +60,7 @@ public class RespawnCommand implements CommandExecutor {
         } else {
             locationManager.useLocation(targetplayer, "Stadthalle");
         }
-        utils.deathUtil.revivePlayer(targetplayer);
+        utils.deathUtil.revivePlayer(targetplayer, false);
         return false;
     }
 }

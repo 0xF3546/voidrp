@@ -71,7 +71,7 @@ public class DeathUtils {
     public void killPlayer(Player player) {
         player.setHealth(0);
     }
-    public void revivePlayer(Player player) {
+    public void revivePlayer(Player player, boolean effects) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setCanInteract(false);
         playerData.setDead(false);
@@ -110,10 +110,12 @@ public class DeathUtils {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
             return;
         }
-        Main.getInstance().weapons.weaponUsages.put(player, Utils.getTime().plusMinutes(3));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 *6, 0, true, false));
+        if (effects) {
+            Main.getInstance().weapons.weaponUsages.put(player, Utils.getTime().plusMinutes(3));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 *6, 0, true, false));
+        }
     }
 
     public void despawnPlayer(Player player) {

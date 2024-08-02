@@ -213,7 +213,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) return;
         playerData.removeBossBar("gangwar");
-        Main.getInstance().utils.deathUtil.revivePlayer(player);
+        Main.getInstance().utils.deathUtil.revivePlayer(player, false);
         if (playerData.getVariable("gangwar") != null) {
             locationManager.useLocation(player, playerData.getFaction());
             playerData.setVariable("gangwar", null);
