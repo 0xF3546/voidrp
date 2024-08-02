@@ -15,10 +15,7 @@ import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -37,6 +34,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class PlayerSwapHandItemsListener implements Listener {
@@ -66,7 +64,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         Player player = event.getPlayer();
         event.setCancelled(true);
         Block block = getTargetBlock(player);
-        if (!player.isSneaking()) {
+        if (!player.isSneaking() || player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
         for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
@@ -214,6 +212,14 @@ public class PlayerSwapHandItemsListener implements Listener {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
+                if (targetplayerData.getVariable("robCd") != null) {
+                    LocalDateTime robCd = targetplayerData.getVariable("robCd");
+                    if (!robCd.isAfter(Utils.getTime())) {
+                        player.sendMessage(Prefix.ERROR + "Der Spieler wurde vor kurzem erst ausgeraubt");
+                        return;
+                    }
+                    playerData.setVariable("robCd", null);
+                }
                 if (targetplayerData.getBargeld() < 1) {
                     player.sendMessage(Main.error + targetplayer.getName() + " hat kein Bargeld dabei.");
                     return;
@@ -229,6 +235,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
+                targetplayerData.setVariable("robCd", Utils.getTime().plusMinutes(5));
                 ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " klaut das Bargeld von " + targetplayer.getName() + ".");
 
             }
@@ -551,7 +558,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 break;
             case "gameboost_3":
                 if (playerData.getCoins() < 2000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Coins (4.000).");
+                    player.sendMessage(Main.error + "Du hast nicht genug Coins (2.000).");
                     player.closeInventory();
                     return;
                 }
