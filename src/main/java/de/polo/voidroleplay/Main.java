@@ -457,6 +457,7 @@ public final class Main extends JavaPlugin {
         public SegenCommand segenCommand;
         public KirchensteuerCommand kirchensteuerCommand;
         public TaufeCommand taufeCommand;
+        public WüfelnCommand wüfelnCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -539,7 +540,7 @@ public final class Main extends JavaPlugin {
             ortenCommand = new OrtenCommand(playerManager, utils);
             youtubeCommand = new YoutubeCommand();
             discordCommand = new DiscordCommand();
-            departmentChatCommand = new DepartmentChatCommand(playerManager);
+            departmentChatCommand = new DepartmentChatCommand(playerManager, factionManager);
             memberCommand = new MemberCommand(playerManager, factionManager);
             farmerCommand = new FarmerCommand(playerManager, locationManager, utils);
             muellmannCommand = new MuellmannCommand(playerManager, locationManager);
@@ -624,6 +625,7 @@ public final class Main extends JavaPlugin {
             segenCommand = new SegenCommand(playerManager, factionManager);
             kirchensteuerCommand = new KirchensteuerCommand(playerManager);
             taufeCommand = new TaufeCommand(playerManager, factionManager);
+            wüfelnCommand = new WüfelnCommand();
 
 
             main.registerCommands();

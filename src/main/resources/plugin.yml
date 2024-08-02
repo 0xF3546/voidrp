@@ -237,3 +237,6 @@ commands:
   kirchensteuer:
   segen:
   taufe:
+  würfeln:
+  alliance:
+    aliases: bündnis
