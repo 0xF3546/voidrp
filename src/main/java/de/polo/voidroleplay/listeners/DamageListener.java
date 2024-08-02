@@ -32,7 +32,7 @@ public class DamageListener implements Listener {
             if (player == null) return;
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             ItemStack chestplate = player.getInventory().getArmorContents()[2];
-            if (!playerData.isAduty()) {
+            if (!playerData.isAduty() || Main.getInstance().supportManager.getTicket(player) != null) {
                 player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     event.setCancelled(playerData.getVisum() <= 2 && playerData.getFaction() == null);
