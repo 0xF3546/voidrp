@@ -240,3 +240,5 @@ commands:
   würfeln:
   alliance:
     aliases: bündnis
+  openinv:
+  geworben:

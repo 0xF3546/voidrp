@@ -14,6 +14,8 @@ import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryApiRegister;
+import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
 import de.polo.voidroleplay.utils.playerUtils.Shop;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -85,6 +87,11 @@ public final class Main extends JavaPlugin {
     @Getter
     private MarkerAPI markerAPI;
 
+    @Getter
+    private ScoreboardAPI scoreboardAPI;
+
+    private ScoreboardManager scoreboardManager;
+
     public void onLoad() {
         instance = this;
     }
@@ -92,12 +99,14 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         mySQL = new MySQL();
+        scoreboardManager = new ScoreboardManager();
+        scoreboardAPI = new ScoreboardAPI(scoreboardManager);
         companyManager = new CompanyManager(mySQL);
         supportManager = new SupportManager(mySQL);
         playerManager = new PlayerManager(mySQL);
         cooldownManager = new CooldownManager();
         locationManager = new LocationManager(mySQL);
-        adminManager = new AdminManager(playerManager);
+        adminManager = new AdminManager(playerManager, scoreboardAPI);
         factionManager = new FactionManager(playerManager);
         blockManager = new BlockManager(mySQL);
         housing = new Housing(playerManager, blockManager);
@@ -458,6 +467,8 @@ public final class Main extends JavaPlugin {
         public KirchensteuerCommand kirchensteuerCommand;
         public TaufeCommand taufeCommand;
         public WüfelnCommand wüfelnCommand;
+        public OpenInvCommand openInvCommand;
+        public GeworbenCommand geworbenCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -626,6 +637,8 @@ public final class Main extends JavaPlugin {
             kirchensteuerCommand = new KirchensteuerCommand(playerManager);
             taufeCommand = new TaufeCommand(playerManager, factionManager);
             wüfelnCommand = new WüfelnCommand();
+            openInvCommand = new OpenInvCommand(playerManager);
+            geworbenCommand = new GeworbenCommand();
 
 
             main.registerCommands();
