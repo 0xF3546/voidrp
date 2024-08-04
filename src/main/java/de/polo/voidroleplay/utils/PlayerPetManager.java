@@ -30,14 +30,14 @@ public class PlayerPetManager {
         this.playerData = playerData;
         this.player = player;
         load();
-        spawnPet(getActivePed());
+        if (getActivePed() != null) spawnPet(getActivePed());
     }
 
     @SneakyThrows
     private void load() {
         pets.clear();
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_peds WHERE uuid = ?");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_pets WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
@@ -119,6 +119,7 @@ public class PlayerPetManager {
 
     public void everySecond() {
         PlayerPed ped = getActivePed();
+        if (ped == null) return;
 
         Entity pet = ped.getEntity();
         if (pet.isValid() && player.isOnline()) {
