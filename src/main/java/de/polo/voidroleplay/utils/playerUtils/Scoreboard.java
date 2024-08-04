@@ -3,234 +3,147 @@ package de.polo.voidroleplay.utils.playerUtils;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.*;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Scoreboard extends ScoreboardBuilder {
+public class Scoreboard {
 
-    private boolean isScore = false;
-    private boolean isAdminScore = false;
-    private boolean isMineScore = false;
-    private boolean isLebensmittelLieferantScore = false;
-    private boolean isFarmerScore = false;
-    private boolean isCarScore = false;
-    private final String uuid;
+    private final ScoreboardAPI scoreboardAPI;
     private final Player player;
     private Vehicle vehicle;
 
-    public Scoreboard(Player p) {
-        super(p, "§6VoidRoleplay");
-        uuid = p.getUniqueId().toString();
-        player = p;
+    public Scoreboard(Player player, ScoreboardAPI scoreboardAPI) {
+        this.player = player;
+        this.scoreboardAPI = scoreboardAPI;
         run();
     }
 
-    @Override
-    public void createScoreboard() {
-
-    }
-
-    @Override
     public void createAdminScoreboard() {
-        Runtime r = Runtime.getRuntime();
-        setDisplayName(ChatColor.RED.toString() + ChatColor.BOLD + "  Administration  ");
-        setScore("§6Tickets offen§8:", 5);
-        setScore("§8 ➥ §e" + Main.getInstance().supportManager.getTickets().size(), 4);
-        setScore("§6Auslastung§8:", 3);
-        setScore("§8 ➥ §e" + (r.totalMemory() - r.freeMemory()) / 1048576, 2);
-        setScore("§6Spieler Online§8:", 1);
-        setScore("§8 ➥ §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers(), 0);
-        isAdminScore = true;
-        isScore = true;
+        scoreboardAPI.createScoreboard(player, "admin", "§cAdministration");
+        updateAdminScoreboard();
     }
+
     public void createMineScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §7§lMine §8«");
-        setScore("§bDiamanterz§8:", 11);
-        setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.DIAMOND_ORE), 10);
-        setScore("§aSmaragderz§8:", 9);
-        setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.EMERALD_ORE), 8);
-        setScore("§6Golderz§8:", 7);
-        setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.GOLD_ORE), 6);
-        setScore("§9Lapislazulierz§8:", 5);
-        setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.LAPIS_ORE), 4);
-        setScore("§cRedstoneerz§8:", 3);
-        setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.REDSTONE_ORE), 2);
-        setScore("§7Eisenerz§8:", 1);
-        setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.IRON_ORE), 0);
-        isScore = true;
-        isMineScore = true;
+        scoreboardAPI.createScoreboard(player, "mine", "§8» §7§lMine §8«");
+        updateMineScoreboard();
     }
 
     public void createFarmerScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §eFarmer §8«");
-        setScore("§eHeuballen abgebaut§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
-        setScore("§eHeuballen abzubauen§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen_remaining"), 0);
-        isScore = true;
-        isFarmerScore = true;
-    }
-    public void updateFarmerScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §eFarmer §8«");
-        setScore("§eHeuballen abgebaut§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen"), 2);
-        setScore("§eHeuballen abzubauen§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("heuballen_remaining"), 0);
-    }
-    public void createPostboteScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §ePostbote §8«");
-        setScore("§ePost verbleibend§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("post"), 0);
+        scoreboardAPI.createScoreboard(player, "farmer", "§8» §eFarmer §8«");
+        updateFarmerScoreboard();
     }
 
-    public void updatePostboteScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §ePostbote §8«");
-        setScore("§ePost verbleibend§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("post"), 0);
+    public void createPostboteScoreboard() {
+        scoreboardAPI.createScoreboard(player, "postbote", "§8» §ePostbote §8«");
+        updatePostboteScoreboard();
     }
 
     public void createMuellmannScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §9Müllmann §8«");
-        setScore("§3Müll gesammelt§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("muellkg") + "kg", 2);
-        setScore("§3Häuser verbleibend§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("muell"), 0);
-    }
-
-    public void updateMuellmannScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §9Müllmann §8«");
-        setScore("§3Müll gesammelt§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("muellkg") + "kg", 2);
-        setScore("§3Häuser verbleibend§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("muell"), 0);
+        scoreboardAPI.createScoreboard(player, "muellmann", "§8» §9Müllmann §8«");
+        updateMuellmannScoreboard();
     }
 
     public void createLumberjackScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §7Holzfäller §8«");
-        setScore("§7Holz gesammelt§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("holzkg") + "kg", 2);
-        setScore("§7Bäume verbleibend§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("holz"), 0);
+        scoreboardAPI.createScoreboard(player, "lumberjack", "§8» §7Holzfäller §8«");
+        updateLumberjackScoreboard();
     }
 
     public void createWinzerScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §5Winzer §8«");
-        setScore("§dWeintrauben gesammelt§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("winzer_harvested") + " Stück", 2);
-        setScore("§dVerbleibende Weinreben§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("winzer"), 0);
-    }
-
-    public void updateLumberjackScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §7Holzfäller §8«");
-        setScore("§7Holz gesammelt§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("holzkg") + "kg", 2);
-        setScore("§7Bäume verbleibend§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("holz"), 0);
+        scoreboardAPI.createScoreboard(player, "winzer", "§8» §5Winzer §8«");
+        updateWinzerScoreboard();
     }
 
     public void createLebensmittelLieferantenScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("8» §6Lieferant §8«");
-        setScore("§6Snacks§8:", 3);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("snacks"), 2);
-        setScore("§6Getränke§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("drinks"), 0);
-        isScore = true;
-        isLebensmittelLieferantScore = true;
+        scoreboardAPI.createScoreboard(player, "lebensmittel", "§8» §6Lieferant §8«");
+        updateLebensmittelLieferantenScoreboard();
     }
 
     public void createWeizentransportScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §eLieferant §8«");
-        setScore("§eWeizen§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("weizen") + "kg", 0);
-        isScore = true;
-    }
-    public void updateWeizentransportScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        setDisplayName("§8» §eLieferant §8«");
-        setScore("§eWeizen§8:", 1);
-        setScore("§8 ➥ §7" + playerData.getIntVariable("weizen") + "kg", 0);
+        scoreboardAPI.createScoreboard(player, "weizen", "§8» §eLieferant §8«");
+        updateWeizentransportScoreboard();
     }
 
     public void createCarScoreboard(Vehicle minecart) {
-        isCarScore = true;
-        isScore = true;
-        String type = minecart.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-        setDisplayName("§6" + type);
-        setScore("§eKM/H§8:", 5);
-        setScore("§8 ➥ §7Lädt...", 4);
-        setScore("§eKM§8:", 3);
-        setScore("§8 ➥ §7Lädt...", 2);
-        setScore("§eTank§8:", 1);
-        setScore("§8 ➥ §7Lädt...", 0);
-        vehicle = minecart;
+        scoreboardAPI.createScoreboard(player, "vehicle", "§6" + minecart.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING));
+        updateCarScoreboard(minecart);
     }
 
-    public void killScoreboard() {
-        for (int i = 0; i < 15; i++) {
-            removeScore(i);
-        }
-        clearScoreboard();
-        Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).removeScoreboard(this);
+    public void removeScoreboard(String scoreboardName) {
+        scoreboardAPI.removeScoreboard(player, scoreboardName);
     }
 
-    @Override
-    public void update() {
-
+    private void updateAdminScoreboard() {
+        Runtime r = Runtime.getRuntime();
+        scoreboardAPI.updateScoreboardTitle(player, "admin", "§cAdministration");
+        scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
+        scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:",  (int)(r.totalMemory() - r.freeMemory()) / 1048576);
+        scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
     }
 
- private void run() {
+    private void updateMineScoreboard() {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        scoreboardAPI.updateScoreboardTitle(player, "mine", "§8» §7§lMine §8«");
+        scoreboardAPI.setScore(player, "mine", "§bDiamanterz§8:", ItemManager.getItem(player, Material.DIAMOND_ORE));
+        scoreboardAPI.setScore(player, "mine", "§aSmaragderz§8:", ItemManager.getItem(player, Material.EMERALD_ORE));
+        scoreboardAPI.setScore(player, "mine", "§6Golderz§8:", ItemManager.getItem(player, Material.GOLD_ORE));
+        scoreboardAPI.setScore(player, "mine", "§9Lapislazulierz§8:", ItemManager.getItem(player, Material.LAPIS_ORE));
+        scoreboardAPI.setScore(player, "mine", "§cRedstoneerz§8:", ItemManager.getItem(player, Material.REDSTONE_ORE));
+        scoreboardAPI.setScore(player, "mine", "§7Eisenerz§8:", ItemManager.getItem(player, Material.IRON_ORE));
+    }
+
+    private void updateFarmerScoreboard() {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        scoreboardAPI.updateScoreboardTitle(player, "farmer", "§8» §eFarmer §8«");
+        scoreboardAPI.setScore(player, "farmer", "§eHeuballen abgebaut§8:", playerData.getIntVariable("heuballen"));
+        scoreboardAPI.setScore(player, "farmer", "§eHeuballen abzubauen§8:", playerData.getIntVariable("heuballen_remaining"));
+    }
+
+    private void updatePostboteScoreboard() {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        scoreboardAPI.updateScoreboardTitle(player, "postbote", "§8» §ePostbote §8«");
+        scoreboardAPI.setScore(player, "postbote", "§ePost verbleibend§8:", playerData.getIntVariable("post"));
+    }
+
+    private void updateMuellmannScoreboard() {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        scoreboardAPI.updateScoreboardTitle(player, "muellmann", "§8» §9Müllmann §8«");
+        scoreboardAPI.setScore(player, "muellmann", "§3Müll gesammelt§8:", playerData.getIntVariable("muellkg"));
+        scoreboardAPI.setScore(player, "muellmann", "§3Häuser verbleibend§8:", playerData.getIntVariable("muell"));
+    }
+
+    private void updateLumberjackScoreboard() {
+        // Implementiere diese Methode je nach Bedarf
+    }
+
+    private void updateWinzerScoreboard() {
+        // Implementiere diese Methode je nach Bedarf
+    }
+
+    private void updateLebensmittelLieferantenScoreboard() {
+        // Implementiere diese Methode je nach Bedarf
+    }
+
+    private void updateWeizentransportScoreboard() {
+        // Implementiere diese Methode je nach Bedarf
+    }
+
+    private void updateCarScoreboard(Vehicle minecart) {
+        // Implementiere diese Methode je nach Bedarf
+    }
+
+    private void run() {
+        // Hier wird der Scoreboard-Updater gestartet
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-
-                if (!player.isOnline()) {
-                    cancel();
-                    return;
-                }
-
-                if (playerData.getScoreboard("admin") != null) {
-                    Runtime r = Runtime.getRuntime();
-                    setScore("§8 ➥ §e" + SupportManager.TicketCount, 4);
-                    setScore("§8 ➥ §e" + (r.totalMemory() - r.freeMemory()) / 1048576, 2);
-                    setScore("§8 ➥ §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers(), 0);
-                } else if (playerData.getScoreboard("mine") != null) {
-                    setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.IRON_ORE), 10);
-                    setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.EMERALD_ORE), 8);
-                    setScore("§8 ➥ §7" +ItemManager.getItem(player, Material.GOLD_ORE), 6);
-                    setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.LAPIS_ORE), 4);
-                    setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.REDSTONE_ORE), 2);
-                    setScore("§8 ➥ §7" + ItemManager.getItem(player, Material.IRON_ORE), 0);
-                } else if (playerData.getScoreboard("vehicle") != null) {
-                    int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
-                    float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
-                    double speedMetersPerSecond = player.getVehicle().getVelocity().length();
-                    double kmh = speedMetersPerSecond * 36;
-                    setScore("§8 ➥ §7" + (int) kmh * 2, 4);
-                    setScore("§8 ➥ §7" + km, 2);
-                    setScore("§8 ➥ §7" + fuel + "l", 0);
-                } else if (playerData.getScoreboard("winzer") != null) {
-                    createWinzerScoreboard();
-                } else {
-                    cancel();
-                }
+                // Beispiel, alle 60 Sekunden aktualisieren
+                updateAdminScoreboard();
             }
-        }.runTaskTimer(Main.getInstance(), 20, 30);
+        }.runTaskTimer(Main.plugin, 0, 1200); // Alle 60 Sekunden aktualisieren
     }
 }
