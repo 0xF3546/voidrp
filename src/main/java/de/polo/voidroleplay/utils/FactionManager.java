@@ -231,22 +231,11 @@ public class FactionManager {
 
     public void addFactionMoney(String faction, Integer amount, String reason) throws SQLException {
         FactionData factionData = factionDataMap.get(faction);
-        factionData.setBank(factionData.getBank() + amount);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('einzahlung', '" + faction + "', " + amount + ", '" + reason + "', true)");
-        statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
+        factionData.addBankMoney(amount, reason);
     }
     public boolean removeFactionMoney(String faction, Integer amount, String reason) throws SQLException {
-        boolean returnval = false;
         FactionData factionData = factionDataMap.get(faction);
-        if (factionData.getBank() >= amount) {
-            factionData.setBank(factionData.getBank() - amount);
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('auszahlung', '" + faction + "', " + amount + ", '" + reason + "', false)");
-            statement.execute("UPDATE `factions` SET `bank` = " + factionData.getBank() + " WHERE `name` = '" + faction + "'");
-            returnval = true;
-        }
-        return returnval;
+        return factionData.removeFactionMoney(amount, reason);
     }
     public void sendMessageToFaction(String faction, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -418,5 +407,25 @@ public class FactionManager {
             }
         }
         return players;
+    }
+
+    @SneakyThrows
+    public Collection<FactionPlayerData> getFactionMember(String faction) {
+        FactionData factionData = getFactionData(faction);
+        if (factionData == null) return null;
+
+        List<FactionPlayerData> factionPlayers = new ArrayList<>();
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM players WHERE faction = ?");
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            FactionPlayerData fpd = new FactionPlayerData();
+            fpd.setFaction(factionData.getName());
+            fpd.setFaction_grade(result.getInt("faction_grade"));
+            fpd.setId(result.getInt("id"));
+            fpd.setUuid(result.getString("uuid"));
+            factionPlayers.add(fpd);
+        }
+
+        return factionPlayers;
     }
 }

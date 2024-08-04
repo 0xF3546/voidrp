@@ -103,7 +103,7 @@ public class PostboteCommand implements CommandExecutor {
         playerData.setVariable("job", null);
         if (!silent) player.sendMessage("§8[§ePostbote§8]§7 Vielen Dank für die geleistete Arbeit.");
         SoundManager.successSound(player);
-        playerData.getScoreboard("postbote").killScoreboard();
+        //playerData.getScoreboard("postbote").killScoreboard();
         Main.getInstance().getCooldownManager().setCooldown(player, "postbote", 600);
         player.closeInventory();
     }
@@ -112,9 +112,9 @@ public class PostboteCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("post", Main.random(2, 5));
         playerData.setVariable("job", "Postbote");
-        Scoreboard scoreboard = new Scoreboard(player);
-        scoreboard.createPostboteScoreboard();
-        playerData.setScoreboard("postbote", scoreboard);
+        /*Scoreboard scoreboard = new Scoreboard(player);
+        scoreboard.createPostboteScoreboard();*/
+        //playerData.setScoreboard("postbote", scoreboard);
         player.sendMessage("§8[§ePostbote§8]§7 Bringe die Post zu verschiedenen Häusern.");
         player.sendMessage("§8 ➥ §7Nutze §8[§6Rechtsklick§8]§7 auf die Hausschilder.");
     }
@@ -127,7 +127,7 @@ public class PostboteCommand implements CommandExecutor {
             playerManager.addExp(player, Main.random(1, 3));
             playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
             Main.getInstance().seasonpass.didQuest(player, 3);
-            playerData.getScoreboard("postbote").updatePostboteScoreboard();
+            //playerData.getScoreboard("postbote").updatePostboteScoreboard();
             try {
                 playerManager.addBankMoney(player, payout, "Auszahlung Postbote");
             } catch (SQLException e) {
@@ -137,7 +137,7 @@ public class PostboteCommand implements CommandExecutor {
                 player.sendMessage("§8[§ePostbote§8]§7 Du hast alles abgegeben. Danke!");
                 playerData.setVariable("job", null);
                 quitJob(player, true);
-                playerData.getScoreboard("postbote").killScoreboard();
+                //playerData.getScoreboard("postbote").killScoreboard();
             }
             array.add(house);
             player.closeInventory();

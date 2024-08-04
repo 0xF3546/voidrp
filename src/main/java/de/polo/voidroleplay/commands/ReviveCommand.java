@@ -36,6 +36,13 @@ public class ReviveCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.getVariable("isReviving") == null) {
+            playerData.setVariable("isReviving", false);
+        }
+        boolean reviving = playerData.getVariable("isReviving");
+        if (reviving) {
+            return false;
+        }
         if (Objects.equals(playerData.getFaction(), "Medic")) {
             Collection<Entity> entities = player.getWorld().getNearbyEntities(player.getLocation(), 3, 3, 3);
             Item nearestSkull = null;
@@ -70,6 +77,10 @@ public class ReviveCommand implements CommandExecutor {
                 UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
                 Player targetplayer = Bukkit.getPlayer(uuid);
                 PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+                if (targetplayerData.isHitmanDead()) {
+                    return false;
+                }
+                playerData.setVariable("isReviving", true);
                 targetplayer.sendMessage(Main.prefix + "Du wirst von " + player.getName() + " wiederbelebt.");
                 player.sendMessage(Main.prefix + "Du fängst an " + targetplayer.getName() + " wiederzubeleben.");
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " fängt an " + targetplayer.getName() + " wiederzubeleben.");
@@ -82,6 +93,7 @@ public class ReviveCommand implements CommandExecutor {
                             targetplayer.teleport(player.getLocation());
                             playerManager.addExp(player, Main.random(2, 5));
                             targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
+                            playerData.setVariable("isReviving", false);
                             try {
                                 factionManager.addFactionMoney("Medic", ServerManager.getPayout("revive"), "Revive durch " + player.getName());
                                 playerManager.removeBankMoney(targetplayer, ServerManager.getPayout("revive"), "Medizinische Behandlung");

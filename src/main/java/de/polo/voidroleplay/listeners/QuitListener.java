@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
+import de.polo.voidroleplay.utils.enums.PlayerPed;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.*;
 import org.bukkit.ChatColor;
@@ -44,6 +45,9 @@ public class QuitListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
         adminManager.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
+        if (player.getGameMode().equals(GameMode.CREATIVE)) {
+            player.setGameMode(GameMode.SURVIVAL);
+        }
         serverManager.updateTablist(null);
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             playerData.setVariable("inventory::build", player.getInventory().getContents());
@@ -62,6 +66,10 @@ public class QuitListener implements Listener {
             player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.SLOW);
+        }
+        PlayerPed ped = playerData.getPlayerPetManager().getActivePed();
+        if (ped != null) {
+            playerData.getPlayerPetManager().removeEntity(ped);
         }
         try {
             Vehicles.deleteVehicleByUUID(player.getUniqueId().toString());

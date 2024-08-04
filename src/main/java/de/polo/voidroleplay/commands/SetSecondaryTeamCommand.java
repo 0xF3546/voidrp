@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,6 +38,7 @@ public class SetSecondaryTeamCommand implements CommandExecutor {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+                    TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
                 } else {
                     player.sendMessage(Main.error + args[0] + " ist nicht online.");
                 }

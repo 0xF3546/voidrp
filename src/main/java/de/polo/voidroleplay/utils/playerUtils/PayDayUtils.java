@@ -36,6 +36,9 @@ public class PayDayUtils {
             steuern = Math.round(playerManager.bank(player) * 0.0035);
         }
         int visumbonus = playerManager.visum(player) * 10;
+        if (playerData.getPermlevel() >= 20) {
+            visumbonus = visumbonus * 2;
+        }
         int frakpayday = 0;
         plus = plus + zinsen - steuern + visumbonus;
         player.sendMessage("");
@@ -61,18 +64,16 @@ public class PayDayUtils {
         for (House houseData : Housing.houseDataMap.values()) {
             if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
                 rent += houseData.getRenter().get(player.getUniqueId().toString());
-                if (rent >= plus) {
-                    if (rent > playerData.getBank()) {
-                        player.sendMessage("§8 ➥ §6Du konntest deine Miete für Haus " + houseData.getNumber() + " nicht begleichen.");
-                        continue;
-                    }
+                if (rent > playerData.getBank()) {
+                    player.sendMessage("§8 ➥ §6Du konntest deine Miete für Haus " + houseData.getNumber() + " nicht begleichen.");
+                    continue;
                 }
                 player.sendMessage("§8 ➥ §6Miete (Haus " + houseData.getNumber() + ")§8:§c -" + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
                 houseData.setMoney(houseData.getMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
                 houseData.setTotalMoney(houseData.getTotalMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
                 Statement statement = Main.getInstance().mySQL.getStatement();
                 statement.executeUpdate("UPDATE `housing` SET `money` = " + houseData.getMoney() + ", `totalMoney` = " + houseData.getTotalMoney() + " WHERE `number` = " + houseData.getNumber());
-
+                plus -= houseData.getRenter().get(player.getUniqueId().toString());
             }
             if (houseData.getOwner() != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
@@ -84,6 +85,7 @@ public class PayDayUtils {
                 }
             }
         }
+
         if (playerData.isChurch()) {
             player.sendMessage("§8 ➥ §6Kirchensteuer §8: §c-" + Main.getInstance().serverManager.getPayout("kirchensteuer") + "$");
             plus -= Main.getInstance().serverManager.getPayout("kirchensteuer");

@@ -3,7 +3,10 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
+import de.polo.voidroleplay.utils.GamePlay.DisplayNameManager;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
+import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,8 +26,11 @@ import java.util.List;
 public class AdminManager implements CommandExecutor, TabCompleter {
 
     private final PlayerManager playerManager;
-    public AdminManager(PlayerManager playerManager) {
+    private final ScoreboardAPI scoreboardAPI;
+
+    public AdminManager(PlayerManager playerManager, ScoreboardAPI scoreboardAPI) {
         this.playerManager = playerManager;
+        this.scoreboardAPI = scoreboardAPI;
     }
 
     @Override
@@ -38,27 +44,33 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
         if (args.length == 0) {
             if (playerData.isAduty()) {
+
                 playerData.setAduty(false);
                 send_message(player.getName() + " hat den Admindienst verlassen.", ChatColor.RED);
-                player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
-                (player).setFlying(false);
-                (player).setAllowFlight(false);
-                playerData.getScoreboard("admin").killScoreboard();
-                if (playerData.getVariable("isSpec") != null) {
-                    Main.getInstance().commands.specCommand.leaveSpec(player);
-                }
-                //Utils.Display.adminMode(player, false);
+                player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
+                player.setFlying(false);
+                player.setAllowFlight(false);
+
+
+                scoreboardAPI.removeScoreboard(player, "admin");
                 player.setCollidable(true);
             } else {
+
                 send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
-                player.sendMessage(Main.admin_prefix + "Du hast den Admindienst §abetreten§7.");
-                (player).setAllowFlight(true);
-                Scoreboard adminScoreboard = new Scoreboard(player);
-                adminScoreboard.createAdminScoreboard();
-                playerData.setScoreboard("admin", adminScoreboard);
+                player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §abetreten§7.");
+                player.setAllowFlight(true);
+
+                scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
+                    scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
+                    Runtime r = Runtime.getRuntime();
+                    scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
+                    scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
+                });
+
+                playerData.setScoreboard("admin", scoreboardAPI.getScoreboard(player, "admin"));
+
                 player.setCollidable(false);
-                //Utils.Display.adminMode(player, true);
             }
         }
         if (args.length >= 1) {

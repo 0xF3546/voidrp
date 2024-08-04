@@ -231,6 +231,28 @@ public class Storage implements Listener {
         return null;
     }
 
+    @SneakyThrows
+    public static Storage getStorageById(int id) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
+        statement.setInt(1, id);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
+            storage.setId(resultSet.getInt("id"));
+            storage.setFactionId(resultSet.getInt("factionId"));
+            storage.setVehicleId(resultSet.getInt("vehicleId"));
+            storage.setPlayer(resultSet.getString("player"));
+            if (resultSet.getString("extra") != null) {
+                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
+            }
+            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
+            return storage;
+        }
+        return null;
+    }
+
     public boolean isCanOpen() {
         return canOpen;
     }

@@ -32,7 +32,7 @@ public class SetRankPayDayCommand implements CommandExecutor {
             return false;
         }
         if (!(args.length >= 2)) {
-            player.sendMessage(Main.faction_prefix + "Syntax-Fehler: /setrankpayday [Rang] [Name]");
+            player.sendMessage(Main.faction_prefix + "Syntax-Fehler: /setrankpayday [Rang] [Gehalt]");
             return false;
         }
         if (Integer.parseInt(args[1]) < 0) {

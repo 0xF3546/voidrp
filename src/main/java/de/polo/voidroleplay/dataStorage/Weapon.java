@@ -1,5 +1,11 @@
 package de.polo.voidroleplay.dataStorage;
 
+import de.polo.voidroleplay.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Weapon {
@@ -11,6 +17,10 @@ public class Weapon {
     private int currentAmmo;
     private WeaponType weaponType;
     private boolean canShoot = true;
+
+    @Getter
+    @Setter
+    private Instant shootCooldown = Instant.now();
 
     public boolean isReloading() {
         return isReloading;

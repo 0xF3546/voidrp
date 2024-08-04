@@ -42,9 +42,9 @@ public class MineCommand implements CommandExecutor {
                             playerData.setVariable("job", "mine");
                             player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
                             player.sendMessage(prefix + "Baue nun Erze ab.");
-                            Scoreboard scoreboard = new Scoreboard(player);
+                            /*Scoreboard scoreboard = new Scoreboard(player);
                             scoreboard.createMineScoreboard();
-                            playerData.setScoreboard("mine", scoreboard);
+                            playerData.setScoreboard("mine", scoreboard);*/
                             player.getInventory().addItem(ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§6Spitzhacke"));
                         } else {
                             player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Mine§7!");
@@ -57,7 +57,7 @@ public class MineCommand implements CommandExecutor {
                         if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
                             player.sendMessage(prefix + "Du hast den Job Minenarbeiter beendet.");
                             playerData.setVariable("job", null);
-                            playerData.getScoreboard("mine").killScoreboard();
+                            //playerData.getScoreboard("mine").killScoreboard();
                             quitJob(player);
                         }
                     } else {
@@ -92,7 +92,7 @@ public class MineCommand implements CommandExecutor {
     public void quitJob(Player player) {
         Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.getScoreboard("mine").killScoreboard();
+        //playerData.getScoreboard("mine").killScoreboard();
         int iron = ItemManager.getItem(player, Material.IRON_ORE);
         int redstone = ItemManager.getItem(player, Material.REDSTONE_ORE);
         int lapis = ItemManager.getItem(player, Material.LAPIS_ORE);

@@ -86,10 +86,7 @@ public class Plant {
     }
 
     public boolean hasTookout(UUID uuid) {
-        for (UUID uid : tookOutThisHour) {
-            if (uid == uuid) return true;
-        }
-        return false;
+        return tookOutThisHour.contains(uuid);
     }
 
     @SneakyThrows

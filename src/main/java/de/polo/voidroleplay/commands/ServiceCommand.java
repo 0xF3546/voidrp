@@ -2,9 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.PhoneUtils;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +20,10 @@ public class ServiceCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
+        if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
+            player.sendMessage(Prefix.ERROR + "Du hast kein Handy dabei!");
+            return false;
+        }
         if (args.length >= 1) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             if (playerData.getVariable("service") == null) {

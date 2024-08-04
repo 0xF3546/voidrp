@@ -145,7 +145,7 @@ public class LumberjackCommand implements CommandExecutor {
             int amount = Main.random(2, 4);
             playerData.setIntVariable("holzkg", playerData.getIntVariable("holzkg") + amount);
             player.sendMessage("§8[§7Holzfäller§8]§7 +" + amount + " KG Holz");
-            playerData.getScoreboard("lumberjack").updateLumberjackScoreboard();
+            //playerData.getScoreboard("lumberjack").updateLumberjackScoreboard();
             if (playerData.getIntVariable("holz") <= 0) {
                 player.sendMessage("§8[§7Holzfäller§8]§7 Du hast genug Bäume gefällt, begib dich wieder zur Holzfällerei und entrinde das Holz.");
             }
@@ -207,7 +207,7 @@ public class LumberjackCommand implements CommandExecutor {
         player.sendMessage("§8[§7Holzfäller§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
         if (playerData.getIntVariable("holz") <= 0) playerManager.addExp(player, Main.random(12, 20));
-        playerData.getScoreboard("lumberjack").killScoreboard();
+      //  playerData.getScoreboard("lumberjack").killScoreboard();
         player.closeInventory();
         try {
             playerManager.addBankMoney(player, payout, "Auszahlung Holzfäller");
@@ -235,9 +235,9 @@ public class LumberjackCommand implements CommandExecutor {
             player.sendMessage("§8[§7Holzfäller§8]§7 Baue §e" + trees + " Bäume§7 ab.");
             playerData.setIntVariable("holz", trees);
             playerData.setIntVariable("holzkg", 0);
-            Scoreboard scoreboard = new Scoreboard(player);
+           /* Scoreboard scoreboard = new Scoreboard(player);
             scoreboard.createLumberjackScoreboard();
-            playerData.setScoreboard("lumberjack", scoreboard);
+            playerData.setScoreboard("lumberjack", scoreboard);*/
             if (playerData.addonXP.getLumberjackLevel() < 5) {
                 player.getInventory().addItem(ItemManager.createItem(Material.WOODEN_AXE, 1, 0, "§7Holzfälleraxt"));
             } else {

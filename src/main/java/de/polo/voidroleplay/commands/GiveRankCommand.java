@@ -66,6 +66,16 @@ public class GiveRankCommand implements CommandExecutor {
         } catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Fehler beim setzen der Ränge, bitte warte bis der Server neugestartet wurde.");
         }
+        int leaders = 0;
+        if (rang >= 7) {
+            for (FactionPlayerData fpd : factionManager.getFactionMember(playerData.getFaction())) {
+                if (fpd.getFaction_grade() >= 7) leaders++;
+            }
+        }
+        if (leaders >= 3) {
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann nur 3 Leader haben!");
+            return false;
+        }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
         factionPlayerData.setFaction_grade(rang);

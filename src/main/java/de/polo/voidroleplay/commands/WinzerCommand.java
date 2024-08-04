@@ -199,9 +199,9 @@ public class WinzerCommand implements CommandExecutor {
             player.sendMessage(Main.infoPrefix + "Nutze \"/rebstock\" falls du deinen Rebstock verloren hast.");
             playerData.setIntVariable("winzer", 12);
             playerData.setIntVariable("winzer_harvested", 0);
-            Scoreboard scoreboard = new Scoreboard(player);
+            /*Scoreboard scoreboard = new Scoreboard(player);
             scoreboard.createWinzerScoreboard();
-            playerData.setScoreboard("winzer", scoreboard);
+            playerData.setScoreboard("winzer", scoreboard);*/
             player.getInventory().addItem(ItemManager.createItem(Material.SHEARS, 1, 0, "§5Werkzeug"));
             findGrapevine(player);
         } else {
@@ -217,7 +217,7 @@ public class WinzerCommand implements CommandExecutor {
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
         if (playerData.getIntVariable("winzer") <= 0) playerManager.addExp(player, Main.random(12, 20));
-        playerData.getScoreboard("winzer").killScoreboard();
+        //playerData.getScoreboard("winzer").killScoreboard();
         player.closeInventory();
         try {
             playerManager.addBankMoney(player, payout, "Auszahlung Winzer");

@@ -2,9 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,6 +30,10 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         String uuid = player.getUniqueId().toString();
+        if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
+            player.sendMessage(Prefix.ERROR + "Du hast kein Handy dabei!");
+            return false;
+        }
         if (factionManager.faction(player) != null) {
             if (args.length >= 1) {
                 String msg = utils.stringArrayToString(args);

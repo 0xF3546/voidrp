@@ -210,7 +210,19 @@ public class ItemManager {
                 }
             }
         }
+
+        ItemStack offhandItem = player.getInventory().getItemInOffHand();
+        if (offhandItem.getType() == item && remainingCount > 0) {
+            int offhandAmount = offhandItem.getAmount();
+            if (offhandAmount <= remainingCount) {
+                remainingCount -= offhandAmount;
+                player.getInventory().setItemInOffHand(null);
+            } else {
+                offhandItem.setAmount(offhandAmount - remainingCount);
+            }
+        }
     }
+
 
 
     public static void removeCustomItem(Player player, RoleplayItem item, int amount) {
@@ -225,13 +237,29 @@ public class ItemManager {
                         player.updateInventory();
                         return;
                     } else {
-                        player.getInventory().remove(itemStack);
                         amount -= itemStack.getAmount();
+                        player.getInventory().remove(itemStack);
                     }
                 }
             }
         }
+
+        ItemStack offhandItem = player.getInventory().getItemInOffHand();
+        if (offhandItem.getType() == item.getMaterial() && amount > 0) {
+            if (offhandItem.hasItemMeta() && offhandItem.getItemMeta().hasDisplayName() &&
+                    offhandItem.getItemMeta().getDisplayName().equals(item.getDisplayName())) {
+                if (offhandItem.getAmount() >= amount) {
+                    offhandItem.setAmount(offhandItem.getAmount() - amount);
+                    player.updateInventory();
+                } else {
+                    amount -= offhandItem.getAmount();
+                    player.getInventory().setItemInOffHand(null);
+                }
+            }
+        }
     }
+
+
     public static void addCustomItem(Player player, RoleplayItem item, int amount) {
         for (int i = 0; i < amount; i++) {
             player.getInventory().addItem(ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName()));

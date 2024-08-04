@@ -4,10 +4,8 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.dataStorage.WeaponData;
-import de.polo.voidroleplay.utils.AdminManager;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Item;
@@ -171,6 +169,7 @@ public class DeathUtils {
         deathSkulls.remove(player.getUniqueId().toString());
         playerManager.setPlayerMove(player, true);
         playerData.save();
+        ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
     }
 
     public static boolean isDead(Player player) throws SQLException {

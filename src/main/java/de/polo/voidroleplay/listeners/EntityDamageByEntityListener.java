@@ -2,7 +2,9 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Weapons;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -20,6 +22,13 @@ public class EntityDamageByEntityListener implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
+            Player damager = (Player) event.getDamager();
+            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                if (damager.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
             PlayerData playerData = playerManager.getPlayerData(event.getDamager().getUniqueId());
             if ((playerData.getVisum() <= 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
                 event.setCancelled(true);

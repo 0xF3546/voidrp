@@ -24,12 +24,12 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -183,7 +183,10 @@ public class PlayerManager implements Listener, ServerTiming {
                     Date utilDate = new Date(result.getDate("lastPayDay").getTime());
                     playerData.setLastPayDay(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
-                if (result.getDate("boostDuration") != null) playerData.setBoostDuration(Utils.toLocalDateTime(result.getDate("boostDuration")));
+                if (result.getDate("boostDuration") != null)
+                    playerData.setBoostDuration(Utils.toLocalDateTime(result.getDate("boostDuration")));
+                if (result.getDate("lastContract") != null)
+                    playerData.setLastContract(Utils.toLocalDateTime(result.getDate("lastContract")));
                 playerData.setSecondaryTeam(result.getString("secondaryTeam"));
                 playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
                 playerData.setSpawn(result.getString("spawn"));
@@ -344,6 +347,15 @@ public class PlayerManager implements Listener, ServerTiming {
                 Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().utils.staatUtil.loadParole(player);
                 Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
+
+                if (playerData.getFaction() != null) {
+                    for (PlayerData pData : getPlayers()) {
+                        if (pData.getFaction() == null) continue;
+                        if (pData.getFaction().equalsIgnoreCase(playerData.getFaction())) {
+                            Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(pData.getPlayer());
+                        }
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -424,6 +436,9 @@ public class PlayerManager implements Listener, ServerTiming {
                         Main.getInstance().beginnerpass.didQuest(player, 3);
                         player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                         playerData.setCurrentHours(0);
+                        if (visum == 2) {
+
+                        }
                     } else {
                         current_hours = current_hours + 1;
                         playerData.setCurrentHours(current_hours);
@@ -443,6 +458,10 @@ public class PlayerManager implements Listener, ServerTiming {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void registerBonus(Player player) {
+
     }
 
     public void addMoney(Player player, int amount, String reason) throws SQLException {
@@ -509,6 +528,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     PlayerData playerData = playerDataMap.get(uuid);
                     playerData.setRang(rankData.getRang());
                     playerData.setPermlevel(rankData.getPermlevel());
+                    playerData.setAduty(false);
                     Player player = Bukkit.getPlayer(uuid);
                     if (player == null) {
                         return;
@@ -631,7 +651,7 @@ public class PlayerManager implements Listener, ServerTiming {
                             player.sendMessage("§8[§cGefängnis§8]§7 Deine Bewährung ist abgelaufen.");
                         }
                         preparedStatement.close();
-                        }
+                    }
                 }
 
                 if (currentMinute % 5 == 0) {
@@ -668,12 +688,13 @@ public class PlayerManager implements Listener, ServerTiming {
 
                         // Batch-Operation für Fraktionsmitglieder
                         for (PlayerData playerData : playerDataMap.values()) {
-                            if (playerData.getFaction() == null) continue;
-                            if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
-                                Player player = Bukkit.getPlayer(playerData.getUuid());
-                                if (player == null) continue;
-                                sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus);
-                                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                            if (playerData.getFaction() != null) {
+                                if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
+                                    Player player = Bukkit.getPlayer(playerData.getUuid());
+                                    if (player == null) continue;
+                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus);
+                                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                                }
                             }
                         }
 
@@ -934,10 +955,17 @@ public class PlayerManager implements Listener, ServerTiming {
                 targetplayer.sendMessage("§8 ➥§eBank§8: §a" + playerData.getBank() + "$");
             }
         });
-        inventoryManager.setItem(new CustomItem(40, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen")) {
+        inventoryManager.setItem(new CustomItem(38, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 Server.Utils.kissPlayer(player, targetplayer);
+                player.closeInventory();
+            }
+        });
+        inventoryManager.setItem(new CustomItem(42, ItemManager.createItem(Material.POPPY, 1, 0, "§eTragen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                carryPlayer(player, targetplayer);
                 player.closeInventory();
             }
         });
@@ -966,6 +994,39 @@ public class PlayerManager implements Listener, ServerTiming {
 
             }
         });
+        if (ItemManager.getCustomItemCount(targetplayer, RoleplayItem.SMARTPHONE) >= 1) {
+            inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, "§eHandy abnehmen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (ItemManager.getCustomItemCount(targetplayer, RoleplayItem.SMARTPHONE) < 1) {
+                        return;
+                    }
+                    ItemManager.removeCustomItem(targetplayer, RoleplayItem.SMARTPHONE, 1);
+                    ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
+                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt " + targetplayer.getName() + " das Handy ab");
+                    player.closeInventory();
+                }
+            });
+        } else if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) >= 1) {
+            inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, "§eHandy geben")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
+                        return;
+                    }
+                    ItemManager.removeCustomItem(player, RoleplayItem.SMARTPHONE, 1);
+                    ItemManager.addCustomItem(targetplayer, RoleplayItem.SMARTPHONE, 1);
+                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " gibt " + targetplayer.getName() + " ein Handy");
+                    player.closeInventory();
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, "§e§mHandy abnehmen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                }
+            });
+        }
         switch (faction.toLowerCase()) {
             case "medic":
                 inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen")) {
@@ -1057,7 +1118,6 @@ public class PlayerManager implements Listener, ServerTiming {
         Player player = event.getPlayer();
         if (!canPlayerMove(player)) return;
         player.setFlying(false);
-        //event.setCancelled(true);
     }
 
     public PlayerData getPlayerData(UUID uuid) {
@@ -1117,4 +1177,76 @@ public class PlayerManager implements Listener, ServerTiming {
         statement.close();
         playerData.setSpawn(spawn);
     }
+
+    public void carryPlayer(Player player, Player target) {
+        // Überprüfen, ob die Spieler null sind
+        if (player == null || target == null) {
+            return; // Beende die Methode, wenn einer der Spieler null ist
+        }
+
+        ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(player.getLocation(), EntityType.ARMOR_STAND);
+
+        armorStand.setVisible(false);
+        armorStand.setGravity(false);
+        armorStand.setBasePlate(false);
+        armorStand.setArms(false);
+        armorStand.setSmall(true);
+        armorStand.setCustomName("CarryStand_" + player.getUniqueId()); // Füge einen benutzerdefinierten Namen hinzu
+
+        Location playerLocation = player.getLocation();
+        Location armorStandLocation = playerLocation.clone().add(0, 1.8, 0); // 1.8 für den Kopfbereich
+        armorStand.teleport(armorStandLocation);
+
+        player.addPassenger(armorStand);
+        armorStand.addPassenger(target);
+    }
+
+    private ArmorStand getArmorStand(Player player) {
+        for (Entity entity : player.getWorld().getEntities()) {
+            if (entity instanceof ArmorStand) {
+                ArmorStand armorStand = (ArmorStand) entity;
+                if (armorStand.getCustomName() != null && armorStand.getCustomName().equals("CarryStand_" + player.getUniqueId())) {
+                    return armorStand;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void removeTargetFromArmorStand(Player player) {
+        ArmorStand armorStand = getArmorStand(player);
+        if (armorStand != null) {
+            armorStand.remove();
+        }
+    }
+
+
+    public boolean isCarrying(Entity entity) {
+        if (entity == null) {
+            return false;
+        }
+
+        return !entity.getPassengers().isEmpty();
+    }
+
+    @SneakyThrows
+    public int getGeworbenCount(Player player) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM players WHERE geworben = ? AND visum >= 2");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+
+        int count = 0;
+        if (result.next()) {
+            count = result.getInt(1);
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+
+        return count;
+    }
+
+
 }

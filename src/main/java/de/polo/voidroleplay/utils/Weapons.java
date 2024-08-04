@@ -30,6 +30,7 @@ import org.bukkit.util.Vector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -41,6 +42,7 @@ public class Weapons implements Listener {
     private final Utils utils;
     private final PlayerManager playerManager;
     public HashMap<Player, LocalDateTime> weaponUsages = new HashMap<>();
+    private HashMap<Player, Weapon> weaponCooldowns = new HashMap<>();
 
     public Weapons(Utils utils, PlayerManager playerManager) {
         this.utils = utils;
@@ -199,8 +201,6 @@ public class Weapons implements Listener {
             return;
         }
         if (weaponUsages.get(player) != null) {
-            System.out.println(weaponUsages.get(player));
-            System.out.println(Utils.getTime());
             if (Utils.getTime().isAfter(weaponUsages.get(player))) {
                 weaponUsages.remove(player);
             } else {
@@ -233,7 +233,6 @@ public class Weapons implements Listener {
                     if (target == null || !target.equals(hitPlayer)) {
                         target = hitPlayer;
                     }
-                    System.out.println("Getroffener Spieler: " + hitPlayer.getName());
                 }
                 // Erzeuge den Partikel
                 player.spawnParticle(Particle.FIREWORKS_SPARK, particleLocation, 1, 0.0, 0.0, 0.0, 0.0);
@@ -270,13 +269,20 @@ public class Weapons implements Listener {
         NamespacedKey id = new NamespacedKey(Main.plugin, "id");
         Integer weaponId = event.getItem().getItemMeta().getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
         Weapon weapon = weaponList.get(weaponId);
-        if (weapon.isReloading() || !weapon.isCanShoot()) {
+
+
+        if (!Instant.now().isAfter(weapon.getShootCooldown())) {
+            return;
+        }
+        if (weapon.isReloading()) {
             return;
         }
         if (weapon.getCurrentAmmo() < 1) {
             reloadWeapon(event.getPlayer(), event.getItem());
             return;
         }
+
+        // Shooting logic
         Arrow arrow = player.launchProjectile(Arrow.class);
         ProjectileSource shooter = arrow.getShooter();
         ItemMeta meta = event.getItem().getItemMeta();
@@ -292,6 +298,7 @@ public class Weapons implements Listener {
             arrow.setGravity(false);
             arrow.setKnockbackStrength(weaponData.getKnockback());
         }
+
         Location location = player.getLocation();
         for (Player nearbyPlayer : Bukkit.getOnlinePlayers()) {
             Location playerLocation = nearbyPlayer.getLocation();
@@ -301,6 +308,7 @@ public class Weapons implements Listener {
                 nearbyPlayer.playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, volume, weaponData.getSoundPitch());
             }
         }
+
         int newAmmo = weapon.getCurrentAmmo() - 1;
         weapon.setCurrentAmmo(newAmmo);
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + weapon.getWeaponData().getMaxAmmo()));
@@ -308,19 +316,18 @@ public class Weapons implements Listener {
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
 
         event.getItem().setItemMeta(meta);
-        weapon.setCanShoot(false);
+
+        long shootDuration =(long) weaponData.getShootDuration(); // In Sekunden
+        long delayTicks = (long) (shootDuration * 2); // In Ticks
+        long delayMillis = delayTicks * 30; // In Millisekunden
+
+        Instant cooldownExpiration = Instant.now().plusMillis(delayMillis);
+        weapon.setShootCooldown(cooldownExpiration);
+
         updateWeaponLore(weapon, event.getItem());
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ItemMeta meta1 = event.getItem().getItemMeta();
-                weapon.setCanShoot(true);
-                if (weapon.getCurrentAmmo() < 1) {
-                    reloadWeapon(player, event.getItem());
-                }
-                cancel();
-            }
-        }.runTaskLater(Main.getInstance(), (long) (weaponData.getShootDuration() * 2));
+        if (weapon.getCurrentAmmo() < 1) {
+            reloadWeapon(player, event.getItem());
+        }
         new BukkitRunnable() {
             @Override
             public void run() {

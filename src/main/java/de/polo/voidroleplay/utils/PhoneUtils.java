@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import lombok.SneakyThrows;
@@ -765,6 +766,21 @@ public class PhoneUtils implements Listener {
 
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) throws SQLException {
+        if (event.getSubmitTo().equalsIgnoreCase("dating::description")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE app_dating_profiles SET description = ? WHERE uuid = ?");
+            statement.setString(1, event.getMessage());
+            statement.setString(2, event.getPlayer().getUniqueId().toString());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            openDatingApp(event.getPlayer());
+        }
         if (event.getSubmitTo().equals("sendsms")) {
             if (event.isCancel()) {
                 event.end();
@@ -825,6 +841,13 @@ public class PhoneUtils implements Listener {
                 }
             }
         });
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRlYWY4OTQyOGEzNjQ5YzI2ZWRjMWY3MWNjMTlmMjYzZTlmNGViMzFlZDE4Yzk3Njg2YWFjODJmNzY0MjQyIn19fQ==", 1, 0, "§5Swiper", Collections.singletonList("§8 ➥ §7Finde einen Beziehungs-Partner"))) {
+            @SneakyThrows
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openDatingApp(player);
+            }
+        });
         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -832,4 +855,202 @@ public class PhoneUtils implements Listener {
             }
         });
     }
+
+    @SneakyThrows
+    private void openDatingApp(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM app_dating_profiles WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        boolean hasProfile = result.next();
+        System.out.println("RESULT: " + hasProfile);
+
+        if (hasProfile) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJiOThhMjE5YmE0YWY1MTMyMWE4NWRiZjVmZjgzN2M1NjdkODBmMTA2NWE4ZGIxYTJjZWNiMTI1ZTYyMzAyNyJ9fX0=", 1, 0, "§5Beschreibung ändern", Collections.singletonList("§8 ➥ §e" + result.getString("description")))) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerData.setVariable("chatblock", "dating::description");
+                    player.sendMessage("§8[§6Handy§8]§7 Gib nun deine neue Beschreibung ein.");
+                    player.closeInventory();
+                }
+            });
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRlYWY4OTQyOGEzNjQ5YzI2ZWRjMWY3MWNjMTlmMjYzZTlmNGViMzFlZDE4Yzk3Njg2YWFjODJmNzY0MjQyIn19fQ==", 1, 0, "§5Swipen starten")) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openSwiping(player);
+                }
+            });
+
+            Gender gender = Gender.valueOf(result.getString("preferences"));
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJiOThhMjE5YmE0YWY1MTMyMWE4NWRiZjVmZjgzN2M1NjdkODBmMTA2NWE4ZGIxYTJjZWNiMTI1ZTYyMzAyNyJ9fX0=", 1, 0, "§5Präferenzen", Collections.singletonList("§8 ➥ §e" + gender.getTranslation()))) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    Gender gender = Gender.valueOf(result.getString("preferences"));
+                    if (gender == Gender.MALE) {
+                        gender = Gender.FEMALE;
+                    } else {
+                        gender = Gender.MALE;
+                    }
+                    PreparedStatement updateStatement = connection.prepareStatement("UPDATE app_dating_profiles SET preferences = ? WHERE uuid = ?");
+                    updateStatement.setString(1, gender.name());
+                    updateStatement.setString(2, player.getUniqueId().toString());
+                    updateStatement.executeUpdate();
+                    updateStatement.close();
+                    openDatingApp(player);
+                }
+            });
+
+            // Add item to show matches
+            PreparedStatement matchStatement = connection.prepareStatement("SELECT * FROM app_dating_matches WHERE uuid = ? OR target = ?");
+            matchStatement.setString(1, player.getUniqueId().toString());
+            matchStatement.setString(2, player.getUniqueId().toString());
+            ResultSet matchResult = matchStatement.executeQuery();
+            List<String> matches = new ArrayList<>();
+            while (matchResult.next()) {
+                String matchedUUID = matchResult.getString("uuid").equals(player.getUniqueId().toString()) ? matchResult.getString("target") : matchResult.getString("uuid");
+                matches.add("§8 ➥ §e" + Bukkit.getOfflinePlayer(UUID.fromString(matchedUUID)).getName() + " §8- §7" + Utils.localDateTimeToReadableString(Utils.toLocalDateTime(matchResult.getDate("matched"))));
+            }
+
+            inventoryManager.setItem(new CustomItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFlNTVkZjRjY2FkZDU5ZTM0MTU4NWI3MWM2ZDZlZjMxYmE3NTQzYmRjNmY4MjQ0OTU2N2ZmNTRjMzZiZjg3OSJ9fQ==", 1, 0, "§5Matches", matches)) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.sendMessage("§8[§6Handy§8]§7 Deine Matches:");
+                    for (String match : matches) {
+                        player.sendMessage(match);
+                    }
+                    player.closeInventory();
+                }
+            });
+
+        } else {
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aAccount erstellen")) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO app_dating_profiles (uuid) VALUES (?)");
+                    insertStatement.setString(1, player.getUniqueId().toString());
+                    insertStatement.execute();
+                    insertStatement.close();
+                    openDatingApp(player);
+                }
+            });
+        }
+    }
+
+    @SneakyThrows
+    private void openSwiping(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+
+        PreparedStatement statement = connection.prepareStatement(
+                "SELECT adp.uuid, adp.description, p.firstname, p.lastname " +
+                        "FROM app_dating_profiles adp " +
+                        "JOIN players p ON adp.uuid = p.uuid " +
+                        "WHERE adp.uuid != ? AND adp.uuid NOT IN (SELECT target_uuid FROM app_dating_swipes WHERE swiper_uuid = ?)"
+        );
+        statement.setString(1, player.getUniqueId().toString());
+        statement.setString(2, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+
+        if (result.next()) {
+            String targetUuid = result.getString("uuid");
+            String description = result.getString("description");
+            String firstname = result.getString("firstname");
+            String lastname = result.getString("lastname");
+
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetUuid, 1, 0, "§5" + firstname + " " + lastname, "§8 ➥ §d" + description
+            )) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    recordSwipe(player.getUniqueId().toString(), targetUuid, true);
+                    checkForMatch(player.getUniqueId().toString(), targetUuid);
+                    openSwiping(player); // Show the next profile
+                }
+            });
+
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead(
+                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRjZGE2ZTNjNmRjYTdlOWI4YjZiYTNmZWJmNWNkMDkxN2Y5OTdiNjRiMmFlZjE4YzNmNzczNzY1ZTNhNTc5In19fQ==", 1, 0, "§aSwipe Rechts"
+            )) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    recordSwipe(player.getUniqueId().toString(), targetUuid, true);
+                    checkForMatch(player.getUniqueId().toString(), targetUuid);
+                    openSwiping(player); // Show the next profile
+                }
+            });
+
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead(
+                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI4YjhjZjQwNWVhZjYwNmEwMjEwZjAzMDNiMDEzMTc5ZjhmMTJlYWE5NTgyNDEyOWViZWVmOWU0NGI2ODIzMCJ9fX0=", 1, 0, "§cSwipe Links"
+            )) {
+                @SneakyThrows
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    recordSwipe(player.getUniqueId().toString(), targetUuid, false);
+                    openSwiping(player); // Show the next profile
+                }
+            });
+        } else {
+            player.sendMessage("§8[§6Handy§8]§7 Keine weiteren Profile verfügbar.");
+        }
+    }
+
+    @SneakyThrows
+    private void recordSwipe(String swiperUuid, String targetUuid, boolean swipeRight) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO app_dating_swipes (swiper_uuid, target_uuid, swipe_right) VALUES (?, ?, ?)"
+        );
+        statement.setString(1, swiperUuid);
+        statement.setString(2, targetUuid);
+        statement.setBoolean(3, swipeRight);
+        statement.execute();
+        statement.close();
+    }
+
+    @SneakyThrows
+    private void checkForMatch(String swiperUuid, String targetUuid) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+                "SELECT * FROM app_dating_swipes WHERE swiper_uuid = ? AND target_uuid = ? AND swipe_right = ?"
+        );
+        statement.setString(1, targetUuid);
+        statement.setString(2, swiperUuid);
+        statement.setBoolean(3, true);
+        ResultSet result = statement.executeQuery();
+
+        if (result.next()) {
+            PreparedStatement matchStatement = connection.prepareStatement(
+                    "INSERT INTO app_dating_matches (uuid, target, matched) VALUES (?, ?, ?)"
+            );
+            matchStatement.setString(1, swiperUuid);
+            matchStatement.setString(2, targetUuid);
+            matchStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            matchStatement.execute();
+            matchStatement.close();
+
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(swiperUuid));
+            OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(UUID.fromString(targetUuid));
+                if (player.isOnline()) {
+                    Player onPlayer = Bukkit.getPlayer(player.getUniqueId());
+                    if (onPlayer != null) onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + targetPlayer.getName() + "!");
+                }
+
+            if (targetPlayer.isOnline()) {
+                Player onPlayer = Bukkit.getPlayer(player.getUniqueId());
+                if (onPlayer != null) onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + player.getName() + "!");
+            }
+        }
+        statement.close();
+    }
+
 }

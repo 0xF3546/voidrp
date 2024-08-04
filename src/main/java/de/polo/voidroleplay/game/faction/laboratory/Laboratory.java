@@ -211,7 +211,7 @@ public class Laboratory implements CommandExecutor, Listener {
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7 » §" + defenderFaction.getPrimaryColor() + "Labor §8× §cAngriff", true, true);
         Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet res = statement.executeQuery("SELECT * FROM player_laboratory AS pl LEFT JOIN players AS p ON LOWER(p.faction) = '" + defenderFaction.getName() + "'");
+        ResultSet res = statement.executeQuery("SELECT * FROM player_laboratory AS pl LEFT JOIN players AS p WHERE LOWER(p.faction) = '" + defenderFaction.getName() + "'");
         int weedAmount = 0;
         int jointAmount = 0;
         while (res.next()) {

@@ -13,7 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,14 +20,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
+import java.util.logging.Logger;
 
 /**
- * @author Mayson1337
- * @version 1.0.0
- * @since 1.0.0
+ * Drop class to handle drop events
+ *
  */
 public class Drop {
+
+    private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
 
     List<ItemStack> items = Arrays.asList(
             ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 4, 0, "§7Gepackte Waffe", "§8 ➥ §cSturmgewehr"),
@@ -66,9 +66,9 @@ public class Drop {
             RegisteredBlock block = Main.getInstance().blockManager.getNearestBlockOfType(location, "house");
             if (block.getLocation().distance(location) < 30) {
                 House house = Main.getInstance().housing.getHouse(Integer.parseInt(block.getInfoValue()));
-                Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der nähe von Haus " + house.getNumber() + " verloren.");
+                Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der Nähe von Haus " + house.getNumber() + " verloren.");
             } else {
-                Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der nähe von " + naviData.getName().replace("&", "§") + " §cverloren.");
+                Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der Nähe von " + naviData.getName().replace("&", "§") + " §cverloren.");
             }
         }
         location.getBlock().setType(Material.CHEST);
@@ -114,14 +114,19 @@ public class Drop {
     }
 
     public void cleanup() {
+        LOGGER.info("Cleaning up drop.");
         Utils.removeAreaMarker("Schmugglerkiste");
         if (lastBlock != null) {
+            LOGGER.info("Removing block at location: " + lastBlock.getLocation());
             lastBlock.getLocation().getBlock().setType(Material.AIR);
         }
         if (hologram != null) {
+            LOGGER.info("Removing hologram at location: " + hologram.getLocation());
             hologram.remove();
+            hologram = null; // Ensure hologram reference is cleared
         }
         dropEnded = true;
+        LOGGER.info("Drop cleanup complete.");
     }
 
     private void addItemsToChest() {

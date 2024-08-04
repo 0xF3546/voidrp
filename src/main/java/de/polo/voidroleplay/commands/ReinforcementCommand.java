@@ -5,7 +5,10 @@ import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.faction.alliance.Alliance;
 import de.polo.voidroleplay.utils.FactionManager;
+import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -35,6 +38,10 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
+            player.sendMessage(Prefix.ERROR + "Du hast kein Handy dabei!");
+            return false;
+        }
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
             if (args.length == 0) {
                 sendReinforcement(player, "§cHilfe!", false);
@@ -58,6 +65,8 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                     case "-m":
                         sendReinforcement(player, "§cMedic!", true);
                         break;
+                    case "-lb":
+                        sendReinforcement(player, "§cLeichenbewachung!", true);
                     case "gotoreinf":
                         if (args.length >= 3) {
                             Location loc = new Location(player.getWorld(), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
@@ -168,6 +177,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
             suggestions.add("-ep");
             suggestions.add("-ed");
             suggestions.add("-m");
+            suggestions.add("-lb");
 
             return suggestions;
         }

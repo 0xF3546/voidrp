@@ -184,6 +184,7 @@ public class ServerManager {
             @Override
             public void run() {
                 LocalDateTime now = Utils.getTime();
+                Main.getInstance().getScoreboardAPI().everySecond();
                 if (now.getHour() == 0 && now.getMinute() == 1 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
                     // clear everything
                     PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM seasonpass_player_quests");
@@ -249,6 +250,7 @@ public class ServerManager {
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
+                    playerData.getPlayerPetManager().everySecond();
                     if (playerData.isDead()) {
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
                         utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");

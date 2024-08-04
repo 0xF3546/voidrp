@@ -32,9 +32,9 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
                     player.sendMessage(prefix + "Bringe die Lebensmittel zu einem Shop deiner Wahl!");
                     playerData.setIntVariable("snacks", Main.random(3, 7));
                     playerData.setIntVariable("drinks", Main.random(3, 7));
-                    Scoreboard scoreboard = new Scoreboard(player);
+                    /*Scoreboard scoreboard = new Scoreboard(player);
                     scoreboard.createLebensmittelLieferantenScoreboard();
-                    playerData.setScoreboard("lebensmittellieferant", scoreboard);
+                    playerData.setScoreboard("lebensmittellieferant", scoreboard);*/
                 } else {
                     player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe des §aLebensmittel-Lieferanten§7 Jobs!");
                 }
@@ -79,6 +79,6 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
         playerData.setIntVariable("drinks", null);
         playerData.setIntVariable("snacks", null);
         playerData.setVariable("job", null);
-        playerData.getScoreboard("lebensmittellieferant").killScoreboard();
+        //playerData.getScoreboard("lebensmittellieferant").killScoreboard();
     }
 }

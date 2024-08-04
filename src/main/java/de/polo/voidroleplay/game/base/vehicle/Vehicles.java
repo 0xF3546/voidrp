@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
+import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import lombok.SneakyThrows;
 import org.bukkit.*;
@@ -237,9 +238,20 @@ public class Vehicles implements Listener, CommandExecutor {
             Player player = (Player) event.getEntered();
             if (vehicle.getPersistentDataContainer().get(key_lock, PersistentDataType.INTEGER) == 0) {
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                Scoreboard scoreboard = new Scoreboard(player);
-                scoreboard.createCarScoreboard(event.getVehicle());
-                playerData.setScoreboard("vehicle", scoreboard);
+                ScoreboardAPI scoreboardAPI = Main.getInstance().getScoreboardAPI();
+                String type = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
+
+                scoreboardAPI.createScoreboard(player, "vehicle", "§6" + type, () -> {
+                    int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
+                    float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                    double speedMetersPerSecond = player.getVehicle().getVelocity().length();
+                    double kmh = speedMetersPerSecond * 36;
+                    scoreboardAPI.setScore(player, "vehicle", "§eKMH§8:", (int) kmh);
+                    scoreboardAPI.setScore(player, "vehicle", "§eKM§8:", (int) km * 2);
+                    scoreboardAPI.setScore(player, "vehicle", "§eTank§8:", (int) fuel);
+                });
+
+                playerData.setScoreboard("vehicle", scoreboardAPI.getScoreboard(player, "vehicle"));
                 playerSpeeds.put(player, 0.0);
             } else {
                 event.setCancelled(true);
@@ -252,16 +264,18 @@ public class Vehicles implements Listener, CommandExecutor {
     @EventHandler
     public void onVehicleExit(VehicleExitEvent event) {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
+            ScoreboardAPI scoreboardAPI = Main.getInstance().getScoreboardAPI();
             Vehicle vehicle = event.getVehicle();
             Player player = (Player) event.getExited();
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            playerData.getScoreboard("vehicle").killScoreboard();
+            //playerData.getScoreboard("vehicle").killScoreboard();
             int id = event.getVehicle().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
             PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
             playerVehicleData.setX((int) event.getVehicle().getLocation().getX());
             playerVehicleData.setY((int) event.getVehicle().getLocation().getY());
             playerVehicleData.setZ((int) event.getVehicle().getLocation().getZ());
             playerVehicleData.save();
+            scoreboardAPI.removeScoreboard(player, "vehicle");
         }
     }
 

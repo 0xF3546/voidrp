@@ -168,7 +168,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                             }
                         }
                     } else {
-                        player.sendMessage(Main.error + "Du bist in keienr Fraktion.");
+                        player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
                     }
                 } else {
                     player.sendMessage(Main.error + "Syntax-Fehler: /gangwar attack [Zone]");
@@ -207,6 +207,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 5, 0, RoleplayItem.COCAINE.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 5, 0, RoleplayItem.NOBLE_JOINT.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(Material.COOKED_BEEF, 16, 0, "§6Nahrung"));
+        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
     }
 
     public void leaveGangwar(Player player) {

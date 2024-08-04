@@ -161,7 +161,7 @@ public class ApothekeFunctions implements Listener {
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Noch " + remaining + " Minuten bis der Apotheker aufgibt!");
             }
         }
-        if ((LocalDateTime.now().getHour() >= 16 && LocalDateTime.now().getHour() <= 22)) {
+        if ((Utils.getTime().getHour() >= 16 && Utils.getTime().getHour() <= 22)) {
             for (FactionData factionData : factionManager.getFactions()) {
                 int plus = 0;
                 for (Apotheke apotheke : getApotheken()) {
@@ -184,7 +184,7 @@ public class ApothekeFunctions implements Listener {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2200$ Steuern aus Apotheken erhalten .");
+                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2200$ Steuern aus Apotheken erhalten .");
                                 }
                             }
                         }
@@ -195,7 +195,7 @@ public class ApothekeFunctions implements Listener {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
+                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
                                 }
                             }
                         }

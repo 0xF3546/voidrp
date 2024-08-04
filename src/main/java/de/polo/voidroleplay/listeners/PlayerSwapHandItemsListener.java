@@ -67,6 +67,17 @@ public class PlayerSwapHandItemsListener implements Listener {
         if (!player.isSneaking() || player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
+        if (playerManager.isCarrying(player)) {
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Tragen");
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§cFrei lassen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerManager.removeTargetFromArmorStand(player);
+                    player.closeInventory();
+                }
+            });
+            return;
+        }
         for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
             if (player.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
                 InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » " + weaponData.getName());
@@ -122,6 +133,12 @@ public class PlayerSwapHandItemsListener implements Listener {
             if (player.getLocation().distance(storage.getLocation()) < 5) {
                 Storage s = Storage.getStorageByTypeAndPlayer(StorageType.EXTRA, player, storage);
                 if (s == null) {
+                    if (storage.isGeworben()) {
+                        if (playerManager.getGeworbenCount(player) < storage.getAmount()) {
+                            player.sendMessage(Prefix.ERROR + "Du musst mindestens " + storage.getAmount() + " Spieler werben um dieses Lager zu benutzen.");
+                            return;
+                        }
+                    }
                     s = new Storage(StorageType.EXTRA);
                     s.setExtra(storage);
                     s.setPlayer(player.getUniqueId().toString());
