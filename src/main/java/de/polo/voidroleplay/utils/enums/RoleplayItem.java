@@ -34,7 +34,8 @@ public enum RoleplayItem {
     EISEN("§fEisen", Material.IRON_INGOT, false),
     IBOPROFEN("§c§lIboprofen", Material.PAPER, false),
     JESUSKREUZ("§6Jesuskreuz", Material.TOTEM_OF_UNDYING, false),
-    MASK("§7Maske", Material.WITHER_SKELETON_SKULL, true);
+    MASK("§7Maske", Material.WITHER_SKELETON_SKULL, true),
+    SMARTPHONE("§eHandy", Material.IRON_NUGGET, false);
 
     private final String displayName;
     private final Material material;

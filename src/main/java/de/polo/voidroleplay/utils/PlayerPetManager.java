@@ -1,0 +1,132 @@
+package de.polo.voidroleplay.utils;
+
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.enums.Pet;
+import de.polo.voidroleplay.utils.enums.PlayerPed;
+import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class PlayerPetManager {
+    private final PlayerData playerData;
+    private final Player player;
+    private final List<PlayerPed> pets = new ArrayList<>();
+    public PlayerPetManager(PlayerData playerData, Player player) {
+        this.playerData = playerData;
+        this.player = player;
+        load();
+        spawnPet(getActivePed());
+    }
+
+    @SneakyThrows
+    private void load() {
+        pets.clear();
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_peds WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            PlayerPed ped = new PlayerPed(Pet.valueOf(result.getString("ped")), result.getBoolean("active"));
+            pets.add(ped);
+        }
+    }
+
+    @SneakyThrows
+    public void addPet(PlayerPed pet, boolean save) {
+        pets.add(pet);
+        if (save) {
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO player_pets (uuid, pet) VALUES (?, ?)");
+            statement.setString(1, player.getUniqueId().toString());
+            statement.setString(2, pet.getPet().name());
+            statement.execute();
+            statement.close();
+            connection.close();
+        }
+    }
+
+    @SneakyThrows
+    public void removePet(PlayerPed pet, boolean save) {
+        pets.remove(pet);
+        if (save) {
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM player_pets WHERE uuid = ? AND pet = ?");
+            statement.setString(1, player.getUniqueId().toString());
+            statement.setString(2, pet.getPet().name());
+            statement.execute();
+            statement.close();
+            connection.close();
+        }
+    }
+
+    @SneakyThrows
+    public void changeState(PlayerPed pet, boolean state) {
+        pet.setActive(state);
+
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE player_pets SET active = ? WHERE pet = ? AND uuid = ?");
+        statement.setBoolean(1, state);
+        statement.setString(3, player.getUniqueId().toString());
+        statement.setString(2, pet.getPet().name());
+        statement.execute();
+        statement.close();
+        connection.close();
+
+        if (state) {
+            spawnPet(pet);
+        }
+    }
+
+    public void removeEntity(PlayerPed ped) {
+        ped.getEntity().remove();
+    }
+
+    public Collection<PlayerPed> getPlayerPets() {
+        return pets;
+    }
+
+    public PlayerPed getActivePed() {
+        for (PlayerPed ped : getPlayerPets()) {
+            if (ped.isActive()) return ped;
+        }
+        return null;
+    }
+
+    public void spawnPet(PlayerPed ped) {
+        Entity entity = player.getWorld().spawnEntity(player.getLocation(), ped.getPet().getAnimal());
+        entity.setCustomName("§7" + player.getName() + "'s Haustier");
+        entity.setCustomNameVisible(true);
+
+        ped.setEntity(entity);
+
+        makePetInvulnerable(entity);
+    }
+
+    public void everySecond() {
+        PlayerPed ped = getActivePed();
+
+        Entity pet = ped.getEntity();
+        if (pet.isValid() && player.isOnline()) {
+            ((Animals) pet).setTarget(player);
+        }
+    }
+
+    private void makePetInvulnerable(Entity pet) {
+        pet.setInvulnerable(true);
+    }
+}

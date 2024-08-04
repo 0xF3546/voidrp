@@ -4,9 +4,10 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.PlayerQuest;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
+import de.polo.voidroleplay.utils.PlayerPetManager;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.Workstation;
-import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -24,6 +26,9 @@ import java.util.*;
 import java.util.Date;
 
 public class PlayerData {
+    @Getter
+    private PlayerPetManager playerPetManager;
+
     @Getter
     private Player player;
     private String spawn;
@@ -33,6 +38,7 @@ public class PlayerData {
 
     public PlayerData(Player player) {
         this.player = player;
+        this.playerPetManager = new PlayerPetManager(this, player);
     }
 
     private int id;
@@ -77,6 +83,9 @@ public class PlayerData {
     private int houseSlot;
     private LocalDateTime rankDuration;
     private LocalDateTime boostDuration;
+    @Getter
+    @Setter
+    private LocalDateTime lastContract;
     private Location deathLocation;
     private String secondaryTeam;
     private String teamSpeakUID;
@@ -696,7 +705,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -711,7 +720,9 @@ public class PlayerData {
         statement.setInt(8, karma);
         statement.setBoolean(9, isChurch);
         statement.setBoolean(10, isBaptized);
-        statement.setInt(11, getId());
+        Timestamp timestamp = Timestamp.valueOf(lastContract);
+        statement.setTimestamp(11, timestamp);
+        statement.setInt(12, getId());
         statement.executeUpdate();
     }
 
