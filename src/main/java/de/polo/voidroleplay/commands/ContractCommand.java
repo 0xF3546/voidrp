@@ -3,10 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.dataStorage.ContractData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.ServerManager;
+import de.polo.voidroleplay.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,6 +38,11 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage(Main.error + args[0] + " ist nicht online.");
             return false;
         }
+        PlayerData targetplayerData = playerManager.getPlayerData(targetplayer);
+        if (!Utils.getTime().isAfter(targetplayerData.getLastContract().plusHours(20))) {
+            player.sendMessage(Prefix.ERROR + "Der Spieler hatte in den letzten 20 Stunden bereits Kopfgeld!");
+            return false;
+        }
         int price = Integer.parseInt(args[1]);
         if (price < ServerManager.getPayout("kopfgeld")) {
             player.sendMessage(Main.error + "Die Mindestsumme beträgt " + ServerManager.getPayout("kopfgeld") + "$.");
@@ -50,6 +52,8 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
             return false;
         }
+        targetplayerData.setLastContract(Utils.getTime());
+        targetplayerData.save();
         if (factionManager.faction(targetplayer).equals("ICA")) {
             try {
                 factionManager.addFactionMoney("ICA", price, "Versuchtes Kopfgeld auf Mitarbeiter");
