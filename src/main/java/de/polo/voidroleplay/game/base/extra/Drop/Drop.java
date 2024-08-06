@@ -15,6 +15,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,12 +41,12 @@ public class Drop {
             ItemManager.createItem(Material.IRON_CHESTPLATE, 5, 0, "§7Schwere Schutzweste"),
             ItemManager.createItem(RoleplayItem.WAFFENTEIL.getMaterial(), 85, 0, RoleplayItem.WAFFENTEIL.getDisplayName()),
             ItemManager.createItem(RoleplayItem.WAFFENTEIL.getMaterial(), 45, 0, RoleplayItem.WAFFENTEIL.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 20, 0, RoleplayItem.COCAINE.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 100, 0, RoleplayItem.MARIHUANA.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 28, 0, RoleplayItem.COCAINE.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 130, 0, RoleplayItem.MARIHUANA.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 27, 0, RoleplayItem.JOINT.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 20, 0, RoleplayItem.JOINT.getDisplayName())
+            ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 20, 0, RoleplayItem.SNUFF.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 100, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 28, 0, RoleplayItem.SNUFF.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 130, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 27, 0, RoleplayItem.PIPE.getDisplayName()),
+            ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 20, 0, RoleplayItem.PIPE.getDisplayName())
     );
     private Block lastBlock = null;
     private int minutes = 8;
@@ -74,6 +75,7 @@ public class Drop {
         location.getBlock().setType(Material.CHEST);
         Location hologramLocation = location.clone().add(0.5, 2.5, 0.5);
         hologram = (ArmorStand) location.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
+        hologram.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, 0);
         hologram.setVisible(false);
         hologram.setCustomNameVisible(true);
         hologram.setGravity(false);

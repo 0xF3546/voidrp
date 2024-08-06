@@ -52,30 +52,34 @@ public class PlayerInteractWithPlayerListener implements Listener {
                             player.sendMessage(Prefix.ERROR + "Du kannst Spieler im Admindienst nicht fesseln.");
                             return;
                         }
-                        if (!targetPlayerData.isCuffed()) {
-                            if (playerData.getVariable("wantsToCuff") == null) {
-                                Main.getInstance().getCooldownManager().setCooldown(player, "handschellen_anlegen", 5);
-                                playerData.setVariable("wantsToCuff", true);
-                                return;
-                            } else {
-                                if (Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen_anlegen")) {
-                                    player.sendMessage(Prefix.MAIN + "Warte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "handschellen_anlegen") + " Sekunden.");
-                                    return;
+                        if (playerData.getFaction() != null) {
+                            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                                if (!targetPlayerData.isCuffed()) {
+                                    if (playerData.getVariable("wantsToCuff") == null) {
+                                        Main.getInstance().getCooldownManager().setCooldown(player, "handschellen_anlegen", 5);
+                                        playerData.setVariable("wantsToCuff", true);
+                                        return;
+                                    } else {
+                                        if (Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen_anlegen")) {
+                                            player.sendMessage(Prefix.MAIN + "Warte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "handschellen_anlegen") + " Sekunden.");
+                                            return;
+                                        }
+                                    }
+                                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
+                                    targetPlayerData.setCuffed(true);
+                                    playerData.setVariable("wantsToCuff", null);
+                                    ItemManager.removeCustomItem(player, RoleplayItem.CUFF, 1);
+                                } else {
+                                    for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                                        if (player.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
+                                            return;
+                                        }
+                                    }
+                                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
+                                    targetPlayerData.setCuffed(false);
+                                    ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                                 }
                             }
-                            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen angelegt.");
-                            targetPlayerData.setCuffed(true);
-                            playerData.setVariable("wantsToCuff", null);
-                            ItemManager.removeCustomItem(player, RoleplayItem.CUFF, 1);
-                        } else {
-                            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
-                                if (player.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
-                                    return;
-                                }
-                            }
-                            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
-                            targetPlayerData.setCuffed(false);
-                            ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                         }
                         Main.getInstance().getCooldownManager().setCooldown(player, "handschellen", 1);
                     }

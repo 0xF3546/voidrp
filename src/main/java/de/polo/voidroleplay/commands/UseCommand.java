@@ -24,8 +24,8 @@ public class UseCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Syntax-Fehler: /use [Kokain/Joint/Schmerzmittel/Spritze/Antibiotikum]");
             return false;
         }
-        int cocaineCount = ItemManager.getCustomItemCount(player, RoleplayItem.COCAINE);
-        int jointCount = ItemManager.getCustomItemCount(player, RoleplayItem.NOBLE_JOINT);
+        int cocaineCount = ItemManager.getCustomItemCount(player, RoleplayItem.SNUFF);
+        int jointCount = ItemManager.getCustomItemCount(player, RoleplayItem.CIGAR);
         String errorMsg = "§cDu hast nicht genug Drogen.";
         switch (args[0].toLowerCase()) {
             case "kokain":

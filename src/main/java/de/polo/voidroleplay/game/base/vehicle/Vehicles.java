@@ -242,6 +242,9 @@ public class Vehicles implements Listener, CommandExecutor {
                 String type = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
 
                 scoreboardAPI.createScoreboard(player, "vehicle", "§6" + type, () -> {
+                    if (!player.isInsideVehicle()) {
+                        return;
+                    }
                     int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
                     double speedMetersPerSecond = player.getVehicle().getVelocity().length();

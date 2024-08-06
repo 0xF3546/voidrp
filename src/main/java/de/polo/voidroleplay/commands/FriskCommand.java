@@ -104,16 +104,16 @@ public class FriskCommand implements CommandExecutor {
                             isWeapon = true;
                         }
                     }
-                    if (stack.getType().equals(RoleplayItem.JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.JOINT.getDisplayName())) {
+                    if (stack.getType().equals(RoleplayItem.PIPE.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.PIPE.getDisplayName())) {
                         StaatUtil.Asservatemkammer.setJoints(StaatUtil.Asservatemkammer.getJoints() + stack.getAmount());
                     }
-                    if (stack.getType().equals(RoleplayItem.COCAINE.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.COCAINE.getDisplayName())) {
+                    if (stack.getType().equals(RoleplayItem.SNUFF.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.SNUFF.getDisplayName())) {
                         StaatUtil.Asservatemkammer.setCocaine(StaatUtil.Asservatemkammer.getCocaine() + stack.getAmount());
                     }
-                    if (stack.getType().equals(RoleplayItem.MARIHUANA.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.MARIHUANA.getDisplayName())) {
+                    if (stack.getType().equals(RoleplayItem.PIPE_TOBACCO.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.PIPE_TOBACCO.getDisplayName())) {
                         StaatUtil.Asservatemkammer.setWeed(StaatUtil.Asservatemkammer.getWeed() + stack.getAmount());
                     }
-                    if (stack.getType().equals(RoleplayItem.NOBLE_JOINT.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.NOBLE_JOINT.getDisplayName())) {
+                    if (stack.getType().equals(RoleplayItem.CIGAR.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.CIGAR.getDisplayName())) {
                         StaatUtil.Asservatemkammer.setNoble_joints(StaatUtil.Asservatemkammer.getNoble_joints() + stack.getAmount());
                     }
                     targetplayer.getInventory().remove(stack);

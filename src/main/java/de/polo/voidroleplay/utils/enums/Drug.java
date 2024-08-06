@@ -11,13 +11,13 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public enum Drug {
-    COCAINE(RoleplayItem.COCAINE, Arrays.asList(
+    COCAINE(RoleplayItem.SNUFF, Arrays.asList(
             new PotionEffect(PotionEffectType.ABSORPTION, 3 * 60 * 20, 4),
             new PotionEffect(PotionEffectType.SPEED, 15 * 20, 1),
             new PotionEffect(PotionEffectType.REGENERATION, 15 * 12, 0)
 
     )),
-    JOINT(RoleplayItem.NOBLE_JOINT, Arrays.asList(
+    JOINT(RoleplayItem.CIGAR, Arrays.asList(
             new PotionEffect(PotionEffectType.ABSORPTION, 2 * 60 * 20, 1),
             new PotionEffect(PotionEffectType.REGENERATION, 15 * 20, 1)
     )),

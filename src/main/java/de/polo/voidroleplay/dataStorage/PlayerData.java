@@ -705,7 +705,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -722,7 +722,8 @@ public class PlayerData {
         statement.setBoolean(10, isBaptized);
         Timestamp timestamp = Timestamp.valueOf(lastContract);
         statement.setTimestamp(11, timestamp);
-        statement.setInt(12, getId());
+        statement.setInt(12, votes);
+        statement.setInt(13, getId());
         statement.executeUpdate();
     }
 

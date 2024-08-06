@@ -1046,7 +1046,7 @@ public class PhoneUtils implements Listener {
                 }
 
             if (targetPlayer.isOnline()) {
-                Player onPlayer = Bukkit.getPlayer(player.getUniqueId());
+                Player onPlayer = Bukkit.getPlayer(targetPlayer.getUniqueId());
                 if (onPlayer != null) onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + player.getName() + "!");
             }
         }

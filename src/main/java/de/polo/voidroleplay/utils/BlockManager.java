@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -101,6 +102,23 @@ public class BlockManager {
 
         Statement statement = mySQL.getStatement();
         statement.execute("DELETE FROM blocks WHERE id = " + block.getId());
+    }
+
+    public List<Block> getNearbyBlocks(Location location, double radius) {
+        List<Block> blocks = new ArrayList<>();
+        int bx = location.getBlockX();
+        int by = location.getBlockY();
+        int bz = location.getBlockZ();
+        int r = (int) radius;
+
+        for (int x = bx - r; x <= bx + r; x++) {
+            for (int y = by - r; y <= by + r; y++) {
+                for (int z = bz - r; z <= bz + r; z++) {
+                    blocks.add(location.getWorld().getBlockAt(x, y, z));
+                }
+            }
+        }
+        return blocks;
     }
 
     public Collection<RegisteredBlock> getBlocks() {

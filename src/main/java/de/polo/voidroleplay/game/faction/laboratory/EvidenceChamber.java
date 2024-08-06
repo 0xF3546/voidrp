@@ -63,16 +63,16 @@ public class EvidenceChamber {
     public int getAmount(RoleplayItem item) {
         int amount = 0;
         switch (item) {
-            case COCAINE:
+            case SNUFF:
                 amount = cocaine;
                 break;
-            case MARIHUANA:
+            case PIPE_TOBACCO:
                 amount = weed;
                 break;
-            case NOBLE_JOINT:
+            case CIGAR:
                 amount = noble_joints;
                 break;
-            case JOINT:
+            case PIPE:
                 amount = joints;
                 break;
         }
@@ -81,16 +81,16 @@ public class EvidenceChamber {
 
     public void removeItem(RoleplayItem item, int amount) {
         switch (item) {
-            case COCAINE:
+            case SNUFF:
                 setCocaine(cocaine - amount);
                 break;
-            case MARIHUANA:
+            case PIPE_TOBACCO:
                 setWeed(weed - amount);
                 break;
-            case NOBLE_JOINT:
+            case CIGAR:
                 setNoble_joints(noble_joints - amount);
                 break;
-            case JOINT:
+            case PIPE:
                 setJoints(joints - amount);
                 break;
         }
@@ -98,16 +98,16 @@ public class EvidenceChamber {
 
     public void addItem(RoleplayItem item, int amount) {
         switch (item) {
-            case COCAINE:
+            case SNUFF:
                 setCocaine(cocaine + amount);
                 break;
-            case MARIHUANA:
+            case PIPE_TOBACCO:
                 setWeed(weed + amount);
                 break;
-            case NOBLE_JOINT:
+            case CIGAR:
                 setNoble_joints(noble_joints + amount);
                 break;
-            case JOINT:
+            case PIPE:
                 setJoints(joints + amount);
                 break;
         }

@@ -8,7 +8,6 @@ import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -19,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
@@ -204,8 +202,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
 
     public void equipPlayer(Player player) {
         Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.GANGWAR);
-        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 5, 0, RoleplayItem.COCAINE.getDisplayName()));
-        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 5, 0, RoleplayItem.NOBLE_JOINT.getDisplayName()));
+        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 5, 0, RoleplayItem.SNUFF.getDisplayName()));
+        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 5, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(Material.COOKED_BEEF, 16, 0, "§6Nahrung"));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
     }
@@ -270,7 +268,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             player.sendMessage(Main.error_nopermission);
             return;
         }
-        if ((Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() <= 22) || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
+        if ((Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() < 22) || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
             IGangzone gangzone = getGangzoneByName(zone);
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.canDoGangwar()) {

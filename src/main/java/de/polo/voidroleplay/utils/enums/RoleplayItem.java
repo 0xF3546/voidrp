@@ -7,22 +7,22 @@ import org.bukkit.Material;
 @Getter
 @AllArgsConstructor
 public enum RoleplayItem {
-    JOINT("§2Joint", Material.BAMBOO, true),
-    FACTION_JOINT("§2Joint (F)", Material.BAMBOO, true),
-    MARIHUANA("§aMarihuana", Material.KELP, true),
-    BOX_WITH_JOINTS("§7Kiste mit Joints", Material.CHEST, true),
-    COCAINE("§fKokain", Material.SUGAR, true),
-    NOBLE_JOINT("§2Veredelter Joint", Material.BAMBOO, true),
+    PIPE("§6Pfeife", Material.BAMBOO, true),
+    FACTION_PIPE("§6Pfeife (F)", Material.BAMBOO, true),
+    PIPE_TOBACCO("§2Pfeifentabak", Material.KELP, true),
+    BOX_WITH_JOINTS("§7Kiste mit Pfeifen", Material.CHEST, true),
+    SNUFF("§7Schnupftabak", Material.SUGAR, true),
+    CIGAR("§7§lZigarre", Material.BAMBOO, true),
     WELDING_MACHINE("§cSchweißgerät", Material.BLAZE_ROD, true),
-    CUFF("§6Handschellen", Material.LEAD, false),
-    SWAT_SHIELD("§6Einsatzschild", Material.SHIELD, false),
+    CUFF("§6Handschellen", Material.LEAD, true),
+    SWAT_SHIELD("§6Einsatzschild", Material.SHIELD, true),
     ANTIBIOTIKUM("§cAntibiotikum", Material.RED_DYE, false),
     SCHMERZMITTEL("§cSchmerzmittel", Material.RED_DYE, false),
     DIAMOND("§bDiamant", Material.DIAMOND, false),
     PEARL("§bPerle", Material.GHAST_TEAR, false),
     SHELL("§eMuschel", Material.BIRCH_BUTTON, false),
     EXPLOSION_DEVICE("§cSprengsatz", Material.TNT, true),
-    TAZER("§bTazer", Material.GOLDEN_HOE, false),
+    TAZER("§bTazer", Material.GOLDEN_HOE, true),
     CROWBAR("§cBrechstange", Material.BLAZE_ROD, true),
     ADRENALINE_INJECTION("§fAdrenalin Spritze", Material.END_ROD, true),
     BULLETPROOF("§7Schutzweste", Material.LEATHER_CHESTPLATE, false),
@@ -35,7 +35,7 @@ public enum RoleplayItem {
     IBOPROFEN("§c§lIboprofen", Material.PAPER, false),
     JESUSKREUZ("§6Jesuskreuz", Material.TOTEM_OF_UNDYING, false),
     MASK("§7Maske", Material.WITHER_SKELETON_SKULL, true),
-    SMARTPHONE("§eHandy", Material.IRON_NUGGET, false);
+    SMARTPHONE("§eHandy", Material.IRON_NUGGET, true);
 
     private final String displayName;
     private final Material material;

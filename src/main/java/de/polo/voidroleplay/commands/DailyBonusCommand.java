@@ -108,8 +108,8 @@ public class DailyBonusCommand implements CommandExecutor {
                 player.sendMessage("§8[§6Release§8]§a Du erhälst 3.000 EXP, 12.500$, 20g Kokain, 20g veredelte Joints und 500 Coins.");
                 playerManager.addExp(player, 3000);
                 playerData.addMoney(12500, "Release-Reward");
-                ItemManager.addCustomItem(player, RoleplayItem.COCAINE, 20);
-                ItemManager.addCustomItem(player, RoleplayItem.NOBLE_JOINT, 20);
+                ItemManager.addCustomItem(player, RoleplayItem.SNUFF, 20);
+                ItemManager.addCustomItem(player, RoleplayItem.CIGAR, 20);
                 playerManager.addCoins(player, 500);
                 playerManager.addExp(player, 3000);
                 Connection connection = Main.getInstance().mySQL.getConnection();

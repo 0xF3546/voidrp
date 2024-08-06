@@ -8,9 +8,7 @@ import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import de.polo.voidroleplay.utils.enums.StorageType;
-import de.polo.voidroleplay.utils.enums.Storages;
+import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
@@ -378,12 +376,89 @@ public class PlayerSwapHandItemsListener implements Listener {
                 openCoinShop(player, playerData);
             }
         });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§aTiere", "§8 ➥ §7Übersicht zu Spieler & Character Statistiken")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPetMenu(player, playerData);
+            }
+        });
         inventoryManager.setItem(new CustomItem(23, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§bStatistiken", "§8 ➥ §7Übersicht zu Spieler & Character Statistiken")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openStatistics(player, playerData);
             }
         });
+    }
+
+    private void openPetMenu(Player player, PlayerData playerData) {
+        int i = 0;
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aTiere", true, true);
+        for (PetStoreItem petStoreItem : PetStoreItem.values()) {
+            String priceTag = null;
+            if (petStoreItem.getPriceType().equals(PriceType.CASH)) {
+                priceTag = "§a" + petStoreItem.getPrice() + "$";
+            } else if (petStoreItem.getPriceType().equals(PriceType.VOTES)) {
+                priceTag = "§e" + petStoreItem.getPrice() + " Votes";
+            } else if (petStoreItem.getPriceType().equals(PriceType.RECRUITED)) {
+                priceTag = "§5" + petStoreItem.getPrice() + " Spieler geworben";
+            }
+            PlayerPed ped = playerData.getPlayerPetManager().getPed(petStoreItem.getPet());
+            if (ped == null) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(petStoreItem.getMaterial(), 1, 0, petStoreItem.getPet().getDisplayname(), priceTag)) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        switch (petStoreItem.getPriceType()) {
+                            case CASH:
+                                if (playerData.getBargeld() < petStoreItem.getPrice()) {
+                                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld!");
+                                    return;
+                                }
+                                playerData.removeMoney(petStoreItem.getPrice(), "Kauf von " + petStoreItem.getPet().name());
+                                break;
+                            case VOTES:
+                                if (playerData.getVotes() < petStoreItem.getPrice()) {
+                                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Votes!");
+                                    return;
+                                }
+                                playerData.setVotes(playerData.getVotes() - petStoreItem.getPrice());
+                                playerData.save();
+                                break;
+                            case RECRUITED:
+                                if (playerManager.getGeworbenCount(player) < petStoreItem.getPrice()) {
+                                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Spieler geworben!");
+                                    return;
+                                }
+                                break;
+                            default:
+                                return;
+                        }
+
+                        PlayerPed playerPed = new PlayerPed(petStoreItem.getPet(), false);
+                        playerData.getPlayerPetManager().addPet(playerPed, true);
+                        openPetMenu(player, playerData);
+                    }
+                });
+            } else {
+                String activeState = "§cInaktiv";
+                if (ped.isActive()) {
+                    activeState = "§aAktiv";
+                }
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(petStoreItem.getMaterial(), 1, 0, petStoreItem.getPet().getDisplayname(), "§8 ➥ " + activeState)) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (!ped.isActive()) {
+                            if (playerData.getPlayerPetManager().getActivePed() != null) {
+                                player.sendMessage(Prefix.ERROR + "Du hast bereits ein Tier ausgewählt.");
+                                return;
+                            }
+                        }
+                        playerData.getPlayerPetManager().changeState(ped, !ped.isActive());
+                        openPetMenu(player, playerData);
+                    }
+                });
+            }
+            i++;
+        }
     }
 
     private void openStatistics(Player player, PlayerData playerData) {

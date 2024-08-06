@@ -1,7 +1,6 @@
 package de.polo.voidroleplay.game.faction.laboratory;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
 
@@ -75,10 +74,10 @@ public class PlayerLaboratory {
 
     public void remove(RoleplayItem item, int amount) {
         switch (item) {
-            case MARIHUANA:
+            case PIPE_TOBACCO:
                 setWeedAmount(weedAmount -= amount);
                 break;
-            case JOINT:
+            case PIPE:
                 setJointAmount(jointAmount -= amount);
                 break;
         }

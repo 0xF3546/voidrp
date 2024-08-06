@@ -128,7 +128,7 @@ public class Laboratory implements CommandExecutor, Listener {
             });
         }
 
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.CHEST, 1, 0, "§fLabor öffnen", Arrays.asList("§8 ➥ §a" + playerData.getLaboratory().getJointAmount() + " Joints§", "§8 ➥ §a" + playerData.getLaboratory().getWeedAmount() + " Marihuana§"))) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.CHEST, 1, 0, "§fLabor öffnen", Arrays.asList("§8 ➥ §a" + playerData.getLaboratory().getJointAmount() + " Pfeifen§", "§8 ➥ §a" + playerData.getLaboratory().getWeedAmount() + " Pfeifentabak§"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openLabotory(player);
@@ -147,23 +147,23 @@ public class Laboratory implements CommandExecutor, Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7 » §aLabor", true, true);
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 » §7" + playerData.getLaboratory().getWeedAmount() + " Stück", "", "§cKlicke zum entfernen"))) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 1, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName(), Arrays.asList("§8 » §7" + playerData.getLaboratory().getWeedAmount() + " Stück", "", "§cKlicke zum entfernen"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                ItemManager.addCustomItem(player, RoleplayItem.MARIHUANA, playerData.getLaboratory().getWeedAmount());
-                player.sendMessage("§8[§" + factionData.getPrimaryColor() + "Labor§8]§a Du hast " + playerData.getLaboratory().getWeedAmount() + " Marihuana aus dem Labor genommen.");
+                ItemManager.addCustomItem(player, RoleplayItem.PIPE_TOBACCO, playerData.getLaboratory().getWeedAmount());
+                player.sendMessage("§8[§" + factionData.getPrimaryColor() + "Labor§8]§a Du hast " + playerData.getLaboratory().getWeedAmount() + " Pfeifentabak aus dem Labor genommen.");
                 playerData.getLaboratory().setWeedAmount(0);
                 playerData.getLaboratory().save();
                 player.closeInventory();
             }
         });
 
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.JOINT.getMaterial(), 1, 0, RoleplayItem.JOINT.getDisplayName(), Arrays.asList("§8 » §7" + playerData.getLaboratory().getJointAmount() + " Stück", "", "§cKlicke zum entfernen"))) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 1, 0, RoleplayItem.PIPE.getDisplayName(), Arrays.asList("§8 » §7" + playerData.getLaboratory().getJointAmount() + " Stück", "", "§cKlicke zum entfernen"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 Main.getInstance().beginnerpass.didQuest(player, 8, (int) playerData.getLaboratory().getJointAmount());
-                ItemManager.addCustomItem(player, RoleplayItem.JOINT, (int) playerData.getLaboratory().getJointAmount());
-                player.sendMessage("§8[§" + factionData.getPrimaryColor() + "Labor§8]§a Du hast " + playerData.getLaboratory().getJointAmount() + " Joints aus dem Labor genommen.");
+                ItemManager.addCustomItem(player, RoleplayItem.PIPE, (int) playerData.getLaboratory().getJointAmount());
+                player.sendMessage("§8[§" + factionData.getPrimaryColor() + "Labor§8]§a Du hast " + playerData.getLaboratory().getJointAmount() + " Pfeifen aus dem Labor genommen.");
                 playerData.getLaboratory().setJointAmount(0);
                 playerData.getLaboratory().save();
                 player.closeInventory();
@@ -181,7 +181,7 @@ public class Laboratory implements CommandExecutor, Listener {
     private void openFillInventory(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7 » §aLabor befüllen", true, true);
-        int weedAmount = ItemManager.getCustomItemCount(player, RoleplayItem.MARIHUANA);
+        int weedAmount = ItemManager.getCustomItemCount(player, RoleplayItem.PIPE_TOBACCO);
         int amountFor64 = 1;
         if (weedAmount >= 64) {
             amountFor64 = 64;
@@ -189,10 +189,10 @@ public class Laboratory implements CommandExecutor, Listener {
             amountFor64 = weedAmount;
         }
         int finalAmountFor6 = amountFor64;
-        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), finalAmountFor6, 0, "§aAlles einlagern", "§8 ➥ §7" + weedAmount + " Stück")) {
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), finalAmountFor6, 0, "§aAlles einlagern", "§8 ➥ §7" + weedAmount + " Stück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                ItemManager.removeCustomItem(player, RoleplayItem.MARIHUANA, weedAmount);
+                ItemManager.removeCustomItem(player, RoleplayItem.PIPE_TOBACCO, weedAmount);
                 playerData.getLaboratory().add(weedAmount);
                 player.closeInventory();
                 playerData.getLaboratory().save();
@@ -222,14 +222,14 @@ public class Laboratory implements CommandExecutor, Listener {
         LaboratoryAttack attack = getAttack(factionData);
         if (attack == null) {
             if (ItemManager.getCustomItemCount(player, RoleplayItem.WELDING_MACHINE) >= 1) {
-                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", "§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana")) {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", "§8 ➥ §2" + jointAmount + " Pfeifen & " + weedAmount + " Pfeifentabak")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         attackLaboratory(player, factionData, defenderFaction);
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", Arrays.asList("§8 ➥ §2" + jointAmount + " Joints & " + weedAmount + " Marihuana", "", "§8 ➥ §7Dafür benötigst du ein Schweißgerät."))) {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cRaube das Labor aus", Arrays.asList("§8 ➥ §2" + jointAmount + " Pfeifen & " + weedAmount + " Pfeifentabak", "", "§8 ➥ §7Dafür benötigst du ein Schweißgerät."))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                     }
@@ -316,15 +316,16 @@ public class Laboratory implements CommandExecutor, Listener {
     }
 
     public void pushTick() {
-        Iterator<PlayerLaboratory> iterator = playerLaboratories.iterator();
-        while (iterator.hasNext()) {
-            PlayerLaboratory laboratory = iterator.next();
+        List<PlayerLaboratory> laboratoriesToRemove = new ArrayList<>();
+
+        for (PlayerLaboratory laboratory : playerLaboratories) {
             if (laboratory == null) continue;
             PlayerData playerData = playerManager.getPlayerData(laboratory.getOwner());
             if (playerData == null) continue;
             if (playerData.getFaction() == null) continue;
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             if (factionData == null) continue;
+
             for (Plant plant : Main.getInstance().gamePlay.plant.getPlants()) {
                 if (!plant.getOwner().equalsIgnoreCase(factionData.getName())) continue;
                 if (laboratory.getWeedAmount() >= (2 * plant.getMultiplier())) {
@@ -332,11 +333,13 @@ public class Laboratory implements CommandExecutor, Listener {
                     laboratory.setJointAmount(laboratory.getJointAmount() + (1 * plant.getMultiplier()));
                 } else {
                     laboratory.stop();
-                    iterator.remove();
+                    laboratoriesToRemove.add(laboratory);
                     break;
                 }
             }
         }
+
+        playerLaboratories.removeAll(laboratoriesToRemove);
     }
 
     @SneakyThrows

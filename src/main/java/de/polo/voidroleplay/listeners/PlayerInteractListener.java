@@ -16,12 +16,9 @@ import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
-import de.polo.voidroleplay.game.base.housing.Housing;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Sign;
-import org.bukkit.block.TileState;
+import org.bukkit.block.*;
+import org.bukkit.block.data.Openable;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,12 +29,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class PlayerInteractListener implements Listener {
     private final PlayerManager playerManager;
@@ -46,6 +42,8 @@ public class PlayerInteractListener implements Listener {
     private final FactionManager factionManager;
     private final Main.Commands commands;
     private final BlockManager blockManager;
+
+    private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
     public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager, Laboratory laboratory) {
         this.playerManager = playerManager;
@@ -85,6 +83,7 @@ public class PlayerInteractListener implements Listener {
                     Location l = event.getClickedBlock().getLocation();
                     World w = player.getWorld();
                     ArmorStand armorStand = w.spawn(l.add(0.5D, -1, 0.5D), ArmorStand.class);
+                    armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, 0);
                     armorStand.setVisible(false);
                     armorStand.addPassenger(player);
                 }
@@ -272,12 +271,76 @@ public class PlayerInteractListener implements Listener {
                                 }
                             });
                             if (playerData.getVariable("job") == null) {
-                                inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
-                                    @Override
-                                    public void onClick(InventoryClickEvent event) {
+                                if (playerData.getFaction() != null && (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) && playerData.isDuty()) {
+                                    if (rammingPlayers.get(player) != null) {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9§mRammen", "§8 ➥§7 Du bist bereits eine Tür am eintreten")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
 
+                                            }
+                                        });
+                                    } else {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9Rammen", "§8 ➥§7 Fang an die Tür aufzutreten (2 Polizisten benötigt)")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                Player player = (Player) event.getWhoClicked(); // Ensure we get the player from the event
+                                                List<Player> nearPlayers = new ArrayList<>();
+                                                for (Player p : Bukkit.getOnlinePlayers()) {
+                                                    if (player.getLocation().distance(p.getLocation()) < 5 && p != player) {
+                                                        nearPlayers.add(p);
+                                                    }
+                                                }
+                                                if (nearPlayers.size() < 1) {
+                                                    player.sendMessage(Prefix.ERROR + "Es sind nicht genug Polizisten in der Nähe.");
+                                                    return;
+                                                }
+
+                                                double radius = 5.0;
+                                                Block nearestDoorBlock = null;
+                                                double nearestDistance = radius;
+                                                Location playerLocation = player.getLocation();
+
+                                                for (Block block : blockManager.getNearbyBlocks(playerLocation, radius)) {
+                                                    Material type = block.getType();
+                                                    if (type == Material.IRON_DOOR || type == Material.OAK_DOOR) {
+                                                        double distance = playerLocation.distance(block.getLocation());
+                                                        if (distance < nearestDistance) {
+                                                            nearestDistance = distance;
+                                                            nearestDoorBlock = block;
+                                                        }
+                                                    }
+                                                }
+
+                                                if (nearestDoorBlock == null) {
+                                                    player.sendMessage(Prefix.ERROR + "Keine Tür in der Nähe gefunden.");
+                                                    return;
+                                                }
+
+                                                BlockState state = nearestDoorBlock.getState();
+                                                if (state.getBlockData() instanceof Openable) {
+                                                    Openable openable = (Openable) state.getBlockData();
+                                                    if (openable.isOpen()) {
+                                                        player.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
+                                                    } else {
+                                                        openable.setOpen(true);
+                                                        state.setBlockData(openable);
+                                                        state.update();
+                                                        player.sendMessage(Prefix.MAIN + "Die Tür wurde geöffnet.");
+                                                    }
+                                                } else {
+                                                    player.sendMessage(Prefix.ERROR + "Dies ist keine Tür.");
+                                                }
+                                            }
+                                        });
                                     }
-                                });
+                                } else {
+                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+
+                                        }
+                                    });
+                                }
                             } else {
                                 if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
                                     inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
@@ -359,16 +422,16 @@ public class PlayerInteractListener implements Listener {
                 itemStack.setAmount(itemStack.getAmount() - 1);
                 if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
                 new Case(player, CaseType.DAILY);
-            } else if (event.getItem().getItemMeta().getDisplayName().equals(RoleplayItem.JOINT.getDisplayName())) {
+            } else if (event.getItem().getItemMeta().getDisplayName().equals(RoleplayItem.PIPE.getDisplayName())) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
                 inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, RoleplayItem.BOX_WITH_JOINTS.getDisplayName(), "§8 ➥ §aVerpacke 3 Joints in einer Kiste.")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
-                        if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) < 3) {
+                        if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) < 3) {
                             player.sendMessage(Main.error + "Du hast nicht genug Joints.");
                             return;
                         }
-                        ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 3);
+                        ItemManager.removeCustomItem(player, RoleplayItem.PIPE, 3);
                         ItemManager.addCustomItem(player, RoleplayItem.BOX_WITH_JOINTS, 1);
                         player.sendMessage("§7Du hast eine Kiste hergestellt.");
                         ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " stellt eine Kiste mit Joints her");

@@ -26,6 +26,7 @@ public class PlayerPetManager {
     private final PlayerData playerData;
     private final Player player;
     private final List<PlayerPed> pets = new ArrayList<>();
+
     public PlayerPetManager(PlayerData playerData, Player player) {
         this.playerData = playerData;
         this.player = player;
@@ -41,7 +42,7 @@ public class PlayerPetManager {
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            PlayerPed ped = new PlayerPed(Pet.valueOf(result.getString("ped")), result.getBoolean("active"));
+            PlayerPed ped = new PlayerPed(Pet.valueOf(result.getString("pet")), result.getBoolean("active"));
             pets.add(ped);
         }
     }
@@ -89,11 +90,9 @@ public class PlayerPetManager {
 
         if (state) {
             spawnPet(pet);
+        } else {
+            despawnPet(pet);
         }
-    }
-
-    public void removeEntity(PlayerPed ped) {
-        ped.getEntity().remove();
     }
 
     public Collection<PlayerPed> getPlayerPets() {
@@ -107,15 +106,42 @@ public class PlayerPetManager {
         return null;
     }
 
+    public PlayerPed getPed(Pet pet) {
+        for (PlayerPed ped : getPlayerPets()) {
+            if (ped.getPet().equals(pet)) return ped;
+        }
+        return null;
+    }
+
     public void spawnPet(PlayerPed ped) {
-        Entity entity = player.getWorld().spawnEntity(player.getLocation(), ped.getPet().getAnimal());
+        Animals entity = (Animals) player.getWorld().spawnEntity(player.getLocation(), ped.getPet().getAnimal());
         entity.setCustomName("§7" + player.getName() + "'s Haustier");
         entity.setCustomNameVisible(true);
-
+        entity.teleport(player.getLocation());
         ped.setEntity(entity);
+        entity.setInvulnerable(true);
+        entity.setSilent(true);
+        entity.setRemoveWhenFarAway(false);
+        entity.setAI(false); // hinteher laufe
+        entity.setCollidable(false);
+        entity.setCanPickupItems(false);
+        entity.setBreed(false);
+        entity.setTicksLived(Integer.MAX_VALUE);
 
-        makePetInvulnerable(entity);
+        if (ped.getPet().isSmall()) {
+            entity.setBaby();
+        } else {
+            entity.setAdult();
+        }
     }
+
+    public void despawnPet(PlayerPed ped) {
+        if (ped.getEntity() != null) {
+            ped.getEntity().remove();
+            ped.setEntity(null);
+        }
+    }
+
 
     public void everySecond() {
         PlayerPed ped = getActivePed();
@@ -125,9 +151,5 @@ public class PlayerPetManager {
         if (pet.isValid() && player.isOnline()) {
             ((Animals) pet).setTarget(player);
         }
-    }
-
-    private void makePetInvulnerable(Entity pet) {
-        pet.setInvulnerable(true);
     }
 }

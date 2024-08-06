@@ -121,7 +121,7 @@ public class PlantFunctions implements Listener {
         }
         if (plant.getOwner().equalsIgnoreCase(playerData.getFaction())) {
             if (plant.hasTookout(player.getUniqueId())) {
-                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), "§8 » §cDu kannst in " + getTakeOutDifference(plant) + "min wieder Marihuana entnehmen!")) {
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 1, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName(), "§8 » §cDu kannst in " + getTakeOutDifference(plant) + "min wieder Marihuana entnehmen!")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
@@ -129,7 +129,7 @@ public class PlantFunctions implements Listener {
                 });
             } else {
                 int takeOutAmount = Math.round(10 * (plant.getMultiplier() + factionData.upgrades.getDrugEarningLevel()));
-                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.MARIHUANA.getMaterial(), 1, 0, RoleplayItem.MARIHUANA.getDisplayName(), Arrays.asList("§8 » §cKlick um dir " + takeOutAmount + " zu entnehmen"))) {
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 1, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName(), Arrays.asList("§8 » §cKlick um dir " + takeOutAmount + " zu entnehmen"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (plant.hasTookout(player.getUniqueId())) {
@@ -138,7 +138,7 @@ public class PlantFunctions implements Listener {
                         player.closeInventory();
                         Main.getInstance().beginnerpass.didQuest(player, 5, takeOutAmount);
                         Main.getInstance().seasonpass.didQuest(player, 18, takeOutAmount);
-                        ItemManager.addCustomItem(player, RoleplayItem.MARIHUANA, takeOutAmount);
+                        ItemManager.addCustomItem(player, RoleplayItem.PIPE_TOBACCO, takeOutAmount);
                         plant.addTookout(player.getUniqueId());
                         plant.save();
                     }

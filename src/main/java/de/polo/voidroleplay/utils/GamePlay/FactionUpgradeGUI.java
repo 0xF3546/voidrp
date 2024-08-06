@@ -31,7 +31,7 @@ public class FactionUpgradeGUI {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bFraktionsupgrades", true, true);
         int level = factionData.upgrades.getDrugEarningLevel();
         int upgradeDrugPrice = (int) (Math.pow(2, level - 1) * 400000);
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 1, 0, "§2Drogen-Multiplier", Arrays.asList("§8 ➥§e Aktuell§8:§7 " + factionData.upgrades.getDrugEarning() + "x", "§8 ➥§7Plantagen produzieren mehr Drogen", "", "§8 » §aUpgrade für " + utils.toDecimalFormat(upgradeDrugPrice) + "$"))) {
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, "§2Drogen-Multiplier", Arrays.asList("§8 ➥§e Aktuell§8:§7 " + factionData.upgrades.getDrugEarning() + "x", "§8 ➥§7Plantagen produzieren mehr Drogen", "", "§8 » §aUpgrade für " + utils.toDecimalFormat(upgradeDrugPrice) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (playerData.getFactionGrade() < 7) {

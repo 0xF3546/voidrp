@@ -331,17 +331,17 @@ public class FactionData {
         public int getAmount(RoleplayItem item) {
             int amount = 0;
             switch (item) {
-                case COCAINE:
+                case SNUFF:
                     amount = cocaine;
                     break;
-                case MARIHUANA:
+                case PIPE_TOBACCO:
                     amount = weed;
                     break;
-                case NOBLE_JOINT:
+                case CIGAR:
                     amount = noble_joint;
                     break;
-                case JOINT:
-                case FACTION_JOINT:
+                case PIPE:
+                case FACTION_PIPE:
                     amount = joint;
                     break;
             }
@@ -350,17 +350,17 @@ public class FactionData {
 
         public void removeItem(RoleplayItem item, int amount) {
             switch (item) {
-                case COCAINE:
+                case SNUFF:
                     setCocaine(cocaine - amount);
                     break;
-                case MARIHUANA:
+                case PIPE_TOBACCO:
                     setWeed(weed - amount);
                     break;
-                case NOBLE_JOINT:
+                case CIGAR:
                     setNoble_joint(noble_joint - amount);
                     break;
-                case FACTION_JOINT:
-                case JOINT:
+                case FACTION_PIPE:
+                case PIPE:
                     setJoint(joint - amount);
                     break;
             }
@@ -368,17 +368,17 @@ public class FactionData {
 
         public void addItem(RoleplayItem item, int amount) {
             switch (item) {
-                case COCAINE:
+                case SNUFF:
                     setCocaine(cocaine + amount);
                     break;
-                case MARIHUANA:
+                case PIPE_TOBACCO:
                     setWeed(weed + amount);
                     break;
-                case NOBLE_JOINT:
+                case CIGAR:
                     setNoble_joint(noble_joint + amount);
                     break;
-                case FACTION_JOINT:
-                case JOINT:
+                case FACTION_PIPE:
+                case PIPE:
                     setJoint(joint + amount);
                     break;
             }

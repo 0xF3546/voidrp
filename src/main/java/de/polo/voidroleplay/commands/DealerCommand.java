@@ -47,36 +47,36 @@ public class DealerCommand implements CommandExecutor {
     private void open(Player player, Dealer dealer) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer", true, true);
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.COCAINE.getMaterial(), 1, 0, RoleplayItem.COCAINE.getDisplayName(), "§8 ➥ §eBenötigt§8: §71 Joint")) {
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §eBenötigt§8: §71 Joint")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) < 1 && ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_JOINT) < 1) {
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) < 1 && ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_PIPE) < 1) {
                     player.sendMessage(Main.error + "Du hast davon nicht genug.");
                     player.closeInventory();
                     return;
                 }
-                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) >= 1) {
-                    ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 1);
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) >= 1) {
+                    ItemManager.removeCustomItem(player, RoleplayItem.PIPE, 1);
                 } else {
-                    ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 1);
+                    ItemManager.removeCustomItem(player, RoleplayItem.FACTION_PIPE, 1);
                 }
-                ItemManager.addCustomItem(player, RoleplayItem.COCAINE, 1);
+                ItemManager.addCustomItem(player, RoleplayItem.SNUFF, 1);
             }
         });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.NOBLE_JOINT.getMaterial(), 1, 0, RoleplayItem.NOBLE_JOINT.getDisplayName(), "§8 ➥ §eBenötigt§8: §71 Joint")) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 1, 0, RoleplayItem.CIGAR.getDisplayName(), "§8 ➥ §eBenötigt§8: §71 Joint")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) < 1 && ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_JOINT) < 1) {
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) < 1 && ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_PIPE) < 1) {
                     player.sendMessage(Main.error + "Du hast davon nicht genug.");
                     player.closeInventory();
                     return;
                 }
-                if (ItemManager.getCustomItemCount(player, RoleplayItem.JOINT) >= 1) {
-                    ItemManager.removeCustomItem(player, RoleplayItem.JOINT, 1);
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) >= 1) {
+                    ItemManager.removeCustomItem(player, RoleplayItem.PIPE, 1);
                 } else {
-                    ItemManager.removeCustomItem(player, RoleplayItem.FACTION_JOINT, 1);
+                    ItemManager.removeCustomItem(player, RoleplayItem.FACTION_PIPE, 1);
                 }
-                ItemManager.addCustomItem(player, RoleplayItem.NOBLE_JOINT, 1);
+                ItemManager.addCustomItem(player, RoleplayItem.CIGAR, 1);
             }
         });
         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, "§a+" + ServerManager.getPayout("box_dealer") + "$", "§8 ➥ §eBenötigt§8: §71 Kiste mit Joints")) {

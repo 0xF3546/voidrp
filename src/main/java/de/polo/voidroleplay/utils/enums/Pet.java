@@ -14,16 +14,17 @@ import org.bukkit.entity.EntityType;
 @AllArgsConstructor
 @Getter
 public enum Pet {
-    CHICKEN(EntityType.CHICKEN, false),
-    RABBIT(EntityType.RABBIT, false),
-    BEE(EntityType.BEE, false),
-    WOLF(EntityType.WOLF, false),
-    OCELOT(EntityType.OCELOT, false),
-    BAT(EntityType.BAT, false),
-    MUSHROOM_COW(EntityType.MUSHROOM_COW, true),
-    POLAR_BEAR(EntityType.POLAR_BEAR, true),
-    PARROT(EntityType.PARROT, false);
+    CHICKEN(EntityType.CHICKEN, false, "§eHuhn"),
+    RABBIT(EntityType.RABBIT, false, "§eHase"),
+    BEE(EntityType.BEE, false, "§eBiene"),
+    WOLF(EntityType.WOLF, false, "§eHund"),
+    OCELOT(EntityType.OCELOT, false, "§eKatze"),
+    BAT(EntityType.BAT, false, "§eFledermaus"),
+    MUSHROOM_COW(EntityType.MUSHROOM_COW, true, "§ePilz Kuh"),
+    POLAR_BEAR(EntityType.POLAR_BEAR, true, "§eEisbär"),
+    PARROT(EntityType.PARROT, false, "§ePapagei");
 
     private final EntityType animal;
     private boolean isSmall;
+    private String displayname;
 }

@@ -4,26 +4,32 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.BreakPersistentBlockEvent;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.ServerManager;
+import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.enums.Farmer;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class BlockBreakListener implements Listener {
     private final PlayerManager playerManager;
     private final Main.Commands commands;
+
+    private final HashMap<LocalDateTime, Block> brokenBlocks = new HashMap<>();
 
     public BlockBreakListener(PlayerManager playerManager, Main.Commands commands) {
         this.playerManager = playerManager;
@@ -46,9 +52,7 @@ public class BlockBreakListener implements Listener {
                     event.getBlock().setType(Material.AIR);
                     Main.getInstance().seasonpass.didQuest(player, 1);
                     ItemManager.addCustomItem(player, RoleplayItem.ARAMID, 1);
-                    Main.waitSeconds(120, () -> {
-                        event.getBlock().setType(Material.DEAD_BUSH);
-                    });
+                    brokenBlocks.put(Utils.getTime(), event.getBlock());
                 }
             }
             if (playerData.getVariable("job") != null) {
@@ -76,6 +80,23 @@ public class BlockBreakListener implements Listener {
                 Bukkit.getPluginManager().callEvent(new BreakPersistentBlockEvent(player, event.getBlock()));
             } else {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void everyMinute(MinuteTickEvent event) {
+        LocalDateTime now = Utils.getTime();
+        Iterator<Map.Entry<LocalDateTime, Block>> iterator = brokenBlocks.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<LocalDateTime, Block> entry = iterator.next();
+            LocalDateTime timeBroken = entry.getKey();
+            Block block = entry.getValue();
+
+            if (Duration.between(timeBroken, now).toMinutes() >= 2) {
+                block.setType(Material.DEAD_BUSH);
+                iterator.remove();
             }
         }
     }

@@ -9,6 +9,7 @@ import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
 import de.polo.voidroleplay.utils.enums.PlayerPed;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
@@ -29,13 +30,15 @@ public class QuitListener implements Listener {
     private final ServerManager serverManager;
     private final SupportManager supportManager;
     private PlayerQuit playerQuit;
-    public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager) {
+    private final ScoreboardAPI scoreboardAPI;
+    public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager, ScoreboardAPI scoreboardAPI) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         this.utils = utils;
         this.commands = commands;
         this.serverManager = serverManager;
         this.supportManager = supportManager;
+        this.scoreboardAPI = scoreboardAPI;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
     @EventHandler
@@ -44,6 +47,7 @@ public class QuitListener implements Listener {
         event.setQuitMessage("");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
+        scoreboardAPI.clearScoreboards(player);
         adminManager.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             player.setGameMode(GameMode.SURVIVAL);
@@ -69,7 +73,7 @@ public class QuitListener implements Listener {
         }
         PlayerPed ped = playerData.getPlayerPetManager().getActivePed();
         if (ped != null) {
-            playerData.getPlayerPetManager().removeEntity(ped);
+            playerData.getPlayerPetManager().despawnPet(ped);
         }
         try {
             Vehicles.deleteVehicleByUUID(player.getUniqueId().toString());
