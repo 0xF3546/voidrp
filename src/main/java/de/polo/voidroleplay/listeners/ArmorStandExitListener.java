@@ -20,17 +20,12 @@ public class ArmorStandExitListener implements Listener {
             ArmorStand armorStand = (ArmorStand) dismounted;
             if (event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
-                // Überprüfe, ob der ArmorStand den richtigen Namen hat
                 if (armorStand.getCustomName() != null && armorStand.getCustomName().equals("CarryStand_" + player.getUniqueId())) {
-                    // Verhindere das Verlassen des ArmorStands
                     event.setCancelled(true);
                     return;
                 }
             }
-            // Entferne den ArmorStand, wenn er nicht mehr gültig ist
-            if (!armorStand.isValid()) {
-                armorStand.remove();
-            }
+            armorStand.remove();
         }
     }
 }

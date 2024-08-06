@@ -6,10 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +33,13 @@ public class DeleteBrokenEntitiesCommand implements CommandExecutor {
                 }
             }
             if (entity instanceof Vehicle) {
+                NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
+                if (entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER) == null) {
+                    entity.remove();
+                    player.sendMessage(Main.gamedesign_prefix + "Fahrzeug wurde gelöscht.");
+                }
+            }
+            if (entity instanceof ArmorStand) {
                 NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
                 if (entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER) == null) {
                     entity.remove();
