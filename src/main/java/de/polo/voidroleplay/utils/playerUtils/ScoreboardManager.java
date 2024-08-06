@@ -119,4 +119,9 @@ public class ScoreboardManager implements Listener {
             }
         }
     }
+
+    public void clearScoreboards(Player player) {
+        activeScoreboards.remove(player);
+        playerScoreboards.removeIf(scoreboard -> scoreboard.getPlayer().equals(player));
+    }
 }

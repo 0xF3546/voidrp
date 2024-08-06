@@ -73,4 +73,8 @@ public class ScoreboardAPI {
     public void everySecond() {
         scoreboardManager.everySecond();
     }
+
+    public void clearScoreboards(Player player) {
+        scoreboardManager.clearScoreboards(player);
+    }
 }

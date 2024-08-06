@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
+import java.util.UUID;
 
 public class DeathListener implements Listener {
     private final PlayerManager playerManager;
@@ -59,7 +60,6 @@ public class DeathListener implements Listener {
                     playerData.setDead(true);
                     playerData.setDeathTime(300);
                 }
-                // event.getEntity().getKiller().sendMessage("§8[§c✟§8]§7 " + event.getEntity().getName());
                 ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta meta = (SkullMeta) skull.getItemMeta();
                 assert meta != null;
@@ -67,22 +67,35 @@ public class DeathListener implements Listener {
                 meta.setDisplayName("§7" + player.getName());
                 skull.setItemMeta(meta);
 
+                Player killer = player.getKiller();
+                UUID playerUUID = player.getUniqueId();
+
                 Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
                 utils.deathUtil.addDeathSkull(player.getUniqueId().toString(), item);
-                if ((ServerManager.contractDataMap.get(player.getUniqueId().toString()) != null && Objects.equals(factionManager.faction(Objects.requireNonNull(player.getKiller())), "ICA")) || playerData.isHitmanDead()) {
-                    ContractData contractData = ServerManager.contractDataMap.get(player.getUniqueId().toString());
+                if ((ServerManager.contractDataMap.get(playerUUID.toString()) != null
+                        && killer != null
+                        && Objects.equals(factionManager.faction(killer), "ICA"))
+                        || playerData.isHitmanDead()) {
+
+                    ContractData contractData = ServerManager.contractDataMap.get(playerUUID.toString());
+
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         PlayerData playersData = playerManager.getPlayerData(players);
                         if (playersData.getFaction() == null) continue;
                         if (playersData.getFaction().equalsIgnoreCase("ICA")) {
-                            players.sendMessage("§8[§cKopfgeld§8]§e " + factionManager.getPlayerFactionRankName(player.getKiller()) + " " + player.getKiller().getName() + " §7hat sich das Kopfgeld von §e" + player.getName() + " §7geholt. §8(§a+" + contractData.getAmount() + "$§8)");
+                            players.sendMessage("§8[§cKopfgeld§8]§e " + factionManager.getPlayerFactionRankName(killer)
+                                    + " " + killer.getName()
+                                    + " §7hat sich das Kopfgeld von §e" + player.getName()
+                                    + " §7geholt. §8(§a+" + contractData.getAmount() + "$§8)");
                         }
                     }
-                    PlayerData killerData = playerManager.getPlayerData(player.getKiller());
+
+                    PlayerData killerData = playerManager.getPlayerData(killer);
                     killerData.addKarma(Main.random(1, 3), false);
                     removeKarma = false;
-                    playerManager.addExp(player.getKiller(), Main.random(30, 90));
-                    ServerManager.contractDataMap.remove(player.getUniqueId().toString());
+                    playerManager.addExp(killer, Main.random(30, 90));
+                    ServerManager.contractDataMap.remove(playerUUID.toString());
+
                     try {
                         Statement statement = Main.getInstance().mySQL.getStatement();
                         statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + player.getUniqueId() + "'");
@@ -90,6 +103,7 @@ public class DeathListener implements Listener {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+
                     item.setCustomName("§8" + player.getName());
                     item.setCustomNameVisible(true);
                     utils.deathUtil.setHitmanDeath(player);
@@ -162,10 +176,13 @@ public class DeathListener implements Listener {
                     }
                 }
                 PlayerData killerData = playerManager.getPlayerData(player.getKiller());
-                killerData.removeKarma(Main.random(1, 3), false);
+                if (killerData != null) killerData.removeKarma(Main.random(1, 3), false);
                 Main.getInstance().seasonpass.didQuest(player.getKiller(), 5);
                 PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO death_logs (uuid, killer) VALUES (?, ?)");
-
+                statement.setString(1, player.getUniqueId().toString());
+                statement.setString(2, player.getKiller().getUniqueId().toString());
+                statement.execute();
+                statement.close();
             }
         }
 }
