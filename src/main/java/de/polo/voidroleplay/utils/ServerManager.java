@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.enums.ShopType;
+import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -184,8 +185,9 @@ public class ServerManager {
             @Override
             public void run() {
                 LocalDateTime now = Utils.getTime();
-                Main.getInstance().getScoreboardAPI().everySecond();
-                if (now.getHour() == 0 && now.getMinute() == 1 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
+                ScoreboardAPI scoreboardAPI = Main.getInstance().getScoreboardAPI();
+                if (scoreboardAPI != null) scoreboardAPI.everySecond();
+                if (now.getHour() == 0 && now.getMinute() == 1 && now.getSecond() == 0 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
                     // clear everything
                     PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM seasonpass_player_quests");
                     statement.execute();
@@ -250,7 +252,6 @@ public class ServerManager {
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
-                    playerData.getPlayerPetManager().everySecond();
                     if (playerData.isDead()) {
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
                         utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
@@ -258,6 +259,7 @@ public class ServerManager {
                             Main.getInstance().utils.deathUtil.despawnPlayer(players);
                         }
                     }
+                    playerData.getPlayerPetManager().everySecond();
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20, 20);
@@ -311,7 +313,7 @@ public class ServerManager {
                     switch (announceType) {
                         case 1:
                             TextComponent text = new TextComponent("§8[§6Regelwerk§8]§e Unwissenheit schützt vor Strafe nicht!");
-                            text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/forum/index.php?thread%2F4-ingame-regelwerk%2F=&postID=4#post4"));
+                            text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/rules"));
                             text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oRegelwerk öffnen")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 player.spigot().sendMessage(text);

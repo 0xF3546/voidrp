@@ -159,7 +159,7 @@ public final class Main extends JavaPlugin {
 
     private void registerListener(Commands commands) {
         new JoinListener(playerManager, adminManager, utils, locationManager, serverManager);
-        new QuitListener(playerManager, adminManager, utils, commands, serverManager, supportManager);
+        new QuitListener(playerManager, adminManager, utils, commands, serverManager, supportManager, scoreboardAPI);
         new DamageListener(playerManager);
         new ChatListener(playerManager, supportManager, utils);
         new BlockBreakListener(playerManager, commands);
@@ -469,6 +469,8 @@ public final class Main extends JavaPlugin {
         public WüfelnCommand wüfelnCommand;
         public OpenInvCommand openInvCommand;
         public GeworbenCommand geworbenCommand;
+        public KickSecondaryTeam kickSecondaryTeam;
+        public AuktionCommand auktionCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -639,6 +641,8 @@ public final class Main extends JavaPlugin {
             wüfelnCommand = new WüfelnCommand();
             openInvCommand = new OpenInvCommand(playerManager);
             geworbenCommand = new GeworbenCommand();
+            kickSecondaryTeam = new KickSecondaryTeam(playerManager);
+            auktionCommand = new AuktionCommand(playerManager, factionManager, locationManager);
 
 
             main.registerCommands();

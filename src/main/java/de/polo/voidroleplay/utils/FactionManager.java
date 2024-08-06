@@ -257,6 +257,20 @@ public class FactionManager {
             }
         }
     }
+
+    public void sendCustomLeaderMessageToFactions(String message, String... factions) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (String faction : factions) {
+                PlayerData playerData = playerManager.getPlayerData(player);
+                if (playerData.getFaction() == null) continue;
+                if (playerData.getFactionGrade() < 7) continue;
+                if (playerData.getFaction().equalsIgnoreCase(faction)) {
+                    player.sendMessage(message);
+                }
+            }
+        }
+    }
+
     public void sendCustomMessageToFaction(String faction, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerManager.getPlayerData(player);
@@ -416,6 +430,7 @@ public class FactionManager {
 
         List<FactionPlayerData> factionPlayers = new ArrayList<>();
         PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM players WHERE faction = ?");
+        statement.setString(1, factionData.getName());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             FactionPlayerData fpd = new FactionPlayerData();

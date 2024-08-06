@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.api.faction.gangwar.IGangzone;
+import de.polo.voidroleplay.commands.AuktionCommand;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.MySQL;
@@ -31,6 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,6 +41,7 @@ import org.json.JSONObject;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -666,6 +669,31 @@ public class PlayerManager implements Listener, ServerTiming {
                     Main.getInstance().laboratory.pushTick();
                 }
 
+                if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                    if (currentMinute == 30 && Utils.getTime().getHour() == 17) {
+                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 90 Minuten ist die Auktion beendet!", factions);
+                    }
+                    if (currentMinute == 30 && Utils.getTime().getHour() == 18) {
+                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 30 Minuten ist die Auktion beendet!", factions);
+                    }
+
+                    if (currentMinute == 45 && Utils.getTime().getHour() == 18) {
+                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 15 Minuten ist die Auktion beendet!", factions);
+                    }
+
+                    if (currentMinute == 55 && Utils.getTime().getHour() == 18) {
+                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 5 Minuten ist die Auktion beendet!", factions);
+                    }
+
+                    if (currentMinute == 0 && Utils.getTime().getHour() == 19 && Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                        Main.getInstance().commands.auktionCommand.rollAuction();
+                    }
+                }
+
                 if (currentMinute == 0) {
                     int currentHour = Main.getInstance().utils.getCurrentHour();
                     Bukkit.getPluginManager().callEvent(new HourTickEvent(currentHour));
@@ -685,6 +713,11 @@ public class PlayerManager implements Listener, ServerTiming {
                                 plus += 150;
                             }
                         }
+                        int auction = 0;
+                        if (Integer.parseInt(GlobalStats.getValue("auction")) == factionData.getId()) {
+                            auction = Main.random(1, 3000);
+                            plus += auction;
+                        }
 
                         // Batch-Operation für Fraktionsmitglieder
                         for (PlayerData playerData : playerDataMap.values()) {
@@ -692,7 +725,7 @@ public class PlayerManager implements Listener, ServerTiming {
                                 if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
                                     if (player == null) continue;
-                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus);
+                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction);
                                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                                 }
                             }
@@ -713,7 +746,7 @@ public class PlayerManager implements Listener, ServerTiming {
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
 
-    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus) {
+    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction) {
         player.sendMessage(" ");
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
         player.sendMessage(" ");
@@ -736,7 +769,10 @@ public class PlayerManager implements Listener, ServerTiming {
         }
         if (factionData.hasLaboratory()) {
             player.sendMessage(" ");
-            player.sendMessage("§8 ➥ §2Joints§8:§a +" + factionData.getJointsMade() + " Stück");
+            player.sendMessage("§8 ➥ §7Zigarren§8:§a +" + factionData.getJointsMade() + " Stück");
+        }
+        if (auction != 0) {
+            player.sendMessage("§8 ➥ §3Bank§8:§a +" + auction + "$");
         }
         player.sendMessage(" ");
         if (plus >= 0) {
@@ -1191,6 +1227,7 @@ public class PlayerManager implements Listener, ServerTiming {
         armorStand.setBasePlate(false);
         armorStand.setArms(false);
         armorStand.setSmall(true);
+        armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, 0);
         armorStand.setCustomName("CarryStand_" + player.getUniqueId()); // Füge einen benutzerdefinierten Namen hinzu
 
         Location playerLocation = player.getLocation();
