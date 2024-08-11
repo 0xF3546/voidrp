@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum WeaponType {
     NORMAL(true),
     FFA(false),
-    GANGWAR(false);
+    GANGWAR(false),
+    MILITARY(false);
 
 
     private boolean needsAmmoToReload;

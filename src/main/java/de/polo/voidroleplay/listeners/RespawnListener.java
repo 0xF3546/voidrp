@@ -2,6 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -19,8 +20,17 @@ public class RespawnListener implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        float flySpeed = 0;
         if (!playerData.isDead()) {
-            return;
+            if (MilitaryDrop.ACTIVE) {
+                if (!Main.getInstance().gamePlay.militaryDrop.isPlayerInEvent(player)) {
+                    return;
+                } else {
+                    flySpeed = 0.1F;
+                }
+            } else {
+                return;
+            }
         }
         if (playerData.getVariable("current_lobby") != null) {
             return;
@@ -28,6 +38,6 @@ public class RespawnListener implements Listener {
         event.setRespawnLocation(playerData.getDeathLocation());
         player.sendTitle("§cDu bist gestorben.", null, 1, 12, 1);
         player.setGameMode(GameMode.SPECTATOR);
-        player.setFlySpeed(0);
+        player.setFlySpeed(flySpeed);
     }
 }

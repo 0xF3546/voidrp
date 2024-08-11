@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
@@ -240,7 +241,13 @@ public class Vehicles implements Listener, CommandExecutor {
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 ScoreboardAPI scoreboardAPI = Main.getInstance().getScoreboardAPI();
                 String type = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-
+                if (playerData.getVariable("job") != null) {
+                    if (playerData.getVariable("job").equals("pfeifentransport")) {
+                        event.setCancelled(true);
+                        player.sendMessage(Prefix.ERROR + "Du kannst kein Auto fahren, während du den Pfeifentransport machst!");
+                        return;
+                    }
+                }
                 scoreboardAPI.createScoreboard(player, "vehicle", "§6" + type, () -> {
                     if (!player.isInsideVehicle()) {
                         return;

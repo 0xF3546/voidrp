@@ -27,11 +27,15 @@ public class ShoutCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Syntax-Fehler: /shout [Nachricht]");
             return false;
         }
+        String playerName = player.getName();
+        if (Main.getInstance().gamePlay.getMaskState(player) != null) {
+            playerName = "Maskierter";
+        }
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 28) {
-                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + player.getName() + " schreit: " + utils.stringArrayToString(args) + "!");
+                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + playerName + " schreit: " + utils.stringArrayToString(args) + "!");
             } else if (player.getLocation().distance(players.getLocation()) <= 38) {
-                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + player.getName() + " schreit: " + utils.stringArrayToString(args) + "!");
+                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + playerName + " schreit: " + utils.stringArrayToString(args) + "!");
             }
         }
         ChatUtils.LogMessage(utils.stringArrayToString(args), player.getUniqueId());

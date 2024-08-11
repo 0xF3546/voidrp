@@ -65,13 +65,17 @@ public class ChatListener implements Listener {
                         String restOfString = msg.substring(1).toLowerCase();
                         msg = firstChar + restOfString;
                     }*/
+                    String playerName = player.getName();
+                    if (Main.getInstance().gamePlay.getMaskState(player) != null) {
+                        playerName = "Maskierter";
+                    }
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         if (player.getLocation().distance(players.getLocation()) <= 8) {
-                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + player.getName() + " " + type + ":§f " + msg);
+                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + playerName + " " + type + ":§f " + msg);
                         } else if (player.getLocation().distance(players.getLocation()) <= 15) {
-                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + player.getName() + " " + type + "§7:§7 " + msg);
+                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + playerName + " " + type + "§7:§7 " + msg);
                         } else if (player.getLocation().distance(players.getLocation()) <= 28) {
-                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §8" + player.getName() + " " + type + "§8:§8 " + msg);
+                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §8" + playerName + " " + type + "§8:§8 " + msg);
                         }
                     }
                     ChatUtils.LogMessage(msg, player.getUniqueId());

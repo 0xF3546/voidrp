@@ -58,11 +58,11 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
 
             List<Map.Entry<String, Integer>> sortedFactionBets = new ArrayList<>(factionBets.entrySet());
             sortedFactionBets.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
-
+            player.sendMessage("§7   ===§8[§3Bank§8]§7===");
             for (Map.Entry<String, Integer> entry : sortedFactionBets) {
                 FactionData fData = factionManager.getFactionData(entry.getKey());
                 if (fData == null) continue;
-                player.sendMessage(fData.getPrimaryColor() + fData.getName() + "§8:§a " + entry.getValue() + "$");
+                player.sendMessage("§8 ➥ §" + fData.getPrimaryColor() + fData.getName() + "§8:§a " + Utils.toDecimalFormat(entry.getValue()) + "$");
             }
             return true;
         }
@@ -73,9 +73,18 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
         }
         try {
             int amount = Integer.parseInt(args[1]);
+            if (playerData.getBargeld() < amount) {
+                player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
+                return false;
+            }
+            if (amount < 1) {
+                player.sendMessage(Prefix.ERROR + "Der Betrag muss mindestens 1 Betragen");
+                return false;
+            }
             String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
-            factionManager.sendCustomLeaderMessageToFactions("§8[§3Auktion§8]§7 Die Fraktion " + factionData.getPrimaryColor() + factionData.getFullname() + "§7 haben Ihr Gebot um §a" + amount + "$§7 erhöht.", factions);
-            factionManager.sendMessageToFaction(playerData.getFaction(), factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat das Gebot der Fraktion um " + amount + "$ erhöht.");
+            factionManager.sendCustomLeaderMessageToFactions("§8[§3Auktion§8]§7 Die Fraktion §" + factionData.getPrimaryColor() + factionData.getFullname() + "§7 haben Ihr Gebot um §a" + Utils.toDecimalFormat(amount) + "$§7 erhöht.", factions);
+            factionManager.sendMessageToFaction(playerData.getFaction(), factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat das Gebot der Fraktion um " + Utils.toDecimalFormat(amount) + "$ erhöht.");
+            playerData.removeMoney(amount, "Auktion - Bet");
             payIn(factionData, amount);
         } catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
@@ -149,5 +158,15 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
         );
 
         GlobalStats.setValue("auction", String.valueOf(winningFaction.getId()), true);
+        clearList();
+    }
+
+    @SneakyThrows
+    private void clearList() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM auction_bets");
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 }

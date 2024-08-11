@@ -26,6 +26,9 @@ public class DropCommand implements CommandExecutor {
                 case "weizenlieferant":
                     Main.getInstance().commands.farmerCommand.dropTransport(player);
                     break;
+                case "pfeifentransport":
+                    Main.getInstance().commands.pfeifenTransport.dropTransport(player);
+                    break;
             }
         } else {
             player.sendMessage(Main.error + "Du hast keinen Job angenommen.");

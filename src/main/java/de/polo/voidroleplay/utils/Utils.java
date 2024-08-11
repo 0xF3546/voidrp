@@ -186,10 +186,16 @@ public class Utils {
                         break;
                 }
             }
-            player.setDisplayName(prefix + color + player.getName());
-            player.setPlayerListName(prefix + color + player.getName() + " " + suffix);
-            player.setCustomName(prefix + color + player.getName());
-            player.setCustomNameVisible(true);
+            if (Main.getInstance().gamePlay.getMaskState(player) == null) {
+                player.setDisplayName(prefix + color + player.getName());
+                player.setPlayerListName(prefix + color + player.getName() + " " + suffix);
+                player.setCustomName(prefix + color + player.getName());
+                player.setCustomNameVisible(true);
+            } else {
+                player.setCustomNameVisible(true);
+                player.setCustomName("§k" + player.getName());
+                player.setDisplayName("§k" + player.getName());
+            }
         }
     }
 
@@ -377,6 +383,7 @@ public class Utils {
 
     public static OfflinePlayer getOfflinePlayer(String name) {
         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            if (player == null) continue;
             if (player.getName() == null) continue;
             if (player.getName().equalsIgnoreCase(name)) return player;
         }

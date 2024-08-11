@@ -204,6 +204,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setVotes(result.getInt("votes"));
                 playerData.setChurch(result.getBoolean("isChurch"));
                 playerData.setChurch(result.getBoolean("isBaptized"));
+                playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
 
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");
@@ -301,6 +302,9 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
                 playerData.addonXP.setLumberjackLevel(result.getInt("lumberjackLevel"));
                 playerData.addonXP.setLumberjackXP(result.getInt("lumberjackXP"));
+                playerData.addonXP.setPopularityLevel(result.getInt("popularityLevel"));
+                playerData.addonXP.setPopularityXP(result.getInt("popularityXP"));
+
 
                 ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
                 if (jail.next()) {
@@ -627,7 +631,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     PlayerData playerData = getPlayerData(player.getUniqueId());
                     playerDataMap.put(player.getUniqueId(), playerData);
                     if (playerData.getBoostDuration() != null) {
-                        if (playerData.getBoostDuration().isAfter(Utils.getTime())) {
+                        if (Utils.getTime().isAfter(playerData.getBoostDuration())) {
                             clearExpBoost(player);
                         }
                     }
@@ -665,31 +669,27 @@ public class PlayerManager implements Listener, ServerTiming {
                     }
                 }
 
-                if (currentMinute % 15 == 0) {
-                    Main.getInstance().laboratory.pushTick();
-                }
-
-                if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-                    if (currentMinute == 30 && Utils.getTime().getHour() == 17) {
+                if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+                    if (Utils.getTime().getMinute() == 30 && Utils.getTime().getHour() == 17) {
                         String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
                         Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 90 Minuten ist die Auktion beendet!", factions);
                     }
-                    if (currentMinute == 30 && Utils.getTime().getHour() == 18) {
+                    if (Utils.getTime().getMinute() == 30 && Utils.getTime().getHour() == 18) {
                         String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
                         Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 30 Minuten ist die Auktion beendet!", factions);
                     }
 
-                    if (currentMinute == 45 && Utils.getTime().getHour() == 18) {
+                    if (Utils.getTime().getMinute() == 45 && Utils.getTime().getHour() == 18) {
                         String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
                         Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 15 Minuten ist die Auktion beendet!", factions);
                     }
 
-                    if (currentMinute == 55 && Utils.getTime().getHour() == 18) {
+                    if (Utils.getTime().getMinute() == 55 && Utils.getTime().getHour() == 18) {
                         String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
                         Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 5 Minuten ist die Auktion beendet!", factions);
                     }
 
-                    if (currentMinute == 0 && Utils.getTime().getHour() == 19 && Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                    if (Utils.getTime().getMinute() == 0 && Utils.getTime().getHour() == 19 && Utils.getTime().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
                         Main.getInstance().commands.auktionCommand.rollAuction();
                     }
                 }
@@ -710,13 +710,17 @@ public class PlayerManager implements Listener, ServerTiming {
                         // Berechnung der Gebietseinnahmen
                         for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {
                             if (gangwarData.getGangZone().getOwner().equals(factionData.getName())) {
-                                plus += 150;
+                                plus = plus + 150;
                             }
                         }
                         int auction = 0;
-                        if (Integer.parseInt(GlobalStats.getValue("auction")) == factionData.getId()) {
-                            auction = Main.random(1, 3000);
-                            plus += auction;
+                        try {
+                            if (Integer.parseInt(GlobalStats.getValue("auction")) == factionData.getId()) {
+                                auction = Main.random(500, 1000);
+                                plus = plus + auction;
+                            }
+                        } catch (Exception ignored) {
+
                         }
 
                         // Batch-Operation für Fraktionsmitglieder
@@ -741,6 +745,10 @@ public class PlayerManager implements Listener, ServerTiming {
                             throw new RuntimeException(e);
                         }
                     }
+                }
+
+                if (currentMinute % 15 == 0) {
+                    if (Main.getInstance().laboratory != null) Main.getInstance().laboratory.pushTick();
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
@@ -803,7 +811,7 @@ public class PlayerManager implements Listener, ServerTiming {
         String characters = "a0b1c2d3e4569";
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         if (playerData.getBoostDuration() != null) {
-            if (playerData.getBoostDuration().isAfter(Utils.getTime())) {
+            if (Utils.getTime().isAfter(playerData.getBoostDuration())) {
                 clearExpBoost(player);
             } else {
                 exp = exp * 2;
@@ -842,6 +850,10 @@ public class PlayerManager implements Listener, ServerTiming {
             case LUMBERJACK:
                 playerData.addonXP.addLumberjackXP(amount);
                 Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getLumberjackXP() + "/" + expType.getLevelUpXp() + ")");
+                break;
+            case POPULARITY:
+                playerData.addonXP.addPopularity(amount);
+                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getPopularityXP() + "/" + expType.getLevelUpXp() + ")");
                 break;
         }
     }

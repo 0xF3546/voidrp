@@ -1,8 +1,10 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import lombok.SneakyThrows;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -12,15 +14,33 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 public class WorldListener implements Listener {
     public WorldListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+    @SneakyThrows
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getClickedBlock() == null) {
             return;
+        }
+        if (event.getClickedBlock().getType().name().contains("SHULKER")) {
+            Block block = event.getClickedBlock();
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO block_logs (uuid, block, x, y, z, type) VALUES (?, ?, ?, ?, ?, ?)");
+            statement.setString(1, player.getUniqueId().toString());
+            statement.setString(2, block.getType().name());
+            statement.setInt(3, block.getX());
+            statement.setInt(4, block.getY());
+            statement.setInt(5, block.getZ());
+            statement.setString(6, "interacted");
+            statement.execute();
+            statement.close();
+            connection.close();
         }
         if (event.getClickedBlock().getType() == Material.CHEST) {
             if (!player.getGameMode().equals(GameMode.CREATIVE)) {

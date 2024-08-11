@@ -1,5 +1,11 @@
 package de.polo.voidroleplay.dataStorage;
 
+import de.polo.voidroleplay.Main;
+import lombok.SneakyThrows;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 public class BlacklistData {
     private int id;
     private String uuid;
@@ -63,5 +69,18 @@ public class BlacklistData {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    @SneakyThrows
+    public void save() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE blacklist SET reason = ?, kills = ?, price = ? WHERE id = ?");
+        statement.setString(1, reason);
+        statement.setInt(2, kills);
+        statement.setInt(3, price);
+        statement.setInt(4, id);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
     }
 }

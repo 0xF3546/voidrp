@@ -9,6 +9,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class FactionManager {
@@ -81,6 +82,7 @@ public class FactionManager {
             factionData.equip.setSturmgewehr_ammo(locs.getInt("sturmgewehr_ammo"));
             factionData.upgrades.calculate();
             factionDataMap.put(locs.getString(2), factionData);
+            factionData.loadReasons();
         }
 
         ResultSet grades = statement.executeQuery("SELECT * FROM faction_grades");
@@ -151,6 +153,43 @@ public class FactionManager {
         TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
+    @SneakyThrows
+    public void removePlayerFromFrak(UUID uuid) {
+        PlayerData playerData = playerManager.getPlayerData(uuid);
+        LocalDateTime cooldown = Utils.getTime().plusHours(20);
+        if (playerData != null) {
+            Player player = Bukkit.getPlayer(uuid);
+            playerData.setFaction(null);
+            playerData.setFactionGrade(0);
+            playerData.setDuty(false);
+            Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
+            if (playerData.getPermlevel() >= 60) {
+                Utils.Tablist.updatePlayer(player);
+                player.setCustomNameVisible(true);
+            } else {
+                player.setDisplayName("§7" + player.getName());
+                player.setPlayerListName("§7" + player.getName());
+                player.setCustomName("§7" + player.getName());
+                player.setCustomNameVisible(true);
+            }
+            playerData.setFactionCooldown(cooldown);
+            for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
+                if (offlinePlayer.getName() != null) {
+                    if (offlinePlayer.getName().equalsIgnoreCase(player.getName())) {
+                        dbPlayerData.setFaction_grade(0);
+                        dbPlayerData.setFaction(null);
+                    }
+                }
+            }
+        }
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, `factionCooldown` = '" + cooldown + "' WHERE `uuid` = '" + uuid + "'");
+        ServerManager.factionPlayerDataMap.remove(uuid.toString());
+        TeamSpeak.reloadPlayer(uuid);
+    }
+
     public void removePlayerFromFrak(Player player) throws SQLException {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
@@ -187,8 +226,10 @@ public class FactionManager {
         Statement statement = Main.getInstance().mySQL.getStatement();
         assert statement != null;
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
+        LocalDateTime cooldown = Utils.getTime().plusHours(6);
         statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        playerData.setFactionCooldown(cooldown);
         TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
@@ -442,5 +483,24 @@ public class FactionManager {
         }
 
         return factionPlayers;
+    }
+
+    @SneakyThrows
+    public PlayerData getFactionOfPlayer(UUID uuid) {
+        PlayerData playerData = playerManager.getPlayerData(uuid);
+        if (playerData != null) {
+            return playerData;
+        }
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT faction, faction_grade FROM players WHERE uuid = ?");
+        statement.setString(1, uuid.toString());
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            PlayerData pData = new PlayerData();
+            pData.setFaction(result.getString("faction"));
+            pData.setFactionGrade(result.getInt("faction_grade"));
+            return pData;
+        }
+        return null;
     }
 }

@@ -5,6 +5,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
+import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
 import de.polo.voidroleplay.utils.enums.PlayerPed;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
@@ -52,6 +53,7 @@ public class QuitListener implements Listener {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             player.setGameMode(GameMode.SURVIVAL);
         }
+        if (MilitaryDrop.ACTIVE) Main.getInstance().gamePlay.militaryDrop.handleQuit(player);
         serverManager.updateTablist(null);
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             playerData.setVariable("inventory::build", player.getInventory().getContents());

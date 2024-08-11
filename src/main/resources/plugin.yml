@@ -244,3 +244,11 @@ commands:
   geworben:
   kicksecondaryteam:
   auktion:
+  fixblock:
+  pfeifentransport:
+  test:
+  blacklistreasons:
+  modifyblacklist:
+    aliases: mbl
+  autoblacklist:
+    aliases: [abl, ablacklist]

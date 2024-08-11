@@ -52,14 +52,13 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Der Rang muss von 0-8 sein!");
             return false;
         }
-        DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
-        FactionPlayerData factionPlayerData = ServerManager.factionPlayerDataMap.get(targetplayer.getUniqueId().toString());
+        PlayerData targetData = factionManager.getFactionOfPlayer(targetplayer.getUniqueId());
         try {
-            if (!factionPlayerData.getFaction().equals(playerData.getFaction()) || dbPlayerData.getFaction() == null) {
+            if (!targetData.getFaction().equals(playerData.getFaction()) || targetData.getFaction() == null) {
                 player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner Fraktion.");
                 return false;
             }
-            if (factionPlayerData.getFaction_grade() >= playerData.getFactionGrade()) {
+            if (targetData.getFactionGrade() >= playerData.getFactionGrade()) {
                 player.sendMessage(Main.error_nopermission);
                 return false;
             }
@@ -72,14 +71,16 @@ public class GiveRankCommand implements CommandExecutor {
                 if (fpd.getFaction_grade() >= 7) leaders++;
             }
         }
-        if (leaders >= 3) {
-            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann nur 3 Leader haben!");
+        int leaderLimit = 3;
+        if (playerData.getFaction().equalsIgnoreCase("Medic") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+            leaderLimit = 4;
+        }
+        if (leaders >= leaderLimit) {
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann nur " + leaderLimit +" Leader haben!");
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
-        factionPlayerData.setFaction_grade(rang);
-        dbPlayerData.setFaction_grade(rang);
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             statement.executeUpdate("UPDATE players SET faction_grade = " + rang + " WHERE uuid = '" + targetplayer.getUniqueId() + "'");

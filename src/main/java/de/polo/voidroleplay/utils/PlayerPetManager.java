@@ -6,9 +6,11 @@ import de.polo.voidroleplay.utils.enums.Pet;
 import de.polo.voidroleplay.utils.enums.PlayerPed;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -115,6 +117,7 @@ public class PlayerPetManager {
 
     public void spawnPet(PlayerPed ped) {
         Animals entity = (Animals) player.getWorld().spawnEntity(player.getLocation(), ped.getPet().getAnimal());
+        entity.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "owner"), PersistentDataType.STRING, player.getUniqueId().toString());
         entity.setCustomName("§7" + player.getName() + "'s Haustier");
         entity.setCustomNameVisible(true);
         entity.teleport(player.getLocation());

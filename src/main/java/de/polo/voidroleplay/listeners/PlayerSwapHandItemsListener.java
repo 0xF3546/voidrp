@@ -8,6 +8,7 @@ import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
@@ -34,6 +35,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerSwapHandItemsListener implements Listener {
     private final PlayerManager playerManager;
@@ -347,7 +349,45 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             });
         }
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.VILLAGER_SPAWN_EGG, 1, 0, "§cDealer suchen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openDealers(player);
+            }
+        });
+        if (MilitaryDrop.ACTIVE) {
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§cMilitärabsturz beitreten")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    if (!Main.getInstance().gamePlay.militaryDrop.handleJoin(player)) {
+                        player.sendMessage(Prefix.ERROR + "Du kannst dem Absturz-Event nicht beitreten!");
+                    }
+                }
+            });
+        }
     }
+
+    private void openDealers(Player player) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer");
+        Collection<Dealer> dealers = Main.getInstance().gamePlay.getCurrentDealer();
+
+        List<Integer> slots = Arrays.asList(11, 13, 15);
+        int index = 0;
+
+        for (Dealer dealer : dealers.stream().limit(3).collect(Collectors.toList())) {
+            int slot = slots.get(index);
+            inventoryManager.setItem(new CustomItem(slot, ItemManager.createItem(Material.VILLAGER_SPAWN_EGG, 1, 0, "§cDealer-" + dealer.getGangzone(), "§8 ➥ §e" + (int) player.getLocation().distance(dealer.getLocation()) + "m")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    Main.getInstance().utils.navigation.createNaviByCord(player, (int) dealer.getLocation().getX(), (int) dealer.getLocation().getY(), (int) dealer.getLocation().getZ());
+                }
+            });
+            index++;
+        }
+    }
+
 
     private void openBag(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);

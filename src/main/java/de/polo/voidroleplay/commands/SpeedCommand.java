@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.PlayerManager;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,11 +19,11 @@ public class SpeedCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getPermlevel() < 70) {
+        if (playerData.getPermlevel() < 70 && !player.getGameMode().equals(GameMode.CREATIVE)) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
-        if (!playerData.isAduty()) {
+        if (!playerData.isAduty() && !player.getGameMode().equals(GameMode.CREATIVE)) {
             player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
             return false;
         }

@@ -59,14 +59,20 @@ public class Streetwar implements CommandExecutor {
     public void addPunkte(String faction, int points, String reason) {
         for (StreetwarData streetwarData : streetwarDataMap.values()) {
             if (streetwarData.getAttacker().equalsIgnoreCase(faction)) {
+                if (factionManager.getOnlineMemberCount(streetwarData.getAttacker()) < 3) {
+                    return;
+                }
                 streetwarData.setAttacker_points(streetwarData.getAttacker_points() + points);
                 factionManager.sendCustomMessageToFaction(streetwarData.getAttacker(), "§8[§6Streetwar§8]§e +" + points + " Punkte §8→ §e" + reason + "§8[§e" + streetwarData.getAttacker_points() + "§7/§6450§8]");
             }
             if (streetwarData.getDefender().equalsIgnoreCase(faction)) {
+                if (factionManager.getOnlineMemberCount(streetwarData.getDefender()) < 3) {
+                    return;
+                }
                 streetwarData.setDefender_points(streetwarData.getDefender_points() + points);
                 factionManager.sendCustomMessageToFaction(streetwarData.getDefender(), "§8[§6Streetwar§8]§e +" + points + " Punkte §8→ §e" + reason + "§8[§e" + streetwarData.getDefender_points() + "§7/§6450§8]");
             }
-            if (streetwarData.getAttacker_points() >= 450 || streetwarData.getDefender_points() >= 450) {
+            if (streetwarData.getAttacker_points() >= 100 || streetwarData.getDefender_points() >= 100) {
                 endStreetwar(streetwarData.getId());
             } else {
                 streetwarData.save();

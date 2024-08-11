@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.faction.streetwar.StreetwarData;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
+import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,10 +47,15 @@ public class DeathListener implements Listener {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             boolean removeKarma = true;
             event.setKeepInventory(true);
+            playerData.setDeathLocation(player.getLocation());
+            if (MilitaryDrop.ACTIVE) {
+                if (player.getKiller() == null) return;
+                Main.getInstance().gamePlay.militaryDrop.handleDeath(player, player.getKiller());
+                return;
+            }
             if (playerData.getVariable("current_lobby") != null) {
                 utils.ffaUtils.useSpawn(player, playerData.getIntVariable("current_lobby"));
             } else {
-                playerData.setDeathLocation(player.getLocation());
                 if (!playerData.isDead()) {
                     adminManager.send_message(player.getName() + " starb.", null);
                 } else {

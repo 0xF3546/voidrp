@@ -32,7 +32,7 @@ public class MemberCommand implements CommandExecutor {
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + factionData.getFullname() + "§8]§7===");
             Map<Integer, List<OfflinePlayer>> sort = new HashMap<>();
-            for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
+            for (FactionPlayerData factionPlayerData : factionManager.getFactionMember(playerData.getFaction())) {
                 if (factionPlayerData.getFaction().equals(playerData.getFaction())) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(factionPlayerData.getUuid()));
                     if (sort.containsKey(factionPlayerData.getFaction_grade())) {

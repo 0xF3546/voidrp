@@ -745,6 +745,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§6Handy§8]§7 Du hast aufgelegt.");
                     players.sendMessage("§8[§6Handy§8]§7 " + player.getName() + "§7 hat aufgelegt.");
                     playerData.setVariable("calling", null);
+                    player.stopSound(Sound.MUSIC_CREATIVE);
                 }
             }
         } else {

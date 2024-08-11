@@ -27,6 +27,7 @@ import java.util.List;
 
 public class Navigation implements CommandExecutor, TabCompleter, Listener {
     private final PlayerManager playerManager;
+
     public Navigation(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
@@ -39,6 +40,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
         double nearestDistance = Double.MAX_VALUE;
         for (NaviData data : LocationManager.naviDataMap.values()) {
             if (data.getLocation() == null) continue;
+            if (data.isGroup()) continue;
             Location dataLocation = Main.getInstance().locationManager.getLocation(data.getLocation());
             double distance = dataLocation.distance(location);
 
@@ -46,6 +48,9 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                 nearest = data;
                 nearestDistance = distance;
             }
+        }
+        if (nearest == null) {
+            nearest = LocationManager.naviDataMap.values().stream().findFirst().orElse(null);
         }
         return nearest;
     }
@@ -237,6 +242,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                     if (progress >= length) {
                         progress = 0.0;
                     }
+                    spawnParticle(player, targetLocation, Particle.REDSTONE);
                     String actionBarText = "§8 » §6Noch " + (int) Math.floor(player.getLocation().distance(targetLocation)) + " Meter§8 « ";
                     player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     if (player.getLocation().distance(targetLocation) <= 5) {
@@ -265,7 +271,8 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                 if (!isNavi) {
                     player.sendMessage(Prefix.ERROR + "Der Navipunkt wurde nicht gefunden.");
                     return;
-                };
+                }
+                ;
                 playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", nav);
                 if (!silent) player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
                 final double length = 5.0;
@@ -287,6 +294,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                             }
                             String actionBarText = "§8 » §6Noch " + (int) Math.floor(player.getLocation().distance(targetLocation)) + " Meter§8 « ";
                             player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+                            spawnParticle(player, targetLocation, Particle.REDSTONE);
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
                                 player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
@@ -325,6 +333,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                             }
                             String actionBarText = "§8 » §6Noch " + (int) Math.floor(player.getLocation().distance(targetLocation)) + " Meter§8 « ";
                             player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
+                            spawnParticle(player, targetLocation, Particle.REDSTONE);
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
                                 player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
@@ -369,4 +378,13 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
         }
     }
 
+    private void spawnParticle(Player player, Location location, Particle particle) {
+        for (int d = 0; d <= 90; d += 1) {
+            Location particleLoc = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+            particleLoc.setX(location.getX() + Math.cos(d) * 2);
+            particleLoc.setZ(location.getZ() + Math.sin(d) * 2);
+            player.spawnParticle(particle, particleLoc, 1, new Particle.DustOptions(Color.WHITE, 5));
+        }
+
+    }
 }

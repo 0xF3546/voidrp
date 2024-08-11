@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.dataStorage.Company;
+import de.polo.voidroleplay.dataStorage.SubGroup;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
@@ -95,6 +96,12 @@ public class VertragUtil {
                     playerData.setCompany(company);
                     playerData.save();
                     player.sendMessage("§6Du bist " + company.getName() + " beigetreten.");
+                    break;
+                case "subgroup_invite":
+                    SubGroup group = Main.getInstance().factionManager.subGroups.getSubGroup(Integer.parseInt(curr.toString()));
+                    playerData.setSubGroupId(group.getId());
+                    playerData.save();
+                    player.sendMessage("§6Du bist " + group.getName() + " beigetreten.");
                     break;
                 case "rental":
                     String[] args = curr.toString().split("_");
@@ -217,6 +224,10 @@ public class VertragUtil {
                 case "company_invite":
                     Company company = Main.getInstance().companyManager.getCompanyById(Integer.parseInt(curr.toString()));
                     player.sendMessage("§6Du hast die einladung zu " + company.getName() + " abgelehnt.");
+                    break;
+                case "subgroup_invite":
+                    SubGroup subGroup = Main.getInstance().factionManager.subGroups.getSubGroup(Integer.parseInt(curr.toString()));
+                    player.sendMessage("§6Du hast die einladung zu " + subGroup.getName() + " abgelehnt.");
                     break;
                 case "phonecall":
                     PhoneUtils.denyCall(player, curr);

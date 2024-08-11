@@ -504,5 +504,20 @@ public class PlayerInteractListener implements Listener {
                 }
             }
         }
+
+
+        /*
+        No null
+         */
+
+
+        if (event.getItem() == null) return;
+        if (event.getItem().getType().equals(RoleplayItem.MASK.getMaterial()) && Objects.requireNonNull(event.getItem().getItemMeta()).getDisplayName().equalsIgnoreCase(RoleplayItem.MASK.getDisplayName())){
+            if (ItemManager.getCustomItemCount(player, RoleplayItem.MASK) < 1) {
+                return;
+            }
+            ItemManager.removeCustomItem(player, RoleplayItem.MASK, 1);
+            Main.getInstance().gamePlay.setMaskState(player, Utils.getTime().plusMinutes(20));
+        }
     }
 }

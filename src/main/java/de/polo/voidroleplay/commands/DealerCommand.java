@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Dealer;
 import de.polo.voidroleplay.dataStorage.FactionData;
@@ -21,11 +22,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.time.LocalDateTime;
+
 public class DealerCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final GamePlay gamePlay;
     private final LocationManager locationManager;
     private final FactionManager factionManager;
+
     public DealerCommand(PlayerManager playerManager, GamePlay gamePlay, LocationManager locationManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.gamePlay = gamePlay;
@@ -33,20 +37,23 @@ public class DealerCommand implements CommandExecutor {
         this.factionManager = factionManager;
         Main.registerCommand("dealer", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        for (Dealer dealer : gamePlay.getDealer()) {
-            if (locationManager.getDistanceBetweenCoords(player, "dealer-" + dealer.getId()) < 5) {
+        for (Dealer dealer : gamePlay.getCurrentDealer()) {
+            if (player.getLocation().distance(dealer.getLocation()) < 5) {
                 open(player, dealer);
             }
         }
         return false;
     }
+
     private void open(Player player, Dealer dealer) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer", true, true);
+        FactionData factionData = factionManager.getFactionData(dealer.getOwner());
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer §8(§" + factionData.getPrimaryColor() + factionData.getName() + "§8)", true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §eBenötigt§8: §71 Joint")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -79,7 +86,8 @@ public class DealerCommand implements CommandExecutor {
                 ItemManager.addCustomItem(player, RoleplayItem.CIGAR, 1);
             }
         });
-        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, "§a+" + ServerManager.getPayout("box_dealer") + "$", "§8 ➥ §eBenötigt§8: §71 Kiste mit Joints")) {
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, "§a+" + dealer.getPrice() + "$", "§8 ➥ §eBenötigt§8: §71 Kiste mit Pfeifen")) {
+            @SneakyThrows
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (ItemManager.getCustomItemCount(player, RoleplayItem.BOX_WITH_JOINTS) < 1) {
@@ -87,8 +95,12 @@ public class DealerCommand implements CommandExecutor {
                     player.closeInventory();
                     return;
                 }
+                if (!dealer.canSell()) {
+                    player.sendMessage(Prefix.ERROR + "Der Dealer ist aktuell überfüllt.");
+                    return;
+                }
                 FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-                double amount = ServerManager.getPayout("box_dealer");
+                double amount = dealer.getPrice();
                 if (Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() < 22) {
                     amount = amount * 1.08;
                 }
@@ -100,8 +112,34 @@ public class DealerCommand implements CommandExecutor {
                 player.sendMessage("§8[§cDealer§8]§7 Aus dem Verkauf einer Box erhälst du §a" + cashOutAmount + "$§7. Es gehen §a" + percentage + "$§7 an deine Fraktion.");
                 playerData.addMoney(cashOutAmount, "Verkauf-Dealer");
                 player.closeInventory();
-                dealer.setLocation(player.getLocation());
                 soldAtDealer(dealer);
+
+                IGangzone gangzone = Main.getInstance().utils.gangwarUtils.getGangzoneByName(dealer.getGangzone());
+                double ownerPercentages = 0.005;
+                if (!gangzone.getOwner().equalsIgnoreCase(dealer.getOwner())) {
+                    ownerPercentages = 0.002;
+                    factionManager.addFactionMoney(gangzone.getOwner(), (int) (amount * 0.003), "Verkauf von Kisten an Dealer-" + dealer.getId() + " durch " + playerData.getFaction());
+                }
+                factionManager.addFactionMoney(gangzone.getOwner(), (int) (amount * ownerPercentages), "Verkauf von Kisten an Dealer-" + dealer.getId() + " durch " + playerData.getFaction());
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cÜbernehmen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (dealer.getOwner().equalsIgnoreCase(playerData.getFaction())) {
+                    player.sendMessage(Main.error + "Du kannst deine eigene Apotheken nicht einschüchtern.");
+                    return;
+                }
+                if (gamePlay.rob.containsKey(dealer)) {
+                    player.sendMessage(Prefix.ERROR + "Jemand nimmt aktuell den Dealer ein!");
+                    return;
+                }
+                player.closeInventory();
+                factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Jemand versucht deinen Dealer zu übernehmen.");
+                factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Ihr fangt an den Dealer zu übernehmen!");
+                player.sendMessage("§8[§cDealer§8]§7 Warte nun 10 Minuten, bleibe dabei in der nähe des Dealers.");
+                dealer.setAttacker(playerData.getFaction());
+                gamePlay.rob.put(dealer, 0);
             }
         });
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§6Ankauf")) {
@@ -153,7 +191,8 @@ public class DealerCommand implements CommandExecutor {
     }
 
     private void soldAtDealer(Dealer dealer) {
-        boolean isSnitch = Utils.isRandom(7);
+        boolean isSnitch = Utils.isRandom(3);
+        dealer.setSold(dealer.getSold() + 1);
         if (!isSnitch) return;
         TextComponent message = new TextComponent("§8[§cInformant§8]§7 Jemand hat mir hier gerade Drogen verkauft. §8[§7Klick§8]");
         message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/navi " + (int) dealer.getLocation().getX() + " " + (int) dealer.getLocation().getY() + " " + (int) dealer.getLocation().getZ()));

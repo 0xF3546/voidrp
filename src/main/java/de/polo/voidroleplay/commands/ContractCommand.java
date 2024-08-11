@@ -29,7 +29,7 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Syntax-Fehler: /contract [Spieler] [Kopfgeld]");
             return false;
         }
-        if (playerData.getFaction() == null || playerData.getFaction().equalsIgnoreCase("ICA")) {
+        if ((playerData.getFaction() != null && playerData.getFaction().equalsIgnoreCase("ICA"))) {
             player.sendMessage(Prefix.error_nopermission);
             return false;
         }

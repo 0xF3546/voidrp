@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.utils.PlayerPetManager;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.Workstation;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
 
@@ -127,6 +129,10 @@ public class PlayerData {
     @Setter
     private int karma;
     private List<PlayerWorkstation> workstations = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private LocalDateTime factionCooldown;
 
     @Getter
     @Setter
@@ -705,7 +711,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -723,7 +729,9 @@ public class PlayerData {
         Timestamp timestamp = Timestamp.valueOf(lastContract);
         statement.setTimestamp(11, timestamp);
         statement.setInt(12, votes);
-        statement.setInt(13, getId());
+        String formattedBoostDuration = factionCooldown.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        statement.setString(13, formattedBoostDuration);
+        statement.setInt(14, getId());
         statement.executeUpdate();
     }
 
@@ -901,6 +909,14 @@ public class PlayerData {
         private int lumberjackXP;
         private int lumberjackLevel;
 
+        @Getter
+        @Setter
+        private int popularityXP;
+
+        @Getter
+        @Setter
+        private int popularityLevel;
+
         public int getFishingXP() {
             return fishingXP;
         }
@@ -948,6 +964,19 @@ public class PlayerData {
             try {
                 Statement statement = Main.getInstance().mySQL.getStatement();
                 statement.executeUpdate("UPDATE player_addonxp SET lumberjackXP = " + lumberjackXP + " WHERE uuid = '" + player.getUniqueId() + "'");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public void addPopularity(int amount) {
+            popularityXP += amount;
+            if (popularityXP >= EXPType.POPULARITY.getLevelUpXp()) {
+                setPopularityLevel(getPopularityLevel() + 1);
+            }
+            try {
+                Statement statement = Main.getInstance().mySQL.getStatement();
+                statement.executeUpdate("UPDATE player_addonxp SET popularityXP = " + popularityXP + ", popularityXP = " + popularityLevel + " WHERE uuid = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

@@ -137,6 +137,13 @@ public class EquipCommand implements CommandExecutor, Listener {
             public void onClick(InventoryClickEvent event) {
                 if (event.isLeftClick()) {
                     int priceForFaction = (int) (ServerManager.getPayout("equip_sturmgewehr") * (100 - factionData.upgrades.getWeapon()) / 100);
+                    try {
+                        if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                            priceForFaction = (int) (priceForFaction * 0.75);
+                        }
+                    } catch (Exception ex) {
+
+                    }
                     if (factionData.getBank() < priceForFaction) {
                         player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um diese Waffe zu kaufen.");
                         return;
@@ -166,6 +173,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) (ServerManager.getPayout("equip_sniper"));
+                    try {
+                        if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                            priceForFaction = (int) (priceForFaction * 0.75);
+                        }
+                    } catch (Exception ex) {
+
+                    }
                     if (factionData.getBank() < priceForFaction) {
                         player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um diese Waffe zu kaufen.");
                         return;
@@ -190,6 +204,13 @@ public class EquipCommand implements CommandExecutor, Listener {
             @Override
             public void onClick(InventoryClickEvent event) {
                 int priceForFaction = (int) (ServerManager.getPayout("equip_sturmgewehr_ammo") * (100 - factionData.upgrades.getWeapon()) / 100);
+                try {
+                    if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                        priceForFaction = (int) (priceForFaction * 0.75);
+                    }
+                } catch (Exception ex) {
+
+                }
                 if (factionData.getBank() < priceForFaction) {
                     player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
                     return;
@@ -225,6 +246,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) ServerManager.getPayout("equip_sniper_ammo");
+                    try {
+                        if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                            priceForFaction = (int) (priceForFaction * 0.75);
+                        }
+                    } catch (Exception ex) {
+
+                    }
                     if (factionData.getBank() < priceForFaction) {
                         player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
                         return;
@@ -287,6 +315,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) (ServerManager.getPayout("cuffs"));
+                    try {
+                        if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                            priceForFaction = (int) (priceForFaction * 0.75);
+                        }
+                    } catch (Exception ex) {
+
+                    }
                     if (factionData.getBank() < priceForFaction) {
                         player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
                         return;
@@ -305,6 +340,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) (ServerManager.getPayout("antibiotikum"));
+                    try {
+                        if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                            priceForFaction = (int) (priceForFaction * 0.75);
+                        }
+                    } catch (Exception ex) {
+
+                    }
                     if (factionData.getBank() < priceForFaction) {
                         player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
                         return;
@@ -323,6 +365,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) (ServerManager.getPayout("tazer"));
+                    try {
+                        if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                            priceForFaction = (int) (priceForFaction * 0.75);
+                        }
+                    } catch (Exception ex) {
+
+                    }
                     if (factionData.getBank() < priceForFaction) {
                         player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um einen Tazer zu kaufen.");
                         return;
@@ -346,6 +395,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
+                        try {
+                            if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                                priceForFaction = (int) (priceForFaction * 0.75);
+                            }
+                        } catch (Exception ex) {
+
+                        }
                         if (factionData.getBank() < priceForFaction) {
                             player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
                             return;
@@ -366,6 +422,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         int priceForFaction = (int) (ServerManager.getPayout("adrenaline_injection"));
+                        try {
+                            if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                                priceForFaction = (int) (priceForFaction * 0.75);
+                            }
+                        } catch (Exception ex) {
+
+                        }
                         if (factionData.getBank() < priceForFaction) {
                             player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
                             return;

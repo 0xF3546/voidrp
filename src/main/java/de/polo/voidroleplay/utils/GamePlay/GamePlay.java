@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.faction.alliance.Alliance;
+import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.game.faction.apotheke.ApothekeFunctions;
 import de.polo.voidroleplay.game.faction.houseban.Houseban;
 import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
@@ -29,12 +30,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class GamePlay implements Listener {
     public final ApothekeFunctions apotheke;
@@ -52,9 +51,14 @@ public class GamePlay implements Listener {
     public Houseban houseban;
     public DisplayNameManager displayNameManager;
     public final Alliance alliance;
+    private HashMap<Player, LocalDateTime> masks = new HashMap<>();
+    public final MilitaryDrop militaryDrop;
+    private final List<Dealer> currentDealer = new ArrayList<>();
+    private final NPC npc;
 
+    public final HashMap<Dealer, Integer> rob = new HashMap<>();
     @SneakyThrows
-    public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager) {
+    public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager, NPC npc) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.mySQL = mySQL;
@@ -67,13 +71,46 @@ public class GamePlay implements Listener {
         houseban = new Houseban(playerManager, factionManager);
         displayNameManager = new DisplayNameManager(playerManager, factionManager, Main.getInstance().getScoreboardAPI());
         alliance = new Alliance(playerManager, factionManager, utils);
+        militaryDrop = new MilitaryDrop(playerManager, factionManager, locationManager);
+        this.npc = npc;
         Statement statement = mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM dealer");
         while (result.next()) {
             Dealer dealer = new Dealer();
             dealer.setId(result.getInt("id"));
+            dealer.setLocation(new Location(Bukkit.getWorld("world"), result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getFloat("yaw"), result.getFloat("pitch")));
+            dealer.setGangzone(result.getString("gangzone"));
             dealers.add(dealer);
+            try {
+                npc.deleteNPC(dealer.getLocation(), "dealer-" + dealer.getId());
+            } catch (Exception ignored) {
+
+            }
         }
+
+        Collections.shuffle(dealers);
+
+        Set<String> usedGangzones = new HashSet<>();
+        int addedDealers = 0;
+
+        for (Dealer dealer : dealers) {
+            if (!usedGangzones.contains(dealer.getGangzone())) {
+                currentDealer.add(dealer);
+                usedGangzones.add(dealer.getGangzone());
+                addedDealers++;
+                try {
+                    npc.spawnNPC(dealer.getLocation(), "dealer-" + dealer.getId(), "§cDealer", "dealer");
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (addedDealers == 3) {
+                break;
+            }
+        }
+
+
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -91,10 +128,10 @@ public class GamePlay implements Listener {
         ItemManager.removeCustomItem(player, drug.getItem(), 1);
         switch (drug) {
             case JOINT:
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " konsumiert einen Joint");
+                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " raucht eine Zigarre");
                 break;
             case COCAINE:
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " konsumiert Kokain");
+                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " konsumiert Schnupftabak");
                 break;
             case ANTIBIOTIKUM:
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Antibiotikum");
@@ -386,13 +423,14 @@ public class GamePlay implements Listener {
                     return;
                 }
                 RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
-                if (ItemManager.getCustomItemCount(event.getPlayer(), item) < amount) {
+                if (StaatUtil.Asservatemkammer.getAmount(item) < amount) {
                     event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
                     return;
                 }
                 factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 verbrannt.", "FBI", "Polizei");
                 StaatUtil.Asservatemkammer.removeItem(item, amount);
                 StaatUtil.Asservatemkammer.save();
+                factionManager.addFactionMoney("FBI", amount * 3, "Verbrennung von Drogen durch " + event.getPlayer().getName());
                 playerManager.addExp(event.getPlayer(), amount);
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
@@ -483,8 +521,18 @@ public class GamePlay implements Listener {
 
         long minecraftTime = ((hour - 6 + 24) % 24) * 1000 + (long) (minute * 16.6667);
 
+        if (minute % 5 == 0) {
+            for (Dealer dealer : dealers) {
+                dealer.setSold(0);
+            }
+        }
+
         for (World world : Bukkit.getWorlds()) {
             world.setTime((long) minecraftTime);
+        }
+
+        if (Utils.getTime().getHour() % 2 == 0 && event.getMinute() == 0) {
+            Main.getInstance().commands.pfeifenTransport.resetTransports();
         }
 
         long minutesBetween = Duration.between(currentDateTime, lastDrop).toMinutes();
@@ -503,6 +551,39 @@ public class GamePlay implements Listener {
             }
         }
 
+        if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY) && Utils.getTime().getHour() >= 17 && Utils.getTime().getHour() <= 19) {
+            if (Utils.getTime().getHour() == 17 && event.getMinute() == 0) {
+                Bukkit.broadcastMessage("§8[§cMilitär§8]§7 In 2 Stunden werden Militärische Flugzeuge auf dem Flughafen landen!");
+            }
+            if (Utils.getTime().getHour() == 18 && event.getMinute() == 0) {
+                Bukkit.broadcastMessage("§8[§cMilitär§8]§7 In 1 Stunde werden Militärische Flugzeuge auf dem Flughafen landen!");
+            }
+            if (Utils.getTime().getHour() == 18 && event.getMinute() == 30) {
+                Bukkit.broadcastMessage("§8[§cMilitär§8]§7 In 30 Minuten werden Militärische Flugzeuge auf dem Flughafen landen!");
+            }
+            if (Utils.getTime().getHour() == 18 && event.getMinute() == 45) {
+                Bukkit.broadcastMessage("§8[§cMilitär§8]§7 Eines der Militärischen Flugzeuge ist kurz vor dem Landen abgestürzt!");
+                String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                factionManager.sendCustomMessageToFactions("§8[§cMilitär§8]§aIhr könnt in 10 Minuten dem Militärabsturz-Event im Fraktionslager beitreten!", factions);
+            }
+            if (Utils.getTime().getHour() == 18 && event.getMinute() == 55) {
+                String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                factionManager.sendCustomMessageToFactions("§8[§cMilitär§8]§aIhr könnt nun dem Militärabsturz-Event im Fraktionslager beitreten!", factions);
+                MilitaryDrop.ACTIVE = true;
+            }
+            if (Utils.getTime().getHour() == 19 && event.getMinute() == 0) {
+                Bukkit.broadcastMessage("§8[§cMilitär§8]§7 Das abgestürzte Flugzeug hat mehrere Waffenkisten verloren!");
+                militaryDrop.start();
+            }
+        }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (getMaskState(player) != null) {
+                if (Utils.getTime().isAfter(getMaskState(player))) {
+                    clearMaskState(player);
+                }
+            }
+        }
 
         for (FactionData factionData : factionManager.getFactions()) {
             LocalDateTime proceedingStarted = factionData.storage.getProceedingStarted();
@@ -531,6 +612,30 @@ public class GamePlay implements Listener {
             statement.execute();
             statement.close();
             connection.close();
+        }
+
+        for (Dealer dealer : rob.keySet()) {
+            if (!factionManager.isFactionMemberInRange(dealer.getAttacker(), dealer.getLocation(), 30, false)) {
+                rob.remove(dealer);
+                factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Die Angreifer haben aufgehört den Dealer einzuschüchtern.");
+                factionManager.sendCustomMessageToFaction(dealer.getAttacker(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Ihr habt aufgehört den Dealer einzuschüchtern.");
+                return;
+            }
+            int currentTime = rob.get(dealer);
+            if (currentTime >= 10) {
+                factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Die Angreifer haben es geschafft euren Dealer einzuschüchtern.");
+                factionManager.sendCustomMessageToFaction(dealer.getAttacker(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Ihr habt es geschafft den Dealer einzuschüchtern.");
+                for (PlayerData playerData1 : factionManager.getFactionMemberInRange(dealer.getAttacker(), dealer.getLocation(), 30, true)) {
+                    playerManager.addExp(playerData1.getPlayer(), Main.random(5, 10));
+                }
+                dealer.setOwner(dealer.getAttacker());
+                rob.remove(dealer);
+            } else {
+                rob.replace(dealer, ++currentTime);
+                int remaining = (10 - currentTime + 1);
+                factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Die Angreifer haben noch " + remaining + " Minuten bis der Dealer aufgibt!");
+                factionManager.sendCustomMessageToFaction(dealer.getAttacker(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Noch " + remaining + " Minuten bis der Dealer aufgibt!");
+            }
         }
     }
 
@@ -562,6 +667,32 @@ public class GamePlay implements Listener {
                 }
                 break;
         }
+    }
+
+    public LocalDateTime getMaskState(Player player) {
+        return masks.get(player);
+    }
+
+    public void setMaskState(Player player, LocalDateTime until) {
+        if (getMaskState(player) == null) {
+            masks.put(player, until);
+            return;
+        }
+        LocalDateTime dateTime = getMaskState(player);
+        masks.replace(player, until);
+        player.setCustomNameVisible(true);
+        player.setCustomName("§k" + player.getName());
+        player.setDisplayName("§k" + player.getName());
+    }
+
+    public void clearMaskState(Player player) {
+        masks.remove(player);
+
+        Utils.Tablist.updatePlayer(player);
+    }
+
+    public Collection<Dealer> getCurrentDealer() {
+        return currentDealer;
     }
 
 }

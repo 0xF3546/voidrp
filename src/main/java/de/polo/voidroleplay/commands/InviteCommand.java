@@ -81,6 +81,16 @@ public class InviteCommand implements CommandExecutor {
             });
             i++;
         }
+        if (playerData.getSubGroup() != null && playerData.getSubGroupGrade() >= 2) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.LAPIS_LAZULI, 1, 0, "§6In Untergruppierung einladen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    inviteToSubGroup(player, targetplayer);
+                    player.closeInventory();
+                }
+            });
+            i++;
+        }
         return false;
     }
 
@@ -134,6 +144,10 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + "§7 ist bereits in einer Fraktion.");
             return;
         }
+        if (Utils.getTime().isBefore(targetplayerData.getFactionCooldown())) {
+            player.sendMessage(Prefix.ERROR + "Der Spieler kann noch nicht invited werden!");
+            return;
+        }
         if (factionManager.getMemberCount(playerfac) >= factionData.getMaxMember()) {
             player.sendMessage(Main.error + "Deine Fraktion ist voll!");
             return;
@@ -144,6 +158,22 @@ public class InviteCommand implements CommandExecutor {
             utils.vertragUtil.sendInfoMessage(targetplayer);
         } else {
             player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+        }
+    }
+
+    private void inviteToSubGroup(Player player, Player targetplayer) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerManager.getPlayerData(targetplayer.getUniqueId()).getSubGroup() != null) {
+            player.sendMessage("§8[§f" + playerData.getSubGroup().getName() + "§8] §3" + targetplayer.getName() + " ist bereits in einer Untergruppierung.");
+            return;
+        }
+        if (VertragUtil.setVertrag(player, targetplayer, "subgroup_invite", playerData.getCompany().getId())) {
+            player.sendMessage("§8[§f" + playerData.getSubGroup().getName() + "§8] §3" + targetplayer.getName() + " wurde in die Firma §aeingeladen§3.");
+            targetplayer.sendMessage("§6" + player.getName() + " hat dich in die Untergruppierung §e" + playerData.getSubGroup().getName() + "§6 eingeladen.");
+            utils.vertragUtil.sendInfoMessage(targetplayer);
+            PlayerData tplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+        } else {
+            player.sendMessage("§8[§6Firma§8]§8 §7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
         }
     }
 }

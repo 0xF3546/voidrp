@@ -179,12 +179,13 @@ public class ApothekeFunctions implements Listener {
                 factionData.setJointsMade(plus);
                 if (plus >= 1) {
                     if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei")) {
-                        factionManager.addFactionMoney(factionData.getName(), 2000, "Apotheke");
+                        factionManager.addFactionMoney("FBI", 1000, "Apotheke");
+                        factionManager.addFactionMoney("Polizei", 1000, "Apotheke");
                         for (PlayerData playerData : playerManager.getPlayers()) {
                             if (playerData.getFaction() != null) {
-                                if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
+                                if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2200$ Steuern aus Apotheken erhalten .");
+                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §21000$§a Steuern aus Apotheken erhalten .");
                                 }
                             }
                         }

@@ -101,7 +101,7 @@ public class MarryCommand implements CommandExecutor {
                 firstplayerData.getRelationShip().clear();
                 firstplayerData.setRelationShip(hmap2);
                 if (firstplayerData.getGender().equals(Gender.MALE)) {
-                    firstplayerData.setLastname(playerData.getLastname());
+                    firstplayerData.setLastname(firstplayerData.getLastname());
                     secondplayer.sendMessage("§8 » §7Dein Nachname lautet nun \"" + firstplayerData.getLastname() + "\".");
                 } else {
                     firstplayerData.setLastname(secondplayerData.getLastname());

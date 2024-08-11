@@ -90,6 +90,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
                     subGroup.setName(name);
                     factionManager.subGroups.create(subGroup);
                     playerData.setSubGroupId(subGroup.getId());
+                    playerData.setSubGroupGrade(3);
                     playerData.save();
                 }
             });

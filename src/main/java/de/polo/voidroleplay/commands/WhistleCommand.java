@@ -27,11 +27,15 @@ public class WhistleCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Syntax-Fehler: /whistle [Nachricht]");
             return false;
         }
+        String playerName = player.getName();
+        if (Main.getInstance().gamePlay.getMaskState(player) != null) {
+            playerName = "Maskierter";
+        }
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (player.getLocation().distance(players.getLocation()) <= 3) {
-                players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §7" + player.getName() + " flüstert: " + utils.stringArrayToString(args));
+                players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §7" + playerName + " flüstert: " + utils.stringArrayToString(args));
             } else if (player.getLocation().distance(players.getLocation()) <= 5) {
-                players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §8" + player.getName() + " flüstert: " + utils.stringArrayToString(args));
+                players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §8" + playerName + " flüstert: " + utils.stringArrayToString(args));
             }
         }
         ChatUtils.LogMessage(utils.stringArrayToString(args), player.getUniqueId());

@@ -318,7 +318,7 @@ public class TabletUtils implements Listener {
                 String value2 = result.getString(2);
                 int value3 = result.getInt(4);
 
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + value2, Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + value1, "§8 ➥ §bGeldstrafe§8:§7 " + value3 + "$"))) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §3" + value2, Arrays.asList("§8 ➥ §bHafteinheiten§8:§7 " + value1, "§8 ➥ §bGeldstrafe§8:§7 " + value3 + "$"))) {
                     @SneakyThrows
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -392,7 +392,7 @@ public class TabletUtils implements Listener {
                 i++;
             } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
                 int id = result.getInt("id");
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), Arrays.asList("§8 ➥ §bHaftineinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5), "§8 ➥ §bDatum§8:§7 " + result.getString("formatted_timestamp")))) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), Arrays.asList("§8 ➥ §bHafteinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5), "§8 ➥ §bDatum§8:§7 " + result.getString("formatted_timestamp")))) {
                     @SneakyThrows
                     @Override
                     public void onClick(InventoryClickEvent event) {

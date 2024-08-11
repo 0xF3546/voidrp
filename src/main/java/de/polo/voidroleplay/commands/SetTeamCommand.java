@@ -2,11 +2,10 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.AdminManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.ServerManager;
-import de.polo.voidroleplay.utils.TeamSpeak;
+import de.polo.voidroleplay.utils.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,25 +29,32 @@ public class SetTeamCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (player.hasPermission("operator")) {
             if (args.length == 2) {
-                Player targetplayer = getServer().getPlayer(args[0]);
+                OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
+                if (offlinePlayer == null) {
+                    player.sendMessage(Prefix.ERROR + "Spieler wurde nicht gefunden.");
+                    return false;
+                }
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 String rank = args[1];
                 if (ServerManager.rankDataMap.get(rank) == null) {
                     player.sendMessage(Main.error + "Rang nicht gefunden.");
                     return false;
                 }
-                player.sendMessage(Main.admin_prefix + targetplayer.getName() + " ist nun §c" + rank + "§7.");
-                targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
+                if (offlinePlayer.isOnline()) {
+                    Player targetplayer = Bukkit.getPlayer(offlinePlayer.getUniqueId());
+                    targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
+                    targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
+                }
+                player.sendMessage(Main.admin_prefix + offlinePlayer.getName() + " ist nun §c" + rank + "§7.");
                 try {
                     Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + targetplayer.getUniqueId() + "'");
-                    targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
+                    statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + offlinePlayer.getUniqueId() + "'");
                     playerData.setRankDuration(null);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                playerManager.setRang(targetplayer.getUniqueId(), rank);
-                adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
+                playerManager.setRang(offlinePlayer.getUniqueId(), rank);
+                adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
             } else {
                 player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }

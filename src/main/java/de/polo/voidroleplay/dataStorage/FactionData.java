@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +9,11 @@ import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FactionData {
     private int id;
@@ -38,9 +42,26 @@ public class FactionData {
     @Setter
     private int allianceFaction;
 
+    @Getter
+    @Setter
+    private List<BlacklistReason> blacklistReasons = new ArrayList<>();
+
     public Storage storage = new Storage(this);
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
+
+    @SneakyThrows
+    public void loadReasons() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM blacklistreasons WHERE faction = ?");
+        statement.setInt(1, id);
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            BlacklistReason reason = new BlacklistReason(result.getString("reason"), result.getInt("price"), result.getInt("kills"));
+            reason.setId(result.getInt("id"));
+            blacklistReasons.add(reason);
+        }
+    }
 
     public String getPrimaryColor() {
         return primaryColor;
@@ -237,6 +258,57 @@ public class FactionData {
         statement.close();
         connection.close();
     }
+
+    @SneakyThrows
+    public void addBlacklistReason(BlacklistReason blacklistReason, boolean save) {
+        blacklistReasons.add(blacklistReason);
+        if (save) {
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO blacklistreasons (kills, price, reason, faction) VALUES (?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS
+            );
+            statement.setInt(1, blacklistReason.getKills());
+            statement.setInt(2, blacklistReason.getPrice());
+            statement.setString(3, blacklistReason.getReason());
+            statement.setInt(4, blacklistReason.getFactionId());
+
+            statement.executeUpdate();
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+
+            if (generatedKeys.next()) {
+                int generatedId = generatedKeys.getInt(1);
+                blacklistReason.setId(generatedId);
+            }
+
+            generatedKeys.close();
+            statement.close();
+            connection.close();
+        }
+    }
+
+    @SneakyThrows
+    public void removeBlacklistReason(BlacklistReason blacklistReason, boolean save) {
+        blacklistReasons.remove(blacklistReason);
+        if (save) {
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM blacklistreasons WHERE id = ?");
+            statement.setInt(1, blacklistReason.getId());
+            statement.execute();
+
+            statement.close();
+            connection.close();
+        }
+    }
+
+    public BlacklistReason getBlacklistReasonById(int id) {
+        for (BlacklistReason reason : getBlacklistReasons()) {
+            if (reason.getId() == id) return reason;
+        }
+        return null;
+    }
+
 
     public int getCooperationPartner() {
         return cooperationPartner;

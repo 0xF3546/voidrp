@@ -333,7 +333,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         return null;
     }
 
-    private IGangzone getGangzoneByName(String name) {
+    public IGangzone getGangzoneByName(String name) {
         for (IGangzone gangzone : gangZones) {
             if (gangzone.getName().equalsIgnoreCase(name)) return gangzone;
         }

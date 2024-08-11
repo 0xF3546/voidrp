@@ -2,6 +2,7 @@ package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,7 +36,7 @@ public class NPC implements CommandExecutor {
                         for (int i = 4; i < args.length; i++) {
                             command = command + " " + args[i];
                         }
-                        spawnNPC(player, args[1], args[2], command);
+                        spawnNPC(player.getLocation(), args[1], args[2], command);
                     }
                 }
             } else {
@@ -46,11 +47,11 @@ public class NPC implements CommandExecutor {
         }
         return false;
     }
-    private void spawnNPC(Player player, String name, String displayname, String command) {
-        Villager villager = (Villager) player.getWorld().spawnEntity(player.getLocation(), EntityType.VILLAGER);
-        NamespacedKey cmd = new NamespacedKey(Main.plugin, "command");
+    public void spawnNPC(Location location, String name, String displayname, String command) {
+        Villager villager = (Villager) location.getWorld().spawnEntity(location, EntityType.VILLAGER);
+        NamespacedKey cmd = new NamespacedKey(Main.getInstance(), "command");
         villager.getPersistentDataContainer().set(cmd, PersistentDataType.STRING, command);
-        NamespacedKey id_name = new NamespacedKey(Main.plugin, "name");
+        NamespacedKey id_name = new NamespacedKey(Main.getInstance(), "name");
         villager.getPersistentDataContainer().set(id_name, PersistentDataType.STRING, name);
         villager.setAI(false);
         villager.setCustomName(displayname.replace("&", "§"));
@@ -65,20 +66,34 @@ public class NPC implements CommandExecutor {
         villager.setAgeLock(true);
         villager.setRemoveWhenFarAway(false);
         villager.setTicksLived(Integer.MAX_VALUE);
-        player.sendMessage(Main.gamedesign_prefix + "Du hast einen Villager erstellt.");
     }
 
-    private void deleteNPC(Player player, String name) {
+    public void deleteNPC(Player player, String name) {
         System.out.println("delete npc: " + name);
         for (Entity entity : player.getWorld().getEntities()) {
             if (entity instanceof Villager) {
                 Villager villager = (Villager) entity;
-                String villager_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING);
+                String villager_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING);
                 if (villager_name == null) continue;
-                System.out.println("villager: " + villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING));
-                if (villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING).equalsIgnoreCase(name)) {
+                System.out.println("villager: " + villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING));
+                if (villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING).equalsIgnoreCase(name)) {
                     villager.remove();
                     player.sendMessage(Main.gamedesign_prefix + "Der Villager wurde entfernt.");
+                }
+            }
+        }
+    }
+
+    public void deleteNPC(Location location, String name) {
+        System.out.println("delete npc: " + name);
+        for (Entity entity : location.getWorld().getEntities()) {
+            if (entity instanceof Villager) {
+                Villager villager = (Villager) entity;
+                String villager_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING);
+                if (villager_name == null) continue;
+                System.out.println("villager: " + villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING));
+                if (villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING).equalsIgnoreCase(name)) {
+                    villager.remove();
                 }
             }
         }

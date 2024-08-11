@@ -80,6 +80,7 @@ public final class Main extends JavaPlugin {
     public CompanyManager companyManager;
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
+    private NPC npc;
 
     @Getter
     private DynmapAPI dynmapAPI;
@@ -120,11 +121,14 @@ public final class Main extends JavaPlugin {
         weapons = new Weapons(utils, playerManager);
         isOnline = true;
         laboratory = new Laboratory(playerManager, factionManager, locationManager);
-        gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager);
+        npc = new NPC(playerManager);
+        gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager, npc);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
         new InventoryApiRegister(this);
+        GlobalStats.load();
+        new TestCommand();
 
         dynmapAPI = (DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin("dynmap");
         if (dynmapAPI == null) {
@@ -362,7 +366,6 @@ public final class Main extends JavaPlugin {
         public UnrentCommand unrentCommand;
         public FriskCommand friskCommand;
         public BlacklistCommand blacklistCommand;
-        public NPC npc;
         public RedeemCommand redeemCommand;
         public WhistleCommand whistleCommand;
         public ShoutCommand shoutCommand;
@@ -471,6 +474,11 @@ public final class Main extends JavaPlugin {
         public GeworbenCommand geworbenCommand;
         public KickSecondaryTeam kickSecondaryTeam;
         public AuktionCommand auktionCommand;
+        public FixBlockCommand fixBlockCommand;
+        public PfeifenTransport pfeifenTransport;
+        public BlacklistReasonsCommand blacklistReasonsCommand;
+        public ModifyBlacklistCommand modifyBlacklistCommand;
+        public AutoBlacklistCommand autoBlacklistCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -535,7 +543,6 @@ public final class Main extends JavaPlugin {
             unrentCommand = new UnrentCommand(utils);
             friskCommand = new FriskCommand(playerManager, weapons, factionManager);
             blacklistCommand = new BlacklistCommand(playerManager, factionManager);
-            npc = new NPC(playerManager);
             redeemCommand = new RedeemCommand(playerManager, utils);
             whistleCommand = new WhistleCommand(utils, playerManager);
             shoutCommand = new ShoutCommand(utils, playerManager);
@@ -643,6 +650,11 @@ public final class Main extends JavaPlugin {
             geworbenCommand = new GeworbenCommand();
             kickSecondaryTeam = new KickSecondaryTeam(playerManager);
             auktionCommand = new AuktionCommand(playerManager, factionManager, locationManager);
+            fixBlockCommand = new FixBlockCommand(playerManager, blockManager);
+            pfeifenTransport = new PfeifenTransport(playerManager, factionManager, locationManager);
+            blacklistReasonsCommand = new BlacklistReasonsCommand(playerManager, factionManager);
+            modifyBlacklistCommand = new ModifyBlacklistCommand(playerManager, factionManager);
+            autoBlacklistCommand = new AutoBlacklistCommand(playerManager, factionManager);
 
 
             main.registerCommands();

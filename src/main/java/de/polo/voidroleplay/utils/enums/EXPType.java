@@ -9,7 +9,8 @@ import org.bukkit.ChatColor;
 public enum EXPType {
     LEVEL("Level", SkillType.NULL, ChatColor.GREEN, -1),
     SKILL_FISHING("Fishing", SkillType.FISHING, ChatColor.BLUE, 3120),
-    SKILL_LUMBERJACK("Holzfäller", SkillType.LUMBERJACK, ChatColor.GRAY, 3120);
+    SKILL_LUMBERJACK("Holzfäller", SkillType.LUMBERJACK, ChatColor.GRAY, 3120),
+    POPULARITY("Popularität", SkillType.POPULARITY, ChatColor.RED, 5000);
 
     private final String displayName;
     private final SkillType skillType;

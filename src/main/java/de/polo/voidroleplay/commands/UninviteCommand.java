@@ -1,12 +1,10 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.DBPlayerData;
+import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.AdminManager;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.ServerManager;
+import de.polo.voidroleplay.utils.*;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,40 +48,28 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Main.error + "Syntax-Fehler: /uninvite [Spieler]");
             return false;
         }
-        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-            if (offlinePlayer.getName() != null) {
-                if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
-                    if (dbPlayerData.getFaction().equals(playerData.getFaction())) {
-                        if (dbPlayerData.getFaction_grade() <= playerData.getFactionGrade()) {
-                            adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
-                            if (offlinePlayer.isOnline()) {
-                                try {
-                                    factionManager.removePlayerFromFrak(offlinePlayer.getPlayer());
-                                    Player target = (Player) offlinePlayer;
-                                    target.sendMessage("§8 » §7Du wurdest von " + player.getName() + " aus der Fraktion geworfen!");
-                                } catch (SQLException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            } else {
-                                try {
-                                    factionManager.removeOfflinePlayerFromFrak(offlinePlayer);
-                                } catch (SQLException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                            factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
-                        } else {
-                            player.sendMessage(Main.error_nopermission);
-                        }
-                    } else {
-                        player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht in deiner Fraktion.");
-                    }
-                    return true;
-                }
-            }
+        OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
+        if (offlinePlayer == null) {
+            player.sendMessage(Prefix.ERROR + "Spieler wurde nicht gefunden!");
+            return false;
         }
-        player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+        PlayerData targetData = factionManager.getFactionOfPlayer(offlinePlayer.getUniqueId());
+        if (!playerData.getFaction().equalsIgnoreCase(targetData.getFaction())) {
+            player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht in deiner Fraktion.");
+            return false;
+        }
+        if (targetData.getFactionGrade() > playerData.getFactionGrade()) {
+            player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + targetData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
+        factionManager.removePlayerFromFrak(offlinePlayer.getUniqueId());
+        factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
+        if (offlinePlayer.isOnline()) {
+            Player target = Bukkit.getPlayer(offlinePlayer.getUniqueId());
+            if (target == null) return false;
+            target.sendMessage("§8 » §7Du wurdest von " + player.getName() + " aus der Fraktion geworfen!");
+        }
         return false;
     }
 
