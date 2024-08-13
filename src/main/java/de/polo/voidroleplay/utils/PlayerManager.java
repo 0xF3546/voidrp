@@ -488,6 +488,7 @@ public class PlayerManager implements Listener, ServerTiming {
             Main.getInstance().seasonpass.didQuest(player, 7);
             Main.getInstance().utils.payDayUtils.givePayDay(player);
             playerData.setHours(playerData.getHours() + 1);
+            playerData.setMinutes(0);
             if (current_hours >= needed_hours) {
                 needed_hours = needed_hours + 4;
                 statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
