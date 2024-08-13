@@ -100,6 +100,14 @@ public class ApothekeFunctions implements Listener {
                         player.sendMessage(Main.error + "Du kannst deine eigene Apotheken nicht einschüchtern.");
                         return;
                     }
+                    int i = 0;
+                    for (Apotheke a : apotheken) {
+                        if (a.getOwner().equalsIgnoreCase(playerData.getFaction())) i++;
+                    }
+                    if (i >= 3) {
+                        player.sendMessage(Prefix.ERROR + "Deine Fraktion kann maximal 3 Apotheken besitzen!");
+                        return;
+                    }
                     player.closeInventory();
                     apotheke.setLastAttack(LocalDateTime.now());
                     if (apotheke.isStaat()) {
@@ -196,7 +204,7 @@ public class ApothekeFunctions implements Listener {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Joints§a aus den aktuell übernommenen Apotheken erhalten.");
+                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Pfeifen§a aus den aktuell übernommenen Apotheken erhalten.");
                                 }
                             }
                         }

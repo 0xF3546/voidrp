@@ -383,7 +383,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     Main.getInstance().utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
                 }
             }
-            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + ", `lastLogin` = NOW() WHERE `uuid` = '" + uuid + "'");
+            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + ", `lastLogin` = NOW(), playtime_minutes = " + playerData.getMinutes() + " WHERE `uuid` = '" + uuid + "'");
             if (playerData.isJailed()) {
                 statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
             }
@@ -407,63 +407,111 @@ public class PlayerManager implements Listener, ServerTiming {
         }
     }
 
+    /*@SneakyThrows
     public void add1MinutePlaytime(Player player) {
-        try {
-            UUID uuid = player.getUniqueId();
-            PlayerData playerData = playerDataMap.get(uuid);
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            assert statement != null;
-            if (playerData.isJailed()) {
-                playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
-                if (playerData.getHafteinheiten() <= 0) {
-                    Main.getInstance().utils.staatUtil.unarrestPlayer(player);
-                }
+        UUID uuid = player.getUniqueId();
+        PlayerData playerData = playerDataMap.get(uuid);
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        if (playerData.isJailed()) {
+            playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
+            if (playerData.getHafteinheiten() <= 0) {
+                Main.getInstance().utils.staatUtil.unarrestPlayer(player);
             }
-            ResultSet result = statement.executeQuery("SELECT `playtime_hours`, `playtime_minutes`, `current_hours`, `needed_hours`, `visum` FROM `players` WHERE `uuid` = '" + uuid + "'");
-            if (result.next()) {
-                int hours = result.getInt(1) + 1;
-                int minutes = result.getInt(2);
-                int newMinutes = result.getInt(2) + 1;
-                int current_hours = result.getInt(3);
-                int needed_hours = result.getInt(4);
-                int visum = result.getInt(5) + 1;
-                playerData.setMinutes(newMinutes);
-                float value = (float) (needed_hours / player.getExpToLevel());
-                player.setTotalExperience((int) (value * current_hours));
-                if (minutes >= 60) {
-                    Main.getInstance().beginnerpass.didQuest(player, 7);
-                    Main.getInstance().seasonpass.didQuest(player, 7);
-                    Main.getInstance().utils.payDayUtils.givePayDay(player);
-                    playerData.setHours(playerData.getHours() + 1);
-                    if (current_hours >= needed_hours) {
-                        needed_hours = needed_hours + 4;
-                        statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
-                        player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
-                        playerData.setVisum(visum);
-                        Main.getInstance().beginnerpass.didQuest(player, 3);
-                        player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
-                        playerData.setCurrentHours(0);
-                        if (visum == 2) {
+        }
+        if (playerData.isAFK()) return;
+        int hours = playerData.getHours() + 1;
+        int minutes = playerData.getMinutes();
+        int newMinutes = minutes + 1;
+        int current_hours = playerData.getCurrentHours();
+        int needed_hours = playerData.getVisum() * 4;
+        int visum = playerData.getVisum() + 1;
+        playerData.setMinutes(newMinutes);
+        float value = (float) (needed_hours / player.getExpToLevel());
+        player.setTotalExperience((int) (value * current_hours));
+        if (minutes >= 60) {
+            Main.getInstance().beginnerpass.didQuest(player, 7);
+            Main.getInstance().seasonpass.didQuest(player, 7);
+            Main.getInstance().utils.payDayUtils.givePayDay(player);
+            playerData.setHours(playerData.getHours() + 1);
+            if (current_hours >= needed_hours) {
+                needed_hours = needed_hours + 4;
+                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
+                player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
+                playerData.setVisum(visum);
+                Main.getInstance().beginnerpass.didQuest(player, 3);
+                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
+                playerData.setCurrentHours(0);
+                if (visum == 2) {
 
-                        }
-                    } else {
-                        current_hours = current_hours + 1;
-                        playerData.setCurrentHours(current_hours);
-                        statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
-                    }
-                } else {
-                    statement.executeUpdate("UPDATE `players` SET `playtime_minutes` = " + newMinutes + " WHERE `uuid` = '" + uuid + "'");
-                    if (newMinutes == 56) {
-                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
-                    } else if (newMinutes == 58) {
-                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
-                    } else if (newMinutes == 60) {
-                        player.sendMessage(Main.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
-                    }
                 }
+            } else {
+                current_hours = current_hours + 1;
+                playerData.setCurrentHours(current_hours);
+                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } else {
+            if (newMinutes == 56) {
+                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
+            } else if (newMinutes == 58) {
+                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
+            } else if (newMinutes == 60) {
+                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
+            }
+        }
+    }*/
+
+    @SneakyThrows
+    public void add1MinutePlaytime(Player player) {
+        UUID uuid = player.getUniqueId();
+        PlayerData playerData = playerDataMap.get(uuid);
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        if (playerData.isJailed()) {
+            playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
+            if (playerData.getHafteinheiten() <= 0) {
+                Main.getInstance().utils.staatUtil.unarrestPlayer(player);
+            }
+        }
+        if (playerData.isAFK()) return;
+        int hours = playerData.getHours() + 1;
+        int minutes = playerData.getMinutes();
+        int newMinutes = minutes + 1;
+        int current_hours = playerData.getCurrentHours();
+        int needed_hours = playerData.getVisum() * 4;
+        int visum = playerData.getVisum() + 1;
+        playerData.setMinutes(newMinutes);
+        float value = (float) (needed_hours / player.getExpToLevel());
+        player.setTotalExperience((int) (value * current_hours));
+        if (minutes >= 60) {
+            Main.getInstance().beginnerpass.didQuest(player, 7);
+            Main.getInstance().seasonpass.didQuest(player, 7);
+            Main.getInstance().utils.payDayUtils.givePayDay(player);
+            playerData.setHours(playerData.getHours() + 1);
+            if (current_hours >= needed_hours) {
+                needed_hours = needed_hours + 4;
+                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
+                player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
+                playerData.setVisum(visum);
+                Main.getInstance().beginnerpass.didQuest(player, 3);
+                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
+                playerData.setCurrentHours(0);
+                if (visum == 2) {
+
+                }
+            } else {
+                current_hours = current_hours + 1;
+                playerData.setCurrentHours(current_hours);
+                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
+            }
+        } else {
+            if (newMinutes == 56) {
+                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
+            } else if (newMinutes == 58) {
+                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
+            } else if (newMinutes == 60) {
+                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
+            }
         }
     }
 
@@ -635,8 +683,8 @@ public class PlayerManager implements Listener, ServerTiming {
                             clearExpBoost(player);
                         }
                     }
+                    add1MinutePlaytime(player);
                     if (!playerData.isAFK()) {
-                        add1MinutePlaytime(player);
                         int afkCounter = playerData.getIntVariable("afk") + 1;
                         playerData.setIntVariable("afk", afkCounter);
                         if (afkCounter >= 2) {
@@ -1164,6 +1212,10 @@ public class PlayerManager implements Listener, ServerTiming {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        PlayerData playerData = getPlayerData(player);
+        if (playerData.isAFK() && event.getTo() != null && event.getFrom().distance(event.getTo()) > 0) {
+            event.setCancelled(true);
+        }
         if (!canPlayerMove(player)) return;
         player.setFlying(false);
     }

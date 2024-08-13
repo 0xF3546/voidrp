@@ -50,8 +50,7 @@ public class DeathListener implements Listener {
             playerData.setDeathLocation(player.getLocation());
             if (MilitaryDrop.ACTIVE) {
                 if (player.getKiller() == null) return;
-                Main.getInstance().gamePlay.militaryDrop.handleDeath(player, player.getKiller());
-                return;
+                if (Main.getInstance().gamePlay.militaryDrop.handleDeath(player, player.getKiller())) return;
             }
             if (playerData.getVariable("current_lobby") != null) {
                 utils.ffaUtils.useSpawn(player, playerData.getIntVariable("current_lobby"));

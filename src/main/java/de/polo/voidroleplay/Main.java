@@ -128,7 +128,6 @@ public final class Main extends JavaPlugin {
         beginnerpass = new Beginnerpass(playerManager, factionManager);
         new InventoryApiRegister(this);
         GlobalStats.load();
-        new TestCommand();
 
         dynmapAPI = (DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin("dynmap");
         if (dynmapAPI == null) {
@@ -479,6 +478,7 @@ public final class Main extends JavaPlugin {
         public BlacklistReasonsCommand blacklistReasonsCommand;
         public ModifyBlacklistCommand modifyBlacklistCommand;
         public AutoBlacklistCommand autoBlacklistCommand;
+        public AFKCommand afkCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -655,6 +655,7 @@ public final class Main extends JavaPlugin {
             blacklistReasonsCommand = new BlacklistReasonsCommand(playerManager, factionManager);
             modifyBlacklistCommand = new ModifyBlacklistCommand(playerManager, factionManager);
             autoBlacklistCommand = new AutoBlacklistCommand(playerManager, factionManager);
+            afkCommand = new AFKCommand(utils);
 
 
             main.registerCommands();

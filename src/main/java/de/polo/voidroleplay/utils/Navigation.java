@@ -42,6 +42,8 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
             if (data.getLocation() == null) continue;
             if (data.isGroup()) continue;
             Location dataLocation = Main.getInstance().locationManager.getLocation(data.getLocation());
+            if (dataLocation == null) continue;
+            System.out.println(dataLocation);
             double distance = dataLocation.distance(location);
 
             if (nearest == null || distance < nearestDistance) {

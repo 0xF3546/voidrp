@@ -111,6 +111,11 @@ public class PlayerData {
     private boolean hudEnabled;
     private LocalDateTime dailyBonusRedeemed;
     private LocalDateTime lastPayDay;
+
+    @Getter
+    @Setter
+    private int payday;
+
     private int currentHours;
     private int atmBlown;
 

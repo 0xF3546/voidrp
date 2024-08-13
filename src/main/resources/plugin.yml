@@ -252,3 +252,4 @@ commands:
     aliases: mbl
   autoblacklist:
     aliases: [abl, ablacklist]
+  afk:

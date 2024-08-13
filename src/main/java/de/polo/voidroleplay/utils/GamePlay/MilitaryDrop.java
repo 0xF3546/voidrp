@@ -108,7 +108,6 @@ public class MilitaryDrop implements Listener {
     public boolean handleJoin(Player player) {
         if (!ACTIVE) return false;
         if (joinedPlayers.contains(player)) return false;
-        joinedPlayers.add(player);
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return false;
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
@@ -126,6 +125,7 @@ public class MilitaryDrop implements Listener {
             factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§cMilitärabsturz§8]§f " + player.getName() + " hat das Event betreten!");
         }
 
+        joinedPlayers.add(player);
         playerData.setVariable("inventory::military", player.getInventory().getContents());
         player.getInventory().clear();
 
@@ -227,10 +227,12 @@ public class MilitaryDrop implements Listener {
         return players;
     }
 
-    public void handleDeath(Player player, Player killer) {
+    public boolean handleDeath(Player player, Player killer) {
         alivePlayers.remove(player);
         PlayerData killerData = playerManager.getPlayerData(killer);
         String faction = killerData.getFaction();
+        if (!joinedPlayers.contains(player)) return false;
+        if (!joinedPlayers.contains(killer)) return false;
         if (faction.equalsIgnoreCase("FBI") || faction.equalsIgnoreCase("Polizei")) {
             faction = "Staat";
             factionManager.sendCustomMessageToFaction("Polizei", "§8[§cMilitärabsturz§8]§7 +1 Punkt für das Töten eines Gegners (" + killer.getName() + " » " + player.getName() + ")");
@@ -241,6 +243,7 @@ public class MilitaryDrop implements Listener {
         addPoints(faction, 1);
         rollWinner();
         player.setGameMode(GameMode.SPECTATOR);
+        return true;
     }
 
     private void sendMessage(String message) {
