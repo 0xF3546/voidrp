@@ -87,7 +87,9 @@ public class Alliance implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFactionGrade() < 7) {
+        player.sendMessage(Prefix.ERROR + "Dieses Feature ist deaktiviert!");
+        return false;
+        /*if (playerData.getFactionGrade() < 7) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -147,6 +149,6 @@ public class Alliance implements CommandExecutor {
             return false;
         }
         player.sendMessage("§8[§cBündnis§8]§a Du hast die Fraktion zum Bündnis eingeladen.");
-        return false;
+        return false;*/
     }
 }
