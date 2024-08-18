@@ -36,10 +36,6 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Du kannst niemanden einladen.");
             return false;
         }
-        if (factionManager.faction_grade(player) < 7) {
-            player.sendMessage(Main.error_nopermission);
-            return false;
-        }
         if (!(args.length >= 1)) {
             player.sendMessage(Main.error + "Syntax-Fehler: /invite [Spieler]");
             return false;
