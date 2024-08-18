@@ -36,7 +36,7 @@ public class Drop {
             ItemManager.createItem(Material.CLAY_BALL, 50, 0, "§7Magazin", "§8 ➥ §cSturmgewehr"),
             ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§7Gepackte Waffe", "§8 ➥ §cMarksman"),
             ItemManager.createItem(Material.CLAY_BALL, 10, 0, "§7Magazin", "§8 ➥ §cMarksman"),
-            ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 2, 0, "§7Gepackte Waffe", "§8 ➥ §cFlinte"),
+            ItemManager.createItem(Material.GOLDEN_HORSE_ARMOR, 2, 0, "§7Gepackte Waffe", "§8 ➥ §cFlinte"),
             ItemManager.createItem(Material.CLAY_BALL, 15, 0, "§7Magazin", "§8 ➥ §cFlinte"),
             ItemManager.createItem(Material.IRON_CHESTPLATE, 5, 0, "§7Schwere Schutzweste"),
             ItemManager.createItem(RoleplayItem.WAFFENTEIL.getMaterial(), 85, 0, RoleplayItem.WAFFENTEIL.getDisplayName()),
