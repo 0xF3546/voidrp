@@ -187,9 +187,9 @@ public class PlayerManager implements Listener, ServerTiming {
                     playerData.setLastPayDay(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
                 if (result.getDate("boostDuration") != null)
-                    playerData.setBoostDuration(Utils.toLocalDateTime(result.getDate("boostDuration")));
+                    playerData.setBoostDuration(result.getTimestamp("boostDuration").toLocalDateTime());
                 if (result.getDate("lastContract") != null)
-                    playerData.setLastContract(Utils.toLocalDateTime(result.getDate("lastContract")));
+                    playerData.setLastContract(result.getTimestamp("lastContract").toLocalDateTime());
                 playerData.setSecondaryTeam(result.getString("secondaryTeam"));
                 playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
                 playerData.setSpawn(result.getString("spawn"));
@@ -692,7 +692,7 @@ public class PlayerManager implements Listener, ServerTiming {
                             Main.getInstance().utils.setAFK(player, true);
                         }
                     }
-                    if (playerData.getJailParole() >= 0) {
+                    if (playerData.getJailParole() > 0) {
                         playerData.setJailParole(playerData.getJailParole() - 1);
                         PreparedStatement preparedStatement;
                         if (playerData.getJailParole() == 0) {
@@ -1215,7 +1215,7 @@ public class PlayerManager implements Listener, ServerTiming {
         Player player = event.getPlayer();
         PlayerData playerData = getPlayerData(player);
         if (playerData.isAFK() && event.getTo() != null && event.getFrom().distance(event.getTo()) > 0) {
-            event.setCancelled(true);
+            event.getPlayer().setCollidable(false);
         }
         if (!canPlayerMove(player)) return;
         player.setFlying(false);
