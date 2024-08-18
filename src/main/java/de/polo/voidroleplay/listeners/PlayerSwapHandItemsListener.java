@@ -63,7 +63,7 @@ public class PlayerSwapHandItemsListener implements Listener {
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         event.setCancelled(true);
-        Block block = getTargetBlock(player);
+        //Block block = getTargetBlock(player);
         if (!player.isSneaking() || player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
@@ -165,6 +165,10 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             }
         }
+        if (Main.getInstance().locationManager.getDistanceBetweenCoords(player, "staatsbank") < 5) {
+            Main.getInstance().gamePlay.openStaatsbankRaub(player);
+            return;
+        }
         Collection<Entity> entities = player.getWorld().getNearbyEntities(player.getLocation(), 3, 3, 3);
         Item nearestSkull = null;
         double nearestDistance = Double.MAX_VALUE;
@@ -217,7 +221,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.sendMessage("§7     ===§8[§6PERSONALAUSWEIS§8]§7===");
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eVorname§8:§7 " + targetplayerData.getFirstname());
-                player.sendMessage("§8 ➥ §eNachname§8:§7 " + targetplayerData.getFirstname());
+                player.sendMessage("§8 ➥ §eNachname§8:§7 " + targetplayerData.getLastname());
                 player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + targetplayerData.getGender().getTranslation());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                 player.sendMessage(" ");

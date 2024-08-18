@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
@@ -40,6 +41,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 Player player = event.getPlayer();
                 Player targetplayer = (Player) event.getRightClicked();
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+                if (player.getGameMode().equals(GameMode.SPECTATOR)) return;
                 if (playerData.isDead()) {
                     event.setCancelled(true);
                     return;

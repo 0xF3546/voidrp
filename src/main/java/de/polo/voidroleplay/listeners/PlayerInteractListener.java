@@ -60,6 +60,7 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
+        if (player.getGameMode().equals(GameMode.SPECTATOR)) return;
         if (event.getHand() != null && event.getHand().equals(org.bukkit.inventory.EquipmentSlot.OFF_HAND)) {
             event.setCancelled(true);
             return;
@@ -87,6 +88,19 @@ public class PlayerInteractListener implements Listener {
                     armorStand.setVisible(false);
                     armorStand.addPassenger(player);
                 }
+                if (event.getClickedBlock().getType().toString().contains("BANNER")) {
+                    RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                    if (block.getInfo() == null) return;
+                    if (block.getInfoValue() == null) return;
+                    if (!block.getInfo().equalsIgnoreCase("banner")) return;
+                    InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
+                    inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
+                }
                 if (event.getClickedBlock().getType() == Material.OAK_DOOR) {
                     RegisteredBlock rBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (rBlock != null && rBlock.getInfo() != null) {
@@ -103,6 +117,10 @@ public class PlayerInteractListener implements Listener {
                                 if (!((blockFaction.equals("fbi") && playerFaction.equals("polizei")) ||
                                         (blockFaction.equals("polizei") && playerFaction.equals("fbi")))) {
                                     event.setCancelled(true);
+                                    if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                                        FactionData defender = factionManager.getFactionData(blockFaction);
+                                        Main.getInstance().gamePlay.openGOVRaidGUI(defender, player);
+                                    }
                                 }
                             }
 
