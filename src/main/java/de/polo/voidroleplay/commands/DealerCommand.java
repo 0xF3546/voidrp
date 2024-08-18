@@ -127,13 +127,18 @@ public class DealerCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (dealer.getOwner().equalsIgnoreCase(playerData.getFaction())) {
-                    player.sendMessage(Main.error + "Du kannst deine eigene Apotheken nicht einschüchtern.");
+                    player.sendMessage(Main.error + "Du kannst deinen eigenen Dealer nicht einschüchtern.");
                     return;
                 }
                 if (gamePlay.rob.containsKey(dealer)) {
                     player.sendMessage(Prefix.ERROR + "Jemand nimmt aktuell den Dealer ein!");
                     return;
                 }
+                if (!Utils.getTime().plusMinutes(60).isAfter(dealer.getLastAttack())) {
+                    player.sendMessage(Prefix.ERROR + "Der Dealer wurde erst vor kurzem eingenommen!");
+                    return;
+                }
+                dealer.setLastAttack(Utils.getTime());
                 player.closeInventory();
                 factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Jemand versucht deinen Dealer zu übernehmen.");
                 factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Ihr fangt an den Dealer zu übernehmen!");
