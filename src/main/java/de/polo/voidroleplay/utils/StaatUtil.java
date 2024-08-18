@@ -81,8 +81,8 @@ public class StaatUtil {
             geldstrafe += result.getInt(3);
         }
         if (hafteinheiten > 0) {
-            if (hafteinheiten >= 40) {
-                hafteinheiten = 40;
+            if (hafteinheiten >= 25) {
+                hafteinheiten = 25;
             }
             JailData jailData = new JailData();
             locationManager.useLocation(player, "gefaengnis");
