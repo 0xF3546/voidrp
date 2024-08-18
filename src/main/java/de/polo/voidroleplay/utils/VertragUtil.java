@@ -198,6 +198,10 @@ public class VertragUtil {
                 case "alliance":
                     Main.getInstance().gamePlay.alliance.accept(player, curr.toString());
                     break;
+                case "vertrag":
+                    player.sendMessage(Prefix.MAIN + "Du hast den Vertrag angenommen!");
+                    targetplayer.sendMessage(Prefix.MAIN + player.getName() + " hat den Vertrag angeommen!");
+                    break;
             }
             deleteVertrag(player);
         } else {
@@ -262,6 +266,10 @@ public class VertragUtil {
                     break;
                 case "alliance":
                     Main.getInstance().gamePlay.alliance.deny(player, curr);
+                    break;
+                case "vertrag":
+                    player.sendMessage(Prefix.MAIN + "Du hast den Vertrag abgelehnt!");
+                    targetplayer.sendMessage(Prefix.MAIN + player.getName() + " hat den Vertrag abgelehnt!");
                     break;
             }
             deleteVertrag(player);

@@ -253,3 +253,7 @@ commands:
   autoblacklist:
     aliases: [abl, ablacklist]
   afk:
+  secondaryteaminfo:
+    aliases: stinfo
+  vertrag:
+  settings:

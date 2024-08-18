@@ -184,6 +184,9 @@ public class Utils {
                     case "medic":
                         color = "§c";
                         break;
+                    case "news":
+                        color = "§6";
+                        break;
                 }
             }
             if (Main.getInstance().gamePlay.getMaskState(player) == null) {

@@ -479,6 +479,9 @@ public final class Main extends JavaPlugin {
         public ModifyBlacklistCommand modifyBlacklistCommand;
         public AutoBlacklistCommand autoBlacklistCommand;
         public AFKCommand afkCommand;
+        public SettingsCommand settingsCommand;
+        public VertragCommand vertragCommand;
+        public SecondaryTeamInfoCommand secondaryTeamInfoCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -656,7 +659,9 @@ public final class Main extends JavaPlugin {
             modifyBlacklistCommand = new ModifyBlacklistCommand(playerManager, factionManager);
             autoBlacklistCommand = new AutoBlacklistCommand(playerManager, factionManager);
             afkCommand = new AFKCommand(utils);
-
+            settingsCommand = new SettingsCommand(playerManager);
+            secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
+            vertragCommand = new VertragCommand();
 
             main.registerCommands();
             main.registerListener(this);
