@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class StaatsbankRob {
     private int vaultsOpen;
 
     @Getter
-    private List<Integer> openVaults;
+    private final List<Integer> openVaults = new ArrayList<>();
 
     public StaatsbankRob() {
         vaults = Main.random(12, 20);

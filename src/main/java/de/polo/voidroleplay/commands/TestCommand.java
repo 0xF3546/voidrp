@@ -21,6 +21,7 @@ public class TestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
+        if (!player.hasPermission("OP")) return false;
         if (!MilitaryDrop.ACTIVE) {
             player.sendMessage(Prefix.infoPrefix + "Du hast das Event aktiviert.");
             MilitaryDrop.ACTIVE = true;
