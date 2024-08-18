@@ -4,10 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,10 +40,16 @@ public class MilitaryDrop implements Listener {
     private final List<Location> chestSpawns = new ArrayList<>();
     private FactionData staat = null;
 
+    private final Location middleArena;
+
+    private int arenaSize = 200;
+
     public MilitaryDrop(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.locationManager = locationManager;
+
+        middleArena = locationManager.getLocation("middleArena");
 
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
@@ -114,6 +117,8 @@ public class MilitaryDrop implements Listener {
         if (!(playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei") || factionData.isBadFrak())) {
             return false;
         }
+
+        System.out.println("Size of Team " + factionData.getName() + ": " + getFactionPlayers(factionData.getName()).size());
 
         if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
             if (getFactionPlayers("FBI").size() > 15) {
@@ -189,6 +194,7 @@ public class MilitaryDrop implements Listener {
             addPoints(winner.getName(), 20);
             sendRankingListToPlayers();
             sendMessage("§8[§cMilitärabsturz§8]§f Die Fraktion " + winner.getFullname() + " haben die Runde gewonnen!");
+            isRoundActive = false;
             Main.waitSeconds(5, this::startRound);
         }
     }
@@ -232,7 +238,6 @@ public class MilitaryDrop implements Listener {
         PlayerData killerData = playerManager.getPlayerData(killer);
         String faction = killerData.getFaction();
         if (!joinedPlayers.contains(player)) return false;
-        if (!joinedPlayers.contains(killer)) return false;
         if (faction.equalsIgnoreCase("FBI") || faction.equalsIgnoreCase("Polizei")) {
             faction = "Staat";
             factionManager.sendCustomMessageToFaction("Polizei", "§8[§cMilitärabsturz§8]§7 +1 Punkt für das Töten eines Gegners (" + killer.getName() + " » " + player.getName() + ")");
@@ -292,17 +297,6 @@ public class MilitaryDrop implements Listener {
         return staat;
     }
 
-    private Collection<Player> getPlayersByTeam(String faction) {
-        List<Player> players = new ArrayList<>();
-        for (Player player : joinedPlayers) {
-            PlayerData playerData = playerManager.getPlayerData(player);
-            if (playerData.getFaction().equalsIgnoreCase(faction)) players.add(player);
-        }
-        return players;
-    }
-
-
-
     public void startRound() {
         if (currentRound >= 5 && end()) {
             return;
@@ -315,6 +309,7 @@ public class MilitaryDrop implements Listener {
         }
         freezePlayers = true;
         clearPlayers();
+        arenaSize = 200;
         sendCountdown(5);
     }
 
@@ -431,4 +426,48 @@ public class MilitaryDrop implements Listener {
         factionSpawns.put(faction, randomLocation);
         return randomLocation;
     }
+
+    public void everySecond() {
+        if (!isRoundActive) return;
+        if (arenaSize > 25) arenaSize--;
+        drawBorder();
+        for (Player player : alivePlayers) {
+            if (player.getLocation().distance(middleArena) < arenaSize) continue;
+            player.damage(1);
+            Main.getInstance().utils.sendActionBar(player, "§cDu bist nicht in der Zone!");
+        }
+    }
+
+    private void drawBorder() {
+        int halfSize = arenaSize;
+        middleArena.setWorld(Bukkit.getWorld("world"));
+
+        Location corner1 = middleArena.clone().add(-halfSize, 0, -halfSize);
+        Location corner2 = middleArena.clone().add(halfSize, 0, -halfSize);
+        Location corner3 = middleArena.clone().add(halfSize, 0, halfSize);
+        Location corner4 = middleArena.clone().add(-halfSize, 0, halfSize);
+
+        drawParticleLine(corner1, corner2);
+        drawParticleLine(corner2, corner3);
+        drawParticleLine(corner3, corner4);
+        drawParticleLine(corner4, corner1);
+    }
+
+    private void drawParticleLine(Location start, Location end) {
+        double distance = start.distance(end);
+        int points = (int) distance * 5;
+        double dx = (end.getX() - start.getX()) / points;
+        double dz = (end.getZ() - start.getZ()) / points;
+
+        // DustOptions für den REDSTONE-Partikel
+        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.RED, 1);
+
+        for (int i = 0; i <= points; i++) {
+            for (int j = 0; j < 10; j++) {
+                Location point = start.clone().add(dx * i, j, dz * i);
+                Bukkit.getWorld("world").spawnParticle(Particle.REDSTONE, point, 1, dustOptions);
+            }
+        }
+    }
+
 }

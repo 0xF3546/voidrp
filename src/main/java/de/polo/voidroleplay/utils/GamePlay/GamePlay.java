@@ -9,6 +9,8 @@ import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.game.faction.apotheke.ApothekeFunctions;
 import de.polo.voidroleplay.game.faction.houseban.Houseban;
 import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
+import de.polo.voidroleplay.game.faction.staat.GOVRaid;
+import de.polo.voidroleplay.game.faction.staat.StaatsbankRob;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
@@ -20,6 +22,9 @@ import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Openable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,8 +60,12 @@ public class GamePlay implements Listener {
     public final MilitaryDrop militaryDrop;
     private final List<Dealer> currentDealer = new ArrayList<>();
     private final NPC npc;
+    private final List<GOVRaid> govRaids = new ArrayList<>();
 
     public final HashMap<Dealer, Integer> rob = new HashMap<>();
+
+    private StaatsbankRob staatsbankRob = null;
+    private boolean isStaatsbankRobBlocked = false;
     @SneakyThrows
     public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager, NPC npc) {
         this.playerManager = playerManager;
@@ -637,6 +646,13 @@ public class GamePlay implements Listener {
                 factionManager.sendCustomMessageToFaction(dealer.getAttacker(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Noch " + remaining + " Minuten bis der Dealer aufgibt!");
             }
         }
+
+        if (event.getMinute() % 2 == 0) {
+            if (staatsbankRob == null) return;
+            if (staatsbankRob.getVaultsOpen() >= staatsbankRob.getVaults()) return;
+            staatsbankRob.setVaultsOpen(staatsbankRob.getVaultsOpen() + 1);
+            staatsbankRob.sendMessage("Ein Schließfach wurde geknackt! (" + staatsbankRob.getVaultsOpen() + "/" + staatsbankRob.getVaults() + ")", ChatColor.GRAY);
+        }
     }
 
     public void addQuestReward(Player player, String type, int amount, String info) {
@@ -689,6 +705,198 @@ public class GamePlay implements Listener {
         masks.remove(player);
 
         Utils.Tablist.updatePlayer(player);
+    }
+
+    public void openGOVRaidGUI(FactionData factionData, Player attacker) {
+        InventoryManager inventoryManager = new InventoryManager(attacker, 27, "§8 » §cRazzia");
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§" + factionData.getPrimaryColor() + factionData.getFullname() + " raiden")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§2cazzia§8]§c Der Staat führt eine Razzia durch!");
+
+                double radius = 5.0;
+                Block nearestDoorBlock = null;
+                double nearestDistance = radius;
+                Location playerLocation = attacker.getLocation();
+
+                for (Block block : Main.getInstance().blockManager.getNearbyBlocks(playerLocation, radius)) {
+                    Material type = block.getType();
+                    if (type == Material.IRON_DOOR || type == Material.OAK_DOOR) {
+                        double distance = playerLocation.distance(block.getLocation());
+                        if (distance < nearestDistance) {
+                            nearestDistance = distance;
+                            nearestDoorBlock = block;
+                        }
+                    }
+                }
+                if (nearestDoorBlock == null) {
+                    if (locationManager.getDistanceBetweenCoords(attacker, "fdoor_" + factionData.getName()) > 5) {
+                        attacker.sendMessage(Main.error + "Du bist nicht in der nähe einer Fraktionstür.");
+                        return;
+                    }
+                    List<RegisteredBlock> blocks = new ArrayList<>();
+                    for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
+                        if (block.getInfo().equalsIgnoreCase("adoor_" + factionData.getName())) {
+                            blocks.add(block);
+                        }
+                    }
+                    for (int i = 0; i < blocks.size() / 2; i++) {
+                        for (RegisteredBlock block : blocks) {
+                            if (Integer.parseInt(block.getInfoValue()) == i + 1) {
+                                Block block1 = block.getLocation().getBlock();
+                                if (block1.getType().equals(block.getMaterial())) {
+                                    block1.setType(Material.AIR);
+                                }
+                            }
+                        }
+                    }
+                    sendStaatRazziaMessage(factionData.getName());
+                    return;
+                }
+
+                BlockState state = nearestDoorBlock.getState();
+                if (state.getBlockData() instanceof Openable) {
+                    Openable openable = (Openable) state.getBlockData();
+                    if (openable.isOpen()) {
+                        attacker.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
+                    } else {
+                        openable.setOpen(true);
+                        state.setBlockData(openable);
+                        state.update();
+                        attacker.sendMessage(Prefix.MAIN + "Die Tür wurde geöffnet.");
+                    }
+                } else {
+                    attacker.sendMessage(Prefix.ERROR + "Dies ist keine Tür.");
+                    return;
+                }
+                sendStaatRazziaMessage(factionData.getName());
+            }
+        });
+    }
+
+    private void sendStaatRazziaMessage(String defender) {
+        factionManager.sendCustomMessageToFactions("§8[§cRazzia§8]§7 Die Tür der Fraktionstür von " + defender + " ist offen!", "FBI", "Polizei");
+    }
+
+    public void openStaatsbankRaub(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) return;
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank");
+        if (staatsbankRob == null) {
+            int count = factionManager.getOnlineMemberCount("Polizei");
+            count += factionManager.getOnlineMemberCount("FBI");
+            if (count < 4) {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§cRaub starten", "§8 ➥ §cEs müssen 4 Staatsbeamte online sein!")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§cRaub starten")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (isStaatsbankRobBlocked) {
+                            player.sendMessage(Prefix.ERROR + "Die Staatsbank wurde heute bereits ausgeraubt!");
+                            return;
+                        }
+                        startStaatsbankRaub(player);
+                    }
+                });
+            }
+        } else if (staatsbankRob.getAttacker().equals(factionData)) {
+            int memberInRange = 0;
+            memberInRange += factionManager.getFactionMemberInRange("Polizei", player.getLocation(), 100, true).size();
+            memberInRange += factionManager.getFactionMemberInRange("FBI", player.getLocation(), 100, true).size();
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PAPER, 1, 0, "§7Überwachungskameras", "§8 ➥ §c" + memberInRange + " FBI/Polizei wurden auf den Kameras gefunden (100 Meter)")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfächer", "§8 ➥ §e" + staatsbankRob.getVaultsOpen() + "§8/§e" + staatsbankRob.getVaults())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openVaults(player);
+                }
+            });
+        } else if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§cRaub beenden")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (factionManager.getFactionMemberInRange(staatsbankRob.getAttacker().getName(), player.getLocation(), 30, false).size() > 1) {
+                        player.sendMessage(Prefix.ERROR + "Es sind noch zu viele Gegner am leben!");
+                        return;
+                    }
+                    staatsbankRob.sendMessage("Der Staat konnte den Staatsbankraub verhindern!", ChatColor.RED, "FBI", "Polizei", factionData.getName());
+                    staatsbankRob = null;
+                }
+            });
+        }
+
+    }
+
+    private void openVaults(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) return;
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank §8-§6 Schließfächer");
+        for (int i = 0; i < staatsbankRob.getVaults(); i++) {
+            if (staatsbankRob.getVaultsOpen() <= i) {
+                int finalI = i;
+                inventoryManager.setItem(new CustomItem(finalI, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + i, staatsbankRob.isVaultOpen(i) ? "§8 ➥ §eLeer" : "§8 ➥ §cGeschlossen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (staatsbankRob.openVault(finalI)) {
+                            player.sendMessage(Prefix.ERROR + "Das Schließfach ist bereits entleert wurden.");
+                            return;
+                        }
+                        player.closeInventory();
+                        int amount = Main.random(finalI * 100, finalI * 150);
+                        factionData.addBankMoney(amount, "Schließfach " + finalI + " (Staatsbankraub)");
+                        staatsbankRob.sendMessage("Ihr habt " + amount + "$ aus Schließfach " + finalI + " erhalten!", ChatColor.GREEN, factionData.getName());
+                        if (staatsbankRob.getVaultsOpen() >= staatsbankRob.getVaults()) {
+                            staatsbankRob.sendMessage("Ihr habt es geschafft die Staatsbank auszurauben!", ChatColor.GREEN, factionData.getName());
+                            staatsbankRob.sendMessage("Die Angreifer haben es geschafft die Staatsbank auszurauben!", ChatColor.RED, "Polizei", "FBI");
+                            staatsbankRob = null;
+                        }
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + i, "§8 ➥ §cVerschlossen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    private void startStaatsbankRaub(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) {
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in keiner Bad Fraktion!");
+            return;
+        }
+        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        if (!factionData.isBadFrak()) {
+            player.sendMessage(Prefix.ERROR + "Du bist in keiner Bad Fraktion!");
+            return;
+        }
+        if (staatsbankRob != null) {
+            player.sendMessage(Prefix.ERROR + "Es läuft bereits ein Staatsbank-Raub.");
+            return;
+        }
+        isStaatsbankRobBlocked = true;
+        staatsbankRob = new StaatsbankRob();
+        staatsbankRob.setAttacker(factionData);
+        staatsbankRob.sendMessage("Ihr habt den Raub auf die Staatsbank begonnen!", ChatColor.GRAY, factionData.getName());
+        staatsbankRob.sendMessage("Ihr knackt alle 2 Minuten ein Schließfach auf, nehmt dann das Geld raus (Sneak + F).", ChatColor.GRAY, factionData.getName());
+        staatsbankRob.sendMessage("Das Geld geht direkt auf das Fraktionskonto und erhöht sich mit der Zeit!", ChatColor.GRAY, factionData.getName());
+        staatsbankRob.sendMessage("Ihr habt den Raub auf die Staatsbank begonnen!", ChatColor.GRAY, factionData.getName());
+        staatsbankRob.sendMessage("Es wurde ein Raub auf die Staatsbank gemeldet!", ChatColor.RED, "FBI", "Polizei");
     }
 
     public Collection<Dealer> getCurrentDealer() {

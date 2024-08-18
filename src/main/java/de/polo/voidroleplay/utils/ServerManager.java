@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
+import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import lombok.SneakyThrows;
@@ -249,6 +250,10 @@ public class ServerManager {
                             }
                         }
                     }
+                }
+
+                if (MilitaryDrop.ACTIVE) {
+                    Main.getInstance().gamePlay.militaryDrop.everySecond();
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
