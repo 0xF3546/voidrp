@@ -117,7 +117,6 @@ public class PlayerPetManager {
 
     public void spawnPet(PlayerPed ped) {
         Animals entity = (Animals) player.getWorld().spawnEntity(player.getLocation(), ped.getPet().getAnimal());
-        entity.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "owner"), PersistentDataType.STRING, player.getUniqueId().toString());
         entity.setCustomName("§7" + player.getName() + "'s Haustier");
         entity.setCustomNameVisible(true);
         entity.teleport(player.getLocation());
@@ -125,7 +124,7 @@ public class PlayerPetManager {
         entity.setInvulnerable(true);
         entity.setSilent(true);
         entity.setRemoveWhenFarAway(false);
-        entity.setAI(false); // hinteher laufe
+        // entity.setAI(false); // hinteher laufe
         entity.setCollidable(false);
         entity.setCanPickupItems(false);
         entity.setBreed(false);
@@ -136,6 +135,7 @@ public class PlayerPetManager {
         } else {
             entity.setAdult();
         }
+        entity.setTarget(player);
     }
 
     public void despawnPet(PlayerPed ped) {
@@ -147,12 +147,6 @@ public class PlayerPetManager {
 
 
     public void everySecond() {
-        PlayerPed ped = getActivePed();
-        if (ped == null) return;
 
-        Entity pet = ped.getEntity();
-        if (pet.isValid() && player.isOnline()) {
-            ((Animals) pet).setTarget(player);
-        }
     }
 }
