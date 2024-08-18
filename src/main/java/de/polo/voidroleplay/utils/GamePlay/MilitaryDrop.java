@@ -428,14 +428,14 @@ public class MilitaryDrop implements Listener {
     }
 
     public void everySecond() {
-        if (!isRoundActive) return;
+        /*if (!isRoundActive) return;
         if (arenaSize > 25) arenaSize--;
         drawBorder();
         for (Player player : alivePlayers) {
             if (player.getLocation().distance(middleArena) < arenaSize) continue;
             player.damage(1);
             Main.getInstance().utils.sendActionBar(player, "§cDu bist nicht in der Zone!");
-        }
+        }*/
     }
 
     private void drawBorder() {

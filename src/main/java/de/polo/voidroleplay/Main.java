@@ -662,6 +662,7 @@ public final class Main extends JavaPlugin {
             settingsCommand = new SettingsCommand(playerManager);
             secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
             vertragCommand = new VertragCommand();
+            new TestCommand();
 
             main.registerCommands();
             main.registerListener(this);

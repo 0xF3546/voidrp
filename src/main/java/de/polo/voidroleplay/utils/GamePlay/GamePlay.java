@@ -651,7 +651,7 @@ public class GamePlay implements Listener {
             if (staatsbankRob == null) return;
             if (staatsbankRob.getVaultsOpen() >= staatsbankRob.getVaults()) return;
             staatsbankRob.setVaultsOpen(staatsbankRob.getVaultsOpen() + 1);
-            staatsbankRob.sendMessage("Ein Schließfach wurde geknackt! (" + staatsbankRob.getVaultsOpen() + "/" + staatsbankRob.getVaults() + ")", ChatColor.GRAY);
+            staatsbankRob.sendMessage("Ein Schließfach wurde geknackt! (" + staatsbankRob.getVaultsOpen() + "/" + staatsbankRob.getVaults() + ")", ChatColor.GRAY, staatsbankRob.getAttacker().getName());
         }
     }
 
@@ -801,6 +801,7 @@ public class GamePlay implements Listener {
                             player.sendMessage(Prefix.ERROR + "Die Staatsbank wurde heute bereits ausgeraubt!");
                             return;
                         }
+                        player.closeInventory();
                         startStaatsbankRaub(player);
                     }
                 });
@@ -895,7 +896,6 @@ public class GamePlay implements Listener {
         staatsbankRob.sendMessage("Ihr habt den Raub auf die Staatsbank begonnen!", ChatColor.GRAY, factionData.getName());
         staatsbankRob.sendMessage("Ihr knackt alle 2 Minuten ein Schließfach auf, nehmt dann das Geld raus (Sneak + F).", ChatColor.GRAY, factionData.getName());
         staatsbankRob.sendMessage("Das Geld geht direkt auf das Fraktionskonto und erhöht sich mit der Zeit!", ChatColor.GRAY, factionData.getName());
-        staatsbankRob.sendMessage("Ihr habt den Raub auf die Staatsbank begonnen!", ChatColor.GRAY, factionData.getName());
         staatsbankRob.sendMessage("Es wurde ein Raub auf die Staatsbank gemeldet!", ChatColor.RED, "FBI", "Polizei");
     }
 
