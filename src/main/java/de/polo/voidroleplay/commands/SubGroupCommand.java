@@ -74,6 +74,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
                 public void onClick(InventoryClickEvent event) {
                     String name = playerData.getVariable("subgroup::name");
                     for (SubGroup subGroup : factionManager.subGroups.getSubGroups()) {
+                        if (subGroup.getName() == null) continue;
                         if (subGroup.getName().equalsIgnoreCase(name)) {
                             player.sendMessage(Main.error + "Es gibt bereits eine Gruppierung mit diesem Namen.");
                             return;

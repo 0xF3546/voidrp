@@ -1,10 +1,19 @@
 package de.polo.voidroleplay.dataStorage;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
 public class FactionPlayerData {
     private int id;
     private String uuid;
     private String faction;
     private int faction_grade;
+
+    @Getter
+    @Setter
+    private LocalDateTime lastLogin;
 
     public int getId() {
         return id;

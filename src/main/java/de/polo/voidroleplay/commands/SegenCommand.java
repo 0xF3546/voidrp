@@ -44,6 +44,10 @@ public class SegenCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
+        if (target == player) {
+            player.sendMessage(Prefix.ERROR + "Du kannst dich nicht selbst segnen!");
+            return false;
+        }
         if (target.getLocation().distance(player.getLocation()) > 5) {
             player.sendMessage(Prefix.ERROR + target.getName() + " ist nicht in deiner nähe.");
             return false;

@@ -43,6 +43,10 @@ public class TaufeCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
+        if (target == player) {
+            player.sendMessage(Prefix.ERROR + "Du kannst dich nicht selbst taufen.");
+            return false;
+        }
         if (player.getLocation().distance(target.getLocation()) > 5) {
             player.sendMessage(Prefix.ERROR + target.getName() + " ist nicht in der nähe.");
             return false;

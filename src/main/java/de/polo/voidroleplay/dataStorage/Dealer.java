@@ -3,9 +3,12 @@ package de.polo.voidroleplay.dataStorage;
 import de.polo.api.faction.dealer.IDealer;
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+
+import java.time.LocalDateTime;
 
 public class Dealer implements IDealer {
     private int id;
@@ -28,6 +31,10 @@ public class Dealer implements IDealer {
     @Getter
     @Setter
     private String attacker;
+
+    @Getter
+    @Setter
+    private LocalDateTime lastAttack = Utils.getTime();
 
     public String getOwner() {
         if (owner == null) {
