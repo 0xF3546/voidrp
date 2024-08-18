@@ -100,14 +100,6 @@ public class ApothekeFunctions implements Listener {
                         player.sendMessage(Main.error + "Du kannst deine eigene Apotheken nicht einschüchtern.");
                         return;
                     }
-                    int i = 0;
-                    for (Apotheke a : apotheken) {
-                        if (a.getOwner().equalsIgnoreCase(playerData.getFaction())) i++;
-                    }
-                    if (i >= 3) {
-                        player.sendMessage(Prefix.ERROR + "Deine Fraktion kann maximal 3 Apotheken besitzen!");
-                        return;
-                    }
                     player.closeInventory();
                     apotheke.setLastAttack(LocalDateTime.now());
                     if (apotheke.isStaat()) {
