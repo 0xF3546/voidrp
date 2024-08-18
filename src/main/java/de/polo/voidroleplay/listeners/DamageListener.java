@@ -3,6 +3,7 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -10,6 +11,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.ENTITY_ATTACK;
+import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 
 public class DamageListener implements Listener {
     private final PlayerManager playerManager;
@@ -25,24 +31,41 @@ public class DamageListener implements Listener {
                 || event.getEntity().getType() == EntityType.MINECART) {
             event.setCancelled(true);
         }
-        if (event.getEntity() instanceof Player) {
-            Player player = ((Player) event.getEntity()).getPlayer();
-            if (player == null) return;
-            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            ItemStack chestplate = player.getInventory().getArmorContents()[2];
-            if (!playerData.isAduty() || Main.getInstance().supportManager.getTicket(player) != null) {
-                player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
-                if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
-                    event.setCancelled(playerData.getVisum() <= 2 && playerData.getFaction() == null);
-                    if (chestplate == null) return;
-                    if (chestplate.getType() == Material.LEATHER_CHESTPLATE) {
-                        event.setDamage(event.getDamage() / 3);
-                        chestplate.setDurability((short) (chestplate.getDurability() - 10));
-                    }
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+        Player player = ((Player) event.getEntity()).getPlayer();
+        if (player == null) return;
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.getTicket(player) != null) {
+            event.setCancelled(true);
+            return;
+        }
+        player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
+        if (event.getCause() == PROJECTILE) {
+            for (ItemStack armor : player.getInventory().getArmorContents()) {
+                if (armor == null || armor.getType() == Material.AIR) continue;
+                event.setDamage(0.5);
+                ItemMeta meta = armor.getItemMeta();
+                if (meta instanceof Damageable) {
+                    Damageable damageable = (Damageable) meta;
+                    damageable.setDamage(damageable.getDamage() + 15);
+                    armor.setItemMeta(meta);
                 }
-            } else {
-                event.setCancelled(true);
             }
+            if (player.getInventory().getItemInMainHand().getType() == RoleplayItem.SWAT_SHIELD.getMaterial()) {
+                if (!player.isBlocking()) return;
+                ItemStack shield = player.getInventory().getItemInMainHand();
+                ItemMeta meta = shield.getItemMeta();
+                if (meta instanceof Damageable) {
+                    Damageable damageable = (Damageable) meta;
+                    damageable.setDamage(damageable.getDamage() + 15);
+                    shield.setItemMeta(meta);
+                }
+            }
+        }
+        if (event.getCause() == ENTITY_ATTACK) {
+            event.setCancelled(playerData.getVisum() <= 2 && playerData.getFaction() == null);
         }
     }
 }
