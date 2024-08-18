@@ -61,7 +61,7 @@ public class PlantFunctions implements Listener {
     }
 
     private boolean canAttack(Plant plant) {
-        Duration duration = Duration.between(plant.getLastAttack(), LocalDateTime.now());
+        Duration duration = Duration.between(plant.getLastAttack(), Utils.getTime());
         long minutesDifference = duration.toMinutes();
         if (minutesDifference < 60) {
             return false;
@@ -70,7 +70,7 @@ public class PlantFunctions implements Listener {
     }
 
     public long getMinuteDifference(Plant plant) {
-        Duration duration = Duration.between(plant.getLastAttack(), LocalDateTime.now());
+        Duration duration = Duration.between(plant.getLastAttack(), Utils.getTime());
         long minutesDifference = duration.toMinutes();
         return 360 - minutesDifference;
     }
@@ -101,8 +101,12 @@ public class PlantFunctions implements Listener {
                         player.sendMessage(Main.error + "Du kannst deine eigene Plantage nicht übernehmen.");
                         return;
                     }
+                    if (!canAttack(plant)) {
+                        player.sendMessage(Prefix.ERROR + "Die Plantage kann noch nicht angegriffen werden.");
+                        return;
+                    }
                     player.closeInventory();
-                    plant.setLastAttack(LocalDateTime.now());
+                    plant.setLastAttack(Utils.getTime());
                     factionManager.sendCustomMessageToFaction(plant.getOwner(), "§8[§2Plantage§8]§c Jemand versucht deine deine Plantage zu übernehmen.");
                     factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§2Plantage§8]§a Ihr fangt an die Plantage von " + plant.getOwner() +" zu übernehmen!");
                     player.sendMessage("§8[§2Plantage§8]§7 Die nächsten 10 Minuten muss mindestens ein Fraktionmitglied im Umkreis von 30 Metern leben.");
@@ -190,7 +194,7 @@ public class PlantFunctions implements Listener {
 
             }
         }
-        if (LocalDateTime.now().getHour() < 16 && LocalDateTime.now().getHour() > 22) return;
+        if (Utils.getTime().getHour() < 16 && Utils.getTime().getHour() > 22) return;
         /*for (FactionData factionData : factionManager.getFactions()) {
             int plus = 0;
             for (Plant plant : getPlants()) {
