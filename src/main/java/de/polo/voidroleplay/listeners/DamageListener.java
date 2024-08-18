@@ -49,7 +49,11 @@ public class DamageListener implements Listener {
                 ItemMeta meta = armor.getItemMeta();
                 if (meta instanceof Damageable) {
                     Damageable damageable = (Damageable) meta;
-                    damageable.setDamage(damageable.getDamage() + 15);
+                    if (armor.getType().equals(RoleplayItem.HEAVY_BULLETPROOF.getMaterial())) {
+                        damageable.setDamage(damageable.getDamage() + 30);
+                    } else {
+                        damageable.setDamage(damageable.getDamage() + 15);
+                    }
                     armor.setItemMeta(meta);
                 }
             }
