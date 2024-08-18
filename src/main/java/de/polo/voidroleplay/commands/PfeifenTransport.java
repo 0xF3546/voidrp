@@ -116,6 +116,10 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         playerData.setVariable("transport::amount", amount);
         Main.getInstance().utils.navigation.createNaviByLocation(player, factionData.getName());
         playerData.setVariable("job", "pfeifentransport");
+        if (amount < 1 || amount > 50) {
+            player.sendMessage(Prefix.ERROR + "Du kannst nur zwischen 1 und 50 Pfeifen transportieren");
+            return;
+        }
         if (amount >= 40) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2, true, false));
         } else if (amount >= 20) {
