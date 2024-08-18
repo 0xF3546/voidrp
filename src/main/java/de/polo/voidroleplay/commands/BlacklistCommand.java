@@ -52,16 +52,28 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                 if (blacklistData.getFaction().equals(factionData.getName())) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(blacklistData.getUuid()));
+                    if (!offlinePlayer.isOnline()) continue;
                     player.sendMessage("§8 ➥ §e" + offlinePlayer.getName() + "§8 | §e" + blacklistData.getPrice() + "$ §8 | §e" + blacklistData.getKills() + " Tode §8| §e" + blacklistData.getReason() + " §8|§e " + blacklistData.getDate());
                 }
             }
             return false;
         }
         if (!(args.length >= 2)) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /blacklist [add/remove/pay] [Spieler/Fraktion] [<Kills>] [<Preis>] [<Grund>]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /blacklist [add/remove/pay/all] [Spieler/Fraktion] [<Kills>] [<Preis>] [<Grund>]");
             return false;
         }
-        if (args[0].equalsIgnoreCase("add")) {
+        if (args[0].equalsIgnoreCase("all")) {
+            player.sendMessage("§7   ===§8[§cBlacklist§8]§7===");
+            player.sendMessage("§8 ➥ §" + factionData.getPrimaryColor() + factionData.getFullname());
+            player.sendMessage(" ");
+            for (BlacklistData blacklistData : factionManager.getBlacklists()) {
+                if (blacklistData.getFaction().equals(factionData.getName())) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(blacklistData.getUuid()));
+                    player.sendMessage("§8 ➥ §e" + offlinePlayer.getName() + "§8 | §e" + blacklistData.getPrice() + "$ §8 | §e" + blacklistData.getKills() + " Tode §8| §e" + blacklistData.getReason() + " §8|§e " + blacklistData.getDate());
+                }
+            }
+        }
+        else if (args[0].equalsIgnoreCase("add")) {
             if (args.length >= 4) {
                 Player player1 = Bukkit.getPlayer(args[1]);
                 if (player1 == null) {
@@ -208,6 +220,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
+            suggestions.add("all");
             suggestions.add("add");
             suggestions.add("remove");
             suggestions.add("pay");
