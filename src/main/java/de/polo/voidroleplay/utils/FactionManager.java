@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.Date;
 
 public class FactionManager {
     private final Map<String, FactionData> factionDataMap = new HashMap<>();
@@ -479,6 +480,7 @@ public class FactionManager {
             fpd.setFaction_grade(result.getInt("faction_grade"));
             fpd.setId(result.getInt("id"));
             fpd.setUuid(result.getString("uuid"));
+            fpd.setLastLogin(result.getTimestamp("lastLogin").toLocalDateTime());
             factionPlayers.add(fpd);
         }
 

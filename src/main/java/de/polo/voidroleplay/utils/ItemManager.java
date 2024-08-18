@@ -5,6 +5,7 @@ import com.mojang.authlib.properties.Property;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -271,6 +272,4 @@ public class ItemManager {
             player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName));
         }
     }
-
-
 }
