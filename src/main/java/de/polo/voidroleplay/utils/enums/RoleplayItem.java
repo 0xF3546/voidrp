@@ -12,7 +12,7 @@ public enum RoleplayItem {
     PIPE_TOBACCO("§2Pfeifentabak", Material.KELP, true),
     BOX_WITH_JOINTS("§7Kiste mit Pfeifen", Material.CHEST, true),
     SNUFF("§7Schnupftabak", Material.SUGAR, true),
-    CIGAR("§7§lZigarre", Material.BAMBOO, true),
+    CIGAR("§7§lZigarre", Material.STICK, true),
     WELDING_MACHINE("§cSchweißgerät", Material.BLAZE_ROD, true),
     CUFF("§6Handschellen", Material.LEAD, true),
     SWAT_SHIELD("§6Einsatzschild", Material.SHIELD, true),

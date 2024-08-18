@@ -129,7 +129,7 @@ public class Vehicles implements Listener, CommandExecutor {
         }
     }
 
-    public static void spawnVehicle(Player player, PlayerVehicleData playerVehicleData) {
+    public static Minecart spawnVehicle(Player player, PlayerVehicleData playerVehicleData) {
         Location location = new Location(Bukkit.getWorld("world"), playerVehicleData.getX(), playerVehicleData.getY() + 1, playerVehicleData.getZ(), playerVehicleData.getYaw(), playerVehicleData.getPitch());
         Minecart minecart = (Minecart) Bukkit.getWorld("world").spawnEntity(location, EntityType.MINECART);
         NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
@@ -148,6 +148,7 @@ public class Vehicles implements Listener, CommandExecutor {
 
         VehicleData vehicleData = vehicleDataMap.get(playerVehicleData.getType());
         minecart.setMaxSpeed(vehicleData.getMaxspeed());
+        return minecart;
     }
 
     public static void deleteVehicleById(Integer id) throws SQLException {
@@ -577,8 +578,11 @@ public class Vehicles implements Listener, CommandExecutor {
                             SoundManager.successSound(player);
                             Statement statement = Main.getInstance().mySQL.getStatement();
                             statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + vehicleData.getId());
-                            spawnVehicle(player, playerVehicleData);
+                            Minecart vehicle = spawnVehicle(player, playerVehicleData);
                             player.closeInventory();
+                            if (vehicle.getLocation().distance(player.getLocation()) >= 50) {
+                                vehicle.teleport(player.getLocation());
+                            }
                         }
                     });
                 }
