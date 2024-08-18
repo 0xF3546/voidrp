@@ -72,6 +72,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                     player.sendMessage("§8 ➥ §e" + offlinePlayer.getName() + "§8 | §e" + blacklistData.getPrice() + "$ §8 | §e" + blacklistData.getKills() + " Tode §8| §e" + blacklistData.getReason() + " §8|§e " + blacklistData.getDate());
                 }
             }
+            return false;
         }
         else if (args[0].equalsIgnoreCase("add")) {
             if (args.length >= 4) {
