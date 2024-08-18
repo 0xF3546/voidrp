@@ -212,7 +212,7 @@ public class Laboratory implements CommandExecutor, Listener {
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7 » §" + defenderFaction.getPrimaryColor() + "Labor §8× §cAngriff", true, true);
         Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet res = statement.executeQuery("SELECT * FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = '" + defenderFaction.getName() + "'");
+        ResultSet res = statement.executeQuery("SELECT pl.* FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = '" + defenderFaction.getName() + "'");
         int weedAmount = 0;
         int jointAmount = 0;
         while (res.next()) {
@@ -270,7 +270,7 @@ public class Laboratory implements CommandExecutor, Listener {
     public void attackLaboratory(Player player, FactionData attacker, FactionData defender) {
         ItemManager.removeCustomItem(player, RoleplayItem.WELDING_MACHINE, 1);
         LaboratoryAttack attack = new LaboratoryAttack(attacker, defender);
-        attack.setStarted(LocalDateTime.now());
+        attack.setStarted(Utils.getTime());
         factionManager.sendCustomMessageToFaction(attacker.getName(), "§8[§" + attacker.getPrimaryColor() + attacker.getName() + "§8]§e Ihr fangt an das Labor von " + defender.getFullname() + " auszurauben, bleibt 5 Minuten bei der Tür!");
         factionManager.sendCustomMessageToFaction(defender.getName(), "§8[§cLabor§8]§e Das Sicherheitssystem deines Labors meldet Alarm.");
         attacks.add(attack);
@@ -316,30 +316,38 @@ public class Laboratory implements CommandExecutor, Listener {
     }
 
     public void pushTick() {
-        List<PlayerLaboratory> laboratoriesToRemove = new ArrayList<>();
+        Iterator<PlayerLaboratory> iterator = playerLaboratories.iterator();
+        System.out.println("has next: " + iterator.hasNext());
 
-        for (PlayerLaboratory laboratory : playerLaboratories) {
+        while (iterator.hasNext()) {
+            PlayerLaboratory laboratory = iterator.next();
             if (laboratory == null) continue;
+            System.out.println("LABORATORY FOUND");
+
             PlayerData playerData = playerManager.getPlayerData(laboratory.getOwner());
-            if (playerData == null) continue;
-            if (playerData.getFaction() == null) continue;
+            if (playerData == null || playerData.getFaction() == null) continue;
+            System.out.println("PLAYERDATA FOUND");
+
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             if (factionData == null) continue;
+            System.out.println("FACTIONDATA FOUND");
 
             for (Plant plant : Main.getInstance().gamePlay.plant.getPlants()) {
+                if (plant == null) continue;
+                if (plant.getOwner() == null) continue;
                 if (!plant.getOwner().equalsIgnoreCase(factionData.getName())) continue;
+                System.out.println("PLANT FOR " + plant.getOwner() + " FOUND");
+
                 if (laboratory.getWeedAmount() >= (2 * plant.getMultiplier())) {
                     laboratory.setWeedAmount(laboratory.getWeedAmount() - (int) (2 * plant.getMultiplier()));
                     laboratory.setJointAmount(laboratory.getJointAmount() + (1 * plant.getMultiplier()));
                 } else {
                     laboratory.stop();
-                    laboratoriesToRemove.add(laboratory);
+                    iterator.remove();
                     break;
                 }
             }
         }
-
-        playerLaboratories.removeAll(laboratoriesToRemove);
     }
 
     @SneakyThrows
