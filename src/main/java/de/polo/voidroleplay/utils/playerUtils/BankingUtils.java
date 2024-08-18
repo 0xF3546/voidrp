@@ -338,6 +338,61 @@ public class BankingUtils implements Listener {
         });
     }
 
+    private void openTransactionMenu(Player player, Player target) {
+        openTransactionMenu(player, target, -1);
+    }
+
+    @SneakyThrows
+    private void openTransactionMenu(Player player, Player target, int amount) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Transaktion");
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItemHead(target.getUniqueId().toString(), 1, 0, "§7" + target.getName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.PAPER, 1, 0, "§7Betrag angeben")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                player.sendMessage("§8[§aATM§8]§7 Gib nun an, wie viel Geld " + target.getName() + " erhalten soll.");
+                playerData.setVariable("chatblock", "atm_transfer_amount");
+                playerData.setVariable("transfer_player", target.getName());
+            }
+        });
+        if (amount >= 1) {
+            playerData.setVariable("transfer_player", null);
+            if (playerManager.bank(player) >= amount) {
+                inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aTransaktion bestätigen", "§8 ➥ §7" + amount + "$")) {
+                    @SneakyThrows
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        player.closeInventory();
+                        if (playerData.getBank() < amount) {
+                            player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank.");
+                            return;
+                        }
+                        playerManager.removeBankMoney(player, amount, "Überweisung an " + target.getName());
+                        playerManager.addBankMoney(target, amount, "Überweisung von " + player.getName());
+                        player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ an " + target.getName() + " überwiesen.");
+                        target.sendMessage("§8[§6Bank§8]§a " + player.getName() + " hat dir " + amount + "$ überwiesen.");
+                        Main.getInstance().adminManager.send_message("§6" + player.getName() + " hat" + target.getName() + " " + amount + "$ überwiesen.", ChatColor.GOLD);
+                    }
+                });
+            } else {
+                inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§a§mTransaktion bestätigen", "§8 ➥ §cDu hast nicht genug Geld auf der Bank.")) {
+                    @SneakyThrows
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+
+                    }
+                });
+            }
+        }
+
+    }
+
     @EventHandler
     public void onSubmit(SubmitChatEvent event) throws SQLException {
         System.out.println("submit event trigger");
@@ -391,9 +446,7 @@ public class BankingUtils implements Listener {
                 event.end();
             } else {
                 event.end();
-                player.sendMessage("§8[§aATM§8]§7 Gib nun an, wie viel Geld " + targetplayer.getName() + " erhalten soll.");
-                event.getPlayerData().setVariable("chatblock", "atm_transfer_amount");
-                event.getPlayerData().setVariable("transfer_player", targetplayer.getName());
+                openTransactionMenu(player, targetplayer);
             }
         }
         if (event.getSubmitTo().equals("atm_transfer_amount")) {
@@ -405,24 +458,13 @@ public class BankingUtils implements Listener {
             }
             if (event.getMessage().equals(event.getPlayerData().getVariable("transfer_player"))) return;
             Player targetplayer = Bukkit.getPlayer(event.getPlayerData().getVariable("transfer_player").toString());
-            if (!targetplayer.isOnline()) {
-                player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
-                event.end();
-            } else {
-                event.getPlayerData().setVariable("transfer_player", null);
+            try {
                 int amount = Integer.parseInt(event.getMessage());
-                if (amount >= 1) {
-                    if (playerManager.bank(player) >= amount) {
-                        playerManager.removeBankMoney(player, amount, "Überweisung an " + targetplayer.getName());
-                        playerManager.addBankMoney(targetplayer, amount, "Überweisung von " + player.getName());
-                        player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ an " + targetplayer.getName() + " überwiesen.");
-                        targetplayer.sendMessage("§8[§6Bank§8]§a " + player.getName() + " hat dir " + amount + "$ überwiesen.");
-                    } else {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
-                    }
-                }
-                event.end();
+                openTransactionMenu(player, targetplayer, amount);
+            } catch (Exception ex) {
+                player.sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
+            event.end();
         }
         if (event.getSubmitTo().equals("atm_frak_einzahlen")) {
             if (event.isCancel()) {
