@@ -17,9 +17,9 @@ public class EntitySpawnListener implements Listener {
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event) {
         if (event.getEntity().getType() == EntityType.VILLAGER ||event.getEntity().getType() == EntityType.MINECART) return;
-        if (event.getEntity() instanceof Animals || event.getEntity() instanceof Mob) {
+        /*if (event.getEntity() instanceof Animals || event.getEntity() instanceof Mob) {
             if (event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "owner"), PersistentDataType.STRING) == null)
             event.setCancelled(true);
-        }
+        }*/
     }
 }
