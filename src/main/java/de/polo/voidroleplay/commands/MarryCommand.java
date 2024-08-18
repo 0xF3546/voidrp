@@ -71,15 +71,22 @@ public class MarryCommand implements CommandExecutor {
         PlayerData secondplayerData = playerManager.getPlayerData(secondplayer);
 
         if (!firstplayerData.isChurch()) {
-            player.sendMessage(Prefix.ERROR + firstplayer.getName() + " ist nicht in der Kirche.");
+            player.sendMessage(Prefix.ERROR + firstplayer.getName() + " zahlt keine Kirchensteuer.");
             return false;
         }
 
         if (!secondplayerData.isChurch()) {
-            player.sendMessage(Prefix.ERROR + secondplayer.getName() + " ist nicht in der Kirche.");
+            player.sendMessage(Prefix.ERROR + secondplayer.getName() + " zahlt keine Kirchensteuer.");
             return false;
         }
-
+        if (secondplayer == player || firstplayer == player) {
+            player.sendMessage(Prefix.ERROR + "Du kannst dich nicht selbst heiraten!");
+            return false;
+        }
+        if (firstplayerData.getRelationShip() == null || secondplayerData.getRelationShip() == null) {
+            player.sendMessage(Prefix.ERROR + "Einer der beiden Spieler ist in keiner Beziehung.");
+            return false;
+        }
         if (firstplayerData.getRelationShip().get(secondplayer.getUniqueId().toString()).equals("verlobt")) {
             if (secondplayerData.getRelationShip().get(firstplayer.getUniqueId().toString()).equals("verlobt")) {
                 if (firstplayerData.getGender() == secondplayerData.getGender()) {
@@ -121,7 +128,7 @@ public class MarryCommand implements CommandExecutor {
                 player.sendMessage(Main.error + secondplayer.getName() + " & " + firstplayer.getName() + " sind nicht verlobt.");
             }
         } else {
-            player.sendMessage(Main.error + player.getName() + " & du seid nicht verlobt.");
+            player.sendMessage(Main.error + firstplayer.getName() + " & " + secondplayer.getName() + " seid nicht verlobt.");
         }
         return false;
     }
