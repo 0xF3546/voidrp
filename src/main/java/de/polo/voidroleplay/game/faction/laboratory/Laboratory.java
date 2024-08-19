@@ -308,8 +308,15 @@ public class Laboratory implements CommandExecutor, Listener {
             defender.storage.setProceedingAmount(0);
             defender.storage.setProceedingStarted(null);
         }
-        attacker.storage.setWeed(attacker.storage.getWeed() + weedAmount);
-        attacker.storage.setJoint(attacker.storage.getJoint() + jointAmount);
+        if (attacker.getName().equalsIgnoreCase("FBI") || attacker.getName().equalsIgnoreCase("Polizei")) {
+            StaatUtil.Asservatemkammer.setWeed(StaatUtil.Asservatemkammer.getWeed() + weedAmount);
+            StaatUtil.Asservatemkammer.setJoints(StaatUtil.Asservatemkammer.getJoints() + jointAmount);
+            StaatUtil.Asservatemkammer.save();
+        } else {
+            attacker.storage.setWeed(attacker.storage.getWeed() + weedAmount);
+            attacker.storage.setJoint(attacker.storage.getJoint() + jointAmount);
+            attacker.storage.save();
+        }
         PreparedStatement deleteStatement = connection.prepareStatement("DELETE pl FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = ?");
         deleteStatement.setString(1, defender.getName().toLowerCase());
         deleteStatement.execute();
