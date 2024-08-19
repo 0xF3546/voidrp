@@ -482,6 +482,7 @@ public final class Main extends JavaPlugin {
         public SettingsCommand settingsCommand;
         public VertragCommand vertragCommand;
         public SecondaryTeamInfoCommand secondaryTeamInfoCommand;
+        public SubTeamCommand subTeamCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -662,7 +663,7 @@ public final class Main extends JavaPlugin {
             settingsCommand = new SettingsCommand(playerManager);
             secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
             vertragCommand = new VertragCommand();
-            new TestCommand();
+            subTeamCommand = new SubTeamCommand(playerManager, factionManager);
 
             main.registerCommands();
             main.registerListener(this);

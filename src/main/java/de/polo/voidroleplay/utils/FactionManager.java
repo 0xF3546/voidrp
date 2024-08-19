@@ -1,7 +1,9 @@
 package de.polo.voidroleplay.utils;
 
+import de.polo.voidroleplay.commands.SubTeamCommand;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,6 +21,7 @@ public class FactionManager {
     private final Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
     private final PlayerManager playerManager;
     public final SubGroups subGroups;
+    private final List<SubTeam> subTeams = new ArrayList<>();
     public FactionManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
@@ -504,5 +507,36 @@ public class FactionManager {
             return pData;
         }
         return null;
+    }
+
+    @SneakyThrows
+    public void createSubTeam(SubTeam subTeam) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO faction_subgroups (faction, name) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+        statement.setInt(1, factionData.getId());
+        statement.setString(2, value.toString());
+        statement.execute();
+        statement.close();
+        connection.close();
+        subTeams.add(subTeam);
+    }
+
+    @SneakyThrows
+    public void deleteSubTeam(SubTeam subTeam) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM faction_subgroups WHERE id = ?");
+        statement.setInt(1, subTeams.getId());
+        statement.execute();
+        statement.close();
+        connection.close();
+        subTeams.remove(subTeam);
+    }
+
+    public Collection<SubTeam> getSubTeams(int factionId) {
+        List<SubTeam> teams = new ArrayList<>();
+        for (SubTeam team : subTeams) {
+            if (team.getFactionId().equals(factionId)) teams.add(team);
+        }
+        return teams;
     }
 }
