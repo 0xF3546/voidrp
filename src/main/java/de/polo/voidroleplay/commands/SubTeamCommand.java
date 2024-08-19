@@ -8,6 +8,7 @@ import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,7 +43,7 @@ public class SubTeamCommand implements CommandExecutor {
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [list/add/remove/invite] [Name/Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [list/add/remove/invite/uninvite] [Name/Spieler]");
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
@@ -53,7 +54,7 @@ public class SubTeamCommand implements CommandExecutor {
             }
             return false;
         } else if (args.length < 2) {
-            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [add/remove/invite] [Name/Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [list/add/remove/invite/uninvite] [Name/Spieler]");
             return false;
         }
         StringBuilder value = new StringBuilder(args[1]);
@@ -62,23 +63,75 @@ public class SubTeamCommand implements CommandExecutor {
         }
         if (args[0].equalsIgnoreCase("add")) {
             for (SubTeam team : factionManager.getSubTeams(factionData.getId())) {
-                if (team.getName().equalsIgnoreCase(value)) {
+                if (team.getName().equalsIgnoreCase(value.toString())) {
                     player.sendMessage(Prefix.ERROR + "Es gibt bereits ein Sub-Team mit diesem Namen.");
                     return false;
                 }
             }
-            factionManager.sendCustomLeaderMessageToFactions("§8[§" + factionData.getPrimaryColor() + +factionData.getName() + "§8]§9 " + player.getName() + " hat das Sub-Team \"" + value + "\" erstellt.", factionData.getName());
+            factionManager.sendCustomLeaderMessageToFactions("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§9 " + player.getName() + " hat das Sub-Team \"" + value + "\" erstellt.", factionData.getName());
             SubTeam subTeam = new SubTeam(factionData.getId(), value.toString());
             factionManager.createSubTeam(subTeam);
         } else if (args[0].equalsIgnoreCase("remove")) {
             for (SubTeam team : factionManager.getSubTeams(factionData.getId())) {
-                if (team.getName().equalsIgnoreCase(value)) {
+                if (team.getName().equalsIgnoreCase(value.toString())) {
                     player.sendMessage(Prefix.ERROR + "Es gibt bereits ein Sub-Team mit diesem Namen.");
-                    factionManager.sendCustomLeaderMessageToFactions("§8[§" + factionData.getPrimaryColor() + +factionData.getName() + "§8]§9 " + player.getName() + " hat das Sub-Team \"" + value + "\" gelöscht.", factionData.getName());
+                    factionManager.sendCustomLeaderMessageToFactions("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§9 " + player.getName() + " hat das Sub-Team \"" + value + "\" gelöscht.", factionData.getName());
                     factionManager.deleteSubTeam(team);
                     return false;
                 }
             }
+            player.sendMessage(Prefix.ERROR + "Die Gruppe wurde nicht gefunden.");
+        } else if (args[0].equalsIgnoreCase("invite")) {
+            Player target = Bukkit.getPlayer(value.toString());
+            if (target == null) {
+                player.sendMessage(Prefix.ERROR + "Spieler wurde nichtg gefunden.");
+                return false;
+            }
+            PlayerData targetData = playerManager.getPlayerData(target);
+            if (targetData.getFaction() == null) {
+                player.sendMessage(Prefix.ERROR + "Der Spieler ist nicht in deiner Fraktion.");
+                return false;
+            }
+            if (!targetData.getFaction().equals(playerData.getFaction())) {
+                player.sendMessage(Prefix.ERROR + "Der Spieler ist nicht in deiner Fraktion.");
+                return false;
+            }
+            if (args.length < 3) {
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [invite] [Spieler] [Team]");
+                return false;
+            }
+            for (SubTeam team : factionManager.getSubTeams(factionData.getId())) {
+                if (team.getName().equalsIgnoreCase(value.toString())) {
+                    player.sendMessage(Prefix.MAIN + "Du hast " + target.getName() + " in das Sub-Team hinzugefügt.");
+                    targetData.setSubTeam(team);
+                    targetData.getSubTeam().sendMessage("§8[§3" + playerData.getSubTeam().getName() + "§8]§7 " + player.getName() + " " + " hat " + target.getName() + " in das Team eingeladen!");
+                    targetData.save();
+                    return false;
+                }
+            }
+            player.sendMessage(Prefix.ERROR + "Das Team wurde nicht gefunden!");
+        } else if (args[0].equalsIgnoreCase("uninvite")) {
+            Player target = Bukkit.getPlayer(value.toString());
+            if (target == null) {
+                player.sendMessage(Prefix.ERROR + "Spieler wurde nichtg gefunden.");
+                return false;
+            }
+            PlayerData targetData = playerManager.getPlayerData(target);
+            if (targetData.getFaction() == null) {
+                player.sendMessage(Prefix.ERROR + "Der Spieler ist nicht in deiner Fraktion.");
+                return false;
+            }
+            if (!targetData.getFaction().equals(playerData.getFaction())) {
+                player.sendMessage(Prefix.ERROR + "Der Spieler ist nicht in deiner Fraktion.");
+                return false;
+            }
+            player.sendMessage(Prefix.MAIN + "Du hast " + target.getName() + " aus dem Sub-Team geworfen!");
+            targetData.setSubTeam(null);
+            targetData.getSubTeam().sendMessage("§8[§3" + playerData.getSubTeam().getName() + "§8]§7 " + player.getName() + " " + " hat " + target.getName() + " aus dem Team geworfen!");
+            targetData.save();
+            player.sendMessage(Prefix.ERROR + "Das Team wurde nicht gefunden!");
+        } else {
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [list/add/remove/invite/uninvite] [Name/Spieler]");
         }
         return false;
     }

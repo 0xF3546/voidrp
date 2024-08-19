@@ -112,6 +112,13 @@ public class FactionManager {
             blacklistData.setDate(blacklist.getString(7));
             blacklistDataMap.put(blacklist.getInt(1), blacklistData);
         }
+
+        ResultSet subteams = statement.executeQuery("SELECT * FROM faction_subteams");
+        while (subteams.next()) {
+            SubTeam subTeam = new SubTeam(subteams.getInt("faction"), subteams.getString("name"));
+            subTeam.setId(subteams.getInt("id"));
+            subTeams.add(subTeam);
+        }
     }
 
     public String faction(Player player) {
@@ -160,7 +167,7 @@ public class FactionManager {
     @SneakyThrows
     public void removePlayerFromFrak(UUID uuid) {
         PlayerData playerData = playerManager.getPlayerData(uuid);
-        LocalDateTime cooldown = Utils.getTime().plusHours(20);
+        LocalDateTime cooldown = Utils.getTime().plusHours(6);
         if (playerData != null) {
             Player player = Bukkit.getPlayer(uuid);
             playerData.setFaction(null);
@@ -512,10 +519,15 @@ public class FactionManager {
     @SneakyThrows
     public void createSubTeam(SubTeam subTeam) {
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO faction_subgroups (faction, name) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-        statement.setInt(1, factionData.getId());
-        statement.setString(2, value.toString());
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO faction_subteams (faction, name) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+        statement.setInt(1, subTeam.getFactionId());
+        statement.setString(2, subTeam.getName());
         statement.execute();
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            int key = generatedKeys.getInt(1);
+            subTeam.setId(key);
+        }
         statement.close();
         connection.close();
         subTeams.add(subTeam);
@@ -524,8 +536,8 @@ public class FactionManager {
     @SneakyThrows
     public void deleteSubTeam(SubTeam subTeam) {
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("DELETE FROM faction_subgroups WHERE id = ?");
-        statement.setInt(1, subTeams.getId());
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM faction_subteams WHERE id = ?");
+        statement.setInt(1, subTeam.getId());
         statement.execute();
         statement.close();
         connection.close();
@@ -535,7 +547,7 @@ public class FactionManager {
     public Collection<SubTeam> getSubTeams(int factionId) {
         List<SubTeam> teams = new ArrayList<>();
         for (SubTeam team : subTeams) {
-            if (team.getFactionId().equals(factionId)) teams.add(team);
+            if (team.getFactionId() == factionId) teams.add(team);
         }
         return teams;
     }

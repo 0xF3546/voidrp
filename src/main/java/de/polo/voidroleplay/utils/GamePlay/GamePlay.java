@@ -844,7 +844,7 @@ public class GamePlay implements Listener {
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank §8-§6 Schließfächer");
         for (int i = 0; i < staatsbankRob.getVaults(); i++) {
-            if (staatsbankRob.getVaultsOpen() <= i) {
+            if (staatsbankRob.getVaultsOpen() > i) {
                 int finalI = i;
                 inventoryManager.setItem(new CustomItem(finalI, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + i, staatsbankRob.isVaultOpen(i) ? "§8 ➥ §eLeer" : "§8 ➥ §cGeschlossen")) {
                     @Override

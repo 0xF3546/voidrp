@@ -10,6 +10,7 @@ import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
+import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.EXPType;
@@ -205,6 +206,14 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setChurch(result.getBoolean("isChurch"));
                 playerData.setChurch(result.getBoolean("isBaptized"));
                 playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+
+                if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
+                    FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+                    for (SubTeam subTeam : Main.getInstance().factionManager.getSubTeams(factionData.getId())) {
+                        if (!(subTeam.getId() == result.getInt("subTeam"))) continue;
+                        playerData.setSubTeam(subTeam);
+                    }
+                }
 
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");

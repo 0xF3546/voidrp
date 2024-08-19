@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.PlayerQuest;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
+import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.PlayerPetManager;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.EXPType;
@@ -138,6 +139,10 @@ public class PlayerData {
     @Getter
     @Setter
     private LocalDateTime factionCooldown;
+
+    @Getter
+    @Setter
+    private SubTeam subTeam = null;
 
     @Getter
     @Setter
@@ -716,7 +721,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ?, subTeam = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -736,7 +741,12 @@ public class PlayerData {
         statement.setInt(12, votes);
         String formattedBoostDuration = factionCooldown.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         statement.setString(13, formattedBoostDuration);
-        statement.setInt(14, getId());
+        if (subTeam == null) {
+            statement.setInt(14, -1);
+        } else {
+            statement.setInt(14, subTeam.getId());
+        }
+        statement.setInt(15, getId());
         statement.executeUpdate();
     }
 

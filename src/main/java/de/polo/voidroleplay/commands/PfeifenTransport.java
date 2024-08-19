@@ -168,6 +168,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
 
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo() == null) return;
         if (event.getSubmitTo().equalsIgnoreCase("transport::pfeife")) {
             try {
                 int amount = Integer.parseInt(event.getMessage());

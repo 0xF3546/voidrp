@@ -48,7 +48,7 @@ public class JailCommand implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
                 if (!playerData.isJailed()) return;
                 if (Main.getInstance().utils.staatUtil.hasParole(player)) {
-                    player.sendMessage(Prefix.ERROR + "Du hast bist bereits auf Bewährung.");
+                    player.sendMessage(Prefix.ERROR + "Du bist bereits auf Bewährung.");
                     return;
                 }
                 Main.getInstance().utils.staatUtil.setParole(player, playerData.getHafteinheiten() * 2);
