@@ -483,6 +483,7 @@ public final class Main extends JavaPlugin {
         public VertragCommand vertragCommand;
         public SecondaryTeamInfoCommand secondaryTeamInfoCommand;
         public SubTeamCommand subTeamCommand;
+        public SubTeamChat subTeamChat;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -664,6 +665,7 @@ public final class Main extends JavaPlugin {
             secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
             vertragCommand = new VertragCommand();
             subTeamCommand = new SubTeamCommand(playerManager, factionManager);
+            subTeamChat = new SubTeamChat(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

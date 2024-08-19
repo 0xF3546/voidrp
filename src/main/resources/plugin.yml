@@ -258,3 +258,5 @@ commands:
   vertrag:
   settings:
   subteam:
+  subteamchat:
+    aliases: [stc]
