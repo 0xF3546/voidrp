@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
@@ -43,6 +44,10 @@ public class JoinListener implements Listener {
             PlayerData playerData = playerManager.getPlayerData(uuid);
             adminManager.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
+            if (playerData.getFaction() != null) {
+                FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+                player.sendMessage("§8 ➥ §6[FMOTD] " + factionData.getMotd());
+            }
             RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
             Utils.Tablist.setTablist(player, null);
             playerData.setUuid(player.getUniqueId());

@@ -27,7 +27,7 @@ public enum Drug {
     )),
     SCHMERZMITTEL(RoleplayItem.SCHMERZMITTEL, Arrays.asList(
             new PotionEffect(PotionEffectType.ABSORPTION, 3 * 60 * 20, 3),
-            new PotionEffect(PotionEffectType.REGENERATION, 15 * 20, 1)
+            new PotionEffect(PotionEffectType.REGENERATION, 3 * 20, 1)
     )),
     ADRENALINE_INJECTION(RoleplayItem.ADRENALINE_INJECTION, Arrays.asList(
             new PotionEffect(PotionEffectType.ABSORPTION, 3 * 60 * 20, 4),
