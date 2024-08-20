@@ -74,6 +74,7 @@ public class FactionManager {
             factionData.setLaboratory(locs.getInt("laboratory"));
             factionData.setBadFrak(locs.getBoolean("isBadFrak"));
             factionData.setAllianceFaction(locs.getInt("alliance"));
+            factionData.setMotd(locs.getString("motd"));
             factionData.storage.setJoint(locs.getInt("joint"));
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));
@@ -550,5 +551,18 @@ public class FactionManager {
             if (team.getFactionId() == factionId) teams.add(team);
         }
         return teams;
+    }
+
+    @SneakyThrows
+    public void setFactionMOTD(int factionId, String motd) {
+        FactionData factionData = getFactionData(factionId);
+        factionData.setMotd(motd);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE faction SET motd = ? WHERE id = ?");
+        statement.setString(1, motd);
+        statement.setInt(2, factionId);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
     }
 }

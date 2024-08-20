@@ -260,3 +260,4 @@ commands:
   subteam:
   subteamchat:
     aliases: [stc]
+  setmotd:
