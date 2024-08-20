@@ -82,7 +82,7 @@ public class SubTeamCommand implements CommandExecutor {
             }
             player.sendMessage(Prefix.ERROR + "Die Gruppe wurde nicht gefunden.");
         } else if (args[0].equalsIgnoreCase("invite")) {
-            Player target = Bukkit.getPlayer(value.toString());
+            Player target = Bukkit.getPlayer(args[1]);
             if (target == null) {
                 player.sendMessage(Prefix.ERROR + "Spieler wurde nichtg gefunden.");
                 return false;
@@ -100,6 +100,10 @@ public class SubTeamCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [invite] [Spieler] [Team]");
                 return false;
             }
+            value = new StringBuilder(args[2]);
+            for (int i = 3; i < args.length; i++) {
+                value.append(" ").append(args[i]);
+            }
             for (SubTeam team : factionManager.getSubTeams(factionData.getId())) {
                 if (team.getName().equalsIgnoreCase(value.toString())) {
                     player.sendMessage(Prefix.MAIN + "Du hast " + target.getName() + " in das Sub-Team hinzugefügt.");
@@ -111,7 +115,7 @@ public class SubTeamCommand implements CommandExecutor {
             }
             player.sendMessage(Prefix.ERROR + "Das Team wurde nicht gefunden!");
         } else if (args[0].equalsIgnoreCase("uninvite")) {
-            Player target = Bukkit.getPlayer(value.toString());
+            Player target = Bukkit.getPlayer(args[1]);
             if (target == null) {
                 player.sendMessage(Prefix.ERROR + "Spieler wurde nichtg gefunden.");
                 return false;
