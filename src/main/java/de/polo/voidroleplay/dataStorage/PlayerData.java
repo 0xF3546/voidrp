@@ -265,6 +265,11 @@ public class PlayerData {
 
     public void setAduty(boolean aduty) {
         isAduty = aduty;
+        if (aduty) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1, true, false));
+        } else {
+            player.removePotionEffect(PotionEffectType.GLOWING);
+        }
     }
 
     public void setIntVariable(String variable, Integer value) {

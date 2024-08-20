@@ -44,6 +44,10 @@ public class FactionData {
 
     @Getter
     @Setter
+    private String motd;
+
+    @Getter
+    @Setter
     private List<BlacklistReason> blacklistReasons = new ArrayList<>();
 
     public Storage storage = new Storage(this);
