@@ -1,5 +1,7 @@
 package de.polo.voidroleplay.dataStorage;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.World;
 
 public class GarageData {
@@ -11,6 +13,10 @@ public class GarageData {
         private World welt;
         private float yaw;
         private float pitch;
+
+        @Getter
+        @Setter
+        private int factionId;
 
         public int getId() {
             return id;

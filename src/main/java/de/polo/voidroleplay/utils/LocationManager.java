@@ -90,14 +90,15 @@ public class LocationManager {
         ResultSet garage = statement.executeQuery("SELECT * FROM garage");
         while (garage.next()) {
             GarageData garageData = new GarageData();
-            garageData.setId(garage.getInt(1));
-            garageData.setName(garage.getString(2));
-            garageData.setX(garage.getInt(3));
-            garageData.setY(garage.getInt(4));
-            garageData.setZ(garage.getInt(5));
-            garageData.setWelt(Bukkit.getWorld(garage.getString(6)));
-            garageData.setYaw(garage.getFloat(7));
-            garageData.setPitch(garage.getFloat(8));
+            garageData.setId(garage.getInt("id"));
+            garageData.setName(garage.getString("name"));
+            garageData.setFactionId(garage.getInt("factionId"));
+            garageData.setX(garage.getInt("x"));
+            garageData.setY(garage.getInt("y"));
+            garageData.setZ(garage.getInt("z"));
+            garageData.setWelt(Bukkit.getWorld(garage.getString("welt")));
+            garageData.setYaw(garage.getFloat("yaw"));
+            garageData.setPitch(garage.getFloat("pitch"));
             garageDataMap.put(garage.getInt(1), garageData);
         }
 

@@ -90,6 +90,7 @@ public class Vehicles implements Listener, CommandExecutor {
             playerVehicleData.setYaw(result.getFloat("yaw"));
             playerVehicleData.setPitch(result.getFloat("pitch"));
             playerVehicleData.setGarage(result.getInt("garage"));
+            playerVehicleData.setFactionId(result.getInt("factionId"));
             playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
             vehicleIDByUUid.put(result.getString(2), result.getInt(1));
         }
@@ -523,6 +524,11 @@ public class Vehicles implements Listener, CommandExecutor {
         GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         GarageData garageData = LocationManager.garageDataMap.get(station);
+        if (garageData.getFactionId() != 0) {
+            if (playerData.getFaction() == null) return;
+            FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+            if (garageData.getFactionId() != factionData.getId()) return;
+        }
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6" + garageData.getName(), true, false);
         inventoryManager.setItem(new CustomItem(48, ItemManager.createItem(Material.EMERALD, 1, 0, "§aEinparken")) {
             @Override
@@ -541,9 +547,17 @@ public class Vehicles implements Listener, CommandExecutor {
             for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
                 if (entity.getType() == EntityType.MINECART) {
                     if (entity.getLocation().distance(player.getLocation()) < 15) {
-                        if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "uuid"), PersistentDataType.STRING).equals(player.getUniqueId().toString())) {
-                            int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                            PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
+                        int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                        PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
+                        if (playerVehicleData == null) continue;
+                        boolean isPlayerVehicle = false;
+                        if (garageData.getFactionId() != 0) {
+                            if (playerVehicleData.getFactionId() != garageData.getFactionId()) continue;
+                            isPlayerVehicle = true;
+                        } else if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "uuid"), PersistentDataType.STRING).equals(player.getUniqueId().toString())) {
+                            isPlayerVehicle = true;
+                        }
+                        if (isPlayerVehicle) {
                             VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
                             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §aEinparken"))) {
                                 @SneakyThrows
@@ -567,7 +581,17 @@ public class Vehicles implements Listener, CommandExecutor {
             }
         } else {
             for (PlayerVehicleData playerVehicleData : playerVehicleDataMap.values()) {
-                if (playerVehicleData.getGarage() == station && playerVehicleData.isParked() && playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
+                if (playerVehicleData.getGarage() == station && playerVehicleData.isParked()) {
+                    boolean canAccess = false;
+                    if (garageData.getFactionId() != 0) {
+                        if (playerData.getFaction() == null) continue;
+                        FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+                        if (factionData.getId() != garageData.getFactionId()) continue;
+                        canAccess = true;
+                    } else if (playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
+                        canAccess = true;
+                    }
+                    if (!canAccess) continue;
                     VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
                     inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §cAusparken"))) {
                         @SneakyThrows
@@ -585,8 +609,8 @@ public class Vehicles implements Listener, CommandExecutor {
                             }
                         }
                     });
+                    i++;
                 }
-                i++;
             }
         }
     }

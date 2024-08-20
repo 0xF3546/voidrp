@@ -433,13 +433,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                             player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
                             return;
                         }
-                        if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
+                        if (playerData.getBank() < priceForFaction) {
                             player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                             return;
                         }
                         factionData.removeFactionMoney(priceForFaction, "Item-Kauf " + player.getName());
-                        factionData.addBankMoney(sturmgewehrPrice, "Item-Kauf " + player.getName());
-                        playerData.removeBankMoney(sturmgewehrPrice, "Item-Kauf");
+                        factionData.addBankMoney(priceForFaction, "Item-Kauf " + player.getName());
+                        playerData.removeBankMoney(priceForFaction, "Item-Kauf");
                         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName()));
                     }
                 });

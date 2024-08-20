@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.game.base.vehicle;
 
 import de.polo.voidroleplay.Main;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,6 +25,10 @@ public class PlayerVehicleData {
     private float pitch;
     private int garage;
     private boolean locked;
+
+    @Getter
+    @Setter
+    private int factionId;
 
     public int getId() {
         return id;
