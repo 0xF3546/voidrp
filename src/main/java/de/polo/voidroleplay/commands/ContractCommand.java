@@ -89,13 +89,7 @@ public class ContractCommand implements CommandExecutor {
             contractData.setUuid(targetplayer.getUniqueId().toString());
             contractData.setSetter(player.getUniqueId().toString());
             ServerManager.contractDataMap.put(targetplayer.getUniqueId().toString(), contractData);
-            for (Player players : Bukkit.getOnlinePlayers()) {
-                PlayerData playersData = playerManager.getPlayerData(player);
-                if (playersData.getFaction() == null) continue;
-                if (playersData.getFaction().equals("ICA")) {
-                    players.sendMessage("§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
-                }
-            }
+            factionManager.sendCustomMessageToFaction("ICA", "§8[§cKopfgeld§8]§7 Es wurde ein §eKopfgeld§7 in höhe von §a" + price + "$ §7auf §e" + targetplayer.getName() + "§7 gesetzt.");
             player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             try {
                 playerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
