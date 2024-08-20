@@ -123,30 +123,32 @@ public class DealerCommand implements CommandExecutor {
                 factionManager.addFactionMoney(gangzone.getOwner(), (int) (amount * ownerPercentages), "Verkauf von Kisten an Dealer-" + dealer.getId() + " durch " + playerData.getFaction());
             }
         });
-        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cÜbernehmen")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (dealer.getOwner().equalsIgnoreCase(playerData.getFaction())) {
-                    player.sendMessage(Main.error + "Du kannst deinen eigenen Dealer nicht einschüchtern.");
-                    return;
+        if (factionData.isBadFrak()) {
+            inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cÜbernehmen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (dealer.getOwner().equalsIgnoreCase(playerData.getFaction())) {
+                        player.sendMessage(Main.error + "Du kannst deinen eigenen Dealer nicht einschüchtern.");
+                        return;
+                    }
+                    if (gamePlay.rob.containsKey(dealer)) {
+                        player.sendMessage(Prefix.ERROR + "Jemand nimmt aktuell den Dealer ein!");
+                        return;
+                    }
+                    if (!Utils.getTime().plusMinutes(60).isAfter(dealer.getLastAttack())) {
+                        player.sendMessage(Prefix.ERROR + "Der Dealer wurde erst vor kurzem eingenommen!");
+                        return;
+                    }
+                    dealer.setLastAttack(Utils.getTime());
+                    player.closeInventory();
+                    factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Jemand versucht deinen Dealer zu übernehmen.");
+                    factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Ihr fangt an den Dealer zu übernehmen!");
+                    player.sendMessage("§8[§cDealer§8]§7 Warte nun 10 Minuten, bleibe dabei in der nähe des Dealers.");
+                    dealer.setAttacker(playerData.getFaction());
+                    gamePlay.rob.put(dealer, 0);
                 }
-                if (gamePlay.rob.containsKey(dealer)) {
-                    player.sendMessage(Prefix.ERROR + "Jemand nimmt aktuell den Dealer ein!");
-                    return;
-                }
-                if (!Utils.getTime().plusMinutes(60).isAfter(dealer.getLastAttack())) {
-                    player.sendMessage(Prefix.ERROR + "Der Dealer wurde erst vor kurzem eingenommen!");
-                    return;
-                }
-                dealer.setLastAttack(Utils.getTime());
-                player.closeInventory();
-                factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Jemand versucht deinen Dealer zu übernehmen.");
-                factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Ihr fangt an den Dealer zu übernehmen!");
-                player.sendMessage("§8[§cDealer§8]§7 Warte nun 10 Minuten, bleibe dabei in der nähe des Dealers.");
-                dealer.setAttacker(playerData.getFaction());
-                gamePlay.rob.put(dealer, 0);
-            }
-        });
+            });
+        }
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§6Ankauf")) {
             @Override
             public void onClick(InventoryClickEvent event) {
