@@ -82,6 +82,9 @@ public class DeathListener implements Listener {
                         && Objects.equals(factionManager.faction(killer), "ICA"))
                         || playerData.isHitmanDead()) {
 
+                    item.setCustomName("§8" + player.getName());
+                    item.setCustomNameVisible(true);
+
                     ContractData contractData = ServerManager.contractDataMap.get(playerUUID.toString());
 
                     for (Player players : Bukkit.getOnlinePlayers()) {
@@ -109,8 +112,6 @@ public class DeathListener implements Listener {
                         throw new RuntimeException(e);
                     }
 
-                    item.setCustomName("§8" + player.getName());
-                    item.setCustomNameVisible(true);
                     utils.deathUtil.setHitmanDeath(player);
                     player.sendMessage("§8[§cKopfgeld§8]§7 Ein Kopfgeldjäger hat dich getötet.");
                     player.sendMessage("§8 ➥ §bInfo§8:§f Du kannst nun nicht mehr wiederbelebt werden & bist 5 Minuten länger tot.");
