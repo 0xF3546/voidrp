@@ -26,9 +26,9 @@ public class PlayerLoginListener implements Listener {
                 boolean isPerm = res.getBoolean("isPermanent");
                 java.util.Date utilDate = new java.util.Date(res.getDate(6).getTime());
 
-                LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
 
-                LocalDateTime date = localDateTime.atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime date = localDateTime.atZone(ZoneId.of("Europe/Berlin")).toLocalDateTime();
                 if (date.isBefore(LocalDateTime.now()) && !isPerm) {
                     event.setResult(PlayerLoginEvent.Result.ALLOWED);
                     statement.execute("DELETE FROM player_bans WHERE uuid = '" + player.getUniqueId() + "'");
