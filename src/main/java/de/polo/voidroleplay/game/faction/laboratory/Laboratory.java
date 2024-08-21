@@ -70,7 +70,7 @@ public class Laboratory implements CommandExecutor, Listener {
             return;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        if (!factionData.hasLaboratory()) {
+        if (!factionData.hasLaboratory() && !(factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei"))) {
             player.sendMessage(Main.error + "Deine Fraktion hat kein Labor.");
             return;
         }
@@ -211,8 +211,10 @@ public class Laboratory implements CommandExecutor, Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7 » §" + defenderFaction.getPrimaryColor() + "Labor §8× §cAngriff", true, true);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet res = statement.executeQuery("SELECT pl.* FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = '" + defenderFaction.getName() + "'");
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT pl.* FROM player_laboratory AS pl LEFT JOIN players AS p ON pl.uuid = p.uuid WHERE LOWER(p.faction) = ?");
+        preparedStatement.setString(1, defenderFaction.getName().toLowerCase());
+        ResultSet res = preparedStatement.executeQuery();
         int weedAmount = 0;
         int jointAmount = 0;
         while (res.next()) {
