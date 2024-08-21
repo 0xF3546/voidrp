@@ -845,16 +845,16 @@ public class GamePlay implements Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank §8-§6 Schließfächer");
         for (int i = 0; i < staatsbankRob.getVaults(); i++) {
             if (staatsbankRob.getVaultsOpen() > i) {
-                int finalI = i;
-                inventoryManager.setItem(new CustomItem(finalI, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + i, staatsbankRob.isVaultOpen(i) ? "§8 ➥ §eLeer" : "§8 ➥ §cGeschlossen")) {
+                int finalI = i + 1;
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + finalI, staatsbankRob.isVaultOpen(finalI) ? "§8 ➥ §eLeer" : "§8 ➥ §cGeschlossen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
-                        if (staatsbankRob.openVault(finalI)) {
+                        if (!staatsbankRob.openVault(finalI)) {
                             player.sendMessage(Prefix.ERROR + "Das Schließfach ist bereits entleert wurden.");
                             return;
                         }
                         player.closeInventory();
-                        int amount = Main.random(finalI * 100, finalI * 150);
+                        int amount = Main.random(finalI * 175, finalI * 225);
                         factionData.addBankMoney(amount, "Schließfach " + finalI + " (Staatsbankraub)");
                         staatsbankRob.sendMessage("Ihr habt " + amount + "$ aus Schließfach " + finalI + " erhalten!", ChatColor.GREEN, factionData.getName());
                         if (staatsbankRob.getVaultsOpen() >= staatsbankRob.getVaults()) {
