@@ -204,7 +204,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setKarma(result.getInt("karma"));
                 playerData.setVotes(result.getInt("votes"));
                 playerData.setChurch(result.getBoolean("isChurch"));
-                playerData.setChurch(result.getBoolean("isBaptized"));
+                playerData.setBaptized(result.getBoolean("isBaptized"));
                 playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
 
                 if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
