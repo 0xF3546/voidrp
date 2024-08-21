@@ -16,7 +16,7 @@ import org.bukkit.Material;
 @Getter
 public enum Farmer {
 
-    ARAMID("Aramid", new Location(Bukkit.getWorld("World"), 290, 69, -311), Material.DEAD_BUSH, RoleplayItem.ARAMID, 250);
+    ARAMID("Aramid", new Location(Bukkit.getWorld("World"), 38, 67, -735), Material.DEAD_BUSH, RoleplayItem.ARAMID, 250);
 
     private final String name;
     private final Location location;

@@ -558,7 +558,7 @@ public class FactionManager {
         FactionData factionData = getFactionData(factionId);
         factionData.setMotd(motd);
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE faction SET motd = ? WHERE id = ?");
+        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET motd = ? WHERE id = ?");
         statement.setString(1, motd);
         statement.setInt(2, factionId);
         statement.executeUpdate();

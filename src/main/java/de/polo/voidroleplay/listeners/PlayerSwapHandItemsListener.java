@@ -432,6 +432,15 @@ public class PlayerSwapHandItemsListener implements Listener {
                 openStatistics(player, playerData);
             }
         });
+
+        if (playerData.getFaction() != null && playerData.getFactionGrade() >= 7) {
+            inventoryManager.setItem(new CustomItem(27, ItemManager.createItem(Material.PAPER, 1, 0, "§cLeadermenü")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+        }
     }
 
     private void openPetMenu(Player player, PlayerData playerData) {
