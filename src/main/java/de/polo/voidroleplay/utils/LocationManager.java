@@ -138,6 +138,15 @@ public class LocationManager {
                 statement.executeUpdate("INSERT INTO dealer (x, y, z, yaw, pitch) VALUES (" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else {
                 statement.executeUpdate("INSERT INTO locations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
+                LocationData locationData = new LocationData();
+                locationData.setId(-1);
+                locationData.setWelt(p.getWorld().getName());
+                locationData.setX(((int) p.getLocation().getX()));
+                locationData.setY(((int) p.getLocation().getY()));
+                locationData.setZ(((int) p.getLocation().getZ()));
+                locationData.setYaw(p.getLocation().getYaw());
+                locationData.setPitch(p.getLocation().getPitch());
+                locationDataMap.put(name.replace(" ", ""), locationData);
             }
             } catch (SQLException e) {
             throw new RuntimeException(e);

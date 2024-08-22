@@ -66,6 +66,10 @@ public class Housing {
         return houseDataMap.get(houseNumber);
     }
 
+    public void addHouse(House house) {
+        houseDataMap.put(house.getNumber(), house);
+    }
+
     public boolean isPlayerOwner(Player player, int number) {
         House houseData = houseDataMap.get(number);
         return player.getUniqueId().toString().equals(houseData.getOwner());

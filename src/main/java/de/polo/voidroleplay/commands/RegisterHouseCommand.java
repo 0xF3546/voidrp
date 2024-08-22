@@ -36,7 +36,10 @@ public class RegisterHouseCommand implements CommandExecutor {
                         house.setId(result.getInt(1));
                         house.setNumber(Integer.parseInt(args[0]));
                         house.setPrice(Integer.parseInt(args[1]));
+                        Main.getInstance().housing.addHouse(house);
                     }
+                    statement.close();
+                    connection.close();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
