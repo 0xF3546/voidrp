@@ -444,7 +444,10 @@ public class FactionManager {
         return null;
     }
     public FactionData getFactionData(String faction) {
-        return factionDataMap.get(faction);
+        for (FactionData factionData : factionDataMap.values()) {
+            if (factionData.getName().equalsIgnoreCase(faction)) return factionData;
+        }
+        return null;
     }
 
     public boolean isFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath) {

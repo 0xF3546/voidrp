@@ -118,6 +118,7 @@ public class PlayerInteractListener implements Listener {
                                         (blockFaction.equals("polizei") && playerFaction.equals("fbi")))) {
                                     event.setCancelled(true);
                                     if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                                        System.out.println(blockFaction);
                                         FactionData defender = factionManager.getFactionData(blockFaction);
                                         Main.getInstance().gamePlay.openGOVRaidGUI(defender, player);
                                     }

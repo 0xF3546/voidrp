@@ -1,11 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.utils.BlockManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -37,17 +39,36 @@ public class FDoorCommand implements CommandExecutor {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
-        if (locationManager.getLocation("fdoor_" + playerData.getFaction()) == null) {
+        String faction = playerData.getFaction();
+        if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+            if (args.length < 1) {
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /fdoor [Fraktion]");
+                return false;
+            }
+            for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
+                if (!factionData.getName().equalsIgnoreCase(args[0])) continue;
+                faction = factionData.getName();
+            }
+            if (faction == null) {
+                player.sendMessage(Prefix.ERROR + "Fraktion wurde nicht gefunden.");
+                return false;
+            }
+        }
+        if (locationManager.getLocation("fdoor_" + faction) == null) {
             player.sendMessage(Main.error + "Deine Fraktion hat keine Fraktionstür.");
             return false;
         }
-        if (locationManager.getDistanceBetweenCoords(player, "fdoor_" + playerData.getFaction()) > 5) {
+        if (locationManager.getDistanceBetweenCoords(player, "fdoor_" + faction) > 5) {
             player.sendMessage(Main.error + "Du bist nicht in der nähe deine Fraktionstür.");
+            return false;
+        }
+        if (playerManager.isInStaatsFrak(player)) {
+            Main.getInstance().gamePlay.openGOVRaidGUI(Main.getInstance().factionManager.getFactionData(faction), player);
             return false;
         }
         List<RegisteredBlock> blocks = new ArrayList<>();
         for (RegisteredBlock block : blockManager.getBlocks()) {
-            if (block.getInfo().equalsIgnoreCase("adoor_" + playerData.getFaction())) {
+            if (block.getInfo().equalsIgnoreCase("adoor_" + faction)) {
                 blocks.add(block);
             }
         }
