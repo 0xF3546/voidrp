@@ -2,14 +2,14 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class RegisterHouseCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -24,9 +24,19 @@ public class RegisterHouseCommand implements CommandExecutor {
         if (playerData.getPermlevel() >= 90) {
             if (args.length >= 1) {
                 try {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.execute("INSERT INTO `housing` (`number`, `price`) VALUES (" + args[0] + ", " + args[1] + ")");
+                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    PreparedStatement statement = connection.prepareStatement("INSERT INTO housing (number, price) VALUES (?, ?)");
+                    statement.setInt(1, Integer.parseInt(args[0]));
+                    statement.setInt(2, Integer.parseInt(args[1]));
+                    statement.execute();
                     player.sendMessage(Main.gamedesign_prefix + "Haus " + args[0] + " wurde mit Preis " + args[1] + " angelegt.");
+                    ResultSet result = statement.getGeneratedKeys();
+                    if (result.next()) {
+                        House house = new House();
+                        house.setId(result.getInt(1));
+                        house.setNumber(Integer.parseInt(args[0]));
+                        house.setPrice(Integer.parseInt(args[1]));
+                    }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
