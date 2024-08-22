@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,6 +27,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Mayson1337
@@ -93,7 +95,7 @@ public class FFA implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave/leaderboard]");
             return false;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
@@ -109,16 +111,82 @@ public class FFA implements CommandExecutor {
             }
         } else if (args[0].equalsIgnoreCase("leave")) {
             if (playerData.getVariable("ffa") != null) {
-                player.sendMessage("§8[§6FFA§8]§a Du hast die FFA-Arena verlassen.");
+                player.sendMessage("§8[§cFFA§8]§a Du hast die FFA-Arena verlassen.");
                 leaveFFA(player);
             } else {
                 player.sendMessage(Main.error + "Du bist nicht in FFA.");
             }
+        } else if (args[0].equalsIgnoreCase("leaderboard")) {
+            openLeaderboard(player, FFAStatsType.ALL_TIME);
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave]");
+            player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave/leaderboard]");
         }
         return false;
     }
+
+    public void openLeaderboard(Player player, FFAStatsType type) {
+        List<PlayerFFAStats> sortedStats = playerFFAStats.stream()
+                .sorted(Comparator.comparing(PlayerFFAStats::getKD).reversed())
+                .collect(Collectors.toList());
+
+        String playerUUID = player.getUniqueId().toString();
+        int playerRank = -1;
+
+        for (int i = 0; i < sortedStats.size(); i++) {
+            if (sortedStats.get(i).getUuid().equals(playerUUID)) {
+                playerRank = i + 1;
+                break;
+            }
+        }
+
+        List<PlayerFFAStats> top5Players = sortedStats.stream().limit(5).collect(Collectors.toList());
+
+        player.sendMessage("§6§lLeaderboard:");
+        for (int i = 0; i < top5Players.size(); i++) {
+            PlayerFFAStats stats = top5Players.get(i);
+            player.sendMessage("§7#" + (i + 1) + " §e" + stats.getUuid() + " §7| KD: §e" + stats.getKD());
+        }
+
+        if (playerRank != -1) {
+            player.sendMessage("§aDein Rang: §e#" + playerRank + " §7| KD: §e" + sortedStats.get(playerRank - 1).getKD());
+        } else {
+            player.sendMessage("§cDu bist nicht in der Rangliste.");
+        }
+
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eStats§8 - " + type.getDisplayName());
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§6§l#" + playerRank + "§7 " + player.getName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        int i = 9;
+        int rank = 1;
+        for (PlayerFFAStats stats : top5Players) {
+            OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(stats.getUuid());
+            if (offlinePlayer == null) continue;
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(stats.getUuid(), 1, 0, "§6§l#" + rank + "§7 " + offlinePlayer.getName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+            i++;
+            rank++;
+        }
+
+        i = 19;
+        for (FFAStatsType statsType : FFAStatsType.values()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, statsType.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openLeaderboard(player, statsType);
+                }
+            });
+            i++;
+        }
+    }
+
 
     private void openFFAMenu(Player player) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cFree for All");
@@ -184,7 +252,23 @@ public class FFA implements CommandExecutor {
     }
 
     public void equipPlayer(Player player) {
+        for (ItemStack item : player.getInventory().getContents()) {
+            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                if (weaponData.getMaterial() != null && item != null) {
+                    if (item.getType() == weaponData.getMaterial()) {
+                        ItemMeta meta = item.getItemMeta();
+                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        if (weapon.getWeaponType() == WeaponType.GANGWAR) {
+                            Main.getInstance().weapons.removeWeapon(player, item);
+                        }
+                    }
+                }
+            }
+        }
+        player.getInventory().clear();
         Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.FFA);
+        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.IRON_HORSE_ARMOR, WeaponType.FFA);
+        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.GOLDEN_SHOVEL, WeaponType.FFA);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 5, 0, RoleplayItem.SNUFF.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 5, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
@@ -196,6 +280,8 @@ public class FFA implements CommandExecutor {
         // if (playerData.getFaction() == null) return;
         // playerData.removeBossBar("ffa");
         Main.getInstance().utils.deathUtil.revivePlayer(player, false);
+        FFALobby lobby = playerData.getVariable("ffa");
+        sendMessageToLobby(lobby, "§8[§cFFA§8]§7 " + player.getName() + " hat die Lobby verlassen.");
         if (playerData.getVariable("ffa") == null) {
             return;
         }

@@ -12,7 +12,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum FFAStatsType {
-    ALL_TIME(),
-    WEEKLY(),
-    MONTHLY();
+    ALL_TIME("§cAll-Time"),
+    WEEKLY("§5Wöchtenlich"),
+    MONTHLY("§eMonatlich");
+
+    private String displayName;
 }

@@ -35,4 +35,8 @@ public class PlayerFFAStats {
         this.deaths = deaths;
     }
 
+    public float getKD() {
+        return (float) kills / deaths;
+    }
+
 }

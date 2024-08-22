@@ -55,16 +55,20 @@ public class PlayerFFAStatsManager {
             for (PlayerFFAStats stat : stats) {
                 if (stat.getId() > 0) {
                     try (PreparedStatement statement = connection.prepareStatement(
-                            "UPDATE player_ffa_stats SET statsType = ? WHERE id = ?")) {
+                            "UPDATE player_ffa_stats SET statsType = ?, kills = ?, deaths = ? WHERE id = ?")) {
                         statement.setString(1, stat.getFfaStatsType().name());
-                        statement.setInt(2, stat.getId());
+                        statement.setInt(2, stat.getKills());
+                        statement.setInt(3, stat.getDeaths());
+                        statement.setInt(4, stat.getId());
                         statement.executeUpdate();
                     }
                 } else {
                     try (PreparedStatement statement = connection.prepareStatement(
-                            "INSERT INTO player_ffa_stats (uuid, statsType) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                            "INSERT INTO player_ffa_stats (uuid, statsType, kills, deaths) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                         statement.setString(1, stat.getUuid());
-                        statement.setString(2, stat.getFfaStatsType().name());
+                        statement.setInt(2, stat.getKills());
+                        statement.setInt(3, stat.getDeaths());
+                        statement.setString(4, stat.getFfaStatsType().name());
                         statement.executeUpdate();
                         try (ResultSet result = statement.getGeneratedKeys()) {
                             if (result.next()) {
