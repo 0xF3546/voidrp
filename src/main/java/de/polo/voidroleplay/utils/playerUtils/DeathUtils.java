@@ -122,6 +122,10 @@ public class DeathUtils {
         player.setGameMode(GameMode.SURVIVAL);
         playerData.setDeathTime(300);
         playerData.setDead(false);
+        playerData.setFFADead(playerData.getVariable("ffa") != null);
+        if (playerData.isFFADead()) {
+            Main.getInstance().gamePlay.getFfa().respawnPlayer(player);
+        }
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
@@ -130,6 +134,7 @@ public class DeathUtils {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        if (playerData.isFFADead()) return;
         if (playerData.getVariable("gangwar") != null) {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
         } else {

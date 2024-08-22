@@ -758,8 +758,8 @@ public class PlayerManager implements Listener, ServerTiming {
 
                     // Batch-Operation für Fraktionsdaten-Update
                     for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
-                        double zinsen = Math.round(factionData.getBank() * 0.0075);
-                        double steuern = Math.round(factionData.getBank() * 0.0035);
+                        double zinsen = Math.round(factionData.getBank() * 0.00075);
+                        double steuern = Math.round(factionData.getBank() * 0.00035);
                         if (factionData.getBank() >= factionData.upgrades.getTax()) {
                             steuern += Math.round(factionData.getBank() * 0.015);
                         }

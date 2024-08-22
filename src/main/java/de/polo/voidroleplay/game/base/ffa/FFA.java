@@ -199,7 +199,7 @@ public class FFA implements CommandExecutor {
         if (playerData.getVariable("ffa") == null) {
             return;
         }
-        locationManager.useLocation(player, playerData.getFaction());
+        locationManager.useLocation(player, "ffa");
         playerData.setVariable("ffa", null);
         for (ItemStack item : player.getInventory().getContents()) {
             for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
@@ -223,14 +223,20 @@ public class FFA implements CommandExecutor {
         if (!joinedPlayers.contains(player)) return;
         PlayerData playerData = playerManager.getPlayerData(player);
         FFALobby lobby = playerData.getVariable("ffa");
-        FFASpawn spawn = getRandomSpawn(lobby);
-        player.teleport(spawn.getLocation());
         if (player.getKiller() == null) return;
         sendMessageToLobby(lobby, "§8[§cFFA§8]§7 " + player.getKiller().getName() + " §8»§7 " + player.getName());
         playerData.getPlayerFFAStatsManager().addDeath();
 
         PlayerData targetData = playerManager.getPlayerData(player.getKiller());
         targetData.getPlayerFFAStatsManager().addKill();
+    }
+
+    public void respawnPlayer(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        FFALobby lobby = playerData.getVariable("ffa");
+        FFASpawn spawn = getRandomSpawn(lobby);
+        player.teleport(spawn.getLocation());
+        equipPlayer(player);
     }
 
     private Collection<Player> getPlayersInLobby(FFALobby lobby) {

@@ -83,6 +83,9 @@ public class PlayerData {
     private boolean isStabilized = false;
     private boolean isHitmanDead = false;
     private int deathTime = 300;
+    @Getter
+    @Setter
+    private boolean isFFADead = false;
     private int number = 0;
     private boolean isFlightmode = false;
     private boolean isDuty = false;

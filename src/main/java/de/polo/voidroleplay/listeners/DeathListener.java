@@ -53,6 +53,8 @@ public class DeathListener implements Listener {
                 if (Main.getInstance().gamePlay.militaryDrop.handleDeath(player, player.getKiller())) return;
             }
             if (playerData.getVariable("ffa") != null) {
+                playerData.setDead(true);
+                playerData.setDeathTime(5);
                 Main.getInstance().gamePlay.getFfa().handleDeath(player);
                 return;
             } else {

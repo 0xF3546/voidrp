@@ -28,13 +28,12 @@ public class RespawnListener implements Listener {
                 } else {
                     flySpeed = 0.1F;
                 }
-            } else {
-                return;
             }
         }
-        if (playerData.getVariable("current_lobby") != null) {
+        /*if (playerData.getVariable("ffa") != null) {
+            Main.getInstance().gamePlay.getFfa().handleDeath(player);
             return;
-        }
+        }*/
         event.setRespawnLocation(playerData.getDeathLocation());
         player.sendTitle("§cDu bist gestorben.", null, 1, 12, 1);
         player.setGameMode(GameMode.SPECTATOR);
