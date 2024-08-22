@@ -70,31 +70,6 @@ public class FFAUtils implements CommandExecutor, Listener {
         Player player = (Player) sender;
         player.sendMessage(Main.error + "FFA ist gerade nicht Spielbar.");
         return false;
-        /*if (args.length >= 1) {
-            if (args[0].equalsIgnoreCase("join")) {
-                if (playerManager.getPlayerData(player.getUniqueId()).getVariable("current_lobby") == null) {
-                    if (locationManager.getDistanceBetweenCoords(player, "ffa") < 5) {
-                        openFFAMenu(player, 1);
-                    } else {
-                        player.sendMessage(Main.error + "Du bist nicht in der nähe der FFA-Arena!");
-                    }
-                } else {
-                    player.sendMessage(Main.error + "Du bist bereits in einem FFA.");
-                }
-            } else if (args[0].equalsIgnoreCase("leave")) {
-                if (playerManager.getPlayerData(player.getUniqueId()).getVariable("current_lobby") != null) {
-                    player.sendMessage("§8[§6FFA§8]§a Du hast die FFA-Arena verlassen.");
-                    leaveFFA(player);
-                } else {
-                    player.sendMessage(Main.error + "Du bist nicht in FFA.");
-                }
-            } else {
-                player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave]");
-            }
-        } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave]");
-        }
-        return false;*/
     }
 
     public void openFFAMenu(Player player, int page) {

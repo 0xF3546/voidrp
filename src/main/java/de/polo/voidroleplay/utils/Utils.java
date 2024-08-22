@@ -38,7 +38,6 @@ public class Utils {
     public final BankingUtils bankingUtils;
     public final PhoneUtils phoneUtils;
     public final TabletUtils tabletUtils;
-    public final FFAUtils ffaUtils;
     public final GangwarUtils gangwarUtils;
     private final CompanyManager companyManager;
     private static HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
@@ -56,7 +55,6 @@ public class Utils {
         this.companyManager = companyManager;
         tabletUtils = new TabletUtils(playerManager, factionManager, this, companyManager);
         phoneUtils = new PhoneUtils(playerManager, this);
-        ffaUtils = new FFAUtils(playerManager, locationManager);
         gangwarUtils = new GangwarUtils(playerManager, factionManager, locationManager);
     }
 

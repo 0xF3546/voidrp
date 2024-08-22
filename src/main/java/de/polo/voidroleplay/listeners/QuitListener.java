@@ -58,8 +58,8 @@ public class QuitListener implements Listener {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             playerData.setVariable("inventory::build", player.getInventory().getContents());
         }
-        if (playerData.getVariable("current_lobby") != null) {
-            utils.ffaUtils.leaveFFA(player);
+        if (playerData.getVariable("ffa") != null) {
+            Main.getInstance().gamePlay.getFfa().leaveFFA(player);
         }
         if (playerData.getVariable("gangwar") != null) {
             utils.gangwarUtils.leaveGangwar(player);

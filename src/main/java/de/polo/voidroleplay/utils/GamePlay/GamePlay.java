@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
+import de.polo.voidroleplay.game.base.ffa.FFA;
 import de.polo.voidroleplay.game.faction.alliance.Alliance;
 import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.game.faction.apotheke.ApothekeFunctions;
@@ -20,6 +21,7 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -51,6 +53,10 @@ public class GamePlay implements Listener {
     private final LocationManager locationManager;
     private final List<Dealer> dealers = new ArrayList<>();
     public final FactionUpgradeGUI factionUpgradeGUI;
+
+    @Getter
+    private final FFA ffa;
+
     public Drop activeDrop = null;
     public LocalDateTime lastDrop = Utils.getTime();
     public Houseban houseban;
@@ -81,6 +87,7 @@ public class GamePlay implements Listener {
         displayNameManager = new DisplayNameManager(playerManager, factionManager, Main.getInstance().getScoreboardAPI());
         alliance = new Alliance(playerManager, factionManager, utils);
         militaryDrop = new MilitaryDrop(playerManager, factionManager, locationManager);
+        ffa = new FFA(playerManager, locationManager);
         this.npc = npc;
         Statement statement = mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM dealer");

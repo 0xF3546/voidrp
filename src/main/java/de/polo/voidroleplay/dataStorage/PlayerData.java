@@ -10,6 +10,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.Workstation;
+import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -33,6 +34,9 @@ public class PlayerData {
     private PlayerPetManager playerPetManager;
 
     @Getter
+    private PlayerFFAStatsManager playerFFAStatsManager;
+
+    @Getter
     private Player player;
     private String spawn;
 
@@ -42,6 +46,7 @@ public class PlayerData {
     public PlayerData(Player player) {
         this.player = player;
         this.playerPetManager = new PlayerPetManager(this, player);
+        this.playerFFAStatsManager = new PlayerFFAStatsManager(player);
     }
 
     private int id;

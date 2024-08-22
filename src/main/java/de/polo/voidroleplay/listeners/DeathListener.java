@@ -52,8 +52,9 @@ public class DeathListener implements Listener {
                 if (player.getKiller() == null) return;
                 if (Main.getInstance().gamePlay.militaryDrop.handleDeath(player, player.getKiller())) return;
             }
-            if (playerData.getVariable("current_lobby") != null) {
-                utils.ffaUtils.useSpawn(player, playerData.getIntVariable("current_lobby"));
+            if (playerData.getVariable("ffa") != null) {
+                Main.getInstance().gamePlay.getFfa().handleDeath(player);
+                return;
             } else {
                 if (!playerData.isDead()) {
                     adminManager.send_message(player.getName() + " starb.", null);
