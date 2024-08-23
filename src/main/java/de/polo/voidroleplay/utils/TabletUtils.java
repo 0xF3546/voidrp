@@ -487,10 +487,29 @@ public class TabletUtils implements Listener {
                     }
 
                     if (playerVehicleData.isParked()) {
-                        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §aEingeparkt"))) {
+                        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §aEingeparkt", "§8 ➥ §8[§6Rechtsklick§8]§7 Verkaufen"))) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
-
+                                if (event.isLeftClick()) {
+                                    return;
+                                }
+                                int price = (int) (vehicleData.getPrice() * 0.75);
+                                InventoryManager sellInventory = new InventoryManager(player, 27, "§8 » §e" + vehicleData.getName() + " verkaufen");
+                                sellInventory.setItem(new CustomItem(12, ItemManager.createItem(Material.GREEN_WOOL, 1, 0, "§aVerkaufen", "§8 ➥ §7" + Utils.toDecimalFormat(price) + "$")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        player.closeInventory();
+                                        player.sendMessage(Prefix.MAIN + "Du hast dein " + vehicleData.getName() + " verkauft.");
+                                        playerData.addMoney(price, "Verkauf " + vehicleData.getName());
+                                        Main.getInstance().vehicles.removeVehicleFromDatabase(playerVehicleData.getId());
+                                    }
+                                });
+                                sellInventory.setItem(new CustomItem(14, ItemManager.createItem(Material.RED_WOOL, 1, 0, "§cAbbrechen")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        openVehiclesApp(player, page);
+                                    }
+                                });
                             }
                         });
                     } else {

@@ -30,9 +30,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class Vehicles implements Listener, CommandExecutor {
@@ -120,6 +118,17 @@ public class Vehicles implements Listener, CommandExecutor {
             playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
             spawnVehicle(player, playerVehicleData);
         }
+    }
+
+    @SneakyThrows
+    public void removeVehicleFromDatabase(int vehicleId) {
+        playerVehicleDataMap.remove(vehicleId);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM player_vehicles WHERE id = ?");
+        statement.setInt(1, vehicleId);
+        statement.execute();
+        statement.close();
+        connection.close();
     }
 
     public static void spawnPlayerVehicles(Player player) {
