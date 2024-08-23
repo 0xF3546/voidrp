@@ -636,7 +636,7 @@ public class PlayerSwapHandItemsListener implements Listener {
             public void onClick(InventoryClickEvent event) {
             }
         });
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY4MTIxMTJkZDE4N2U3YzhkZGI1YzNiOGU4NTRlODJmMTkxOTc0MTRhOGNkYjU0MjAyMWYxYTQ5MTg5N2U1MyJ9fX0=", 1, 0, "§bHausslot", Arrays.asList("§8 » §e4.000 Coins"))) {
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY4MTIxMTJkZDE4N2U3YzhkZGI1YzNiOGU4NTRlODJmMTkxOTc0MTRhOGNkYjU0MjAyMWYxYTQ5MTg5N2U1MyJ9fX0=", 1, 0, "§bHausslot", Arrays.asList("§8 » §e6.000 Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 buy(player, "hausslot");
@@ -691,12 +691,12 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.closeInventory();
                 break;
             case "hausslot":
-                if (playerData.getCoins() < 4000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Coins (4.000).");
+                if (playerData.getCoins() < 6000) {
+                    player.sendMessage(Main.error + "Du hast nicht genug Coins (6.000).");
                     player.closeInventory();
                     return;
                 }
-                playerManager.removeCoins(player, 4000);
+                playerManager.removeCoins(player, 6000);
                 utils.housing.addHausSlot(player);
                 player.closeInventory();
                 player.sendMessage("§8[§eCoin-Shop§8]§a Du hast einen Hausslot eingelöst!");
