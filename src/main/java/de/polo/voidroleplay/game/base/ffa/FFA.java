@@ -133,7 +133,7 @@ public class FFA implements CommandExecutor {
         int playerRank = -1;
 
         for (int i = 0; i < sortedStats.size(); i++) {
-            if (sortedStats.get(i).getUuid().equals(playerUUID)) {
+            if (sortedStats.get(i).getUuid().equals(playerUUID) && sortedStats.get(i).getFfaStatsType().equals(type)) {
                 playerRank = i + 1;
                 break;
             }
@@ -142,7 +142,7 @@ public class FFA implements CommandExecutor {
         List<PlayerFFAStats> top5Players = sortedStats.stream().limit(5).collect(Collectors.toList());
 
         player.sendMessage("§6§lLeaderboard:");
-        for (int i = 0; i < top5Players.size(); i++) {
+        /*for (int i = 0; i < top5Players.size(); i++) {
             PlayerFFAStats stats = top5Players.get(i);
             player.sendMessage("§7#" + (i + 1) + " §e" + stats.getUuid() + " §7| KD: §e" + stats.getKD());
         }
@@ -151,7 +151,7 @@ public class FFA implements CommandExecutor {
             player.sendMessage("§aDein Rang: §e#" + playerRank + " §7| KD: §e" + sortedStats.get(playerRank - 1).getKD());
         } else {
             player.sendMessage("§cDu bist nicht in der Rangliste.");
-        }
+        }*/
 
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eStats§8 - " + type.getDisplayName());
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§6§l#" + playerRank + "§7 " + player.getName())) {
@@ -163,8 +163,8 @@ public class FFA implements CommandExecutor {
         int i = 9;
         int rank = 1;
         for (PlayerFFAStats stats : top5Players) {
-            OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(stats.getUuid());
-            if (offlinePlayer == null) continue;
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(stats.getUuid()));
+            if (offlinePlayer.getName() == null) continue;
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(stats.getUuid(), 1, 0, "§6§l#" + rank + "§7 " + offlinePlayer.getName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -175,7 +175,7 @@ public class FFA implements CommandExecutor {
             rank++;
         }
 
-        i = 19;
+        i = 18;
         for (FFAStatsType statsType : FFAStatsType.values()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, statsType.getDisplayName())) {
                 @Override
