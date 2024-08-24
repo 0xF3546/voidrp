@@ -14,10 +14,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.sql.PreparedStatement;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerVoteListener implements Listener {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
+    private final HashMap<UUID, Integer> votes = new HashMap<>();
 
     public PlayerVoteListener(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
@@ -36,6 +39,10 @@ public class PlayerVoteListener implements Listener {
             PlayerData playerData = playerManager.getPlayerData(player);
             player.sendMessage(Main.prefix + "§6§lDanke§7 für deinen Vote!");
             playerManager.addExp(player, Main.random(30, 50));
+            if (votes.get(player.getUniqueId()) >= 2) {
+                return;
+            }
+            votes.replace(player.getUniqueId(), votes.get(player.getUniqueId()) + 1);
             playerManager.addCoins(player, Main.random(10, 13));
             playerData.setVotes(playerData.getVotes() + 1);
             PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET votes = ? WHERE uuid = ?");

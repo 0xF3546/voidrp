@@ -342,4 +342,8 @@ public class FFA implements CommandExecutor {
         int randomIndex = random.nextInt(spawns.size());
         return spawns.get(randomIndex);
     }
+
+    public void clearStats(FFAStatsType type) {
+        playerFFAStats.removeIf(ffaStats -> ffaStats.getFfaStatsType().equals(type));
+    }
 }

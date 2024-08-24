@@ -119,4 +119,10 @@ public class PlayerFFAStatsManager {
     public void handleJoin() {
         checkForUncreatedStat();
     }
+
+    public void clearStats(FFAStatsType type) {
+        for (PlayerFFAStats ffaStats : stats) {
+            if (ffaStats.getFfaStatsType().equals(type)) stats.remove(ffaStats);
+        }
+    }
 }

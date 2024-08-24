@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
+import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import lombok.SneakyThrows;
@@ -194,9 +195,28 @@ public class ServerManager {
                     statement.execute();
                     for (PlayerData playerData : playerManager.getPlayers()) {
                         playerData.clearQuests();
+                        if (playerData.getPlayerFFAStatsManager().getStats(FFAStatsType.WEEKLY) == null) continue;
+                        playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.WEEKLY);
+                        Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.WEEKLY);
                     }
                     Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der Seasonpass wurde zurückgesetzt!");
 
+                    PreparedStatement ffaStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
+                    ffaStatement.setString(1, FFAStatsType.WEEKLY.name());
+                    ffaStatement.execute();
+                    ffaStatement.close();
+
+                    if (now.getDayOfMonth() == 1) {
+                        for (PlayerData playerData : playerManager.getPlayers()) {
+                            if (playerData.getPlayerFFAStatsManager().getStats(FFAStatsType.MONTHLY) == null) continue;
+                            playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.MONTHLY);
+                            Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.MONTHLY);
+                        }
+                        PreparedStatement ffaMonStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
+                        ffaMonStatement.setString(1, FFAStatsType.MONTHLY.name());
+                        ffaMonStatement.execute();
+                        ffaMonStatement.close();
+                    }
                 }
                 if (now.getMinute() == 45 && now.getHour() == 1 && now.getSecond() == 0) {
                     Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 15 Minuten neu!");
