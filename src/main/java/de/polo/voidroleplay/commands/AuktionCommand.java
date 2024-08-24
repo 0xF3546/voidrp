@@ -152,7 +152,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
 
         String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
         factionManager.sendCustomLeaderMessageToFactions(
-                "§8[§3Auktion§8]§7 Die Fraktion " + winningFaction.getPrimaryColor() + winningFaction.getFullname() +
+                "§8[§3Auktion§8]§7 Die Fraktion §" + winningFaction.getPrimaryColor() + winningFaction.getFullname() +
                         "§7 hat mit einem Einsatz von §a" + amount + "$§7 die Auktion gewonnen!",
                 factions
         );
