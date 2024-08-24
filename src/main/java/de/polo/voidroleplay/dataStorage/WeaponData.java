@@ -1,5 +1,7 @@
 package de.polo.voidroleplay.dataStorage;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
@@ -17,6 +19,10 @@ public class WeaponData {
     private Material ammoItem;
     private float soundPitch;
     private int knockback;
+
+    @Getter
+    @Setter
+    private boolean meele;
 
     public float getReloadDuration() {
         return reloadDuration;

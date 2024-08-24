@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.Workstation;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
+import de.polo.voidroleplay.utils.playerUtils.PlayerPowerUpManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -37,16 +38,20 @@ public class PlayerData {
     private PlayerFFAStatsManager playerFFAStatsManager;
 
     @Getter
+    private PlayerPowerUpManager playerPowerUpManager;
+
+    @Getter
     private Player player;
     private String spawn;
 
-    private List<PlayerQuest> quests = new ArrayList<>();
-    private List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
+    private final List<PlayerQuest> quests = new ArrayList<>();
+    private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
 
     public PlayerData(Player player) {
         this.player = player;
         this.playerPetManager = new PlayerPetManager(this, player);
         this.playerFFAStatsManager = new PlayerFFAStatsManager(player);
+        this.playerPowerUpManager = new PlayerPowerUpManager(player, this);
     }
 
     private int id;
@@ -60,6 +65,11 @@ public class PlayerData {
     private int permlevel;
     private String faction;
     private int faction_grade;
+
+    @Getter
+    @Setter
+    private int eventPoints;
+
     private final HashMap<String, Object> variables = new HashMap<>();
     private final HashMap<String, Integer> integer_variables = new HashMap<>();
     private final HashMap<String, Location> locationVariables = new HashMap<>();
@@ -955,9 +965,13 @@ public class PlayerData {
 
         public void addFishingXP(int amount) {
             fishingXP += amount;
+            if (fishingXP >= EXPType.SKILL_FISHING.getLevelUpXp()) {
+                setFishingLevel(getFishingLevel() + 1);
+                setFishingLevel(getFishingLevel() - EXPType.SKILL_FISHING.getLevelUpXp());
+            }
             try {
                 Statement statement = Main.getInstance().mySQL.getStatement();
-                statement.executeUpdate("UPDATE player_addonxp SET fishingXP = " + fishingXP + " WHERE uuid = '" + player.getUniqueId() + "'");
+                statement.executeUpdate("UPDATE player_addonxp SET fishingXP = " + fishingXP + ", fishingLevel = " + fishingLevel + " WHERE uuid = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -1001,6 +1015,7 @@ public class PlayerData {
             popularityXP += amount;
             if (popularityXP >= EXPType.POPULARITY.getLevelUpXp()) {
                 setPopularityLevel(getPopularityLevel() + 1);
+                setPopularityXP(getPopularityXP() - EXPType.POPULARITY.getLevelUpXp());
             }
             try {
                 Statement statement = Main.getInstance().mySQL.getStatement();

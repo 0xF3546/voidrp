@@ -277,7 +277,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion kann maximal 3 Gebiete besitzen!");
             return;
         }
-        if ((Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() < 22 && Utils.getTime().getDayOfWeek().equals(DayOfWeek.THURSDAY) && Utils.getTime().getDayOfWeek().equals(DayOfWeek.TUESDAY)) || (playerData.isAduty() && playerData.getPermlevel() >= 80)) {
+        if ((Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() < 22 || (playerData.isAduty() && playerData.getPermlevel() >= 80))) {
             IGangzone gangzone = getGangzoneByName(zone);
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.canDoGangwar()) {
