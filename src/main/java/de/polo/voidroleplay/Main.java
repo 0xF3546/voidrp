@@ -486,6 +486,7 @@ public final class Main extends JavaPlugin {
         public SubTeamChat subTeamChat;
         public SetMOTDCommand setMOTDCommand;
         public VoteShopCommand voteShopCommand;
+        public AnwaltCommand anwaltCommand;
         private void Init() {
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
@@ -670,6 +671,7 @@ public final class Main extends JavaPlugin {
             subTeamChat = new SubTeamChat(playerManager);
             setMOTDCommand = new SetMOTDCommand(playerManager, factionManager);
             voteShopCommand = new VoteShopCommand(playerManager);
+            anwaltCommand = new AnwaltCommand(playerManager, locationManager);
 
             main.registerCommands();
             main.registerListener(this);
