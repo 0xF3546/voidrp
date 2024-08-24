@@ -1,9 +1,13 @@
 package de.polo.voidroleplay.game.base.extra;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.InventoryUtils;
+import de.polo.voidroleplay.utils.enums.Powerup;
 import de.polo.voidroleplay.utils.enums.StorageType;
 import de.polo.voidroleplay.utils.enums.Storages;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -31,10 +35,18 @@ public class Storage implements Listener {
     private String player;
     private int factionId = -1;
     private int vehicleId = -1;
+
+    @Getter
+    @Setter
+    private int houseNumber = -1;
+
     private StorageType storageType;
     private Inventory inventory;
     private Storages extra;
     private boolean canOpen = true;
+    @Getter
+    @Setter
+    private int size = 27;
 
     public Storage(StorageType storageType) {
         this.storageType = storageType;
@@ -90,7 +102,11 @@ public class Storage implements Listener {
                 name = "§7Hauslager";
                 break;
         }
-        Inventory newInv = Bukkit.createInventory(p, inventory.getSize(), name);
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(p);
+        if (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.STORAGE).getAmount() > inventory.getSize()) {
+            setSize(playerData.getPlayerPowerUpManager().getPowerUp(Powerup.STORAGE).getAmount());
+        }
+        Inventory newInv = Bukkit.createInventory(p, size, name);
         newInv.setContents(inventory.getContents());
         this.inventory = newInv;
         p.openInventory(inventory);
@@ -108,7 +124,7 @@ public class Storage implements Listener {
     @SneakyThrows
     public void create() {
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO storages (storageType, factionId, vehicleId, player, extra, inventory) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO storages (storageType, factionId, vehicleId, player, extra, inventory, houseNumber) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, storageType.name());
         statement.setInt(2, factionId);
         statement.setInt(3, vehicleId);
@@ -116,11 +132,12 @@ public class Storage implements Listener {
         if (extra != null) statement.setString(5, extra.name());
         else statement.setString(5, null);
         if (player != null) {
-            this.inventory = Bukkit.createInventory(Bukkit.getPlayer(UUID.fromString(player)), 27, "§7Lager");
+            this.inventory = Bukkit.createInventory(Bukkit.getPlayer(UUID.fromString(player)), size, "§7Lager");
         } else {
-            this.inventory = Bukkit.createInventory(null, 27, "§7Lager");
+            this.inventory = Bukkit.createInventory(null, size, "§7Lager");
         }
         statement.setString(6, InventoryUtils.serializeInventory(inventory));
+        statement.setInt(7, houseNumber);
         statement.execute();
         ResultSet generatedKeys = statement.getGeneratedKeys();
         if (generatedKeys.next()) {
@@ -148,7 +165,7 @@ public class Storage implements Listener {
     public void save() {
         Connection connection = Main.getInstance().mySQL.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE storages SET storageType = ?, factionId = ?, vehicleId = ?, player = ?, inventory = ?, extra = ? WHERE id = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE storages SET storageType = ?, factionId = ?, vehicleId = ?, player = ?, inventory = ?, extra = ?, size = ?, houseNumber = ? WHERE id = ?");
             statement.setString(1, storageType.name());
             statement.setInt(2, factionId);
             statement.setInt(3, vehicleId);
@@ -156,7 +173,9 @@ public class Storage implements Listener {
             statement.setString(5, InventoryUtils.serializeInventory(inventory));
             if (extra != null) statement.setString(6, extra.name());
             else statement.setString(6, null);
-            statement.setInt(7, id);
+            statement.setInt(7, size);
+            statement.setInt(8, houseNumber);
+            statement.setInt(9, id);
             statement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,6 +232,10 @@ public class Storage implements Listener {
                 statement = connection.prepareStatement("SELECT * FROM storages WHERE factionId = ?");
                 statement.setInt(1, (int) value);
                 break;
+            case HOUSE:
+                statement = connection.prepareStatement("SELECT * FROM storages WHERE houseNumber = ?");
+                statement.setInt(1, (int) value);
+                break;
         }
         ResultSet resultSet = statement.executeQuery();
 
@@ -222,6 +245,8 @@ public class Storage implements Listener {
             storage.setFactionId(resultSet.getInt("factionId"));
             storage.setVehicleId(resultSet.getInt("vehicleId"));
             storage.setPlayer(resultSet.getString("player"));
+            storage.setHouseNumber(resultSet.getInt("houseNumber"));
+            storage.setSize(resultSet.getInt("size"));
             if (resultSet.getString("extra") != null) {
                 storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
             }
@@ -244,6 +269,8 @@ public class Storage implements Listener {
             storage.setFactionId(resultSet.getInt("factionId"));
             storage.setVehicleId(resultSet.getInt("vehicleId"));
             storage.setPlayer(resultSet.getString("player"));
+            storage.setHouseNumber(resultSet.getInt("houseNumber"));
+            storage.setSize(resultSet.getInt("size"));
             if (resultSet.getString("extra") != null) {
                 storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
             }

@@ -420,7 +420,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 openCoinShop(player, playerData);
             }
         });
-        inventoryManager.setItem(new CustomItem(22, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§aTiere", "§8 ➥ §7Übersicht zu Spieler & Character Statistiken")) {
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjJmYTdiMDA1OGIxOTExOGFkNmQ4MTRlNzNlNTRiM2U3YjRlZWUxNzJkMWJhODBjNDQyOTc2ODgwOGJiNjdhIn19fQ==", 1, 0, "§aTiere")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openPetMenu(player, playerData);
@@ -434,7 +434,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         });
 
         if (playerData.getFaction() != null && playerData.getFactionGrade() >= 7) {
-            inventoryManager.setItem(new CustomItem(27, ItemManager.createItem(Material.PAPER, 1, 0, "§cLeadermenü")) {
+            inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.PAPER, 1, 0, "§cLeadermenü")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
 
@@ -531,7 +531,7 @@ public class PlayerSwapHandItemsListener implements Listener {
             bloodType = "Nicht gemessen";
         }
         if (playerData.getFirstname() != null) {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + playerData.getFirstname() + " " + playerData.getLastname(), Arrays.asList("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation(), "§8 ➥ §eFraktion§8:§7 " + faction, "§8 ➥ §eBlutgruppe§8:§7" + bloodType))) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + playerData.getFirstname() + " " + playerData.getLastname(), Arrays.asList("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation(), "§8 ➥ §eFraktion§8: §7 " + faction, "§8 ➥ §eBlutgruppe§8:§7" + bloodType))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
 
@@ -545,6 +545,13 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             });
         }
+
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bPowerups")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openPowerUpMenu(player);
+            }
+        });
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -713,5 +720,71 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.sendMessage("§8[§eCoin-Shop§8]§a Du hast einen EXP-Boost eingelöst!");
                 break;
         }
+    }
+
+    private void openPowerUpMenu(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bPowerups");
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 1, 0, "§cLabor", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.LABORATORY).getAmount() + " §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.LABORATORY).getAmount() + Powerup.LABORATORY.getUpgradeAmount()), "", "§b » §7Erhöht den umgewandelten Pfeifentabak (zu Pfeifen)", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.LABORATORY)) + "$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.LABORATORY)) {
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei!");
+                    return;
+                }
+                player.closeInventory();
+                player.sendMessage(Prefix.MAIN + "Du hast ein Labor-Upgrade gekauft.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.EXPERIENCE_BOTTLE, 1, 0, "§bEXP", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() + "% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() + Powerup.EXP.getUpgradeAmount()) + "%", "", "§b » §7Erhöht den EXP-Output", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.EXP)) + "$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.EXP)) {
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei!");
+                    return;
+                }
+                player.closeInventory();
+                player.sendMessage(Prefix.MAIN + "Du hast ein EXP-Upgrade gekauft.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§7Steuern", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.TAX).getAmount() +"% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.TAX).getAmount() + Powerup.TAX.getUpgradeAmount()) + "%", "", "§b » §7Verringert die höhe der Steuern", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.TAX)) + "$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.TAX)) {
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei!");
+                    return;
+                }
+                player.closeInventory();
+                player.sendMessage(Prefix.MAIN + "Du hast ein Steuer-Upgrade gekauft.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.CHEST, 1, 0, "§9Lager", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.STORAGE).getAmount() + " Slots §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.STORAGE).getAmount() + Powerup.STORAGE.getUpgradeAmount()) + " Slots", "", "§b » §7Erhöht die Anzahl der Slots in allen Lagern", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.STORAGE)) + "$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.STORAGE)) {
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei!");
+                    return;
+                }
+                player.closeInventory();
+                player.sendMessage(Prefix.MAIN + "Du hast ein Lager-Upgrade gekauft.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.FISHING_ROD, 1, 0, "§3Fishing", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.FISHING).getAmount() + "% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.FISHING).getAmount() + Powerup.FISHING.getUpgradeAmount()) + "%", "", "§b » §7Erhöht die Chance auf Legendäre Drops", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.FISHING)) + "$"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.FISHING)) {
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei!");
+                    return;
+                }
+                player.closeInventory();
+                player.sendMessage(Prefix.MAIN + "Du hast ein EXP-Upgrade gekauft.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openStatistics(player, playerData);
+            }
+        });
     }
 }

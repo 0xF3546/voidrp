@@ -4,6 +4,7 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
+import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
@@ -14,6 +15,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.StorageType;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
 import org.bukkit.*;
@@ -211,6 +213,7 @@ public class PlayerInteractListener implements Listener {
                                 }
                             });
                         }
+                        Main.getInstance().seasonpass.didQuest(player, 10);
                         ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " durchwühlt einen Mülleimer.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                     } else {
@@ -258,6 +261,19 @@ public class PlayerInteractListener implements Listener {
                                                 player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
                                                 player.closeInventory();
                                             }
+                                        }
+                                    });
+                                    inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CHEST, 1, 0, "§7Lager öffnen")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            Storage s = Storage.getStorageByTypeAndPlayer(StorageType.HOUSE, player, houseData.getNumber());
+                                            if (s == null) {
+                                                s = new Storage(StorageType.HOUSE);
+                                                s.setPlayer(player.getUniqueId().toString());
+                                                s.setHouseNumber(houseData.getNumber());
+                                                s.create();
+                                            };
+                                            s.open(player);
                                         }
                                     });
                                 } else {
