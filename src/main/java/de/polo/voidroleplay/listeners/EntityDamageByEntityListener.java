@@ -23,12 +23,19 @@ public class EntityDamageByEntityListener implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player damager = (Player) event.getDamager();
+            WeaponData currentWeapon = null;
             for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
-                if (damager.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
-                    event.setCancelled(true);
-                    return;
+                if (!damager.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
+                    continue;
                 }
+                if (weaponData.isMeele()) {
+                    currentWeapon = weaponData;
+                    continue;
+                }
+                event.setCancelled(true);
+                return;
             }
+            if (currentWeapon != null) event.setDamage(currentWeapon.getDamage());
             PlayerData playerData = playerManager.getPlayerData(event.getDamager().getUniqueId());
             if ((playerData.getVisum() <= 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
                 event.setCancelled(true);

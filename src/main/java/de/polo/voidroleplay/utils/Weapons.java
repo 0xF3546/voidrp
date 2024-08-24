@@ -43,6 +43,7 @@ public class Weapons implements Listener {
     private final PlayerManager playerManager;
     public HashMap<Player, LocalDateTime> weaponUsages = new HashMap<>();
     private HashMap<Player, Weapon> weaponCooldowns = new HashMap<>();
+    HashMap<Arrow, LocalDateTime> arrows = new HashMap<>();
 
     public Weapons(Utils utils, PlayerManager playerManager) {
         this.utils = utils;
@@ -54,6 +55,18 @@ public class Weapons implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Arrow arrow : arrows.keySet()) {
+                    if (Utils.getTime().isAfter(arrows.get(arrow))) {
+                        arrow.remove();
+                        arrows.remove(arrow);
+                    }
+                }
+            }
+        }.runTaskLater(Main.getInstance(), 20 * 20);
     }
 
     private void loadWeapons() throws SQLException {
@@ -73,6 +86,7 @@ public class Weapons implements Listener {
             weaponData.setType(result.getString("type"));
             weaponData.setSoundPitch(result.getFloat("soundPitch"));
             weaponData.setKnockback(result.getInt("knockback"));
+            weaponData.setMeele(result.getBoolean("isMelee"));
             weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
         }
     }
@@ -283,22 +297,51 @@ public class Weapons implements Listener {
             return;
         }
 
-        // Shooting logic
-        Arrow arrow = player.launchProjectile(Arrow.class);
-        ProjectileSource shooter = arrow.getShooter();
         ItemMeta meta = event.getItem().getItemMeta();
-        Vector direction = player.getEyeLocation().getDirection().normalize();
+        // Shooting logic
+        if (weaponData.getType().equalsIgnoreCase("shotgun")) {
+            double spread = 10.0;
 
-        Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(1));
-        player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.BLACK, 1));
+            Vector direction = player.getEyeLocation().getDirection().normalize();
 
-        if (shooter instanceof Player) {
-            arrow.setVelocity(direction.multiply(weaponData.getArrowVelocity()));
-            arrow.setShooter(shooter);
-            arrow.setDamage(weaponData.getDamage());
-            arrow.setGravity(false);
-            arrow.setKnockbackStrength(weaponData.getKnockback());
+            for (int i = 0; i < 6; i++) {
+                Arrow arrow = player.launchProjectile(Arrow.class);
+                arrows.put(arrow, Utils.getTime().plusSeconds(20));
+
+                Vector spreadDirection = direction.clone();
+                spreadDirection.add(new Vector(
+                        (Math.random() - 0.5) * 2 * spread / 100,
+                        (Math.random() - 0.5) * 2 * spread / 100,
+                        (Math.random() - 0.5) * 2 * spread / 100
+                )).normalize();
+
+                arrow.setVelocity(spreadDirection.multiply(weaponData.getArrowVelocity()));
+                arrow.setShooter(player);
+                arrow.setDamage(weaponData.getDamage());
+                arrow.setGravity(false);
+                arrow.setKnockbackStrength(weaponData.getKnockback());
+
+                Location particleLocation = player.getEyeLocation().clone().add(spreadDirection.clone().multiply(1));
+                player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.BLACK, 1));
+            }
+        } else {
+            Arrow arrow = player.launchProjectile(Arrow.class);
+            arrows.put(arrow, Utils.getTime().plusSeconds(20));
+            ProjectileSource shooter = arrow.getShooter();
+            Vector direction = player.getEyeLocation().getDirection().normalize();
+
+            Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(1));
+            player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.BLACK, 1));
+
+            if (shooter instanceof Player) {
+                arrow.setVelocity(direction.multiply(weaponData.getArrowVelocity()));
+                arrow.setShooter(shooter);
+                arrow.setDamage(weaponData.getDamage());
+                arrow.setGravity(false);
+                arrow.setKnockbackStrength(weaponData.getKnockback());
+            }
         }
+
 
         Location location = player.getLocation();
         for (Player nearbyPlayer : Bukkit.getOnlinePlayers()) {
@@ -329,13 +372,7 @@ public class Weapons implements Listener {
         if (weapon.getCurrentAmmo() < 1) {
             reloadWeapon(player, event.getItem());
         }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                arrow.remove();
-                cancel();
-            }
-        }.runTaskLater(Main.getInstance(), 20 * 20);
+
     }
 
     public void reloadWeapon(Player player, ItemStack weapon) {
