@@ -85,13 +85,11 @@ public class NPC implements CommandExecutor {
     }
 
     public void deleteNPC(Location location, String name) {
-        System.out.println("delete npc: " + name);
         for (Entity entity : location.getWorld().getEntities()) {
             if (entity instanceof Villager) {
                 Villager villager = (Villager) entity;
                 String villager_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING);
                 if (villager_name == null) continue;
-                System.out.println("villager: " + villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING));
                 if (villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING).equalsIgnoreCase(name)) {
                     villager.remove();
                 }

@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.faction.plants.Plant;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.Powerup;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import lombok.SneakyThrows;
@@ -326,30 +327,26 @@ public class Laboratory implements CommandExecutor, Listener {
 
     public void pushTick() {
         Iterator<PlayerLaboratory> iterator = playerLaboratories.iterator();
-        System.out.println("has next: " + iterator.hasNext());
 
         while (iterator.hasNext()) {
             PlayerLaboratory laboratory = iterator.next();
             if (laboratory == null) continue;
-            System.out.println("LABORATORY FOUND");
 
             PlayerData playerData = playerManager.getPlayerData(laboratory.getOwner());
             if (playerData == null || playerData.getFaction() == null) continue;
-            System.out.println("PLAYERDATA FOUND");
 
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             if (factionData == null) continue;
-            System.out.println("FACTIONDATA FOUND");
 
             for (Plant plant : Main.getInstance().gamePlay.plant.getPlants()) {
                 if (plant == null) continue;
                 if (plant.getOwner() == null) continue;
                 if (!plant.getOwner().equalsIgnoreCase(factionData.getName())) continue;
                 System.out.println("PLANT FOR " + plant.getOwner() + " FOUND");
-
-                if (laboratory.getWeedAmount() >= (2 * plant.getMultiplier())) {
-                    laboratory.setWeedAmount(laboratory.getWeedAmount() - (int) (2 * plant.getMultiplier()));
-                    laboratory.setJointAmount(laboratory.getJointAmount() + (1 * plant.getMultiplier()));
+                int amount = playerData.getPlayerPowerUpManager().getPowerUp(Powerup.LABORATORY).getAmount();
+                if (laboratory.getWeedAmount() >= (amount * plant.getMultiplier())) {
+                    laboratory.setWeedAmount(laboratory.getWeedAmount() - (int) (amount * plant.getMultiplier()));
+                    laboratory.setJointAmount(laboratory.getJointAmount() + (((float) amount / 2) * plant.getMultiplier()));
                 } else {
                     laboratory.stop();
                     iterator.remove();

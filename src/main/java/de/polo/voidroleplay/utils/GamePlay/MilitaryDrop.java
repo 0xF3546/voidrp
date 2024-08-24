@@ -104,7 +104,7 @@ public class MilitaryDrop implements Listener {
                 handleQuit(player);
             }
         });
-        GlobalStats.setValue("weapondrop", String.valueOf(topFaction.getId()), true);
+        if (topFaction != null) GlobalStats.setValue("weapondrop", String.valueOf(topFaction.getId()), true);
         return true;
     }
 
@@ -120,10 +120,10 @@ public class MilitaryDrop implements Listener {
 
         System.out.println("Size of Team " + factionData.getName() + ": " + getFactionPlayers(factionData.getName()).size());
 
+        if (getFactionPlayers(playerData.getFaction()).size() > 10) {
+            return false;
+        }
         if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-            if (getFactionPlayers("FBI").size() > 15) {
-                return false;
-            }
             factionManager.sendCustomMessageToFaction("Polizei", "§8[§cMilitärabsturz§8]§f " + player.getName() + " hat das Event betreten!");
             factionManager.sendCustomMessageToFaction("FBI", "§8[§cMilitärabsturz§8]§f " + player.getName() + " hat das Event betreten!");
         } else {

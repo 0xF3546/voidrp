@@ -124,6 +124,16 @@ public class StaatUtil {
     }
 
     @SneakyThrows
+    public void clearPlayerAkte(Player pLayer) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM player_akten WHERE uuid = ?");
+        statement.setString(1, pLayer.getUniqueId().toString());
+        statement.execute();
+        statement.close();
+        connection.close();
+    }
+
+    @SneakyThrows
     public void unarrestPlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (locationManager.getDistanceBetweenCoords(player, "gefaengnis") < 200) {

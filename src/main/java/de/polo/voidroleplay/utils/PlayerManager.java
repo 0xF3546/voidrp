@@ -18,6 +18,7 @@ import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.game.events.HourTickEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.utils.enums.Powerup;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.PlayerTutorial;
@@ -206,6 +207,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setChurch(result.getBoolean("isChurch"));
                 playerData.setBaptized(result.getBoolean("isBaptized"));
                 playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+                playerData.setEventPoints(result.getInt("eventPoints"));
 
                 if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
                     FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
@@ -503,7 +505,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
                 player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                 playerData.setVisum(visum);
-                Main.getInstance().beginnerpass.didQuest(player, 3);
+                Main.getInstance().beginnerpass.didQuest(player, 4);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                 playerData.setCurrentHours(0);
                 if (visum == 2) {
@@ -868,6 +870,7 @@ public class PlayerManager implements Listener, ServerTiming {
     public void addExp(Player player, Integer exp) {
         String characters = "a0b1c2d3e4569";
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        exp = exp + ( exp * (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() / 100));
         if (playerData.getBoostDuration() != null) {
             if (Utils.getTime().isAfter(playerData.getBoostDuration())) {
                 clearExpBoost(player);
