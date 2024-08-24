@@ -261,3 +261,4 @@ commands:
   subteamchat:
     aliases: [stc]
   setmotd:
+  voteshop:
