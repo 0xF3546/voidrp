@@ -16,11 +16,13 @@ import java.sql.Statement;
 public class ContractCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public ContractCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("contract", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -29,9 +31,11 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Syntax-Fehler: /contract [Spieler] [Kopfgeld]");
             return false;
         }
-        if ((playerData.getFaction() != null && playerData.getFaction().equalsIgnoreCase("ICA"))) {
-            player.sendMessage(Prefix.error_nopermission);
-            return false;
+        if (playerData.getFaction() != null) {
+            if (playerData.getFaction().equalsIgnoreCase("ICA")) {
+                player.sendMessage(Prefix.error_nopermission);
+                return false;
+            }
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {

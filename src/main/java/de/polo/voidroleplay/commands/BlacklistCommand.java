@@ -90,9 +90,11 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
                 PlayerData targetPlayerData = playerManager.getPlayerData(player1);
-                if (targetPlayerData.getFaction().equalsIgnoreCase(playerData.getFaction())) {
-                    player.sendMessage(Main.error + "Fraktionsmitglieder können nicht auf die Blacklist.");
-                    return false;
+                if (targetPlayerData.getFaction() != null) {
+                    if (targetPlayerData.getFaction().equalsIgnoreCase(playerData.getFaction())) {
+                        player.sendMessage(Main.error + "Fraktionsmitglieder können nicht auf die Blacklist.");
+                        return false;
+                    }
                 }
                 boolean canDo = true;
                 for (BlacklistData blacklistData : factionManager.getBlacklists()) {
