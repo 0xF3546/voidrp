@@ -9,6 +9,7 @@ import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -73,7 +74,7 @@ public class VoteShopCommand implements CommandExecutor {
                 playerData.save();
             }
         });
-        inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§bVotecase", "§8 ➥ §e10 Votes")) {
+        inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.CHEST, 1, 0, "§bVotecase", "§8 ➥ §e10 Votes")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (playerData.getVotes() < 10) {
@@ -82,6 +83,20 @@ public class VoteShopCommand implements CommandExecutor {
                 }
                 player.sendMessage("§8[§eVoteshop§8]§7 Du hast 1x Votecase eingelöst.");
                 player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.VOTE.getDisplayName()));
+                playerData.setVotes(playerData.getVotes() - 10);
+                playerData.save();
+            }
+        });
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.EXPERIENCE_BOTTLE, 1, 0, "§bEXP-Boost", "§8 ➥ §e10 Votes")) {
+            @SneakyThrows
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getVotes() < 10) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 10 Votes!");
+                    return;
+                }
+                player.sendMessage("§8[§eVoteshop§8]§7 Du hast 1x EXP-Boost eingelöst.");
+                playerManager.addEXPBoost(player, 3);
                 playerData.setVotes(playerData.getVotes() - 10);
                 playerData.save();
             }
