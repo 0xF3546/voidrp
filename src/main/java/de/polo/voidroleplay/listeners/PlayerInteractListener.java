@@ -92,16 +92,18 @@ public class PlayerInteractListener implements Listener {
                 }
                 if (event.getClickedBlock().getType().toString().contains("BANNER")) {
                     RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
-                    if (block.getInfo() == null) return;
-                    if (block.getInfoValue() == null) return;
-                    if (!block.getInfo().equalsIgnoreCase("banner")) return;
-                    InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
-                    inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen")) {
-                        @Override
-                        public void onClick(InventoryClickEvent event) {
+                    if (block != null && block.getInfo() != null && block.getInfoValue() != null) {
 
+                        if (block.getInfo().equalsIgnoreCase("banner")) {
+                            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
+
+                                }
+                            });
                         }
-                    });
+                    }
                 }
                 if (event.getClickedBlock().getType() == Material.OAK_DOOR) {
                     RegisteredBlock rBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
@@ -193,9 +195,12 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
                 RegisteredBlock factionBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                System.out.println("REEG BLOCK: " + factionBlock);
                 if (factionBlock != null) {
                     if (factionBlock.getInfo().equalsIgnoreCase("factionupgrade")) {
+                        System.out.println("INFO: " + factionBlock.getInfo());
                         if (factionBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
+                            System.out.println("INFOVAL: " + factionBlock.getInfoValue());
                             Main.getInstance().gamePlay.factionUpgradeGUI.open(player);
                         }
                     }

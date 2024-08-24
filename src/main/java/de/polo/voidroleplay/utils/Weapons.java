@@ -372,7 +372,6 @@ public class Weapons implements Listener {
         if (weapon.getCurrentAmmo() < 1) {
             reloadWeapon(player, event.getItem());
         }
-
     }
 
     public void reloadWeapon(Player player, ItemStack weapon) {
