@@ -452,16 +452,6 @@ public class PlayerInteractListener implements Listener {
                 itemStack.setAmount(itemStack.getAmount() - 1);
                 if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
                 playerManager.addExp(player, Main.random(50, 100));
-            } else if (event.getItem().getItemMeta().getDisplayName().equals(CaseType.BASIC.getDisplayName())) {
-                ItemStack itemStack = event.getItem();
-                itemStack.setAmount(itemStack.getAmount() - 1);
-                if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
-                new Case(player, CaseType.BASIC);
-            } else if (event.getItem().getItemMeta().getDisplayName().equals(CaseType.DAILY.getDisplayName())) {
-                ItemStack itemStack = event.getItem();
-                itemStack.setAmount(itemStack.getAmount() - 1);
-                if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
-                new Case(player, CaseType.DAILY);
             } else if (event.getItem().getItemMeta().getDisplayName().equals(RoleplayItem.PIPE.getDisplayName())) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
                 inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, RoleplayItem.BOX_WITH_JOINTS.getDisplayName(), "§8 ➥ §aVerpacke 3 Joints in einer Kiste.")) {
@@ -540,6 +530,15 @@ public class PlayerInteractListener implements Listener {
                     if (event.getItem().getItemMeta().getLore().get(0).toString().replace("§8 ➥ ", "").equalsIgnoreCase(weaponData.getName())) {
                         player.getInventory().remove(event.getItem());
                         Main.getInstance().weapons.giveWeaponToPlayer(player, weaponData.getMaterial(), WeaponType.NORMAL);
+                    }
+                }
+            } else {
+                for (CaseType caseType : CaseType.values()) {
+                    if (event.getItem().getItemMeta().getDisplayName().equals(caseType.getDisplayName())) {
+                        ItemStack itemStack = event.getItem();
+                        itemStack.setAmount(itemStack.getAmount() - 1);
+                        if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
+                        new Case(player, caseType);
                     }
                 }
             }
