@@ -5,6 +5,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.housing.House;
+import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.utils.GamePlay.Case;
@@ -38,6 +39,7 @@ import org.bukkit.util.Vector;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerInteractListener implements Listener {
     private final PlayerManager playerManager;
@@ -50,6 +52,8 @@ public class PlayerInteractListener implements Listener {
     private static final Random RANDOM = new Random();
 
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
+
+    private final List<Molotov> molotovs = new ArrayList<>();
 
     public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager, Laboratory laboratory) {
         this.playerManager = playerManager;
@@ -577,34 +581,33 @@ public class PlayerInteractListener implements Listener {
                     for (int z = -radius; z <= radius; z++) {
                         Location fireLocation = location.add(x, 0, z);
 
-                        ItemManager.removeCustomItem(player, RoleplayItem.MOLOTOV, 1); // und ding die main
+                        ItemManager.removeCustomItem(player, RoleplayItem.MOLOTOV, 1);
 
                         Vector direction = player.getLocation().getDirection().normalize();
                         droppedItem.setVelocity(direction.multiply(0.5));
                         droppedItem.setPickupDelay(Integer.MAX_VALUE);
 
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (fireLocation.distance(location) <= radius && RANDOM.nextDouble() <= fireProbability) {
-                                    Block block = fireLocation.getBlock();
-                                    if (block.getType() == Material.AIR && block.getRelative(0, -1, 0).getType().isSolid()) {
-                                        block.setType(Material.FIRE);
-                                        droppedItem.remove();
-
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                block.setType(Material.AIR);
-                                            }
-                                        }.runTaskLater(Main.getInstance(), 20L * 60 * 30);
-                                    }
-                                }
+                        if (fireLocation.distance(location) <= radius && RANDOM.nextDouble() <= fireProbability) {
+                            Block block = fireLocation.getBlock();
+                            if (block.getType() == Material.AIR && block.getRelative(0, -1, 0).getType().isSolid()) {
+                                block.setType(Material.FIRE);
+                                droppedItem.remove();
+                                Molotov molotov = new Molotov(Utils.getTime(), block);
+                                molotovs.add(molotov);
                             }
-                        }.runTaskLater(Main.getInstance(), 20 * 5);
+                        }
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onMinute(MinuteTickEvent event) {
+        List<Molotov> molotvsToRemove = molotovs.stream().filter(m -> m.getThrown().plusMinutes(30).isAfter(Utils.getTime())).collect(Collectors.toList());
+        for (Molotov molotov : molotvsToRemove) {
+            molotov.getBlock().setType(Material.AIR);
+            molotovs.remove(molotov);
         }
     }
 }
