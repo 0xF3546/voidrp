@@ -21,6 +21,7 @@ import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Openable;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,6 +32,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -43,6 +46,8 @@ public class PlayerInteractListener implements Listener {
     private final FactionManager factionManager;
     private final Main.Commands commands;
     private final BlockManager blockManager;
+
+    private static final Random RANDOM = new Random();
 
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
@@ -555,6 +560,51 @@ public class PlayerInteractListener implements Listener {
             }
             ItemManager.removeCustomItem(player, RoleplayItem.MASK, 1);
             Main.getInstance().gamePlay.setMaskState(player, Utils.getTime().plusMinutes(20));
+        }
+
+        Action action = event.getAction();
+        if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
+            if (player.getItemInHand().getType().equals(RoleplayItem.MOLOTOV)) {
+                Location playerLocation = player.getLocation();
+                Location throwLocation = playerLocation.clone().add(player.getLocation().getDirection().multiply(2));
+                Item droppedItem = player.getWorld().dropItem(throwLocation, new ItemStack(Material.FLINT));
+                Location location = droppedItem.getLocation();
+
+                int radius = 5;
+                double fireProbability = 0.5;
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int z = -radius; z <= radius; z++) {
+                        Location fireLocation = location.add(x, 0, z);
+
+                        ItemManager.removeCustomItem(player, RoleplayItem.MOLOTOV, 1); // und ding die main
+
+                        Vector direction = player.getLocation().getDirection().normalize();
+                        droppedItem.setVelocity(direction.multiply(0.5));
+                        droppedItem.setPickupDelay(Integer.MAX_VALUE);
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (fireLocation.distance(location) <= radius && RANDOM.nextDouble() <= fireProbability) {
+                                    Block block = fireLocation.getBlock();
+                                    if (block.getType() == Material.AIR && block.getRelative(0, -1, 0).getType().isSolid()) {
+                                        block.setType(Material.FIRE);
+                                        droppedItem.remove();
+
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                block.setType(Material.AIR);
+                                            }
+                                        }.runTaskLater(Main.getInstance(), 20L * 60 * 30);
+                                    }
+                                }
+                            }
+                        }.runTaskLater(Main.getInstance(), 20 * 5);
+                    }
+                }
+            }
         }
     }
 }
