@@ -41,7 +41,7 @@ public class AnwaltCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (locationManager.getDistanceBetweenCoords(player, "anwalt") < 5) {
+        if (locationManager.getDistanceBetweenCoords(player, "anwalt") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Anwalts.");
             return false;
         }
@@ -53,7 +53,7 @@ public class AnwaltCommand implements CommandExecutor {
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§9Aktenübersicht")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                openPlayerAkte(player, 1);
             }
         });
         inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§9Akten entfernen", Arrays.asList("§8 ➥ §e50% Chance alle Akten entfernt zu bekommen", "§8 ➥ §a20.000$"))) {
