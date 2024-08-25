@@ -498,7 +498,7 @@ public class GamePlay implements Listener {
                     return;
                 }
                 factionData.storage.proceedWeed(amount);
-                factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 " + factionManager.getRankName(factionData.getName(), playerData.getFactionGrade()) + " " + event.getPlayer().getName() + " hat die Verarbeitung von " + amount + " Marihuana im Labor gestartet.");
+                factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 " + factionManager.getRankName(factionData.getName(), playerData.getFactionGrade()) + " " + event.getPlayer().getName() + " hat die Verarbeitung von " + amount + " Pfeifentabak im Labor gestartet.");
             } catch (IllegalArgumentException e) {
                 event.getPlayer().sendMessage(Main.error + "Die Zahl ist nicht numerisch");
                 return;
@@ -606,13 +606,13 @@ public class GamePlay implements Listener {
 
             if (proceedingStarted != null) {
                 Duration duration = Duration.between(proceedingStarted, currentDateTime);
-                long hoursElapsed = duration.toHours();
+                long hoursElapsed = duration.toMinutes();
 
-                if (hoursElapsed >= 2 && proceedingStarted.getMinute() == event.getMinute()) {
+                if (hoursElapsed >= 120) {
                     factionData.storage.setProceedingStarted(null);
                     factionData.storage.setWeed(factionData.storage.getWeed() - factionData.storage.getProceedingAmount());
                     factionData.storage.setJoint(factionData.storage.getJoint() + (factionData.storage.getProceedingAmount() / 2));
-                    factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 Es wurden " + factionData.storage.getProceedingAmount() + " Marihuana zu " + (factionData.storage.getProceedingAmount() / 2) + " Joints verarbeitet.");
+                    factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 Es wurden " + factionData.storage.getProceedingAmount() + " Pfeifentabak zu " + (factionData.storage.getProceedingAmount() / 2) + " Pfeifen verarbeitet.");
                     factionData.storage.setProceedingAmount(0);
                     factionData.storage.save();
                 }

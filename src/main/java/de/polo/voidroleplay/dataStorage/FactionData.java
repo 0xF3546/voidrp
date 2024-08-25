@@ -2,6 +2,7 @@ package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.Getter;
 import lombok.Setter;
@@ -385,7 +386,7 @@ public class FactionData {
                 return false;
             }
             setProceedingAmount(amount);
-            setProceedingStarted(LocalDateTime.now());
+            setProceedingStarted(Utils.getTime());
             return true;
         }
         public int getProceedingAmount() {
