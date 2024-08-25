@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.commands;
 
-import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;

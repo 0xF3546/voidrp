@@ -80,7 +80,6 @@ commands:
   lebensmittellieferant:
   ban:
   unban:
-  setblockvalue:
   car:
     aliases: [vehicle, auto]
   getveh:

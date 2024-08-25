@@ -353,7 +353,6 @@ public final class Main extends JavaPlugin {
         public LebensmittelLieferantCommand lebensmittelLieferantCommand;
         public BanCommand banCommand;
         public UnbanCommand unbanCommand;
-        public SetBlockValueCommand setBlockValueCommand;
         public GetVehCommand getVehCommand;
         public GoToVehCommand goToVehCommand;
         public Navigation navigation;
@@ -539,7 +538,6 @@ public final class Main extends JavaPlugin {
             lebensmittelLieferantCommand = new LebensmittelLieferantCommand(playerManager, locationManager);
             banCommand = new BanCommand(playerManager, adminManager);
             unbanCommand = new UnbanCommand(playerManager, adminManager);
-            setBlockValueCommand = new SetBlockValueCommand(playerManager);
             getVehCommand = new GetVehCommand(playerManager);
             goToVehCommand = new GoToVehCommand(playerManager);
             navigation = new Navigation(playerManager);

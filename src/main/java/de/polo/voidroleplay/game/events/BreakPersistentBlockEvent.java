@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.game.events;
 
-import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import org.bukkit.NamespacedKey;
@@ -23,10 +22,6 @@ public class BreakPersistentBlockEvent extends Event {
 
     public Block getBlock() {
         return block;
-    }
-    public String getPersistentData(PersistentDataType type) {
-        PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
-        return container.get(new NamespacedKey(Main.getInstance(), "value"), type).toString();
     }
 
     public Player getPlayer() {

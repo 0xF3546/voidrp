@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.listeners;
 
-import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.BreakPersistentBlockEvent;
@@ -76,7 +75,6 @@ public class BlockBreakListener implements Listener {
                         event.setCancelled(true);
                         break;
                 }
-                PersistentDataContainer container = new CustomBlockData(event.getBlock(), Main.getInstance());
                 Bukkit.getPluginManager().callEvent(new BreakPersistentBlockEvent(player, event.getBlock()));
             } else {
                 event.setCancelled(true);

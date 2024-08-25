@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.listeners;
 
-import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
@@ -242,7 +241,6 @@ public class PlayerInteractListener implements Listener {
                             }
                             player.sendMessage(Main.error + "Dieser Automat wurde noch nicht registriert.");
                         }
-                        PersistentDataContainer container = new CustomBlockData(event.getClickedBlock(), Main.plugin);
                         RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                         if (block != null && block.getInfo() != null && Objects.equals(block.getInfo(), "house")) {
                             House houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));

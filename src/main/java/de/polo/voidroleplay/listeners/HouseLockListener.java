@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.listeners;
 
-import com.jeff_media.customblockdata.CustomBlockData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;
@@ -29,13 +28,12 @@ public class HouseLockListener implements Listener {
     public void onHouseOpen(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
-        if (block != null) {
+        /*if (block != null) {
             if (block.getType().toString().contains("DOOR") && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 NamespacedKey value = new NamespacedKey(Main.plugin, "value");
                 PersistentDataContainer container = new CustomBlockData(block, Main.plugin);
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 if (!playerData.isAduty()) {
-                    PersistentDataType<?, ?> type = CustomBlockData.getDataType(container, value);
                     if (type == PersistentDataType.INTEGER) {
                         int number = Objects.requireNonNull(container.get(value, PersistentDataType.INTEGER));
                         if (!utils.housing.canPlayerInteract(player, number)) {
@@ -50,6 +48,6 @@ public class HouseLockListener implements Listener {
                     }
                 }
             }
-        }
+        }*/
     }
 }
