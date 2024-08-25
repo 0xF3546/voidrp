@@ -719,7 +719,7 @@ public class GamePlay implements Listener {
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§" + factionData.getPrimaryColor() + factionData.getFullname() + " raiden")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§2cazzia§8]§c Der Staat führt eine Razzia durch!");
+                factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§cRazzia§8]§c Der Staat führt eine Razzia durch!");
 
                 double radius = 5.0;
                 Block nearestDoorBlock = null;
