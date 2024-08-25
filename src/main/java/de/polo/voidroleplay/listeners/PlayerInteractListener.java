@@ -568,7 +568,7 @@ public class PlayerInteractListener implements Listener {
 
         Action action = event.getAction();
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-            if (player.getItemInHand().getType().equals(RoleplayItem.MOLOTOV)) {
+            if (player.getItemInHand().getType().equals(RoleplayItem.MOLOTOV.getMaterial())) {
                 Location playerLocation = player.getLocation();
                 Location throwLocation = playerLocation.clone().add(player.getLocation().getDirection().multiply(2));
                 Item droppedItem = player.getWorld().dropItem(throwLocation, new ItemStack(Material.FLINT));
