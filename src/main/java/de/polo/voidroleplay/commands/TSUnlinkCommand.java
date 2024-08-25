@@ -1,7 +1,5 @@
 package de.polo.voidroleplay.commands;
 
-import com.github.theholywaffle.teamspeak3.api.ClientProperty;
-import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;

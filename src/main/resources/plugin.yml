@@ -122,7 +122,6 @@ commands:
   cancelservice:
   closeservice:
   tslink:
-  verify:
   tsunlink:
   orten:
   gangwar:

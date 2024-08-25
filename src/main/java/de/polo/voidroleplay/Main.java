@@ -211,10 +211,6 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (teamSpeak != null) {
-            teamSpeak.shutdown();
-        }
-
         if (gamePlay != null && gamePlay.activeDrop != null) {
             gamePlay.activeDrop.cleanup();
         }
