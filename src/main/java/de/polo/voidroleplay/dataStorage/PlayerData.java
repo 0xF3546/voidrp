@@ -249,7 +249,8 @@ public class PlayerData {
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            PlayerIllness playerIllness = new PlayerIllness(result.getInt("id"), IllnessType.valueOf(result.getString("illness")));
+            PlayerIllness playerIllness = new PlayerIllness(IllnessType.valueOf(result.getString("illness")));
+            playerIllness.setId(result.getInt(id));
             illnesses.add(playerIllness);
         }
     }

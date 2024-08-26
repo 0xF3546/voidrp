@@ -14,8 +14,7 @@ public class PlayerIllness {
     @Getter
     private final IllnessType illnessType;
 
-    public PlayerIllness(int id, IllnessType illnessType) {
-        this.id = id;
+    public PlayerIllness(IllnessType illnessType) {
         this.illnessType = illnessType;
     }
 }

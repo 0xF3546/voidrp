@@ -195,6 +195,7 @@ public final class Main extends JavaPlugin {
         new EntitySpawnListener();
         new EntityDamageByEntityListener(playerManager);
         new ExplosionListener();
+        new ConsumeListener(playerManager);
     }
 
     public static void registerCommand(String command, CommandExecutor c) {
