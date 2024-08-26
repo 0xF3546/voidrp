@@ -14,10 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -39,7 +36,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteractWithPlayer(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Animals) {
+        if (event.getRightClicked() instanceof Mob) {
             if (!player.getInventory().getItemInMainHand().getType().equals(Material.DEBUG_STICK)) return;
             event.getRightClicked().remove();
         }
