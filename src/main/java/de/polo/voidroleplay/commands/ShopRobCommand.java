@@ -40,7 +40,7 @@ public class ShopRobCommand implements CommandExecutor {
             return false;
         }
         if (ServerManager.serverVariables.get("shoprob") != null) {
-            player.sendMessage(Main.error + "Es ist bereits in Shoprob im gange.");
+            player.sendMessage(Main.error + "Es ist bereits ein Shoprob im Gange.");
             return false;
         }
         if (Main.getInstance().getCooldownManager().isOnCooldown(player, "shoprob")) {
