@@ -38,6 +38,8 @@ public enum RoleplayItem {
     SMARTPHONE("§eHandy", Material.IRON_NUGGET, true),
     HEAVY_BULLETPROOF("§7Schwere Schutzweste", Material.IRON_CHESTPLATE, false),
     MOLOTOV("§7Molotov-Cocktail", Material.FLINT, true),
+    FEUERWEHR_AXT("§7Feuerwehraxt", Material.IRON_AXE, false),
+    SPRUNGTUCH("§7Sprungtuch", Material.STICK, false),
     FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false);
 
     private final String displayName;

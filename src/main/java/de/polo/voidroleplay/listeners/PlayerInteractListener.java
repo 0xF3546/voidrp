@@ -599,6 +599,29 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
+
+            if (player.getItemInHand().getType().equals(RoleplayItem.FEUERLÖSCHER.getMaterial())) {
+                Vector direction = player.getLocation().getDirection().normalize();
+                Location startLocation = player.getEyeLocation();
+
+                int particleCount = 20;
+                double offsetX = 0.1;
+                double offsetY = 0.1;
+                double offsetZ = 0.1;
+
+                Particle.DustOptions dustOptions = new Particle.DustOptions(org.bukkit.Color.WHITE, 1.0F);
+
+                for (int i = 1; i <= 5; i++) {
+                    Location particleLocation = startLocation.clone().add(direction.clone().multiply(i));
+
+                    player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, particleCount, offsetX, offsetY, offsetZ, 0.0, dustOptions);
+
+                    Block block = particleLocation.getBlock();
+                    if (block.getType().equals(Material.FIRE)) {
+                        block.setType(Material.AIR);
+                    }
+                }
+            }
         }
     }
 

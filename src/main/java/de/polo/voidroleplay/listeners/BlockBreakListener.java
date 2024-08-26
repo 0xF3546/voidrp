@@ -2,6 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.events.BreakPersistentBlockEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.utils.*;
@@ -9,8 +10,11 @@ import de.polo.voidroleplay.utils.enums.Farmer;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Openable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -77,7 +81,36 @@ public class BlockBreakListener implements Listener {
                 }
                 Bukkit.getPluginManager().callEvent(new BreakPersistentBlockEvent(player, event.getBlock()));
             } else {
+
                 event.setCancelled(true);
+
+                if (player.getItemInHand().getType() == Material.IRON_AXE && player.getItemInHand().getItemMeta().getDisplayName() == RoleplayItem.FEUERWEHR_AXT.getDisplayName()) {
+                    Location playerLocation = player.getLocation();
+                    Block block = event.getBlock();
+
+                    if (block.getType() != Material.OAK_DOOR) return;
+
+                    RegisteredBlock registeredBlock = Main.getInstance().blockManager.getBlockAtLocation(block.getLocation());
+
+                    if (registeredBlock != null) {
+                        return;
+                    }
+
+                    BlockState state = block.getState();
+                    if (state.getBlockData() instanceof Openable) {
+                        Openable openable = (Openable) state.getBlockData();
+                        if (openable.isOpen()) {
+                            player.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
+                        } else {
+                            openable.setOpen(true);
+                            state.setBlockData(openable);
+                            state.update();
+                            player.sendMessage(Prefix.MAIN + "Die Tür wurde geöffnet.");
+                        }
+                    } else {
+                        player.sendMessage(Prefix.ERROR + "Dies ist keine Tür.");
+                    }
+                }
             }
         }
     }

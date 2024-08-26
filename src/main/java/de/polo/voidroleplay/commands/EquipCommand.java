@@ -283,7 +283,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getBank() < 75) {
-                        player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Iboprofen zu kaufen.");
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Iboprofen zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 75) {
@@ -298,7 +298,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getBank() < 75) {
-                        player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Schmerzmittel zu kaufen.");
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Schmerzmittel zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 75) {
@@ -309,6 +309,41 @@ public class EquipCommand implements CommandExecutor, Listener {
                     player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName()));
                 }
             });
+
+            if (playerData.getSubTeam() == null) return;
+
+            if (playerData.getSubTeam().getName().equalsIgnoreCase("Feuerwehr")) {
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.FEUERLÖSCHER.getMaterial(), 1, 0, RoleplayItem.FEUERLÖSCHER.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (factionData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Schmerzmittel zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        playerData.removeBankMoney(100, "Feuerlöscher-Kauf");
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.FEUERLÖSCHER.getMaterial(), 1, 0, RoleplayItem.FEUERLÖSCHER.getDisplayName()));
+                    }
+                });
+                inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (factionData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Schmerzmittel zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        playerData.removeBankMoney(100, "Feuerlöscher-Kauf");
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName()));
+                    }
+                });
+            }
         }
         if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("cuffs") + "$"))) {
