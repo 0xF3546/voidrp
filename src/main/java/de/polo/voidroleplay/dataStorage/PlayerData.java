@@ -1,15 +1,14 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.extra.PlayerIllness;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.PlayerQuest;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.PlayerPetManager;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.enums.EXPType;
-import de.polo.voidroleplay.utils.enums.Gender;
-import de.polo.voidroleplay.utils.enums.Workstation;
+import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
 import de.polo.voidroleplay.utils.playerUtils.PlayerPowerUpManager;
 import lombok.Getter;
@@ -46,12 +45,14 @@ public class PlayerData {
 
     private final List<PlayerQuest> quests = new ArrayList<>();
     private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
+    private final List<PlayerIllness> illnesses = new ArrayList<>();
 
     public PlayerData(Player player) {
         this.player = player;
         this.playerPetManager = new PlayerPetManager(this, player);
         this.playerFFAStatsManager = new PlayerFFAStatsManager(player);
         this.playerPowerUpManager = new PlayerPowerUpManager(player, this);
+        loadIllnesses();
     }
 
     private int id;
@@ -207,6 +208,54 @@ public class PlayerData {
 
     public String getRang() {
         return rang;
+    }
+
+    @SneakyThrows
+    public void addIllness(PlayerIllness playerIllness, boolean save) {
+        illnesses.add(playerIllness);
+        if (save) {
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO player_illness (uuid, illness) VALUES (?, ?)");
+            statement.setString(1, player.getUniqueId().toString());
+            statement.setString(2, playerIllness.getIllnessType().name());
+            statement.execute();
+            ResultSet result = statement.getGeneratedKeys();
+            if (result.next()) {
+                playerIllness.setId(result.getInt(1));
+            }
+            statement.close();
+            connection.close();
+        }
+    }
+
+    @SneakyThrows
+    public void removeIllness(PlayerIllness playerIllness, boolean save) {
+        illnesses.remove(playerIllness);
+        if (save) {
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM player_illness WHERE id = ?");
+            statement.setInt(1, playerIllness.getId());
+            statement.execute();
+            statement.close();
+            connection.close();
+        }
+    }
+
+    @SneakyThrows
+    private void loadIllnesses() {
+        illnesses.clear();
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_illness WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            PlayerIllness playerIllness = new PlayerIllness(result.getInt("id"), IllnessType.valueOf(result.getString("illness")));
+            illnesses.add(playerIllness);
+        }
+    }
+
+    public PlayerIllness getIllness(IllnessType illnessType) {
+        return illnesses.stream().filter(i -> i.getIllnessType().equals(illnessType)).findFirst().orElse(null);
     }
 
     public void setVisum(int visum) {
