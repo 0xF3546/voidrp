@@ -14,7 +14,7 @@ public class MySQL {
     public MySQL() {
         loadDBData();
     }
-    static final String url = "jdbc:mysql://45.13.227.171/minecraft?autoReconnect=true&useSSL=false";
+    static final String url = "jdbc:mysql://91.212.121.218/minecraft?autoReconnect=true&useSSL=false";
     static String user = null;
     static String password = null;
     static int port = 3306;
