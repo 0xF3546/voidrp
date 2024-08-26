@@ -13,13 +13,10 @@ import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.enums.EXPType;
-import de.polo.voidroleplay.utils.enums.Gender;
+import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.game.events.HourTickEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
-import de.polo.voidroleplay.utils.enums.Powerup;
-import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.PlayerTutorial;
 import lombok.SneakyThrows;
@@ -1143,6 +1140,22 @@ public class PlayerManager implements Listener, ServerTiming {
                     public void onClick(InventoryClickEvent event) {
                         Main.getInstance().utils.staatUtil.checkBloodGroup(player, targetplayer);
                         player.closeInventory();
+                    }
+                });
+                inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§cUntersuchen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        player.closeInventory();
+                        player.sendMessage("§7   ===§8[§cUntersuchung§8]§7===");
+                        for (IllnessType illnessType : IllnessType.values()) {
+                            if (targetplayerData.getIllness(illnessType) != null) {
+                                player.sendMessage("§8 ➦ §6" + illnessType.getName() + "§8: §cPositiv");
+                            } else {
+                                player.sendMessage("§8 ➦ §6" + illnessType.getName() + "§8: §aNegativ");
+                            }
+                        }
+
+                        targetplayer.sendMessage(Prefix.MAIN + player.getName() + " hat dich untersucht.");
                     }
                 });
                 break;
