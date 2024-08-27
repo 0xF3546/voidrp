@@ -776,6 +776,8 @@ public class PhoneUtils implements Listener {
             }
             Player target = Bukkit.getPlayer(event.getMessage());
             if (target == null) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Spieler nicht gefunden.");
+                openTransaction(event.getPlayer());
                 event.end();
                 return;
             }
@@ -927,6 +929,12 @@ public class PhoneUtils implements Listener {
 
             }
         });
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.PAPER, 1, 0, "§aKaufen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
 
         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
             @Override
@@ -953,7 +961,7 @@ public class PhoneUtils implements Listener {
             }
         });
         float amount = playerData.getVariable("wallet::transaction::coins") != null ? playerData.getVariable("wallet::transaction::coins") : 0;
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§7Anzahl angeben", "§8 ➥ §a" + amount + "$")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.PAPER, 1, 0, "§7Anzahl angeben", "§8 ➥ §a" + amount + "$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.sendMessage("§8[§eWallet§8]§7 Gib nun den Coins der Spieler erhalten soll.");

@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class PlayerData {
     @Getter
@@ -257,6 +258,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void addIllness(PlayerIllness playerIllness, boolean save) {
+        if (illnesses.stream().anyMatch(pi -> pi.getIllnessType().equals(playerIllness.getIllnessType()))) return;
         illnesses.add(playerIllness);
         if (save) {
             Connection connection = Main.getInstance().mySQL.getConnection();
@@ -866,6 +868,7 @@ public class PlayerData {
         }
         statement.setInt(15, getId());
         statement.executeUpdate();
+        statement.close();
     }
 
     public String getSpawn() {
