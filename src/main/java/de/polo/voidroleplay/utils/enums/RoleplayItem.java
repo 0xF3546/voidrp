@@ -40,6 +40,8 @@ public enum RoleplayItem {
     MOLOTOV("§7Molotov-Cocktail", Material.FLINT, true),
     FEUERWEHR_AXT("§7Feuerwehraxt", Material.IRON_AXE, false),
     SPRUNGTUCH("§7Sprungtuch", Material.STICK, false),
+    SPRENGSTOFF("§7Sprengstoff", Material.TNT, true),
+    SPLITTERGRANATE("§7Splittergranate", Material.FIRE_CHARGE, true),
     FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false);
 
     private final String displayName;

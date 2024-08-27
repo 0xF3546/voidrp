@@ -408,7 +408,7 @@ public class EquipCommand implements CommandExecutor, Listener {
 
                     }
                     if (factionData.getBank() < priceForFaction) {
-                        player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um einen Tazer zu kaufen.");
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Tazer zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
@@ -438,7 +438,7 @@ public class EquipCommand implements CommandExecutor, Listener {
 
                         }
                         if (factionData.getBank() < priceForFaction) {
-                            player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
                             return;
                         }
                         if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
@@ -465,7 +465,7 @@ public class EquipCommand implements CommandExecutor, Listener {
 
                         }
                         if (factionData.getBank() < priceForFaction) {
-                            player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
                             return;
                         }
                         if (playerData.getBank() < priceForFaction) {
@@ -478,7 +478,38 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName()));
                     }
                 });
-
+            }
+            if (playerData.getFaction().equalsIgnoreCase("Terroristen")) {
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (factionData.getBank() < 2500) {
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < 2500) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        playerData.removeBankMoney(2500, "Sprengstoff-Kauf");
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName()));
+                    }
+                });
+                inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.SPLITTERGRANATE.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (factionData.getBank() < 1500) {
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < 1500) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPLITTERGRANATE.getMaterial(), 1, 0, RoleplayItem.SPLITTERGRANATE.getDisplayName()));
+                    }
+                });
             }
         }
     }

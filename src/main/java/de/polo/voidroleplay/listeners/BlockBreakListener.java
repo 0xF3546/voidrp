@@ -82,8 +82,6 @@ public class BlockBreakListener implements Listener {
                 Bukkit.getPluginManager().callEvent(new BreakPersistentBlockEvent(player, event.getBlock()));
             } else {
 
-                event.setCancelled(true);
-
                 if (player.getItemInHand().getType() == Material.IRON_AXE && player.getItemInHand().getItemMeta().getDisplayName() == RoleplayItem.FEUERWEHR_AXT.getDisplayName()) {
                     Location playerLocation = player.getLocation();
                     Block block = event.getBlock();
@@ -112,6 +110,9 @@ public class BlockBreakListener implements Listener {
                     }
                 }
             }
+
+            event.setCancelled(true);
+
         }
     }
 
