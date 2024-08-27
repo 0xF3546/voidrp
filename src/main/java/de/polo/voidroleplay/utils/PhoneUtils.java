@@ -768,6 +768,34 @@ public class PhoneUtils implements Listener {
 
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) throws SQLException {
+        if (event.getSubmitTo().equalsIgnoreCase("wallet::transaction::player")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            Player target = Bukkit.getPlayer(event.getMessage());
+            if (target == null) {
+                event.end();
+                return;
+            }
+            event.getPlayerData().setVariable("wallet::transaction::player", target);
+            openTransaction(event.getPlayer());
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("wallet::transaction::coins")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            try {
+                event.getPlayerData().setVariable("wallet::transaction::coins", Float.parseFloat(event.getMessage()));
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
+            }
+            openTransaction(event.getPlayer());
+        }
+
         if (event.getSubmitTo().equalsIgnoreCase("dating::description")) {
             if (event.isCancel()) {
                 event.end();
@@ -877,7 +905,7 @@ public class PhoneUtils implements Listener {
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§7Coins senden")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                openTransaction(player);
             }
         });
 
@@ -910,6 +938,45 @@ public class PhoneUtils implements Listener {
 
     private void openFarmManager(Player player) {
 
+    }
+
+    private void openTransaction(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eWallet-Überweisung");
+        Player target = playerData.getVariable("wallet::transaction::toPlayer");
+        inventoryManager.setItem(new CustomItem(12, target == null ? ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§7Spieler angeben") : ItemManager.createItemHead(target.getUniqueId().toString(), 1, 0, "§7" + target.getName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.sendMessage("§8[§eWallet§8]§7 Gib nun den Spieler an, an welchen die Coins gehen.");
+                playerData.setVariable("chatblock", "wallet::transaction::player");
+                player.closeInventory();
+            }
+        });
+        float amount = playerData.getVariable("wallet::transaction::coins") != null ? playerData.getVariable("wallet::transaction::coins") : 0;
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§7Anzahl angeben", "§8 ➥ §a" + amount + "$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.sendMessage("§8[§eWallet§8]§7 Gib nun den Coins der Spieler erhalten soll.");
+                playerData.setVariable("chatblock", "wallet::transaction::coins");
+                player.closeInventory();
+            }
+        });
+
+        if (target != null && amount >= 1) {
+            inventoryManager.setItem(new CustomItem(27, ItemManager.createItem(Material.EMERALD, 1, 0, "§aTransaktion ausführen", Arrays.asList("§8 ➥ §e" + target.getName(), "§8 ➥ §a" + amount + "$"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    PlayerData targetData = playerManager.getPlayerData(target);
+                    if (playerData.getCrypto() < amount) {
+                        return;
+                    }
+                    targetData.addCrypto(amount, "Überweisung " + player.getName());
+                    playerData.removeCrypto(amount, "Überweisung " + target.getName());
+                    player.sendMessage("§8[§eWallet§8]§a Du hast " + target.getName() + " " + amount + " Coins überwiesen.");
+                    target.sendMessage("§8[§eWallet§8]§a " + player.getName() + " hat dir " + amount + " Coins überwiesen.");
+                }
+            });
+        }
     }
 
     @SneakyThrows
