@@ -39,6 +39,7 @@ public class PlayerVoteListener implements Listener {
             PlayerData playerData = playerManager.getPlayerData(player);
             player.sendMessage(Main.prefix + "§6§lDanke§7 für deinen Vote!");
             playerManager.addExp(player, Main.random(30, 50));
+            votes.putIfAbsent(player.getUniqueId(), 1);
             if (votes.get(player.getUniqueId()) >= 2) {
                 return;
             }
