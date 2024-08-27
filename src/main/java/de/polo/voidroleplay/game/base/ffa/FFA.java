@@ -323,6 +323,12 @@ public class FFA implements CommandExecutor {
         FFASpawn spawn = getRandomSpawn(lobby);
         player.teleport(spawn.getLocation());
         equipPlayer(player);
+        if (player.getKiller() == null) return;
+        heal(player.getKiller());
+    }
+
+    private void heal(Player player) {
+        player.setHealth(player.getMaxHealth());
     }
 
     private Collection<Player> getPlayersInLobby(FFALobby lobby) {
