@@ -205,6 +205,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setBaptized(result.getBoolean("isBaptized"));
                 playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
                 playerData.setEventPoints(result.getInt("eventPoints"));
+                playerData.setCrypto(result.getFloat("crypto"));
 
                 if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
                     FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());

@@ -234,6 +234,7 @@ public class PhoneUtils implements Listener {
                     playerData.setVariable("chatblock", "checktransactions");
                     player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
                 }
+
                 @SneakyThrows
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
@@ -767,6 +768,34 @@ public class PhoneUtils implements Listener {
 
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) throws SQLException {
+        if (event.getSubmitTo().equalsIgnoreCase("wallet::transaction::player")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            Player target = Bukkit.getPlayer(event.getMessage());
+            if (target == null) {
+                event.end();
+                return;
+            }
+            event.getPlayerData().setVariable("wallet::transaction::player", target);
+            openTransaction(event.getPlayer());
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("wallet::transaction::coins")) {
+            if (event.isCancel()) {
+                event.end();
+                event.sendCancelMessage();
+                return;
+            }
+            try {
+                event.getPlayerData().setVariable("wallet::transaction::coins", Float.parseFloat(event.getMessage()));
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
+            }
+            openTransaction(event.getPlayer());
+        }
+
         if (event.getSubmitTo().equalsIgnoreCase("dating::description")) {
             if (event.isCancel()) {
                 event.end();
@@ -849,12 +878,192 @@ public class PhoneUtils implements Listener {
                 openDatingApp(player);
             }
         });
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Collections.singletonList("§8 ➥ §a" + playerData.getCrypto() + " Coins"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoWallet(player);
+            }
+        });
         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openPhone(player);
             }
         });
+    }
+
+    private void openCryptoWallet(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eCrypto Wallet");
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Collections.singletonList("§8 ➥ §a" + playerData.getCrypto() + " Coins"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§7Coins senden")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openTransaction(player);
+            }
+        });
+
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PAPER, 1, 0, "§7Transaktionen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoTransactions(player, 1, null);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§7Cryptofarmen verwalten")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openFarmManager(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.PAPER, 1, 0, "§cVerkaufen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openInternet(player);
+            }
+        });
+    }
+
+    private void openFarmManager(Player player) {
+
+    }
+
+    private void openTransaction(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eWallet-Überweisung");
+        Player target = playerData.getVariable("wallet::transaction::toPlayer");
+        inventoryManager.setItem(new CustomItem(12, target == null ? ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§7Spieler angeben") : ItemManager.createItemHead(target.getUniqueId().toString(), 1, 0, "§7" + target.getName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.sendMessage("§8[§eWallet§8]§7 Gib nun den Spieler an, an welchen die Coins gehen.");
+                playerData.setVariable("chatblock", "wallet::transaction::player");
+                player.closeInventory();
+            }
+        });
+        float amount = playerData.getVariable("wallet::transaction::coins") != null ? playerData.getVariable("wallet::transaction::coins") : 0;
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§7Anzahl angeben", "§8 ➥ §a" + amount + "$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.sendMessage("§8[§eWallet§8]§7 Gib nun den Coins der Spieler erhalten soll.");
+                playerData.setVariable("chatblock", "wallet::transaction::coins");
+                player.closeInventory();
+            }
+        });
+
+        if (target != null && amount >= 1) {
+            inventoryManager.setItem(new CustomItem(27, ItemManager.createItem(Material.EMERALD, 1, 0, "§aTransaktion ausführen", Arrays.asList("§8 ➥ §e" + target.getName(), "§8 ➥ §a" + amount + "$"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    PlayerData targetData = playerManager.getPlayerData(target);
+                    if (playerData.getCrypto() < amount) {
+                        return;
+                    }
+                    targetData.addCrypto(amount, "Überweisung " + player.getName());
+                    playerData.removeCrypto(amount, "Überweisung " + target.getName());
+                    player.sendMessage("§8[§eWallet§8]§a Du hast " + target.getName() + " " + amount + " Coins überwiesen.");
+                    target.sendMessage("§8[§eWallet§8]§a " + player.getName() + " hat dir " + amount + " Coins überwiesen.");
+                }
+            });
+        }
+    }
+
+    @SneakyThrows
+    public void openCryptoTransactions(Player player, int page, String search) {
+        if (page <= 0) return;
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = null;
+        if (search == null) {
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `crypto_transactions` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY created DESC");
+        } else {
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `crypto_transactions` WHERE LOWER(`reason`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY created DESC");
+        }
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §bTransaktionen §8- §bSeite§8:§7 " + page, true, true);
+        int i = 0;
+        int rows = 0;
+        while (result.next()) {
+            rows++;
+            if (result.getRow() >= (18 * (page - 1)) && result.getRow() <= (18 * page)) {
+                if (result.getFloat("amount") >= 0) {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §aEinzahlung", Arrays.asList("§8 ➥ §7Höhe§8:§a +" + result.getFloat("amount") + "$", "§8 ➥ §7Grund§8:§6 " + result.getString("reason"), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
+                } else {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§8» §cAuszahlung", Arrays.asList("§8 ➥ §7Höhe§8:§c -" + result.getFloat("amount") + "$", "§8 ➥ §7Grund§8:§6 " + result.getString("reason"), "§8 ➥ §7Datum§8:§6 " + result.getString("formatted_timestamp")))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+
+                        }
+                    });
+                }
+                i++;
+            }
+        }
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoTransactions(player, page + 1, search);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoTransactions(player, page - 1, null);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoWallet(player);
+            }
+        });
+        if (search == null) {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Transaktion suchen...")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    playerData.setVariable("chatblock", "checktransactions");
+                    player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
+                }
+
+                @SneakyThrows
+                public void onChatSubmit(SubmitChatEvent event) {
+                    if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
+                        return;
+                    }
+                    if (event.isCancel()) {
+                        event.end();
+                        event.sendCancelMessage();
+                        return;
+                    }
+                    openTransactions(event.getPlayer(), 1, event.getMessage());
+                    event.end();
+                }
+            });
+        } else {
+            inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche löschen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openCryptoTransactions(player, page, null);
+                }
+            });
+        }
+        result.close();
     }
 
     @SneakyThrows
@@ -1041,14 +1250,16 @@ public class PhoneUtils implements Listener {
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(swiperUuid));
             OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(UUID.fromString(targetUuid));
-                if (player.isOnline()) {
-                    Player onPlayer = Bukkit.getPlayer(player.getUniqueId());
-                    if (onPlayer != null) onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + targetPlayer.getName() + "!");
-                }
+            if (player.isOnline()) {
+                Player onPlayer = Bukkit.getPlayer(player.getUniqueId());
+                if (onPlayer != null)
+                    onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + targetPlayer.getName() + "!");
+            }
 
             if (targetPlayer.isOnline()) {
                 Player onPlayer = Bukkit.getPlayer(targetPlayer.getUniqueId());
-                if (onPlayer != null) onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + player.getName() + "!");
+                if (onPlayer != null)
+                    onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + player.getName() + "!");
             }
         }
         statement.close();
