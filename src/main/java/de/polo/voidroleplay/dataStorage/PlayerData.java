@@ -866,6 +866,7 @@ public class PlayerData {
         }
         statement.setInt(15, getId());
         statement.executeUpdate();
+        statement.close();
     }
 
     public String getSpawn() {

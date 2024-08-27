@@ -207,6 +207,11 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setEventPoints(result.getInt("eventPoints"));
                 playerData.setCrypto(result.getFloat("crypto"));
 
+                if (result.getString("faction") != null) {
+                    playerData.setFaction(result.getString("faction"));
+                    playerData.setFactionGrade(result.getInt("faction_grade"));
+                }
+
                 if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
                     FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
                     for (SubTeam subTeam : Main.getInstance().factionManager.getSubTeams(factionData.getId())) {
@@ -302,10 +307,6 @@ public class PlayerManager implements Listener, ServerTiming {
 
                 player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
                 player.setLevel(result.getInt("level"));
-                if (result.getString("faction") != null) {
-                    playerData.setFaction(result.getString("faction"));
-                    playerData.setFactionGrade(result.getInt("faction_grade"));
-                }
 
                 playerData.addonXP.setFishingXP(result.getInt("fishingXP"));
                 playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
