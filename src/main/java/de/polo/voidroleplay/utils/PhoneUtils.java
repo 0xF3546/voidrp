@@ -849,10 +849,27 @@ public class PhoneUtils implements Listener {
                 openDatingApp(player);
             }
         });
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Collections.singletonList("§8 ➥ §a" + playerData.getCrypto() + " Coins"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoWallet(player);
+            }
+        });
         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openPhone(player);
+            }
+        });
+    }
+
+    private void openCryptoWallet(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eCrypto Wallet");
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Collections.singletonList("§8 ➥ §a" + playerData.getCrypto() + " Coins"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
             }
         });
     }
