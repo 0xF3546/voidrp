@@ -73,6 +73,7 @@ public class DeathUtils {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setCanInteract(false);
         playerData.setDead(false);
+        playerData.setCuffed(false);
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
         adminManager.send_message( player.getName() + " wurde wiederbelebt.", null);
