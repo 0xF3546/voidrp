@@ -919,9 +919,9 @@ public class PhoneUtils implements Listener {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = null;
         if (search == null) {
-            result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `crypto_transactions` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY created DESC");
         } else {
-            result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE LOWER(`reason`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
+            result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `crypto_transactions` WHERE LOWER(`reason`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY created DESC");
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §bTransaktionen §8- §bSeite§8:§7 " + page, true, true);
         int i = 0;
