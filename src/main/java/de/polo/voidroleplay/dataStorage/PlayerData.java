@@ -55,6 +55,10 @@ public class PlayerData {
         loadIllnesses();
     }
 
+    @Getter
+    @Setter
+    private float crypto;
+
     private int id;
     private UUID uuid;
     private String firstname;
@@ -208,6 +212,47 @@ public class PlayerData {
 
     public String getRang() {
         return rang;
+    }
+
+    @SneakyThrows
+    public void addCrypto(float amount, String reason) {
+        setCrypto(crypto + amount);
+
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE players SET crypto = ? WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        statement.execute();
+        statement.close();
+
+        PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO crypto_transactions (uuid, amount, reason) VALUES (?, ?, ?)");
+        insertStatement.setString(1, player.getUniqueId().toString());
+        insertStatement.setFloat(2, amount);
+        insertStatement.setString(3, reason);
+        insertStatement.execute();
+        insertStatement.close();
+        connection.close();
+    }
+
+    @SneakyThrows
+    public void removeCrypto(float amount, String reason) {
+        setCrypto(crypto - amount);
+
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE players SET crypto = ? WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        statement.execute();
+        statement.close();
+
+        /*float reversedAmount = 0;
+        reversedAmount *= amount;*/
+
+        PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO crypto_transactions (uuid, amount, reason) VALUES (?, ?, ?)");
+        insertStatement.setString(1, player.getUniqueId().toString());
+        insertStatement.setFloat(2, -amount);
+        insertStatement.setString(3, reason);
+        insertStatement.execute();
+        insertStatement.close();
+        connection.close();
     }
 
     @SneakyThrows
