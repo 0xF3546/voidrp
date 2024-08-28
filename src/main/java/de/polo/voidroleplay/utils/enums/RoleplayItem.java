@@ -41,7 +41,8 @@ public enum RoleplayItem {
     FEUERWEHR_AXT("§7Feuerwehraxt", Material.IRON_AXE, false),
     SPRUNGTUCH("§7Sprungtuch", Material.STICK, false),
     SPRENGSTOFF("§7Sprengstoff", Material.TNT, true),
-    SPLITTERGRANATE("§7Splittergranate", Material.FIRE_CHARGE, true),
+    GRANATE("§7Granate", Material.FIRE_CHARGE, true),
+    SPRENGGUERTEL("§7Sprenggürtel", Material.LEATHER_CHESTPLATE, true),
     FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false);
 
     private final String displayName;

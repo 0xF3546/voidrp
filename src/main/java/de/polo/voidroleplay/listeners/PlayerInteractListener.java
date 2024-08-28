@@ -54,6 +54,8 @@ public class PlayerInteractListener implements Listener {
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
     private final List<Molotov> molotovs = new ArrayList<>();
+    private final List<Block> sprungtuecher = new ArrayList<>();
+    private final List<Grenade> activeGrenades = new ArrayList<>();
 
     public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager, Laboratory laboratory) {
         this.playerManager = playerManager;
@@ -63,6 +65,7 @@ public class PlayerInteractListener implements Listener {
         this.factionManager = factionManager;
         this.laboratory = laboratory;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::checkGrenades, 0L, 20L);
     }
 
     @EventHandler
@@ -623,6 +626,30 @@ public class PlayerInteractListener implements Listener {
                 }
             }
         }
+
+        if (action == Action.RIGHT_CLICK_BLOCK) {
+            Block clickedBlock = event.getClickedBlock();
+
+            if (clickedBlock != null) {
+                if (event.getItem() != null && event.getItem().getType() == Material.STICK) {
+                    if (event.getBlockFace() == BlockFace.UP) {
+                        Block blockAbove = clickedBlock.getRelative(0, 1, 0);
+
+                        if (clickedBlock.getType() == Material.SLIME_BLOCK) {
+                            clickedBlock.setType(Material.AIR);
+                            sprungtuecher.remove(clickedBlock);
+                        } else if (blockAbove.getType() == Material.AIR) {
+                            blockAbove.setType(Material.SLIME_BLOCK);
+                            sprungtuecher.add(blockAbove);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (action == Action.RIGHT_CLICK_AIR) {
+            throwGrenade(player);
+        }
     }
 
     @EventHandler
@@ -631,6 +658,34 @@ public class PlayerInteractListener implements Listener {
         for (Molotov molotov : molotvsToRemove) {
             molotov.getBlock().setType(Material.AIR);
             molotovs.remove(molotov);
+        }
+    }
+
+    private void throwGrenade(Player player) {
+        ItemStack grenadeItem = new ItemStack(Material.FIRE_CHARGE);
+        Item droppedItem = player.getWorld().dropItem(player.getEyeLocation(), grenadeItem);
+        droppedItem.setVelocity(player.getLocation().getDirection().multiply(1.5));
+        droppedItem.setPickupDelay(Integer.MAX_VALUE);
+
+        activeGrenades.add(new Grenade(LocalDateTime.now(), droppedItem));
+    }
+
+    private void checkGrenades() {
+        Iterator<Grenade> iterator = activeGrenades.iterator();
+
+        while (iterator.hasNext()) {
+            Grenade grenade = iterator.next();
+            LocalDateTime thrownTime = grenade.getThrownTime();
+            LocalDateTime now = LocalDateTime.now();
+
+            if (thrownTime.plusSeconds(2).isBefore(now)) {
+                Location loc = grenade.getDroppedItem().getLocation();
+                Bukkit.getLogger().info("Grenade exploding at: " + now);
+
+                loc.getWorld().createExplosion(loc, 4.0f, false, false);
+                grenade.getDroppedItem().remove();
+                iterator.remove();
+            }
         }
     }
 }
