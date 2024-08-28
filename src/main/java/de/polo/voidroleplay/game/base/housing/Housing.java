@@ -4,6 +4,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.base.crypto.Miner;
+import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
@@ -17,6 +18,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -26,7 +29,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-public class Housing implements CommandExecutor {
+public class Housing implements CommandExecutor, Listener {
     public static final Map<Integer, House> houseDataMap = new HashMap<>();
     private final PlayerManager playerManager;
     private final BlockManager blockManager;
@@ -298,6 +301,16 @@ public class Housing implements CommandExecutor {
         });
     }
 
+    public void doCryptoTick() {
+        for (House house : houseDataMap.values()) {
+            if (!house.isServerRoom()) continue;
+            if (house.getActiveMiner().isEmpty()) continue;
+            for (Miner miner : house.getActiveMiner()) {
+                miner.doTick();
+            }
+        }
+    }
+
     private void openCryptoRoom(Player player, House house) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Crypto");
         int i = 0;
@@ -337,5 +350,11 @@ public class Housing implements CommandExecutor {
                 openCryptoRoom(player, house);
             }
         });
+    }
+
+    @EventHandler
+    public void onMinute(MinuteTickEvent event) {
+        if (event.getMinute() % 90 != 0) return;
+        doCryptoTick();
     }
 }
