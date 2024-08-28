@@ -7,7 +7,6 @@ import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.PlayerPetManager;
-import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
 import de.polo.voidroleplay.utils.playerUtils.PlayerPowerUpManager;
@@ -18,7 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
@@ -28,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 public class PlayerData {
     @Getter
@@ -42,6 +39,8 @@ public class PlayerData {
 
     @Getter
     private Player player;
+    @Setter
+    @Getter
     private String spawn;
 
     private final List<PlayerQuest> quests = new ArrayList<>();
@@ -60,15 +59,34 @@ public class PlayerData {
     @Setter
     private float crypto;
 
+    @Setter
+    @Getter
     private int id;
+    @Setter
+    @Getter
     private UUID uuid;
+    @Getter
+    @Setter
     private String firstname;
+    @Getter
+    @Setter
     private String lastname;
+
+    @Getter
+    @Setter
     private int bargeld;
     private int bank;
+    @Getter
+    @Setter
     private String rang;
+    @Getter
+    @Setter
     private int visum;
+    @Getter
+    @Setter
     private int permlevel;
+    @Getter
+    @Setter
     private String faction;
     private int faction_grade;
 
@@ -79,73 +97,144 @@ public class PlayerData {
     private final HashMap<String, Object> variables = new HashMap<>();
     private final HashMap<String, Integer> integer_variables = new HashMap<>();
     private final HashMap<String, Location> locationVariables = new HashMap<>();
-    private final HashMap<String, Inventory> inventoryVariables = new HashMap<>();
     private final HashMap<String, Integer> skillLevel = new HashMap<>();
     private final HashMap<String, Integer> skillExp = new HashMap<>();
     private final HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
+    @Setter
     private boolean canInteract = true;
     private boolean isJailed;
+    @Setter
+    @Getter
     private int hafteinheiten = 0;
     @Getter
     @Setter
     private int jailParole = 0;
     private boolean isAduty = false;
+    @Setter
+    @Getter
     private int level;
+    @Setter
+    @Getter
     private int exp;
+    @Setter
+    @Getter
     private int needed_exp;
     private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
     private final HashMap<String, BossBar> bossBars = new HashMap<>();
     private boolean isDead = false;
     private boolean isStabilized = false;
     private boolean isHitmanDead = false;
+    @Setter
+    @Getter
     private int deathTime = 300;
     @Getter
     @Setter
     private boolean isFFADead = false;
+    @Setter
+    @Getter
     private int number = 0;
     private boolean isFlightmode = false;
     private boolean isDuty = false;
+    @Setter
+    @Getter
     private Gender gender;
+    @Setter
+    @Getter
     private Date birthday;
+    @Setter
+    @Getter
     private int houseSlot;
+    @Setter
+    @Getter
     private LocalDateTime rankDuration;
+    @Setter
+    @Getter
     private LocalDateTime boostDuration;
     @Getter
     @Setter
     private LocalDateTime lastContract;
+    @Setter
+    @Getter
     private Location deathLocation;
+    @Setter
+    @Getter
     private String secondaryTeam;
+    @Setter
+    @Getter
     private String teamSpeakUID;
+    @Setter
+    @Getter
     private String job;
+    @Setter
+    @Getter
     private int hours;
+    @Setter
+    @Getter
     private int minutes;
+    @Setter
+    @Getter
     private Integer business;
+    @Setter
+    @Getter
     private int business_grade;
+    @Setter
+    @Getter
     private int warns = 0;
+    @Setter
+    @Getter
     private Integer forumID;
+    @Setter
+    @Getter
     private HashMap<String, String> relationShip = new HashMap<>();
+    @Setter
+    @Getter
     private String bloodType;
+    @Setter
     private boolean hasAnwalt;
     private boolean isAFK = false;
+    @Setter
+    @Getter
     private int Coins = 0;
 
+    @Getter
     private boolean cuffed;
+    @Setter
+    @Getter
     private PlayerLaboratory laboratory;
+    @Setter
+    @Getter
     private Company company;
+    @Setter
+    @Getter
     private CompanyRole companyRole;
+    @Setter
+    @Getter
     private boolean hudEnabled;
+    @Setter
+    @Getter
     private LocalDateTime dailyBonusRedeemed;
+    @Setter
+    @Getter
     private LocalDateTime lastPayDay;
 
     @Getter
     @Setter
     private int payday;
 
+    @Setter
+    @Getter
     private int currentHours;
+    @Setter
+    @Getter
     private int atmBlown;
 
+    @Setter
     private boolean receivedBonus;
+    @Setter
+    @Getter
     private int subGroupId;
+    @Setter
+    @Getter
     private int subGroupGrade;
     @Getter
     @Setter
@@ -158,6 +247,7 @@ public class PlayerData {
     @Getter
     @Setter
     private int karma;
+    @Setter
     private List<PlayerWorkstation> workstations = new ArrayList<>();
 
     @Getter
@@ -175,30 +265,6 @@ public class PlayerData {
     public PlayerData() {
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setBargeld(Integer bargeld) {
-        this.bargeld = bargeld;
-    }
-
-    public Integer getBargeld() {
-        return bargeld;
-    }
-
     public void setBank(Integer bank) {
         this.bank = bank;
     }
@@ -207,16 +273,8 @@ public class PlayerData {
         return bank;
     }
 
-    public void setRang(String rang) {
-        this.rang = rang;
-    }
-
-    public String getRang() {
-        return rang;
-    }
-
     @SneakyThrows
-    public void addCrypto(float amount, String reason) {
+    public void addCrypto(float amount, String reason, boolean silent) {
         setCrypto(crypto + amount);
 
         Connection connection = Main.getInstance().mySQL.getConnection();
@@ -232,10 +290,12 @@ public class PlayerData {
         insertStatement.execute();
         insertStatement.close();
         connection.close();
+
+        if (!silent) player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: +" + amount + " Coins (" + reason + ")");
     }
 
     @SneakyThrows
-    public void removeCrypto(float amount, String reason) {
+    public void removeCrypto(float amount, String reason, boolean silent) {
         setCrypto(crypto - amount);
 
         Connection connection = Main.getInstance().mySQL.getConnection();
@@ -254,6 +314,8 @@ public class PlayerData {
         insertStatement.execute();
         insertStatement.close();
         connection.close();
+
+        if (!silent) player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: -" + amount + " Coins (" + reason + ")");
     }
 
     @SneakyThrows
@@ -306,30 +368,6 @@ public class PlayerData {
         return illnesses.stream().filter(i -> i.getIllnessType().equals(illnessType)).findFirst().orElse(null);
     }
 
-    public void setVisum(int visum) {
-        this.visum = visum;
-    }
-
-    public int getVisum() {
-        return visum;
-    }
-
-    public void setPermlevel(int permlevel) {
-        this.permlevel = permlevel;
-    }
-
-    public int getPermlevel() {
-        return permlevel;
-    }
-
-    public void setFaction(String faction) {
-        this.faction = faction;
-    }
-
-    public String getFaction() {
-        return faction;
-    }
-
     public void setFactionGrade(Integer faction_grade) {
         this.faction_grade = faction_grade;
     }
@@ -354,24 +392,12 @@ public class PlayerData {
         return canInteract;
     }
 
-    public void setCanInteract(boolean canInteract) {
-        this.canInteract = canInteract;
-    }
-
     public boolean isJailed() {
         return isJailed;
     }
 
     public void setJailed(boolean isJailed) {
         this.isJailed = isJailed;
-    }
-
-    public int getHafteinheiten() {
-        return hafteinheiten;
-    }
-
-    public void setHafteinheiten(int hafteinheiten) {
-        this.hafteinheiten = hafteinheiten;
     }
 
     public boolean isAduty() {
@@ -397,30 +423,6 @@ public class PlayerData {
 
     public int getIntVariable(String variable) {
         return integer_variables.get(variable);
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public int getExp() {
-        return exp;
-    }
-
-    public void setExp(int exp) {
-        this.exp = exp;
-    }
-
-    public int getNeeded_exp() {
-        return needed_exp;
-    }
-
-    public void setNeeded_exp(int needed_exp) {
-        this.needed_exp = needed_exp;
     }
 
     public BossBar getBossBar(String identifier) {
@@ -467,64 +469,12 @@ public class PlayerData {
         scoreboards.remove(scoreboardName);
     }
 
-    public Integer getSkillLevel(String type) {
-        return skillLevel.get(type);
-    }
-
-    public void setSkillLevel(String type, Integer skillLevel) {
-        if (this.skillLevel.get(type) != null) {
-            this.skillLevel.replace(type, skillLevel);
-        } else {
-            this.skillLevel.put(type, skillLevel);
-        }
-    }
-
-    public Integer getSkillExp(String type) {
-        return skillExp.get(type);
-    }
-
-    public void setSkillExp(String type, Integer skillLevel) {
-        if (this.skillExp.get(type) != null) {
-            this.skillExp.replace(type, skillLevel);
-        } else {
-            this.skillExp.put(type, skillLevel);
-        }
-    }
-
-    public Integer getSkillNeeded_Exp(String type) {
-        return skillNeeded_Exp.get(type);
-    }
-
-    public void setSkillNeeded_Exp(String type, Integer skillLevel) {
-        if (this.skillNeeded_Exp.get(type) != null) {
-            this.skillNeeded_Exp.replace(type, skillLevel);
-        } else {
-            this.skillNeeded_Exp.put(type, skillLevel);
-        }
-    }
-
     public boolean isDead() {
         return isDead;
     }
 
     public void setDead(boolean dead) {
         isDead = dead;
-    }
-
-    public int getDeathTime() {
-        return deathTime;
-    }
-
-    public void setDeathTime(int deathTime) {
-        this.deathTime = deathTime;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
     }
 
     public boolean isFlightmode() {
@@ -544,103 +494,6 @@ public class PlayerData {
     }
 
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getHouseSlot() {
-        return houseSlot;
-    }
-
-    public void setHouseSlot(int houseSlot) {
-        this.houseSlot = houseSlot;
-    }
-
-
-    public LocalDateTime getBoostDuration() {
-        return boostDuration;
-    }
-
-    public void setBoostDuration(LocalDateTime boostDuration) {
-        this.boostDuration = boostDuration;
-    }
-
-    public Location getDeathLocation() {
-        return deathLocation;
-    }
-
-    public void setDeathLocation(Location deathLocation) {
-        this.deathLocation = deathLocation;
-    }
-
-    public String getSecondaryTeam() {
-        return secondaryTeam;
-    }
-
-    public void setSecondaryTeam(String secondaryTeam) {
-        this.secondaryTeam = secondaryTeam;
-    }
-
-    public String getTeamSpeakUID() {
-        return teamSpeakUID;
-    }
-
-    public void setTeamSpeakUID(String teamSpeakUID) {
-        this.teamSpeakUID = teamSpeakUID;
-    }
-
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
-    public int getHours() {
-        return hours;
-    }
-
-    public void setHours(int hours) {
-        this.hours = hours;
-    }
-
-    public int getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(int minutes) {
-        this.minutes = minutes;
-    }
-
-    public Integer getBusiness() {
-        return business;
-    }
-
-    public void setBusiness(Integer business) {
-        this.business = business;
-    }
-
-    public int getBusiness_grade() {
-        return business_grade;
-    }
-
-    public void setBusiness_grade(int business_grade) {
-        this.business_grade = business_grade;
-    }
-
-    public HashMap<String, String> getRelationShip() {
-        return relationShip;
-    }
-
-    public void setRelationShip(HashMap<String, String> relationShip) {
-        this.relationShip = relationShip;
-    }
-
     public void setLocationVariable(String variable, Location value) {
         if (this.locationVariables.get(variable) != null) {
             this.locationVariables.replace(variable, value);
@@ -653,64 +506,9 @@ public class PlayerData {
         return locationVariables.get(variable);
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public void setInventoryVariable(String variable, Inventory value) {
-        if (this.locationVariables.get(variable) != null) {
-            this.inventoryVariables.replace(variable, value);
-        } else {
-            this.inventoryVariables.put(variable, value);
-        }
-    }
-
-    public Inventory getInventoryVariable(String variable) {
-        return inventoryVariables.get(variable);
-    }
-
-    public int getWarns() {
-        return warns;
-    }
-
-    public void setWarns(int warns) {
-        this.warns = warns;
-    }
-
-    public String getBloodType() {
-        return bloodType;
-    }
-
-    public void setBloodType(String bloodType) {
-        this.bloodType = bloodType;
-    }
-
-    public LocalDateTime getRankDuration() {
-        return rankDuration;
-    }
-
-    public void setRankDuration(LocalDateTime rankDuration) {
-        this.rankDuration = rankDuration;
-    }
-
-    public Integer getForumID() {
-        return forumID;
-    }
-
-    public void setForumID(Integer forumID) {
-        this.forumID = forumID;
-    }
 
     public boolean hasAnwalt() {
         return hasAnwalt;
-    }
-
-    public void setHasAnwalt(boolean hasAnwalt) {
-        this.hasAnwalt = hasAnwalt;
     }
 
     public boolean isAFK() {
@@ -721,19 +519,7 @@ public class PlayerData {
         isAFK = AFK;
     }
 
-    public int getCoins() {
-        return Coins;
-    }
-
-    public void setCoins(int coins) {
-        Coins = coins;
-    }
-
     public final AddonXP addonXP = new AddonXP();
-
-    public boolean isCuffed() {
-        return cuffed;
-    }
 
     public void setCuffed(boolean cuffed) {
         this.cuffed = cuffed;
@@ -749,14 +535,6 @@ public class PlayerData {
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.SLOW);
         }
-    }
-
-    public PlayerLaboratory getLaboratory() {
-        return laboratory;
-    }
-
-    public void setLaboratory(PlayerLaboratory laboratory) {
-        this.laboratory = laboratory;
     }
 
     @SneakyThrows
@@ -871,84 +649,8 @@ public class PlayerData {
         statement.close();
     }
 
-    public String getSpawn() {
-        return spawn;
-    }
-
-    public void setSpawn(String spawn) {
-        this.spawn = spawn;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public boolean isHudEnabled() {
-        return hudEnabled;
-    }
-
-    public void setHudEnabled(boolean hudEnabled) {
-        this.hudEnabled = hudEnabled;
-    }
-
-    public LocalDateTime getDailyBonusRedeemed() {
-        return dailyBonusRedeemed;
-    }
-
-    public void setDailyBonusRedeemed(LocalDateTime dailyBonusRedeemed) {
-        this.dailyBonusRedeemed = dailyBonusRedeemed;
-    }
-
-    public LocalDateTime getLastPayDay() {
-        return lastPayDay;
-    }
-
-    public void setLastPayDay(LocalDateTime lastPayDay) {
-        this.lastPayDay = lastPayDay;
-    }
-
-    public int getCurrentHours() {
-        return currentHours;
-    }
-
-    public void setCurrentHours(int currentHours) {
-        this.currentHours = currentHours;
-    }
-
-    public int getAtmBlown() {
-        return atmBlown;
-    }
-
-    public void setAtmBlown(int atmBlown) {
-        this.atmBlown = atmBlown;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public CompanyRole getCompanyRole() {
-        return companyRole;
-    }
-
-    public void setCompanyRole(CompanyRole companyRole) {
-        this.companyRole = companyRole;
-    }
-
     public boolean hasReceivedBonus() {
         return receivedBonus;
-    }
-
-    public void setReceivedBonus(boolean receivedBonus) {
-        this.receivedBonus = receivedBonus;
     }
 
     public boolean isHitmanDead() {
@@ -965,30 +667,6 @@ public class PlayerData {
 
     public void setStabilized(boolean stabilized) {
         isStabilized = stabilized;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public int getSubGroupId() {
-        return subGroupId;
-    }
-
-    public void setSubGroupId(int subGroupId) {
-        this.subGroupId = subGroupId;
-    }
-
-    public int getSubGroupGrade() {
-        return subGroupGrade;
-    }
-
-    public void setSubGroupGrade(int subGroupGrade) {
-        this.subGroupGrade = subGroupGrade;
     }
 
     public SubGroup getSubGroup() {
@@ -1008,9 +686,6 @@ public class PlayerData {
         return null;
     }
 
-    public void setWorkstations(List<PlayerWorkstation> workstations) {
-        this.workstations = workstations;
-    }
     public void addWorkstation(PlayerWorkstation workstation) {
         workstations.add(workstation);
     }

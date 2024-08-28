@@ -110,7 +110,7 @@ public final class Main extends JavaPlugin {
         adminManager = new AdminManager(playerManager, scoreboardAPI);
         factionManager = new FactionManager(playerManager);
         blockManager = new BlockManager(mySQL);
-        housing = new Housing(playerManager, blockManager);
+        housing = new Housing(playerManager, blockManager, locationManager);
         utils = new Utils(playerManager, adminManager, factionManager, locationManager, housing, new Navigation(playerManager), companyManager);
         vehicles = new Vehicles(playerManager ,locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
@@ -150,6 +150,7 @@ public final class Main extends JavaPlugin {
         try {
             Statement statement = mySQL.getStatement();
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
+            statement.execute("DELETE FROM money_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM phone_messages WHERE datum < DATE_SUB(NOW(), INTERVAL 14 DAY)");
 
             Shop.loadShopItems();

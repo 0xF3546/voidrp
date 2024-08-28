@@ -3,6 +3,7 @@ package de.polo.voidroleplay.utils.GamePlay;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.base.crypto.Crypto;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.ffa.FFA;
 import de.polo.voidroleplay.game.faction.alliance.Alliance;
@@ -72,6 +73,9 @@ public class GamePlay implements Listener {
 
     private StaatsbankRob staatsbankRob = null;
     private boolean isStaatsbankRobBlocked = false;
+
+    @Getter
+    private final Crypto crypto;
     @SneakyThrows
     public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager, NPC npc) {
         this.playerManager = playerManager;
@@ -88,6 +92,7 @@ public class GamePlay implements Listener {
         alliance = new Alliance(playerManager, factionManager, utils);
         militaryDrop = new MilitaryDrop(playerManager, factionManager, locationManager);
         ffa = new FFA(playerManager, locationManager);
+        crypto = new Crypto();
         this.npc = npc;
         Statement statement = mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM dealer");

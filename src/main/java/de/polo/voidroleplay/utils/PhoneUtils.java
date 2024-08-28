@@ -3,6 +3,8 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.dataStorage.PhoneCall;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.crypto.Miner;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.Gender;
@@ -897,7 +899,7 @@ public class PhoneUtils implements Listener {
     private void openCryptoWallet(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eCrypto Wallet");
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Collections.singletonList("§8 ➥ §a" + playerData.getCrypto() + " Coins"))) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Arrays.asList("§8 ➥ §a" + playerData.getCrypto() + " Coins", "§8 ➥ §ePreis§8:§7 " + Main.getInstance().gamePlay.getCrypto().getPrice() + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -945,7 +947,20 @@ public class PhoneUtils implements Listener {
     }
 
     private void openFarmManager(Player player) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eFarmen");
+        int i = 0;
+        for (House house : Main.getInstance().housing.getHouses(player)) {
+            if (!house.isServerRoom()) return;
+            for (Miner miner : house.getActiveMiner()) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Miner #" + miner.getId(), "§8 ➥ §7Haus " + house.getNumber())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
 
+                    }
+                });
+                i++;
+            }
+        }
     }
 
     private void openTransaction(Player player) {
@@ -978,8 +993,8 @@ public class PhoneUtils implements Listener {
                     if (playerData.getCrypto() < amount) {
                         return;
                     }
-                    targetData.addCrypto(amount, "Überweisung " + player.getName());
-                    playerData.removeCrypto(amount, "Überweisung " + target.getName());
+                    targetData.addCrypto(amount, "Überweisung von " + player.getName(), false);
+                    playerData.removeCrypto(amount, "Überweisung an " + target.getName(), false);
                     player.sendMessage("§8[§eWallet§8]§a Du hast " + target.getName() + " " + amount + " Coins überwiesen.");
                     target.sendMessage("§8[§eWallet§8]§a " + player.getName() + " hat dir " + amount + " Coins überwiesen.");
                 }

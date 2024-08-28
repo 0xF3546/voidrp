@@ -32,7 +32,7 @@ public class RegisterHouseCommand implements CommandExecutor {
                     player.sendMessage(Main.gamedesign_prefix + "Haus " + args[0] + " wurde mit Preis " + args[1] + " angelegt.");
                     ResultSet result = statement.getGeneratedKeys();
                     if (result.next()) {
-                        House house = new House();
+                        House house = new House(Integer.parseInt(args[0]), 2, 7);
                         house.setId(result.getInt(1));
                         house.setNumber(Integer.parseInt(args[0]));
                         house.setPrice(Integer.parseInt(args[1]));

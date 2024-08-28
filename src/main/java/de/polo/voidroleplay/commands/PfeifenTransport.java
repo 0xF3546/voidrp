@@ -78,6 +78,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         int i = 0;
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Pfeifentransport");
         for (FactionData factionData : factionManager.getFactions()) {
+            if (!factionData.isActive()) continue;
             if (factionData.isBadFrak() || factionData.getName().equalsIgnoreCase("ICA")) {
                 int amountDelivered = 0;
                 if (transports.get(factionData.getName()) != null) amountDelivered = transports.get(factionData.getName());

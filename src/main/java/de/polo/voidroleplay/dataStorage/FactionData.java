@@ -55,6 +55,10 @@ public class FactionData {
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
 
+    @Getter
+    @Setter
+    private boolean active;
+
     @SneakyThrows
     public void loadReasons() {
         Connection connection = Main.getInstance().mySQL.getConnection();
