@@ -5,6 +5,8 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.utils.BlockManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -35,12 +37,15 @@ public class Housing {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
         while (locs.next()) {
-            House houseData = new House();
+            House houseData = new House(locs.getInt("maxServer"), locs.getInt("maxMiner"));
             houseData.setId(locs.getInt(1));
             houseData.setOwner(locs.getString(2));
             houseData.setNumber(locs.getInt(3));
             houseData.setPrice(locs.getInt(4));
             houseData.setTotalMoney(locs.getInt(7));
+            houseData.setMiner(locs.getInt("miner"));
+            houseData.setServer(locs.getInt("server"));
+            houseData.setServerRoom(locs.getBoolean("hasServerRoom"));
 
             JSONObject object = new JSONObject(locs.getString(5));
             HashMap<String, Integer> map = new HashMap<>();

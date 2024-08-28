@@ -1,5 +1,12 @@
 package de.polo.voidroleplay.game.base.housing;
 
+import de.polo.voidroleplay.Main;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.HashMap;
 
 public class House {
@@ -12,6 +19,42 @@ public class House {
     private int totalMoney;
     private int mieterSlots;
     private int totalSlots;
+
+    @Getter
+    @Setter
+    private boolean serverRoom;
+
+    @Getter
+    @Setter
+    private int server;
+
+    @Getter
+    private final int maxServer;
+
+    @Getter
+    @Setter
+    private int miner;
+
+    @Getter
+    private final int maxMiner;
+
+    public House(int maxServer, int maxMiner) {
+        this.maxServer = maxServer;
+        this.maxMiner = maxMiner;
+    }
+
+    @SneakyThrows
+    public void save() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE housing SET miner = ?, server = ?, hasServerRoom = ? WHERE id = ?");
+        statement.setInt(1, miner);
+        statement.setInt(server, 2);
+        statement.setBoolean(3, serverRoom);
+        statement.setInt(4, id);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    }
 
     public int getId() {
         return id;
