@@ -3,6 +3,7 @@ package de.polo.voidroleplay.game.base.housing;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
+import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
@@ -204,7 +205,7 @@ public class Housing implements CommandExecutor {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
         int i = 0;
         for (House house : getHouses(player)) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7"  + house.getMiner() + "§8/§7" + house.getMaxMiner(),  "§8 ➥ §eServer§8: §7"  + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7"  + house.getTotalSlots()))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getMiner() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openHouseAddonMenu(player, house);
@@ -248,6 +249,7 @@ public class Housing implements CommandExecutor {
                 }
                 playerData.removeMoney(serverRoomPrice, "Kauf Miner (" + house.getNumber() + ")");
                 house.setMiner(house.getMiner() + 1);
+                house.addMiner(new Miner());
                 house.save();
             }
         });
@@ -255,6 +257,8 @@ public class Housing implements CommandExecutor {
         inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Server" + (house.getServer() >= house.getMaxServer() ? " §8[§cKein Platz§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverPrice) + "$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
+                player.sendMessage(Prefix.ERROR + "Aktuell haben wir keine Server zu verkaufen.");
+                return;/*
                 if (house.isServerRoom()) {
                     player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
                     return;
@@ -266,7 +270,69 @@ public class Housing implements CommandExecutor {
                 }
                 playerData.removeMoney(serverRoomPrice, "Kauf Server (" + house.getNumber() + ")");
                 house.setServer(house.getServer() + 1);
-                house.save();
+                house.save();*/
+            }
+        });
+    }
+
+    public void openHouseServerRoom(Player player, House house) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ")");
+        int active = 0;
+        float kWh = 0;
+        for (Miner miner : house.getActiveMiner()) {
+            if (miner.isActive()) active++;
+            kWh += miner.getKWh();
+        }
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aAktiv§8: §7" + active + "§8/§7" + house.getMiner(), "§8 ➥ §bVerbrauch§8: §7" + kWh + " kWh"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoRoom(player, house);
+            }
+        });
+
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.CHEST, 1, 0, "§7Server")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+    }
+
+    private void openCryptoRoom(Player player, House house) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Crypto");
+        int i = 0;
+        for (Miner miner : house.getActiveMiner()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aAktiv§8: " + (miner.isActive() ? "§aAktiv" : "§cInaktiv"), "§8 ➥ §bVerbrauch§8: §7" + miner.getKWh() + " kWh", "§8 ➥ §eCoins§8: §7" + miner.getCoins()))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openCryptoMiner(player, house, miner);
+                }
+            });
+            i++;
+        }
+    }
+
+    private void openCryptoMiner(Player player, House house, Miner miner) {
+        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Miner " + miner.getId());
+        inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.PAPER, 1, 0, miner.isActive() ? "§aAktiv" : "§cInaktiv")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                miner.setActive(!miner.isActive());
+                openCryptoMiner(player, house, miner);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(6, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + miner.getCoins() + " Coins")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerManager.getPlayerData(player).addCrypto(miner.getCoins(), "Ertrag Miner " + miner.getId());
+                miner.setCoins(0);
+                openCryptoMiner(player, house, miner);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoRoom(player, house);
             }
         });
     }

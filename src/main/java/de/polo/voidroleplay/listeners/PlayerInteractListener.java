@@ -284,8 +284,16 @@ public class PlayerInteractListener implements Listener {
                                                 s.setPlayer(player.getUniqueId().toString());
                                                 s.setHouseNumber(houseData.getNumber());
                                                 s.create();
-                                            };
+                                            }
+                                            ;
                                             s.open(player);
+                                        }
+                                    });
+                                    inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§7Server-Raum" + (!houseData.isServerRoom() ? " §8[§cNicht ausgebaut§8]" : ""))) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            if (!houseData.isServerRoom()) return;
+                                            Main.getInstance().housing.openHouseServerRoom(player, houseData);
                                         }
                                     });
                                 } else {
@@ -558,7 +566,7 @@ public class PlayerInteractListener implements Listener {
 
 
         if (event.getItem() == null) return;
-        if (event.getItem().getType().equals(RoleplayItem.MASK.getMaterial()) && Objects.requireNonNull(event.getItem().getItemMeta()).getDisplayName().equalsIgnoreCase(RoleplayItem.MASK.getDisplayName())){
+        if (event.getItem().getType().equals(RoleplayItem.MASK.getMaterial()) && Objects.requireNonNull(event.getItem().getItemMeta()).getDisplayName().equalsIgnoreCase(RoleplayItem.MASK.getDisplayName())) {
             if (ItemManager.getCustomItemCount(player, RoleplayItem.MASK) < 1) {
                 return;
             }

@@ -1,13 +1,17 @@
 package de.polo.voidroleplay.game.base.housing;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.crypto.Miner;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
 
 public class House {
     private int id;
@@ -36,6 +40,10 @@ public class House {
     private int miner;
 
     @Getter
+    @Setter
+    private List<Miner> activeMiner;
+
+    @Getter
     private final int maxMiner;
 
     public House(int maxServer, int maxMiner) {
@@ -54,6 +62,19 @@ public class House {
         statement.executeUpdate();
         statement.close();
         connection.close();
+    }
+
+    @SneakyThrows
+    public void addMiner(Miner miner) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO crypto_miner (houseNumber) VALUE (?)", Statement.RETURN_GENERATED_KEYS);
+        statement.setInt(1, number);
+        statement.execute();
+        ResultSet result = statement.getGeneratedKeys();
+        if (result.next()) {
+            miner.setId(result.getInt(1));
+        }
+        activeMiner.add(miner);
     }
 
     public int getId() {
