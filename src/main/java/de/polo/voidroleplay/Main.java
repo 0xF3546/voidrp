@@ -150,6 +150,7 @@ public final class Main extends JavaPlugin {
         try {
             Statement statement = mySQL.getStatement();
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
+            statement.execute("DELETE FROM money_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM phone_messages WHERE datum < DATE_SUB(NOW(), INTERVAL 14 DAY)");
 
             Shop.loadShopItems();
