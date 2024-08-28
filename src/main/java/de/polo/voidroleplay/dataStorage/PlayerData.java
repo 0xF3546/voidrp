@@ -216,7 +216,7 @@ public class PlayerData {
     }
 
     @SneakyThrows
-    public void addCrypto(float amount, String reason) {
+    public void addCrypto(float amount, String reason, boolean silent) {
         setCrypto(crypto + amount);
 
         Connection connection = Main.getInstance().mySQL.getConnection();
@@ -232,10 +232,12 @@ public class PlayerData {
         insertStatement.execute();
         insertStatement.close();
         connection.close();
+
+        if (!silent) player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: +" + amount + " Coins (" + reason + ")");
     }
 
     @SneakyThrows
-    public void removeCrypto(float amount, String reason) {
+    public void removeCrypto(float amount, String reason, boolean silent) {
         setCrypto(crypto - amount);
 
         Connection connection = Main.getInstance().mySQL.getConnection();
@@ -254,6 +256,8 @@ public class PlayerData {
         insertStatement.execute();
         insertStatement.close();
         connection.close();
+
+        if (!silent) player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: -" + amount + " Coins (" + reason + ")");
     }
 
     @SneakyThrows

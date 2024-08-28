@@ -325,7 +325,7 @@ public class Housing implements CommandExecutor {
         inventoryManager.setItem(new CustomItem(6, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + miner.getCoins() + " Coins")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                playerManager.getPlayerData(player).addCrypto(miner.getCoins(), "Ertrag Miner " + miner.getId());
+                playerManager.getPlayerData(player).addCrypto(miner.getCoins(), "Ertrag Miner " + miner.getId(), false);
                 miner.setCoins(0);
                 miner.save();
                 openCryptoMiner(player, house, miner);

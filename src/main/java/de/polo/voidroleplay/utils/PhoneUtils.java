@@ -978,8 +978,8 @@ public class PhoneUtils implements Listener {
                     if (playerData.getCrypto() < amount) {
                         return;
                     }
-                    targetData.addCrypto(amount, "Überweisung " + player.getName());
-                    playerData.removeCrypto(amount, "Überweisung " + target.getName());
+                    targetData.addCrypto(amount, "Überweisung von " + player.getName(), false);
+                    playerData.removeCrypto(amount, "Überweisung an " + target.getName(), false);
                     player.sendMessage("§8[§eWallet§8]§a Du hast " + target.getName() + " " + amount + " Coins überwiesen.");
                     target.sendMessage("§8[§eWallet§8]§a " + player.getName() + " hat dir " + amount + " Coins überwiesen.");
                 }
