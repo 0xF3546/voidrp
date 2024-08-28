@@ -657,6 +657,7 @@ public class PlayerInteractListener implements Listener {
 
         if (action == Action.RIGHT_CLICK_AIR) {
             throwGrenade(player);
+            ItemManager.removeCustomItem(player, RoleplayItem.GRANATE, 1);
         }
     }
 
