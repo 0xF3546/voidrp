@@ -360,7 +360,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 });
             }
             if (playerData.getSubTeam().getName().equalsIgnoreCase("Notfallmedizin")) {
-                inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
+                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (factionData.getBank() < 100) {
