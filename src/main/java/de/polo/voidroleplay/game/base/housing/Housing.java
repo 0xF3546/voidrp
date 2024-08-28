@@ -207,7 +207,7 @@ public class Housing implements CommandExecutor, Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
         int i = 0;
         for (House house : getHouses(player)) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getMiner() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (!house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getMiner() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openHouseAddonMenu(player, house);
@@ -222,7 +222,7 @@ public class Housing implements CommandExecutor, Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
         int serverRoomPrice = ServerManager.getPayout("serverroom");
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.CHEST, 1, 0, "§6Server-Raum" + (house.isServerRoom() ? " §8[§cGekauft§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverRoomPrice) + "$")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§6Server-Raum" + (house.isServerRoom() ? " §8[§cGekauft§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverRoomPrice) + "$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (house.isServerRoom()) return;
@@ -231,6 +231,7 @@ public class Housing implements CommandExecutor, Listener {
                     player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                     return;
                 }
+                player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Server-Raum\" gekauft.");
                 playerData.removeMoney(serverRoomPrice, "Kauf Server-Raum (" + house.getNumber() + ")");
                 house.setServerRoom(true);
                 house.save();
@@ -240,7 +241,7 @@ public class Housing implements CommandExecutor, Listener {
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Crypto-Miner" + (house.getMiner() >= house.getMaxMiner() ? " §8[§cKein Platz§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(minerPrice) + "$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (house.isServerRoom()) {
+                if (!house.isServerRoom()) {
                     player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
                     return;
                 }
@@ -249,6 +250,7 @@ public class Housing implements CommandExecutor, Listener {
                     player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                     return;
                 }
+                player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Crypto-Miner\" gekauft.");
                 playerData.removeMoney(serverRoomPrice, "Kauf Miner (" + house.getNumber() + ")");
                 house.setMiner(house.getMiner() + 1);
                 house.addMiner(new Miner());
@@ -261,7 +263,7 @@ public class Housing implements CommandExecutor, Listener {
             public void onClick(InventoryClickEvent event) {
                 player.sendMessage(Prefix.ERROR + "Aktuell haben wir keine Server zu verkaufen.");
                 return;/*
-                if (house.isServerRoom()) {
+                if (!house.isServerRoom()) {
                     player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
                     return;
                 }
@@ -281,9 +283,11 @@ public class Housing implements CommandExecutor, Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ")");
         int active = 0;
         float kWh = 0;
-        for (Miner miner : house.getActiveMiner()) {
-            if (miner.isActive()) active++;
-            kWh += miner.getKWh();
+        if (!house.getActiveMiner().isEmpty()) {
+            for (Miner miner : house.getActiveMiner()) {
+                if (miner.isActive()) active++;
+                kWh += miner.getKWh();
+            }
         }
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aAktiv§8: §7" + active + "§8/§7" + house.getMiner(), "§8 ➥ §bVerbrauch§8: §7" + kWh + " kWh"))) {
             @Override
