@@ -61,6 +61,7 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
             for (FactionData factionData : factionManager.getFactions()) {
+                if (!factionData.isActive()) continue;
                 suggestions.add(factionData.getName());
             }
 
