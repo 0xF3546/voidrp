@@ -318,6 +318,7 @@ public class Housing implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 miner.setActive(!miner.isActive());
+                miner.save();
                 openCryptoMiner(player, house, miner);
             }
         });
@@ -326,6 +327,7 @@ public class Housing implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
                 playerManager.getPlayerData(player).addCrypto(miner.getCoins(), "Ertrag Miner " + miner.getId());
                 miner.setCoins(0);
+                miner.save();
                 openCryptoMiner(player, house, miner);
             }
         });
