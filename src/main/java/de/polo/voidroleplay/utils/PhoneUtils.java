@@ -3,6 +3,8 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.dataStorage.PhoneCall;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.crypto.Miner;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.Gender;
@@ -945,7 +947,20 @@ public class PhoneUtils implements Listener {
     }
 
     private void openFarmManager(Player player) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eFarmen");
+        int i = 0;
+        for (House house : Main.getInstance().housing.getHouses(player)) {
+            if (!house.isServerRoom()) return;
+            for (Miner miner : house.getActiveMiner()) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Miner #" + miner.getId(), "§8 ➥ §7Haus " + house.getNumber())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
 
+                    }
+                });
+                i++;
+            }
+        }
     }
 
     private void openTransaction(Player player) {
