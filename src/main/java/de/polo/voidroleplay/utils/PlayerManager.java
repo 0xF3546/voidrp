@@ -1024,6 +1024,8 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void openInterActionMenu(Player player, Player targetplayer) {
+        PlayerData targetData = getPlayerData(targetplayer);
+        if (targetData.isAFK()) return;
         Main.getInstance().beginnerpass.didQuest(player, 12);
         PlayerData playerData = getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
@@ -1073,6 +1075,10 @@ public class PlayerManager implements Listener, ServerTiming {
         inventoryManager.setItem(new CustomItem(42, ItemManager.createItem(Material.POPPY, 1, 0, "§eTragen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
+                if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                    return;
+                }
                 carryPlayer(player, targetplayer);
                 player.closeInventory();
             }
