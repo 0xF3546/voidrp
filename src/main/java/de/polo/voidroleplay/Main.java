@@ -484,7 +484,9 @@ public final class Main extends JavaPlugin {
         public SetMOTDCommand setMOTDCommand;
         public VoteShopCommand voteShopCommand;
         public AnwaltCommand anwaltCommand;
+        public SprengguertelCommand sprengguertelCommand;
         private void Init() {
+            sprengguertelCommand = new SprengguertelCommand(playerManager, utils);
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
             personalausweisCommand = new PersonalausweisCommand(playerManager, utils);
