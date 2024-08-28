@@ -75,6 +75,7 @@ public class FactionManager {
             factionData.setBadFrak(locs.getBoolean("isBadFrak"));
             factionData.setAllianceFaction(locs.getInt("alliance"));
             factionData.setMotd(locs.getString("motd"));
+            factionData.setActive(locs.getBoolean("active"));
             factionData.storage.setJoint(locs.getInt("joint"));
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));

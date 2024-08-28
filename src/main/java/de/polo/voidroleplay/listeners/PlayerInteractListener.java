@@ -289,7 +289,7 @@ public class PlayerInteractListener implements Listener {
                                             s.open(player);
                                         }
                                     });
-                                    inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§7Server-Raum" + (!houseData.isServerRoom() ? " §8[§cNicht ausgebaut§8]" : ""))) {
+                                    inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§7Server-Raum" + (!houseData.isServerRoom() ? " §8[§cNicht ausgebaut§8]" : ""))) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             if (!houseData.isServerRoom()) return;
