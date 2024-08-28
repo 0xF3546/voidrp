@@ -14,14 +14,23 @@ import java.util.HashMap;
 import java.util.List;
 
 public class House {
+    @Setter
     private int id;
+    @Setter
     private String owner;
+    @Setter
     private int number;
+    @Setter
     private int price;
+    @Setter
     private HashMap<String, Integer> renter = new HashMap<>();
+    @Setter
     private int money;
+    @Setter
     private int totalMoney;
+    @Setter
     private int mieterSlots;
+    @Setter
     private int totalSlots;
 
     @Getter
@@ -81,40 +90,20 @@ public class House {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getOwner() {
         return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 
     public int getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     public int getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
     public HashMap<String, Integer> getRenter() {
         return renter;
-    }
-
-    public void setRenter(HashMap<String, Integer> map) {
-        this.renter = map;
     }
 
     public void addRenter(String uuid, int miete) {
@@ -125,31 +114,16 @@ public class House {
         return money;
     }
 
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
     public int getTotalMoney() {
         return totalMoney;
-    }
-
-    public void setTotalMoney(int totalMoney) {
-        this.totalMoney = totalMoney;
     }
 
     public int getTotalSlots() {
         return totalSlots;
     }
 
-    public void setTotalSlots(int totalSlots) {
-        this.totalSlots = totalSlots;
-    }
-
     public int getMieterSlots() {
         return mieterSlots;
     }
 
-    public void setMieterSlots(int mieterSlots) {
-        this.mieterSlots = mieterSlots;
-    }
 }
