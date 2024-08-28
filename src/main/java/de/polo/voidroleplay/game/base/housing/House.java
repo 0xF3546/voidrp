@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class House {
 
     @Getter
     @Setter
-    private List<Miner> activeMiner;
+    private List<Miner> activeMiner = new ArrayList<>();
 
     @Getter
     private final int maxMiner;
@@ -84,7 +85,7 @@ public class House {
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE housing SET miner = ?, server = ?, hasServerRoom = ? WHERE id = ?");
         statement.setInt(1, miner);
-        statement.setInt(server, 2);
+        statement.setInt(2, server);
         statement.setBoolean(3, serverRoom);
         statement.setInt(4, id);
         statement.executeUpdate();
@@ -103,6 +104,8 @@ public class House {
             miner.setId(result.getInt(1));
         }
         activeMiner.add(miner);
+        setMiner(getMiner() + 1);
+        save();
     }
 
     public int getId() {
