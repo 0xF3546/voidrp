@@ -55,9 +55,28 @@ public class House {
     @Getter
     private final int maxMiner;
 
-    public House(int maxServer, int maxMiner) {
+    public House(int number, int maxServer, int maxMiner) {
         this.maxServer = maxServer;
         this.maxMiner = maxMiner;
+        this.number = number;
+        loadMiner();
+    }
+
+    @SneakyThrows
+    private void loadMiner() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM crypto_miner WHERE houseNumber = ?");
+        statement.setInt(1, number);
+        ResultSet res = statement.executeQuery();
+        while (res.next()) {
+            Miner m = new Miner();
+            m.setActive(res.getBoolean("active"));
+            m.setId(res.getInt("id"));
+            m.setKWh(res.getFloat("kWh"));
+            m.setCoins(res.getFloat("coins"));
+            activeMiner.add(m);
+        }
+
     }
 
     @SneakyThrows

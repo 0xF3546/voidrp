@@ -51,10 +51,9 @@ public class Housing implements CommandExecutor, Listener {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
         while (locs.next()) {
-            House houseData = new House(locs.getInt("maxServer"), locs.getInt("maxMiner"));
+            House houseData = new House(locs.getInt("number"), locs.getInt("maxServer"), locs.getInt("maxMiner"));
             houseData.setId(locs.getInt(1));
             houseData.setOwner(locs.getString(2));
-            houseData.setNumber(locs.getInt(3));
             houseData.setPrice(locs.getInt(4));
             houseData.setTotalMoney(locs.getInt(7));
             houseData.setMiner(locs.getInt("miner"));
