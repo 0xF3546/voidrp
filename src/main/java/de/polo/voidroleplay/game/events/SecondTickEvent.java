@@ -5,12 +5,20 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class SecondTickEvent extends Event {
-    @Getter
     private static final HandlerList handlers = new HandlerList();
 
     @Getter
-    private final int second;
+    private int second;
     public SecondTickEvent(int second) {
         this.second = second;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 }

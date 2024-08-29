@@ -52,7 +52,7 @@ public class DeathListener implements Listener {
             playerData.setDeathLocation(player.getLocation());
             if (BombeCommand.ACTIVE) {
                 if (ItemManager.getCustomItemCount(player, RoleplayItem.DRAHT) >= 1) {
-                    ItemStack draht = ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), Main.getInstance().commands.bombeCommand.getDrahtColor());
+                    ItemStack draht = ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), Main.getInstance().commands.bombeCommand.getBomb().getColor());
                     player.getWorld().dropItemNaturally(player.getLocation(), draht);
                     ItemManager.removeCustomItem(player, RoleplayItem.DRAHT, 1);
                 }
