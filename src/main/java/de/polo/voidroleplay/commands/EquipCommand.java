@@ -306,7 +306,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         return;
                     }
                     playerData.removeBankMoney(75, "Schmerzmittel-Kauf");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 1);
                 }
             });
 
@@ -325,7 +325,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(100, "Feuerlöscher-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.FEUERLÖSCHER.getMaterial(), 1, 0, RoleplayItem.FEUERLÖSCHER.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.FEUERLÖSCHER, 1);
                     }
                 });
                 inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName())) {
@@ -340,7 +340,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(100, "Feuerlöscher-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.FEUERWEHR_AXT, 1);
                     }
                 });
                 inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
@@ -372,7 +372,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(100, "Sprungtuch-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.SPRUNGTUCH, 1);
                     }
                 });
             }
@@ -400,7 +400,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
                     factionData.addBankMoney(priceForFaction, "Munitionskauf " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "Munitionskauf");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                 }
             });
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("antibiotikum") + "$"))) {
@@ -425,7 +425,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.removeFactionMoney(priceForFaction, "ANTIBIOTIKUM " + player.getName());
                     factionData.addBankMoney(priceForFaction, "ANTIBIOTIKUM " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "ANTIBIOTIKUM");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.ANTIBIOTIKUM, 1);
                 }
             });
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("tazer") + "$"))) {
@@ -450,7 +450,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.removeFactionMoney(priceForFaction, "TAZER " + player.getName());
                     factionData.addBankMoney(priceForFaction, "TAZER " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "TAZER");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.TAZER, 1);
                 }
             });
             if (playerData.getFactionGrade() >= 5 && playerData.getFaction().equalsIgnoreCase("Polizei")) {
@@ -480,7 +480,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         factionData.removeFactionMoney(priceForFaction, "Munitionskauf " + player.getName());
                         factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
                         playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
                     }
                 });
             }
@@ -507,7 +507,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         factionData.removeFactionMoney(priceForFaction, "Item-Kauf " + player.getName());
                         factionData.addBankMoney(priceForFaction, "Item-Kauf " + player.getName());
                         playerData.removeBankMoney(priceForFaction, "Item-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.ADRENALINE_INJECTION, 1);
                     }
                 });
             }
@@ -528,7 +528,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(2500, "Sprengstoff-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
                     }
                 });
                 inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
@@ -547,7 +547,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.GRANATE.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.GRANATE, 1);
                     }
                 });
                 inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
