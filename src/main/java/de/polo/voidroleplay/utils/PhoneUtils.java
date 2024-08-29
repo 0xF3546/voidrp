@@ -928,13 +928,13 @@ public class PhoneUtils implements Listener {
         inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.PAPER, 1, 0, "§cVerkaufen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                openSellApp(player, 1);
             }
         });
         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.PAPER, 1, 0, "§aKaufen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                openBuyApp(player, 1);
             }
         });
 
@@ -944,6 +944,33 @@ public class PhoneUtils implements Listener {
                 openInternet(player);
             }
         });
+    }
+
+    private void openSellApp(Player player, int page) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cVerkauf §8-§c Seite§8: §7" + page);
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openSellApp(player, page + 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openSellApp(player, page - 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openCryptoWallet(player);
+            }
+        });
+    }
+
+    private void openBuyApp(Player player, int page) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aAnkauf §8-§a Seite§8: §7" + page);
     }
 
     private void openFarmManager(Player player) {
