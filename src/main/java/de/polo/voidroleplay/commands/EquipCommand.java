@@ -453,36 +453,38 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.TAZER, 1);
                 }
             });
-            if (playerData.getFactionGrade() >= 5 && playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1) {
-                            player.sendMessage(Prefix.ERROR + "Du hast bereits ein Schild");
-                            return;
-                        }
-                        int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
-                        try {
-                            if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
-                                priceForFaction = (int) (priceForFaction * 0.75);
+            if (playerData.getSubTeam() != null) {
+                if (playerData.getSubTeam().getName().equalsIgnoreCase("SWAT") && playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                    inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1) {
+                                player.sendMessage(Prefix.ERROR + "Du hast bereits ein Schild");
+                                return;
                             }
-                        } catch (Exception ex) {
+                            int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
+                            try {
+                                if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                                    priceForFaction = (int) (priceForFaction * 0.75);
+                                }
+                            } catch (Exception ex) {
 
+                            }
+                            if (factionData.getBank() < priceForFaction) {
+                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
+                                return;
+                            }
+                            if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
+                                player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                                return;
+                            }
+                            factionData.removeFactionMoney(priceForFaction, "Munitionskauf " + player.getName());
+                            factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
+                            playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
+                            ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
                         }
-                        if (factionData.getBank() < priceForFaction) {
-                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
-                            return;
-                        }
-                        if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
-                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                            return;
-                        }
-                        factionData.removeFactionMoney(priceForFaction, "Munitionskauf " + player.getName());
-                        factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
-                        playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
-                        ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
-                    }
-                });
+                    });
+                }
             }
             if (playerData.getFaction().equalsIgnoreCase("FBI")) {
                 inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("adrenaline_injection") + "$"))) {
