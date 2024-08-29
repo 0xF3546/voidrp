@@ -40,6 +40,7 @@ public class Housing implements CommandExecutor, Listener {
         this.blockManager = blockManager;
         this.locationManager = locationManager;
         Main.registerCommand("houseaddon", this);
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         try {
             loadHousing();
         } catch (SQLException e) {
