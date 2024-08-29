@@ -47,13 +47,17 @@ public class SprengguertelCommand implements CommandExecutor, Listener {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage("§cBitte gib eine Verzögerungszeit an.");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /sprenggürtel [Zeit (in Sekunden)]");
             return false;
         }
 
         int delay;
         try {
             delay = Integer.parseInt(args[0]);
+            if (delay < 7) {
+                player.sendMessage(Prefix.ERROR + "Die Zeit muss größer als 7 sein.");
+                return false;
+            }
             player.sendMessage("§cDein Sprenggürtel geht in " + args[0] + " hoch.");
         } catch (NumberFormatException e) {
             player.sendMessage(Prefix.ERROR + "Die Zeit muss numerisch sein.");
