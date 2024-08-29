@@ -7,7 +7,6 @@ import de.polo.voidroleplay.game.base.crypto.Crypto;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.ffa.FFA;
 import de.polo.voidroleplay.game.faction.alliance.Alliance;
-import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.game.faction.apotheke.ApothekeFunctions;
 import de.polo.voidroleplay.game.faction.houseban.Houseban;
 import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
@@ -920,28 +919,28 @@ public class GamePlay implements Listener {
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), "§aGrün")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (Main.getInstance().commands.bombeCommand.getDrahtColor().equalsIgnoreCase("Grün")) {
+                if (Main.getInstance().commands.bombeCommand.getBomb().getColor().equalsIgnoreCase("Grün")) {
                     Main.getInstance().commands.bombeCommand.defuseBomb();
                     player.sendMessage("§8[§cBombe§8] §7Du hast die Bombe erfolgreich entschärft");
                     player.closeInventory();
                     return;
                 }
 
-                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBombLocation().get(0).getBlock().getLocation());
+                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBomb().getBlock().getLocation());
                 player.sendMessage("§8[§cBombe§8] §7Du hast den falschen draht durchgeschnitten");
             }
         });
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), "§cRot")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (Main.getInstance().commands.bombeCommand.getDrahtColor().equalsIgnoreCase("Rot")) {
+                if (Main.getInstance().commands.bombeCommand.getBomb().getColor().equalsIgnoreCase("Rot")) {
                     Main.getInstance().commands.bombeCommand.defuseBomb();
                     player.sendMessage("§8[§cBombe§8] §7Du hast die Bombe erfolgreich entschärft");
                     player.closeInventory();
                     return;
                 }
 
-                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBombLocation().get(0).getBlock().getLocation());
+                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBomb().getBlock().getLocation());
                 player.sendMessage("§8[§cBombe§8] §7Du hast den falschen draht durchgeschnitten");
                 player.closeInventory();
             }
@@ -949,14 +948,14 @@ public class GamePlay implements Listener {
         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), "§9Blau")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (Main.getInstance().commands.bombeCommand.getDrahtColor().equalsIgnoreCase("Blau")) {
+                if (Main.getInstance().commands.bombeCommand.getBomb().getColor().equalsIgnoreCase("Blau")) {
                     Main.getInstance().commands.bombeCommand.defuseBomb();
                     player.sendMessage("§8[§cBombe§8] §7Du hast die Bombe erfolgreich entschärft");
                     player.closeInventory();
                     return;
                 }
 
-                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBombLocation().get(0).getBlock().getLocation());
+                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBomb().getBlock().getLocation());
                 player.sendMessage("§8[§cBombe§8] §7Du hast den falschen draht durchgeschnitten");
                 player.closeInventory();
             }
