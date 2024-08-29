@@ -685,7 +685,7 @@ public class PlayerInteractListener implements Listener {
         while (iterator.hasNext()) {
             Grenade grenade = iterator.next();
             LocalDateTime thrownTime = grenade.getThrownTime();
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = Utils.getTime();
 
             if (thrownTime.plusSeconds(2).isBefore(now)) {
                 Location loc = grenade.getDroppedItem().getLocation();
