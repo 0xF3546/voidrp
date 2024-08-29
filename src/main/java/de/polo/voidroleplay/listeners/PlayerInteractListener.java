@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.utils.GamePlay.Case;
@@ -31,9 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
@@ -54,6 +53,8 @@ public class PlayerInteractListener implements Listener {
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
     private final List<Molotov> molotovs = new ArrayList<>();
+    private final List<Block> sprungtuecher = new ArrayList<>();
+    private final List<Grenade> activeGrenades = new ArrayList<>();
 
     public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager, Laboratory laboratory) {
         this.playerManager = playerManager;
@@ -576,7 +577,7 @@ public class PlayerInteractListener implements Listener {
 
         Action action = event.getAction();
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-            if (player.getItemInHand().getType().equals(RoleplayItem.MOLOTOV.getMaterial())) {
+            if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.MOLOTOV)) {
                 Location playerLocation = player.getLocation();
                 Location throwLocation = playerLocation.clone().add(player.getLocation().getDirection().multiply(2));
                 Item droppedItem = player.getWorld().dropItem(throwLocation, new ItemStack(Material.FLINT));
@@ -608,7 +609,7 @@ public class PlayerInteractListener implements Listener {
                 }
             }
 
-            if (player.getItemInHand().getType().equals(RoleplayItem.FEUERLÖSCHER.getMaterial())) {
+            if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.FEUERLÖSCHER)) {
                 Vector direction = player.getLocation().getDirection().normalize();
                 Location startLocation = player.getEyeLocation();
 
@@ -631,6 +632,40 @@ public class PlayerInteractListener implements Listener {
                 }
             }
         }
+
+        if (action == Action.RIGHT_CLICK_BLOCK) {
+            Block clickedBlock = event.getClickedBlock();
+
+            if (clickedBlock != null) {
+                if (event.getItem() != null && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.SPRUNGTUCH)) {
+                    if (event.getBlockFace() == BlockFace.UP) {
+                        Block blockAbove = clickedBlock.getRelative(0, 1, 0);
+
+                        if (clickedBlock.getType() == Material.SLIME_BLOCK) {
+                            clickedBlock.setType(Material.AIR);
+                            sprungtuecher.remove(clickedBlock);
+                        } else if (blockAbove.getType() == Material.AIR) {
+                            blockAbove.setType(Material.SLIME_BLOCK);
+                            sprungtuecher.add(blockAbove);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (action == Action.RIGHT_CLICK_AIR && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.GRANATE)) {
+            throwGrenade(player);
+            ItemManager.removeCustomItem(player, RoleplayItem.GRANATE, 1);
+        }
+
+        if (action == Action.RIGHT_CLICK_BLOCK) {
+            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                Block clickedBlock = event.getClickedBlock();
+                if (clickedBlock.getType().equals(RoleplayItem.SPRENGSTOFF.getMaterial())) {
+                    Main.getInstance().gamePlay.openBombGUI(player);
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -640,5 +675,38 @@ public class PlayerInteractListener implements Listener {
             molotov.getBlock().setType(Material.AIR);
             molotovs.remove(molotov);
         }
+    }
+
+    private void throwGrenade(Player player) {
+        ItemStack grenadeItem = new ItemStack(Material.FIRE_CHARGE);
+        Item droppedItem = player.getWorld().dropItem(player.getEyeLocation(), grenadeItem);
+        droppedItem.setVelocity(player.getLocation().getDirection().multiply(1.5));
+        droppedItem.setPickupDelay(Integer.MAX_VALUE);
+
+        activeGrenades.add(new Grenade(Utils.getTime(), droppedItem));
+    }
+
+    private void checkGrenades() {
+        Iterator<Grenade> iterator = activeGrenades.iterator();
+
+        while (iterator.hasNext()) {
+            Grenade grenade = iterator.next();
+            LocalDateTime thrownTime = grenade.getThrownTime();
+            LocalDateTime now = Utils.getTime();
+
+            if (thrownTime.plusSeconds(2).isBefore(now)) {
+                Location loc = grenade.getDroppedItem().getLocation();
+                Bukkit.getLogger().info("Grenade exploding at: " + now);
+
+                loc.getWorld().createExplosion(loc, 4.0f, false, false);
+                grenade.getDroppedItem().remove();
+                iterator.remove();
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSecond(SecondTickEvent event) {
+        checkGrenades();
     }
 }

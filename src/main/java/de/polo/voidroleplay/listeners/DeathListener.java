@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.listeners;
 
+import de.polo.voidroleplay.commands.BombeCommand;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
@@ -8,6 +9,7 @@ import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -48,6 +50,15 @@ public class DeathListener implements Listener {
             boolean removeKarma = true;
             event.setKeepInventory(true);
             playerData.setDeathLocation(player.getLocation());
+            if (BombeCommand.ACTIVE) {
+                if (ItemManager.getCustomItemCount(player, RoleplayItem.DRAHT) >= 1) {
+                    ItemStack draht = ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), Main.getInstance().commands.bombeCommand.getDrahtColor());
+                    player.getWorld().dropItemNaturally(player.getLocation(), draht);
+                    ItemManager.removeCustomItem(player, RoleplayItem.DRAHT, 1);
+                }
+            } else {
+                ItemManager.removeCustomItem(player, RoleplayItem.DRAHT, 1);
+            }
             if (MilitaryDrop.ACTIVE) {
                 if (player.getKiller() == null) return;
                 if (Main.getInstance().gamePlay.militaryDrop.handleDeath(player, player.getKiller())) return;
@@ -193,5 +204,7 @@ public class DeathListener implements Listener {
                 statement.execute();
                 statement.close();
             }
+
+
         }
 }

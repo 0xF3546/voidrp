@@ -306,7 +306,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         return;
                     }
                     playerData.removeBankMoney(75, "Schmerzmittel-Kauf");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 1);
                 }
             });
 
@@ -325,7 +325,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(100, "Feuerlöscher-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.FEUERLÖSCHER.getMaterial(), 1, 0, RoleplayItem.FEUERLÖSCHER.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.FEUERLÖSCHER, 1);
                     }
                 });
                 inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName())) {
@@ -340,7 +340,39 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(100, "Feuerlöscher-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.FEUERWEHR_AXT, 1);
+                    }
+                });
+                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (factionData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Sprungtücher zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        playerData.removeBankMoney(100, "Sprungtuch-Kauf");
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName()));
+                    }
+                });
+            }
+            if (playerData.getSubTeam().getName().equalsIgnoreCase("Notfallmedizin")) {
+                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (factionData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Sprungtücher zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < 100) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        playerData.removeBankMoney(100, "Sprungtuch-Kauf");
+                        ItemManager.addCustomItem(player, RoleplayItem.SPRUNGTUCH, 1);
                     }
                 });
             }
@@ -368,7 +400,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
                     factionData.addBankMoney(priceForFaction, "Munitionskauf " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "Munitionskauf");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                 }
             });
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("antibiotikum") + "$"))) {
@@ -393,7 +425,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.removeFactionMoney(priceForFaction, "ANTIBIOTIKUM " + player.getName());
                     factionData.addBankMoney(priceForFaction, "ANTIBIOTIKUM " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "ANTIBIOTIKUM");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.ANTIBIOTIKUM, 1);
                 }
             });
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("tazer") + "$"))) {
@@ -418,39 +450,56 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.removeFactionMoney(priceForFaction, "TAZER " + player.getName());
                     factionData.addBankMoney(priceForFaction, "TAZER " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "TAZER");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName()));
+                    ItemManager.addCustomItem(player, RoleplayItem.TAZER, 1);
                 }
             });
-            if (playerData.getFactionGrade() >= 5 && playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1) {
-                            player.sendMessage(Prefix.ERROR + "Du hast bereits ein Schild");
-                            return;
-                        }
-                        int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
-                        try {
-                            if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
-                                priceForFaction = (int) (priceForFaction * 0.75);
-                            }
-                        } catch (Exception ex) {
-
-                        }
-                        if (factionData.getBank() < priceForFaction) {
-                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
-                            return;
-                        }
-                        if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
-                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                            return;
-                        }
-                        factionData.removeFactionMoney(priceForFaction, "Munitionskauf " + player.getName());
-                        factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
-                        playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName()));
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.WINGSUIT.getMaterial(), 1, 0, RoleplayItem.WINGSUIT.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (factionData.getBank() < 250) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Wingsuit zu kaufen.");
+                        return;
                     }
-                });
+                    if (playerData.getBank() < 250) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    playerData.removeBankMoney(2500, "Wingsuit-Kauf");
+                    ItemManager.addCustomItem(player, RoleplayItem.WINGSUIT, 1);
+                }
+            });
+            if (playerData.getSubTeam() != null) {
+                if (playerData.getSubTeam().getName().equalsIgnoreCase("SWAT") && playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                    inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1) {
+                                player.sendMessage(Prefix.ERROR + "Du hast bereits ein Schild");
+                                return;
+                            }
+                            int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
+                            try {
+                                if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
+                                    priceForFaction = (int) (priceForFaction * 0.75);
+                                }
+                            } catch (Exception ex) {
+
+                            }
+                            if (factionData.getBank() < priceForFaction) {
+                                player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
+                                return;
+                            }
+                            if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
+                                player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                                return;
+                            }
+                            factionData.removeFactionMoney(priceForFaction, "Munitionskauf " + player.getName());
+                            factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
+                            playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
+                            ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
+                        }
+                    });
+                }
             }
             if (playerData.getFaction().equalsIgnoreCase("FBI")) {
                 inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("adrenaline_injection") + "$"))) {
@@ -475,7 +524,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         factionData.removeFactionMoney(priceForFaction, "Item-Kauf " + player.getName());
                         factionData.addBankMoney(priceForFaction, "Item-Kauf " + player.getName());
                         playerData.removeBankMoney(priceForFaction, "Item-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.ADRENALINE_INJECTION, 1);
                     }
                 });
             }
@@ -483,6 +532,10 @@ public class EquipCommand implements CommandExecutor, Listener {
                 inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        if (playerData.getFactionGrade() < 6) {
+                            player.sendMessage(Main.error + "Du musst mindestens rang 6 sein um einen Sprengstoff zu kaufen!");
+                            return;
+                        }
                         if (factionData.getBank() < 2500) {
                             player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
                             return;
@@ -492,12 +545,16 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(2500, "Sprengstoff-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
                     }
                 });
-                inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.SPLITTERGRANATE.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+                inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        if (playerData.getFactionGrade() < 3) {
+                            player.sendMessage(Main.error + "Du musst mindestens rang 3 sein um eine Granate zu kaufen!");
+                            return;
+                        }
                         if (factionData.getBank() < 1500) {
                             player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
                             return;
@@ -507,7 +564,26 @@ public class EquipCommand implements CommandExecutor, Listener {
                             return;
                         }
                         playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPLITTERGRANATE.getMaterial(), 1, 0, RoleplayItem.SPLITTERGRANATE.getDisplayName()));
+                        ItemManager.addCustomItem(player, RoleplayItem.GRANATE, 1);
+                    }
+                });
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (playerData.getFactionGrade() < 4) {
+                            player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
+                            return;
+                        }
+                        if (factionData.getBank() < 2500) {
+                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
+                            return;
+                        }
+                        if (playerData.getBank() < 2500) {
+                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                            return;
+                        }
+                        playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
+                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.GRANATE.getDisplayName()));
                     }
                 });
             }

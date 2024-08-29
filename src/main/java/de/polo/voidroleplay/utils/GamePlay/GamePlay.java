@@ -915,4 +915,52 @@ public class GamePlay implements Listener {
         return currentDealer;
     }
 
+    public void openBombGUI(Player player) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bFraktionsupgrades", true, true);
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), "§aGrün")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (Main.getInstance().commands.bombeCommand.getDrahtColor().equalsIgnoreCase("Grün")) {
+                    Main.getInstance().commands.bombeCommand.defuseBomb();
+                    player.sendMessage("§8[§cBombe§8] §7Du hast die Bombe erfolgreich entschärft");
+                    player.closeInventory();
+                    return;
+                }
+
+                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBombLocation().get(0).getBlock().getLocation());
+                player.sendMessage("§8[§cBombe§8] §7Du hast den falschen draht durchgeschnitten");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), "§cRot")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (Main.getInstance().commands.bombeCommand.getDrahtColor().equalsIgnoreCase("Rot")) {
+                    Main.getInstance().commands.bombeCommand.defuseBomb();
+                    player.sendMessage("§8[§cBombe§8] §7Du hast die Bombe erfolgreich entschärft");
+                    player.closeInventory();
+                    return;
+                }
+
+                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBombLocation().get(0).getBlock().getLocation());
+                player.sendMessage("§8[§cBombe§8] §7Du hast den falschen draht durchgeschnitten");
+                player.closeInventory();
+            }
+        });
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), "§9Blau")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (Main.getInstance().commands.bombeCommand.getDrahtColor().equalsIgnoreCase("Blau")) {
+                    Main.getInstance().commands.bombeCommand.defuseBomb();
+                    player.sendMessage("§8[§cBombe§8] §7Du hast die Bombe erfolgreich entschärft");
+                    player.closeInventory();
+                    return;
+                }
+
+                Main.getInstance().commands.bombeCommand.explodeBomb(Main.getInstance().commands.bombeCommand.getBombLocation().get(0).getBlock().getLocation());
+                player.sendMessage("§8[§cBombe§8] §7Du hast den falschen draht durchgeschnitten");
+                player.closeInventory();
+            }
+        });
+    }
+
 }

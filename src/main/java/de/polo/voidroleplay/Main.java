@@ -197,6 +197,7 @@ public final class Main extends JavaPlugin {
         new EntityDamageByEntityListener(playerManager);
         new ExplosionListener();
         new ConsumeListener(playerManager);
+        new EntityToggleGlideListener();
     }
 
     public static void registerCommand(String command, CommandExecutor c) {
@@ -484,7 +485,11 @@ public final class Main extends JavaPlugin {
         public SetMOTDCommand setMOTDCommand;
         public VoteShopCommand voteShopCommand;
         public AnwaltCommand anwaltCommand;
+        public SprengguertelCommand sprengguertelCommand;
+        public BombeCommand bombeCommand;
         private void Init() {
+            bombeCommand = new BombeCommand(playerManager, utils);
+            sprengguertelCommand = new SprengguertelCommand(playerManager, utils);
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
             personalausweisCommand = new PersonalausweisCommand(playerManager, utils);
