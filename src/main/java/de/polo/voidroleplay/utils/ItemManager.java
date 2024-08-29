@@ -272,4 +272,8 @@ public class ItemManager {
             player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName));
         }
     }
+
+    public static boolean equals(ItemStack itemStack, RoleplayItem roleplayItem) {
+        return (itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(roleplayItem.getDisplayName()) && itemStack.getType().equals(roleplayItem.getMaterial()));
+    }
 }

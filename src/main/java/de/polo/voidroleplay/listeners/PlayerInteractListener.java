@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.utils.GamePlay.Case;
@@ -65,7 +66,6 @@ public class PlayerInteractListener implements Listener {
         this.factionManager = factionManager;
         this.laboratory = laboratory;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), this::checkGrenades, 0L, 20L);
     }
 
     @EventHandler
@@ -579,7 +579,7 @@ public class PlayerInteractListener implements Listener {
 
         Action action = event.getAction();
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-            if (player.getItemInHand().getType().equals(RoleplayItem.MOLOTOV.getMaterial())) {
+            if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.MOLOTOV)) {
                 Location playerLocation = player.getLocation();
                 Location throwLocation = playerLocation.clone().add(player.getLocation().getDirection().multiply(2));
                 Item droppedItem = player.getWorld().dropItem(throwLocation, new ItemStack(Material.FLINT));
@@ -611,7 +611,7 @@ public class PlayerInteractListener implements Listener {
                 }
             }
 
-            if (player.getItemInHand().getType().equals(RoleplayItem.FEUERLÖSCHER.getMaterial())) {
+            if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.FEUERLÖSCHER)) {
                 Vector direction = player.getLocation().getDirection().normalize();
                 Location startLocation = player.getEyeLocation();
 
@@ -639,7 +639,7 @@ public class PlayerInteractListener implements Listener {
             Block clickedBlock = event.getClickedBlock();
 
             if (clickedBlock != null) {
-                if (event.getItem() != null && event.getItem().getType() == Material.STICK) {
+                if (event.getItem() != null && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.SPRUNGTUCH)) {
                     if (event.getBlockFace() == BlockFace.UP) {
                         Block blockAbove = clickedBlock.getRelative(0, 1, 0);
 
@@ -655,7 +655,7 @@ public class PlayerInteractListener implements Listener {
             }
         }
 
-        if (action == Action.RIGHT_CLICK_AIR) {
+        if (action == Action.RIGHT_CLICK_AIR && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.GRANATE)) {
             throwGrenade(player);
             ItemManager.removeCustomItem(player, RoleplayItem.GRANATE, 1);
         }
@@ -676,7 +676,7 @@ public class PlayerInteractListener implements Listener {
         droppedItem.setVelocity(player.getLocation().getDirection().multiply(1.5));
         droppedItem.setPickupDelay(Integer.MAX_VALUE);
 
-        activeGrenades.add(new Grenade(LocalDateTime.now(), droppedItem));
+        activeGrenades.add(new Grenade(Utils.getTime(), droppedItem));
     }
 
     private void checkGrenades() {
@@ -696,5 +696,10 @@ public class PlayerInteractListener implements Listener {
                 iterator.remove();
             }
         }
+    }
+
+    @EventHandler
+    public void onSecond(SecondTickEvent event) {
+        checkGrenades();
     }
 }
