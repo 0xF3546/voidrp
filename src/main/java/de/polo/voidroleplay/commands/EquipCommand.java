@@ -453,6 +453,21 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.TAZER, 1);
                 }
             });
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.WINGSUIT.getMaterial(), 1, 0, RoleplayItem.WINGSUIT.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (factionData.getBank() < 250) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Wingsuit zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < 250) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    playerData.removeBankMoney(2500, "Wingsuit-Kauf");
+                    ItemManager.addCustomItem(player, RoleplayItem.WINGSUIT, 1);
+                }
+            });
             if (playerData.getSubTeam() != null) {
                 if (playerData.getSubTeam().getName().equalsIgnoreCase("SWAT") && playerData.getFaction().equalsIgnoreCase("Polizei")) {
                     inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("swat_shield") + "$"))) {
