@@ -283,6 +283,7 @@ public class FactionManager {
         return factionData.getBank();
     }
 
+    @SneakyThrows
     public void addFactionMoney(String faction, Integer amount, String reason) throws SQLException {
         FactionData factionData = factionDataMap.get(faction);
         factionData.addBankMoney(amount, reason);

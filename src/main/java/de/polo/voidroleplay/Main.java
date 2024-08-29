@@ -488,7 +488,7 @@ public final class Main extends JavaPlugin {
         public SprengguertelCommand sprengguertelCommand;
         public BombeCommand bombeCommand;
         private void Init() {
-            bombeCommand = new BombeCommand(playerManager, utils);
+            bombeCommand = new BombeCommand(playerManager, utils, factionManager);
             sprengguertelCommand = new SprengguertelCommand(playerManager, utils);
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
             geldbeutelCommand  = new GeldbeutelCommand(playerManager);
