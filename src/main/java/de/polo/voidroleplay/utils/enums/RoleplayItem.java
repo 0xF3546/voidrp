@@ -43,6 +43,7 @@ public enum RoleplayItem {
     SPRENGSTOFF("§7Sprengstoff", Material.TNT, true),
     GRANATE("§7Granate", Material.FIRE_CHARGE, true),
     SPRENGGUERTEL("§7Sprenggürtel", Material.LEATHER_CHESTPLATE, true),
+    DRAHT("§7Draht", Material.PAPER, true),
     FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false);
 
     private final String displayName;

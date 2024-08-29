@@ -32,9 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
@@ -658,6 +656,15 @@ public class PlayerInteractListener implements Listener {
         if (action == Action.RIGHT_CLICK_AIR && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.GRANATE)) {
             throwGrenade(player);
             ItemManager.removeCustomItem(player, RoleplayItem.GRANATE, 1);
+        }
+
+        if (action == Action.RIGHT_CLICK_BLOCK) {
+            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                Block clickedBlock = event.getClickedBlock();
+                if (clickedBlock.getType().equals(RoleplayItem.SPRENGSTOFF.getMaterial())) {
+                    Main.getInstance().gamePlay.openBombGUI(player);
+                }
+            }
         }
     }
 
