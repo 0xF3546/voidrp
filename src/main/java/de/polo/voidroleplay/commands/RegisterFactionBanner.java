@@ -9,6 +9,7 @@ import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,11 +46,13 @@ public class RegisterFactionBanner implements CommandExecutor {
             return false;
         }
         Block block = player.getTargetBlock(null, 10);
-        if (!(block instanceof Banner)) {
+        BlockState state = block.getState();
+        if (!(state instanceof Banner)) {
             player.sendMessage(Prefix.ERROR + "Der Angeschaute Block ist kein Banner.");
             return false;
         }
-        Banner banner = (Banner) block;
+
+        Banner banner = (Banner) state;
         List<Pattern> patterns = banner.getPatterns();
         JSONArray jsonArray = new JSONArray();
 
@@ -60,7 +63,9 @@ public class RegisterFactionBanner implements CommandExecutor {
             jsonArray.put(patternObject);
         }
 
-        player.sendMessage(jsonArray.toString());
+        JSONObject bannerObject = new JSONObject();
+        bannerObject.put("bannerType", block.getType().name());
+        bannerObject.put("patterns", jsonArray);
 
         FactionData factionData = factionManager.getFactionData(strings[0]);
         if (factionData == null) {
@@ -68,9 +73,10 @@ public class RegisterFactionBanner implements CommandExecutor {
             return false;
         }
         factionData.setBannerPattern(banner.getPatterns());
+        factionData.setBannerType(block.getType());
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE faction SET banner = ? WHERE id = ?");
-        statement.setString(1, jsonArray.toString());
+        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET banner = ? WHERE id = ?");
+        statement.setString(1, bannerObject.toString());
         statement.setInt(2, factionData.getId());
         statement.executeUpdate();
         statement.close();
