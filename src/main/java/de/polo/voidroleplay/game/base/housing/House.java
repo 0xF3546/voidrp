@@ -2,6 +2,7 @@ package de.polo.voidroleplay.game.base.housing;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.crypto.Miner;
+import de.polo.voidroleplay.utils.enums.HouseType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -51,10 +52,18 @@ public class House {
 
     @Getter
     @Setter
+    private HouseType houseType = HouseType.BASIC;
+
+    @Getter
+    @Setter
     private List<Miner> activeMiner = new ArrayList<>();
 
     @Getter
     private final int maxMiner;
+
+    @Getter
+    @Setter
+    private boolean cookActive;
 
     public House(int number, int maxServer, int maxMiner) {
         this.maxServer = maxServer;

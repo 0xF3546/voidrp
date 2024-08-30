@@ -3,12 +3,19 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.commands.SubTeamCommand;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -22,10 +29,13 @@ public class FactionManager {
     private final PlayerManager playerManager;
     public final SubGroups subGroups;
     private final List<SubTeam> subTeams = new ArrayList<>();
+    private final HashMap<Block, LocalDateTime> bannerSprayed = new HashMap<>();
+    private final List<SprayableBanner> sprayableBanners = new ArrayList<>();
     public FactionManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
             loadFactions();
+            loadBanners();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -47,7 +57,18 @@ public class FactionManager {
         blacklistDataMap.remove(blacklistDataId);
     }
 
-    public void loadFactions() throws SQLException {
+    @SneakyThrows
+    private void loadBanners() {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+
+        ResultSet locs = statement.executeQuery("SELECT * FROM faction_banners");
+        while (locs.next()) {
+            SprayableBanner banner = new SprayableBanner(locs.getInt("registeredBlock"), locs.getInt("factionId"));
+            sprayableBanners.add(banner);
+        }
+    }
+
+    private void loadFactions() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
 
         ResultSet locs = statement.executeQuery("SELECT f.*, fs.*, fu.*, fe.* FROM factions AS f " +
@@ -76,6 +97,22 @@ public class FactionManager {
             factionData.setAllianceFaction(locs.getInt("alliance"));
             factionData.setMotd(locs.getString("motd"));
             factionData.setActive(locs.getBoolean("isActive"));
+            if (locs.getString("banner") != null) {
+                String bannerData = locs.getString("banner");
+
+                JSONArray jsonArray = new JSONArray(bannerData);
+                List<Pattern> patterns = new ArrayList<>();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject patternObject = jsonArray.getJSONObject(i);
+                    DyeColor color = DyeColor.valueOf(patternObject.getString("color"));
+                    PatternType type = PatternType.valueOf(patternObject.getString("type"));
+                    patterns.add(new Pattern(color, type));
+                }
+
+                factionData.setBannerPattern(patterns);
+
+            }
             factionData.storage.setJoint(locs.getInt("joint"));
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));
@@ -569,5 +606,46 @@ public class FactionManager {
         statement.executeUpdate();
         statement.close();
         connection.close();
+    }
+
+    @SneakyThrows
+    public void updateBanner(Block block, FactionData faction) {
+        if (bannerSprayed.get(block) == null) {
+            bannerSprayed.put(block, Utils.getTime());
+            return;
+        }
+        bannerSprayed.replace(block, Utils.getTime());
+        RegisteredBlock registeredBlock = Main.getInstance().blockManager.getBlockAtLocation(block.getLocation());
+        if (registeredBlock == null) {
+            return;
+        }
+        SprayableBanner banner = getSprayAbleBannerByBlockId(registeredBlock.getId());
+        if (banner == null) {
+            SprayableBanner b = new SprayableBanner(registeredBlock.getId(), faction.getId());
+            Connection connection = Main.getInstance().mySQL.getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO faction_banner (registeredBlock, factionId) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, registeredBlock.getId());
+            statement.setInt(2, faction.getId());
+            statement.execute();
+            ResultSet res = statement.getGeneratedKeys();
+            if (res.next()) {
+                b.setId(res.getInt(1));
+            }
+            sprayableBanners.add(b);
+            statement.close();
+            connection.close();
+            return;
+        }
+        banner.setLastSpray(Utils.getTime());
+        banner.setFaction(faction.getId());
+    }
+
+    private SprayableBanner getSprayAbleBannerByBlockId(int id) {
+        return sprayableBanners.stream().filter(b -> b.getRegisteredBlock() == id).findFirst().orElse(null);
+    }
+    public boolean canSprayBanner(RegisteredBlock block) {
+        SprayableBanner banner = getSprayAbleBannerByBlockId(block.getId());
+        if (banner == null) return true;
+        return banner.getLastSpray().plusMinutes(10).isAfter(Utils.getTime());
     }
 }
