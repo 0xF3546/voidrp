@@ -464,7 +464,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
-                    playerData.removeBankMoney(2500, "Wingsuit-Kauf");
+                    playerData.removeBankMoney(250, "Wingsuit-Kauf");
                     ItemManager.addCustomItem(player, RoleplayItem.WINGSUIT, 1);
                 }
             });

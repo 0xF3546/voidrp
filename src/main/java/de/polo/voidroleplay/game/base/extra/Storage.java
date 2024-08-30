@@ -98,6 +98,9 @@ public class Storage implements Listener {
             case EXTRA:
                 name = "§7Lager " + extra.getName();
                 break;
+            case CRYSTAL_LABORATORY:
+                name = "§bKristall-Labor";
+                break;
             case HOUSE:
                 name = "§7Hauslager";
                 break;
@@ -232,6 +235,7 @@ public class Storage implements Listener {
                 statement = connection.prepareStatement("SELECT * FROM storages WHERE factionId = ?");
                 statement.setInt(1, (int) value);
                 break;
+            case CRYSTAL_LABORATORY:
             case HOUSE:
                 statement = connection.prepareStatement("SELECT * FROM storages WHERE houseNumber = ?");
                 statement.setInt(1, (int) value);

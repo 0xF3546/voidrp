@@ -105,10 +105,20 @@ public class PlayerInteractListener implements Listener {
 
                         if (block.getInfo().equalsIgnoreCase("banner")) {
                             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
-                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen")) {
+                            Block b = event.getClickedBlock();
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen" + (factionManager.canSprayBanner(block) ? "" :" §8(§cx§8)"))) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
-
+                                    if (!factionManager.canSprayBanner(block)) {
+                                        return;
+                                    }
+                                    FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                                    Banner banner = (Banner) b;
+                                    banner.setPatterns(factionData.getBannerPattern());
+                                    banner.update();
+                                    player.sendMessage("§8[§bBanner§8]§7 Du hast den Banner §3" + block.getInfoValue() + "§7 übersprüht!");
+                                    factionManager.updateBanner(b, factionData);
+                                    playerManager.addExp(player, Main.random(5,10));
                                 }
                             });
                         }
@@ -326,6 +336,14 @@ public class PlayerInteractListener implements Listener {
 
                                 }
                             });
+                            /*if (houseData.getHouseType().isCanCook()) {
+                                inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§bKochen")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        Main.getInstance().housing.openCookMenu(player, houseData);
+                                    }
+                                });
+                            }*/
                             if (playerData.getVariable("job") == null) {
                                 if (playerData.getFaction() != null && (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) && playerData.isDuty()) {
                                     if (rammingPlayers.get(player) != null) {

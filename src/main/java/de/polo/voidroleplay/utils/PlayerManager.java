@@ -1039,6 +1039,10 @@ public class PlayerManager implements Listener, ServerTiming {
         inventoryManager.setItem(new CustomItem(20, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjg4OWNmY2JhY2JlNTk4ZThhMWNkODYxMGI0OWZjYjYyNjQ0ZThjYmE5ZDQ5MTFkMTIxMTM0NTA2ZDhlYTFiNyJ9fX0=", 1, 0, "§aGeld geben", null)) {
             @Override
             public void onClick(InventoryClickEvent event) {
+                if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                    return;
+                }
                 playerData.setVariable("chatblock", "givemoney");
                 player.sendMessage("§8[§6Interaktion§8]§7 Gib nun einen Wert ein.");
                 player.closeInventory();
@@ -1047,6 +1051,10 @@ public class PlayerManager implements Listener, ServerTiming {
         inventoryManager.setItem(new CustomItem(24, ItemManager.createItem(Material.PAPER, 1, 0, "§6Personalausweis zeigen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
+                if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                    return;
+                }
                 player.performCommand("personalausweis show " + targetplayer.getName());
                 if (playerData.getGender().equals(Gender.MALE)) {
                     ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " zeigt " + targetplayer.getName() + " seinen Personalausweis.");
@@ -1059,6 +1067,11 @@ public class PlayerManager implements Listener, ServerTiming {
         inventoryManager.setItem(new CustomItem(25, ItemManager.createItem(Material.PAPER, 1, 0, "§6Finanzen zeigen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
+                if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                    return;
+                }
+                player.sendMessage(Prefix.MAIN + "Du hast " + targetplayer.getName() + " deine Finanzen gezeigt.");
                 player.closeInventory();
                 targetplayer.sendMessage("§7   ===§8[§6" + player.getName() + "'s Finanzen§8]§7===");
                 targetplayer.sendMessage("§8 ➥§eBargeld§8: §a" + playerData.getBargeld() + "$");
@@ -1068,6 +1081,10 @@ public class PlayerManager implements Listener, ServerTiming {
         inventoryManager.setItem(new CustomItem(38, ItemManager.createItem(Material.POPPY, 1, 0, "§cKüssen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
+                if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                    return;
+                }
                 Server.Utils.kissPlayer(player, targetplayer);
                 player.closeInventory();
             }
@@ -1112,6 +1129,10 @@ public class PlayerManager implements Listener, ServerTiming {
             inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, "§eHandy abnehmen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                        player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                        return;
+                    }
                     if (ItemManager.getCustomItemCount(targetplayer, RoleplayItem.SMARTPHONE) < 1) {
                         return;
                     }
@@ -1125,6 +1146,10 @@ public class PlayerManager implements Listener, ServerTiming {
             inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, "§eHandy geben")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                        player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                        return;
+                    }
                     if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
                         return;
                     }
@@ -1146,6 +1171,10 @@ public class PlayerManager implements Listener, ServerTiming {
                 inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cBlutgruppe testen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                            return;
+                        }
                         Main.getInstance().utils.staatUtil.checkBloodGroup(player, targetplayer);
                         player.closeInventory();
                     }
@@ -1153,6 +1182,10 @@ public class PlayerManager implements Listener, ServerTiming {
                 inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.PAPER, 1, 0, "§cUntersuchen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                            return;
+                        }
                         player.closeInventory();
                         player.sendMessage("§7   ===§8[§cUntersuchung§8]§7===");
                         for (IllnessType illnessType : IllnessType.values()) {
@@ -1173,6 +1206,10 @@ public class PlayerManager implements Listener, ServerTiming {
                     inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.LEAD, 1, 0, "§3Handschellen abnehmen")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
+                            if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                                player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                                return;
+                            }
                             targetplayerData.setCuffed(false);
                             ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                             ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Handschellen abgenommen.");
@@ -1189,8 +1226,13 @@ public class PlayerManager implements Listener, ServerTiming {
                 inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.LEAD, 1, 0, "§3Dienstmarke zeigen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
+                        if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                            return;
+                        }
                         targetplayer.sendMessage("§7   ===§8[§3Dienstmarke§8]§7===");
                         targetplayer.sendMessage("§8 ➥ §bRang§8: §7" + Main.getInstance().factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()));
+                        player.sendMessage(Prefix.MAIN + "Du hast " + targetplayer.getName() + " deinen Dienstausweis gezeigt.");
                     }
                 });
                 break;

@@ -9,5 +9,6 @@ public enum StorageType {
     VEHICLE,
     HOUSE,
     FACTION,
-    EXTRA;
+    EXTRA,
+    CRYSTAL_LABORATORY;
 }
