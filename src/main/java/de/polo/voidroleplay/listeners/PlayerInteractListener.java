@@ -118,6 +118,7 @@ public class PlayerInteractListener implements Listener {
                                     banner.update();
                                     player.sendMessage("§8[§bBanner§8]§7 Du hast den Banner §3" + block.getInfoValue() + "§7 übersprüht!");
                                     factionManager.updateBanner(b, factionData);
+                                    playerManager.addExp(player, Main.random(5,10));
                                 }
                             });
                         }
