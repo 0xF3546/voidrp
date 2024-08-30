@@ -108,7 +108,6 @@ public class PlayerInteractListener implements Listener {
                             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen")) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
-
                                 }
                             });
                         }

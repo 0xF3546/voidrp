@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.block.banner.Pattern;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,6 +39,10 @@ public class FactionData {
     private boolean isBadFrak;
     private int subGroupId;
     private int cooperationPartner;
+
+    @Getter
+    @Setter
+    private List<Pattern> bannerPattern = null;
 
     @Getter
     @Setter

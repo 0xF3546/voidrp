@@ -6,9 +6,14 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -76,6 +81,22 @@ public class FactionManager {
             factionData.setAllianceFaction(locs.getInt("alliance"));
             factionData.setMotd(locs.getString("motd"));
             factionData.setActive(locs.getBoolean("isActive"));
+            if (locs.getString("banner") != null) {
+                String bannerData = locs.getString("banner");
+
+                JSONArray jsonArray = new JSONArray(bannerData);
+                List<Pattern> patterns = new ArrayList<>();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject patternObject = jsonArray.getJSONObject(i);
+                    DyeColor color = DyeColor.valueOf(patternObject.getString("color"));
+                    PatternType type = PatternType.valueOf(patternObject.getString("type"));
+                    patterns.add(new Pattern(color, type));
+                }
+
+                factionData.setBannerPattern(patterns);
+
+            }
             factionData.storage.setJoint(locs.getInt("joint"));
             factionData.storage.setWeed(locs.getInt("weed"));
             factionData.storage.setCocaine(locs.getInt("cocaine"));
