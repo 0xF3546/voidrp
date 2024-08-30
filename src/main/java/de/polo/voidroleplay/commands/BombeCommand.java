@@ -66,7 +66,7 @@ public class BombeCommand implements CommandExecutor, Listener {
         }
 
         if (bomb != null) {
-            player.sendMessage(Prefix.ERROR + "Es istz bereits eine Bombe im gange.");
+            player.sendMessage(Prefix.ERROR + "Es ist bereits eine Bombe im gange.");
             return false;
         }
 
@@ -87,7 +87,7 @@ public class BombeCommand implements CommandExecutor, Listener {
 
         int count = factionManager.getOnlineMemberCount("Polizei");
         count += factionManager.getOnlineMemberCount("FBI");
-        if (count < 5) {
+        if (count < 4) {
             player.sendMessage(Prefix.ERROR + "Es sind nicht genug Staatsmitglieder online.");
             return false;
         }
