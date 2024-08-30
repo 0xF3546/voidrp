@@ -7,6 +7,8 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 
 import java.sql.Connection;
@@ -43,6 +45,10 @@ public class FactionData {
     @Getter
     @Setter
     private List<Pattern> bannerPattern = null;
+
+    @Getter
+    @Setter
+    private DyeColor bannerColor = null;
 
     @Getter
     @Setter

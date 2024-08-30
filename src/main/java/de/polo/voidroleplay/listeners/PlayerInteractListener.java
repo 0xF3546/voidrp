@@ -104,20 +104,26 @@ public class PlayerInteractListener implements Listener {
                     if (block != null && block.getInfo() != null && block.getInfoValue() != null) {
 
                         if (block.getInfo().equalsIgnoreCase("banner")) {
+                            if (playerData.getFaction() == null) return;
                             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
                             Block b = event.getClickedBlock();
+                            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                            if (!factionManager.isBannerRegistered(block)) {
+                                factionManager.updateBanner(block, factionData);
+                            }
                             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen" + (factionManager.canSprayBanner(block) ? "" :" §8(§cx§8)"))) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
+                                    player.closeInventory();
                                     if (!factionManager.canSprayBanner(block)) {
                                         return;
                                     }
-                                    FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-                                    Banner banner = (Banner) b;
+                                    Banner banner = (Banner) b.getState();
                                     banner.setPatterns(factionData.getBannerPattern());
+                                    banner.setBaseColor(factionData.getBannerColor());
                                     banner.update();
                                     player.sendMessage("§8[§bBanner§8]§7 Du hast den Banner §3" + block.getInfoValue() + "§7 übersprüht!");
-                                    factionManager.updateBanner(b, factionData);
+                                    factionManager.updateBanner(block, factionData);
                                     playerManager.addExp(player, Main.random(5,10));
                                 }
                             });

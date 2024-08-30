@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
+import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
@@ -21,10 +22,12 @@ import java.time.LocalDateTime;
 public class PayDayUtils {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public PayDayUtils(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
     }
+
     public void givePayDay(Player player) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         double plus = 0;
@@ -79,9 +82,20 @@ public class PayDayUtils {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                     plus += houseData.getMoney();
                     Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.executeUpdate("UPDATE `housing` SET `money` = 0 WHERE `number` = " + houseData.getNumber());
+                    statement.executeUpdate("UPDATE `housing` SET `money` = 0, `kWh` = 0 WHERE `number` = " + houseData.getNumber());
                     player.sendMessage("§8 ➥ §6Mieteinnahmen (Haus " + houseData.getNumber() + ")§8: §a+" + houseData.getMoney() + "$");
                     houseData.setMoney(0);
+                    if (houseData.isServerRoom()) {
+                        float kWh = 0;
+                        for (Miner miner : houseData.getActiveMiner()) {
+                            kWh += miner.getKWh();
+                            miner.setKWh(0);
+                            miner.save();
+                        }
+                        float amount = kWh * ServerManager.getPayout("kwh");
+                        player.sendMessage("§8 ➥ §bStromkosten (Haus " + houseData.getNumber() + ")§8: §c-" + amount + "$");
+                        plus -= kWh;
+                    }
                 }
             }
         }

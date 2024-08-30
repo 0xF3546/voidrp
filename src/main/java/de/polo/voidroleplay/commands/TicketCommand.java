@@ -1,12 +1,14 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.NaviData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,10 +57,20 @@ public class TicketCommand implements CommandExecutor {
             return false;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §e" + target.getName() + "'s Ticket");
-        inventoryManager.setItem(new CustomItem(0, ItemManager.createItemHead(target.getUniqueId().toString(), 1, 0, "§6" + target.getName(), "§8 ➥ §eTicket-Ersteller")) {
+        Player finalTarget = target;
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItemHead(finalTarget.getUniqueId().toString(), 1, 0, "§6" + finalTarget.getName(), Arrays.asList("§8 ➥ §eTicket-Ersteller", "§8 ➥ §7[§6Linksklick§7]§e Zum Spieler teleportieren", "§8 ➥ §7[§6Rechtsklick§7]§e Spieler zum nächsten Navi teleportieren"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                if (event.isLeftClick()) {
+                    player.teleport(finalTarget.getLocation());
+                    player.sendMessage(Prefix.support_prefix + "Du hast dich zu " + finalTarget.getName() + " teleportiert.");
+                    Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", ChatColor.AQUA);
+                } else {
+                    NaviData nearest = Navigation.getNearestNaviPoint(finalTarget.getLocation());
+                    finalTarget.teleport(Main.getInstance().locationManager.getLocation(nearest.getLocation()));
+                    player.sendMessage(Prefix.support_prefix + "Du hast " + finalTarget.getName() + " zu " + nearest.getName() + "§7 teleportiert.");
+                    Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), ChatColor.AQUA);
+                }
             }
         });
         int i = 1;

@@ -528,65 +528,65 @@ public class EquipCommand implements CommandExecutor, Listener {
                     }
                 });
             }
-            if (playerData.getFaction().equalsIgnoreCase("Terroristen")) {
-                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        if (playerData.getFactionGrade() < 6) {
-                            player.sendMessage(Main.error + "Du musst mindestens rang 6 sein um einen Sprengstoff zu kaufen!");
-                            return;
-                        }
-                        if (factionData.getBank() < 2500) {
-                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
-                            return;
-                        }
-                        if (playerData.getBank() < 2500) {
-                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                            return;
-                        }
-                        playerData.removeBankMoney(2500, "Sprengstoff-Kauf");
-                        ItemManager.addCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
+        }
+        if (playerData.getFaction().equalsIgnoreCase("Terroristen")) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getFactionGrade() < 6) {
+                        player.sendMessage(Main.error + "Du musst mindestens rang 6 sein um einen Sprengstoff zu kaufen!");
+                        return;
                     }
-                });
-                inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        if (playerData.getFactionGrade() < 3) {
-                            player.sendMessage(Main.error + "Du musst mindestens rang 3 sein um eine Granate zu kaufen!");
-                            return;
-                        }
-                        if (factionData.getBank() < 1500) {
-                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
-                            return;
-                        }
-                        if (playerData.getBank() < 1500) {
-                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                            return;
-                        }
-                        playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
-                        ItemManager.addCustomItem(player, RoleplayItem.GRANATE, 1);
+                    if (factionData.getBank() < 2500) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
+                        return;
                     }
-                });
-                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        if (playerData.getFactionGrade() < 4) {
-                            player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
-                            return;
-                        }
-                        if (factionData.getBank() < 2500) {
-                            player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
-                            return;
-                        }
-                        if (playerData.getBank() < 2500) {
-                            player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                            return;
-                        }
-                        playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.GRANATE.getDisplayName()));
+                    if (playerData.getBank() < 2500) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
                     }
-                });
-            }
+                    playerData.removeBankMoney(2500, "Sprengstoff-Kauf");
+                    ItemManager.addCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getFactionGrade() < 3) {
+                        player.sendMessage(Main.error + "Du musst mindestens rang 3 sein um eine Granate zu kaufen!");
+                        return;
+                    }
+                    if (factionData.getBank() < 1500) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < 1500) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
+                    ItemManager.addCustomItem(player, RoleplayItem.GRANATE, 1);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getFactionGrade() < 4) {
+                        player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
+                        return;
+                    }
+                    if (factionData.getBank() < 2500) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < 2500) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
+                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.GRANATE.getDisplayName()));
+                }
+            });
         }
     }
 
