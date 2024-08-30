@@ -28,6 +28,7 @@ public class UseCommand implements CommandExecutor {
         int jointCount = ItemManager.getCustomItemCount(player, RoleplayItem.CIGAR);
         String errorMsg = "§cDu hast nicht genug Drogen.";
         switch (args[0].toLowerCase()) {
+            case "schnupftabak":
             case "kokain":
                 if (cocaineCount >= 1) {
                     GamePlay.useDrug(player, Drug.COCAINE);
@@ -35,6 +36,7 @@ public class UseCommand implements CommandExecutor {
                     player.sendMessage(errorMsg);
                 }
                 break;
+            case "zigarre":
             case "joint":
                 if (jointCount >= 1) {
                     GamePlay.useDrug(player, Drug.JOINT);
@@ -63,8 +65,16 @@ public class UseCommand implements CommandExecutor {
                     player.sendMessage(errorMsg);
                 }
                 break;
+            case "crystal":
+            case "kristall":
+                if (cocaineCount >= 1) {
+                    GamePlay.useDrug(player, Drug.CRYSTAL);
+                } else {
+                    player.sendMessage(errorMsg);
+                }
+                break;
             default:
-                player.sendMessage(Main.error + "Syntax-Fehler: /use [Kokain/Joint/Schmerzmittel/Spritze]");
+                player.sendMessage(Main.error + "Syntax-Fehler: /use [Schnupftabak/Zigarre/Kristall/Schmerzmittel/Spritze]");
                 break;
         }
         return false;
