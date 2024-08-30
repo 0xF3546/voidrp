@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ public class FactionManager {
     private final PlayerManager playerManager;
     public final SubGroups subGroups;
     private final List<SubTeam> subTeams = new ArrayList<>();
+    private final HashMap<Block, LocalDateTime> bannerSprayed = new HashMap<>();
     public FactionManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
@@ -590,5 +592,17 @@ public class FactionManager {
         statement.executeUpdate();
         statement.close();
         connection.close();
+    }
+
+    public void updateBanner(Block block, FactionData faction) {
+        if (bannerSprayed.get(block) == null) {
+            bannerSprayed.put(block, Utils.getTime());
+            return;
+        }
+        bannerSprayed.replace(block, Utils.getTime());
+    }
+    public boolean canSprayBanner(Block block) {
+        if (bannerSprayed.get(block) == null) return true;
+        return bannerSprayed.get(block).plusMinutes(10).isAfter(Utils.getTime());
     }
 }
