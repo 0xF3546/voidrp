@@ -489,7 +489,9 @@ public final class Main extends JavaPlugin {
         public BombeCommand bombeCommand;
         public CookCommand cookCommand;
         public RegisterFactionBanner registerFactionBanner;
+        public SperrinfoCommand sperrinfoCommand;
         private void Init() {
+            sperrinfoCommand = new SperrinfoCommand(playerManager);
             cookCommand = new CookCommand(playerManager);
             registerFactionBanner = new RegisterFactionBanner(playerManager, factionManager);
             bombeCommand = new BombeCommand(playerManager, utils, factionManager);
