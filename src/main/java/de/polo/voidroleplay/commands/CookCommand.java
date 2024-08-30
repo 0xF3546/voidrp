@@ -41,6 +41,10 @@ public class CookCommand implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Hauses.");
             return false;
         }
+        if (!house.getHouseType().isCanCook()) {
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Wohnwagens!");
+            return false;
+        }
         if (!Main.getInstance().housing.canPlayerInteract(player, house.getNumber())) {
             player.sendMessage(Prefix.ERROR + "Du hast kein Zugriff auf dieses Haus.");
             return false;

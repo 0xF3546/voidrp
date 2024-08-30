@@ -487,7 +487,9 @@ public final class Main extends JavaPlugin {
         public AnwaltCommand anwaltCommand;
         public SprengguertelCommand sprengguertelCommand;
         public BombeCommand bombeCommand;
+        public CookCommand cookCommand;
         private void Init() {
+            cookCommand = new CookCommand(playerManager);
             bombeCommand = new BombeCommand(playerManager, utils, factionManager);
             sprengguertelCommand = new SprengguertelCommand(playerManager, utils);
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
