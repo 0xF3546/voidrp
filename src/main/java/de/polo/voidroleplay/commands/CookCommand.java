@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.CookTimer;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
@@ -73,6 +74,7 @@ public class CookCommand implements CommandExecutor, Listener {
             }
             ItemManager.addCustomItem(timer.getPlayer(), RoleplayItem.CRYSTAL, Main.random(8, 13));
             timer.getPlayer().sendMessage(Prefix.MAIN + "Das kochen wurde beendet.");
+            playerManager.addExp(timer.getPlayer(), Main.random(80, 130));
             activeCooking.remove(timer);
         }
     }
