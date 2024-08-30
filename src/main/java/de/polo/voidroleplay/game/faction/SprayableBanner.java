@@ -20,7 +20,7 @@ public class SprayableBanner {
 
     @Getter
     @Setter
-    private LocalDateTime lastSpray = Utils.getTime();
+    private LocalDateTime lastSpray = Utils.getTime().minusMinutes(10);
 
     public SprayableBanner(int registeredBlock, int faction) {
         this.registeredBlock = registeredBlock;

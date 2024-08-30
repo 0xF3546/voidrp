@@ -21,7 +21,10 @@ import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
 import org.bukkit.*;
 import org.bukkit.block.*;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -118,10 +121,31 @@ public class PlayerInteractListener implements Listener {
                                     if (!factionManager.canSprayBanner(block)) {
                                         return;
                                     }
-                                    Banner banner = (Banner) b.getState();
+                                    BlockState state = b.getState();
+                                    /*BlockData blockData = state.getBlockData();
+
+                                    BlockFace originalFace = null;
+                                    boolean isWallBanner = false;
+                                    if (blockData instanceof Directional) {
+                                        isWallBanner = true;
+                                        Directional directional = (Directional) blockData;
+                                        originalFace = directional.getFacing();
+                                        System.out.println("Original facing: " + originalFace);
+                                    }*/
+
+                                    Banner banner = (Banner) state;
+                                    //banner.setType(factionData.getBannerColor());
                                     banner.setPatterns(factionData.getBannerPattern());
-                                    banner.setBaseColor(factionData.getBannerColor());
-                                    banner.update();
+                                    banner.update(true, true);
+
+                                    /*if (isWallBanner) {
+                                        Directional newDirectional = (Directional) b.getBlockData();
+                                        newDirectional.setFacing(originalFace);
+                                        b.setBlockData(newDirectional);
+                                        state.update(true, true);
+                                        System.out.println("New facing: " + newDirectional.getFacing());
+                                    }*/
+
                                     player.sendMessage("§8[§bBanner§8]§7 Du hast den Banner §3" + block.getInfoValue() + "§7 übersprüht!");
                                     factionManager.updateBanner(block, factionData);
                                     playerManager.addExp(player, Main.random(5,10));
@@ -130,7 +154,7 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 }
-                if (event.getClickedBlock().getType() == Material.OAK_DOOR) {
+                if (event.getClickedBlock().getState() instanceof Door) {
                     RegisteredBlock rBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (rBlock != null && rBlock.getInfo() != null) {
                         if (rBlock.getInfo().equalsIgnoreCase("fdoor")) {
