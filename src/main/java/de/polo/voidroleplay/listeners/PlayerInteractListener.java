@@ -106,10 +106,10 @@ public class PlayerInteractListener implements Listener {
                         if (block.getInfo().equalsIgnoreCase("banner")) {
                             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
                             Block b = event.getClickedBlock();
-                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen" + (factionManager.canSprayBanner(event.getClickedBlock()) ? "" :" §8(§cx§8)"))) {
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen" + (factionManager.canSprayBanner(block) ? "" :" §8(§cx§8)"))) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
-                                    if (!factionManager.canSprayBanner(b)) {
+                                    if (!factionManager.canSprayBanner(block)) {
                                         return;
                                     }
                                     FactionData factionData = factionManager.getFactionData(playerData.getFaction());
