@@ -61,6 +61,10 @@ public class House {
     @Getter
     private final int maxMiner;
 
+    @Getter
+    @Setter
+    private boolean cookActive;
+
     public House(int number, int maxServer, int maxMiner) {
         this.maxServer = maxServer;
         this.maxMiner = maxMiner;

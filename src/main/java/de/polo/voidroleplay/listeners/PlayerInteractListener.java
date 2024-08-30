@@ -326,6 +326,14 @@ public class PlayerInteractListener implements Listener {
 
                                 }
                             });
+                            /*if (houseData.getHouseType().isCanCook()) {
+                                inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§bKochen")) {
+                                    @Override
+                                    public void onClick(InventoryClickEvent event) {
+                                        Main.getInstance().housing.openCookMenu(player, houseData);
+                                    }
+                                });
+                            }*/
                             if (playerData.getVariable("job") == null) {
                                 if (playerData.getFaction() != null && (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) && playerData.isDuty()) {
                                     if (rammingPlayers.get(player) != null) {

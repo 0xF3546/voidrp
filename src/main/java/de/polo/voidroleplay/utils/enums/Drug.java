@@ -33,6 +33,11 @@ public enum Drug {
             new PotionEffect(PotionEffectType.ABSORPTION, 3 * 60 * 20, 4),
             new PotionEffect(PotionEffectType.SPEED, 15 * 20, 1),
             new PotionEffect(PotionEffectType.REGENERATION, 15 * 12, 0)
+    )),
+    CRYSTAL(RoleplayItem.CRYSTAL, Arrays.asList(
+            new PotionEffect(PotionEffectType.ABSORPTION, 3 * 60 * 20, 4),
+            new PotionEffect(PotionEffectType.SPEED, 15 * 20, 1),
+            new PotionEffect(PotionEffectType.REGENERATION, 15 * 20, 1)
     ));
 
     private final RoleplayItem item;

@@ -4,15 +4,20 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.base.crypto.Miner;
+import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.HouseType;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.StorageType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -22,6 +27,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -148,124 +155,170 @@ public class Housing implements CommandExecutor, Listener {
         return access;
     }
 
-    public Collection<House> getHouses(Player player) {
-        List<House> access = new ArrayList<>();
-        for (House houseData : houseDataMap.values()) {
-            if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) continue;
+    public House getNearestHouse(Location loc, int range) {
+        int centerX = loc.getBlockX();
+        int centerY = loc.getBlockY();
+        int centerZ = loc.getBlockZ();
+        World world = loc.getWorld();
 
-            access.add(houseData);
-        }
-        return access;
-    }
+        House nearestHouse = null;
+        double nearestDistance = Double.MAX_VALUE;
 
-    @SneakyThrows
-    public void addHausSlot(Player player) {
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        System.out.println("hausslot hinzugefügt");
-        playerData.setHouseSlot(playerData.getHouseSlot() + 1);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-    }
+        for (int x = centerX - range; x <= centerX + range; x++) {
+            for (int y = centerY - range; y <= centerY + range; y++) {
+                for (int z = centerZ - range; z <= centerZ + range; z++) {
+                    Location location = new Location(world, x, y, z);
+                    Block block = location.getBlock();
 
-    public boolean resetHouse(Player player, int house) {
-        for (RegisteredBlock rBlock : blockManager.getBlocks()) {
-            if (rBlock.getInfo() == null) continue;
-            if (rBlock.getInfoValue() == null) continue;
+                    if (block.getType().toString().contains("SIGN")) {
+                        Sign sign = (Sign) block.getState();
+                        RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(location);
+                        if (registeredBlock == null) continue;
+                        if (registeredBlock.getInfoValue() == null) continue;
+                        if (!registeredBlock.getInfo().equalsIgnoreCase("house")) continue;
 
-            if (!rBlock.getInfo().equalsIgnoreCase("house")) continue;
-            if (!rBlock.getInfoValue().equalsIgnoreCase(String.valueOf(house))) continue;
+                        String houseIdString = sign.getLine(0);
+                        int houseId;
+                        try {
+                            houseId = Integer.parseInt(houseIdString);
+                        } catch (NumberFormatException e) {
+                            continue;
+                        }
 
-            System.out.println("Haus: " + house);
-            System.out.println(rBlock.getInfo() + " - " + rBlock.getInfoValue());
-
-            Block block = rBlock.getLocation().getBlock();
-            System.out.println(block.getType().toString());
-            if (block.getType().toString().contains("SIGN")) {
-                Sign sign = (Sign) block.getState();
-                try {
-                    House houseData = Housing.houseDataMap.get(house);
-                    System.out.println("HOUSE: " + houseData.getOwner());
-                    houseData.setOwner(null);
-                    sign.setLine(2, "§aZu Verkaufen");
-                    sign.update();
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.executeUpdate("UPDATE `housing` SET `owner` = null WHERE `number` = " + house);
-                    return true;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                        House houseData = houseDataMap.get(houseId);
+                        if (houseData != null) {
+                            double distance = loc.distance(location);
+                            if (distance < nearestDistance) {
+                                nearestDistance = distance;
+                                nearestHouse = houseData;
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        return false;
+        return nearestHouse;
     }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        Player player = (Player) commandSender;
-        if (locationManager.getDistanceBetweenCoords(player, "houseaddon") > 5) {
-            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Hausaddon-Shops.");
+    public Collection<House> getHouses(Player player) {
+            List<House> access = new ArrayList<>();
+            for (House houseData : houseDataMap.values()) {
+                if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) continue;
+
+                access.add(houseData);
+            }
+            return access;
+        }
+
+        @SneakyThrows
+        public void addHausSlot(Player player) {
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+            System.out.println("hausslot hinzugefügt");
+            playerData.setHouseSlot(playerData.getHouseSlot() + 1);
+            Statement statement = Main.getInstance().mySQL.getStatement();
+            statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        }
+
+        public boolean resetHouse(Player player, int house) {
+            for (RegisteredBlock rBlock : blockManager.getBlocks()) {
+                if (rBlock.getInfo() == null) continue;
+                if (rBlock.getInfoValue() == null) continue;
+
+                if (!rBlock.getInfo().equalsIgnoreCase("house")) continue;
+                if (!rBlock.getInfoValue().equalsIgnoreCase(String.valueOf(house))) continue;
+
+                System.out.println("Haus: " + house);
+                System.out.println(rBlock.getInfo() + " - " + rBlock.getInfoValue());
+
+                Block block = rBlock.getLocation().getBlock();
+                System.out.println(block.getType().toString());
+                if (block.getType().toString().contains("SIGN")) {
+                    Sign sign = (Sign) block.getState();
+                    try {
+                        House houseData = Housing.houseDataMap.get(house);
+                        System.out.println("HOUSE: " + houseData.getOwner());
+                        houseData.setOwner(null);
+                        sign.setLine(2, "§aZu Verkaufen");
+                        sign.update();
+                        Statement statement = Main.getInstance().mySQL.getStatement();
+                        statement.executeUpdate("UPDATE `housing` SET `owner` = null WHERE `number` = " + house);
+                        return true;
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
-        int i = 0;
-        for (House house : getHouses(player)) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (!house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getMiner() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
+
+        @Override
+        public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+            Player player = (Player) commandSender;
+            if (locationManager.getDistanceBetweenCoords(player, "houseaddon") > 5) {
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Hausaddon-Shops.");
+                return false;
+            }
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
+            int i = 0;
+            for (House house : getHouses(player)) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (!house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getMiner() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        openHouseAddonMenu(player, house);
+                    }
+                });
+                i++;
+            }
+            return false;
+        }
+
+        private void openHouseAddonMenu(Player player, House house) {
+            PlayerData playerData = playerManager.getPlayerData(player);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
+            int serverRoomPrice = ServerManager.getPayout("serverroom");
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§6Server-Raum" + (house.isServerRoom() ? " §8[§cGekauft§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverRoomPrice) + "$")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    openHouseAddonMenu(player, house);
+                    if (house.isServerRoom()) return;
+                    player.closeInventory();
+                    if (playerData.getBargeld() < serverRoomPrice) {
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
+                        return;
+                    }
+                    player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Server-Raum\" gekauft.");
+                    playerData.removeMoney(serverRoomPrice, "Kauf Server-Raum (" + house.getNumber() + ")");
+                    house.setServerRoom(true);
+                    house.save();
                 }
             });
-            i++;
-        }
-        return false;
-    }
-
-    private void openHouseAddonMenu(Player player, House house) {
-        PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
-        int serverRoomPrice = ServerManager.getPayout("serverroom");
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§6Server-Raum" + (house.isServerRoom() ? " §8[§cGekauft§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverRoomPrice) + "$")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (house.isServerRoom()) return;
-                player.closeInventory();
-                if (playerData.getBargeld() < serverRoomPrice) {
-                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
-                    return;
+            int minerPrice = ServerManager.getPayout("miner");
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Crypto-Miner" + (house.getMiner() >= house.getMaxMiner() ? " §8[§cKein Platz§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(minerPrice) + "$")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (!house.isServerRoom()) {
+                        player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
+                        return;
+                    }
+                    if (house.getMiner() >= house.getMaxMiner()) return;
+                    if (playerData.getBargeld() < minerPrice) {
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
+                        return;
+                    }
+                    player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Crypto-Miner\" gekauft.");
+                    playerData.removeMoney(serverRoomPrice, "Kauf Miner (" + house.getNumber() + ")");
+                    house.setMiner(house.getMiner() + 1);
+                    house.addMiner(new Miner());
+                    house.save();
                 }
-                player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Server-Raum\" gekauft.");
-                playerData.removeMoney(serverRoomPrice, "Kauf Server-Raum (" + house.getNumber() + ")");
-                house.setServerRoom(true);
-                house.save();
-            }
-        });
-        int minerPrice = ServerManager.getPayout("miner");
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Crypto-Miner" + (house.getMiner() >= house.getMaxMiner() ? " §8[§cKein Platz§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(minerPrice) + "$")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!house.isServerRoom()) {
-                    player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
-                    return;
-                }
-                if (house.getMiner() >= house.getMaxMiner()) return;
-                if (playerData.getBargeld() < minerPrice) {
-                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
-                    return;
-                }
-                player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Crypto-Miner\" gekauft.");
-                playerData.removeMoney(serverRoomPrice, "Kauf Miner (" + house.getNumber() + ")");
-                house.setMiner(house.getMiner() + 1);
-                house.addMiner(new Miner());
-                house.save();
-            }
-        });
-        int serverPrice = ServerManager.getPayout("server");
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Server" + (house.getServer() >= house.getMaxServer() ? " §8[§cKein Platz§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverPrice) + "$")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                player.sendMessage(Prefix.ERROR + "Aktuell haben wir keine Server zu verkaufen.");
-                return;/*
+            });
+            int serverPrice = ServerManager.getPayout("server");
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Server" + (house.getServer() >= house.getMaxServer() ? " §8[§cKein Platz§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverPrice) + "$")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.sendMessage(Prefix.ERROR + "Aktuell haben wir keine Server zu verkaufen.");
+                    return;/*
                 if (!house.isServerRoom()) {
                     player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
                     return;
@@ -278,89 +331,119 @@ public class Housing implements CommandExecutor, Listener {
                 playerData.removeMoney(serverRoomPrice, "Kauf Server (" + house.getNumber() + ")");
                 house.setServer(house.getServer() + 1);
                 house.save();*/
-            }
-        });
-    }
-
-    public void openHouseServerRoom(Player player, House house) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ")");
-        int active = 0;
-        float kWh = 0;
-        if (!house.getActiveMiner().isEmpty()) {
-            for (Miner miner : house.getActiveMiner()) {
-                if (miner.isActive()) active++;
-                kWh += miner.getKWh();
-            }
+                }
+            });
         }
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aAktiv§8: §7" + active + "§8/§7" + house.getMiner(), "§8 ➥ §bVerbrauch§8: §7" + kWh + " kWh"))) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                openCryptoRoom(player, house);
+
+        public void openHouseServerRoom(Player player, House house) {
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ")");
+            int active = 0;
+            float kWh = 0;
+            if (!house.getActiveMiner().isEmpty()) {
+                for (Miner miner : house.getActiveMiner()) {
+                    if (miner.isActive()) active++;
+                    kWh += miner.getKWh();
+                }
             }
-        });
-
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.CHEST, 1, 0, "§7Server")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-
-            }
-        });
-    }
-
-    public void doCryptoTick() {
-        for (House house : houseDataMap.values()) {
-            if (!house.isServerRoom()) continue;
-            if (house.getActiveMiner().isEmpty()) continue;
-            for (Miner miner : house.getActiveMiner()) {
-                miner.doTick();
-            }
-        }
-    }
-
-    private void openCryptoRoom(Player player, House house) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Crypto");
-        int i = 0;
-        for (Miner miner : house.getActiveMiner()) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aStatus§8: " + (miner.isActive() ? "§aAktiv" : "§cInaktiv"), "§8 ➥ §bVerbrauch§8: §7" + miner.getKWh() + " kWh", "§8 ➥ §eCoins§8: §7" + miner.getCoins()))) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aAktiv§8: §7" + active + "§8/§7" + house.getMiner(), "§8 ➥ §bVerbrauch§8: §7" + kWh + " kWh"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    openCryptoRoom(player, house);
+                }
+            });
+
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.CHEST, 1, 0, "§7Server")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+
+                }
+            });
+        }
+
+        public void doCryptoTick() {
+            for (House house : houseDataMap.values()) {
+                if (!house.isServerRoom()) continue;
+                if (house.getActiveMiner().isEmpty()) continue;
+                for (Miner miner : house.getActiveMiner()) {
+                    miner.doTick();
+                }
+            }
+        }
+
+        private void openCryptoRoom(Player player, House house) {
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Crypto");
+            int i = 0;
+            for (Miner miner : house.getActiveMiner()) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aStatus§8: " + (miner.isActive() ? "§aAktiv" : "§cInaktiv"), "§8 ➥ §bVerbrauch§8: §7" + miner.getKWh() + " kWh", "§8 ➥ §eCoins§8: §7" + miner.getCoins()))) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        openCryptoMiner(player, house, miner);
+                    }
+                });
+                i++;
+            }
+        }
+
+        private void openCryptoMiner(Player player, House house, Miner miner) {
+            InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Miner " + miner.getId());
+            inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.PAPER, 1, 0, miner.isActive() ? "§aAktiv" : "§cInaktiv")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    miner.setActive(!miner.isActive());
+                    miner.save();
                     openCryptoMiner(player, house, miner);
                 }
             });
-            i++;
+            inventoryManager.setItem(new CustomItem(6, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + miner.getCoins() + " Coins")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    playerManager.getPlayerData(player).addCrypto(miner.getCoins(), "Ertrag Miner " + miner.getId(), false);
+                    miner.setCoins(0);
+                    miner.save();
+                    openCryptoMiner(player, house, miner);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    openCryptoRoom(player, house);
+                }
+            });
+        }
+
+        public void openCookMenu(Player player, House house) {
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§bKochmenü");
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, "§7Lager öffnen")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    Storage s = Storage.getStorageByTypeAndPlayer(StorageType.CRYSTAL_LABORATORY, player, house.getNumber());
+                    if (s == null) {
+                        s = new Storage(StorageType.CRYSTAL_LABORATORY);
+                        s.setPlayer(player.getUniqueId().toString());
+                        s.setHouseNumber(house.getNumber());
+                        s.create();
+                    };
+                    s.open(player);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, house.isCookActive() ? "§cStoppen" : "§aStarten")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    house.setCookActive(!house.isCookActive());
+                    ItemStack item = event.getCurrentItem();
+                    if (item == null || item.getItemMeta() == null) return;
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName(house.isCookActive() ? "§cStoppen" : "§aStarten");
+                    item.setItemMeta(meta);
+                }
+            });
+
+        }
+
+        @EventHandler
+        public void onMinute(MinuteTickEvent event) {
+            if (event.getMinute() % 90 != 0) return;
+            doCryptoTick();
         }
     }
 
-    private void openCryptoMiner(Player player, House house, Miner miner) {
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Miner " + miner.getId());
-        inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.PAPER, 1, 0, miner.isActive() ? "§aAktiv" : "§cInaktiv")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                miner.setActive(!miner.isActive());
-                miner.save();
-                openCryptoMiner(player, house, miner);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(6, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + miner.getCoins() + " Coins")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                playerManager.getPlayerData(player).addCrypto(miner.getCoins(), "Ertrag Miner " + miner.getId(), false);
-                miner.setCoins(0);
-                miner.save();
-                openCryptoMiner(player, house, miner);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                openCryptoRoom(player, house);
-            }
-        });
-    }
-
-    @EventHandler
-    public void onMinute(MinuteTickEvent event) {
-        if (event.getMinute() % 90 != 0) return;
-        doCryptoTick();
-    }
-}
