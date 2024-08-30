@@ -2,6 +2,7 @@ package de.polo.voidroleplay.game.base.housing;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.crypto.Miner;
+import de.polo.voidroleplay.utils.enums.HouseType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -48,6 +49,10 @@ public class House {
     @Getter
     @Setter
     private int miner;
+
+    @Getter
+    @Setter
+    private HouseType houseType = HouseType.BASIC;
 
     @Getter
     @Setter
