@@ -51,7 +51,12 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(Main.error + "Die Fraktion \"" + args[0] + "\" konnte nicht gefunden werden.");
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /fraktionsinfo [Fraktion]");
+            player.sendMessage("§7   ===§8[§6Fraktionen§8]§7===");
+            for (FactionData factionData : factionManager.getFactions()) {
+                if (!factionData.isActive()) continue;
+                int count = factionManager.getOnlineMemberCount(factionData.getName());
+                player.sendMessage("§8 ➥ §" + factionData.getPrimaryColor() + factionData.getFullname() + "§8 - §7" + count + " online");
+            }
         }
         return false;
     }
