@@ -5,6 +5,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
@@ -189,7 +190,7 @@ public class ServerManager {
             public void run() {
                 LocalDateTime now = Utils.getTime();
                 ScoreboardAPI scoreboardAPI = Main.getInstance().getScoreboardAPI();
-                Bukkit.getPluginManager().callEvent(new MinuteTickEvent(now.getSecond()));
+                Bukkit.getPluginManager().callEvent(new SecondTickEvent(now.getSecond()));
                 if (scoreboardAPI != null) scoreboardAPI.everySecond();
                 if (now.getHour() == 0 && now.getMinute() == 1 && now.getSecond() == 0 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
                     // clear everything
