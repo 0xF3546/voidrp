@@ -41,7 +41,7 @@ public class Weapons implements Listener {
 
     private final Utils utils;
     private final PlayerManager playerManager;
-    public HashMap<Player, LocalDateTime> weaponUsages = new HashMap<>();
+    public HashMap<UUID, LocalDateTime> weaponUsages = new HashMap<>();
     private HashMap<Player, Weapon> weaponCooldowns = new HashMap<>();
     HashMap<Arrow, LocalDateTime> arrows = new HashMap<>();
 
@@ -215,9 +215,9 @@ public class Weapons implements Listener {
         if (playerData.isDead()) {
             return;
         }
-        if (weaponUsages.get(player) != null) {
-            if (Utils.getTime().isAfter(weaponUsages.get(player))) {
-                weaponUsages.remove(player);
+        if (weaponUsages.get(player.getUniqueId()) != null) {
+            if (Utils.getTime().isAfter(weaponUsages.get(player.getUniqueId()))) {
+                weaponUsages.remove(player.getUniqueId());
             } else {
                 utils.sendActionBar(player, "§cDu hast keine Kraft um die Waffe zu benutzen!");
                 return;
