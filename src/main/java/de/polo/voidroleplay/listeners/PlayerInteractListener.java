@@ -108,6 +108,11 @@ public class PlayerInteractListener implements Listener {
                             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen")) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
+                                    FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                                    Banner banner = (Banner) block;
+                                    banner.setPatterns(factionData.getBannerPattern());
+                                    banner.update();
+                                    player.sendMessage("§8[§bBanner§8]§7 Du hast den Banner §3" + block.getInfoValue() + "§7 übersprüht!");
                                 }
                             });
                         }
