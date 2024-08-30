@@ -394,6 +394,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 }
             }
             gangwarData.getGangZone().setOwner(attackerData.getName());
+            Main.getInstance().blockManager.updateBlocksAtScenario("gangwar-" + gangwarData.getGangZone().getName(), attackerData);
             try {
                 Connection connection = Main.getInstance().mySQL.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE gangwar SET lastAttack = NOW(), owner = ? WHERE zone = ?");

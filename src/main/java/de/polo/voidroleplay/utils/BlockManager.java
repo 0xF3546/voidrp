@@ -2,6 +2,7 @@ package de.polo.voidroleplay.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.housing.House;
@@ -9,7 +10,9 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +21,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlockManager {
     private final MySQL mySQL;
@@ -123,5 +127,17 @@ public class BlockManager {
 
     public Collection<RegisteredBlock> getBlocks() {
         return registeredBlocks;
+    }
+
+    public void updateBlocksAtScenario(String scenario, FactionData faction) {
+        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(b -> b.getInfo().equalsIgnoreCase(scenario)).collect(Collectors.toList());
+        for (RegisteredBlock block : blocks) {
+            BlockState state = block.getBlock().getState();
+            if (state instanceof Banner) {
+                ((Banner) state).setPatterns(faction.getBannerPattern());
+                ((Banner) state).setBaseColor(faction.getBannerColor());
+                state.update();
+            }
+        }
     }
 }

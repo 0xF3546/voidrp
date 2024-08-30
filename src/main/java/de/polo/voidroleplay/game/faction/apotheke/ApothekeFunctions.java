@@ -148,10 +148,11 @@ public class ApothekeFunctions implements Listener {
                     playerManager.addExp(playerData1.getPlayer(), Main.random(5, 10));
                 }
                 if (apotheke.getAttacker().getName().equalsIgnoreCase("Polizei") || apotheke.getAttacker().getName().equalsIgnoreCase("FBI")) {
-                 apotheke.setOwner("staat");
+                    apotheke.setOwner("staat");
                 } else {
                     apotheke.setOwner(apotheke.getAttackerFaction());
                 }
+                Main.getInstance().blockManager.updateBlocksAtScenario("apotheke-" + apotheke.getId(), factionManager.getFactionData(apotheke.getAttackerFaction()));
                 apotheke.save();
                 rob.remove(apotheke);
             } else {
