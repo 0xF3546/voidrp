@@ -42,7 +42,7 @@ public class Miner {
     public void doTick() {
         if (!isActive()) return;
         kWh += getRandom(0.2F, 0.5F);
-        coins += getRandom(0.4F, 0.6F);
+        coins += getRandom(0.1F, 0.25F);
         save();
     }
 
