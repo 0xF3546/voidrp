@@ -38,7 +38,9 @@ public class SperrinfoCommand implements CommandExecutor {
         player.sendMessage("§7   ===§8[§cCooldowns§8]§7===");
 
         if (playerData.getFactionCooldown() != null) {
-            player.sendMessage("§8 ➦ §6Fraktions-sperre: §7" + hours + ":" + minutes);
+            if (hours < 6) {
+                player.sendMessage("§8 ➥ §6Fraktions-sperre: §7" + hours + ":" + minutes);
+            }
         }
 
         return true;
