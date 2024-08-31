@@ -139,6 +139,11 @@ public class GamePlay implements Listener {
     }
 
     public static void useDrug(Player player, Drug drug) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        if (playerData.isCuffed()) {
+            player.sendMessage(Prefix.ERROR + "Du bist in Handschellen.");
+            return;
+        }
         for (PotionEffect effect : drug.getEffects()) {
             if (!player.hasPotionEffect(effect.getType())) {
                 player.addPotionEffect(effect);
