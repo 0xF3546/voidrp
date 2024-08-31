@@ -160,14 +160,6 @@ public class DeathUtils {
             player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
             playerData.setDead(false);
             playerData.setDeathTime(0);
-            Inventory inventory = player.getInventory();
-            for (ItemStack itemStack : inventory.getContents()) {
-                if (itemStack == null) continue;
-                WeaponData weaponData = Main.getInstance().weapons.getWeaponData(itemStack.getType());
-                if (weaponData != null) {
-                    Main.getInstance().weapons.removeWeapon(player, itemStack);
-                }
-            }
             player.getInventory().clear();
         }
         Item skull = deathSkulls.get(player.getUniqueId().toString());
