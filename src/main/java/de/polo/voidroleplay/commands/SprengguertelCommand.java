@@ -58,7 +58,7 @@ public class SprengguertelCommand implements CommandExecutor, Listener {
                 player.sendMessage(Prefix.ERROR + "Die Zeit muss größer als 7 sein.");
                 return false;
             }
-            player.sendMessage("§cDein Sprenggürtel geht in " + args[0] + " hoch.");
+            player.sendMessage("§cDein Sprenggürtel geht in " + args[0] + " sekunden hoch.");
         } catch (NumberFormatException e) {
             player.sendMessage(Prefix.ERROR + "Die Zeit muss numerisch sein.");
             return false;
