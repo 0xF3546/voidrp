@@ -82,7 +82,7 @@ public class PayDayUtils {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                     plus += houseData.getMoney();
                     Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.executeUpdate("UPDATE `housing` SET `money` = 0, `kWh` = 0 WHERE `number` = " + houseData.getNumber());
+                    statement.executeUpdate("UPDATE `housing` SET `money` = 0 WHERE `number` = " + houseData.getNumber());
                     player.sendMessage("§8 ➥ §6Mieteinnahmen (Haus " + houseData.getNumber() + ")§8: §a+" + houseData.getMoney() + "$");
                     houseData.setMoney(0);
                     if (houseData.isServerRoom()) {
