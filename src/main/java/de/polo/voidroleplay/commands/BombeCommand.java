@@ -97,6 +97,7 @@ public class BombeCommand implements CommandExecutor, Listener {
         Block block = world.getBlockAt(location);
 
         player.getLocation().getBlock().setType(Material.TNT);
+        ItemManager.removeCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
         bomb = new Bomb(Utils.getTime(), block, 15);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), bomb.getColor()));
         Bukkit.broadcastMessage("§8[§6News§8] §6Achtung! es wurde eine bombe gefunden, in der nähe von: " + Navigation.getNearestNaviPoint(bomb.getBlock().getLocation()).getName().replace("&", "§"));
