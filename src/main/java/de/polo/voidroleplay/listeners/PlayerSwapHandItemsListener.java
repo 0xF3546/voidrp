@@ -235,7 +235,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.closeInventory();
                 if (targetplayerData.getVariable("robCd") != null) {
                     LocalDateTime robCd = targetplayerData.getVariable("robCd");
-                    if (!robCd.isAfter(Utils.getTime())) {
+                    if (!Utils.getTime().isAfter(robCd)) {
                         player.sendMessage(Prefix.ERROR + "Der Spieler wurde vor kurzem erst ausgeraubt");
                         return;
                     }
