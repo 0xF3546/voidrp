@@ -130,12 +130,12 @@ public class BlockManager {
     }
 
     public void updateBlocksAtScenario(String scenario, FactionData faction) {
-        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(b -> b.getInfo().equalsIgnoreCase(scenario)).collect(Collectors.toList());
+        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(b -> b.getInfo().equalsIgnoreCase("gangzone") && b.getInfoValue().equalsIgnoreCase(scenario)).collect(Collectors.toList());
         for (RegisteredBlock block : blocks) {
-            BlockState state = block.getBlock().getState();
+            BlockState state = block.getLocation().getBlock().getState();
             if (state instanceof Banner) {
+                //block.getLocation().getBlock().setType(faction.getBannerColor());
                 ((Banner) state).setPatterns(faction.getBannerPattern());
-                ((Banner) state).setBaseColor(faction.getBannerColor());
                 state.update();
             }
         }

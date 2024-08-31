@@ -21,7 +21,7 @@ public class ServerPingListener implements Listener {
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
         String firstline = "§6§lVoidRoleplay §8| §eReallife & Roleplay §8[§e1.16.5§8]";
-        String secondline = "§8➥ §cRoleplay mit Stil. §8 × §bⓘ §adiscord.gg/voidrp";
+        String secondline = "§8➥ §cRoleplay mit Stil. §8 × §bⓘ §adiscord.gg/void-roleplay";
         String motd = null;
 
         try {

@@ -48,7 +48,7 @@ public class FactionData {
 
     @Getter
     @Setter
-    private DyeColor bannerColor = null;
+    private Material bannerColor = null;
 
     @Getter
     @Setter

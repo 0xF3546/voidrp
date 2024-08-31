@@ -100,7 +100,7 @@ public class FactionManager {
                 JSONObject bannerObject = new JSONObject(bannerData);
 
                 String bannerTypeString = bannerObject.getString("baseColor");
-                factionData.setBannerColor(DyeColor.valueOf(bannerTypeString));
+                factionData.setBannerColor(Material.valueOf(bannerTypeString));
 
                 JSONArray jsonArray = bannerObject.getJSONArray("patterns");
                 List<Pattern> patterns = new ArrayList<>();

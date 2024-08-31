@@ -279,7 +279,8 @@ public class PlayerData {
 
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE players SET crypto = ? WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
+        statement.setFloat(1, crypto);
+        statement.setString(2, player.getUniqueId().toString());
         statement.execute();
         statement.close();
 

@@ -64,7 +64,7 @@ public class RegisterFactionBanner implements CommandExecutor {
         }
 
         JSONObject bannerObject = new JSONObject();
-        bannerObject.put("baseColor", banner.getBaseColor().name());
+        bannerObject.put("baseColor", banner.getType().name());
         bannerObject.put("patterns", jsonArray);
 
         FactionData factionData = factionManager.getFactionData(strings[0]);
@@ -73,7 +73,7 @@ public class RegisterFactionBanner implements CommandExecutor {
             return false;
         }
         factionData.setBannerPattern(banner.getPatterns());
-        factionData.setBannerColor(banner.getBaseColor());
+        factionData.setBannerColor(banner.getType());
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE factions SET banner = ? WHERE id = ?");
         statement.setString(1, bannerObject.toString());
