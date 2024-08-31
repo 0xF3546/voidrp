@@ -47,9 +47,16 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 return;
             }
             ItemStack item = player.getInventory().getItemInMainHand();
+            PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
+            if (ItemManager.equals(item, RoleplayItem.CROWBAR)) {
+                if (targetPlayerData.isCuffed()) {
+                    targetPlayerData.setCuffed(false);
+                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + "'s Handschellen geknackt");
+                    ItemManager.removeCustomItem(player, RoleplayItem.CROWBAR, 1);
+                }
+            }
             if (item.getType() == Material.LEAD) {
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
-                    PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
                     if (targetPlayerData.isAduty()) {
                         player.sendMessage(Prefix.ERROR + "Du kannst Spieler im Admindienst nicht fesseln.");
                         return;
