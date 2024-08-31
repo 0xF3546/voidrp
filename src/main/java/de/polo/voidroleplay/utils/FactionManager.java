@@ -644,4 +644,9 @@ public class FactionManager {
     public boolean isBannerRegistered(RegisteredBlock block) {
         return getSprayAbleBannerByBlockId(block.getId()) != null;
     }
+
+    public Collection<SprayableBanner> getBanner()
+    {
+        return sprayableBanners;
+    }
 }

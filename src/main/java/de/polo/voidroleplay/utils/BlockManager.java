@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.housing.House;
+import de.polo.voidroleplay.game.faction.SprayableBanner;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
