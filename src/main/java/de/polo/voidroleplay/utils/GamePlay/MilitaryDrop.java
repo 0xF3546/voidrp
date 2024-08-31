@@ -64,7 +64,8 @@ public class MilitaryDrop implements Listener {
 
         for (LocationData location : locationManager.getLocations()) {
             if (location.getType() == null) continue;
-            if (location.getType().equalsIgnoreCase("militarydrop")) spawns.add(new Location(Bukkit.getWorld("world"), location.getX(), location.getY(), location.getZ()));
+            if (location.getType().equalsIgnoreCase("militarydrop"))
+                spawns.add(new Location(Bukkit.getWorld("world"), location.getX(), location.getY(), location.getZ()));
         }
         startRound();
     }
@@ -94,16 +95,14 @@ public class MilitaryDrop implements Listener {
             return false;
         }
 
+        for (Player player : joinedPlayers) {
+            handleQuit(player);
+        }
+
         if (topFaction != null) {
             sendMessage("§8[§cMilitärabsturz§8]§f Die Fraktion " + topFaction.getFullname() + " hat das Event mit den meisten Punkten gewonnen!");
         }
 
-
-        Main.waitSeconds(10, () -> {
-            for (Player player : joinedPlayers) {
-                handleQuit(player);
-            }
-        });
         if (topFaction != null) GlobalStats.setValue("weapondrop", String.valueOf(topFaction.getId()), true);
         return true;
     }
@@ -222,9 +221,9 @@ public class MilitaryDrop implements Listener {
         for (Player player : joinedPlayers) {
             PlayerData playerData = playerManager.getPlayerData(player);
             if (faction.equalsIgnoreCase("FBI") || faction.equalsIgnoreCase("Polizei")) {
-                if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei"))
-                    continue;
-                players.add(player);
+                if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                    players.add(player);
+                }
             } else if (playerData.getFaction().equalsIgnoreCase(faction)) {
                 players.add(player);
             }
