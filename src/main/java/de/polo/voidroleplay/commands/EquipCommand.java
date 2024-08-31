@@ -549,7 +549,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.GRANATE.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 3) {
@@ -568,7 +568,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.GRANATE, 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGGUERTEL.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 4) {
@@ -583,8 +583,8 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
-                    playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
-                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.GRANATE.getMaterial(), 1, 0, RoleplayItem.GRANATE.getDisplayName()));
+                    playerData.removeBankMoney(1500, "Sprenggürtel-Kauf");
+                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGGUERTEL.getDisplayName()));
                 }
             });
         }
