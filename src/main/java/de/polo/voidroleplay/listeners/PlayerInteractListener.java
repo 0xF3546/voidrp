@@ -154,7 +154,7 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 }
-                if (event.getClickedBlock().getState() instanceof Door) {
+                if (event.getClickedBlock().getType() == Material.OAK_DOOR) {
                     RegisteredBlock rBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (rBlock != null && rBlock.getInfo() != null) {
                         if (rBlock.getInfo().equalsIgnoreCase("fdoor")) {
