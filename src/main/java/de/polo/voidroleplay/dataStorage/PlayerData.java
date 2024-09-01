@@ -43,6 +43,10 @@ public class PlayerData {
     @Getter
     private String spawn;
 
+    @Getter
+    @Setter
+    private boolean sendAdminMessages = false;
+
     private final List<PlayerQuest> quests = new ArrayList<>();
     private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
     private final List<PlayerIllness> illnesses = new ArrayList<>();
