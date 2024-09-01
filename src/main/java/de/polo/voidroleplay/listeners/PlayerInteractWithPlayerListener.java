@@ -46,6 +46,10 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
+            if (player.isSneaking()) {
+                playerManager.openInterActionMenu(player, targetplayer);
+                return;
+            }
             ItemStack item = player.getInventory().getItemInMainHand();
             PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
             if (ItemManager.equals(item, RoleplayItem.CROWBAR)) {
@@ -54,8 +58,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                     ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + "'s Handschellen geknackt");
                     ItemManager.removeCustomItem(player, RoleplayItem.CROWBAR, 1);
                 }
-            }
-            if (item.getType() == Material.LEAD) {
+            } else if (ItemManager.equals(item, RoleplayItem.CUFF)) {
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
                     if (targetPlayerData.isAduty()) {
                         player.sendMessage(Prefix.ERROR + "Du kannst Spieler im Admindienst nicht fesseln.");
@@ -159,8 +162,6 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 } else {
                     player.sendMessage(Main.error + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
                 }
-            } else {
-                if (player.isSneaking()) playerManager.openInterActionMenu(player, targetplayer);
             }
         }
         if ((event.getRightClicked().getType() == EntityType.ARMOR_STAND || event.getRightClicked().getType() == EntityType.ITEM_FRAME || event.getRightClicked().getType() == EntityType.PAINTING) && !playerManager.getPlayerData(event.getPlayer().getUniqueId()).isAduty()) {
