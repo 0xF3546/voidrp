@@ -490,7 +490,9 @@ public final class Main extends JavaPlugin {
         public CookCommand cookCommand;
         public RegisterFactionBanner registerFactionBanner;
         public SperrinfoCommand sperrinfoCommand;
+        public RoadBlockCommand roadBlockCommand;
         private void Init() {
+            roadBlockCommand = new RoadBlockCommand(factionManager);
             sperrinfoCommand = new SperrinfoCommand(playerManager);
             cookCommand = new CookCommand(playerManager);
             registerFactionBanner = new RegisterFactionBanner(playerManager, factionManager);
