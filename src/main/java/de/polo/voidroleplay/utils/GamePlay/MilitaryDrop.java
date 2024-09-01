@@ -74,6 +74,7 @@ public class MilitaryDrop implements Listener {
         ACTIVE = false;
 
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             player.setGameMode(GameMode.SPECTATOR);
         }
 
@@ -96,6 +97,7 @@ public class MilitaryDrop implements Listener {
         }
 
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             handleQuit(player);
         }
 
@@ -212,6 +214,7 @@ public class MilitaryDrop implements Listener {
         }
 
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             player.sendMessage(rankingMessage.toString());
         }
     }
@@ -219,6 +222,7 @@ public class MilitaryDrop implements Listener {
     public Collection<Player> getFactionPlayers(String faction) {
         List<Player> players = new ArrayList<>();
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);
             if (faction.equalsIgnoreCase("FBI") || faction.equalsIgnoreCase("Polizei")) {
                 if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
@@ -264,6 +268,7 @@ public class MilitaryDrop implements Listener {
     private Collection<FactionData> getTeamsAlive() {
         List<FactionData> factions = new ArrayList<>();
         for (Player player : alivePlayers) {
+            if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
                 FactionData data = getStaat();
@@ -280,6 +285,7 @@ public class MilitaryDrop implements Listener {
     private Collection<FactionData> getTeams() {
         List<FactionData> factions = new ArrayList<>();
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
                 FactionData data = getStaat();
@@ -304,6 +310,7 @@ public class MilitaryDrop implements Listener {
         currentRound++;
         factionSpawns.clear();
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             handleSpawn(player);
         }
         freezePlayers = true;
@@ -351,6 +358,7 @@ public class MilitaryDrop implements Listener {
 
     private void sendTitle(String title, String subtitle) {
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             player.sendTitle(title, subtitle, 10, 20, 10);
         }
     }
@@ -380,6 +388,7 @@ public class MilitaryDrop implements Listener {
 
     private void equipPlayers() {
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             for (PotionEffect potionEffect : player.getActivePotionEffects()) {
                 player.removePotionEffect(potionEffect.getType());
             }
@@ -390,6 +399,7 @@ public class MilitaryDrop implements Listener {
 
     private void clearPlayers() {
         for (Player player : joinedPlayers) {
+            if (player == null) continue;
             player.setGameMode(GameMode.SURVIVAL);
             for (ItemStack item : player.getInventory().getContents()) {
                 for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
