@@ -2,6 +2,8 @@ package de.polo.voidroleplay.game.faction.laboratory;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
@@ -13,11 +15,15 @@ public class EvidenceChamber {
     private int joints;
     private int cocaine;
     private int noble_joints;
-    public EvidenceChamber(int weed, int joints, int cocaine, int noble_joints) {
+    @Getter
+    @Setter
+    private int crystal;
+    public EvidenceChamber(int weed, int joints, int cocaine, int noble_joints, int crystal) {
         this.weed = weed;
         this.joints = joints;
         this.cocaine = cocaine;
         this.noble_joints = noble_joints;
+        this.crystal = crystal;
     }
 
     public int getJoints() {
@@ -75,6 +81,9 @@ public class EvidenceChamber {
             case PIPE:
                 amount = joints;
                 break;
+            case CRYSTAL:
+                amount = crystal;
+                break;
         }
         return amount;
     }
@@ -93,6 +102,9 @@ public class EvidenceChamber {
             case PIPE:
                 setJoints(joints - amount);
                 break;
+            case CRYSTAL:
+                setCrystal(crystal - amount);
+                break;
         }
     }
 
@@ -110,18 +122,22 @@ public class EvidenceChamber {
             case PIPE:
                 setJoints(joints + amount);
                 break;
+            case CRYSTAL:
+                setCrystal(crystal + amount);
+                break;
         }
     }
 
     @SneakyThrows
     public void save() {
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE evidenceChamber SET weed = ?, joints = ?, cocaine = ?, noble_joints = ? WHERE id = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE evidenceChamber SET weed = ?, joints = ?, cocaine = ?, noble_joints = ?, crystal = ? WHERE id = ?");
         preparedStatement.setInt(1, weed);
         preparedStatement.setInt(2, joints);
         preparedStatement.setInt(3, cocaine);
         preparedStatement.setInt(4, noble_joints);
-        preparedStatement.setInt(5, id);
+        preparedStatement.setInt(5, crystal);
+        preparedStatement.setInt(6, id);
         preparedStatement.executeUpdate();
         preparedStatement.close();
         connection.close();
