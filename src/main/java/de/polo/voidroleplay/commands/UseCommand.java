@@ -26,6 +26,7 @@ public class UseCommand implements CommandExecutor {
         }
         int cocaineCount = ItemManager.getCustomItemCount(player, RoleplayItem.SNUFF);
         int jointCount = ItemManager.getCustomItemCount(player, RoleplayItem.CIGAR);
+        int crystalCount = ItemManager.getCustomItemCount(player, RoleplayItem.CRYSTAL);
         String errorMsg = "§cDu hast nicht genug Drogen.";
         switch (args[0].toLowerCase()) {
             case "schnupftabak":
@@ -67,7 +68,7 @@ public class UseCommand implements CommandExecutor {
                 break;
             case "crystal":
             case "kristall":
-                if (cocaineCount >= 1) {
+                if (crystalCount >= 1) {
                     GamePlay.useDrug(player, Drug.CRYSTAL);
                 } else {
                     player.sendMessage(errorMsg);
