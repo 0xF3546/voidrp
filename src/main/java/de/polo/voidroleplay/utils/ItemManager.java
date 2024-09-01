@@ -274,6 +274,8 @@ public class ItemManager {
     }
 
     public static boolean equals(ItemStack itemStack, RoleplayItem roleplayItem) {
+        if (itemStack == null) return false;
+        if (itemStack.getItemMeta() == null) return false;
         return (itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(roleplayItem.getDisplayName()) && itemStack.getType().equals(roleplayItem.getMaterial()));
     }
 }

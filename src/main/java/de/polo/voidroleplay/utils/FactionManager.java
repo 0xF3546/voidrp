@@ -368,7 +368,11 @@ public class FactionManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction() == null) continue;
-            if (playerData.getFaction().equalsIgnoreCase(faction)) {
+            if (faction.equalsIgnoreCase("Staat")) {
+                if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                    player.sendMessage(message);
+                }
+            } else if (playerData.getFaction().equalsIgnoreCase(faction)) {
                 player.sendMessage(message);
             }
         }
