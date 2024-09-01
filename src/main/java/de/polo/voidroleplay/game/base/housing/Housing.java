@@ -170,7 +170,7 @@ public class Housing implements CommandExecutor, Listener {
                     Location location = new Location(world, x, y, z);
                     Block block = location.getBlock();
 
-                    if (block.getType().toString().contains("SIGN")) {
+                    if (block.getType().name().contains("SIGN")) {
                         Sign sign = (Sign) block.getState();
                         RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(location);
                         if (registeredBlock == null) continue;
@@ -178,20 +178,16 @@ public class Housing implements CommandExecutor, Listener {
                         if (!registeredBlock.getInfo().equalsIgnoreCase("house")) continue;
 
                         String houseIdString = sign.getLine(0);
-                        int houseId;
                         try {
-                            houseId = Integer.parseInt(houseIdString);
-                        } catch (NumberFormatException e) {
-                            continue;
-                        }
-
-                        House houseData = houseDataMap.get(houseId);
-                        if (houseData != null) {
-                            double distance = loc.distance(location);
-                            if (distance < nearestDistance) {
-                                nearestDistance = distance;
-                                nearestHouse = houseData;
+                            House houseData = houseDataMap.get(Integer.parseInt(registeredBlock.getInfoValue()));
+                            if (houseData != null) {
+                                double distance = loc.distance(location);
+                                if (distance < nearestDistance) {
+                                    nearestDistance = distance;
+                                    nearestHouse = houseData;
+                                }
                             }
+                        } catch (Exception ex) {
                         }
                     }
                 }
@@ -263,7 +259,7 @@ public class Housing implements CommandExecutor, Listener {
             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
             int i = 0;
             for (House house : getHouses(player)) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (!house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getMiner() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (!house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getActiveMiner().size() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         openHouseAddonMenu(player, house);
@@ -301,7 +297,7 @@ public class Housing implements CommandExecutor, Listener {
                         player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
                         return;
                     }
-                    if (house.getMiner() >= house.getMaxMiner()) return;
+                    if (house.getActiveMiner().size() >= house.getMaxMiner()) return;
                     if (playerData.getBargeld() < minerPrice) {
                         player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                         return;
