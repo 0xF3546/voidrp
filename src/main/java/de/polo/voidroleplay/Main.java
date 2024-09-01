@@ -490,7 +490,9 @@ public final class Main extends JavaPlugin {
         public CookCommand cookCommand;
         public RegisterFactionBanner registerFactionBanner;
         public SperrinfoCommand sperrinfoCommand;
+        public SetFactionChatColorCommand setFactionChatColorCommand;
         private void Init() {
+            setFactionChatColorCommand = new SetFactionChatColorCommand(playerManager, factionManager);
             sperrinfoCommand = new SperrinfoCommand(playerManager);
             cookCommand = new CookCommand(playerManager);
             registerFactionBanner = new RegisterFactionBanner(playerManager, factionManager);

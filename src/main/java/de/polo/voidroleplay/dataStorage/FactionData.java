@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -41,6 +42,10 @@ public class FactionData {
     private boolean isBadFrak;
     private int subGroupId;
     private int cooperationPartner;
+
+    @Getter
+    @Setter
+    private ChatColor chatColor = ChatColor.GRAY;
 
     @Getter
     @Setter

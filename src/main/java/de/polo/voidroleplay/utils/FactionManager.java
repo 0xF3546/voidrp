@@ -76,6 +76,7 @@ public class FactionManager {
             FactionData factionData = new FactionData();
             factionData.setId(locs.getInt("id"));
             factionData.setName(locs.getString("name"));
+            factionData.setChatColor(ChatColor.valueOf(locs.getString("chatColor")));
             factionData.setFullname(locs.getString("fullname"));
             factionData.setPrimaryColor(locs.getString("primaryColor"));
             factionData.setSecondaryColor(locs.getString("secondaryColor"));
@@ -607,6 +608,19 @@ public class FactionManager {
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE factions SET motd = ? WHERE id = ?");
         statement.setString(1, motd);
+        statement.setInt(2, factionId);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    }
+
+    @SneakyThrows
+    public void setFactionChatColor(int factionId, ChatColor color) {
+        FactionData factionData = getFactionData(factionId);
+        factionData.setChatColor(color);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET chatColor = ? WHERE id = ?");
+        statement.setString(1, color.name());
         statement.setInt(2, factionId);
         statement.executeUpdate();
         statement.close();
