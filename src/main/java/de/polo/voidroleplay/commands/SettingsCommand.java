@@ -32,21 +32,33 @@ public class SettingsCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Einstellungen");
+        int i = 0;
         if (playerData.getTeamSpeakUID() == null) {
-            inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§7§mTeamSpeak neu synchronisieren", "§8 ➥ §cDu hast dein TeamSpeak nicht verbunden")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§7§mTeamSpeak neu synchronisieren", "§8 ➥ §cDu hast dein TeamSpeak nicht verbunden")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
 
                 }
             });
         } else {
-            inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§7TeamSpeak neu synchronisieren")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§7TeamSpeak neu synchronisieren")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
                     TeamSpeak.reloadPlayer(player.getUniqueId());
                 }
             });
+        }
+        i++;
+        if (playerData.getPermlevel() >= 60) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§cAdmin-Nachrichten", "§8 ➥ " + (playerData.isSendAdminMessages() ? "§cDeaktivieren" : "§aAktivieren"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    playerData.setSendAdminMessages(!playerData.isSendAdminMessages());
+                }
+            });
+            i++;
         }
         return false;
     }
