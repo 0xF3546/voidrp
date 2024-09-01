@@ -41,7 +41,7 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
                 FactionData factionData = factionManager.getFactionData(playerfac);
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (Objects.equals(factionManager.faction(players), playerfac)) {
-                        players.sendMessage("§"+factionManager.getFactionPrimaryColor(playerfac) + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + "§8:§7 " + msg);
+                        players.sendMessage(factionData.getChatColor() + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + "§8:§7 " + msg);
                     }
                 }
             } else {

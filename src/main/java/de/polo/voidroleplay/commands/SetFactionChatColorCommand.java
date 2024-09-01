@@ -53,6 +53,7 @@ public class SetFactionChatColorCommand implements CommandExecutor {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, color + color.name())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
                     factionManager.setFactionChatColor(factionData.getId(), color);
                 }
             });
