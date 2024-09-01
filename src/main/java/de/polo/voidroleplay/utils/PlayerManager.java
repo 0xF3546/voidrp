@@ -797,7 +797,7 @@ public class PlayerManager implements Listener, ServerTiming {
                                 if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
                                     if (player == null) continue;
-                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction, banner);
+                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction, (banner * 30));
                                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                                 }
                             }
