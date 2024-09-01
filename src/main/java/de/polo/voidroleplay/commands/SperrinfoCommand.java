@@ -41,7 +41,7 @@ public class SperrinfoCommand implements CommandExecutor {
             Duration duration = Duration.between(Utils.getTime(), playerData.getFactionCooldown());
             long hours = duration.toHours();
             long minutes = duration.minusHours(hours).toMinutes();
-            if (hours < 6) {
+            if (hours >= 0 && hours < 6) {
                 player.sendMessage("§8 ➥ §6Fraktions-sperre: §7" + hours + ":" + minutes);
             }
         }
@@ -51,7 +51,7 @@ public class SperrinfoCommand implements CommandExecutor {
                 Duration d = Duration.between(Utils.getTime(), time.plusHours(6));
                 long hours = d.toHours();
                 long minutes = d.toMinutes();
-                if (hours < 6) {
+                if (hours >= 0 && hours < 6) {
                     player.sendMessage("§8 ➥ §6Bombe: §7" + hours + ":" + minutes);
                 }
             }
