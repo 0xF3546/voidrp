@@ -51,6 +51,12 @@ public class SprengguertelCommand implements CommandExecutor, Listener {
             return false;
         }
 
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (!playerData.getFaction().equalsIgnoreCase("Terroristen")) {
+            player.sendMessage("§cDafür hast du keine rechte.");
+            return false;
+        }
+
         int delay;
         try {
             delay = Integer.parseInt(args[0]);
@@ -61,13 +67,6 @@ public class SprengguertelCommand implements CommandExecutor, Listener {
             player.sendMessage("§cDein Sprenggürtel geht in " + args[0] + " sekunden hoch.");
         } catch (NumberFormatException e) {
             player.sendMessage(Prefix.ERROR + "Die Zeit muss numerisch sein.");
-            return false;
-        }
-
-        String uuid = player.getUniqueId().toString();
-        PlayerData playerData = playerManager.getPlayerData(player);
-        if (playerData.getFaction().equalsIgnoreCase("Terroristen")) {
-            player.sendMessage("§cDafür hast du keine rechte.");
             return false;
         }
 
