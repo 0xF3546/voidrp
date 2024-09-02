@@ -349,7 +349,7 @@ public class GamePlay implements Listener {
                     interactDrugStorage(player, RoleplayItem.CIGAR);
                 }
             });
-            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, RoleplayItem.CRYSTAL.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCrystal() + " Stück")) {
+            inventoryManager.setItem(new CustomItem(17, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, RoleplayItem.CRYSTAL.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCrystal() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     interactDrugStorage(player, RoleplayItem.CRYSTAL);
@@ -872,8 +872,8 @@ public class GamePlay implements Listener {
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank §8-§6 Schließfächer");
         for (int i = 0; i < staatsbankRob.getVaults(); i++) {
+            int finalI = i + 1;
             if (staatsbankRob.getVaultsOpen() > i) {
-                int finalI = i + 1;
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + finalI, staatsbankRob.isVaultOpen(finalI) ? "§8 ➥ §eLeer" : "§8 ➥ §cGeschlossen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -893,7 +893,7 @@ public class GamePlay implements Listener {
                     }
                 });
             } else {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + i, "§8 ➥ §cVerschlossen")) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Schließfach " + finalI, "§8 ➥ §cVerschlossen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
