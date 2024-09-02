@@ -1204,115 +1204,142 @@ public class PhoneUtils implements Listener {
         }
     }
 
-    @SneakyThrows
     private void openSwiping(Player player) {
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            try {
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
+                Connection connection = Main.getInstance().mySQL.getConnection();
 
-        PreparedStatement statement = connection.prepareStatement(
-                "SELECT adp.uuid, adp.description, p.firstname, p.lastname " +
-                        "FROM app_dating_profiles adp " +
-                        "JOIN players p ON adp.uuid = p.uuid " +
-                        "WHERE adp.uuid != ? AND adp.uuid NOT IN (SELECT target_uuid FROM app_dating_swipes WHERE swiper_uuid = ?)"
-        );
-        statement.setString(1, player.getUniqueId().toString());
-        statement.setString(2, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
+                PreparedStatement statement = connection.prepareStatement(
+                        "SELECT adp.uuid, adp.description, p.firstname, p.lastname " +
+                                "FROM app_dating_profiles adp " +
+                                "JOIN players p ON adp.uuid = p.uuid " +
+                                "WHERE adp.uuid != ? AND adp.uuid NOT IN (SELECT target_uuid FROM app_dating_swipes WHERE swiper_uuid = ?)"
+                );
+                statement.setString(1, player.getUniqueId().toString());
+                statement.setString(2, player.getUniqueId().toString());
+                ResultSet result = statement.executeQuery();
 
-        if (result.next()) {
-            String targetUuid = result.getString("uuid");
-            String description = result.getString("description");
-            String firstname = result.getString("firstname");
-            String lastname = result.getString("lastname");
+                if (result.next()) {
+                    String targetUuid = result.getString("uuid");
+                    String description = result.getString("description");
+                    String firstname = result.getString("firstname");
+                    String lastname = result.getString("lastname");
 
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetUuid, 1, 0, "§5" + firstname + " " + lastname, "§8 ➥ §d" + description
-            )) {
-                @SneakyThrows
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    recordSwipe(player.getUniqueId().toString(), targetUuid, true);
-                    checkForMatch(player.getUniqueId().toString(), targetUuid);
-                    openSwiping(player); // Show the next profile
+                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                        inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetUuid, 1, 0, "§5" + firstname + " " + lastname, "§8 ➥ §d" + description
+                        )) {
+                            @SneakyThrows
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                recordSwipe(player.getUniqueId().toString(), targetUuid, true);
+                                checkForMatch(player.getUniqueId().toString(), targetUuid);
+                                openSwiping(player); // Show the next profile
+                            }
+                        });
+
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead(
+                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRjZGE2ZTNjNmRjYTdlOWI4YjZiYTNmZWJmNWNkMDkxN2Y5OTdiNjRiMmFlZjE4YzNmNzczNzY1ZTNhNTc5In19fQ==", 1, 0, "§aSwipe Rechts"
+                        )) {
+                            @SneakyThrows
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                recordSwipe(player.getUniqueId().toString(), targetUuid, true);
+                                checkForMatch(player.getUniqueId().toString(), targetUuid);
+                                openSwiping(player); // Show the next profile
+                            }
+                        });
+
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead(
+                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI4YjhjZjQwNWVhZjYwNmEwMjEwZjAzMDNiMDEzMTc5ZjhmMTJlYWE5NTgyNDEyOWViZWVmOWU0NGI2ODIzMCJ9fX0=", 1, 0, "§cSwipe Links"
+                        )) {
+                            @SneakyThrows
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+                                recordSwipe(player.getUniqueId().toString(), targetUuid, false);
+                                openSwiping(player); // Show the next profile
+                            }
+                        });
+                    });
+                } else {
+                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.sendMessage("§8[§6Handy§8]§7 Keine weiteren Profile verfügbar."));
                 }
-            });
-
-            inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead(
-                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRjZGE2ZTNjNmRjYTdlOWI4YjZiYTNmZWJmNWNkMDkxN2Y5OTdiNjRiMmFlZjE4YzNmNzczNzY1ZTNhNTc5In19fQ==", 1, 0, "§aSwipe Rechts"
-            )) {
-                @SneakyThrows
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    recordSwipe(player.getUniqueId().toString(), targetUuid, true);
-                    checkForMatch(player.getUniqueId().toString(), targetUuid);
-                    openSwiping(player); // Show the next profile
-                }
-            });
-
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead(
-                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI4YjhjZjQwNWVhZjYwNmEwMjEwZjAzMDNiMDEzMTc5ZjhmMTJlYWE5NTgyNDEyOWViZWVmOWU0NGI2ODIzMCJ9fX0=", 1, 0, "§cSwipe Links"
-            )) {
-                @SneakyThrows
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    recordSwipe(player.getUniqueId().toString(), targetUuid, false);
-                    openSwiping(player); // Show the next profile
-                }
-            });
-        } else {
-            player.sendMessage("§8[§6Handy§8]§7 Keine weiteren Profile verfügbar.");
-        }
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
+
 
     @SneakyThrows
     private void recordSwipe(String swiperUuid, String targetUuid, boolean swipeRight) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO app_dating_swipes (swiper_uuid, target_uuid, swipe_right) VALUES (?, ?, ?)"
-        );
-        statement.setString(1, swiperUuid);
-        statement.setString(2, targetUuid);
-        statement.setBoolean(3, swipeRight);
-        statement.execute();
-        statement.close();
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            try {
+                Connection connection = Main.getInstance().mySQL.getConnection();
+                PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO app_dating_swipes (swiper_uuid, target_uuid, swipe_right) VALUES (?, ?, ?)"
+                );
+                statement.setString(1, swiperUuid);
+                statement.setString(2, targetUuid);
+                statement.setBoolean(3, swipeRight);
+                statement.execute();
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
+
 
     @SneakyThrows
     private void checkForMatch(String swiperUuid, String targetUuid) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM app_dating_swipes WHERE swiper_uuid = ? AND target_uuid = ? AND swipe_right = ?"
-        );
-        statement.setString(1, targetUuid);
-        statement.setString(2, swiperUuid);
-        statement.setBoolean(3, true);
-        ResultSet result = statement.executeQuery();
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            try {
+                Connection connection = Main.getInstance().mySQL.getConnection();
+                PreparedStatement statement = connection.prepareStatement(
+                        "SELECT * FROM app_dating_swipes WHERE swiper_uuid = ? AND target_uuid = ? AND swipe_right = ?"
+                );
+                statement.setString(1, targetUuid);
+                statement.setString(2, swiperUuid);
+                statement.setBoolean(3, true);
+                ResultSet result = statement.executeQuery();
 
-        if (result.next()) {
-            PreparedStatement matchStatement = connection.prepareStatement(
-                    "INSERT INTO app_dating_matches (uuid, target, matched) VALUES (?, ?, ?)"
-            );
-            matchStatement.setString(1, swiperUuid);
-            matchStatement.setString(2, targetUuid);
-            matchStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            matchStatement.execute();
-            matchStatement.close();
+                if (result.next()) {
+                    PreparedStatement matchStatement = connection.prepareStatement(
+                            "INSERT INTO app_dating_matches (uuid, target, matched) VALUES (?, ?, ?)"
+                    );
+                    matchStatement.setString(1, swiperUuid);
+                    matchStatement.setString(2, targetUuid);
+                    matchStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                    matchStatement.execute();
+                    matchStatement.close();
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(swiperUuid));
-            OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(UUID.fromString(targetUuid));
-            if (player.isOnline()) {
-                Player onPlayer = Bukkit.getPlayer(player.getUniqueId());
-                if (onPlayer != null)
-                    onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + targetPlayer.getName() + "!");
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(swiperUuid));
+                    OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(UUID.fromString(targetUuid));
+
+                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                        if (player.isOnline()) {
+                            Player onPlayer = Bukkit.getPlayer(player.getUniqueId());
+                            if (onPlayer != null)
+                                onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + targetPlayer.getName() + "!");
+                        }
+
+                        if (targetPlayer.isOnline()) {
+                            Player onPlayer = Bukkit.getPlayer(targetPlayer.getUniqueId());
+                            if (onPlayer != null)
+                                onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + player.getName() + "!");
+                        }
+                    });
+                }
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            if (targetPlayer.isOnline()) {
-                Player onPlayer = Bukkit.getPlayer(targetPlayer.getUniqueId());
-                if (onPlayer != null)
-                    onPlayer.sendMessage("§8[§6Handy§8]§7 Du hast ein Match mit " + player.getName() + "!");
-            }
-        }
-        statement.close();
+        });
     }
-
 }

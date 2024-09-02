@@ -8,6 +8,7 @@ import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.Housing;
+import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
@@ -782,13 +783,21 @@ public class PlayerManager implements Listener, ServerTiming {
 
                         }
 
+                        int banner = 0;
+                        for (SprayableBanner sprayableBanner : Main.getInstance().factionManager.getBanner()) {
+                            if (sprayableBanner.getFaction() == factionData.getId()) {
+                                banner++;
+                            }
+                        }
+                        plus += (banner * 30);
+
                         // Batch-Operation für Fraktionsmitglieder
                         for (PlayerData playerData : playerDataMap.values()) {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFactionGrade() >= 7 && playerData.getFaction().equals(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
                                     if (player == null) continue;
-                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction);
+                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction, (banner * 30));
                                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                                 }
                             }
@@ -813,7 +822,7 @@ public class PlayerManager implements Listener, ServerTiming {
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
 
-    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction) {
+    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction, int banner) {
         player.sendMessage(" ");
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
         player.sendMessage(" ");
@@ -841,6 +850,7 @@ public class PlayerManager implements Listener, ServerTiming {
         if (auction != 0) {
             player.sendMessage("§8 ➥ §3Bank§8:§a +" + auction + "$");
         }
+        player.sendMessage("§8 ➥ §bBanner§8:§a +" + banner + "$");
         player.sendMessage(" ");
         if (plus >= 0) {
             player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");

@@ -103,7 +103,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         }
         for (Player player1 : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
-            if (playerData.isAduty()) {
+            if (playerData.isAduty() || playerData.isSendAdminMessages()) {
                 player1.sendMessage("§8[§c§l!§8] " + color + msg);
             }
         }

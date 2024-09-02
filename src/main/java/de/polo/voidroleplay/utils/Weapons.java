@@ -168,7 +168,7 @@ public class Weapons implements Listener {
 
     @SneakyThrows
     private void removeWeapon(Weapon weapon) {
-        weaponList.remove(weapon);
+        weaponList.remove(weapon.getId());
         Statement statement = Main.getInstance().mySQL.getStatement();
         statement.execute("DELETE FROM player_weapons WHERE id = " + weapon.getId());
         statement.close();

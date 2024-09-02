@@ -76,6 +76,7 @@ public class FactionManager {
             FactionData factionData = new FactionData();
             factionData.setId(locs.getInt("id"));
             factionData.setName(locs.getString("name"));
+            factionData.setChatColor(ChatColor.valueOf(locs.getString("chatColor")));
             factionData.setFullname(locs.getString("fullname"));
             factionData.setPrimaryColor(locs.getString("primaryColor"));
             factionData.setSecondaryColor(locs.getString("secondaryColor"));
@@ -368,7 +369,11 @@ public class FactionManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction() == null) continue;
-            if (playerData.getFaction().equalsIgnoreCase(faction)) {
+            if (faction.equalsIgnoreCase("Staat")) {
+                if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                    player.sendMessage(message);
+                }
+            } else if (playerData.getFaction().equalsIgnoreCase(faction)) {
                 player.sendMessage(message);
             }
         }
@@ -610,6 +615,19 @@ public class FactionManager {
     }
 
     @SneakyThrows
+    public void setFactionChatColor(int factionId, ChatColor color) {
+        FactionData factionData = getFactionData(factionId);
+        factionData.setChatColor(color);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET chatColor = ? WHERE id = ?");
+        statement.setString(1, color.name());
+        statement.setInt(2, factionId);
+        statement.executeUpdate();
+        statement.close();
+        connection.close();
+    }
+
+    @SneakyThrows
     public void updateBanner(RegisteredBlock block, FactionData faction) {
         SprayableBanner banner = getSprayAbleBannerByBlockId(block.getId());
         if (banner == null) {
@@ -643,5 +661,10 @@ public class FactionManager {
 
     public boolean isBannerRegistered(RegisteredBlock block) {
         return getSprayAbleBannerByBlockId(block.getId()) != null;
+    }
+
+    public Collection<SprayableBanner> getBanner()
+    {
+        return sprayableBanners;
     }
 }

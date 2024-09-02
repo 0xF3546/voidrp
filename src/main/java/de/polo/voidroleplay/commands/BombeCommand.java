@@ -34,7 +34,7 @@ public class BombeCommand implements CommandExecutor, Listener {
 
     public static boolean ACTIVE;
 
-    private LocalDateTime lastBomb = Utils.getTime().minusHours(6);
+    public LocalDateTime lastBomb = Utils.getTime().minusHours(6);
 
     public BombeCommand(PlayerManager playerManager, Utils utils, FactionManager factionManager) {
         this.playerManager = playerManager;
@@ -102,6 +102,7 @@ public class BombeCommand implements CommandExecutor, Listener {
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), bomb.getColor()));
         Bukkit.broadcastMessage("§8[§6News§8] §6Achtung! es wurde eine bombe gefunden, in der nähe von: " + Navigation.getNearestNaviPoint(bomb.getBlock().getLocation()).getName().replace("&", "§"));
         ACTIVE = true;
+        lastBomb = Utils.getTime();
 
         return true;
     }

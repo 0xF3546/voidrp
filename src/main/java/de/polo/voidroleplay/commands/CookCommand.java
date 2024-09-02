@@ -63,6 +63,10 @@ public class CookCommand implements CommandExecutor, Listener {
     @EventHandler
     public void onMinute(MinuteTickEvent event) {
         for (CookTimer timer : activeCooking) {
+            if (timer.getPlayer() == null) {
+                activeCooking.remove(timer);
+                continue;
+            }
             if (timer.getPlayer().getLocation().distance(timer.getLocation()) > 15) {
                 timer.getPlayer().sendMessage(Prefix.MAIN + "Das kochen wurde beendet.");
                 activeCooking.remove(timer);

@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -41,6 +42,10 @@ public class FactionData {
     private boolean isBadFrak;
     private int subGroupId;
     private int cooperationPartner;
+
+    @Getter
+    @Setter
+    private ChatColor chatColor = ChatColor.GRAY;
 
     @Getter
     @Setter
@@ -346,6 +351,9 @@ public class FactionData {
         private final FactionData factionData;
         private int noble_joint;
         private int proceedingAmount;
+        @Getter
+        @Setter
+        private int crystal;
         private LocalDateTime proceedingStarted;
         public Storage(FactionData factionData) {
             this.factionData = factionData;
@@ -386,7 +394,7 @@ public class FactionData {
         @SneakyThrows
         public void save() {
             Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("UPDATE faction_storage SET weed = " + getWeed() + ", joint = " + getJoint() + ", cocaine = " + getCocaine() + ", kevlar = " + getKevlar() + ", noble_joint = " + getNoble_joint() + " WHERE factionId = " + factionData.getId());
+            statement.execute("UPDATE faction_storage SET weed = " + getWeed() + ", joint = " + getJoint() + ", cocaine = " + getCocaine() + ", kevlar = " + getKevlar() + ", noble_joint = " + getNoble_joint() + ", crystal = " + getCrystal() + " WHERE factionId = " + factionData.getId());
         }
 
         public int getNoble_joint() {
@@ -436,6 +444,9 @@ public class FactionData {
                 case FACTION_PIPE:
                     amount = joint;
                     break;
+                case CRYSTAL:
+                    amount = crystal;
+                    break;
             }
             return amount;
         }
@@ -455,6 +466,9 @@ public class FactionData {
                 case PIPE:
                     setJoint(joint - amount);
                     break;
+                case CRYSTAL:
+                    setCrystal(crystal - amount);
+                    break;
             }
         }
 
@@ -472,6 +486,9 @@ public class FactionData {
                 case FACTION_PIPE:
                 case PIPE:
                     setJoint(joint + amount);
+                    break;
+                case CRYSTAL:
+                    setCrystal(crystal + amount);
                     break;
             }
         }

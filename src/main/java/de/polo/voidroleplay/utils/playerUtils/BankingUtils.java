@@ -377,7 +377,7 @@ public class BankingUtils implements Listener {
                         playerManager.addBankMoney(target, amount, "Überweisung von " + player.getName());
                         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ an " + target.getName() + " überwiesen.");
                         target.sendMessage("§8[§6Bank§8]§a " + player.getName() + " hat dir " + amount + "$ überwiesen.");
-                        Main.getInstance().adminManager.send_message("§6" + player.getName() + " hat" + target.getName() + " " + amount + "$ überwiesen.", ChatColor.GOLD);
+                        Main.getInstance().adminManager.send_message("§6" + player.getName() + " hat " + target.getName() + " " + amount + "$ überwiesen.", ChatColor.GOLD);
                     }
                 });
             } else {

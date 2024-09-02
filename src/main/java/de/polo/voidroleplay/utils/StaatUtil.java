@@ -41,7 +41,7 @@ public class StaatUtil {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM evidenceChamber");
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                Asservatemkammer = new EvidenceChamber(result.getInt("weed"), result.getInt("joints"), result.getInt("cocaine"), result.getInt("noble_joints"));
+                Asservatemkammer = new EvidenceChamber(result.getInt("weed"), result.getInt("joints"), result.getInt("cocaine"), result.getInt("noble_joints"), result.getInt("crystal"));
                 Asservatemkammer.setId(result.getInt("id"));
             }
             result.close();
