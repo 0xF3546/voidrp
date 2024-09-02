@@ -59,6 +59,7 @@ public class DeathUtils {
     public void setHitmanDeath(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setDeathTime(playerData.getDeathTime() + 300);
+        playerData.setHitmanDead(true);
     }
 
     public void setGangwarDeath(Player player) {
