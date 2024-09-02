@@ -324,11 +324,26 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 1);
                 }
             });
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ROADBLOCK.getMaterial(), 1, 0, RoleplayItem.ROADBLOCK.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (factionData.getBank() < 100) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Roadblocks zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() <100) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    playerData.removeBankMoney(100, "Roadblock-Kauf");
+                    ItemManager.addCustomItem(player, RoleplayItem.ROADBLOCK, 1);
+                }
+            });
 
             if (playerData.getSubTeam() == null) return;
 
             if (playerData.getSubTeam().getName().equalsIgnoreCase("Feuerwehr")) {
-                inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.FEUERLÖSCHER.getMaterial(), 1, 0, RoleplayItem.FEUERLÖSCHER.getDisplayName())) {
+                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.FEUERLÖSCHER.getMaterial(), 1, 0, RoleplayItem.FEUERLÖSCHER.getDisplayName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (factionData.getBank() < 100) {
@@ -343,7 +358,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.FEUERLÖSCHER, 1);
                     }
                 });
-                inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName())) {
+                inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.FEUERWEHR_AXT.getMaterial(), 1, 0, RoleplayItem.FEUERWEHR_AXT.getDisplayName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (factionData.getBank() < 100) {
@@ -358,7 +373,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.FEUERWEHR_AXT, 1);
                     }
                 });
-                inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
+                inventoryManager.setItem(new CustomItem(17, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (factionData.getBank() < 100) {
@@ -375,7 +390,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 });
             }
             if (playerData.getSubTeam().getName().equalsIgnoreCase("Notfallmedizin")) {
-                inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
+                inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(RoleplayItem.SPRUNGTUCH.getMaterial(), 1, 0, RoleplayItem.SPRUNGTUCH.getDisplayName())) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (factionData.getBank() < 100) {
@@ -496,6 +511,21 @@ public class EquipCommand implements CommandExecutor, Listener {
                     }
                     playerData.removeBankMoney(250, "Pfefferspray-Kauf");
                     ItemManager.addCustomItem(player, RoleplayItem.PFEFFERSPRAY, 1);
+                }
+            });
+            inventoryManager.setItem(new CustomItem(17, ItemManager.createItem(RoleplayItem.ROADBLOCK.getMaterial(), 1, 0, RoleplayItem.ROADBLOCK.getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (factionData.getBank() < 100) {
+                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Roadblocks zu kaufen.");
+                        return;
+                    }
+                    if (playerData.getBank() < 100) {
+                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        return;
+                    }
+                    playerData.removeBankMoney(100, "Roadblock-Kauf");
+                    ItemManager.addCustomItem(player, RoleplayItem.ROADBLOCK, 1);
                 }
             });
             if (playerData.getSubTeam() != null) {
