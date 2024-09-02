@@ -629,35 +629,8 @@ public class PlayerInteractListener implements Listener {
         Action action = event.getAction();
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
             if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.MOLOTOV)) {
-                Location playerLocation = player.getLocation();
-                Location throwLocation = playerLocation.clone().add(player.getLocation().getDirection().multiply(2));
-                Item droppedItem = player.getWorld().dropItem(throwLocation, new ItemStack(Material.FLINT));
-                Location location = droppedItem.getLocation();
-
-                int radius = 5;
-                double fireProbability = 0.5;
-
-                for (int x = -radius; x <= radius; x++) {
-                    for (int z = -radius; z <= radius; z++) {
-                        Location fireLocation = location.add(x, 0, z);
-
-                        ItemManager.removeCustomItem(player, RoleplayItem.MOLOTOV, 1);
-
-                        Vector direction = player.getLocation().getDirection().normalize();
-                        droppedItem.setVelocity(direction.multiply(0.5));
-                        droppedItem.setPickupDelay(Integer.MAX_VALUE);
-
-                        if (fireLocation.distance(location) <= radius && RANDOM.nextDouble() <= fireProbability) {
-                            Block block = fireLocation.getBlock();
-                            if (block.getType() == Material.AIR && block.getRelative(0, -1, 0).getType().isSolid()) {
-                                block.setType(Material.FIRE);
-                                droppedItem.remove();
-                                Molotov molotov = new Molotov(Utils.getTime(), block);
-                                molotovs.add(molotov);
-                            }
-                        }
-                    }
-                }
+                throwMolotov(player);
+                ItemManager.removeCustomItem(player, RoleplayItem.MOLOTOV, 1);
             }
 
             if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.FEUERLÖSCHER)) {
@@ -759,15 +732,6 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onMinute(MinuteTickEvent event) {
-        List<Molotov> molotvsToRemove = molotovs.stream().filter(m -> m.getThrown().plusMinutes(30).isAfter(Utils.getTime())).collect(Collectors.toList());
-        for (Molotov molotov : molotvsToRemove) {
-            molotov.getBlock().setType(Material.AIR);
-            molotovs.remove(molotov);
-        }
-    }
-
     private void throwGrenade(Player player) {
         ItemStack grenadeItem = new ItemStack(Material.FIRE_CHARGE);
         Item droppedItem = player.getWorld().dropItem(player.getEyeLocation(), grenadeItem);
@@ -775,6 +739,15 @@ public class PlayerInteractListener implements Listener {
         droppedItem.setPickupDelay(Integer.MAX_VALUE);
 
         activeGrenades.add(new Grenade(Utils.getTime(), droppedItem));
+    }
+
+    private void throwMolotov(Player player) {
+        ItemStack molotovItem = new ItemStack(Material.FLINT);
+        Item droppedItem = player.getWorld().dropItem(player.getEyeLocation(), molotovItem);
+        droppedItem.setVelocity(player.getLocation().getDirection().multiply(1.5));
+        droppedItem.setPickupDelay(Integer.MAX_VALUE);
+
+        molotovs.add(new Molotov(Utils.getTime(), droppedItem));
     }
 
     private void checkGrenades() {
@@ -796,8 +769,51 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
+    private void checkMolotovs() {
+        Iterator<Molotov> iterator = molotovs.iterator();
+
+        while (iterator.hasNext()) {
+            Molotov molotov = iterator.next();
+            LocalDateTime thrownTime = molotov.getThrownTime();
+            LocalDateTime now = Utils.getTime();
+
+            if (thrownTime.plusSeconds(2).isBefore(now)) {
+                Location loc = molotov.getDroppedItem().getLocation();
+                Bukkit.getLogger().info("Molotov igniting at: " + now);
+
+                int radius = 5;
+                World world = loc.getWorld();
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        for (int z = -radius; z <= radius; z++) {
+                            Location fireLocation = loc.clone().add(x, y, z);
+
+                            double distance = loc.distance(fireLocation);
+
+                            if (distance <= radius && Math.random() > 0.2) {
+                                Block block = fireLocation.getBlock();
+
+                                if (block.getType() == Material.AIR) {
+                                    Block blockBelow = fireLocation.clone().add(0, -1, 0).getBlock();
+                                    if (blockBelow.getType().isSolid()) {
+                                        block.setType(Material.FIRE);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                molotov.getDroppedItem().remove();
+                iterator.remove();
+            }
+        }
+    }
+
+
     @EventHandler
     public void onSecond(SecondTickEvent event) {
         checkGrenades();
+        checkMolotovs();
     }
 }
