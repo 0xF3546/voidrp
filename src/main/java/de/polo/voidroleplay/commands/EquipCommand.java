@@ -635,15 +635,15 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
                         return;
                     }
-                    if (factionData.getBank() < 2500) {
+                    if (factionData.getBank() < 5000) {
                         player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
                         return;
                     }
-                    if (playerData.getBank() < 2500) {
+                    if (playerData.getBank() < 5000) {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
-                    playerData.removeBankMoney(1500, "Sprenggürtel-Kauf");
+                    playerData.removeBankMoney(5000, "Sprenggürtel-Kauf");
                     player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SPRENGGUERTEL.getMaterial(), 1, 0, RoleplayItem.SPRENGGUERTEL.getDisplayName()));
                 }
             });
