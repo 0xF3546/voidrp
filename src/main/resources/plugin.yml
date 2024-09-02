@@ -268,3 +268,4 @@ commands:
   registerfactionbanner:
   sperrinfo:
   rbreset:
+  setfactionchatcolor:
