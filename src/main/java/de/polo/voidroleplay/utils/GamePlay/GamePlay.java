@@ -70,6 +70,8 @@ public class GamePlay implements Listener {
 
     public final HashMap<Dealer, Integer> rob = new HashMap<>();
 
+    public final List<Block> roadblocks = new ArrayList<>();
+
     private StaatsbankRob staatsbankRob = null;
     private boolean isStaatsbankRobBlocked = false;
 

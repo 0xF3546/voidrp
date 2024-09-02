@@ -267,4 +267,4 @@ commands:
   cook:
   registerfactionbanner:
   sperrinfo:
-  setfactionchatcolor:
+  rbreset:

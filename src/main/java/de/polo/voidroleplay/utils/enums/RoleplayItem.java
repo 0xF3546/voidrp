@@ -45,7 +45,9 @@ public enum RoleplayItem {
     GRANATE("§7Granate", Material.FIRE_CHARGE, true),
     SPRENGGUERTEL("§7Sprenggürtel", Material.LEATHER_CHESTPLATE, true),
     DRAHT("§7Draht", Material.PAPER, true),
-    WINGSUIT("§7Wingsuit", Material.ELYTRA, false),
+    WINGSUIT("§7Wingsuit", Material.ELYTRA, true),
+    ROADBLOCK("§7Roadblock", Material.STICK, true),
+    PFEFFERSPRAY("§7Pfefferspray", Material.LEVER, true),
     FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false);
 
     private final String displayName;

@@ -26,6 +26,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,6 +37,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
@@ -666,7 +669,7 @@ public class PlayerInteractListener implements Listener {
                 double offsetY = 0.1;
                 double offsetZ = 0.1;
 
-                Particle.DustOptions dustOptions = new Particle.DustOptions(org.bukkit.Color.WHITE, 1.0F);
+                Particle.DustOptions dustOptions = new Particle.DustOptions(Color.WHITE, 1.0F);
 
                 for (int i = 1; i <= 5; i++) {
                     Location particleLocation = startLocation.clone().add(direction.clone().multiply(i));
@@ -676,6 +679,33 @@ public class PlayerInteractListener implements Listener {
                     Block block = particleLocation.getBlock();
                     if (block.getType().equals(Material.FIRE)) {
                         block.setType(Material.AIR);
+                    }
+                }
+            }
+
+            if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.PFEFFERSPRAY)) {
+                Vector direction = player.getLocation().getDirection().normalize();
+                Location startLocation = player.getEyeLocation();
+
+                int particleCount = 5;
+                double offsetX = 0.1;
+                double offsetY = 0.1;
+                double offsetZ = 0.1;
+
+                Particle.DustOptions dustOptions = new Particle.DustOptions(Color.GRAY, 1.0F);
+
+                for (int i = 1; i <= 5; i++) {
+                    Location particleLocation = startLocation.clone().add(direction.clone().multiply(i));
+
+                    player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, particleCount, offsetX, offsetY, offsetZ, 0.0, dustOptions);
+
+                    for (Entity entity : player.getWorld().getNearbyEntities(particleLocation, 0.5, 0.5, 0.5)) {
+                        if (entity instanceof Player && entity != player) {
+                            Player hitPlayer = (Player) entity;
+                            hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2, 1));
+                            hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 2));
+                            break;
+                        }
                     }
                 }
             }
@@ -695,6 +725,19 @@ public class PlayerInteractListener implements Listener {
                         } else if (blockAbove.getType() == Material.AIR) {
                             blockAbove.setType(Material.SLIME_BLOCK);
                             sprungtuecher.add(blockAbove);
+                        }
+                    }
+                }
+                if (event.getItem() != null && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.ROADBLOCK)) {
+                    if (event.getBlockFace() == BlockFace.UP) {
+                        Block blockAbove = clickedBlock.getRelative(0, 1, 0);
+
+                        if (clickedBlock.getType() == Material.STONE_BRICK_WALL) {
+                            clickedBlock.setType(Material.AIR);
+                            Main.getInstance().gamePlay.roadblocks.remove(clickedBlock);
+                        } else if (blockAbove.getType() == Material.AIR) {
+                            blockAbove.setType(Material.STONE_BRICK_WALL);
+                            Main.getInstance().gamePlay.roadblocks.add(blockAbove);
                         }
                     }
                 }
