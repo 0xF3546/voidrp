@@ -408,7 +408,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             }
         }
         if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("cuffs") + "$"))) {
+            inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("cuffs") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) (ServerManager.getPayout("cuffs"));
@@ -433,7 +433,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("antibiotikum") + "$"))) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("antibiotikum") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) (ServerManager.getPayout("antibiotikum"));
@@ -458,7 +458,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.ANTIBIOTIKUM, 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("tazer") + "$"))) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("tazer") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     int priceForFaction = (int) (ServerManager.getPayout("tazer"));
@@ -483,7 +483,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.TAZER, 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.WINGSUIT.getMaterial(), 1, 0, RoleplayItem.WINGSUIT.getDisplayName())) {
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.WINGSUIT.getMaterial(), 1, 0, RoleplayItem.WINGSUIT.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getBank() < 250) {
@@ -498,7 +498,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.WINGSUIT, 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(16, ItemManager.createItem(RoleplayItem.PFEFFERSPRAY.getMaterial(), 1, 0, RoleplayItem.PFEFFERSPRAY.getDisplayName())) {
+            inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.PFEFFERSPRAY.getMaterial(), 1, 0, RoleplayItem.PFEFFERSPRAY.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getBank() < 100) {
@@ -513,7 +513,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.PFEFFERSPRAY, 1);
                 }
             });
-            inventoryManager.setItem(new CustomItem(17, ItemManager.createItem(RoleplayItem.ROADBLOCK.getMaterial(), 1, 0, RoleplayItem.ROADBLOCK.getDisplayName())) {
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.ROADBLOCK.getMaterial(), 1, 0, RoleplayItem.ROADBLOCK.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getBank() < 100) {
