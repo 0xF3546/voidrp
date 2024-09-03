@@ -321,7 +321,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         return;
                     }
                     playerData.removeBankMoney(75, "Schmerzmittel-Kauf");
-                    ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 1);
+                    ItemManager.addCustomItem(player, RoleplayItem.PFEFFERSPRAY, 1);
                 }
             });
             inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ROADBLOCK.getMaterial(), 1, 0, RoleplayItem.ROADBLOCK.getDisplayName())) {
