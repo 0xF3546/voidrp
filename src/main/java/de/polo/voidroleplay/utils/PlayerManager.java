@@ -411,66 +411,13 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.getLaboratory().save();
             }
 
+            playerData.getWorkstations().forEach(PlayerWorkstation::save);
             playerDataMap.remove(uuid);
             statement.close();
         } else {
             System.out.println("Spieler " + player.getName() + "'s playerData konnte nicht gefunden werden.");
         }
     }
-
-    /*@SneakyThrows
-    public void add1MinutePlaytime(Player player) {
-        UUID uuid = player.getUniqueId();
-        PlayerData playerData = playerDataMap.get(uuid);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        if (playerData.isJailed()) {
-            playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
-            if (playerData.getHafteinheiten() <= 0) {
-                Main.getInstance().utils.staatUtil.unarrestPlayer(player);
-            }
-        }
-        if (playerData.isAFK()) return;
-        int hours = playerData.getHours() + 1;
-        int minutes = playerData.getMinutes();
-        int newMinutes = minutes + 1;
-        int current_hours = playerData.getCurrentHours();
-        int needed_hours = playerData.getVisum() * 4;
-        int visum = playerData.getVisum() + 1;
-        playerData.setMinutes(newMinutes);
-        float value = (float) (needed_hours / player.getExpToLevel());
-        player.setTotalExperience((int) (value * current_hours));
-        if (minutes >= 60) {
-            Main.getInstance().beginnerpass.didQuest(player, 7);
-            Main.getInstance().seasonpass.didQuest(player, 7);
-            Main.getInstance().utils.payDayUtils.givePayDay(player);
-            playerData.setHours(playerData.getHours() + 1);
-            if (current_hours >= needed_hours) {
-                needed_hours = needed_hours + 4;
-                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
-                player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
-                playerData.setVisum(visum);
-                Main.getInstance().beginnerpass.didQuest(player, 3);
-                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
-                playerData.setCurrentHours(0);
-                if (visum == 2) {
-
-                }
-            } else {
-                current_hours = current_hours + 1;
-                playerData.setCurrentHours(current_hours);
-                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
-            }
-        } else {
-            if (newMinutes == 56) {
-                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
-            } else if (newMinutes == 58) {
-                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
-            } else if (newMinutes == 60) {
-                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
-            }
-        }
-    }*/
 
     @SneakyThrows
     public void add1MinutePlaytime(Player player) {
@@ -682,7 +629,7 @@ public class PlayerManager implements Listener, ServerTiming {
             @SneakyThrows
             @Override
             public void run() {
-                int currentMinute = Main.getInstance().utils.getCurrentMinute();
+                int currentMinute = Utils.getTime().getMinute();
                 Bukkit.getPluginManager().callEvent(new MinuteTickEvent(currentMinute));
 
                 // Batch-Operation für Spielerdaten-Update

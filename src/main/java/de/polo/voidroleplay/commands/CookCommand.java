@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CookCommand implements CommandExecutor, Listener {
@@ -62,14 +63,18 @@ public class CookCommand implements CommandExecutor, Listener {
 
     @EventHandler
     public void onMinute(MinuteTickEvent event) {
-        for (CookTimer timer : activeCooking) {
+        Iterator<CookTimer> iterator = activeCooking.iterator();
+
+        while (iterator.hasNext()) {
+            CookTimer timer = iterator.next();
+
             if (timer.getPlayer() == null) {
-                activeCooking.remove(timer);
+                iterator.remove();
                 continue;
             }
             if (timer.getPlayer().getLocation().distance(timer.getLocation()) > 15) {
                 timer.getPlayer().sendMessage(Prefix.MAIN + "Das kochen wurde beendet.");
-                activeCooking.remove(timer);
+                iterator.remove();
                 continue;
             }
             if (timer.getMinutes() >= 1) {
@@ -79,7 +84,8 @@ public class CookCommand implements CommandExecutor, Listener {
             ItemManager.addCustomItem(timer.getPlayer(), RoleplayItem.CRYSTAL, Main.random(8, 13));
             timer.getPlayer().sendMessage(Prefix.MAIN + "Das kochen wurde beendet.");
             playerManager.addExp(timer.getPlayer(), Main.random(80, 130));
-            activeCooking.remove(timer);
+            iterator.remove();
         }
     }
+
 }
