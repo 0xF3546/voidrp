@@ -675,8 +675,8 @@ public class PlayerInteractListener implements Listener {
                     for (Entity entity : player.getWorld().getNearbyEntities(particleLocation, 0.5, 0.5, 0.5)) {
                         if (entity instanceof Player && entity != player) {
                             Player hitPlayer = (Player) entity;
-                            hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2, 1));
-                            hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 2));
+                            hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
+                            hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 2));
                             break;
                         }
                     }
