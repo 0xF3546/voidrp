@@ -31,7 +31,7 @@ public class EventTeamChat implements CommandExecutor {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
-                    if (playersData.getSecondaryTeam().equalsIgnoreCase("Event-Team") || playersData.isAduty()) {
+                    if (playersData.getSecondaryTeam().equalsIgnoreCase("Event-Team") || playersData.getPermlevel() >= 70) {
                         if (playersData.getSecondaryTeam().equals("Event-Team") || playersData.isAduty()) {
                             players.sendMessage("§8[§6Event-Team§8]§e " + player.getName() + "§8:§7 " + utils.stringArrayToString(args));
                         }
