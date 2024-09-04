@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
 import de.polo.voidroleplay.utils.PlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,6 +38,8 @@ public class StatsCommand implements CommandExecutor {
         if (playerData.getSubGroupId() != 0) {
             player.sendMessage(" §8- §eGruppierung§8:§7 " + playerData.getSubGroup().getName());
         }
+        PlaytimeReward playtimeReward = playerManager.getPlaytimeReward(playerData.getRewardId());
+        player.sendMessage("§8 -§eSpielzeitbelohnung§8: §7" + playtimeReward.getDisplayName() + " §8- §7" + playerData.getRewardTime() + "§7h verbleibend" + (playtimeReward.isPremiumOnly() ?  "§8[§6Premium§8]": ""));
         return false;
     }
 }

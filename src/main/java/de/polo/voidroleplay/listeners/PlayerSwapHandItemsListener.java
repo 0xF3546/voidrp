@@ -568,10 +568,21 @@ public class PlayerSwapHandItemsListener implements Listener {
 
             }
         });
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWUzZDM2YmE4YTI5NjYzZGZkYmVmMTFmOWIyZDExY2FlMzg4Yzc1Nzg0Y2FiYzcwNmRjNjY4OWE4Y2IwYjM1MSJ9fX0=", 1, 0, "§bPremium", Arrays.asList("§8 » §e30 Tage", "§8 » §e10.000 Coins"))) {
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWUzZDM2YmE4YTI5NjYzZGZkYmVmMTFmOWIyZDExY2FlMzg4Yzc1Nzg0Y2FiYzcwNmRjNjY4OWE4Y2IwYjM1MSJ9fX0=", 1, 0, "§bPremium", Arrays.asList("§8 » §e30 Tage", "§8 » §e10.000 Coins", "", "§8 » §7[§6Rechtsklick§8]§7 Mehr Informationen"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                buy(player, "premium_30");
+                if (event.isLeftClick()) {
+                    buy(player, "premium_30");
+                } else {
+                    player.sendMessage("§7   ===§8[§6Premium§8]§7===");
+                    player.sendMessage("§8 ➥ §a2x Sozialbonus");
+                    player.sendMessage("§8 ➥ §aExtra Spielzeitbelohnungen");
+                    player.sendMessage("§8 ➥ §5Labor startet automatisch");
+                    player.sendMessage("§8 ➥ §6Business §8(§e/business§8)");
+                    player.sendMessage("§8 ➥ §6Spawn nach Despawn ändern §8(§e/changespawn§8)");
+                    player.sendMessage("§8 ➥ §6extra TeamSpeak Rolle");
+                    player.sendMessage("§8 ➥ §6Visuell in der Tablist §8(§d◈§8)");
+                }
             }
         });
         inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTQ4MGQ1N2IwZDFkNDMyZTA3NDg3OGM2YWVjNWY0NWEyY2U5OGQ5YzQ4MWZiOGNjODM4MmNmZjE3MWY4MzY5OSJ9fX0=", 1, 0, "§5Cosmetics", null)) {

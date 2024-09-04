@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.api.faction.gangwar.IGangzone;
-import de.polo.voidroleplay.commands.AuktionCommand;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.Housing;
@@ -30,8 +30,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -47,13 +45,15 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class PlayerManager implements Listener, ServerTiming {
 
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
-    private final HashMap<String, Boolean> onPlayer = new HashMap<>();
     private final HashMap<String, Boolean> playerMovement = new HashMap<>();
     public final HashMap<String, Integer> player_rent = new HashMap<>();
+
+    private final List<PlaytimeReward> playtimeRewards = new ArrayList<>();
 
     private final MySQL mySQL;
 
@@ -61,6 +61,26 @@ public class PlayerManager implements Listener, ServerTiming {
         this.mySQL = mySQL;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         startTimeTracker();
+        initPlaytimeRewards();
+    }
+
+    private void initPlaytimeRewards() {
+        playtimeRewards.add(new PlaytimeReward(1, 2, "§a2000$", false, 2000, PlaytimeRewardType.MONEY));
+        playtimeRewards.add(new PlaytimeReward(2, 2, "§a4000$", true, 4000, PlaytimeRewardType.MONEY));
+        playtimeRewards.add(new PlaytimeReward(3, 6, "§e20 Crypto", true, 20, PlaytimeRewardType.CRYPTO));
+        playtimeRewards.add(new PlaytimeReward(4, 6, "§e35 Crypto", true, 35, PlaytimeRewardType.CRYPTO));
+    }
+
+    private PlaytimeReward getRandomPlaytimeReward(PlayerData playerData) {
+        List<PlaytimeReward> randomRewards = playtimeRewards;
+        if (Main.random(1, 3) == 3 && playerData.getPermlevel() >= 20) {
+           randomRewards = randomRewards.stream().filter(PlaytimeReward::isPremiumOnly).collect(Collectors.toList());
+        }
+        return randomRewards.get(Main.random(0, randomRewards.size()));
+    }
+
+    public PlaytimeReward getPlaytimeReward(int id) {
+        return playtimeRewards.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
     }
 
     public boolean isCreated(UUID uuid) {
@@ -207,6 +227,11 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
                 playerData.setEventPoints(result.getInt("eventPoints"));
                 playerData.setCrypto(result.getFloat("crypto"));
+                playerData.setRewardTime(result.getInt("rewardTime"));
+                playerData.setRewardId(result.getInt("rewardId"));
+                if (playerData.getRewardId() == 0) {
+                    playerData.setRewardId(getRandomPlaytimeReward(playerData).getId());
+                }
 
                 if (result.getString("faction") != null) {
                     playerData.setFaction(result.getString("faction"));
@@ -386,7 +411,6 @@ public class PlayerManager implements Listener, ServerTiming {
         PlayerData playerData = playerDataMap.get(uuid);
         if (playerData != null) {
             assert statement != null;
-            onPlayer.remove(uuid);
             if (playerData.isDead()) {
                 Item skull = Main.getInstance().utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
                 if (skull != null) {
@@ -419,6 +443,18 @@ public class PlayerManager implements Listener, ServerTiming {
         }
     }
 
+    private void giveReward(PlayerData playerData) {
+        PlaytimeReward playtimeReward = getPlaytimeReward(playerData.getRewardId());
+        switch (playtimeReward.getPlaytimeRewardType()) {
+            case MONEY:
+                playerData.addBankMoney((int) playtimeReward.getAmount(), "Spielzeitbelhnung");
+                break;
+            case CRYPTO:
+                playerData.addCrypto(playtimeReward.getAmount(), "Spielzeitbelohnung" , false);
+                break;
+        }
+    }
+
     @SneakyThrows
     public void add1MinutePlaytime(Player player) {
         UUID uuid = player.getUniqueId();
@@ -447,6 +483,14 @@ public class PlayerManager implements Listener, ServerTiming {
             Main.getInstance().utils.payDayUtils.givePayDay(player);
             playerData.setHours(playerData.getHours() + 1);
             playerData.setMinutes(0);
+            playerData.setRewardTime(playerData.getRewardTime() - 1);
+            if (playerData.getRewardTime() <= 0) {
+                giveReward(playerData);
+                PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
+                playerData.setRewardId(playtimeReward.getId());
+                playerData.setRewardTime(playtimeReward.getHour());
+                playerData.save();
+            }
             if (current_hours >= needed_hours) {
                 needed_hours = needed_hours + 4;
                 statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
