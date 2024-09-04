@@ -36,9 +36,12 @@ public class CheckoutWebshopCommand implements CommandExecutor {
         if (!(sender instanceof ConsoleCommandSender)) {
             return false;
         }
-        UUID uuid = UUID.fromString(args[0]);
+        String uuid = args[0];
         float amount = Float.parseFloat(args[2]);
-        Player target = Bukkit.getPlayer(uuid);
+        Player target = null;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getUniqueId().toString().replace("-", "").equalsIgnoreCase(uuid)) target = player;
+        }
         logBuy(uuid, args[1], amount);
         switch (args[1].toLowerCase()) {
             case "coins":
@@ -48,7 +51,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                     return false;
                 }
                 Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE players SET coins = coins + ? WHERE uuid = ?");
+                PreparedStatement statement = connection.prepareStatement("UPDATE players SET coins = coins + ? WHERE REPLACE(uuid, '-', '') = ?");
                 statement.setInt(1, (int) amount);
                 statement.setString(2, uuid.toString());
                 statement.executeUpdate();
@@ -66,10 +69,10 @@ public class CheckoutWebshopCommand implements CommandExecutor {
     }
 
     @SneakyThrows
-    private void logBuy(UUID uuid, String product, float amount) {
+    private void logBuy(String uuid, String product, float amount) {
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO webshop_logs (uuid, product, amount) VALUES (?, ?, ?)");
-        statement.setString(1, uuid.toString());
+        statement.setString(1, uuid);
         statement.setString(2, product);
         statement.setFloat(3, amount);
         statement.execute();

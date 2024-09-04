@@ -344,14 +344,15 @@ public class Weapons implements Listener {
 
 
         Location location = player.getLocation();
-        for (Player nearbyPlayer : Bukkit.getOnlinePlayers()) {
+        /*for (Player nearbyPlayer : Bukkit.getOnlinePlayers()) {
             Location playerLocation = nearbyPlayer.getLocation();
             double distance = location.distance(playerLocation);
             if (distance <= 20) {
                 float volume = (float) (1.0 - (distance / 20.0));
                 nearbyPlayer.playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, volume, weaponData.getSoundPitch());
             }
-        }
+        }*/
+        Bukkit.getWorld("World").playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, 1, weaponData.getSoundPitch());
 
         int newAmmo = weapon.getCurrentAmmo() - 1;
         weapon.setCurrentAmmo(newAmmo);

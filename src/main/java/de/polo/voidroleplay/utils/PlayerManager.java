@@ -229,12 +229,6 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setCrypto(result.getFloat("crypto"));
                 playerData.setRewardTime(result.getInt("rewardTime"));
                 playerData.setRewardId(result.getInt("rewardId"));
-                if (playerData.getRewardId() == 0) {
-                    PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
-                    playerData.setRewardId(playtimeReward.getId());
-                    playerData.setRewardTime(playtimeReward.getHour());
-                    playerData.save();
-                }
 
                 if (result.getString("faction") != null) {
                     playerData.setFaction(result.getString("faction"));
@@ -355,6 +349,12 @@ public class PlayerManager implements Listener, ServerTiming {
 
 
                 playerDataMap.put(uuid, playerData);
+                if (playerData.getRewardId() == 0) {
+                    PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
+                    playerData.setRewardId(playtimeReward.getId());
+                    playerData.setRewardTime(playtimeReward.getHour());
+                    playerData.save();
+                }
                 if (tutorial != 0) {
                     playerData.setVariable("tutorial", new PlayerTutorial(player, playerData, tutorial));
                     Main.getInstance().utils.tutorial.start(player);
