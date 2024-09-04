@@ -230,7 +230,10 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setRewardTime(result.getInt("rewardTime"));
                 playerData.setRewardId(result.getInt("rewardId"));
                 if (playerData.getRewardId() == 0) {
-                    playerData.setRewardId(getRandomPlaytimeReward(playerData).getId());
+                    PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
+                    playerData.setRewardId(playtimeReward.getId());
+                    playerData.setRewardTime(playtimeReward.getHour());
+                    playerData.save();
                 }
 
                 if (result.getString("faction") != null) {

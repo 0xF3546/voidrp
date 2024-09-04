@@ -32,7 +32,7 @@ public class PRTeamChat implements CommandExecutor {
                 PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
                     if (playersData.getSecondaryTeam().equalsIgnoreCase("PR-Team") || playersData.getPermlevel() >= 70) {
-                        if (playersData.getSecondaryTeam().equals("PR-Team") || playersData.isAduty()) {
+                        if (playersData.getSecondaryTeam().equals("PR-Team") || playersData.isAduty() || playersData.getPermlevel() >= 70) {
                             players.sendMessage("§8[§6PRTeam§8]§e " + player.getName() + "§8:§7 " + utils.stringArrayToString(args));
                         }
                     }

@@ -32,7 +32,7 @@ public class BauteamChat implements CommandExecutor {
                 PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
                     if (playersData.getSecondaryTeam().equalsIgnoreCase("Bau-Team") || playersData.isAduty()) {
-                        if (playersData.getSecondaryTeam().equals("Bau-Team") || playersData.isAduty()) {
+                        if (playersData.getSecondaryTeam().equals("Bau-Team") || playersData.isAduty() || playersData.getPermlevel() >= 70) {
                             players.sendMessage("§8[§6BauTeam§8]§e " + player.getName() + "§8:§7 " + utils.stringArrayToString(args));
                         }
                     }

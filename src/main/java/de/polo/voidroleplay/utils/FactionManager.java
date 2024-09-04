@@ -120,7 +120,7 @@ public class FactionManager {
             factionData.storage.setCocaine(locs.getInt("cocaine"));
             factionData.storage.setKevlar(locs.getInt("kevlar"));
             factionData.storage.setNoble_joint(locs.getInt("noble_joint"));
-            factionData.storage.setCrystal(locs.getInt("crystal "));
+            factionData.storage.setCrystal(locs.getInt("crystal"));
             factionData.upgrades.setTaxLevel(locs.getInt("tax"));
             factionData.upgrades.setWeaponLevel(locs.getInt("weapon"));
             factionData.upgrades.setDrugEarningLevel(locs.getInt("drug_earning"));

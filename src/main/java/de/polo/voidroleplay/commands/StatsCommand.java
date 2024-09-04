@@ -39,7 +39,7 @@ public class StatsCommand implements CommandExecutor {
             player.sendMessage(" §8- §eGruppierung§8:§7 " + playerData.getSubGroup().getName());
         }
         PlaytimeReward playtimeReward = playerManager.getPlaytimeReward(playerData.getRewardId());
-        player.sendMessage("§8 -§eSpielzeitbelohnung§8: §7" + playtimeReward.getDisplayName() + " §8- §7" + playerData.getRewardTime() + "§7h verbleibend" + (playtimeReward.isPremiumOnly() ?  "§8[§6Premium§8]": ""));
+        player.sendMessage("§8 - §eSpielzeitbelohnung§8: §7" + playtimeReward.getDisplayName() + " §8- §7" + playerData.getRewardTime() + "§7h verbleibend" + (playtimeReward.isPremiumOnly() ?  "§8[§6Premium§8]": ""));
         return false;
     }
 }
