@@ -76,7 +76,7 @@ public class PlayerManager implements Listener, ServerTiming {
         if (Main.random(1, 3) == 3 && playerData.getPermlevel() >= 20) {
            randomRewards = randomRewards.stream().filter(PlaytimeReward::isPremiumOnly).collect(Collectors.toList());
         }
-        return randomRewards.get(Main.random(0, randomRewards.size()));
+        return randomRewards.get(Main.random(0, randomRewards.size() - 1));
     }
 
     public PlaytimeReward getPlaytimeReward(int id) {

@@ -19,6 +19,7 @@ public class OOCCommand implements CommandExecutor {
             message.append(" ").append(args[i]);
         }
         for (Player players : Bukkit.getOnlinePlayers()) {
+            if (players.getWorld() != player.getWorld()) continue;
             if (player.getLocation().distance(players.getLocation()) <= 5) {
                 players.sendMessage("§8[§cOOC§8] §c" + player.getName() + "§8: §7" + message);
             }

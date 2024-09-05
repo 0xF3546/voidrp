@@ -53,7 +53,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                 Connection connection = Main.getInstance().mySQL.getConnection();
                 PreparedStatement statement = connection.prepareStatement("UPDATE players SET coins = coins + ? WHERE REPLACE(uuid, '-', '') = ?");
                 statement.setInt(1, (int) amount);
-                statement.setString(2, uuid.toString());
+                statement.setString(2, uuid);
                 statement.executeUpdate();
                 statement.close();
                 connection.close();
