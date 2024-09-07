@@ -25,7 +25,7 @@ public class RegisterHouseCommand implements CommandExecutor {
             if (args.length >= 1) {
                 try {
                     Connection connection = Main.getInstance().mySQL.getConnection();
-                    PreparedStatement statement = connection.prepareStatement("INSERT INTO housing (number, price) VALUES (?, ?)");
+                    PreparedStatement statement = connection.prepareStatement("INSERT INTO housing (number, price) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
                     statement.setInt(1, Integer.parseInt(args[0]));
                     statement.setInt(2, Integer.parseInt(args[1]));
                     statement.execute();
