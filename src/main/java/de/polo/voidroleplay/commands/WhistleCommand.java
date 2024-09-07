@@ -32,6 +32,7 @@ public class WhistleCommand implements CommandExecutor {
             playerName = "Maskierter";
         }
         for (Player players : Bukkit.getOnlinePlayers()) {
+            if (players.getLocation().getWorld() != player.getLocation().getWorld()) continue;
             if (player.getLocation().distance(players.getLocation()) <= 3) {
                 players.sendMessage("§8[§c" + playerData.getLevel() +"§8] §7" + playerName + " flüstert: " + utils.stringArrayToString(args));
             } else if (player.getLocation().distance(players.getLocation()) <= 5) {

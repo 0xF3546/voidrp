@@ -31,8 +31,8 @@ public class PRTeamChat implements CommandExecutor {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
-                    if (playersData.getSecondaryTeam().equalsIgnoreCase("PR-Team") || playersData.isAduty()) {
-                        if (playersData.getSecondaryTeam().equals("PR-Team") || playersData.isAduty()) {
+                    if (playersData.getSecondaryTeam().equalsIgnoreCase("PR-Team") || playersData.getPermlevel() >= 70) {
+                        if (playersData.getSecondaryTeam().equals("PR-Team") || playersData.isAduty() || playersData.getPermlevel() >= 70) {
                             players.sendMessage("§8[§6PRTeam§8]§e " + player.getName() + "§8:§7 " + utils.stringArrayToString(args));
                         }
                     }

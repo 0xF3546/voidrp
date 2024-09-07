@@ -27,12 +27,12 @@ public class BauteamChat implements CommandExecutor {
             player.sendMessage(Prefix.error_nopermission);
             return false;
         }
-        if (playerData.getSecondaryTeam().equals("Bau-Team") || playerData.isAduty()) {
+        if (playerData.getSecondaryTeam().equals("Bau-Team") || playerData.getPermlevel() >= 70) {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
                     if (playersData.getSecondaryTeam().equalsIgnoreCase("Bau-Team") || playersData.isAduty()) {
-                        if (playersData.getSecondaryTeam().equals("Bau-Team") || playersData.isAduty()) {
+                        if (playersData.getSecondaryTeam().equals("Bau-Team") || playersData.isAduty() || playersData.getPermlevel() >= 70) {
                             players.sendMessage("§8[§6BauTeam§8]§e " + player.getName() + "§8:§7 " + utils.stringArrayToString(args));
                         }
                     }

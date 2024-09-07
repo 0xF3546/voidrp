@@ -47,6 +47,14 @@ public class PlayerData {
     @Setter
     private boolean sendAdminMessages = false;
 
+    @Getter
+    @Setter
+    private int rewardId;
+
+    @Getter
+    @Setter
+    private int rewardTime;
+
     private final List<PlayerQuest> quests = new ArrayList<>();
     private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
     private final List<PlayerIllness> illnesses = new ArrayList<>();
@@ -624,7 +632,7 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ?, subTeam = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ?, subTeam = ?, rewardId = ?, rewardTime = ? WHERE id = ?");
         statement.setInt(1, getBusiness());
         statement.setInt(2, getDeathTime());
         statement.setBoolean(3, isDead());
@@ -649,7 +657,9 @@ public class PlayerData {
         } else {
             statement.setInt(14, subTeam.getId());
         }
-        statement.setInt(15, getId());
+        statement.setInt(15, rewardId);
+        statement.setInt(16, rewardTime);
+        statement.setInt(17, getId());
         statement.executeUpdate();
         statement.close();
     }

@@ -393,6 +393,7 @@ public class PlayerInteractListener implements Listener {
                                                 Player player = (Player) event.getWhoClicked(); // Ensure we get the player from the event
                                                 List<Player> nearPlayers = new ArrayList<>();
                                                 for (Player p : Bukkit.getOnlinePlayers()) {
+                                                    if (p.getWorld() != player.getWorld()) continue;
                                                     if (player.getLocation().distance(p.getLocation()) < 5 && p != player) {
                                                         nearPlayers.add(p);
                                                     }

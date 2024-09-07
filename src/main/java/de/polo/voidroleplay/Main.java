@@ -492,7 +492,9 @@ public final class Main extends JavaPlugin {
         public SperrinfoCommand sperrinfoCommand;
         public RoadBlockCommand roadBlockCommand;
         public SetFactionChatColorCommand setFactionChatColorCommand;
+        public CheckoutWebshopCommand checkoutWebshopCommand;
         private void Init() {
+            checkoutWebshopCommand = new CheckoutWebshopCommand(playerManager);
             setFactionChatColorCommand = new SetFactionChatColorCommand(playerManager, factionManager);
             roadBlockCommand = new RoadBlockCommand(factionManager, playerManager);
             sperrinfoCommand = new SperrinfoCommand(playerManager);
