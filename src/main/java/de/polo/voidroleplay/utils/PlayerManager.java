@@ -229,6 +229,16 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setCrypto(result.getFloat("crypto"));
                 playerData.setRewardTime(result.getInt("rewardTime"));
                 playerData.setRewardId(result.getInt("rewardId"));
+                if (!result.getBoolean("tpNewmap")) {
+                    Main.getInstance().locationManager.useLocation(player, "stadthalle");
+                    player.sendMessage("§8 ✈ §aWillkommen auf der neuen Map!");
+                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    PreparedStatement ps = connection.prepareStatement("UPDATE players SET tpNewmap = true WHERE uuid = ?");
+                    ps.setString(1, uuid.toString());
+                    ps.execute();
+                    ps.close();
+                    connection.close();
+                }
 
                 if (result.getString("faction") != null) {
                     playerData.setFaction(result.getString("faction"));
