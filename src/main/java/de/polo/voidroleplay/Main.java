@@ -494,7 +494,7 @@ public final class Main extends JavaPlugin {
         public SetFactionChatColorCommand setFactionChatColorCommand;
         private void Init() {
             setFactionChatColorCommand = new SetFactionChatColorCommand(playerManager, factionManager);
-            roadBlockCommand = new RoadBlockCommand(factionManager);
+            roadBlockCommand = new RoadBlockCommand(factionManager, playerManager);
             sperrinfoCommand = new SperrinfoCommand(playerManager);
             cookCommand = new CookCommand(playerManager);
             registerFactionBanner = new RegisterFactionBanner(playerManager, factionManager);
