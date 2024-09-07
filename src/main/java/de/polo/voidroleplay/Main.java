@@ -496,7 +496,7 @@ public final class Main extends JavaPlugin {
         private void Init() {
             checkoutWebshopCommand = new CheckoutWebshopCommand(playerManager);
             setFactionChatColorCommand = new SetFactionChatColorCommand(playerManager, factionManager);
-            roadBlockCommand = new RoadBlockCommand(factionManager);
+            roadBlockCommand = new RoadBlockCommand(factionManager, playerManager);
             sperrinfoCommand = new SperrinfoCommand(playerManager);
             cookCommand = new CookCommand(playerManager);
             registerFactionBanner = new RegisterFactionBanner(playerManager, factionManager);

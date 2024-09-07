@@ -2,8 +2,11 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.listeners.PlayerInteractListener;
 import de.polo.voidroleplay.utils.FactionManager;
+import de.polo.voidroleplay.utils.PlayerManager;
+import lombok.val;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -19,9 +22,11 @@ public class RoadBlockCommand implements CommandExecutor {
     List<Block> roadblocks = Main.getInstance().gamePlay.roadblocks;
 
     private final FactionManager factionManager;
+    private final PlayerManager playerManager;
 
-    public RoadBlockCommand(FactionManager factionManager) {
+    public RoadBlockCommand(FactionManager factionManager, PlayerManager playerManager) {
         this.factionManager = factionManager;
+        this.playerManager = playerManager;
 
         Main.getInstance().registerCommand("rbreset", this);
     }
@@ -36,12 +41,18 @@ public class RoadBlockCommand implements CommandExecutor {
             block.setType(Material.AIR);
         }
 
-        roadblocks.clear();
-
         Player player = (Player) sender;
 
-        factionManager.sendCustomMessageToFactions(Main.faction_prefix + player.getName() + " hat die Roadblocks zurückgesetzt", "FBI", "Polizei", "Medic");
+        PlayerData playerData = playerManager.getPlayerData(player);
 
-        return true;
+        if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("Medic")) {
+            roadblocks.clear();
+
+            factionManager.sendCustomMessageToFactions(Main.faction_prefix + player.getName() + " hat die Roadblocks zurückgesetzt", "FBI", "Polizei", "Medic");
+        }
+
+        player.sendMessage(Main.error_nopermission);
+
+        return false;
     }
 }
