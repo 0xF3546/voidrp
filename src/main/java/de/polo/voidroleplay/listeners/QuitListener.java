@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.enums.PlayerPed;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
@@ -23,7 +24,8 @@ import org.bukkit.potion.PotionEffectType;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class QuitListener implements Listener {
+public class
+QuitListener implements Listener {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final Utils utils;
@@ -45,7 +47,6 @@ public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        String originalQuitMessage = event.getQuitMessage();
         event.setQuitMessage("");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
@@ -123,7 +124,11 @@ public class QuitListener implements Listener {
             if (serviceData != null) {
                 utils.staatUtil.cancelService(player);
             }
-            ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat den Server verlassen (" + originalQuitMessage + ").");
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (player.getWorld() != p.getWorld()) continue;
+                if (p.getLocation().distance(player.getLocation()) > 10) continue;
+                p.sendMessage("§8 ➥ §7" + player.getName() + " hat den Server verlassen (" + p.getLocation().distance(player.getLocation()) + "m)");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
