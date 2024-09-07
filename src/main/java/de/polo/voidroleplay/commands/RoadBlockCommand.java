@@ -49,6 +49,7 @@ public class RoadBlockCommand implements CommandExecutor {
             roadblocks.clear();
 
             factionManager.sendCustomMessageToFactions(Main.faction_prefix + player.getName() + " hat die Roadblocks zurückgesetzt", "FBI", "Polizei", "Medic");
+            return false;
         }
 
         player.sendMessage(Main.error_nopermission);
