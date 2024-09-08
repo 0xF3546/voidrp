@@ -32,6 +32,7 @@ public class SecondaryTeamInfoCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length < 1) {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /secondaryteaminfo [Team]");
+            return false;
         }
         String[] teams = {"Bau-Team", "Event-Team", "PR-Team"};
         for (String team : teams) {

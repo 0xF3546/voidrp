@@ -32,6 +32,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -143,7 +144,7 @@ public class GamePlay implements Listener {
     }
 
     private PlayerDrugUsage getDrugUsage(UUID uuid, Drug drug) {
-        PlayerDrugUsage usage = drugUsages.stream().filter(x -> x.getUuid().equals(uuid) && x.getDrug().equals(drug)).findFirst().orElse(null);
+        PlayerDrugUsage usage = drugUsages.stream().filter(x -> x.getUuid().equals(uuid)).findFirst().orElse(null);
         if (usage != null) {
             if (Utils.getTime().isAfter(usage.getUsage().plusSeconds(drug.getTime()))) {
                 usage = null;
@@ -160,10 +161,15 @@ public class GamePlay implements Listener {
             return;
         }
         for (PotionEffect effect : drug.getEffects()) {
-            if (!player.hasPotionEffect(effect.getType()) && Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug) == null) {
+            if (!player.hasPotionEffect(effect.getType())) {
+                if (effect.getType().equals(PotionEffectType.ABSORPTION)) {
+                    if (Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug) != null) continue;
+                }
                 player.addPotionEffect(effect);
             }
         }
+        PlayerDrugUsage usage = new PlayerDrugUsage(player.getUniqueId(), drug, Utils.getTime());
+        Main.getInstance().gamePlay.drugUsages.add(usage);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 1);
         ItemManager.removeCustomItem(player, drug.getItem(), 1);
         switch (drug) {
