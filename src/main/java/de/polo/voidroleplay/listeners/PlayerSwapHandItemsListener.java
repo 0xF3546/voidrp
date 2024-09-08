@@ -129,6 +129,23 @@ public class PlayerSwapHandItemsListener implements Listener {
                 return;
             }
         }
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getVariable("job") != null) {
+            if (playerData.getVariable("job").toString().equalsIgnoreCase("corpse")) {
+                Corpse corpse = Main.getInstance().utils.deathUtil.getNearbyCorpse(player.getLocation(), 3);
+                if (corpse != null) {
+                    InventoryManager inventoryManager = new InventoryManager(player, 27, "§8Leiche");
+                    inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WITHER_SKELETON_SKULL, 1, 0, "§8Leiche aufheben")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            player.closeInventory();
+                            Main.getInstance().utils.deathUtil.jobPickupCorpse(corpse, player);
+                        }
+                    });
+                }
+                return;
+            }
+        }
         for (Storages storage : Storages.values()) {
             if (player.getLocation().distance(storage.getLocation()) < 5) {
                 Storage s = Storage.getStorageByTypeAndPlayer(StorageType.EXTRA, player, storage);
@@ -186,7 +203,6 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             }
         }
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_inventory", null);
         if (nearestSkull == null) {
             for (LocationData locationData : Main.getInstance().locationManager.getLocations()) {

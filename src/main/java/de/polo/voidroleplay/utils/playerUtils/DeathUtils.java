@@ -1,28 +1,36 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
+import de.polo.voidroleplay.dataStorage.Corpse;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
-import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class DeathUtils {
     private final HashMap<String, Boolean> deathPlayer = new HashMap<>();
     private final HashMap<String, Item> deathSkulls = new HashMap<>();
+
+    private final List<Corpse> corpses = new ArrayList<>();
+
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final LocationManager locationManager;
@@ -169,7 +177,62 @@ public class DeathUtils {
         playerManager.setPlayerMove(player, true);
         playerData.save();
         ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
+        spawnCorpse(player);
     }
+
+    private void spawnCorpse(Player player) {
+        ItemStack skull = new ItemStack(Material.WITHER_SKELETON_SKULL);
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName("§8Leiche");
+        skull.setItemMeta(meta);
+        Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
+        Corpse corpse = new Corpse(item, player.getUniqueId(), Utils.getTime());
+        corpses.add(corpse);
+    }
+
+    public void cleanUpCorpses() {
+        for (Corpse corpse : corpses) {
+            corpse.getSkull().remove();
+        }
+    }
+
+    public Corpse getNearbyCorpse(Location location, int range) {
+        Corpse nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (Corpse corpse : corpses) {
+            double distance = corpse.getSkull().getLocation().distance(location);
+
+            if (distance > range) continue;
+
+            if (nearest == null || distance < nearestDistance) {
+                nearest = corpse;
+                nearestDistance = distance;
+            }
+        }
+        return nearest;
+    }
+
+    public void jobPickupCorpse(Corpse corpse, Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getVariable("job::corpse") == null || playerData.getVariable("job::corpse") != corpse) {
+            player.sendMessage(Prefix.ERROR + "Diese Leiche gehört nicht zu deinem Job!");
+            return;
+        }
+        corpse.getSkull().remove();
+        playerData.setVariable("job::corpse::pickedup", true);
+        Main.getInstance().utils.navigation.createNaviByLocation(player, "undertaker");
+        player.sendMessage(Prefix.MAIN + "Du hast eine Leiche aufgesammelt, begib dich nun zum Bestatter.");
+    }
+
+    public void removeCorpse(Corpse corpse) {
+        corpses.remove(corpse);
+    }
+
+    public Collection<Corpse> getCorbses() {
+        return corpses;
+    }
+
 
     public static boolean isDead(Player player) throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();

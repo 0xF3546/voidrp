@@ -217,6 +217,7 @@ public final class Main extends JavaPlugin {
         if (gamePlay != null && gamePlay.activeDrop != null) {
             gamePlay.activeDrop.cleanup();
         }
+        Main.getInstance().utils.deathUtil.cleanUpCorpses();
         System.out.println("Disabling VoidRoleplay");
         isOnline = false;
         try {
@@ -493,7 +494,9 @@ public final class Main extends JavaPlugin {
         public RoadBlockCommand roadBlockCommand;
         public SetFactionChatColorCommand setFactionChatColorCommand;
         public CheckoutWebshopCommand checkoutWebshopCommand;
+        public UndertakerCommand undertakerCommand;
         private void Init() {
+            undertakerCommand = new UndertakerCommand(playerManager, locationManager);
             checkoutWebshopCommand = new CheckoutWebshopCommand(playerManager);
             setFactionChatColorCommand = new SetFactionChatColorCommand(playerManager, factionManager);
             roadBlockCommand = new RoadBlockCommand(factionManager, playerManager);
