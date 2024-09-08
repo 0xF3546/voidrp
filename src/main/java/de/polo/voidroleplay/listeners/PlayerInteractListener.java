@@ -709,7 +709,7 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 }
-                if (event.getItem() != null && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.ROADBLOCK)) {
+                /*if (event.getItem() != null && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.ROADBLOCK)) {
                     if (event.getBlockFace() == BlockFace.UP) {
                         Block blockAbove = clickedBlock.getRelative(0, 1, 0);
 
@@ -721,7 +721,7 @@ public class PlayerInteractListener implements Listener {
                             Main.getInstance().gamePlay.roadblocks.add(blockAbove);
                         }
                     }
-                }
+                }*/
             }
         }
 
