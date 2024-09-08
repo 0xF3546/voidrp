@@ -45,14 +45,14 @@ public class RoadBlockCommand implements CommandExecutor {
 
         PlayerData playerData = playerManager.getPlayerData(player);
 
-        if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("Medic")) {
-            roadblocks.clear();
-
-            factionManager.sendCustomMessageToFactions(Main.faction_prefix + player.getName() + " hat die Roadblocks zurückgesetzt", "FBI", "Polizei", "Medic");
+        if (!playerData.getFaction().equalsIgnoreCase("FBI") || !playerData.getFaction().equalsIgnoreCase("Polizei") || !playerData.getFaction().equalsIgnoreCase("Medic")) {
+            player.sendMessage(Main.error_nopermission);
             return false;
         }
 
-        player.sendMessage(Main.error_nopermission);
+        roadblocks.clear();
+
+        factionManager.sendCustomMessageToFactions(Main.faction_prefix + player.getName() + " hat die Roadblocks zurückgesetzt", "FBI", "Polizei", "Medic");
 
         return false;
     }
