@@ -105,6 +105,21 @@ public class PlayerInteractListener implements Listener {
                     armorStand.setVisible(false);
                     armorStand.addPassenger(player);
                 }
+                if (event.getClickedBlock().getType().equals(Material.PLAYER_HEAD)) {
+                    RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                    if (block.getInfo() == null || block.getInfoValue() == null) return;
+                    if (!playerData.addClickedBlock(block)) {
+                        Main.getInstance().utils.sendActionBar(player, "§cDiesen Kopf hast du bereits gefunden!");
+                        return;
+                    }
+                    int found = 0;
+                    for (ClickedEventBlock eventBlock : playerData.getClickedEventBlocks()) {
+                        RegisteredBlock b = blockManager.getBlockById(eventBlock.getBlockId());
+                        if (b.getInfoValue().equalsIgnoreCase(block.getInfoValue())) found++;
+                    }
+                    int total = blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase(block.getInfo())  && x.getInfoValue().equalsIgnoreCase(block.getInfoValue())).collect(Collectors.toList()).size();
+                    Main.getInstance().utils.sendActionBar(player, "§aDu hast ein Cookie gefunden! (" + found + "/" + total + " in " + block.getInfoValue() + ")");
+                }
                 if (event.getClickedBlock().getType().toString().contains("BANNER")) {
                     RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (block != null && block.getInfo() != null && block.getInfoValue() != null) {

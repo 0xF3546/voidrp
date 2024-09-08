@@ -59,12 +59,15 @@ public class PlayerData {
     private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
     private final List<PlayerIllness> illnesses = new ArrayList<>();
 
+    private final List<ClickedEventBlock> clickedEventBlocks = new ArrayList<>();
+
     public PlayerData(Player player) {
         this.player = player;
         this.playerPetManager = new PlayerPetManager(this, player);
         this.playerFFAStatsManager = new PlayerFFAStatsManager(player);
         this.playerPowerUpManager = new PlayerPowerUpManager(player, this);
         loadIllnesses();
+        loadClickedEventBlocks();
     }
 
     @Getter
@@ -304,7 +307,8 @@ public class PlayerData {
         insertStatement.close();
         connection.close();
 
-        if (!silent) player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: +" + amount + " Coins (" + reason + ")");
+        if (!silent)
+            player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: +" + amount + " Coins (" + reason + ")");
     }
 
     @SneakyThrows
@@ -328,7 +332,8 @@ public class PlayerData {
         insertStatement.close();
         connection.close();
 
-        if (!silent) player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: -" + amount + " Coins (" + reason + ")");
+        if (!silent)
+            player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: -" + amount + " Coins (" + reason + ")");
     }
 
     @SneakyThrows
@@ -375,6 +380,42 @@ public class PlayerData {
             playerIllness.setId(result.getInt(id));
             illnesses.add(playerIllness);
         }
+    }
+
+    @SneakyThrows
+    private void loadClickedEventBlocks() {
+        clickedEventBlocks.clear();
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_eventblocks_clicked WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            ClickedEventBlock block = new ClickedEventBlock(result.getInt("blockId"));
+            clickedEventBlocks.add(block);
+        }
+    }
+
+    @SneakyThrows
+    public boolean addClickedBlock(RegisteredBlock block) {
+        if (clickedEventBlocks.stream().anyMatch(b -> b.getBlockId() == block.getId())) return false;
+        Main.getInstance().playerManager.addExp(player, Main.random(10, 20));
+        int money = Main.random(50, 100);
+        player.sendMessage("§a+" + money + "$");
+        addMoney(money, "Event-Block");
+        ClickedEventBlock clickedEventBlock = new ClickedEventBlock(block.getId());
+        clickedEventBlocks.add(clickedEventBlock);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO player_eventblocks_clicked (uuid, blockId) VALUES (?, ?)");
+        statement.setString(1, player.getUniqueId().toString());
+        statement.setInt(2, block.getId());
+        statement.execute();
+        statement.close();
+        connection.close();
+        return true;
+    }
+
+    public Collection<ClickedEventBlock> getClickedEventBlocks() {
+        return clickedEventBlocks;
     }
 
     public PlayerIllness getIllness(IllnessType illnessType) {

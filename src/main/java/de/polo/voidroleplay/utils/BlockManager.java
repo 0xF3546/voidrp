@@ -61,6 +61,10 @@ public class BlockManager {
         return null;
     }
 
+    public RegisteredBlock getBlockById(int id) {
+        return registeredBlocks.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
+    }
+
     @SneakyThrows
     public int addBlock(RegisteredBlock block) {
         registeredBlocks.add(block);
