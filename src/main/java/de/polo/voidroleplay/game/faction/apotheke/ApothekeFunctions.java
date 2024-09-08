@@ -74,6 +74,15 @@ public class ApothekeFunctions implements Listener {
         return 60 - minutesDifference;
     }
 
+    private boolean isInAttack(String faction) {
+        for (Apotheke apotheke : rob.keySet()) {
+            if (apotheke.getAttackerFaction().equalsIgnoreCase(faction) || apotheke.getOwner().equalsIgnoreCase(faction)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void openApotheke(Player player, int id) {
         Apotheke apotheke = getById(id);
         if (apotheke == null) return;
@@ -96,6 +105,10 @@ public class ApothekeFunctions implements Listener {
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", Arrays.asList("§8 ➥ §7Besitzer§8: " + owner, "§8 ➥ §cKlicke zum attackieren"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (isInAttack(apotheke.getOwner())) {
+                        player.sendMessage(Prefix.ERROR + "Diese Fraktion ist aktuell in einem Überfall.");
+                        return;
+                    }
                     if (apotheke.getOwner().equalsIgnoreCase(playerData.getFaction())) {
                         player.sendMessage(Main.error + "Du kannst deine eigene Apotheken nicht einschüchtern.");
                         return;
