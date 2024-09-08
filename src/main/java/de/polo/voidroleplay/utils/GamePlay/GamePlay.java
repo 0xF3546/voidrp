@@ -72,6 +72,8 @@ public class GamePlay implements Listener {
 
     public final List<Block> roadblocks = new ArrayList<>();
 
+    private final List<PlayerDrugUsage> drugUsages = new ArrayList<>();
+
     private StaatsbankRob staatsbankRob = null;
     private boolean isStaatsbankRobBlocked = false;
 
@@ -140,6 +142,17 @@ public class GamePlay implements Listener {
         return dealers;
     }
 
+    private PlayerDrugUsage getDrugUsage(UUID uuid, Drug drug) {
+        PlayerDrugUsage usage = drugUsages.stream().filter(x -> x.getUuid().equals(uuid) && x.getDrug().equals(drug)).findFirst().orElse(null);
+        if (usage != null) {
+            if (Utils.getTime().isAfter(usage.getUsage().plusSeconds(drug.getTime()))) {
+                usage = null;
+                drugUsages.remove(usage);
+            }
+        }
+        return usage;
+    }
+
     public static void useDrug(Player player, Drug drug) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         if (playerData.isCuffed()) {
@@ -147,7 +160,7 @@ public class GamePlay implements Listener {
             return;
         }
         for (PotionEffect effect : drug.getEffects()) {
-            if (!player.hasPotionEffect(effect.getType())) {
+            if (!player.hasPotionEffect(effect.getType()) && Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug) == null) {
                 player.addPotionEffect(effect);
             }
         }

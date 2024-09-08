@@ -714,7 +714,7 @@ public class PhoneUtils implements Listener {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
             targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf abgelehnt");
-            player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + player.getName() + " abgelehnt");
+            player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + targetplayer.getName() + " abgelehnt");
             player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
             targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);

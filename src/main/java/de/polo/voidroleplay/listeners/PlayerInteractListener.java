@@ -218,6 +218,14 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
                 if (event.getClickedBlock().getType() == Material.CHEST) {
+                    RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+                    if (registeredBlock != null) {
+                        if (registeredBlock.getInfoValue() != null && registeredBlock.getInfo() != null && playerData.getFaction() != null) {
+                            if (registeredBlock.getInfo().equalsIgnoreCase("storage") && registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
+                                event.setCancelled(false);
+                            }
+                        }
+                    }
                     if (Main.getInstance().gamePlay.activeDrop != null) {
                         Drop drop = Main.getInstance().gamePlay.activeDrop;
                         if (drop.location.distance(event.getClickedBlock().getLocation()) < 1) {
@@ -239,7 +247,6 @@ public class PlayerInteractListener implements Listener {
                             Main.getInstance().gamePlay.drugstorage.openEvidence(player);
                         }
                     }
-                    RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (registeredBlock != null && registeredBlock.getInfo() != null && registeredBlock.getInfo().equalsIgnoreCase("dlager")) {
                         if (registeredBlock.getInfoValue() != null && registeredBlock.getInfoValue().equalsIgnoreCase(playerData.getFaction())) {
                             Main.getInstance().gamePlay.drugstorage.open(player);
@@ -702,7 +709,7 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 }
-                if (event.getItem() != null && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.ROADBLOCK)) {
+                /*if (event.getItem() != null && ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.ROADBLOCK)) {
                     if (event.getBlockFace() == BlockFace.UP) {
                         Block blockAbove = clickedBlock.getRelative(0, 1, 0);
 
@@ -714,7 +721,7 @@ public class PlayerInteractListener implements Listener {
                             Main.getInstance().gamePlay.roadblocks.add(blockAbove);
                         }
                     }
-                }
+                }*/
             }
         }
 

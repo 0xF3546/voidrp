@@ -169,7 +169,7 @@ public class WinzerCommand implements CommandExecutor {
             if (currentBlock.getType() == Material.JUNGLE_LEAVES) {
                 // Überprüfe, ob unter den JUNGLE_LEAVES ein OAK_FENCE ist
                 Block blockBelow = player.getWorld().getBlockAt(x, y - 1, z);
-                if (blockBelow.getType() == Material.OAK_FENCE) {
+                if (blockBelow.getType() == Material.SPRUCE_FENCE) {
                     // Gefunden!
                     targetBlock = currentBlock;
                     break;
