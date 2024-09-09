@@ -148,6 +148,7 @@ public class DeathUtils {
         if (playerData.getVariable("gangwar") != null) {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
         } else {
+            spawnCorpse(player);
             if (playerData.getSpawn() == null) {
                 locationManager.useLocation(player, "Krankenhaus");
             } else {
@@ -177,7 +178,6 @@ public class DeathUtils {
         playerManager.setPlayerMove(player, true);
         playerData.save();
         ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
-        spawnCorpse(player);
     }
 
     private void spawnCorpse(Player player) {
