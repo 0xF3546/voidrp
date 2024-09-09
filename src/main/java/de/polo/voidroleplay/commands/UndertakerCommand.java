@@ -73,10 +73,11 @@ public class UndertakerCommand implements CommandExecutor {
                 if (corpse.isJobActive()) continue;
                 int price = (int) (corpse.getSkull().getLocation().distance(player.getLocation()) * 2);
                 if (corpse.getPrice() == 0) corpse.setPrice(price);
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WITHER_SKELETON_SKULL, 1, 0, "", "§8 ➥ §a" + Utils.toDecimalFormat(price))) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WITHER_SKELETON_SKULL, 1, 0, "§8Leiche", "§8 ➥ §a" + Utils.toDecimalFormat(price) + "$")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         player.closeInventory();
+                        playerData.setVariable("job", "corpse");
                         playerData.setVariable("job::corpse", corpse);
                         playerData.setVariable("job::corpse::pickedup", false);
                         showRoute(player, corpse);
