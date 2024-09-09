@@ -175,15 +175,17 @@ public class GamePlay implements Listener {
         }
 
         PlayerDrugUsage existingUsage = Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug);
-        if (existingUsage != null) {
-            player.sendMessage(Prefix.ERROR + "Du kannst diese Droge erst nach Ablauf des Timers erneut verwenden.");
-            return;
-        }
 
         for (PotionEffect effect : drug.getEffects()) {
             if (effect.getType().equals(PotionEffectType.ABSORPTION)) {
-                if (player.hasPotionEffect(PotionEffectType.ABSORPTION)) {
-                    continue;
+                if (existingUsage != null) {
+                    LocalDateTime now = Utils.getTime();
+                    long remainingSeconds = Duration.between(now, existingUsage.getUsage().plusSeconds(drug.getTime())).getSeconds();
+
+                    if (remainingSeconds > 0) {
+                        Main.getInstance().utils.sendActionBar(player, "§cWarte noch " + remainingSeconds + " Sekunden");
+                        continue;
+                    }
                 }
             }
 
