@@ -109,7 +109,7 @@ public class PlayerInteractListener implements Listener {
                     RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                     if (block.getInfo() == null || block.getInfoValue() == null) return;
                     if (!playerData.addClickedBlock(block)) {
-                        Main.getInstance().utils.sendActionBar(player, "§cDiesen Kopf hast du bereits gefunden!");
+                        Main.getInstance().utils.sendActionBar(player, "§cDiesen Kopf hast du bereits gefunden! (" + playerData.getClickedEventBlocks().size() + "/80 gefunden)");
                         return;
                     }
                     int found = 0;
@@ -119,6 +119,10 @@ public class PlayerInteractListener implements Listener {
                     }
                     int total = blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase(block.getInfo())  && x.getInfoValue().equalsIgnoreCase(block.getInfoValue())).collect(Collectors.toList()).size();
                     Main.getInstance().utils.sendActionBar(player, "§aDu hast ein Cookie gefunden! (" + found + "/" + total + " in " + block.getInfoValue() + ")");
+                    if (found >= total) {
+                        player.sendMessage("§8[§6Cookies§8]§a Du hast alle Cookies in " + block.getInfoValue() + " gefunden!");
+                        playerManager.addExp(player, Main.random(100, 200));
+                    }
                 }
                 if (event.getClickedBlock().getType().toString().contains("BANNER")) {
                     RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
