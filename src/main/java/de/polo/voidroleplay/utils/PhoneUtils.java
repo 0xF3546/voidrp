@@ -1205,72 +1205,70 @@ public class PhoneUtils implements Listener {
     }
 
     private void openSwiping(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-            try {
-                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
-                Connection connection = Main.getInstance().mySQL.getConnection();
+        try {
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
+            Connection connection = Main.getInstance().mySQL.getConnection();
 
-                PreparedStatement statement = connection.prepareStatement(
-                        "SELECT adp.uuid, adp.description, p.firstname, p.lastname " +
-                                "FROM app_dating_profiles adp " +
-                                "JOIN players p ON adp.uuid = p.uuid " +
-                                "WHERE adp.uuid != ? AND adp.uuid NOT IN (SELECT target_uuid FROM app_dating_swipes WHERE swiper_uuid = ?)"
-                );
-                statement.setString(1, player.getUniqueId().toString());
-                statement.setString(2, player.getUniqueId().toString());
-                ResultSet result = statement.executeQuery();
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT adp.uuid, adp.description, p.firstname, p.lastname " +
+                            "FROM app_dating_profiles adp " +
+                            "JOIN players p ON adp.uuid = p.uuid " +
+                            "WHERE adp.uuid != ? AND adp.uuid NOT IN (SELECT target_uuid FROM app_dating_swipes WHERE swiper_uuid = ?)"
+            );
+            statement.setString(1, player.getUniqueId().toString());
+            statement.setString(2, player.getUniqueId().toString());
+            ResultSet result = statement.executeQuery();
 
-                if (result.next()) {
-                    String targetUuid = result.getString("uuid");
-                    String description = result.getString("description");
-                    String firstname = result.getString("firstname");
-                    String lastname = result.getString("lastname");
+            if (result.next()) {
+                String targetUuid = result.getString("uuid");
+                String description = result.getString("description");
+                String firstname = result.getString("firstname");
+                String lastname = result.getString("lastname");
 
-                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                        inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetUuid, 1, 0, "§5" + firstname + " " + lastname, "§8 ➥ §d" + description
-                        )) {
-                            @SneakyThrows
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                recordSwipe(player.getUniqueId().toString(), targetUuid, true);
-                                checkForMatch(player.getUniqueId().toString(), targetUuid);
-                                openSwiping(player); // Show the next profile
-                            }
-                        });
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetUuid, 1, 0, "§5" + firstname + " " + lastname, "§8 ➥ §d" + description
+                )) {
+                    @SneakyThrows
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        recordSwipe(player.getUniqueId().toString(), targetUuid, true);
+                        checkForMatch(player.getUniqueId().toString(), targetUuid);
+                        openSwiping(player); // Show the next profile
+                    }
+                });
 
-                        inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead(
-                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRjZGE2ZTNjNmRjYTdlOWI4YjZiYTNmZWJmNWNkMDkxN2Y5OTdiNjRiMmFlZjE4YzNmNzczNzY1ZTNhNTc5In19fQ==", 1, 0, "§aSwipe Rechts"
-                        )) {
-                            @SneakyThrows
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                recordSwipe(player.getUniqueId().toString(), targetUuid, true);
-                                checkForMatch(player.getUniqueId().toString(), targetUuid);
-                                openSwiping(player); // Show the next profile
-                            }
-                        });
+                inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead(
+                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRjZGE2ZTNjNmRjYTdlOWI4YjZiYTNmZWJmNWNkMDkxN2Y5OTdiNjRiMmFlZjE4YzNmNzczNzY1ZTNhNTc5In19fQ==", 1, 0, "§aSwipe Rechts"
+                )) {
+                    @SneakyThrows
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        recordSwipe(player.getUniqueId().toString(), targetUuid, true);
+                        checkForMatch(player.getUniqueId().toString(), targetUuid);
+                        openSwiping(player); // Show the next profile
+                    }
+                });
 
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead(
-                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI4YjhjZjQwNWVhZjYwNmEwMjEwZjAzMDNiMDEzMTc5ZjhmMTJlYWE5NTgyNDEyOWViZWVmOWU0NGI2ODIzMCJ9fX0=", 1, 0, "§cSwipe Links"
-                        )) {
-                            @SneakyThrows
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                recordSwipe(player.getUniqueId().toString(), targetUuid, false);
-                                openSwiping(player); // Show the next profile
-                            }
-                        });
-                    });
-                } else {
-                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.sendMessage("§8[§6Handy§8]§7 Keine weiteren Profile verfügbar."));
-                }
-                statement.close();
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead(
+                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI4YjhjZjQwNWVhZjYwNmEwMjEwZjAzMDNiMDEzMTc5ZjhmMTJlYWE5NTgyNDEyOWViZWVmOWU0NGI2ODIzMCJ9fX0=", 1, 0, "§cSwipe Links"
+                )) {
+                    @SneakyThrows
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        recordSwipe(player.getUniqueId().toString(), targetUuid, false);
+                        openSwiping(player); // Show the next profile
+                    }
+                });
+
+            } else {
+                Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.sendMessage("§8[§6Handy§8]§7 Keine weiteren Profile verfügbar."));
             }
-        });
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
