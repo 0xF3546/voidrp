@@ -45,6 +45,7 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
             Player player = event.getEntity().getPlayer();
+            Main.getInstance().gamePlay.clearDrugUsages(player);
             assert player != null;
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             boolean removeKarma = true;

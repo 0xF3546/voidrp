@@ -80,6 +80,7 @@ public class GamePlay implements Listener {
 
     @Getter
     private final Crypto crypto;
+
     @SneakyThrows
     public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager, NPC npc) {
         this.playerManager = playerManager;
@@ -144,30 +145,51 @@ public class GamePlay implements Listener {
     }
 
     private PlayerDrugUsage getDrugUsage(UUID uuid, Drug drug) {
-        PlayerDrugUsage usage = drugUsages.stream().filter(x -> x.getUuid().equals(uuid)).findFirst().orElse(null);
+        // Suche nach dem entsprechenden PlayerDrugUsage
+        PlayerDrugUsage usage = drugUsages.stream()
+                .filter(x -> x.getUuid().equals(uuid) && x.getDrug().equals(drug)) // Spieler und Droge müssen übereinstimmen
+                .findFirst()
+                .orElse(null);
+
         if (usage != null) {
+            // Überprüfen, ob der Drogengebrauch abgelaufen ist
             if (Utils.getTime().isAfter(usage.getUsage().plusSeconds(drug.getTime()))) {
-                usage = null;
-                drugUsages.remove(usage);
+                drugUsages.remove(usage); // Entferne den abgelaufenen Drogengebrauch
+                usage = null; // Setze usage auf null, da es abgelaufen ist
             }
         }
-        return usage;
+        return usage; // Gibt null zurück, wenn kein gültiger Eintrag existiert
+    }
+
+    public void clearDrugUsages(Player player) {
+        // Entfernt alle Drogenverwendungen eines bestimmten Spielers
+        drugUsages.removeIf(drugUsage -> drugUsage.getUuid().equals(player.getUniqueId()));
     }
 
     public static void useDrug(Player player, Drug drug) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+
         if (playerData.isCuffed()) {
             player.sendMessage(Prefix.ERROR + "Du bist in Handschellen.");
             return;
         }
-        for (PotionEffect effect : drug.getEffects()) {
-            if (!player.hasPotionEffect(effect.getType())) {
-                if (effect.getType().equals(PotionEffectType.ABSORPTION)) {
-                    if (Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug) != null) continue;
-                }
-                player.addPotionEffect(effect);
-            }
+
+        PlayerDrugUsage existingUsage = Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug);
+        if (existingUsage != null) {
+            player.sendMessage(Prefix.ERROR + "Du kannst diese Droge erst nach Ablauf des Timers erneut verwenden.");
+            return;
         }
+
+        for (PotionEffect effect : drug.getEffects()) {
+            if (effect.getType().equals(PotionEffectType.ABSORPTION)) {
+                if (player.hasPotionEffect(PotionEffectType.ABSORPTION)) {
+                    continue;
+                }
+            }
+
+            player.addPotionEffect(effect);
+        }
+
         PlayerDrugUsage usage = new PlayerDrugUsage(player.getUniqueId(), drug, Utils.getTime());
         Main.getInstance().gamePlay.drugUsages.add(usage);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 1);
