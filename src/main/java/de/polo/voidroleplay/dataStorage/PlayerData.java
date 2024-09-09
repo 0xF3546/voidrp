@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.base.extra.Seasonpass.PlayerQuest;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
+import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerPetManager;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
@@ -14,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -404,6 +406,41 @@ public class PlayerData {
         addMoney(money, "Event-Block");
         ClickedEventBlock clickedEventBlock = new ClickedEventBlock(block.getId());
         clickedEventBlocks.add(clickedEventBlock);
+        switch (clickedEventBlocks.size()) {
+            case 10:
+                addMoney(10000, "Gewinn 10 Köpfe");
+                player.sendMessage("§8[§6Cookies§8]§a+10.000$ für 10 Köpfe");
+                break;
+            case 20:
+                player.sendMessage("§8[§6Cookies§8]§a+5 Daily Chests für 20 Köpfe");
+                player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.DAILY.getDisplayName()));
+                break;
+            case 30:
+                player.sendMessage("§8[§6Cookies§8]§a+6h Gameboost für 30 Köpfe");
+                Main.getInstance().playerManager.addEXPBoost(player, 6);
+                break;
+            case 40:
+                player.sendMessage("§8[§6Cookies§8]§a+1.000 EXP für 40 Köpfe");
+                Main.getInstance().playerManager.addExp(player, 1000);
+                break;
+            case 50:
+                player.sendMessage("§8[§6Cookies§8]§a+20 Daily Cases für 50 Köpfe");
+                player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 20, 0, CaseType.DAILY.getDisplayName()));
+                break;
+            case 60:
+                addMoney(25000, "Gewinn 60 Köpfe");
+                player.sendMessage("§8[§6Cookies§8]§a+25.000$ für 60 Köpfe");
+                break;
+            case 70:
+                player.sendMessage("§8[§6Cookies§8]§a+10 Daily Cases & 10 XP Cases für 70 Köpfe");
+                player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, "§bXP-Case"));
+                player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.DAILY.getDisplayName()));
+                break;
+            case 80:
+                player.sendMessage("§8[§6Cookies§8]§a+25 Daily Cases für 80 Köpfe");
+                player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 25, 0, CaseType.DAILY.getDisplayName()));
+                break;
+        }
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO player_eventblocks_clicked (uuid, blockId) VALUES (?, ?)");
         statement.setString(1, player.getUniqueId().toString());
