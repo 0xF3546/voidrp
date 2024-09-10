@@ -112,7 +112,7 @@ public class MinerJobCommand implements CommandExecutor {
         inventoryManager.setItem(new CustomItem(27, ItemManager.createItem(Material.EMERALD, 1, 0, "§aVerkauf")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                openVerkauf(player);
             }
         });
     }
@@ -124,6 +124,12 @@ public class MinerJobCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 open(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.COAL, 1, 0, "§8Kohle")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
             }
         });
     }
