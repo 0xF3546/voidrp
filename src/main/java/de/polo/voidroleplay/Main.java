@@ -495,7 +495,9 @@ public final class Main extends JavaPlugin {
         public SetFactionChatColorCommand setFactionChatColorCommand;
         public CheckoutWebshopCommand checkoutWebshopCommand;
         public UndertakerCommand undertakerCommand;
+        public MinerJobCommand minerJobCommand;
         private void Init() {
+            minerJobCommand = new MinerJobCommand(playerManager, gamePlay, locationManager, factionManager);
             undertakerCommand = new UndertakerCommand(playerManager, locationManager);
             checkoutWebshopCommand = new CheckoutWebshopCommand(playerManager);
             setFactionChatColorCommand = new SetFactionChatColorCommand(playerManager, factionManager);

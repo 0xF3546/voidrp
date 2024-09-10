@@ -110,8 +110,14 @@ public class BlockBreakListener implements Listener {
                             player.sendMessage(Prefix.ERROR + "Dies ist keine Tür.");
                         }
                     }
-                }
 
+                    if (ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_WOODEN)
+                            || ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_IRON)
+                            || ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_STONE)
+                            || ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_DIA)  ) {
+                        Main.getInstance().commands.minerJobCommand.blockBroke(player, event.getBlock());
+                    }
+                }
             }
         } catch (Exception ex) {
             event.setCancelled(true);

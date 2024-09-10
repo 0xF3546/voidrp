@@ -812,6 +812,8 @@ public class PlayerData {
         private int fishingLevel;
         private int lumberjackXP;
         private int lumberjackLevel;
+        private int minerXP;
+        private int minerLevel;
 
         @Getter
         @Setter
@@ -849,6 +851,30 @@ public class PlayerData {
 
         public void setFishingLevel(int fishingLevel) {
             this.fishingLevel = fishingLevel;
+        }
+
+        public int getMinerXP() {
+            return minerXP;
+        }
+
+        public void setMinerXP(int minerXP) {
+            this.minerXP = minerXP;
+        }
+
+        public void addMinerXP(int amount) {
+            minerXP += amount;
+            if (fishingXP >= EXPType.SKILL_MINER.getLevelUpXp()) {
+                setMinerLevel(getMinerLevel() + 1);
+                setMinerLevel(getMinerLevel() - EXPType.SKILL_MINER.getLevelUpXp());
+            }
+        }
+
+        public int getMinerLevel() {
+            return minerLevel;
+        }
+
+        public void setMinerLevel(int minerLevel) {
+            this.minerLevel = minerLevel;
         }
 
         public int getLumberjackLevel() {

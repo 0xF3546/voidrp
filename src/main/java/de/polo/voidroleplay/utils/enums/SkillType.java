@@ -4,5 +4,6 @@ public enum SkillType {
     NULL,
     FISHING,
     LUMBERJACK,
-    POPULARITY
+    POPULARITY,
+    MINER
 }

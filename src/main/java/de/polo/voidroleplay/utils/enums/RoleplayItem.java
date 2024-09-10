@@ -48,6 +48,10 @@ public enum RoleplayItem {
     WINGSUIT("§7Wingsuit", Material.ELYTRA, true),
     ROADBLOCK("§7Roadblock", Material.STICK, true),
     PFEFFERSPRAY("§7Pfefferspray", Material.LEVER, true),
+    MINER_PICKAXE_WOODEN("§7Holz Spitzhacke", Material.WOODEN_PICKAXE, false),
+    MINER_PICKAXE_STONE("§7Stein Spitzhacke", Material.STONE_PICKAXE, false),
+    MINER_PICKAXE_IRON("§7Eisen Spitzhacke", Material.IRON_PICKAXE, false),
+    MINER_PICKAXE_DIA("§7Diamant Spitzhacke", Material.DIAMOND_PICKAXE, false),
     FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false);
 
     private final String displayName;
