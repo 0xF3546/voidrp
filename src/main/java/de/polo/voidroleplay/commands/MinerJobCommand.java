@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
@@ -19,6 +20,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MinerJobCommand implements CommandExecutor {
 
     private final PlayerManager playerManager;
@@ -26,11 +31,16 @@ public class MinerJobCommand implements CommandExecutor {
     private final LocationManager locationManager;
     private final FactionManager factionManager;
 
+    private final List<RegisteredBlock> registeredBlocks;
+
     public MinerJobCommand(PlayerManager playerManager, GamePlay gamePlay, LocationManager locationManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.gamePlay = gamePlay;
         this.locationManager = locationManager;
         this.factionManager = factionManager;
+
+
+        registeredBlocks = Main.getInstance().blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase("mine")).collect(Collectors.toList());
     }
 
     @Override
@@ -135,6 +145,5 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     public void blockBroke(Player player, Block brokenBlock) {
-
     }
 }
