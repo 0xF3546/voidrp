@@ -111,10 +111,10 @@ public class BlockBreakListener implements Listener {
                         }
                     }
 
-                    if (ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_WOODEN)
-                            || ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_IRON)
-                            || ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_STONE)
-                            || ItemManager.equals(event.getPlayer().getItemInHand(), RoleplayItem.MINER_PICKAXE_DIA)  ) {
+                    if (ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_WOODEN)
+                            || ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_IRON)
+                            || ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_STONE)
+                            || ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_DIA)  ) {
                         Main.getInstance().commands.minerJobCommand.blockBroke(player, event.getBlock());
                     }
                 }
