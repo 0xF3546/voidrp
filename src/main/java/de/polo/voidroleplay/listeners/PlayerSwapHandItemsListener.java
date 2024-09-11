@@ -105,7 +105,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                     public void onClick(InventoryClickEvent event) {
                         player.closeInventory();
                         player.sendMessage(Prefix.MAIN + "Du hast " + count + " Magazine benutzt.");
-                        int remainingCount = count;
+                        int remainingCount = ItemManager.getCustomItemCount(player, RoleplayItem.MAGAZIN);
 
                         ItemStack[] contents = player.getInventory().getContents();
                         for (ItemStack itemStack : contents) {
