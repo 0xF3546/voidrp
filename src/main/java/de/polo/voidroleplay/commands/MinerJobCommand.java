@@ -18,6 +18,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -145,5 +146,20 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     public void blockBroke(Player player, Block brokenBlock) {
+        player.getInventory().addItem(new ItemStack(brokenBlock.getType()));
+        brokenBlock.setType(Material.STONE);
+        rolloutBlocks(brokenBlock.getType());
+    }
+
+    private void rolloutBlocks(Material blockType) {
+        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(x -> x.getMaterial().equals(blockType)).collect(Collectors.toList());
+        if (blocks.stream().filter(x -> x.getMaterial() == blockType).count() >= 20) return;
+        List<Block> newBlocks = new ArrayList<>();
+        for (RegisteredBlock registeredBlock : blocks.stream().filter(x -> x.getBlock().getType().equals(Material.AIR)).collect(Collectors.toList())) {
+            newBlocks.add(registeredBlock.getBlock());
+        }
+        Block block = newBlocks.get(Main.random(0, newBlocks.size() - 1));
+
+        block.setType(blockType);
     }
 }
