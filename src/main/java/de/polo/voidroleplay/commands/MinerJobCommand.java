@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
@@ -20,6 +21,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MinerJobCommand implements CommandExecutor {
 
     private final PlayerManager playerManager;
@@ -27,11 +32,16 @@ public class MinerJobCommand implements CommandExecutor {
     private final LocationManager locationManager;
     private final FactionManager factionManager;
 
+    private final List<RegisteredBlock> registeredBlocks;
+
     public MinerJobCommand(PlayerManager playerManager, GamePlay gamePlay, LocationManager locationManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.gamePlay = gamePlay;
         this.locationManager = locationManager;
         this.factionManager = factionManager;
+
+
+        registeredBlocks = Main.getInstance().blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase("mine")).collect(Collectors.toList());
     }
 
     @Override
@@ -270,6 +280,20 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     public void blockBroke(Player player, Block brokenBlock) {
+        player.getInventory().addItem(new ItemStack(brokenBlock.getType()));
+        brokenBlock.setType(Material.STONE);
+        rolloutBlocks(brokenBlock.getType());
+    }
 
+    private void rolloutBlocks(Material blockType) {
+        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(x -> x.getMaterial().equals(blockType)).collect(Collectors.toList());
+        if (blocks.stream().filter(x -> x.getMaterial() == blockType).count() >= 20) return;
+        List<Block> newBlocks = new ArrayList<>();
+        for (RegisteredBlock registeredBlock : blocks.stream().filter(x -> x.getBlock().getType().equals(Material.AIR)).collect(Collectors.toList())) {
+            newBlocks.add(registeredBlock.getBlock());
+        }
+        Block block = newBlocks.get(Main.random(0, newBlocks.size() - 1));
+
+        block.setType(blockType);
     }
 }

@@ -38,7 +38,7 @@ public class UndertakerCommand implements CommandExecutor {
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Bestatter");
         if (playerData.getVariable("job") != null) {
-            if (playerData.getVariable("job") == "corbse") {
+            if (playerData.getVariable("job") == "corpse") {
                 boolean state = playerData.getVariable("job::corpse::pickedup");
                 if (state) {
                     inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.EMERALD, 1, 0, "§aAbgeben")) {
