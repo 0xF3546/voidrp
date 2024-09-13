@@ -257,22 +257,22 @@ public class MinerJobCommand implements CommandExecutor {
 
     public void blockBroke(Player player, Block brokenBlock) {
         RegisteredBlock block = getBlock(brokenBlock);
-        System.out.println(block);
         if (block == null) return;
         PickaxeType type = getType(player.getInventory().getItemInMainHand());
-        System.out.println(type);
+
         if (type == null) return;
         MinerBlockType minerBlockType = MinerBlockType.valueOf(block.getInfoValue());
-        System.out.println(minerBlockType);
+
         if (minerBlockType.getOrder() > type.getOrder()) {
             player.sendMessage(Prefix.ERROR + "Deine Spitzhacke reicht dafür leider nicht aus. Du benötigst: " + type.getDisplayName());
             return;
         }
 
         player.getInventory().addItem(ItemManager.createItem(minerBlockType.getOutputItem().getMaterial(), 1, 0, minerBlockType.getOutputItem().getDisplayName()));
+        Material blockType = brokenBlock.getType();
         brokenBlock.setType(Material.STONE);
         playerManager.addExp(player, EXPType.SKILL_MINER, Main.random(1, 10));
-        rolloutBlocks(brokenBlock.getType());
+        rolloutBlocks(blockType);
     }
 
     private PickaxeType getType(ItemStack itemStack) {
@@ -294,14 +294,32 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     private void rolloutBlocks(Material blockType) {
-        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(x -> MinerBlockType.valueOf(x.getInfoValue()).getBlock().equals(blockType)).collect(Collectors.toList());
-        if (blocks.stream().filter(x -> x.getMaterial() == blockType).count() >= 20) return;
-        List<Block> newBlocks = new ArrayList<>();
-        for (RegisteredBlock registeredBlock : blocks.stream().filter(x -> x.getBlock().getType().equals(Material.AIR)).collect(Collectors.toList())) {
-            newBlocks.add(registeredBlock.getBlock());
+        List<RegisteredBlock> blocks = new ArrayList<>();
+        for (RegisteredBlock block : registeredBlocks) {
+            if (block.getInfoValue() == null) continue;
+            if (!MinerBlockType.valueOf(block.getInfoValue()).getBlock().equals(blockType)) continue;
+            blocks.add(block);
         }
-        Block block = newBlocks.get(Main.random(0, newBlocks.size() - 1));
 
+        if (blocks.stream().filter(x -> x.getMaterial() == blockType).count() >= 20) return;
+
+        List<Block> newBlocks = blocks.stream()
+                .map(RegisteredBlock::getBlock)
+                .filter(block -> block.getType() == Material.STONE)
+                .collect(Collectors.toList());
+        List<Block> nb = new ArrayList<>();
+        for (RegisteredBlock b : blocks) {
+            if (!b.getBlock().getType().equals(Material.STONE)) continue;
+            nb.add(b.getBlock());
+        }
+
+        if (newBlocks.isEmpty()) {
+            System.out.println("Found no block");
+            return;
+        }
+
+        Block block = newBlocks.get(Main.random(0, newBlocks.size() - 1));
         block.setType(blockType);
     }
+
 }

@@ -13,7 +13,7 @@ public class RegisteredBlock {
     private Material material;
 
     public Block getBlock() {
-        return block;
+        return getLocation().getBlock();
     }
 
     public void setBlock(Block block) {
