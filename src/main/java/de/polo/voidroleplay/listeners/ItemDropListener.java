@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Weapons;
+import de.polo.voidroleplay.utils.enums.PickaxeType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemDropListener implements Listener {
@@ -41,6 +43,10 @@ public class ItemDropListener implements Listener {
             return;
         }
         if (blockedItems.contains(event.getItemDrop().getItemStack().getType())) {
+            event.setCancelled(true);
+            return;
+        }
+        if (Arrays.stream(PickaxeType.values()).anyMatch(x -> x.getMaterial().equals(event.getPlayer().getInventory().getItemInMainHand().getType()))) {
             event.setCancelled(true);
             return;
         }

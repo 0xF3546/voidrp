@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.events.BreakPersistentBlockEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.enums.Farmer;
+import de.polo.voidroleplay.utils.enums.PickaxeType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -23,10 +24,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BlockBreakListener implements Listener {
     private final PlayerManager playerManager;
@@ -111,11 +109,9 @@ public class BlockBreakListener implements Listener {
                         }
                     }
 
-                    if (ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_WOODEN)
-                            || ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_IRON)
-                            || ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_STONE)
-                            || ItemManager.equals(event.getPlayer().getInventory().getItemInMainHand(), RoleplayItem.MINER_PICKAXE_DIA)  ) {
+                    if (Arrays.stream(PickaxeType.values()).anyMatch(x -> x.getMaterial().equals(event.getPlayer().getInventory().getItemInMainHand().getType()))) {
                         Main.getInstance().commands.minerJobCommand.blockBroke(player, event.getBlock());
+                        return;
                     }
                 }
             }

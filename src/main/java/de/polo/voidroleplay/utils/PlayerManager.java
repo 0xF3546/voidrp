@@ -347,7 +347,8 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.addonXP.setLumberjackXP(result.getInt("lumberjackXP"));
                 playerData.addonXP.setPopularityLevel(result.getInt("popularityLevel"));
                 playerData.addonXP.setPopularityXP(result.getInt("popularityXP"));
-
+                playerData.addonXP.setMinerLevel(result.getInt("miningLevel"));
+                playerData.addonXP.setMinerXP(result.getInt("minerXP"));
 
                 ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
                 if (jail.next()) {
@@ -928,6 +929,10 @@ public class PlayerManager implements Listener, ServerTiming {
             case POPULARITY:
                 playerData.addonXP.addPopularity(amount);
                 Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getPopularityXP() + "/" + expType.getLevelUpXp() + ")");
+                break;
+            case MINER:
+                playerData.addonXP.addMinerXP(amount);
+                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getMinerXP() + "/" + expType.getLevelUpXp() + ")");
                 break;
         }
     }

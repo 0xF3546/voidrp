@@ -867,6 +867,13 @@ public class PlayerData {
                 setMinerLevel(getMinerLevel() + 1);
                 setMinerLevel(getMinerLevel() - EXPType.SKILL_MINER.getLevelUpXp());
             }
+
+            try {
+                Statement statement = Main.getInstance().mySQL.getStatement();
+                statement.executeUpdate("UPDATE player_addonxp SET minerXP = " + fishingXP + ", miningLevel = " + fishingLevel + " WHERE uuid = '" + player.getUniqueId() + "'");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public int getMinerLevel() {

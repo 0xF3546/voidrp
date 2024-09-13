@@ -3,14 +3,15 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
-import de.polo.voidroleplay.utils.FactionManager;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.enums.EXPType;
+import de.polo.voidroleplay.utils.enums.MinerBlockType;
+import de.polo.voidroleplay.utils.enums.PickaxeType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -41,7 +42,8 @@ public class MinerJobCommand implements CommandExecutor {
         this.factionManager = factionManager;
 
 
-        registeredBlocks = Main.getInstance().blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase("mine")).collect(Collectors.toList());
+        registeredBlocks = Main.getInstance().blockManager.getBlocks().stream().filter(x -> x.getInfo() != null && x.getInfo().equalsIgnoreCase("mine")).collect(Collectors.toList());
+        Main.registerCommand("miner", this);
     }
 
     @Override
@@ -55,75 +57,49 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     private void open(Player player) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Miner");
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§7Spitzhacken")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openBuyMenu(player);
+            }
+        });
+    }
+
+    private void openBuyMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Miner", true, true);
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.WOODEN_PICKAXE, 1, 0, "§7Holz Spitzhacke")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (playerData.getBargeld() < 500) {
-                    player.sendMessage(Main.error + "Du hast nicht genug geld auf der hand!");
-                    return;
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Miner");
+        int i = 10;
+        for (PickaxeType type : PickaxeType.values()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(type.getMaterial(), 1, 0, type.getDisplayName(), "§8 ➥ §cLevel " + type.getMinLevel())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.addonXP.getMinerLevel() < type.getMinLevel()) {
+                        player.sendMessage(Prefix.ERROR + "Du musst mindestens Miner-Level " + type.getMinLevel() + " sein.");
+                        return;
+                    }
+                    for (ItemStack stack : player.getInventory().getContents()) {
+                        if (stack == null || stack.getItemMeta() == null) continue;
+                        if (stack.getItemMeta().getDisplayName().equalsIgnoreCase(type.getDisplayName())) {
+                            player.getInventory().remove(stack);
+                        }
+                    }
+                    player.getInventory().addItem(ItemManager.createItem(type.getMaterial(), 1, 0, type.getDisplayName()));
+                    player.closeInventory();
                 }
-
-                ItemManager.addCustomItem(player, RoleplayItem.MINER_PICKAXE_WOODEN, 1);
-                playerData.removeMoney(500, "Holz-Spitzhacke");
-            }
-        });
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§7Stein Spitzhacke")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (playerData.addonXP.getMinerLevel() < 3) {
-                    player.sendMessage(Main.error + "Du musst mindestens Mining Level 3 sein um dir diese Spitzhacke zu kaufen");
-                    return;
-                }
-
-                if (playerData.getBargeld() < 2500) {
-                    player.sendMessage(Main.error + "Du hast nicht genug geld auf der hand!");
-                    return;
-                }
-
-                ItemManager.addCustomItem(player, RoleplayItem.MINER_PICKAXE_STONE, 1);
-                playerData.removeMoney(2500, "Stein-Spitzhacke");
-            }
-        });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.IRON_PICKAXE, 1, 0, "§7Eisen Spitzhacke")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (playerData.addonXP.getMinerLevel() < 10) {
-                    player.sendMessage(Main.error + "Du musst mindestens Mining level 10 sein um dir diese Spitzhacke zu kaufen");
-                    return;
-                }
-
-                if (playerData.getBargeld() < 15000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug geld auf der hand!");
-                    return;
-                }
-
-                ItemManager.addCustomItem(player, RoleplayItem.MINER_PICKAXE_IRON, 1);
-                playerData.removeMoney(15000, "Eisen-Spitzhacke");
-            }
-        });
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.DIAMOND_PICKAXE, 1, 0, "§7Diamant Spitzhacke")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (playerData.addonXP.getMinerLevel() < 15) {
-                    player.sendMessage(Main.error + "Du musst mindestens Mining level 15 sein um dir diese Spitzhacke zu kaufen");
-                    return;
-                }
-
-                if (playerData.getBargeld() < 20000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug geld auf der hand!");
-                    return;
-                }
-
-                ItemManager.addCustomItem(player, RoleplayItem.MINER_PICKAXE_DIA, 1);
-                playerData.removeMoney(20000, "Dia-Spitzhacke");
-            }
-        });
-        inventoryManager.setItem(new CustomItem(27, ItemManager.createItem(Material.EMERALD, 1, 0, "§aVerkauf")) {
+            });
+            i++;
+        }
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aVerkauf")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openVerkauf(player);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                open(player);
             }
         });
     }
@@ -280,13 +256,45 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     public void blockBroke(Player player, Block brokenBlock) {
-        player.getInventory().addItem(new ItemStack(brokenBlock.getType()));
+        RegisteredBlock block = getBlock(brokenBlock);
+        System.out.println(block);
+        if (block == null) return;
+        PickaxeType type = getType(player.getInventory().getItemInMainHand());
+        System.out.println(type);
+        if (type == null) return;
+        MinerBlockType minerBlockType = MinerBlockType.valueOf(block.getInfoValue());
+        System.out.println(minerBlockType);
+        if (minerBlockType.getOrder() > type.getOrder()) {
+            player.sendMessage(Prefix.ERROR + "Deine Spitzhacke reicht dafür leider nicht aus. Du benötigst: " + type.getDisplayName());
+            return;
+        }
+
+        player.getInventory().addItem(ItemManager.createItem(minerBlockType.getOutputItem().getMaterial(), 1, 0, minerBlockType.getOutputItem().getDisplayName()));
         brokenBlock.setType(Material.STONE);
+        playerManager.addExp(player, EXPType.SKILL_MINER, Main.random(1, 10));
         rolloutBlocks(brokenBlock.getType());
     }
 
+    private PickaxeType getType(ItemStack itemStack) {
+        for (PickaxeType type : PickaxeType.values()) {
+            if (type.getMaterial().equals(itemStack.getType())) return type;
+        }
+        return null;
+    }
+
+    private RegisteredBlock getBlock(Block block) {
+        Location location = block.getLocation();
+        for (RegisteredBlock b : registeredBlocks) {
+            if (b == null) continue;
+            if (b.getLocation().getBlockX() == location.getBlockX() && b.getLocation().getBlockY() == location.getBlockY() && b.getLocation().getBlockZ() == location.getBlockZ()) {
+                return b;
+            }
+        }
+        return null;
+    }
+
     private void rolloutBlocks(Material blockType) {
-        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(x -> x.getMaterial().equals(blockType)).collect(Collectors.toList());
+        List<RegisteredBlock> blocks = registeredBlocks.stream().filter(x -> MinerBlockType.valueOf(x.getInfoValue()).getBlock().equals(blockType)).collect(Collectors.toList());
         if (blocks.stream().filter(x -> x.getMaterial() == blockType).count() >= 20) return;
         List<Block> newBlocks = new ArrayList<>();
         for (RegisteredBlock registeredBlock : blocks.stream().filter(x -> x.getBlock().getType().equals(Material.AIR)).collect(Collectors.toList())) {
