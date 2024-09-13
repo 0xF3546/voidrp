@@ -46,7 +46,7 @@ public class ItemDropListener implements Listener {
             event.setCancelled(true);
             return;
         }
-        if (Arrays.stream(PickaxeType.values()).anyMatch(x -> x.getMaterial().equals(event.getPlayer().getInventory().getItemInMainHand().getType()))) {
+        if (Arrays.stream(PickaxeType.values()).anyMatch(x -> x.getMaterial() == event.getItemDrop().getItemStack().getType())) {
             event.setCancelled(true);
             return;
         }

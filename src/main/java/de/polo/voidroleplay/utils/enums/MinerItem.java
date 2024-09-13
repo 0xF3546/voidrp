@@ -13,9 +13,10 @@ import org.bukkit.Material;
 @AllArgsConstructor
 @Getter
 public enum MinerItem {
-    COAL("§8Kohle", Material.COAL),
-    IRON("§7Eisen", Material.IRON_INGOT);
+    COAL("§8Kohle", Material.COAL, 3),
+    IRON("§7Eisen", Material.IRON_INGOT, 5);
 
     private String displayName;
     private Material material;
+    private int price;
 }

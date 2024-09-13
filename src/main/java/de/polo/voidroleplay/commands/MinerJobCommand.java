@@ -7,10 +7,7 @@ import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.enums.EXPType;
-import de.polo.voidroleplay.utils.enums.MinerBlockType;
-import de.polo.voidroleplay.utils.enums.PickaxeType;
-import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -64,6 +61,12 @@ public class MinerJobCommand implements CommandExecutor {
                 openBuyMenu(player);
             }
         });
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.EMERALD, 1, 0, "§aVerkauf")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openVerkauf(player);
+            }
+        });
     }
 
     private void openBuyMenu(Player player) {
@@ -90,12 +93,6 @@ public class MinerJobCommand implements CommandExecutor {
             });
             i++;
         }
-        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aVerkauf")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                openVerkauf(player);
-            }
-        });
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -107,152 +104,26 @@ public class MinerJobCommand implements CommandExecutor {
     private void openVerkauf(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Verkauf", true, true);
-        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cZurück")) {
+        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 open(player);
             }
         });
-        inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.COAL, 1, 0, "§7Kohle")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!player.getInventory().containsAtLeast(new ItemStack(Material.COAL), 1)) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Kohle dabei!");
-                    return;
+        int i = 10;
+        for (MinerItem minerItem : MinerItem.values()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(minerItem.getMaterial(), 1, 0, minerItem.getDisplayName(), "§8 ➥ §a" + minerItem.getPrice() + "$")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    int count = ItemManager.getItem(player, minerItem.getMaterial());
+                    playerData.addBankMoney(count * minerItem.getPrice(), "Verkauf " + minerItem.name());
+                    player.sendMessage("§8[§7Miner§8]§7 Du hast §a" + Utils.toDecimalFormat(count * minerItem.getPrice()) + "$§7 erhalten.");
+                    ItemManager.removeItem(player, minerItem.getMaterial(), count);
                 }
-
-                int coalAmount = 0;
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == Material.COAL) {
-                        coalAmount += item.getAmount();
-                    }
-                }
-
-                playerData.addMoney(coalAmount, "Kohle verkauft");
-                ItemManager.removeItem(player, Material.COAL, coalAmount);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§7Eisen")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!player.getInventory().containsAtLeast(new ItemStack(Material.IRON_INGOT), 1)) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Eisen dabei!");
-                    return;
-                }
-
-                int ironAmount = 0;
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == Material.IRON_INGOT) {
-                        ironAmount += item.getAmount();
-                    }
-                }
-
-                playerData.addMoney(ironAmount, "Eisen verkauft");
-                ItemManager.removeItem(player, Material.COAL, ironAmount);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§7Gold")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!player.getInventory().containsAtLeast(new ItemStack(Material.GOLD_INGOT), 1)) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Gold dabei!");
-                    return;
-                }
-
-                int goldAmount = 0;
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == Material.GOLD_INGOT) {
-                        goldAmount += item.getAmount();
-                    }
-                }
-
-                playerData.addMoney(goldAmount, "Gold verkauft");
-                ItemManager.removeItem(player, Material.COAL, goldAmount);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.LAPIS_LAZULI,1 ,0, "§7Lapis")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!player.getInventory().containsAtLeast(new ItemStack(Material.LAPIS_LAZULI), 1)) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Lapis dabei!");
-                    return;
-                }
-
-                int lapisAmount = 0;
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == Material.LAPIS_LAZULI) {
-                        lapisAmount += item.getAmount();
-                    }
-                }
-
-                playerData.addMoney(lapisAmount, "lapisAmount verkauft");
-                ItemManager.removeItem(player, Material.COAL, lapisAmount);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.REDSTONE, 1, 0, "§7Redstone")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!player.getInventory().containsAtLeast(new ItemStack(Material.REDSTONE), 1)) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Redstone dabei!");
-                    return;
-                }
-
-                int redstoneAmount = 0;
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == Material.REDSTONE) {
-                        redstoneAmount += item.getAmount();
-                    }
-                }
-
-                playerData.addMoney(redstoneAmount, "Redstone verkauft");
-                ItemManager.removeItem(player, Material.COAL, redstoneAmount);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.DIAMOND, 1, 0, "§7Diamant")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!player.getInventory().containsAtLeast(new ItemStack(Material.DIAMOND), 1)) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Kohle dabei!");
-                    return;
-                }
-
-                int diamondAmount = 0;
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == Material.DIAMOND) {
-                        diamondAmount += item.getAmount();
-                    }
-                }
-
-                playerData.addMoney(diamondAmount, "Diamanten verkauft");
-                ItemManager.removeItem(player, Material.COAL, diamondAmount);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.EMERALD, 1, 0, "§7Emerald")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!player.getInventory().containsAtLeast(new ItemStack(Material.COAL), 1)) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Kohle dabei!");
-                    return;
-                }
-
-                int emeraldAmount = 0;
-
-                for (ItemStack item : player.getInventory().getContents()) {
-                    if (item != null && item.getType() == Material.EMERALD) {
-                        emeraldAmount += item.getAmount();
-                    }
-                }
-
-                playerData.addMoney(emeraldAmount, "Emerald verkauft");
-                ItemManager.removeItem(player, Material.COAL, emeraldAmount);
-            }
-        });
+            });
+            i++;
+        }
     }
 
     public void blockBroke(Player player, Block brokenBlock) {
@@ -262,6 +133,7 @@ public class MinerJobCommand implements CommandExecutor {
 
         if (type == null) return;
         MinerBlockType minerBlockType = MinerBlockType.valueOf(block.getInfoValue());
+        if (!brokenBlock.getType().equals(minerBlockType.getBlock())) return;
 
         if (minerBlockType.getOrder() > type.getOrder()) {
             player.sendMessage(Prefix.ERROR + "Deine Spitzhacke reicht dafür leider nicht aus. Du benötigst: " + type.getDisplayName());
