@@ -198,6 +198,7 @@ public final class Main extends JavaPlugin {
         new ExplosionListener();
         new ConsumeListener(playerManager);
         new EntityToggleGlideListener();
+        new AdrenalinListener();
     }
 
     public static void registerCommand(String command, CommandExecutor c) {
