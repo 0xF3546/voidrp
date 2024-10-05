@@ -162,6 +162,7 @@ public final class Main extends JavaPlugin {
     }
 
     private void registerListener(Commands commands) {
+
         new JoinListener(playerManager, adminManager, utils, locationManager, serverManager);
         new QuitListener(playerManager, adminManager, utils, commands, serverManager, supportManager, scoreboardAPI);
         new DamageListener(playerManager);
@@ -198,7 +199,7 @@ public final class Main extends JavaPlugin {
         new ExplosionListener();
         new ConsumeListener(playerManager);
         new EntityToggleGlideListener();
-        new AdrenalinListener();
+
     }
 
     public static void registerCommand(String command, CommandExecutor c) {
