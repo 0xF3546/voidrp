@@ -61,7 +61,7 @@ public class DeathListener implements Listener {
             Player killer = player.getKiller();
 
         if (killer != null) {
-            handleAdrenalineRush(killer, player);
+            handleAdrenalineRush(killer);
         }
 
             Main.getInstance().gamePlay.clearDrugUsages(player);
@@ -266,6 +266,5 @@ public class DeathListener implements Listener {
             }
         }.runTaskLater(Main.getInstance(), 5 * 20L);
     }
-}
 
 }
