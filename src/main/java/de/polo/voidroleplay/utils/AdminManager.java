@@ -12,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,6 +64,8 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                     scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
                 });
 
+                startMemoryUsageUpdater(player); // Startet den Memory Usage Updater
+
                 playerData.setScoreboard("admin", scoreboardAPI.getScoreboard(player, "admin"));
                 player.setCollidable(false);
             }
@@ -98,6 +101,19 @@ public class AdminManager implements CommandExecutor, TabCompleter {
 
         // Hier setzen wir die Auslastung neu, ohne eine neue Zeile zu erzeugen
         scoreboardAPI.setScore(player, "admin", "§6Auslastung: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 1); // 1 als Position für die Auslastung
+    }
+
+    public void startMemoryUsageUpdater(Player player) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (player.isOnline()) {
+                    updateMemoryUsage(player);
+                } else {
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 0L, 20L * 60); // Aktualisiert jede Minute
     }
 
     public void send_message(String msg, ChatColor color) {
