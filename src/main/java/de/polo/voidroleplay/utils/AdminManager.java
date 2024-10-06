@@ -68,7 +68,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                     long maxMemory = r.maxMemory() / 1024 / 1024; // in MB
 
                     // Setze die Speicheranzeige in einer einzigen Zeile
-                    scoreboardAPI.setScore(player, "admin", "§6Speicher genutzt: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 0);
+                    scoreboardAPI.setScore(player, "admin", "§6Auslastung: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 0);
 
                     int playersOnline = Bukkit.getOnlinePlayers().size();
                     scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", playersOnline);
