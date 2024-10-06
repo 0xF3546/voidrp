@@ -16,7 +16,7 @@ public enum MinerItem {
     COAL("§8Kohle", Material.COAL, 3),
     IRON("§7Eisen", Material.IRON_INGOT, 5);
 
-    private String displayName;
-    private Material material;
-    private int price;
+    private final String displayName;
+    private final Material material;
+    private final int price;
 }

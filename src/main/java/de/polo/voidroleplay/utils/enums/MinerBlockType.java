@@ -21,8 +21,8 @@ public enum MinerBlockType {
     RUBIN("§cRubin", Material.REDSTONE_ORE, MinerItem.COAL, 5),
     WITHER_ORE("§bKristall", Material.NETHER_GOLD_ORE, MinerItem.COAL, 6);
 
-    private String displayName;
-    private Material block;
-    private MinerItem outputItem;
-    private int order;
+    private final String displayName;
+    private final Material block;
+    private final MinerItem outputItem;
+    private final int order;
 }
