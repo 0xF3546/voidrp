@@ -499,20 +499,11 @@ public class PlayerData {
     public void setAduty(boolean aduty) {
         isAduty = aduty;
         if (aduty) {
-            // Füge den GLOWING-Effekt hinzu
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 0, true, false));
 
-            // Setze das Präfix in der Tab-Liste
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.setPlayerListName("§8[§x§F§F§E§2§5§9V§x§F§F§A§7§5§1R§8] " + player.getName());
-            }
         } else {
             player.removePotionEffect(PotionEffectType.GLOWING);
 
-            // Entferne das Präfix in der Tab-Liste
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.setPlayerListName(player.getName());
-            }
         }
     }
 
