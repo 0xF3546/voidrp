@@ -3,10 +3,7 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
-import de.polo.voidroleplay.utils.GamePlay.DisplayNameManager;
-import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,8 +47,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 player.setFlying(false);
                 player.setAllowFlight(false);
-
-
                 scoreboardAPI.removeScoreboard(player, "admin");
                 player.setCollidable(true);
             } else {
@@ -62,14 +57,13 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 player.setAllowFlight(true);
 
                 scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
+                    // Set initial scores
                     scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
-                    Runtime r = Runtime.getRuntime();
-                    scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
+                    updateMemoryUsage(player);  // Initial memory usage
                     scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
                 });
 
                 playerData.setScoreboard("admin", scoreboardAPI.getScoreboard(player, "admin"));
-
                 player.setCollidable(false);
             }
         }
@@ -97,6 +91,15 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         return false;
     }
 
+    private void updateMemoryUsage(Player player) {
+        Runtime r = Runtime.getRuntime();
+        long usedMemory = (r.totalMemory() - r.freeMemory()) / 1024 / 1024; // in MB
+        long maxMemory = r.maxMemory() / 1024 / 1024; // in MB
+
+        // Hier setzen wir die Auslastung neu, ohne eine neue Zeile zu erzeugen
+        scoreboardAPI.setScore(player, "admin", "§6Auslastung: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 1); // 1 als Position für die Auslastung
+    }
+
     public void send_message(String msg, ChatColor color) {
         if (color == null) {
             color = ChatColor.AQUA;
@@ -121,7 +124,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         }
     }
 
-
     @SneakyThrows
     public void insertNote(String punisher, String target, String note) {
         Connection connection = Main.getInstance().mySQL.getConnection();
@@ -140,7 +142,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
             suggestions.add("-v");
-
             return suggestions;
         }
         return null;
