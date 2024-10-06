@@ -932,7 +932,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 break;
             case MINER:
                 playerData.addonXP.addMinerXP(amount);
-                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getMinerXP() + "/" + expType.getLevelUpXp() + ")");
+                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getMinerXP() + "/" + ((playerData.addonXP.getMinerLevel() + 1) * expType.getLevelUpXp()) + ")");
                 break;
         }
     }

@@ -866,14 +866,14 @@ public class PlayerData {
 
         public void addMinerXP(int amount) {
             minerXP += amount;
-            if (fishingXP >= EXPType.SKILL_MINER.getLevelUpXp()) {
+            if (minerXP >= ((minerLevel + 1) * EXPType.SKILL_MINER.getLevelUpXp())) {
                 setMinerLevel(getMinerLevel() + 1);
-                setMinerLevel(getMinerLevel() - EXPType.SKILL_MINER.getLevelUpXp());
+                setMinerXP(0);
             }
 
             try {
                 Statement statement = Main.getInstance().mySQL.getStatement();
-                statement.executeUpdate("UPDATE player_addonxp SET minerXP = " + fishingXP + ", miningLevel = " + fishingLevel + " WHERE uuid = '" + player.getUniqueId() + "'");
+                statement.executeUpdate("UPDATE player_addonxp SET minerXP = " + minerXP + ", miningLevel = " + minerLevel + " WHERE uuid = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

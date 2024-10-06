@@ -16,7 +16,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -120,6 +123,7 @@ public class MinerJobCommand implements CommandExecutor {
                     playerData.addBankMoney(count * minerItem.getPrice(), "Verkauf " + minerItem.name());
                     player.sendMessage("§8[§7Miner§8]§7 Du hast §a" + Utils.toDecimalFormat(count * minerItem.getPrice()) + "$§7 erhalten.");
                     ItemManager.removeItem(player, minerItem.getMaterial(), count);
+                    playerManager.addExp(player, count / 2);
                 }
             });
             i++;
@@ -143,8 +147,33 @@ public class MinerJobCommand implements CommandExecutor {
         player.getInventory().addItem(ItemManager.createItem(minerBlockType.getOutputItem().getMaterial(), 1, 0, minerBlockType.getOutputItem().getDisplayName()));
         Material blockType = brokenBlock.getType();
         brokenBlock.setType(Material.STONE);
-        playerManager.addExp(player, EXPType.SKILL_MINER, Main.random(1, 10));
+        int amount = Main.random(1, 10);
+        int rand = Main.random(1, 100);
+        if (Main.random(1, 100) == 1) {
+            amount = amount * 4;
+            player.sendMessage("§8[§eMiner-Drop§8]§a Du hast 4x XP bekommen!");
+        } else if (rand >= 5 && rand <= 10) {
+            player.sendMessage("§8[§eMiner-Drop§8]§a Du kannst 30 Sekunden schneller abbauen!");
+            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 30 * 20, 1));
+        } else if (rand < 4) {
+            int am = Main.random(2, 4);
+            player.sendMessage("§8[§eMiner-Drop§8]§a Du hast " + am + " mehr " + minerBlockType.getDisplayName() + " §a erhalten.");
+            player.getInventory().addItem(ItemManager.createItem(minerBlockType.getOutputItem().getMaterial(), am, 0, minerBlockType.getOutputItem().getDisplayName()));
+        }
+        playerManager.addExp(player, EXPType.SKILL_MINER, amount);
         rolloutBlocks(blockType);
+    }
+
+    private ItemStack getEquippedItem(Inventory inventory) {
+        for (PickaxeType type : PickaxeType.values()) {
+            for (ItemStack stack : inventory.getContents()) {
+                if (stack == null || stack.getItemMeta() == null) continue;
+                if (stack.getItemMeta().getDisplayName().equalsIgnoreCase(type.getDisplayName())) {
+                    return stack;
+                }
+            }
+        }
+        return null;
     }
 
     private PickaxeType getType(ItemStack itemStack) {
