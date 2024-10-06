@@ -56,6 +56,7 @@ public class ScoreboardAPI {
         if (objective == null) {
             return;
         }
+
         Score scoreEntry = objective.getScore(entry);
         scoreEntry.setScore(score);
     }

@@ -1,7 +1,6 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import jdk.jshell.EvalException;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;

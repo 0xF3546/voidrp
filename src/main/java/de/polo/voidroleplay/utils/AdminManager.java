@@ -60,7 +60,8 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
                     // Set initial scores
                     scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
-                    updateMemoryUsage(player);  // Initial memory usage
+                    Runtime r = Runtime.getRuntime();
+                    scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
                     scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
                 });
 
@@ -99,8 +100,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         long usedMemory = (r.totalMemory() - r.freeMemory()) / 1024 / 1024; // in MB
         long maxMemory = r.maxMemory() / 1024 / 1024; // in MB
 
-        // Hier setzen wir die Auslastung neu, ohne eine neue Zeile zu erzeugen
-        scoreboardAPI.setScore(player, "admin", "§6Auslastung: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 1); // 1 als Position für die Auslastung
+        scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) usedMemory);
     }
 
     public void startMemoryUsageUpdater(Player player) {
