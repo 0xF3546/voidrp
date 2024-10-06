@@ -64,10 +64,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
                     scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
                     Runtime r = Runtime.getRuntime();
-                    long usedMemory = (r.totalMemory() - r.freeMemory()) / 1024 / 1024; // in MB
-                    long maxMemory = r.maxMemory() / 1024 / 1024; // in MB
-
-                    scoreboardAPI.setScore(player, "admin", "§6Auslastung: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 0);
+                    scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
                     scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
                 });
 
