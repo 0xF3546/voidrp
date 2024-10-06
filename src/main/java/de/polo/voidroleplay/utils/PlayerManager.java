@@ -494,10 +494,10 @@ public class PlayerManager implements Listener, ServerTiming {
         if (minutes >= 60) {
             Main.getInstance().beginnerpass.didQuest(player, 7);
             Main.getInstance().seasonpass.didQuest(player, 7);
-            Main.getInstance().utils.payDayUtils.givePayDay(player);
             playerData.setHours(playerData.getHours() + 1);
             playerData.setMinutes(0);
             playerData.setRewardTime(playerData.getRewardTime() - 1);
+            Main.getInstance().utils.payDayUtils.givePayDay(player);
             if (playerData.getRewardTime() <= 0) {
                 giveReward(playerData);
                 PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
