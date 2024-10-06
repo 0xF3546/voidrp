@@ -4,16 +4,13 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.utils.GamePlay.DisplayNameManager;
-import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +48,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 player.setFlying(false);
                 player.setAllowFlight(false);
 
-
                 scoreboardAPI.removeScoreboard(player, "admin");
                 player.setCollidable(true);
             } else {
@@ -61,15 +57,24 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §abetreten§7.");
                 player.setAllowFlight(true);
 
+                // Admin-Scoreboard erstellen und Speicherverbrauch anzeigen
                 scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
-                    scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
+                    int ticketsOpen = Main.getInstance().supportManager.getTickets().size();
+                    scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", ticketsOpen);
+
+                    // Speicherverbrauch berechnen
                     Runtime r = Runtime.getRuntime();
-                    scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
-                    scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
+                    long usedMemory = (r.totalMemory() - r.freeMemory()) / 1024 / 1024; // in MB
+                    long maxMemory = r.maxMemory() / 1024 / 1024; // in MB
+
+                    // Setze die Speicheranzeige in einer einzigen Zeile
+                    scoreboardAPI.setScore(player, "admin", "§6Speicher genutzt: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 0);
+
+                    int playersOnline = Bukkit.getOnlinePlayers().size();
+                    scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", playersOnline);
                 });
 
                 playerData.setScoreboard("admin", scoreboardAPI.getScoreboard(player, "admin"));
-
                 player.setCollidable(false);
             }
         }
