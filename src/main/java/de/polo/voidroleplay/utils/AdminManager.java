@@ -12,6 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,46 +39,31 @@ public class AdminManager implements CommandExecutor, TabCompleter {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
-        RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+
         if (args.length == 0) {
             if (playerData.isAduty()) {
-
                 playerData.setAduty(false);
                 send_message(player.getName() + " hat den Admindienst verlassen.", ChatColor.RED);
                 player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
                 player.setFlying(false);
                 player.setAllowFlight(false);
-
                 scoreboardAPI.removeScoreboard(player, "admin");
                 player.setCollidable(true);
             } else {
-
                 send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
                 player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §abetreten§7.");
                 player.setAllowFlight(true);
 
-                // Admin-Scoreboard erstellen und Speicherverbrauch anzeigen
-                scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
-                    int ticketsOpen = Main.getInstance().supportManager.getTickets().size();
-                    scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", ticketsOpen);
 
-                    // Speicherverbrauch berechnen
-                    Runtime r = Runtime.getRuntime();
-                    long usedMemory = (r.totalMemory() - r.freeMemory()) / 1024 / 1024; // in MB
-                    long maxMemory = r.maxMemory() / 1024 / 1024; // in MB
-
-                    // Setze die Speicheranzeige in einer einzigen Zeile
-                    scoreboardAPI.setScore(player, "admin", "§6Speicher genutzt: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 0);
-
-                    int playersOnline = Bukkit.getOnlinePlayers().size();
-                    scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", playersOnline);
-                });
+                scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", null);
+                updateAdminScoreboard(player);
 
                 playerData.setScoreboard("admin", scoreboardAPI.getScoreboard(player, "admin"));
                 player.setCollidable(false);
             }
         }
+
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {
                 case "-v":
@@ -100,6 +86,33 @@ public class AdminManager implements CommandExecutor, TabCompleter {
             }
         }
         return false;
+    }
+
+    private void updateAdminScoreboard(Player player) {
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (player.isOnline() && playerManager.getPlayerData(player.getUniqueId()).isAduty()) {
+                    int ticketsOpen = Main.getInstance().supportManager.getTickets().size();
+                    scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", ticketsOpen);
+
+
+                    Runtime r = Runtime.getRuntime();
+                    long usedMemory = (r.totalMemory() - r.freeMemory()) / 1024 / 1024; // in MB
+                    long maxMemory = r.maxMemory() / 1024 / 1024; // in MB
+
+
+                    scoreboardAPI.setScore(player, "admin", "§6Auslastung: §e" + usedMemory + "MB §8/ §e" + maxMemory + "MB", 0);
+
+                    int playersOnline = Bukkit.getOnlinePlayers().size();
+                    scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", playersOnline);
+                } else {
+
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(Main.getInstance(), 0, 20);
     }
 
     public void send_message(String msg, ChatColor color) {
@@ -126,7 +139,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         }
     }
 
-
     @SneakyThrows
     public void insertNote(String punisher, String target, String note) {
         Connection connection = Main.getInstance().mySQL.getConnection();
@@ -145,7 +157,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();
             suggestions.add("-v");
-
             return suggestions;
         }
         return null;
