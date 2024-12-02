@@ -41,7 +41,7 @@ public class Laboratory implements CommandExecutor, Listener {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.locationManager = locationManager;
-        Main.registerCommand("labor", this);
+        //Main.registerCommand("labor", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

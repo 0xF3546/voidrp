@@ -407,7 +407,7 @@ public final class Main extends JavaPlugin {
         public BizInviteCommand bizInviteCommand;
         public ShopRobCommand shopRobCommand;
         public RespawnCommand respawnCommand;
-        public DealerCommand dealerCommand;
+        //public DealerCommand dealerCommand;
         public Farming farming;
         public GetHeadCommand getHeadCommand;
         public FactionsCommand factionsCommand;
@@ -433,7 +433,8 @@ public final class Main extends JavaPlugin {
         public TeamSpeak teamSpeak;
         public FDoorCommand fDoorCommand;
         public ChangeSpawnCommand changeSpawnCommand;
-        public FindLaboratoryCommand findLaboratoryCommand;
+        //
+        // public FindLaboratoryCommand findLaboratoryCommand;
         public InvSeeCommand invSeeCommand;
         public UseCommand useCommand;
         public AusziehenCommand ausziehenCommand;
@@ -612,7 +613,7 @@ public final class Main extends JavaPlugin {
             bizInviteCommand = new BizInviteCommand(playerManager, utils, businessManager);
             shopRobCommand = new ShopRobCommand(playerManager, locationManager, factionManager);
             respawnCommand = new RespawnCommand(playerManager, adminManager, utils, locationManager);
-            dealerCommand = new DealerCommand(playerManager, gamePlay, locationManager, factionManager);
+            //dealerCommand = new DealerCommand(playerManager, gamePlay, locationManager, factionManager);
             farming = new Farming(playerManager, locationManager, utils);
             getHeadCommand = new GetHeadCommand();
             factionsCommand = new FactionsCommand(playerManager, factionManager);
@@ -637,7 +638,7 @@ public final class Main extends JavaPlugin {
             //teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
             fDoorCommand = new FDoorCommand(playerManager, blockManager, locationManager);
             changeSpawnCommand = new ChangeSpawnCommand(playerManager, utils);
-            findLaboratoryCommand = new FindLaboratoryCommand(playerManager, utils, locationManager);
+            //findLaboratoryCommand = new FindLaboratoryCommand(playerManager, utils, locationManager);
             invSeeCommand = new InvSeeCommand(playerManager);
             useCommand = new UseCommand(gamePlay);
             ausziehenCommand = new AusziehenCommand(utils);
