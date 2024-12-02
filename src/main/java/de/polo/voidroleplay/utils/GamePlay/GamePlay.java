@@ -100,7 +100,12 @@ public class GamePlay implements Listener {
         crypto = new Crypto();
         this.npc = npc;
         Statement statement = mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM dealer");
+
+        /*
+        Dealer System: deaktiviert
+         */
+
+        /*ResultSet result = statement.executeQuery("SELECT * FROM dealer");
         while (result.next()) {
             Dealer dealer = new Dealer();
             dealer.setId(result.getInt("id"));
@@ -134,7 +139,7 @@ public class GamePlay implements Listener {
             if (addedDealers == 3) {
                 break;
             }
-        }
+        }*/
 
 
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());

@@ -370,12 +370,12 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             });
         }
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.VILLAGER_SPAWN_EGG, 1, 0, "§cDealer suchen")) {
+        /*inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.VILLAGER_SPAWN_EGG, 1, 0, "§cDealer suchen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openDealers(player);
             }
-        });
+        });*/
         if (MilitaryDrop.ACTIVE) {
             inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§cMilitärabsturz beitreten")) {
                 @Override

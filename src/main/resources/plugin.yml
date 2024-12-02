@@ -161,7 +161,6 @@ commands:
     aliases: businessinvite
   shoprob:
   respawn:
-  dealer:
   farming:
   gethead:
   factions:
