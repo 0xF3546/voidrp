@@ -43,7 +43,6 @@ commands:
   playerinfo:
     aliases: pi
   me:
-    aliases: minecraft:me
   announce:
     aliases: ac
   gov:
