@@ -28,7 +28,7 @@ public class StatsCommand implements CommandExecutor {
         player.sendMessage(" §8- §ePayDay§8:§7 " + playerManager.paydayDuration(player) + "/60");
         player.sendMessage(" §8- §eSpielzeit§8:§7 " + playerData.getHours() + " Stunden & " + playerData.getMinutes() + " Minuten");
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
-            player.sendMessage(" §8- §eFraktion§8:§7 " + playerData.getFaction() + " (" + playerData.getFactionGrade() + "/8)");
+            player.sendMessage(" §8- §eFraktion§8:§7 " + playerData.getFaction() + " (" + playerData.getFactionGrade() + "/6)");
         } else {
             player.sendMessage(" §8- §eFraktion§8:§7 Zivilist");
         }

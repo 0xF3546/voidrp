@@ -56,12 +56,21 @@ public class RegisterblockCommand implements CommandExecutor {
             if (state instanceof Sign) {
                 Sign sign = (Sign) state;
                 sign.setEditable(false);
-                sign.setLine(1, "== §6Haus " + args[0] + " §0==");
-                sign.setLine(2, "§2Zu Verkaufen");
-                sign.update();
-                registeredBlock.setInfo("house");
-                registeredBlock.setInfoValue(args[0]);
-                player.sendMessage(Main.gamedesign_prefix + "Haus regestriert.");
+                if (!args[0].equalsIgnoreCase("atm")) {
+                    sign.setLine(1, "== §6Haus " + args[0] + " §0==");
+                    sign.setLine(2, "§2Zu Verkaufen");
+                    sign.update();
+                    registeredBlock.setInfo("house");
+                    registeredBlock.setInfoValue(args[0]);
+                    player.sendMessage(Main.gamedesign_prefix + "Haus regestriert.");
+                } else {
+                    sign.setLine(0, "================");
+                    sign.setLine(1, "Bankautomat");
+                    sign.setLine(2, "§8[Rechtsklick]");
+                    sign.setLine(3, "================");
+                    sign.update();
+                    registeredBlock.setInfo("atm");
+                }
             }
         } catch (Exception e) {
         }
