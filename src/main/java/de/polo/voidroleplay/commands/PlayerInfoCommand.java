@@ -38,7 +38,7 @@ public class PlayerInfoCommand implements CommandExecutor {
                     player.sendMessage("§8 ➥ §6Rang§8: §7" + playerManager.rang(targetplayer));
                     player.sendMessage("§8 ➥ §6Vorname§8: §7" + playerManager.firstname(targetplayer));
                     player.sendMessage("§8 ➥ §6Nachname§8: §7" + playerManager.lastname(targetplayer));
-                    player.sendMessage("§8 ➥ §6Fraktion§8: §7" + factionManager.faction(targetplayer) + " (" + factionManager.faction_grade(targetplayer) + "/8)");
+                    player.sendMessage("§8 ➥ §6Fraktion§8: §7" + factionManager.faction(targetplayer) + " (" + factionManager.faction_grade(targetplayer) + "/6)");
                     if (!targetplayerdata.isJailed()) {
                         player.sendMessage("§8 ➥ §6Gefängnis§8: §7Nein");
                     } else {
