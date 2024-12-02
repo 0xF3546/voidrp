@@ -120,7 +120,7 @@ public final class Main extends JavaPlugin {
         streetwar = new Streetwar(playerManager, factionManager, utils);
         weapons = new Weapons(utils, playerManager);
         isOnline = true;
-        laboratory = new Laboratory(playerManager, factionManager, locationManager);
+        //laboratory = new Laboratory(playerManager, factionManager, locationManager);
         npc = new NPC(playerManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager, npc);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons, companyManager);

@@ -177,7 +177,6 @@ commands:
   streetwar:
   getskin:
   registerblock:
-  labor:
   apotheke:
   apotheken:
   plant:
@@ -187,8 +186,6 @@ commands:
   equip:
   fdoor:
   changespawn:
-  findlaboratory:
-    aliases: findlabor
   tell:
   invsee:
   use:

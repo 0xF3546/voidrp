@@ -393,12 +393,15 @@ public class PlayerManager implements Listener, ServerTiming {
                 updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 if (playerData.isDead()) Main.getInstance().utils.deathUtil.killPlayer(player);
 
-                if (playerData.getPermlevel() >= 20) {
+                /*
+                Labor: deaktiviert
+                 */
+                /*if (playerData.getPermlevel() >= 20) {
                     PlayerLaboratory laboratory = new PlayerLaboratory(Main.getInstance().laboratory);
                     laboratory.create(player.getUniqueId());
                     playerData.setLaboratory(laboratory);
                     laboratory.start();
-                }
+                }*/
 
                 Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
