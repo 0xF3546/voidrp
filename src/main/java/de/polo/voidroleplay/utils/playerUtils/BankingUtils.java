@@ -213,7 +213,7 @@ public class BankingUtils implements Listener {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFactionGrade() >= 7) {
+                    if (playerData.getFactionGrade() >= 5) {
                         playerData.setVariable("chatblock", "atm_company_auszahlen");
                         player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
                         player.closeInventory();
@@ -223,7 +223,7 @@ public class BankingUtils implements Listener {
             inventoryManager.setItem(new CustomItem(29, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNmZjkxZGM5OWQ1ODI4MDIzZWVkZjg3Mzc5OWQyNTUzNWRhZGU2NGEyZTE2YTNiNDk4YjQxMTNlYWZkNDk2NiJ9fX0=", 1, 0, "§cAlles auszahlen", null)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFactionGrade() >= 7) {
+                    if (playerData.getFactionGrade() >= 5) {
                         Main.getInstance().companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getCompany().getBank()) + "$ vom Firmenkonto ausgezahlt.");
                         playerData.addMoney(playerData.getCompany().getBank(), "Company-Auszwahlung - " + playerData.getCompany().getId());
                         playerData.getCompany().removeBank(playerData.getCompany().getBank());
@@ -305,11 +305,11 @@ public class BankingUtils implements Listener {
                 player.closeInventory();
             }
         });
-        if (playerData.getFactionGrade() >= 7) {
+        if (playerData.getFactionGrade() >= 5) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFactionGrade() >= 7) {
+                    if (playerData.getFactionGrade() >= 5) {
                         playerData.setVariable("chatblock", "atm_frak_auszahlen");
                         player.sendMessage("§8[§aATM§8]§7 Gib nun einen Wert ein.");
                         player.closeInventory();
@@ -319,7 +319,7 @@ public class BankingUtils implements Listener {
             inventoryManager.setItem(new CustomItem(29, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNmZjkxZGM5OWQ1ODI4MDIzZWVkZjg3Mzc5OWQyNTUzNWRhZGU2NGEyZTE2YTNiNDk4YjQxMTNlYWZkNDk2NiJ9fX0=", 1, 0, "§cAlles auszahlen", null)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFactionGrade() >= 7) {
+                    if (playerData.getFactionGrade() >= 5) {
                         player.sendMessage("§8[§aATM§8]§a Du hast " + factionData.getBank() + "$ ausgezahlt.");
                         factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + factionData.getBank() + "$ vom Fraktionskonto ausgezahlt.");
                         playerData.addMoney(factionData.getBank(), "Fraktionsbank-Auszahlung - " + factionData.getName());

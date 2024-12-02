@@ -23,7 +23,7 @@ public class LeaderChatCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFactionGrade() < 7 && playerData.getPermlevel() < 70) {
+        if (playerData.getFactionGrade() < 5 && playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -32,7 +32,7 @@ public class LeaderChatCommand implements CommandExecutor {
             return false;
         }
         for (PlayerData pData : playerManager.getPlayers()) {
-            if (pData.getPermlevel() >= 70 || pData.getFactionGrade() >= 7) {
+            if (pData.getPermlevel() >= 70 || pData.getFactionGrade() >= 5) {
                 if (pData.getFaction() == null) continue;
                 Player targetplayer = Bukkit.getPlayer(pData.getUuid());
                 String msg = utils.stringArrayToString(args);

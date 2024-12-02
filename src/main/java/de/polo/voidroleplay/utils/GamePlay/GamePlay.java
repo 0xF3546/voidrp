@@ -304,8 +304,8 @@ public class GamePlay implements Listener {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.RED_DYE, 1, 0, "§4Verbrennen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFactionGrade() < 6) {
-                        player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 6!");
+                    if (playerData.getFactionGrade() < 4) {
+                        player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 4!");
                         return;
                     }
                     playerData.setVariable("chatblock", "evidence::burn");
@@ -326,8 +326,8 @@ public class GamePlay implements Listener {
             inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§cAuslagern")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFactionGrade() < 6) {
-                        player.sendMessage(Main.error + "Das geht erst ab Rang 6.");
+                    if (playerData.getFactionGrade() < 4) {
+                        player.sendMessage(Main.error + "Das geht erst ab Rang 4.");
                         return;
                     }
                     playerData.setVariable("chatblock", "evidence::out");
@@ -371,8 +371,8 @@ public class GamePlay implements Listener {
                 inventoryManager.setItem(new CustomItem(9, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 1, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName(), Arrays.asList("§8 ➥ §7" + factionData.storage.getWeed() + "g", "", "§8 » §cKlicke zum verarbeiten"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
-                        if (playerData.getFactionGrade() < 6) {
-                            player.sendMessage(Main.error + "Das geht erst ab Rang 6!");
+                        if (playerData.getFactionGrade() < 4) {
+                            player.sendMessage(Main.error + "Das geht erst ab Rang 4!");
                             return;
                         }
                         playerData.setVariable("chatblock", "proceedweed");

@@ -80,7 +80,7 @@ public class BombeCommand implements CommandExecutor, Listener {
             return false;
         }
 
-        if (playerData.getFactionGrade() < 6) {
+        if (playerData.getFactionGrade() < 5) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }

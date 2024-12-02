@@ -48,7 +48,7 @@ public class BlacklistReasonsCommand implements CommandExecutor {
             return false;
         }
         if (args[0].equalsIgnoreCase("add")) {
-            if (playerData.getFactionGrade() < 6) {
+            if (playerData.getFactionGrade() < 5) {
                 player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 6!");
                 return false;
             }
@@ -71,7 +71,7 @@ public class BlacklistReasonsCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Der Preis/Kills müssen numerisch sein.");
             }
         } else if (args[0].equalsIgnoreCase("remove")) {
-            if (playerData.getFactionGrade() < 6) {
+            if (playerData.getFactionGrade() < 5) {
                 player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 6!");
                 return false;
             }

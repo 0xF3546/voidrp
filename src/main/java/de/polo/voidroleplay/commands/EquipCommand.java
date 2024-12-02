@@ -157,7 +157,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     playerData.removeBankMoney(sturmgewehrPrice, "Waffenkauf");
                     weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.NORMAL);
                 } else {
-                    if (playerData.getFactionGrade() < 7) {
+                    if (playerData.getFactionGrade() < 5) {
                         player.sendMessage(Main.error_nopermission);
                         return;
                     }
@@ -168,7 +168,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
             }
         });
-        if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 6) {
+        if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 4) {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.STONE_HOE, 1, 0, "§7Sniper", "§8 ➥ §a" + (ServerManager.getPayout("equip_sniper") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -230,7 +230,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
                     playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
                 } else {
-                    if (playerData.getFactionGrade() < 7) {
+                    if (playerData.getFactionGrade() < 5) {
                         player.sendMessage(Main.error_nopermission);
                         return;
                     }
@@ -241,7 +241,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
             }
         });
-        if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 6) {
+        if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 4) {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cSniper-Munition", "§8 ➥ §a" + ServerManager.getPayout("equip_sniper_ammo") + "$")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -593,8 +593,8 @@ public class EquipCommand implements CommandExecutor, Listener {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getFactionGrade() < 6) {
-                        player.sendMessage(Main.error + "Du musst mindestens rang 6 sein um einen Sprengstoff zu kaufen!");
+                    if (playerData.getFactionGrade() < 4) {
+                        player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprengstoff zu kaufen!");
                         return;
                     }
                     if (factionData.getBank() < 2500) {

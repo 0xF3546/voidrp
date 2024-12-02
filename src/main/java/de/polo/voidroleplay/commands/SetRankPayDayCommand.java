@@ -27,7 +27,7 @@ public class SetRankPayDayCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (!(playerData.getFactionGrade() >= 7)) {
+        if (!(playerData.getFactionGrade() >= 5)) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }

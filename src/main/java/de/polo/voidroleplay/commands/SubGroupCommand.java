@@ -107,8 +107,8 @@ public class SubGroupCommand implements CommandExecutor, Listener {
             if (!factionData.isBadFrak()) {
                 errorMessage = "Dieses Feature ist nur für Bad-Fraktionen.";
             } else {
-                if (playerData.getFactionGrade() < 6) {
-                    errorMessage = "Dafür musst du mindestens Rang 6 sein.";
+                if (playerData.getFactionGrade() < 4) {
+                    errorMessage = "Dafür musst du mindestens Rang 4 sein.";
                 }
             }
         }

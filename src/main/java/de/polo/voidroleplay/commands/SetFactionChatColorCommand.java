@@ -42,7 +42,7 @@ public class SetFactionChatColorCommand implements CommandExecutor {
             player.sendMessage(Prefix.error_nopermission);
             return false;
         }
-        if (playerData.getFactionGrade() < 7) {
+        if (playerData.getFactionGrade() < 5) {
             player.sendMessage(Prefix.error_nopermission);
             return false;
         }

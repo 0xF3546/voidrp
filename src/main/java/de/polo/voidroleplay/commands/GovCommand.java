@@ -30,8 +30,8 @@ public class GovCommand implements CommandExecutor {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
-        if (playerData.getFactionGrade() < 5) {
-            player.sendMessage(Main.error + "Du musst mindestens Rang 5+ sein.");
+        if (playerData.getFactionGrade() < 4) {
+            player.sendMessage(Main.error + "Du musst mindestens Rang 4+ sein.");
             return false;
         }
         if (args.length < 1) {

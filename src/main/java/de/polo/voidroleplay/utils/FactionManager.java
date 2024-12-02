@@ -358,7 +358,7 @@ public class FactionManager {
             for (String faction : factions) {
                 PlayerData playerData = playerManager.getPlayerData(player);
                 if (playerData.getFaction() == null) continue;
-                if (playerData.getFactionGrade() < 7) continue;
+                if (playerData.getFactionGrade() < 5) continue;
                 if (playerData.getFaction().equalsIgnoreCase(faction)) {
                     player.sendMessage(message);
                 }

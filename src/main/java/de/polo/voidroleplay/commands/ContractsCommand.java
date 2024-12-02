@@ -47,7 +47,7 @@ public class ContractsCommand implements CommandExecutor, TabCompleter {
                         Player targetplayer = Bukkit.getPlayer(args[1]);
                         if (targetplayer != null) {
                             if (ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()) != null) {
-                                if (playerData.getFactionGrade() >= 6) {
+                                if (playerData.getFactionGrade() >= 4) {
                                     try {
                                         if (factionManager.removeFactionMoney(playerData.getFaction(), ServerManager.contractDataMap.get(targetplayer.getUniqueId().toString()).getAmount(), "Kopfgeld entfernung durch " + player.getName())) {
                                             for (Player players : Bukkit.getOnlinePlayers()) {

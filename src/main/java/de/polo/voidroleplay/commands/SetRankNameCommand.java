@@ -27,7 +27,7 @@ public class SetRankNameCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFactionGrade() >= 7) {
+        if (playerData.getFactionGrade() >= 5) {
             if (args.length >= 2) {
                 try {
                     StringBuilder newName = new StringBuilder(args[1]);

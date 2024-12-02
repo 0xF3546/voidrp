@@ -41,7 +41,7 @@ public class FrakStatsCommand implements CommandExecutor {
             player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "Statistiken§8]§7===");
             player.sendMessage("§8 - §eName§8:§7 " + factionData.getName());
             player.sendMessage("§8 - §eVoller Name§8:§7 " + factionData.getFullname());
-            if (playerData.getFactionGrade() >= 5 || playerData.isAduty()) {
+            if (playerData.getFactionGrade() >= 4 || playerData.isAduty()) {
                 player.sendMessage("§8 - §eBank§8:§7 " + factionData.getBank() + "$");
             }
             int member = 0;

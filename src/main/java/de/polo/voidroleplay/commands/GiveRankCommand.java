@@ -28,7 +28,7 @@ public class GiveRankCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFactionGrade() < 7) {
+        if (playerData.getFactionGrade() < 5) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -48,8 +48,8 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Der Rang muss eine Zahl sein!");
             return false;
         }
-        if (0 > rang || rang > 8) {
-            player.sendMessage(Main.error + "Der Rang muss von 0-8 sein!");
+        if (0 > rang || rang > 6) {
+            player.sendMessage(Main.error + "Der Rang muss von 0-6 sein!");
             return false;
         }
         PlayerData targetData = factionManager.getFactionOfPlayer(targetplayer.getUniqueId());
@@ -90,13 +90,13 @@ public class GiveRankCommand implements CommandExecutor {
         if (targetplayer.isOnline()) {
             Player target = Bukkit.getPlayer(args[0]);
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-            if (targetplayerData.getFactionGrade() >= 7) {
+            if (targetplayerData.getFactionGrade() >= 5) {
                 if (rang < 7) {
                     TeamSpeak.reloadPlayer(targetplayerData.getUuid());
                 }
             }
             targetplayerData.setFactionGrade(rang);
-            if (targetplayerData.getFactionGrade() >= 7) {
+            if (targetplayerData.getFactionGrade() >= 5) {
                 TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
             }
             target.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 " + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat dir Rang " + rang + " gegeben!");

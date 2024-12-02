@@ -57,7 +57,7 @@ public class InviteCommand implements CommandExecutor {
             });
             i++;
         }
-        if (playerData.getFaction() != null && playerData.getFactionGrade() >= 7) {
+        if (playerData.getFaction() != null && playerData.getFactionGrade() >= 5) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§6In Fraktion einladen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

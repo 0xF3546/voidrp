@@ -49,8 +49,8 @@ public class AdminGiveRankCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Der Rang muss eine Zahl sein!");
             return false;
         }
-        if (0 > rang || rang > 8) {
-            player.sendMessage(Main.error + "Der Rang muss von 0-8 sein!");
+        if (0 > rang || rang > 6) {
+            player.sendMessage(Main.error + "Der Rang muss von 0-6 sein!");
             return false;
         }
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
@@ -74,13 +74,13 @@ public class AdminGiveRankCommand implements CommandExecutor {
                 return false;
             }
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-            if (targetplayerData.getFactionGrade() >= 7) {
-                if (rang < 7) {
+            if (targetplayerData.getFactionGrade() >= 5) {
+                if (rang < 5) {
                     TeamSpeak.reloadPlayer(targetplayerData.getUuid());
                 }
             }
             targetplayerData.setFactionGrade(rang);
-            if (targetplayerData.getFactionGrade() >= 7) {
+            if (targetplayerData.getFactionGrade() >= 5) {
                 TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
             }
             target.sendMessage("§8[§cAdmin§8]§c " + playerData.getRang() + " " + player.getName() + " hat dir Rang " + rang + " gegeben! (Administrativ)");

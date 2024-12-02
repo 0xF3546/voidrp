@@ -60,7 +60,7 @@ public class MemberCommand implements CommandExecutor {
                             player.sendMessage("§8 → §a" + offlinePlayer.getName());
                         } else {
                             String lastLoginTime = Utils.localDateTimeToReadableString(lastLogin);
-                            if (playerData.getFactionGrade() >= 7) {
+                            if (playerData.getFactionGrade() >= 5) {
                                 player.sendMessage("§8 → §c" + offlinePlayer.getName() + " - (" + lastLoginTime + ")");
                             } else {
                                 player.sendMessage("§8 → §c" + offlinePlayer.getName());
