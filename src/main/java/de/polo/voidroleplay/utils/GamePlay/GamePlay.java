@@ -638,7 +638,7 @@ public class GamePlay implements Listener {
             }
         }
 
-        if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY) && Utils.getTime().getHour() >= 17 && Utils.getTime().getHour() <= 19) {
+        /*if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY) && Utils.getTime().getHour() >= 17 && Utils.getTime().getHour() <= 19) {
             if (Utils.getTime().getHour() == 17 && event.getMinute() == 0) {
                 Bukkit.broadcastMessage("§8[§cMilitär§8]§7 In 2 Stunden werden Militärische Flugzeuge auf dem Flughafen landen!");
             }
@@ -662,7 +662,7 @@ public class GamePlay implements Listener {
                 Bukkit.broadcastMessage("§8[§cMilitär§8]§7 Das abgestürzte Flugzeug hat mehrere Waffenkisten verloren!");
                 militaryDrop.start();
             }
-        }
+        }*/
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (getMaskState(player) != null) {

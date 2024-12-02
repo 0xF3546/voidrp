@@ -243,7 +243,6 @@ commands:
   auktion:
   fixblock:
   pfeifentransport:
-  test:
   blacklistreasons:
   modifyblacklist:
     aliases: mbl
