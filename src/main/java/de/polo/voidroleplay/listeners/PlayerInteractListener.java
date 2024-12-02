@@ -273,7 +273,6 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
                 RegisteredBlock factionBlock = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
-                System.out.println("REEG BLOCK: " + factionBlock);
                 if (factionBlock != null) {
                     if (factionBlock.getInfo().equalsIgnoreCase("factionupgrade")) {
                         System.out.println("INFO: " + factionBlock.getInfo());
@@ -750,10 +749,12 @@ public class PlayerInteractListener implements Listener {
         }
 
         if (action == Action.RIGHT_CLICK_BLOCK) {
-            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                Block clickedBlock = event.getClickedBlock();
-                if (clickedBlock.getType().equals(RoleplayItem.SPRENGSTOFF.getMaterial())) {
-                    Main.getInstance().gamePlay.openBombGUI(player);
+            if (playerData.getFaction() != null) {
+                if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
+                    Block clickedBlock = event.getClickedBlock();
+                    if (clickedBlock.getType().equals(RoleplayItem.SPRENGSTOFF.getMaterial())) {
+                        Main.getInstance().gamePlay.openBombGUI(player);
+                    }
                 }
             }
         }

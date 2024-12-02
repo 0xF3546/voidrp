@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.CompletableFuture;
 
 public class MySQL {
     public MySQL() {
@@ -88,4 +90,14 @@ public class MySQL {
         }
     }
 
+    public CompletableFuture<ResultSet> queryThreaded(String query) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Statement statement = getStatement();
+                return statement.executeQuery(query);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 }

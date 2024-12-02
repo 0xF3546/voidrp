@@ -27,7 +27,6 @@ public class ServerPingListener implements Listener {
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'");
-            System.out.println("Server Ping erhalten von: " + event.getAddress().toString().replace("/", ""));
             if (res.next()) {
                 if (res.getString(3) != null) {
                     FactionData factionData = factionManager.getFactionData(res.getString(3));

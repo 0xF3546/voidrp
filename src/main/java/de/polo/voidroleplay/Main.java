@@ -203,11 +203,17 @@ public final class Main extends JavaPlugin {
     }
 
     public static void registerCommand(String command, CommandExecutor c) {
-        instance.getCommand(command).setExecutor(c);
+        org.bukkit.command.PluginCommand cmd =  instance.getCommand(command);
+        if (cmd != null) {
+            cmd.setExecutor(c);
+        }
     }
 
     public static void addTabCompeter(String command, TabCompleter c) {
-        instance.getCommand(command).setTabCompleter(c);
+        org.bukkit.command.PluginCommand cmd =  instance.getCommand(command);
+        if (cmd != null) {
+            cmd.setTabCompleter(c);
+        }
     }
 
     private void registerCommands() {
