@@ -49,7 +49,7 @@ public class PayDayUtils {
         player.sendMessage(" ");
         player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
-        if (playerData.getBank() >= 300000) {
+        if (playerData.getBank() >= 100000) {
             double reichensteuer = Math.round(playerManager.bank(player) * 0.015);
             player.sendMessage("§8 ➥ §6Reichensteuer§8:§c -" + (int) reichensteuer + "$");
             plus -= reichensteuer;
