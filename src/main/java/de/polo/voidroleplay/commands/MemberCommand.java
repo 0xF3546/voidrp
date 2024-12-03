@@ -46,7 +46,7 @@ public class MemberCommand implements CommandExecutor {
             }
 
             // Display faction members by grade
-            for (int value = 8; value >= 0; value--) {
+            for (int value = 6; value >= 0; value--) {
                 String message = "§8 » §" + factionData.getSecondaryColor() + "[" + value + "] - " + factionManager.getRankName(playerData.getFaction(), value) + " - " + factionManager.getPaydayFromFaction(playerData.getFaction(), value) + "$/PayDay";
                 player.sendMessage(message);
 

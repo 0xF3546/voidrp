@@ -351,10 +351,9 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.addonXP.setMinerLevel(result.getInt("miningLevel"));
                 playerData.addonXP.setMinerXP(result.getInt("minerXP"));
 
-                ResultSet jail = statement.executeQuery("SELECT `hafteinheiten_verbleibend`, `reason` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+                ResultSet jail = statement.executeQuery("SELECT `wps` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
                 if (jail.next()) {
                     playerData.setHafteinheiten(jail.getInt(1));
-                    playerData.setVariable("jail_reason", jail.getString(2));
                     playerData.setJailed(true);
                 }
                 playerData.setIntVariable("afk", 0);

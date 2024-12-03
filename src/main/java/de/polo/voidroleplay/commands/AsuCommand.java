@@ -40,6 +40,7 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
         }
         if (!playerData.isDuty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Dienst.");
+            return false;
         }
         if (args.length < 2) {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /asu [Spieler] [Grund]");
@@ -61,8 +62,12 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
         PlayerData targetData = playerManager.getPlayerData(target);
         PlayerWanted playerWanted = new PlayerWanted(reason.getId(), player.getUniqueId(), Utils.getTime());
         targetData.setWanted(playerWanted, false).thenAccept(success -> {
+            System.out.println("END");
             if (!success) {
                 player.sendMessage(Prefix.ERROR + "Der Spieler hat bereits eine höhere Fahndung.");
+            } else {
+                Main.getInstance().factionManager.sendCustomMessageToFactions("§9HQ: Gesuchter: " + target.getName() + ". Grund: " + reason.getReason(), "Polizei", "FBI");
+                Main.getInstance().factionManager.sendCustomMessageToFactions("§9HQ: " + target.getName() + "'s momentanes WantedLevel: " + reason.getWanted(), "Polizei", "FBI");
             }
         });
         return false;
@@ -70,10 +75,17 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        List<String> reasons = new ArrayList<>();
-        for (WantedReason reason : utils.getStaatUtil().getWantedReasons()) {
-            reasons.add(reason.getReason());
+        List<String> text = new ArrayList<>();
+        if (args.length == 0) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                text.add(player.getName());
+            }
         }
-        return reasons;
+        if (args.length != 1) {
+            for (WantedReason reason : utils.getStaatUtil().getWantedReasons()) {
+                text.add(reason.getReason());
+            }
+        }
+        return text;
     }
 }

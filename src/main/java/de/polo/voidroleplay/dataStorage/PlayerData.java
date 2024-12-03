@@ -8,6 +8,7 @@ import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerPetManager;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
@@ -18,6 +19,7 @@ import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -76,6 +78,7 @@ public class PlayerData {
         loadIllnesses();
         loadClickedEventBlocks();
         loadWeapons();
+        loadWanteds();
     }
 
     @Getter
@@ -406,9 +409,33 @@ public class PlayerData {
         }
     }
 
+    @SneakyThrows
     private void loadWeapons() {
-        // Muss noch geladen werden
-        Main.getInstance().getMySQL().queryThreaded("SELECT * FROM player_gun_cabinet WHERE uuid = ?", player.getUniqueId().toString());
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_gun_cabinet WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            weapons.add(new PlayerWeapon(Weapon.valueOf(result.getString("weapon")),
+                    result.getInt("wear"),
+                    result.getInt("ammo"),
+                    WeaponType.NORMAL));
+        }
+    }
+    @SneakyThrows
+    private void loadWanteds() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_wanteds WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            wanted = new PlayerWanted(
+                    result.getInt("id"),
+                    result.getInt("wantedId"),
+                    UUID.fromString(result.getString("issuer")),
+                    result.getTimestamp("issued").toLocalDateTime()
+            );
+        }
     }
 
     @SneakyThrows
@@ -828,31 +855,48 @@ public class PlayerData {
     }
 
     public CompletableFuture<Boolean> setWanted(PlayerWanted playerWanted, boolean silent) {
+        System.out.println("MOIN");
         return CompletableFuture.supplyAsync(() -> {
+            System.out.println("www");
             if (playerWanted != null) {
                 WantedReason reason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
                 WantedReason newReason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
-                if (reason.getWanted() > newReason.getWanted()) return false;
+                return reason.getWanted() <= newReason.getWanted();
             }
+            System.out.println("yo");
             return true;
         }).thenCompose(result -> {
+            System.out.println("hhh");
             if (!result) return CompletableFuture.completedFuture(false);
+            System.out.println("h#ä");
+            WantedReason wantedReason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
 
+            System.out.println("Executing DELETE query...");
             String deleteQuery = "DELETE FROM player_wanteds WHERE uuid = ?";
-            return Main.getInstance().getMySQL().queryThreaded(deleteQuery, player.getUniqueId().toString()).thenCompose(deleteResult -> {
-                String insertQuery = "INSERT INTO player_wanteds (uuid, issuer, wantedId) VALUES (?, ?, ?)";
-                return Main.getInstance().getMySQL().queryThreadedWithGeneratedKeys(insertQuery,
-                        player.getUniqueId().toString(),
-                        playerWanted.getIssuer().toString(),
-                        playerWanted.getWantedId());
-            }).thenApply(generatedKey -> {
-                if (generatedKey.isPresent()) {
-                    playerWanted.setId(generatedKey.get());
-                    this.wanted = playerWanted;
-                    return true;
-                }
-                return false;
-            });
+            return Main.getInstance().getMySQL()
+                    .queryThreaded(deleteQuery, player.getUniqueId().toString())
+                    .thenCompose(deleteResult -> {
+                        System.out.println("DELETE query completed.");
+                        String insertQuery = "INSERT INTO player_wanteds (uuid, issuer, wantedId) VALUES (?, ?, ?)";
+                        System.out.println("Preparing to execute INSERT query...");
+                        return Main.getInstance().getMySQL().queryThreadedWithGeneratedKeys(insertQuery,
+                                player.getUniqueId().toString(),
+                                playerWanted.getIssuer().toString(),
+                                playerWanted.getWantedId());
+                    })
+                    .thenApply(generatedKey -> {
+                        System.out.println("INSERT query completed: Key = " + generatedKey);
+                        if (generatedKey.isPresent()) {
+                            playerWanted.setId(generatedKey.get());
+                            this.wanted = playerWanted;
+                            OfflinePlayer issuer = Bukkit.getOfflinePlayer(wanted.getIssuer());
+                            player.sendMessage("§cDu hast ein Verbrechen begangen ( " + wantedReason.getReason() + " ). Beamter: " + issuer.getName());
+                            player.sendMessage("§eDeine momentanen Wantedpunkte: " + wantedReason.getWanted());
+                            return true;
+                        }
+                        System.out.println("No key was generated.");
+                        return false;
+                    });
         });
     }
     public void clearWanted() {

@@ -39,15 +39,16 @@ public class WantedCommand implements CommandExecutor {
         if (playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Polizei")) {
             Main.getInstance().getMySQL().queryThreaded("SELECT * FROM player_wanteds").thenAccept(result -> {
                 try {
-                    if (!result.next()) {
+                    if (!result.isBeforeFirst()) { // Prüft, ob überhaupt Ergebnisse im ResultSet sind
                         player.sendMessage("§9Es steht niemand auf der Fahndungsliste.");
                         return;
                     }
-                    while (result.next()) {
+                    while (result.next()) { // Durchläuft alle Zeilen im ResultSet
+                        System.out.println("Found: " + result);
                         WantedReason wantedReason = utils.staatUtil.getWantedReason(result.getInt("wantedId"));
                         OfflinePlayer player1 = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("uuid")));
-                        if (!player1.isOnline()) continue;
-                        player.sendMessage("§cGesucht! §8- §9" + player1.getName() + " §8-§9 " + wantedReason.getReason() + " §8-§9 " + wantedReason.getReason() + " Wanteds");
+                        if (!player1.isOnline()) continue; // Nur anzeigen, wenn der Spieler online ist
+                        player.sendMessage("§cGesucht! §8- §9" + player1.getName() + " §8-§9 " + wantedReason.getReason() + " §8-§9 " + wantedReason.getWanted() + " Wanteds");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
