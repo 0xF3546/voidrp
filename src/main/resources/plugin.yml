@@ -147,7 +147,8 @@ commands:
   antrag:
   self:
   garage:
-  akten:
+  wanteds:
+    aliases: akten
   spec:
     aliases: spectator
   msg:
@@ -266,3 +267,6 @@ commands:
   checkout-webshop:
   undertaker:
   miner:
+  su:
+    aliases: asu
+  clear:

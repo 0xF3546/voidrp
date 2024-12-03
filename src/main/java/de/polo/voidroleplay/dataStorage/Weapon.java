@@ -12,6 +12,10 @@ public class Weapon {
     private int id;
     private UUID owner;
     private WeaponData weaponData;
+
+    @Getter
+    @Setter
+    private PlayerWeapon playerWeapon;
     private boolean isReloading = false;
     private int ammo;
     private int currentAmmo;

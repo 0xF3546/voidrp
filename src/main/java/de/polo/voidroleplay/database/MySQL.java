@@ -5,11 +5,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class MySQL {
@@ -98,6 +95,46 @@ public class MySQL {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        });
+    }
+
+    public CompletableFuture<ResultSet> queryThreaded(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection(); // Deine Methode zur Verbindungserstellung
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                return statement.executeQuery();
+
+            } catch (SQLException e) {
+                throw new RuntimeException("Error executing query", e);
+            }
+        });
+    }
+
+    public CompletableFuture<Optional<Integer>> queryThreadedWithGeneratedKeys(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                statement.executeUpdate();
+
+                try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        return Optional.of(resultSet.getInt(1));
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error executing query", e);
+            }
+            return Optional.empty();
         });
     }
 }

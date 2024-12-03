@@ -1,10 +1,7 @@
 package de.polo.voidroleplay.utils;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.Weapon;
-import de.polo.voidroleplay.dataStorage.WeaponData;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.WeaponType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
@@ -152,17 +149,13 @@ public class Weapons implements Listener {
 
     @SneakyThrows
     public Integer addWeapon(Weapon weapon) {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.execute("INSERT INTO player_weapons (uuid, weapon, weaponType) VALUES ('" + weapon.getOwner().toString() + "', " + weapon.getWeaponData().getId() + ", '" + weapon.getWeaponType().name() + "')", Statement.RETURN_GENERATED_KEYS);
-
-        ResultSet generatedKeys = statement.getGeneratedKeys();
-        if (generatedKeys.next()) {
-            weapon.setId(generatedKeys.getInt(1));
-            weaponList.put(weapon.getId(), weapon);
-            return generatedKeys.getInt(1);
-        }
-
-        statement.close();
+        Main.getInstance().getMySQL()
+                .queryThreadedWithGeneratedKeys("INSERT INTO player_weapons (uuid, weapon, weaponType)",
+                        weapon.getOwner().toString(), weapon.getPlayerWeapon().getWeapon().name(), weapon.getWeaponType().name())
+                .thenApply(key -> {
+                    key.ifPresent(weapon::setId);
+                    return null;
+                });
         return null;
     }
 
@@ -428,5 +421,57 @@ public class Weapons implements Listener {
         ItemMeta meta = stack.getItemMeta();
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getWeaponData().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
         stack.setItemMeta(meta);
+    }
+    public void giveWeapon(Player player, PlayerWeapon playerWeapon) {
+        ItemStack item = new ItemStack(playerWeapon.getWeapon().getMaterial());
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName(playerWeapon.getWeapon().getName());
+        Weapon weapon = new Weapon();
+        weapon.setOwner(player.getUniqueId());
+        weapon.setPlayerWeapon(playerWeapon);
+        weapon.setWeaponType(playerWeapon.getWeaponType());
+        weapon.setAmmo(0);
+        weapon.setCurrentAmmo(0);
+        weapon.setReloading(false);
+        addWeapon(weapon);
+
+        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
+        meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, weapon.getId());
+
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + playerWeapon.getWeapon().getMaxAmmo()));
+        item.setItemMeta(meta);
+        player.getInventory().addItem(item);
+    }
+
+    public void giveWeaponToCabinet(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, int ammo, int wear, WeaponType weaponType) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        PlayerWeapon existingWeapon = playerData.getWeapons().stream().filter(x -> x.getWeaponType() == weaponType && x.getWeapon() == weapon).findFirst().orElse(null);
+        if (existingWeapon != null) {
+            existingWeapon.setWear(existingWeapon.getWear() + wear);
+            existingWeapon.setAmmo(existingWeapon.getAmmo() + ammo);
+            existingWeapon.save();
+            return;
+        }
+        PlayerWeapon playerWeapon = new PlayerWeapon(weapon, wear, ammo, weaponType);
+        addWeaponToGunCabinet(player, playerWeapon);
+    }
+
+    private void addWeaponToGunCabinet(Player player, PlayerWeapon playerWeapon) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        playerData.giveWeapon(playerWeapon);
+        Main.getInstance()
+                .getMySQL()
+                .queryThreadedWithGeneratedKeys(
+                        "INSERT INTO player_gun_cabinet (uuid, weapon, wear, ammo) VALUES (?, ?, ?, ?)",
+                        player.getUniqueId().toString(),
+                        playerWeapon.getWeapon().name(),
+                        playerWeapon.getWear(),
+                        playerWeapon.getAmmo()
+                )
+                .thenApply(generatedKey -> {
+                    generatedKey.ifPresent(playerWeapon::setId);
+                    return null;
+                });
     }
 }

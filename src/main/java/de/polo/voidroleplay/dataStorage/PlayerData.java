@@ -9,6 +9,7 @@ import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.PlayerPetManager;
 import de.polo.voidroleplay.utils.enums.*;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
 import de.polo.voidroleplay.utils.playerUtils.PlayerPowerUpManager;
 import lombok.Getter;
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 
 public class PlayerData {
     @Getter
@@ -62,6 +64,8 @@ public class PlayerData {
     private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
     private final List<PlayerIllness> illnesses = new ArrayList<>();
 
+    private final List<PlayerWeapon> weapons = new ArrayList<>();
+
     private final List<ClickedEventBlock> clickedEventBlocks = new ArrayList<>();
 
     public PlayerData(Player player) {
@@ -71,6 +75,7 @@ public class PlayerData {
         this.playerPowerUpManager = new PlayerPowerUpManager(player, this);
         loadIllnesses();
         loadClickedEventBlocks();
+        loadWeapons();
     }
 
     @Getter
@@ -280,6 +285,9 @@ public class PlayerData {
     @Setter
     private int votes;
 
+    @Getter
+    private PlayerWanted wanted;
+
     public PlayerData() {
     }
 
@@ -396,6 +404,11 @@ public class PlayerData {
             ClickedEventBlock block = new ClickedEventBlock(result.getInt("blockId"));
             clickedEventBlocks.add(block);
         }
+    }
+
+    private void loadWeapons() {
+        // Muss noch geladen werden
+        Main.getInstance().getMySQL().queryThreaded("SELECT * FROM player_gun_cabinet WHERE uuid = ?", player.getUniqueId().toString());
     }
 
     @SneakyThrows
@@ -745,6 +758,10 @@ public class PlayerData {
         statement.close();
     }
 
+    public boolean isExecutiveFaction() {
+        return faction.equalsIgnoreCase("FBI") || faction.equalsIgnoreCase("Polizei");
+    }
+
     public boolean hasReceivedBonus() {
         return receivedBonus;
     }
@@ -808,6 +825,47 @@ public class PlayerData {
 
     public Collection<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> getBeginnerQuests() {
         return beginnerQuests;
+    }
+
+    public CompletableFuture<Boolean> setWanted(PlayerWanted playerWanted, boolean silent) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (playerWanted != null) {
+                WantedReason reason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
+                WantedReason newReason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
+                if (reason.getWanted() > newReason.getWanted()) return false;
+            }
+            return true;
+        }).thenCompose(result -> {
+            if (!result) return CompletableFuture.completedFuture(false);
+
+            String deleteQuery = "DELETE FROM player_wanteds WHERE uuid = ?";
+            return Main.getInstance().getMySQL().queryThreaded(deleteQuery, player.getUniqueId().toString()).thenCompose(deleteResult -> {
+                String insertQuery = "INSERT INTO player_wanteds (uuid, issuer, wantedId) VALUES (?, ?, ?)";
+                return Main.getInstance().getMySQL().queryThreadedWithGeneratedKeys(insertQuery,
+                        player.getUniqueId().toString(),
+                        playerWanted.getIssuer().toString(),
+                        playerWanted.getWantedId());
+            }).thenApply(generatedKey -> {
+                if (generatedKey.isPresent()) {
+                    playerWanted.setId(generatedKey.get());
+                    this.wanted = playerWanted;
+                    return true;
+                }
+                return false;
+            });
+        });
+    }
+    public void clearWanted() {
+        wanted = null;
+        Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", uuid.toString());
+    }
+
+    public Collection<PlayerWeapon> getWeapons() {
+        return weapons;
+    }
+
+    public void giveWeapon(PlayerWeapon playerWeapon) {
+        this.weapons.add(playerWeapon);
     }
 
     public class AddonXP {

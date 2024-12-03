@@ -404,7 +404,7 @@ public final class Main extends JavaPlugin {
         public TrennenCommand trennenCommand;
         public AntragCommand antragCommand;
         public GarageCommand garageCommand;
-        public AktenCommand aktenCommand;
+        public WantedCommand aktenCommand;
         public SpecCommand specCommand;
         public MsgCommand msgCommand;
         public LeaderChatCommand leaderChatCommand;
@@ -505,6 +505,8 @@ public final class Main extends JavaPlugin {
         public CheckoutWebshopCommand checkoutWebshopCommand;
         public UndertakerCommand undertakerCommand;
         public MinerJobCommand minerJobCommand;
+        public ClearCommand clearCommand;
+        public AsuCommand asuCommand;
         private void Init() {
             minerJobCommand = new MinerJobCommand(playerManager, gamePlay, locationManager, factionManager);
             undertakerCommand = new UndertakerCommand(playerManager, locationManager);
@@ -610,7 +612,7 @@ public final class Main extends JavaPlugin {
             trennenCommand = new TrennenCommand(playerManager);
             antragCommand = new AntragCommand(playerManager, utils);
             garageCommand = new GarageCommand(locationManager, vehicles);
-            aktenCommand = new AktenCommand(playerManager);
+            aktenCommand = new WantedCommand(playerManager, utils);
             specCommand = new SpecCommand(playerManager, adminManager);
             msgCommand = new MsgCommand(playerManager);
             leaderChatCommand = new LeaderChatCommand(playerManager, utils);
@@ -699,6 +701,8 @@ public final class Main extends JavaPlugin {
             setMOTDCommand = new SetMOTDCommand(playerManager, factionManager);
             voteShopCommand = new VoteShopCommand(playerManager);
             anwaltCommand = new AnwaltCommand(playerManager, locationManager);
+            clearCommand = new ClearCommand(playerManager, factionManager, utils);
+            asuCommand = new AsuCommand(playerManager, utils);
 
             main.registerCommands();
             main.registerListener(this);
