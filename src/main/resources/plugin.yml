@@ -271,3 +271,4 @@ commands:
     aliases: asu
   clear:
   weaponinfo:
+  wantedinfo:
