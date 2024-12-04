@@ -52,28 +52,12 @@ public class JoinListener implements Listener {
         event.setJoinMessage("");
         player.setGameMode(GameMode.SURVIVAL);
         if (playerManager.isCreated(player.getUniqueId())) {
-            PlayerData playerData = playerManager.loadPlayer(player).join();
-            if (playerData.getVariable("tpNewmap")) {
-                Main.getInstance().locationManager.useLocation(player, "stadthalle");
-                player.sendMessage("§8 ✈ §aWillkommen auf der neuen Map!");
-                try {
-                    Connection connection = Main.getInstance().mySQL.getConnection();
-                    PreparedStatement ps = connection.prepareStatement("UPDATE players SET tpNewmap = true WHERE uuid = ?");
-                    ps.setString(1, uuid.toString());
-                    ps.execute();
-                    ps.close();
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            playerManager.loadPlayer(player);
+            PlayerData playerData = playerManager.getPlayerData(uuid);
             if (playerData == null) {
                 player.kick(Component.text("§cWir mussten deine Verbindung trennen, da deine Spielerdaten nicht geladen werden konnten."));
                 return;
             }
-            System.out.println(playerData);
-            System.out.println(playerData.getPlayer().getName());
-            System.out.println(playerData.getFirstname());
             adminManager.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getFaction() != null) {
@@ -99,47 +83,6 @@ public class JoinListener implements Listener {
             }
             Vehicles.spawnPlayerVehicles(player);
             serverManager.updateTablist(null);
-
-            if (playerData.getVariable("jugendschutz") != null) {
-                Main.waitSeconds(1, () -> {
-                    InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
-                    playerData.setVariable("originClass", this);
-                    inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
-                        @Override
-                        public void onClick(InventoryClickEvent event) {
-                            playerData.setVariable("jugendschutz", null);
-                            player.closeInventory();
-                            player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
-                            Statement statement = null;
-                            try {
-                                statement = Main.getInstance().mySQL.getStatement();
-                                statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId() + "'");
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
-                            player.closeInventory();
-                        }
-                    });
-                    inventory.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist", "§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7", "§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt", "§c§l und habe keine Erlaubnis meiner Eltern"))) {
-                        @Override
-                        public void onClick(InventoryClickEvent event) {
-                            player.closeInventory();
-                            player.kickPlayer("§cDa du den Jugendschutz nicht aktzeptieren konntest, kannst du auf dem Server §lnicht§c Spielen.\n§cBitte deine Erziehungsberechtigten um Erlabunis oder warte bis du 18 bist.");
-                        }
-                    });
-                    for (int i = 0; i < 27; i++) {
-                        if (i != 15 && i != 11) {
-                            inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
-                                @Override
-                                public void onClick(InventoryClickEvent event) {
-
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-
         } else {
             player.sendMessage(" ");
             player.sendMessage("§6VoidRoleplay §8»§7 Herzlich Wilkommen auf VoidRoleplay, " + player.getName() + ".");
