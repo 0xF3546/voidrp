@@ -10,6 +10,19 @@ public class ShopItem {
     private int price;
     private String type;
     private String secondType;
+    public ShopItem() {
+
+    }
+
+    public ShopItem(int id, int shop, Material material, String displayName, int price, String type, String secondType) {
+        this.id = id;
+        this.shop = shop;
+        this.material = material;
+        this.displayName = displayName;
+        this.price = price;
+        this.type = type;
+        this.secondType = secondType;
+    }
 
     public int getId() {
         return id;
