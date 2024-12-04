@@ -4,11 +4,15 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,14 +24,10 @@ public class MySQL {
     static String user = null;
     static String password = null;
     static int port = 3306;
-    private static boolean error;
-    public static Connection connection;
-
     private HikariDataSource dataSource;
+    private static final Logger logger = LoggerFactory.getLogger(MySQL.class);
 
-
-    //6~nPp?hL
-    public boolean loadDBData() {
+    public void loadDBData() {
         File file = new File("plugins//roleplay//database.yml");
         if (!file.exists()) {
             try {
@@ -36,7 +36,7 @@ public class MySQL {
                 cfg.set("password", "Datenbank-Passwort");
                 cfg.set("user", "Datenbank-Benutzer");
                 cfg.save(file);
-                return false;
+                return;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -45,7 +45,7 @@ public class MySQL {
         password = cfg.getString("password");
         user = cfg.getString("user");
         System.out.println("Database loaded");
-        return true;
+        setupPool();
     }
 
     public void setupPool() {
@@ -64,42 +64,13 @@ public class MySQL {
     }
 
     public Statement getStatement() throws SQLException {
-        if(connection != null) {
-            return (Statement) connection;
-        }
-        Connection connection = dataSource.getConnection();
-
+        Connection connection = getConnection();
         return connection.createStatement();
-    }
-    public static boolean isError() {
-        return error;
-    }
-
-    public static void setError(boolean error) {
-        MySQL.error = error;
-    }
-
-    public static void endConnection() throws SQLException {
-        MySQL.connection.close();
     }
     public interface forum {
         String url = "jdbc:mysql://185.117.3.65/wcf?autoReconnect=true&useSSL=false";
         int port = 3306;
-        static Connection getConnection() throws SQLException {
-            if(connection != null) {
-                return connection;
-            }
-            Connection connection = DriverManager.getConnection(url, user, password);
-
-            for (int i = 0; i < 5; i++) {
-                System.out.println("[MySQL]: Datenbank verbunden");
-            }
-            return connection;
-        }
         static Statement getStatement() throws SQLException {
-            if(connection != null) {
-                return (Statement) connection;
-            }
             Connection connection = DriverManager.getConnection(url, user, password);
 
             return connection.createStatement();
@@ -181,4 +152,136 @@ public class MySQL {
             }
         });
     }
+
+    public <T> CompletableFuture<List<T>> executeQueryAsync(String query, ResultMapper<T> mapper, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                System.out.println("Executing query: {} with args: {}" +  query + Arrays.toString(args));
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    List<T> results = new ArrayList<>();
+
+                    while (resultSet.next()) {
+                        results.add(mapper.map(resultSet));
+                    }
+
+                    logger.info("Query executed successfully. Results: {}", results.size());
+                    return results;
+                }
+
+            } catch (SQLException e) {
+                logger.error("Error executing query: {}", query, e);
+                e.printStackTrace();
+                ///throw new DatabaseException("Error executing query", e);
+            }
+            return null;
+        });
+    }
+
+    public CompletableFuture<Integer> insertAsync(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                logger.info("Executing insert: {} with args: {}", query, Arrays.toString(args));
+
+                int affectedRows = statement.executeUpdate();
+                logger.info("Insert executed successfully. Rows affected: {}", affectedRows);
+
+                return affectedRows;
+
+            } catch (SQLException e) {
+                logger.error("Error executing insert: {}", query, e);
+                throw new RuntimeException("Database insert failed", e);
+            }
+        });
+    }
+
+    public CompletableFuture<Optional<Integer>> insertAndGetKeyAsync(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                logger.info("Executing insert with generated key: {} with args: {}", query, Arrays.toString(args));
+
+                statement.executeUpdate();
+
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int generatedKey = generatedKeys.getInt(1);
+                        logger.info("Insert successful. Generated key: {}", generatedKey);
+                        return Optional.of(generatedKey);
+                    }
+                }
+
+                logger.warn("Insert executed, but no key was generated.");
+                return Optional.empty();
+
+            } catch (SQLException e) {
+                logger.error("Error executing insert with generated key: {}", query, e);
+                throw new RuntimeException("Database insert failed", e);
+            }
+        });
+    }
+
+    public CompletableFuture<Integer> updateAsync(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                logger.info("Executing update: {} with args: {}", query, Arrays.toString(args));
+
+                int affectedRows = statement.executeUpdate();
+                logger.info("Update executed successfully. Rows affected: {}", affectedRows);
+
+                return affectedRows;
+
+            } catch (SQLException e) {
+                logger.error("Error executing update: {}", query, e);
+                throw new RuntimeException("Database update failed", e);
+            }
+        });
+    }
+
+    public CompletableFuture<Integer> deleteAsync(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                logger.info("Executing delete: {} with args: {}", query, Arrays.toString(args));
+
+                int affectedRows = statement.executeUpdate();
+                logger.info("Delete executed successfully. Rows affected: {}", affectedRows);
+
+                return affectedRows;
+
+            } catch (SQLException e) {
+                logger.error("Error executing delete: {}", query, e);
+                throw new RuntimeException("Database delete failed", e);
+            }
+        });
+    }
+
 }
