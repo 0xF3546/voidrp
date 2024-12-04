@@ -38,6 +38,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONObject;
 
 import java.sql.*;
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -45,7 +46,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 public class PlayerManager implements Listener, ServerTiming {
@@ -99,9 +99,10 @@ public class PlayerManager implements Listener, ServerTiming {
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-            Date date = new Date();
+            java.util.Date date = new java.util.Date();
             String newDate = formatter.format(date);
             Player player = Bukkit.getPlayer(uuid);
+            Connection connection = Main.getInstance().getMySQL().getConnection();
             statement.execute("INSERT INTO `players` (`uuid`, `player_name`, `adress`) VALUES ('" + uuid + "', '" + player.getName() + "', '" + player.getAddress() + "')");
             statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
             statement.execute("INSERT INTO `player_addonxp` (`uuid`) VALUES ('" + uuid + "')");
@@ -130,18 +131,13 @@ public class PlayerManager implements Listener, ServerTiming {
 
     public void loadPlayer(Player player) {
         UUID uuid = player.getUniqueId();
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            assert statement != null;
-            String query = "SELECT players.*, player_addonxp.* " +
-                    "FROM players " +
-                    "LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid " +
-                    "WHERE players.uuid = '" + uuid + "'";
-
-            ResultSet result = statement.executeQuery(query);
-            if (result.next()) {
-                if (result.getString("player_name") != null) {
-                    if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
+        String query = "SELECT players.*, player_addonxp.* FROM players LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid WHERE players.uuid = ?";
+        mySQL.executeQueryAsync(query, uuid.toString()).thenAccept(result -> {
+            if (result != null && !result.isEmpty()) {
+                Map<String, Object> row = result.get(0);
+                PlayerData playerData = new PlayerData(player);
+                if ((String) row.get("player_name") != null) {
+                    if (!((String) row.get("player_name")).equalsIgnoreCase(player.getName())) {
                         List<Integer> houses = new ArrayList<>();
                         for (House house : Housing.houseDataMap.values()) {
                             if (house.getOwner() == null) continue;
@@ -167,94 +163,98 @@ public class PlayerManager implements Listener, ServerTiming {
                         }
                     }
                 }
-                PlayerData playerData = new PlayerData(player);
-                playerData.setFirstname(result.getString("firstname"));
-                playerData.setLastname(result.getString("lastname"));
-                playerData.setBargeld(result.getInt("bargeld"));
-                playerData.setBank(result.getInt("bank"));
-                playerData.setVisum(result.getInt("visum"));
-                playerData.setPermlevel(result.getInt("player_permlevel"));
-                playerData.setRang(result.getString("player_rank"));
+                playerData.setFirstname((String) row.get("firstname"));
+                playerData.setLastname((String) row.get("lastname"));
+                playerData.setBargeld((Integer) row.get("bargeld"));
+                playerData.setBank((Integer) row.get("bank"));
+                playerData.setVisum((Integer) row.get("visum"));
+                playerData.setPermlevel((Integer) row.get("player_permlevel"));
+                playerData.setRang((String) row.get("player_rank"));
                 playerData.setAduty(false);
-                playerData.setLevel(result.getInt("level"));
-                playerData.setExp(result.getInt("exp"));
-                playerData.setNeeded_exp(result.getInt("needed_exp"));
-                playerData.setDead(result.getBoolean("isDead"));
-                if (result.getBoolean("isDead")) {
-                    playerData.setDeathTime(result.getInt("deathTime"));
-                    playerData.setHitmanDead(result.getBoolean("isHitmanDead"));
-                    playerData.setStabilized(result.getBoolean("isStabilized"));
+                playerData.setLevel((Integer) row.get("level"));
+                playerData.setExp((Integer) row.get("exp"));
+                playerData.setNeeded_exp((Integer) row.get("needed_exp"));
+                playerData.setDead((Boolean) row.get("isDead"));
+                if ((Boolean) row.get("isDead")) {
+                    playerData.setDeathTime((Integer) row.get("deathTime"));
+                    playerData.setHitmanDead((Boolean) row.get("isHitmanDead"));
+                    playerData.setStabilized((Boolean) row.get("isStabilized"));
                 }
-                playerData.setNumber(result.getInt("number"));
-                playerData.setDuty(result.getBoolean("isDuty"));
-                if (result.getString("gender") != null) {
-                    playerData.setGender(Gender.valueOf(result.getString("gender")));
+                playerData.setNumber((Integer) row.get("number"));
+                playerData.setDuty((Boolean) row.get("isDuty"));
+                if ((String) row.get("gender") != null) {
+                    playerData.setGender(Gender.valueOf((String) row.get("gender")));
                 }
-                playerData.setBirthday(result.getDate("birthday"));
-                playerData.setId(result.getInt("id"));
-                playerData.setHouseSlot(result.getInt("houseSlot"));
-                playerData.setCurrentHours(result.getInt("current_hours"));
-                if (result.getDate("rankDuration") != null) {
-                    Date utilDate = new Date(result.getDate("rankDuration").getTime());
+                playerData.setBirthday((Date) row.get("birthday"));
+                playerData.setId((Integer) row.get("id"));
+                playerData.setHouseSlot((Integer) row.get("houseSlot"));
+                playerData.setCurrentHours((Integer) row.get("current_hours"));
+                if ((Date) row.get("rankDuration") != null) {
+                    Date utilDate = new Date(((Date) row.get("rankDuration")).getTime());
                     LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     playerData.setRankDuration(localDateTime);
                 }
-                if (result.getDate("dailyBonusRedeemed") != null) {
-                    Date utilDate = new Date(result.getDate("dailyBonusRedeemed").getTime());
+                if ((Date) row.get("dailyBonusRedeemed") != null) {
+                    Date utilDate = new Date(((Date) row.get("dailyBonusRedeemed")).getTime());
                     playerData.setDailyBonusRedeemed(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
-                if (result.getDate("lastPayDay") != null) {
-                    Date utilDate = new Date(result.getDate("lastPayDay").getTime());
+                if ((Date) row.get("lastPayDay") != null) {
+                    Date utilDate = new Date(((Date) row.get("lastPayDay")).getTime());
                     playerData.setLastPayDay(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
-                if (result.getDate("boostDuration") != null)
-                    playerData.setBoostDuration(result.getTimestamp("boostDuration").toLocalDateTime());
-                if (result.getDate("lastContract") != null)
-                    playerData.setLastContract(result.getTimestamp("lastContract").toLocalDateTime());
-                playerData.setSecondaryTeam(result.getString("secondaryTeam"));
-                playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
-                playerData.setSpawn(result.getString("spawn"));
-                playerData.setJob(result.getString("job"));
-                player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));
+                if (row.get("boostDuration") != null)
+                    playerData.setBoostDuration(((Timestamp) row.get("boostDuration")).toLocalDateTime());
+                if (row.get("lastContract") != null)
+                    playerData.setLastContract(((Timestamp) row.get("lastContract")).toLocalDateTime());
+                playerData.setSecondaryTeam((String) row.get("secondaryTeam"));
+                playerData.setTeamSpeakUID((String) row.get("teamSpeakUID"));
+                playerData.setSpawn((String) row.get("spawn"));
+                playerData.setJob((String) row.get("job"));
+                player.setMaxHealth(32 + (((double) row.get("level") / 5) * 2));
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
-                playerData.setAtmBlown(result.getInt("atmBlown"));
-                playerData.setSubGroupGrade(result.getInt("subGroup_grade"));
-                playerData.setSubGroupId(result.getInt("subGroup"));
-                playerData.setKarma(result.getInt("karma"));
-                playerData.setVotes(result.getInt("votes"));
-                playerData.setChurch(result.getBoolean("isChurch"));
-                playerData.setBaptized(result.getBoolean("isBaptized"));
-                playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
-                playerData.setEventPoints(result.getInt("eventPoints"));
-                playerData.setCrypto(result.getFloat("crypto"));
-                playerData.setRewardTime(result.getInt("rewardTime"));
-                playerData.setRewardId(result.getInt("rewardId"));
-                if (!result.getBoolean("tpNewmap")) {
+                playerData.setAtmBlown((Integer) row.get("atmBlown"));
+                playerData.setSubGroupGrade((Integer) row.get("subGroup_grade"));
+                playerData.setSubGroupId((Integer) row.get("subGroup"));
+                playerData.setKarma((Integer) row.get("karma"));
+                playerData.setVotes((Integer) row.get("votes"));
+                playerData.setChurch((Boolean) row.get("isChurch"));
+                playerData.setBaptized((Boolean) row.get("isBaptized"));
+                playerData.setFactionCooldown(Utils.toLocalDateTime((Date) row.get("factionCooldown")));
+                playerData.setEventPoints((Integer) row.get("eventPoints"));
+                playerData.setCrypto((Float) row.get("crypto"));
+                playerData.setRewardTime((Integer) row.get("rewardTime"));
+                playerData.setRewardId((Integer) row.get("rewardId"));
+                if (!(Boolean) row.get("tpNewmap")) {
                     Main.getInstance().locationManager.useLocation(player, "stadthalle");
                     player.sendMessage("§8 ✈ §aWillkommen auf der neuen Map!");
-                    Connection connection = Main.getInstance().mySQL.getConnection();
-                    PreparedStatement ps = connection.prepareStatement("UPDATE players SET tpNewmap = true WHERE uuid = ?");
-                    ps.setString(1, uuid.toString());
-                    ps.execute();
-                    ps.close();
-                    connection.close();
+                    try {
+                        Connection connection = Main.getInstance().mySQL.getConnection();
+                        PreparedStatement ps = connection.prepareStatement("UPDATE players SET tpNewmap = true WHERE uuid = ?");
+                        ps.setString(1, uuid.toString());
+                        ps.execute();
+                        ps.close();
+                        connection.close();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 }
 
-                if (result.getString("faction") != null) {
-                    playerData.setFaction(result.getString("faction"));
-                    playerData.setFactionGrade(result.getInt("faction_grade"));
+                if ((String) row.get("faction") != null) {
+                    playerData.setFaction((String) row.get("faction"));
+                    playerData.setFactionGrade((Integer) row.get("faction_grade"));
                 }
 
-                if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
+                if ((Integer) row.get("subTeam") != -1 && playerData.getFaction() != null) {
                     FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
                     for (SubTeam subTeam : Main.getInstance().factionManager.getSubTeams(factionData.getId())) {
-                        if (!(subTeam.getId() == result.getInt("subTeam"))) continue;
+                        if (!(subTeam.getId() == (Integer) row.get("subTeam"))) continue;
                         playerData.setSubTeam(subTeam);
                     }
                 }
 
-                if (!result.getBoolean("jugendschutz")) {
+                if (!(Boolean) row.get("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");
                     Main.waitSeconds(1, () -> {
                         InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
@@ -294,12 +294,12 @@ public class PlayerManager implements Listener, ServerTiming {
                         }
                     });
                 }
-                int tutorial = result.getInt("tutorial");
-                playerData.setHours(result.getInt("playtime_hours"));
-                playerData.setMinutes(result.getInt("playtime_minutes"));
+                int tutorial = (Integer) row.get("tutorial");
+                playerData.setHours((Integer) row.get("playtime_hours"));
+                playerData.setMinutes((Integer) row.get("playtime_minutes"));
                 playerData.setAFK(false);
 
-                JSONObject object = new JSONObject(result.getString("relationShip"));
+                JSONObject object = new JSONObject((String) row.get("relationShip"));
                 HashMap<String, String> map = new HashMap<>();
                 for (String key : object.keySet()) {
                     String value = (String) object.get(key);
@@ -307,27 +307,27 @@ public class PlayerManager implements Listener, ServerTiming {
                 }
                 playerData.setRelationShip(map);
 
-                playerData.setWarns(result.getInt("warns"));
-                playerData.setBusiness(result.getInt("business"));
-                playerData.setBusiness_grade(result.getInt("business_grade"));
-                playerData.setBloodType(result.getString("bloodtype"));
-                playerData.setForumID(result.getInt("forumID"));
-                playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
+                playerData.setWarns((Integer) row.get("warns"));
+                playerData.setBusiness((Integer) row.get("business"));
+                playerData.setBusiness_grade((Integer) row.get("business_grade"));
+                playerData.setBloodType((String) row.get("bloodtype"));
+                playerData.setForumID((Integer) row.get("forumID"));
+                playerData.setHasAnwalt((Boolean) row.get("hasAnwalt"));
 
-                playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
+                playerData.setReceivedBonus((Boolean) row.get("bonusReceived"));
 
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
-                playerData.setCoins(result.getInt("coins"));
+                playerData.setCoins((Integer) row.get("coins"));
                 playerData.setCompany(null);
-                if (result.getInt("company") != 0) {
-                    Company company = Main.getInstance().companyManager.getCompanyById(result.getInt("company"));
+                if ((Integer) row.get("company") != 0) {
+                    Company company = Main.getInstance().companyManager.getCompanyById((Integer) row.get("company"));
                     if (company != null) {
                         playerData.setCompany(company);
                         if (company.getRoles() != null) {
                             for (CompanyRole role : company.getRoles()) {
                                 if (role == null) continue;
-                                if (role.getId() == result.getInt("companyRole")) {
+                                if (role.getId() == (Integer) row.get("companyRole")) {
                                     playerData.setCompanyRole(role);
                                 }
                             }
@@ -339,22 +339,27 @@ public class PlayerManager implements Listener, ServerTiming {
                     playerData.addWorkstation(workstation);
                 }
 
-                player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
-                player.setLevel(result.getInt("level"));
+                player_rent.put(player.getUniqueId().toString(), (Integer) row.get("rent"));
+                player.setLevel((Integer) row.get("level"));
 
-                playerData.addonXP.setFishingXP(result.getInt("fishingXP"));
-                playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
-                playerData.addonXP.setLumberjackLevel(result.getInt("lumberjackLevel"));
-                playerData.addonXP.setLumberjackXP(result.getInt("lumberjackXP"));
-                playerData.addonXP.setPopularityLevel(result.getInt("popularityLevel"));
-                playerData.addonXP.setPopularityXP(result.getInt("popularityXP"));
-                playerData.addonXP.setMinerLevel(result.getInt("miningLevel"));
-                playerData.addonXP.setMinerXP(result.getInt("minerXP"));
-
-                ResultSet jail = statement.executeQuery("SELECT `wps` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
-                if (jail.next()) {
-                    playerData.setHafteinheiten(jail.getInt(1));
-                    playerData.setJailed(true);
+                playerData.addonXP.setFishingXP((Integer) row.get("fishingXP"));
+                playerData.addonXP.setFishingLevel((Integer) row.get("fishingLevel"));
+                playerData.addonXP.setLumberjackLevel((Integer) row.get("lumberjackLevel"));
+                playerData.addonXP.setLumberjackXP((Integer) row.get("lumberjackXP"));
+                playerData.addonXP.setPopularityLevel((Integer) row.get("popularityLevel"));
+                playerData.addonXP.setPopularityXP((Integer) row.get("popularityXP"));
+                playerData.addonXP.setMinerLevel((Integer) row.get("miningLevel"));
+                playerData.addonXP.setMinerXP((Integer) row.get("minerXP"));
+                Statement statement = null;
+                try {
+                    statement = mySQL.getStatement();
+                    ResultSet jail = statement.executeQuery("SELECT `wps` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+                    if (jail.next()) {
+                        playerData.setHafteinheiten(jail.getInt(1));
+                        playerData.setJailed(true);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
                 playerData.setIntVariable("afk", 0);
 
@@ -374,7 +379,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     if (date.isBefore(LocalDateTime.now())) {
                         player.sendMessage(Main.prefix + "Dein " + playerData.getRang() + " ist ausgelaufen.");
-                        statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + player.getUniqueId() + "'");
+                        mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId().toString());
                         if (playerData.getBusiness() != null) {
                             BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
                             if (business != null) {
@@ -417,9 +422,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     }
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     public void savePlayer(Player player) throws SQLException {

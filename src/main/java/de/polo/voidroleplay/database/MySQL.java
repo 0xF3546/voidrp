@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class MySQL {
@@ -183,6 +180,43 @@ public class MySQL {
             return null;
         });
     }
+
+    public CompletableFuture<List<Map<String, Object>>> executeQueryAsync(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                System.out.println("Executing query: " + query + " with args: " + Arrays.toString(args));
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    List<Map<String, Object>> results = new ArrayList<>();
+                    ResultSetMetaData metaData = resultSet.getMetaData();
+                    int columnCount = metaData.getColumnCount();
+
+                    while (resultSet.next()) {
+                        Map<String, Object> row = new HashMap<>();
+                        for (int i = 1; i <= columnCount; i++) {
+                            row.put(metaData.getColumnLabel(i), resultSet.getObject(i));
+                        }
+                        results.add(row);
+                    }
+
+                    logger.info("Query executed successfully. Results: {}", results.size());
+                    return results;
+                }
+
+            } catch (SQLException e) {
+                logger.error("Error executing query: {}", query, e);
+                e.printStackTrace();
+            }
+            return null;
+        });
+    }
+
 
     public CompletableFuture<Integer> insertAsync(String query, Object... args) {
         return CompletableFuture.supplyAsync(() -> {

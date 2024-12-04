@@ -108,13 +108,7 @@ public class ShopData {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE shops SET company = ? WHERE id = ?");
-        statement.setInt(1, getCompany().getId());
-        statement.setInt(2, getId());
-        statement.execute();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE shops SET company = ? WHERE id = ?", getCompany().getId(), getId());
     }
 
     public int getBank() {
