@@ -1,5 +1,7 @@
 package de.polo.voidroleplay.database;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -20,6 +22,10 @@ public class MySQL {
     static int port = 3306;
     private static boolean error;
     public static Connection connection;
+
+    private HikariDataSource dataSource;
+
+
     //6~nPp?hL
     public boolean loadDBData() {
         File file = new File("plugins//roleplay//database.yml");
@@ -41,15 +47,27 @@ public class MySQL {
         System.out.println("Database loaded");
         return true;
     }
+
+    public void setupPool() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(url);
+        config.setUsername(user);
+        config.setPassword(password);
+        config.setMaximumPoolSize(10);
+        config.setIdleTimeout(30000);
+
+        dataSource = new HikariDataSource(config);
+    }
+
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+        return dataSource.getConnection();
     }
 
     public Statement getStatement() throws SQLException {
         if(connection != null) {
             return (Statement) connection;
         }
-        Connection connection = DriverManager.getConnection(url, user, password);
+        Connection connection = dataSource.getConnection();
 
         return connection.createStatement();
     }
