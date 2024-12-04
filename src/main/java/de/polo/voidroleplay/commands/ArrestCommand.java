@@ -18,12 +18,14 @@ public class ArrestCommand implements CommandExecutor {
     private PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public ArrestCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.utils = utils;
         Main.registerCommand("arrest", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -33,42 +35,42 @@ public class ArrestCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Du bist nicht im Dienst.");
             }
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-                if (args.length > 0) {
-                    Player targetplayer = Bukkit.getPlayer(args[0]);
-                    if (targetplayer != null) {
-                        PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
-                        if (targetPlayerData.isCuffed()) {
-                            if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
-                                try {
-                                    if (utils.staatUtil.arrestPlayer(targetplayer, player)) {
-                                        if (targetPlayerData.isAduty()) {
-                                            player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
-                                            return false;
-                                        }
-                                        player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
-                                        playerManager.addExp(player, Main.random(15, 44));
-                                        playerManager.setPlayerMove(targetplayer, true);
-                                        targetPlayerData.setCuffed(false);
-                                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
-                                        Main.getInstance().seasonpass.didQuest(targetplayer, 8);
-                                    } else {
-                                        player.sendMessage(Main.error + targetplayer.getName() + " hat keine offene Akte mit Hafteinheiten.");
+            if (args.length > 0) {
+                Player targetplayer = Bukkit.getPlayer(args[0]);
+                if (targetplayer != null) {
+                    PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
+                    if (targetPlayerData.isCuffed()) {
+                        if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
+                            try {
+                                if (utils.staatUtil.arrestPlayer(targetplayer, player)) {
+                                    if (targetPlayerData.isAduty()) {
+                                        player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
+                                        return false;
                                     }
-                                } catch (SQLException e) {
-                                    throw new RuntimeException(e);
+                                    player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
+                                    playerManager.addExp(player, Main.random(15, 44));
+                                    playerManager.setPlayerMove(targetplayer, true);
+                                    targetPlayerData.setCuffed(false);
+                                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
+                                    Main.getInstance().seasonpass.didQuest(targetplayer, 8);
+                                } else {
+                                    player.sendMessage(Main.error + targetplayer.getName() + " wird nicht gesucht.");
                                 }
-                            } else {
-                                player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
                             }
                         } else {
-                            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in Handschellen.");
+                            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
                         }
                     } else {
-                        player.sendMessage(Main.error + "§c" + args[0] + " ist nicht online.");
+                        player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in Handschellen.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Syntax-Fehler: /arrest [Spieler]");
+                    player.sendMessage(Main.error + "§c" + args[0] + " ist nicht online.");
                 }
+            } else {
+                player.sendMessage(Main.error + "Syntax-Fehler: /arrest [Spieler]");
+            }
         } else {
             player.sendMessage(Main.error_nopermission);
         }
