@@ -46,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class PlayerManager implements Listener, ServerTiming {
@@ -75,7 +76,7 @@ public class PlayerManager implements Listener, ServerTiming {
     private PlaytimeReward getRandomPlaytimeReward(PlayerData playerData) {
         List<PlaytimeReward> randomRewards = playtimeRewards;
         if (Main.random(1, 3) == 3 && playerData.getPermlevel() >= 20) {
-           randomRewards = randomRewards.stream().filter(PlaytimeReward::isPremiumOnly).collect(Collectors.toList());
+            randomRewards = randomRewards.stream().filter(PlaytimeReward::isPremiumOnly).collect(Collectors.toList());
         }
         return randomRewards.get(Main.random(0, randomRewards.size() - 1));
     }
@@ -129,12 +130,18 @@ public class PlayerManager implements Listener, ServerTiming {
         }
     }
 
-    public void loadPlayer(Player player) {
-        UUID uuid = player.getUniqueId();
-        String query = "SELECT players.*, player_addonxp.* FROM players LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid WHERE players.uuid = ?";
-        mySQL.executeQueryAsync(query, uuid.toString()).thenAccept(result -> {
-            if (result != null && !result.isEmpty()) {
+    public CompletableFuture<PlayerData> loadPlayer(Player player) {
+        return CompletableFuture.supplyAsync(() -> {
+            UUID uuid = player.getUniqueId();
+            String query = "SELECT players.*, player_addonxp.* FROM players LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid WHERE players.uuid = ?";
+            return mySQL.executeQueryAsync(query, uuid.toString()).thenApply(result -> {
+                if (result == null || result.isEmpty()) {
+                    System.err.println("Spieler-Datenbankabfrage lieferte keine Ergebnisse für UUID: " + uuid);
+                    return null; // Spieler wurde nicht gefunden
+                }
+                System.out.println(result);
                 Map<String, Object> row = result.get(0);
+                System.out.println(row);
                 PlayerData playerData = new PlayerData(player);
                 if ((String) row.get("player_name") != null) {
                     if (!((String) row.get("player_name")).equalsIgnoreCase(player.getName())) {
@@ -174,14 +181,14 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setLevel((Integer) row.get("level"));
                 playerData.setExp((Integer) row.get("exp"));
                 playerData.setNeeded_exp((Integer) row.get("needed_exp"));
-                playerData.setDead((Boolean) row.get("isDead"));
-                if ((Boolean) row.get("isDead")) {
+                playerData.setDead((Integer) row.get("isDead") == 1);
+                if (playerData.isDead()) {
                     playerData.setDeathTime((Integer) row.get("deathTime"));
-                    playerData.setHitmanDead((Boolean) row.get("isHitmanDead"));
-                    playerData.setStabilized((Boolean) row.get("isStabilized"));
+                    playerData.setHitmanDead((Integer) row.get("isHitmanDead") == 1);
+                    playerData.setStabilized((Integer) row.get("isStabilized") == 1);
                 }
                 playerData.setNumber((Integer) row.get("number"));
-                playerData.setDuty((Boolean) row.get("isDuty"));
+                playerData.setDuty((Integer) row.get("isDuty") == 1);
                 if ((String) row.get("gender") != null) {
                     playerData.setGender(Gender.valueOf((String) row.get("gender")));
                 }
@@ -189,28 +196,26 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setId((Integer) row.get("id"));
                 playerData.setHouseSlot((Integer) row.get("houseSlot"));
                 playerData.setCurrentHours((Integer) row.get("current_hours"));
-                if ((Date) row.get("rankDuration") != null) {
+                if (row.get("rankDuration") != null) {
                     Date utilDate = new Date(((Date) row.get("rankDuration")).getTime());
                     LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     playerData.setRankDuration(localDateTime);
                 }
-                if ((Date) row.get("dailyBonusRedeemed") != null) {
-                    Date utilDate = new Date(((Date) row.get("dailyBonusRedeemed")).getTime());
-                    playerData.setDailyBonusRedeemed(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                if (row.get("dailyBonusRedeemed") != null) {
+                    playerData.setDailyBonusRedeemed((LocalDateTime) row.get("dailyBonusRedeemed"));
                 }
-                if ((Date) row.get("lastPayDay") != null) {
-                    Date utilDate = new Date(((Date) row.get("lastPayDay")).getTime());
-                    playerData.setLastPayDay(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                if (row.get("lastPayDay") != null) {
+                    playerData.setLastPayDay((LocalDateTime) row.get("lastPayDay"));
                 }
                 if (row.get("boostDuration") != null)
-                    playerData.setBoostDuration(((Timestamp) row.get("boostDuration")).toLocalDateTime());
+                    playerData.setBoostDuration(((LocalDateTime) row.get("boostDuration")));
                 if (row.get("lastContract") != null)
-                    playerData.setLastContract(((Timestamp) row.get("lastContract")).toLocalDateTime());
+                    playerData.setLastContract(((LocalDateTime) row.get("lastContract")));
                 playerData.setSecondaryTeam((String) row.get("secondaryTeam"));
                 playerData.setTeamSpeakUID((String) row.get("teamSpeakUID"));
                 playerData.setSpawn((String) row.get("spawn"));
                 playerData.setJob((String) row.get("job"));
-                player.setMaxHealth(32 + (((double) row.get("level") / 5) * 2));
+                player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
                 player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
                 playerData.setAtmBlown((Integer) row.get("atmBlown"));
@@ -218,14 +223,14 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setSubGroupId((Integer) row.get("subGroup"));
                 playerData.setKarma((Integer) row.get("karma"));
                 playerData.setVotes((Integer) row.get("votes"));
-                playerData.setChurch((Boolean) row.get("isChurch"));
-                playerData.setBaptized((Boolean) row.get("isBaptized"));
-                playerData.setFactionCooldown(Utils.toLocalDateTime((Date) row.get("factionCooldown")));
+                playerData.setChurch((Integer) row.get("isChurch") == 1);
+                playerData.setBaptized((Integer) row.get("isBaptized") == 1);
+                playerData.setFactionCooldown((LocalDateTime) row.get("factionCooldown"));
                 playerData.setEventPoints((Integer) row.get("eventPoints"));
                 playerData.setCrypto((Float) row.get("crypto"));
                 playerData.setRewardTime((Integer) row.get("rewardTime"));
                 playerData.setRewardId((Integer) row.get("rewardId"));
-                if (!(Boolean) row.get("tpNewmap")) {
+                if (!((Integer) row.get("tpNewmap") == 1)) {
                     Main.getInstance().locationManager.useLocation(player, "stadthalle");
                     player.sendMessage("§8 ✈ §aWillkommen auf der neuen Map!");
                     try {
@@ -254,7 +259,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     }
                 }
 
-                if (!(Boolean) row.get("jugendschutz")) {
+                if (!((Integer) row.get("jugendschutz") == 1)) {
                     playerData.setVariable("jugendschutz", "muss");
                     Main.waitSeconds(1, () -> {
                         InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
@@ -312,9 +317,9 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.setBusiness_grade((Integer) row.get("business_grade"));
                 playerData.setBloodType((String) row.get("bloodtype"));
                 playerData.setForumID((Integer) row.get("forumID"));
-                playerData.setHasAnwalt((Boolean) row.get("hasAnwalt"));
+                playerData.setHasAnwalt((Integer) row.get("hasAnwalt") == 1);
 
-                playerData.setReceivedBonus((Boolean) row.get("bonusReceived"));
+                playerData.setReceivedBonus((Integer) row.get("bonusReceived") == 1);
 
                 playerData.setCanInteract(true);
                 playerData.setFlightmode(false);
@@ -421,7 +426,8 @@ public class PlayerManager implements Listener, ServerTiming {
                         }
                     }
                 }
-            }
+                return playerData;
+            }).join();
         });
     }
 
@@ -470,7 +476,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 playerData.addBankMoney((int) playtimeReward.getAmount(), "Spielzeitbelhnung");
                 break;
             case CRYPTO:
-                playerData.addCrypto(playtimeReward.getAmount(), "Spielzeitbelohnung" , false);
+                playerData.addCrypto(playtimeReward.getAmount(), "Spielzeitbelohnung", false);
                 break;
         }
     }
@@ -854,7 +860,7 @@ public class PlayerManager implements Listener, ServerTiming {
     public void addExp(Player player, Integer exp) {
         String characters = "a0b1c2d3e4569";
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        exp = exp + ( exp * (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() / 100));
+        exp = exp + (exp * (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() / 100));
         if (playerData.getBoostDuration() != null) {
             if (Utils.getTime().isAfter(playerData.getBoostDuration())) {
                 clearExpBoost(player);

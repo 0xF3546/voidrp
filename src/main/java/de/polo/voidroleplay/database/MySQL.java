@@ -50,7 +50,7 @@ public class MySQL {
         config.setJdbcUrl(url);
         config.setUsername(user);
         config.setPassword(password);
-        config.setMaximumPoolSize(10);
+        config.setMaximumPoolSize(10000);
         config.setIdleTimeout(30000);
 
         dataSource = new HikariDataSource(config);
