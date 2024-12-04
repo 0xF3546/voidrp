@@ -39,7 +39,6 @@ public class Weapons implements Listener {
     private final Utils utils;
     private final PlayerManager playerManager;
     public HashMap<UUID, LocalDateTime> weaponUsages = new HashMap<>();
-    private HashMap<Player, Weapon> weaponCooldowns = new HashMap<>();
     HashMap<Arrow, LocalDateTime> arrows = new HashMap<>();
 
     public Weapons(Utils utils, PlayerManager playerManager) {
@@ -109,57 +108,6 @@ public class Weapons implements Listener {
     }
 
     @SneakyThrows
-    public ItemStack giveWeaponToPlayer(Player player, Material material, WeaponType type) {
-        WeaponData weaponData = weaponDataMap.get(material);
-        ItemStack item = new ItemStack(weaponData.getMaterial());
-        ItemMeta meta = item.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName(weaponData.getName());
-        Weapon weapon = new Weapon();
-        weapon.setOwner(player.getUniqueId());
-        weapon.setWeaponData(weaponData);
-        weapon.setWeaponType(type);
-        weapon.setAmmo(0);
-        weapon.setCurrentAmmo(0);
-        weapon.setReloading(false);
-        addWeapon(weapon);
-
-        NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
-        meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, weapon.getId());
-
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weaponData.getMaxAmmo()));
-        item.setItemMeta(meta);
-        player.getInventory().addItem(item);
-        return item;
-    }
-
-    public void giveWeaponAmmoToPlayer(Player player, ItemStack weapon, Integer amount) {
-        ItemMeta meta = weapon.getItemMeta();
-        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "id");
-        Integer id = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
-        Weapon w = weaponList.get(id);
-
-        int newAmmo = w.getAmmo() + amount;
-        w.setAmmo(newAmmo);
-
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + w.getCurrentAmmo() + "§8/§6" + newAmmo));
-        weapon.setItemMeta(meta);
-    }
-
-
-    @SneakyThrows
-    public Integer addWeapon(Weapon weapon) {
-        Main.getInstance().getMySQL()
-                .queryThreadedWithGeneratedKeys("INSERT INTO player_weapons (uuid, weapon, weaponType)",
-                        weapon.getOwner().toString(), weapon.getPlayerWeapon().getWeapon().name(), weapon.getWeaponType().name())
-                .thenApply(key -> {
-                    key.ifPresent(weapon::setId);
-                    return null;
-                });
-        return null;
-    }
-
-    @SneakyThrows
     private void removeWeapon(Weapon weapon) {
         weaponList.remove(weapon.getId());
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -183,8 +131,8 @@ public class Weapons implements Listener {
         return weapon;
     }
 
-    public WeaponData getWeaponData(Material material) {
-        for (WeaponData weaponData : weaponDataMap.values()) {
+    public de.polo.voidroleplay.utils.enums.Weapon getWeaponData(Material material) {
+        for (de.polo.voidroleplay.utils.enums.Weapon weaponData : de.polo.voidroleplay.utils.enums.Weapon.values()) {
             if (weaponData.getMaterial() == null) continue;
             if (weaponData.getMaterial().equals(material)) return weaponData;
         }
@@ -422,19 +370,11 @@ public class Weapons implements Listener {
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getWeaponData().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
         stack.setItemMeta(meta);
     }
-    public void giveWeapon(Player player, PlayerWeapon playerWeapon) {
+    private void giveWeapon(Player player, PlayerWeapon playerWeapon, Weapon weapon) {
         ItemStack item = new ItemStack(playerWeapon.getWeapon().getMaterial());
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setDisplayName(playerWeapon.getWeapon().getName());
-        Weapon weapon = new Weapon();
-        weapon.setOwner(player.getUniqueId());
-        weapon.setPlayerWeapon(playerWeapon);
-        weapon.setWeaponType(playerWeapon.getWeaponType());
-        weapon.setAmmo(0);
-        weapon.setCurrentAmmo(0);
-        weapon.setReloading(false);
-        addWeapon(weapon);
 
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, weapon.getId());
@@ -444,16 +384,97 @@ public class Weapons implements Listener {
         player.getInventory().addItem(item);
     }
 
-    public void giveWeaponToCabinet(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, int ammo, int wear, WeaponType weaponType) {
+    public void giveWeapon(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, WeaponType weaponType) {
+        giveWeapon(player, weapon, weaponType, 0, 1);
+    }
+
+    public void giveWeapon(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, WeaponType weaponType, int ammo) {
+        giveWeapon(player, weapon, weaponType, ammo, 1);
+    }
+
+    public void giveWeapon(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, WeaponType weaponType, int ammo, int wear) {
+        Weapon w = new Weapon();
+        w.setOwner(player.getUniqueId());
+        w.setAmmo(ammo);
+        w.setCurrentAmmo(0);
+        w.setWeaponType(weaponType);
+        w.setReloading(false);
+
+        if (weaponType == WeaponType.NORMAL) {
+            PlayerWeapon playerWeapon = new PlayerWeapon(
+                    weapon,
+                    wear,
+                    ammo,
+                    weaponType
+            );
+            w.setPlayerWeapon(playerWeapon);
+        }
+
+        Main.getInstance().getMySQL()
+                .queryThreadedWithGeneratedKeys("INSERT INTO player_weapons (uuid, weapon, weaponType)",
+                        w.getOwner().toString(), weapon.name(), weaponType.name())
+                .thenApply(key -> {
+                    key.ifPresent(w::setId);
+                    giveWeapon(player, new PlayerWeapon(
+                            weapon,
+                            wear,
+                            ammo,
+                            weaponType
+                    ), w);
+                    return null;
+                });
+    }
+
+    public void giveAmmo(Player player, Weapon weapon, int ammo){
+        ItemStack item = null;
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack.getItemMeta().getDisplayName()
+                    .equals(weapon.getType().getName())
+                    && itemStack.getType()
+                    == weapon.getType().getMaterial()) {
+                item = itemStack;
+            }
+        }
+        if (item == null) return;
+        ItemMeta meta = item.getItemMeta();
+        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "id");
+        Integer id = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
+        Weapon w = weaponList.get(id);
+
+        int newAmmo = weapon.getAmmo() + ammo;
+        weapon.setAmmo(newAmmo);
+
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + w.getCurrentAmmo() + "§8/§6" + newAmmo));
+        item.setItemMeta(meta);
+    }
+
+    public void giveAmmoToCabinet(PlayerWeapon playerWeapon, int ammo) {
+        playerWeapon.setAmmo(playerWeapon.getAmmo() + ammo);
+        playerWeapon.save();
+    }
+
+    public void takeOutWeapon(Player player, PlayerWeapon playerWeapon) {
+        giveWeapon(player, playerWeapon.getWeapon(), WeaponType.NORMAL, 0);
+        playerWeapon.setWear(playerWeapon.getWear() - 1);
+        playerWeapon.save();
+    }
+
+    public void takeOutAmmo(Player player, PlayerWeapon playerWeapon, Weapon weapon, int ammo) {
+        giveAmmo(player, weapon, ammo);
+        playerWeapon.setAmmo(playerWeapon.getAmmo() - ammo);
+        playerWeapon.save();
+    }
+
+    public void giveWeaponToCabinet(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, int ammo, int wear) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        PlayerWeapon existingWeapon = playerData.getWeapons().stream().filter(x -> x.getWeaponType() == weaponType && x.getWeapon() == weapon).findFirst().orElse(null);
+        PlayerWeapon existingWeapon = playerData.getWeapons().stream().filter(x -> x.getWeaponType() == WeaponType.NORMAL && x.getWeapon() == weapon).findFirst().orElse(null);
         if (existingWeapon != null) {
             existingWeapon.setWear(existingWeapon.getWear() + wear);
             existingWeapon.setAmmo(existingWeapon.getAmmo() + ammo);
             existingWeapon.save();
             return;
         }
-        PlayerWeapon playerWeapon = new PlayerWeapon(weapon, wear, ammo, weaponType);
+        PlayerWeapon playerWeapon = new PlayerWeapon(weapon, wear, ammo, WeaponType.NORMAL);
         addWeaponToGunCabinet(player, playerWeapon);
     }
 

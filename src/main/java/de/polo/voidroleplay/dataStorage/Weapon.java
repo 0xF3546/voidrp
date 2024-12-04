@@ -15,6 +15,10 @@ public class Weapon {
 
     @Getter
     @Setter
+    private de.polo.voidroleplay.utils.enums.Weapon type;
+
+    @Getter
+    @Setter
     private PlayerWeapon playerWeapon;
     private boolean isReloading = false;
     private int ammo;

@@ -115,7 +115,7 @@ public class FFAUtils implements CommandExecutor, Listener {
             lobbyData.setPlayers(lobbyData.getPlayers() + 1);
             player.sendMessage("§8[§6FFA§8]§e Du betrittst: " + lobbyData.getDisplayname().replace("&", "§"));
             player.sendMessage("§8 ➥ §7Nutze §8/§effa leave §7um die Arena zu verlassen.");
-            Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.FFA);
+            Main.getInstance().weapons.giveWeapon(player, de.polo.voidroleplay.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.FFA);
             useSpawn(player, id);
         } else {
             player.sendMessage("§8[§6FFA§8]§c Diese Lobby ist voll!");

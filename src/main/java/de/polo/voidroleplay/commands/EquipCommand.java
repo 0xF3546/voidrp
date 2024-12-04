@@ -10,6 +10,7 @@ import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -131,43 +132,6 @@ public class EquipCommand implements CommandExecutor, Listener {
 
     private void openWeaponShop(Player player, PlayerData playerData, FactionData factionData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cWaffen", true, true);
-        int sturmgewehrPrice = (int) (factionData.equip.getSturmgewehr() * (100 - factionData.upgrades.getWeapon()) / 100);
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§cSturmgewehr", "§8 ➥ §a" + sturmgewehrPrice + "$")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (event.isLeftClick()) {
-                    int priceForFaction = (int) (ServerManager.getPayout("equip_sturmgewehr") * (100 - factionData.upgrades.getWeapon()) / 100);
-                    try {
-                        if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
-                            priceForFaction = (int) (priceForFaction * 0.75);
-                        }
-                    } catch (Exception ex) {
-
-                    }
-                    if (factionData.getBank() < priceForFaction) {
-                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um diese Waffe zu kaufen.");
-                        return;
-                    }
-                    if (playerData.getBank() < factionData.equip.getSturmgewehr()) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                        return;
-                    }
-                    factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
-                    factionData.addBankMoney(sturmgewehrPrice, "Waffenkauf " + player.getName());
-                    playerData.removeBankMoney(sturmgewehrPrice, "Waffenkauf");
-                    weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.NORMAL);
-                } else {
-                    if (playerData.getFactionGrade() < 5) {
-                        player.sendMessage(Main.error_nopermission);
-                        return;
-                    }
-                    playerData.setVariable("chatblock", "changeequipprice");
-                    playerData.setVariable("type", "sturmgewehr");
-                    player.sendMessage("§7Gib nun gewünschten Preis ein.");
-                    player.closeInventory();
-                }
-            }
-        });
         if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 4) {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.STONE_HOE, 1, 0, "§7Sniper", "§8 ➥ §a" + (ServerManager.getPayout("equip_sniper") + "$"))) {
                 @Override
@@ -189,9 +153,9 @@ public class EquipCommand implements CommandExecutor, Listener {
                         return;
                     }
                     factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
-                    factionData.addBankMoney(sturmgewehrPrice, "Waffenkauf " + player.getName());
-                    playerData.removeBankMoney(sturmgewehrPrice, "Waffenkauf");
-                    weapons.giveWeaponToPlayer(player, Material.STONE_HOE, WeaponType.NORMAL);
+                    factionData.addBankMoney(priceForFaction, "Waffenkauf " + player.getName());
+                    playerData.removeBankMoney(priceForFaction, "Waffenkauf");
+                    weapons.giveWeapon(player, Weapon.SNIPER, WeaponType.NORMAL, 0, 0);
                 }
             });
         }
@@ -199,48 +163,6 @@ public class EquipCommand implements CommandExecutor, Listener {
 
     private void openAmmoShop(Player player, PlayerData playerData, FactionData factionData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cMunition", true, true);
-        int sturmgewehrPrice = (int) (factionData.equip.getSturmgewehr_ammo() * (100 - factionData.upgrades.getWeapon()) / 100);
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§cSturmgewehr-Munition", "§8 ➥ §a" + sturmgewehrPrice + "$")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                int priceForFaction = (int) (ServerManager.getPayout("equip_sturmgewehr_ammo") * (100 - factionData.upgrades.getWeapon()) / 100);
-                try {
-                    if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
-                        priceForFaction = (int) (priceForFaction * 0.75);
-                    }
-                } catch (Exception ex) {
-
-                }
-                if (factionData.getBank() < priceForFaction) {
-                    player.sendMessage(Main.error + "Deine Fraktion ht nicht genug Geld um Munition zu kaufen.");
-                    return;
-                }
-                if (event.isLeftClick()) {
-                    if (playerData.getBank() < factionData.equip.getSturmgewehr_ammo()) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                        return;
-                    }
-                    WeaponData weaponData = weapons.getWeaponData(player.getEquipment().getItemInMainHand().getType());
-                    if (weaponData == null) {
-                        player.sendMessage(Main.error + "Halte die Waffe in der Hand.");
-                        return;
-                    }
-                    weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
-                    factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
-                    factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
-                    playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
-                } else {
-                    if (playerData.getFactionGrade() < 5) {
-                        player.sendMessage(Main.error_nopermission);
-                        return;
-                    }
-                    playerData.setVariable("chatblock", "changeequipprice");
-                    playerData.setVariable("type", "sturmgewehr_ammo");
-                    player.sendMessage("§7Gib nun gewünschten Preis ein.");
-                    player.closeInventory();
-                }
-            }
-        });
         if ((playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("ICA")) && playerData.getFactionGrade() >= 4) {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cSniper-Munition", "§8 ➥ §a" + ServerManager.getPayout("equip_sniper_ammo") + "$")) {
                 @Override
@@ -261,15 +183,16 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
-                    WeaponData weaponData = weapons.getWeaponData(player.getEquipment().getItemInMainHand().getType());
+                    Weapon weaponData = weapons.getWeaponData(player.getEquipment().getItemInMainHand().getType());
                     if (weaponData == null) {
                         player.sendMessage(Main.error + "Halte die Waffe in der Hand.");
                         return;
                     }
-                    weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
+                    de.polo.voidroleplay.dataStorage.Weapon weapon = weapons.getWeaponFromItemStack(player.getEquipment().getItemInMainHand());
+                    weapons.giveAmmo(player, weapon, weaponData.getMaxAmmo());
                     factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
-                    factionData.addBankMoney(sturmgewehrPrice, "Munitionskauf " + player.getName());
-                    playerData.removeBankMoney(sturmgewehrPrice, "Munitionskauf");
+                    factionData.addBankMoney(priceForFaction, "Munitionskauf " + player.getName());
+                    playerData.removeBankMoney(priceForFaction, "Munitionskauf");
                 }
             });
         }

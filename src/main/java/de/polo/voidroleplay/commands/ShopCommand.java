@@ -8,6 +8,8 @@ import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.enums.Weapon;
+import de.polo.voidroleplay.utils.playerUtils.Shop;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -266,7 +268,7 @@ public class ShopCommand implements CommandExecutor {
             try {
                 if (Objects.equals(type, "weapon")) {
                     String weapon = displayName.toString().replace("&", "").replace("6", "");
-                    Main.getInstance().weapons.giveWeaponToPlayer(player, item, WeaponType.NORMAL);
+                    Main.getInstance().weapons.giveWeaponToCabinet(player, Weapon.valueOf(info), 0, 250);
                     player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                     playerManager.removeMoney(player, price, "Kauf der Waffe: " + weapon);
@@ -277,13 +279,14 @@ public class ShopCommand implements CommandExecutor {
                         player.closeInventory();
                         return;
                     }
-                    for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
-                        if (weaponData.getType().equalsIgnoreCase(ammo)) {
+                    for (Weapon weaponData : Weapon.values()) {
+                        if (weaponData == Weapon.valueOf(ammo)) {
                             if (weaponData.getMaterial().equals(player.getEquipment().getItemInMainHand().getType())) {
-                                Main.getInstance().weapons.giveWeaponAmmoToPlayer(player, player.getEquipment().getItemInMainHand(), weaponData.getMaxAmmo());
+                                de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(player.getEquipment().getItemInMainHand());
+                                Main.getInstance().weapons.giveAmmo(player, weapon, weaponData.getMaxAmmo());
                                 player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                playerManager.removeMoney(player, price, "Kauf von Munition: " + weaponData.getType());
+                                playerManager.removeMoney(player, price, "Kauf von Munition: " + weaponData.name());
                             } else {
                                 player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
                                 player.closeInventory();

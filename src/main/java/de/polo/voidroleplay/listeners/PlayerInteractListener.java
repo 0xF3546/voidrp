@@ -618,13 +618,6 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 });
-            } else if (event.getItem().getItemMeta().getDisplayName().equals("§7Gepackte Waffe")) {
-                for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
-                    if (event.getItem().getItemMeta().getLore().get(0).toString().replace("§8 ➥ ", "").equalsIgnoreCase(weaponData.getName())) {
-                        player.getInventory().remove(event.getItem());
-                        Main.getInstance().weapons.giveWeaponToPlayer(player, weaponData.getMaterial(), WeaponType.NORMAL);
-                    }
-                }
             } else {
                 for (CaseType caseType : CaseType.values()) {
                     if (event.getItem().getItemMeta().getDisplayName().equals(caseType.getDisplayName())) {

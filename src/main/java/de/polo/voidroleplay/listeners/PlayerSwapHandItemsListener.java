@@ -79,58 +79,6 @@ public class PlayerSwapHandItemsListener implements Listener {
             });
             return;
         }
-        for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
-            if (player.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
-                InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » " + weaponData.getName());
-                inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(weaponData.getMaterial(), 1, 0, weaponData.getName(), "§8 ➥ §7Klicke um Waffe zu packen")) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        player.closeInventory();
-                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(player.getInventory().getItemInMainHand());
-                        int ammoCount = weapon.getAmmo();
-                        if (weapon.getCurrentAmmo() >= weaponData.getMaxAmmo()) {
-                            ammoCount += weaponData.getMaxAmmo();
-                        }
-                        ammoCount = ammoCount / weaponData.getMaxAmmo();
-                        Main.getInstance().weapons.removeWeapon(player, player.getInventory().getItemInMainHand());
-                        if (ammoCount >= 1) {
-                            player.getInventory().addItem(ItemManager.createItem(RoleplayItem.MAGAZIN.getMaterial(), ammoCount, 0, "§7Magazin", "§8 ➥ " + weaponData.getName()));
-                        }
-                        player.getInventory().addItem(ItemManager.createItem(weaponData.getMaterial(), 1, 0, "§7Gepackte Waffe", "§8 ➥ " + weaponData.getName()));
-                        player.sendMessage(Prefix.MAIN + "Du hast deine Waffe gepackt.");
-                    }
-                });
-                int count = ItemManager.getCustomItemCount(player, RoleplayItem.MAGAZIN);
-                inventoryManager.setItem(new CustomItem(5, ItemManager.createItem(Material.CLAY_BALL, 1, 0, "§7Magazin benutzen", "§8 ➥ §7Du hast " + count + " Magazine")) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        player.closeInventory();
-                        player.sendMessage(Prefix.MAIN + "Du hast " + count + " Magazine benutzt.");
-                        int remainingCount = ItemManager.getCustomItemCount(player, RoleplayItem.MAGAZIN);
-                        if (remainingCount == 0) return;
-
-                        ItemStack[] contents = player.getInventory().getContents();
-                        for (ItemStack itemStack : contents) {
-                            if (itemStack != null && itemStack.getType() == RoleplayItem.MAGAZIN.getMaterial() && itemStack.getItemMeta().getLore().get(0).replace("§8 ➥ ", "").equalsIgnoreCase(weaponData.getName())) {
-                                int stackAmount = itemStack.getAmount();
-                                if (stackAmount <= remainingCount) {
-                                    remainingCount -= stackAmount;
-                                    player.getInventory().removeItem(itemStack);
-                                } else {
-                                    itemStack.setAmount(stackAmount - remainingCount);
-                                    break;
-                                }
-                                if (remainingCount <= 0) {
-                                    break;
-                                }
-                            }
-                        }
-                        Main.getInstance().weapons.giveWeaponAmmoToPlayer(player, player.getInventory().getItemInMainHand(), count * weaponData.getMaxAmmo());
-                    }
-                });
-                return;
-            }
-        }
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getVariable("job") != null) {
             if (playerData.getVariable("job").toString().equalsIgnoreCase("corpse")) {
@@ -312,24 +260,6 @@ public class PlayerSwapHandItemsListener implements Listener {
         boolean canTakeout = true;
         for (UUID uuid : ServerManager.factionStorageWeaponsTookout) {
             if (player.getUniqueId().equals(uuid)) canTakeout = false;
-        }
-        if (canTakeout) {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§cTägliche Waffe nehmen")) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    player.closeInventory();
-                    player.sendMessage(Prefix.MAIN + "Du hast deine Tägliche Waffe entnommen");
-                    ItemStack weapon = Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.NORMAL);
-                    Main.getInstance().weapons.giveWeaponAmmoToPlayer(player, weapon, 100);
-                    ServerManager.factionStorageWeaponsTookout.add(player.getUniqueId());
-                }
-            });
-        } else {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§c§mTägliche Waffe nehmen", "§8 ➥ §cDu hast deine Waffe bereits abgeholt")) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                }
-            });
         }
         Gangwar gangwar = null;
         for (Gangwar gw : Main.getInstance().utils.gangwarUtils.getGangwars()) {

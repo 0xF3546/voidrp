@@ -270,3 +270,4 @@ commands:
   su:
     aliases: asu
   clear:
+  weaponinfo:

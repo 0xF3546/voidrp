@@ -506,6 +506,7 @@ public final class Main extends JavaPlugin {
         public UndertakerCommand undertakerCommand;
         public MinerJobCommand minerJobCommand;
         public ClearCommand clearCommand;
+        public WeaponInfoCommand weaponInfoCommand;
         public AsuCommand asuCommand;
         private void Init() {
             minerJobCommand = new MinerJobCommand(playerManager, gamePlay, locationManager, factionManager);
@@ -703,6 +704,7 @@ public final class Main extends JavaPlugin {
             anwaltCommand = new AnwaltCommand(playerManager, locationManager);
             clearCommand = new ClearCommand(playerManager, factionManager, utils);
             asuCommand = new AsuCommand(playerManager, utils);
+            weaponInfoCommand = new WeaponInfoCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

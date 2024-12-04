@@ -23,7 +23,6 @@ public class PlayerWeapon {
     private int ammo;
 
     @Getter
-    @Setter
     private final WeaponType weaponType;
 
     public PlayerWeapon(Weapon weapon, int wear, int ammo, WeaponType weaponType) {

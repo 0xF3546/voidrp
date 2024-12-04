@@ -152,7 +152,7 @@ public class MilitaryDrop implements Listener {
     }
 
     private void equipPlayer(Player player) {
-        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.MILITARY);
+        Main.getInstance().weapons.giveWeapon(player, de.polo.voidroleplay.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.MILITARY);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 15, 0, RoleplayItem.SNUFF.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 15, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));

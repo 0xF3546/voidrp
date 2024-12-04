@@ -1,13 +1,16 @@
 package de.polo.voidroleplay.game.base.ffa;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.WeaponData;
+import de.polo.voidroleplay.dataStorage.WeaponType;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.FFALobbyType;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStats;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -253,11 +256,11 @@ public class FFA implements CommandExecutor {
 
     public void equipPlayer(Player player) {
         for (ItemStack item : player.getInventory().getContents()) {
-            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+            for (Weapon weaponData : Weapon.values()) {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                             Main.getInstance().weapons.removeWeapon(player, item);
                         }
@@ -266,9 +269,9 @@ public class FFA implements CommandExecutor {
             }
         }
         player.getInventory().clear();
-        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.DIAMOND_HORSE_ARMOR, WeaponType.FFA);
-        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.IRON_HORSE_ARMOR, WeaponType.FFA);
-        Main.getInstance().weapons.giveWeaponToPlayer(player, Material.GOLDEN_SHOVEL, WeaponType.FFA);
+        Main.getInstance().weapons.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.FFA, 300);
+        // Main.getInstance().weapons.giveWeapon(player, Weapon.HUNTING_RIFLE.getMaterial(), WeaponType.FFA);
+        Main.getInstance().weapons.giveWeapon(player, Weapon.PISTOL, WeaponType.FFA, 300);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 5, 0, RoleplayItem.SNUFF.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 5, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
@@ -288,11 +291,11 @@ public class FFA implements CommandExecutor {
         locationManager.useLocation(player, "ffa");
         playerData.setVariable("ffa", null);
         for (ItemStack item : player.getInventory().getContents()) {
-            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+            for (Weapon weaponData : Weapon.values()) {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                             Main.getInstance().weapons.removeWeapon(player, item);
                         }

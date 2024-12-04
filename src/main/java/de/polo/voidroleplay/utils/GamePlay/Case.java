@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.WeaponType;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.enums.CaseType;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -91,7 +92,7 @@ public class Case {
                     Main.getInstance().playerManager.addCoins(player, 100);
                     break;
                 case DIAMOND_HORSE_ARMOR:
-                    Main.getInstance().weapons.giveWeaponToPlayer(player, winningItem.getType(), WeaponType.NORMAL);
+                    Main.getInstance().weapons.giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 25);
                     break;
                 case GOLD_INGOT:
                     if (playerData.getPermlevel() >= 40) {
