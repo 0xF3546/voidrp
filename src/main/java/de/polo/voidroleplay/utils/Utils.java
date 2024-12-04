@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.game.base.housing.Housing;
 import de.polo.voidroleplay.utils.playerUtils.*;
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -27,18 +28,30 @@ import java.util.Random;
 
 public class Utils {
     static int minutes = 1;
+    @Getter
     public DeathUtils deathUtil;
+    @Getter
     public StaatUtil staatUtil;
+    @Getter
     public VertragUtil vertragUtil;
+    @Getter
     public Housing housing;
     //public Shop shop;
+    @Getter
     public Tutorial tutorial;
+    @Getter
     public final Navigation navigation;
+    @Getter
     public final PayDayUtils payDayUtils;
+    @Getter
     public final BankingUtils bankingUtils;
+    @Getter
     public final PhoneUtils phoneUtils;
+    @Getter
     public final TabletUtils tabletUtils;
+    @Getter
     public final GangwarUtils gangwarUtils;
+    @Getter
     private final CompanyManager companyManager;
     private static HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
     private static HashMap<String, Marker> markers = new HashMap<>();

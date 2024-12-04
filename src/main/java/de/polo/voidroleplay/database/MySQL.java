@@ -5,11 +5,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class MySQL {
@@ -96,6 +94,71 @@ public class MySQL {
                 Statement statement = getStatement();
                 return statement.executeQuery(query);
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public CompletableFuture<Integer> queryThreaded(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                System.out.println("Executing query: " + query + " with args: " + Arrays.toString(args));
+                int affectedRows = statement.executeUpdate();
+                System.out.println("Query executed successfully: " + query);
+                return affectedRows;
+
+            } catch (SQLException e) {
+                System.err.println("Error executing query: " + query);
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public CompletableFuture<Optional<Integer>> queryThreadedWithGeneratedKeys(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                statement.executeUpdate();
+
+                try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        return Optional.of(resultSet.getInt(1));
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error executing query", e);
+            }
+            return Optional.empty();
+        });
+    }
+
+    public CompletableFuture<ResultSet> queryThreadedSelect(String query, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                System.out.println("Executing SELECT query: " + query + " with args: " + Arrays.toString(args));
+                return statement.executeQuery();
+
+            } catch (SQLException e) {
+                System.err.println("Error executing SELECT query: " + query);
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         });

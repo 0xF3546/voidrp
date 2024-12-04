@@ -2,6 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.dataStorage.Weapon;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;

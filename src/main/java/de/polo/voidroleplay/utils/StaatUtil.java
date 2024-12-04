@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.JailData;
 import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.WantedReason;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -15,14 +16,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class StaatUtil {
     public static final Map<String, JailData> jailDataMap = new HashMap<>();
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
+    private final List<WantedReason> wantedReasons = new ArrayList<>();
 
     public static EvidenceChamber Asservatemkammer;
 
@@ -48,9 +47,24 @@ public class StaatUtil {
             statement.close();
             connection.close();
             loadJail();
+            loadWantedReasons();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void loadWantedReasons() {
+        Main.getInstance().getMySQL().queryThreaded("SELECT * FROM wantedreasons")
+                .thenAccept(resultSet -> {
+                    try {
+                        while (resultSet.next()) {
+                            WantedReason reason = new WantedReason(resultSet.getInt("id"), resultSet.getString("reason"), resultSet.getInt("wanted"));
+                            wantedReasons.add(reason);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     private void loadJail() throws SQLException {
@@ -67,56 +81,30 @@ public class StaatUtil {
     }
 
     public boolean arrestPlayer(Player player, Player arrester) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `hafteinheiten`, `akte`, `geldstrafe` FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        int hafteinheiten = 0;
-        int geldstrafe = 0;
         StringBuilder reason = new StringBuilder();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         PlayerData arresterData = playerManager.getPlayerData(arrester.getUniqueId());
-        while (result.next()) {
-            hafteinheiten += result.getInt(1);
-            assert false;
-            reason.append(result.getString(2)).append(", ");
-            geldstrafe += result.getInt(3);
-        }
-        if (hafteinheiten > 0) {
-            if (hafteinheiten >= 25) {
-                hafteinheiten = 25;
-            }
+        WantedReason wantedReason = getWantedReason(playerData.getWanted().getWantedId());
+        if (playerData.getWanted() != null) {
             JailData jailData = new JailData();
             locationManager.useLocation(player, "gefaengnis");
-            player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + hafteinheiten + " Hafteinheiten§7 inhaftiert.");
-            player.sendMessage("§8[§cGefängnis§8] §7Tatvorwürfe§8:§7 " + reason.substring(0, reason.length() - 2) + ".");
+            player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + wantedReason.getWanted() + " Hafteinheiten§7 inhaftiert.");
             playerData.setJailed(true);
             factionManager.addFactionMoney(arresterData.getFaction(), Main.getInstance().serverManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
-            if (geldstrafe > 0) {
-                if (geldstrafe >= 5000) {
-                    geldstrafe = 5000;
-                }
-                if (playerData.getBank() >= geldstrafe) {
-                    playerManager.removeBankMoney(player, geldstrafe, "Gefängnis Geldstrafe");
-                    player.sendMessage("§8[§cGefängnis§8] §7Strafzahlung§8:§7 " + geldstrafe + "$.");
-                    factionManager.addFactionMoney(arresterData.getFaction(), geldstrafe, "Geldstrafe " + player.getName());
-                } else if (playerData.getBank() > 0) {
-                    int moreJailTime = geldstrafe / 500;
-                    hafteinheiten += moreJailTime;
-                    player.sendMessage("§8[§cGefängnis§8] §7Strafzahlung§8:§7 Da du die Strafzahlung in höhe von " + geldstrafe + "$ nicht begleichen konntest, bist du " + moreJailTime + " Hafteinheiten länger im Gefängnis.");
-                }
-            }
-            playerData.setHafteinheiten(hafteinheiten);
-            statement.execute("DELETE FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId().toString() + "'");
+            playerData.setHafteinheiten(wantedReason.getWanted());
+            Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                 if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
                     players.sendMessage("§8[§cGefängnis§8] §7" + factionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
                 }
             }
-            statement.execute("INSERT INTO `Jail` (`uuid`, `hafteinheiten`, `reason`, `hafteinheiten_verbleibend`) VALUES ('" + player.getUniqueId().toString() + "', " + hafteinheiten + ", '" + reason + "', " + hafteinheiten + ")");
+            Main.getInstance().getMySQL().queryThreaded("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), wantedReason.getWanted(), arrester.getUniqueId().toString());
             jailData.setUuid(player.getUniqueId().toString());
-            jailData.setHafteinheiten(hafteinheiten);
+            jailData.setHafteinheiten(wantedReason.getWanted());
             jailData.setReason(String.valueOf(reason));
             jailDataMap.put(player.getUniqueId().toString(), jailData);
+            playerData.clearWanted();
             return true;
         } else {
             return false;
@@ -293,5 +281,16 @@ public class StaatUtil {
         } else {
             player.sendMessage(Main.error + targetplayer.getName() + " hat einen Vertrag offen.");
         }
+    }
+
+    public WantedReason getWantedReason(int id) {
+        return wantedReasons.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
+    }
+    public Collection<WantedReason> getWantedReasons() {
+        return wantedReasons;
+    }
+
+    public WantedReason getWantedReason(String reason) {
+        return wantedReasons.stream().filter(x -> x.getReason().equalsIgnoreCase(reason)).findFirst().orElse(null);
     }
 }
