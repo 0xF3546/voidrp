@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.game.base;
 
 import de.polo.api.nametags.INameTagProvider;
+import de.polo.voidroleplay.utils.ColorTranslator;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -31,8 +32,8 @@ public class NameTagProviderImpl implements INameTagProvider {
             team = this.scoreboard.registerNewTeam(name);
             this.customTeams.put(name, team);
         }
-        team.prefix(Component.text(prefix));
-        team.suffix(Component.text(suffix));
+        team.prefix(ColorTranslator.translateColorCodes(prefix));
+        team.suffix(ColorTranslator.translateColorCodes(suffix));
         team.addEntry(player.getName());
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
         return true;
