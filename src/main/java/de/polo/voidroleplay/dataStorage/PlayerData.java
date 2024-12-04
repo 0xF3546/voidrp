@@ -316,7 +316,7 @@ public class PlayerData {
     public void removeCrypto(float amount, String reason, boolean silent) {
         setCrypto(crypto - amount);
 
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET crypto = ? WHERE uuid = ?", crypto, player.getUniqueId().toString())
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET crypto = ? WHERE uuid = ?", crypto, player.getUniqueId().toString());
 
         /*float reversedAmount = 0;
         reversedAmount *= amount;*/
@@ -637,55 +637,33 @@ public class PlayerData {
     @SneakyThrows
     public void addMoney(int amount, String reason) {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         setBargeld(getBargeld() + amount);
-        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), uuid.toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", uuid.toString(), amount, reason);
     }
 
     @SneakyThrows
     public void removeMoney(int amount, String reason) {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         setBargeld(getBargeld() - amount);
-        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), uuid.toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", uuid.toString(), amount, reason);
+
     }
 
     @SneakyThrows
     public void addBankMoney(int amount, String reason) {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         setBank(getBank() + amount);
-        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bank` = " + getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), uuid.toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", uuid.toString(), amount, reason);
+
     }
 
     @SneakyThrows
     public void removeBankMoney(int amount, String reason) {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         setBank(getBank() - amount);
-        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bank` = " + getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), uuid.toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", uuid.toString(), amount, reason);
     }
 
     @SneakyThrows

@@ -479,8 +479,6 @@ public class PlayerManager implements Listener, ServerTiming {
     public void add1MinutePlaytime(Player player) {
         UUID uuid = player.getUniqueId();
         PlayerData playerData = playerDataMap.get(uuid);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         if (playerData.isJailed()) {
             playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
             if (playerData.getHafteinheiten() <= 0) {
@@ -513,7 +511,7 @@ public class PlayerManager implements Listener, ServerTiming {
             }
             if (current_hours >= needed_hours) {
                 needed_hours = needed_hours + 4;
-                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = 0, `needed_hours` = " + needed_hours + ", `visum` = " + visum + " WHERE `uuid` = '" + uuid + "'");
+                mySQL.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = 0, needed_hours = ?, visum = ? WHERE uuid = ?", hours, needed_hours, visum, uuid);
                 player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                 playerData.setVisum(visum);
                 Main.getInstance().beginnerpass.didQuest(player, 4);
@@ -525,7 +523,7 @@ public class PlayerManager implements Listener, ServerTiming {
             } else {
                 current_hours = current_hours + 1;
                 playerData.setCurrentHours(current_hours);
-                statement.executeUpdate("UPDATE `players` SET `playtime_hours` = " + hours + ", `playtime_minutes` = 1, `current_hours` = " + current_hours + " WHERE `uuid` = '" + uuid + "'");
+                mySQL.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = ? WHERE uuid = ?", hours, current_hours, uuid);
             }
         } else {
             if (newMinutes == 56) {
@@ -543,57 +541,23 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void addMoney(Player player, int amount, String reason) throws SQLException {
-        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setBargeld(playerData.getBargeld() + amount);
-        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        playerData.addMoney(amount, reason);
     }
 
     public void removeMoney(Player player, int amount, String reason) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setBargeld(playerData.getBargeld() - amount);
-        ResultSet result = statement.executeQuery("SELECT `bargeld` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bargeld` = " + playerData.getBargeld() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `money_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        playerData.removeMoney(amount, reason);
     }
 
     public void addBankMoney(Player player, int amount, String reason) throws SQLException {
-        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setBank(playerData.getBank() + amount);
-        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (true, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        playerData.addBankMoney(amount, reason);
     }
 
     public void removeBankMoney(Player player, int amount, String reason) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setBank(playerData.getBank() - amount);
-        ResultSet result = statement.executeQuery("SELECT `bank` FROM `players` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        if (result.next()) {
-            int res = result.getInt(1);
-            statement.executeUpdate("UPDATE `players` SET `bank` = " + playerData.getBank() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
-            statement.execute("INSERT INTO `bank_logs` (`isPlus`, `uuid`, `amount`, `reason`) VALUES (false, '" + player.getUniqueId() + "', " + amount + ", '" + reason + "')");
-        }
+        playerData.removeBankMoney(amount, reason);
     }
 
 
