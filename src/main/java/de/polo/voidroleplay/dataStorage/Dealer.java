@@ -11,7 +11,11 @@ import org.bukkit.Location;
 import java.time.LocalDateTime;
 
 public class Dealer implements IDealer {
+    @Getter
+    @Setter
     private int id;
+    @Getter
+    @Setter
     private Location location;
 
     @Getter
@@ -52,20 +56,6 @@ public class Dealer implements IDealer {
     public boolean canSell() {
         return sold < 8;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public Location getLocation() {
-        return this.location;
-    }
-
     @Override
     public String getName() {
         return null;
@@ -81,7 +71,4 @@ public class Dealer implements IDealer {
 
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
 }

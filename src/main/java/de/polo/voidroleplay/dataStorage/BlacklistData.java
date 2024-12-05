@@ -1,75 +1,35 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class BlacklistData {
+    @Getter
+    @Setter
     private int id;
+    @Getter
+    @Setter
     private String uuid;
+    @Getter
+    @Setter
     private String faction;
+    @Getter
+    @Setter
     private String reason;
+    @Getter
+    @Setter
     private String date;
+    @Getter
+    @Setter
     private int kills;
+    @Getter
+    @Setter
     private int price;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getFaction() {
-        return faction;
-    }
-
-    public void setFaction(String faction) {
-        this.faction = faction;
-    }
-
-    public int getKills() {
-        return kills;
-    }
-
-    public void setKills(int kills) {
-        this.kills = kills;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
     @SneakyThrows
     public void save() {

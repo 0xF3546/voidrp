@@ -2,6 +2,8 @@ package de.polo.voidroleplay.dataStorage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
@@ -14,44 +16,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class Company {
+    @Getter
+    @Setter
     private int id;
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private UUID owner;
+    @Getter
+    @Setter
     private int bank;
 
     private List<CompanyRole> roles = new ArrayList<>();
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public UUID getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UUID owner) {
-        this.owner = owner;
-    }
-
-    public int getBank() {
-        return bank;
-    }
-
-    public void setBank(int bank) {
-        this.bank = bank;
-    }
 
     public void addRole(CompanyRole role) {
         roles.add(role);
