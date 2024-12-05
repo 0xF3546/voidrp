@@ -91,17 +91,10 @@ public class Plant {
 
     @SneakyThrows
     public void save() {
-        try (PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection()
-                .prepareStatement("UPDATE plantagen SET owner = ?, lastAttack = ?, storage = ? WHERE id = ?")) {
-
-            preparedStatement.setString(1, getOwner());
-            preparedStatement.setObject(2, getLastAttack());
-            preparedStatement.setInt(3, getStorage());
-            preparedStatement.setInt(4, getId());
-
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Main.getInstance().getMySQL().updateAsync("UPDATE plantagen SET owner = ?, lastAttack = ?, storage = ? WHERE id = ?",
+                getOwner(),
+                getLastAttack(),
+                getStorage(),
+                getId());
     }
 }

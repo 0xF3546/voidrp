@@ -8,14 +8,24 @@ import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.plants.Plant;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.Interfaces.PlayerJoin;
+import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
+import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class JoinListener implements Listener {
@@ -25,6 +35,7 @@ public class JoinListener implements Listener {
     private final LocationManager locationManager;
     private final ServerManager serverManager;
     private PlayerJoin playerJoin;
+
     public JoinListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, LocationManager locationManager, ServerManager serverManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -33,22 +44,26 @@ public class JoinListener implements Listener {
         this.serverManager = serverManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        event.setJoinMessage("");
+        event.joinMessage(Component.text(""));
         player.setGameMode(GameMode.SURVIVAL);
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
             PlayerData playerData = playerManager.getPlayerData(uuid);
+            if (playerData == null) {
+                player.kick(Component.text("§cWir mussten deine Verbindung trennen, da deine Spielerdaten nicht geladen werden konnten."));
+                return;
+            }
             adminManager.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getFaction() != null) {
                 FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
                 player.sendMessage("§8 ➥ §6[FMOTD] " + factionData.getMotd());
             }
-            RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
             Utils.Tablist.setTablist(player, null);
             playerData.setUuid(player.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
@@ -69,7 +84,7 @@ public class JoinListener implements Listener {
             serverManager.updateTablist(null);
         } else {
             player.sendMessage(" ");
-            player.sendMessage("§6VoidRoleplay §8»§7 Herzlich Wilkommen auf VoidRoleplay, " + player.getName() + ".");
+            player.sendMessage("§6VoidRoleplay §8»§7 Herzlich willkommen auf VoidRoleplay, " + player.getName() + ".");
             player.sendMessage(" ");
             locationManager.useLocation(player, "Spawn");
             adminManager.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);

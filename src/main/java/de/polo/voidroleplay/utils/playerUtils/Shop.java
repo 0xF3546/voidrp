@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.database.ResultMapper;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import org.bukkit.Material;
 
@@ -13,19 +14,19 @@ import java.util.List;
 public class Shop {
     public static List<ShopItem> shopItems = new ArrayList<>();
     public static void loadShopItems() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet locs = statement.executeQuery("SELECT * FROM shop_items");
-        List<Object[]> resultList = new ArrayList<>();
-        while (locs.next()) {
-            ShopItem item = new ShopItem();
-            item.setId(locs.getInt("id"));
-            item.setShop(locs.getInt("shop"));
-            item.setMaterial(Material.valueOf(locs.getString("material")));
-            item.setDisplayName(locs.getString("name"));
-            item.setPrice(locs.getInt("price"));
-            item.setType(locs.getString("type"));
-            item.setSecondType(locs.getString("type2"));
-            shopItems.add(item);
-        }
+        ResultMapper<ShopItem> itemMapper = resultSet -> new ShopItem(
+                resultSet.getInt("id"),
+                resultSet.getInt("shop"),
+                Material.valueOf(resultSet.getString("material")),
+                resultSet.getString("name"),
+                resultSet.getInt("price"),
+                resultSet.getString("type"),
+                resultSet.getString("type2")
+        );
+
+        Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM shop_items", itemMapper)
+                .thenAccept(items -> {
+                    shopItems = items;
+                });
     }
 }

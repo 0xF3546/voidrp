@@ -227,21 +227,24 @@ public class FactionData {
     @SneakyThrows
     public void addBankMoney(Integer amount, String reason) {
         setBank(getBank() + amount);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('einzahlung', '" + getName() + "', " + amount + ", '" + reason + "', true)");
-        statement.execute("UPDATE `factions` SET `bank` = " + getBank() + " WHERE `name` = '" + getName() + "'");
+        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO factio_bank_logs (type, faction, amount, reason, isPlus) VALUES ('einzahlung', ?, ?, ?, true)",
+                getName(),
+                amount,
+                reason);
     }
     @SneakyThrows
     public boolean removeFactionMoney(Integer amount, String reason)  {
-        boolean returnval = false;
         if (getBank() >= amount) {
             setBank(getBank() - amount);
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("INSERT INTO `faction_bank_logs` (`type`, `faction`, `amount`, `reason`, `isPlus`) VALUES ('auszahlung', '" + getName() + "', " + amount + ", '" + reason + "', false)");
-            statement.execute("UPDATE `factions` SET `bank` = " + getBank() + " WHERE `name` = '" + getName() + "'");
-            returnval = true;
+            Main.getInstance().getMySQL().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
+            Main.getInstance().getMySQL().insertAsync("INSERT INTO factio_bank_logs (type, faction, amount, reason, isPlus) VALUES ('auszahlung', ?, ?, ?, false)",
+                    getName(),
+                    amount,
+                    reason);
+            return true;
         }
-        return returnval;
+        return false;
     }
 
     public int getLaboratory() {
@@ -316,14 +319,8 @@ public class FactionData {
     public void removeBlacklistReason(BlacklistReason blacklistReason, boolean save) {
         blacklistReasons.remove(blacklistReason);
         if (save) {
-            Connection connection = Main.getInstance().mySQL.getConnection();
-            PreparedStatement statement = connection.prepareStatement(
-                    "DELETE FROM blacklistreasons WHERE id = ?");
-            statement.setInt(1, blacklistReason.getId());
-            statement.execute();
-
-            statement.close();
-            connection.close();
+            Main.getInstance().getMySQL().deleteAsync("DELETE FROM blacklistreasons WHERE id = ?",
+                    blacklistReason.getId());
         }
     }
 
