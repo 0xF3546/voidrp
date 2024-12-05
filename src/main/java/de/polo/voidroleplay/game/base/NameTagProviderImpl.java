@@ -57,4 +57,21 @@ public class NameTagProviderImpl implements INameTagProvider {
         this.customTeams.clear();
         return true;
     }
+
+    @Override
+    public boolean setNametagForGroup(final Player player, final Iterable<Player> viewers, final String name, final String prefix, final String suffix) {
+        Team team = this.customTeams.get(name);
+        if (team == null) {
+            team = this.scoreboard.registerNewTeam(name);
+            this.customTeams.put(name, team);
+        }
+        team.prefix(ColorTranslator.translateColorCodes(prefix));
+        team.suffix(ColorTranslator.translateColorCodes(suffix));
+        team.addEntry(player.getName());
+        team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        for (Player viewer : viewers) {
+            viewer.setScoreboard(this.scoreboard);
+        }
+        return true;
+    }
 }
