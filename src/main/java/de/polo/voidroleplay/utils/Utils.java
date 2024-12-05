@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Utils {
-    static int minutes = 1;
     @Getter
     public DeathUtils deathUtil;
     @Getter
@@ -335,5 +334,17 @@ public class Utils {
         if (marker == null) return;
         marker.deleteMarker();
         areaMarkers.remove(markerLabel);
+    }
+
+    public static Location getLocation(int x, int y, int z) {
+        return getLocation(x, y, z, Bukkit.getWorld("world"));
+    }
+
+    public static Location getLocation(int x, int y, int z, World world) {
+        return getLocation(x, y, z, world, 0, 0);
+    }
+
+    public static Location getLocation(int x, int y, int z, World world, float yaw, float pitch) {
+        return new Location(world, x, y, z, yaw, pitch);
     }
 }

@@ -11,27 +11,30 @@ import org.bukkit.entity.Player;
 
 public class CheckInvCommand implements CommandExecutor {
     private PlayerManager playerManager;
+
     public CheckInvCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("checkinv", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getPermlevel() >= 60) {
-            if (playerData.isAduty()) {
-                if (args.length >= 1) {
-                    Player targetplayer = Bukkit.getPlayer(args[0]);
-                    player.openInventory(targetplayer.getInventory());
-                } else {
-                    player.sendMessage(Main.admin_error + "Syntax-Fehler: /checkinv [Spieler]");
-                }
-            } else {
-                player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
-            }
-        } else {
+
+        if (playerData.getPermlevel() < 60) {
             player.sendMessage(Main.error_nopermission);
+            return false;
+        }
+        if (!playerData.isAduty()) {
+            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            return false;
+        }
+        if (args.length >= 1) {
+            Player targetplayer = Bukkit.getPlayer(args[0]);
+            player.openInventory(targetplayer.getInventory());
+        } else {
+            player.sendMessage(Main.admin_error + "Syntax-Fehler: /checkinv [Spieler]");
         }
         return false;
     }

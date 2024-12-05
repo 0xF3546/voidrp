@@ -412,6 +412,8 @@ public class PlayerManager implements Listener {
                         }
                     }
                 }
+
+                Main.getInstance().commands.checkoutWebshopCommand.loadShopBuys(player);
             }
         } catch (SQLException e) {
             e.printStackTrace();

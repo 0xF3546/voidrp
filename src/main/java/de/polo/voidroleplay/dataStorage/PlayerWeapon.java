@@ -33,6 +33,6 @@ public class PlayerWeapon {
     }
 
     public void save() {
-        Main.getInstance().getMySQL().queryThreaded("UPDATE player_gun_cabinet SET wear = ?, ammo = ? WHERE id = ?", wear, ammo, id);
+        Main.getInstance().getMySQL().updateAsync("UPDATE player_gun_cabinet SET wear = ?, ammo = ? WHERE id = ?", wear, ammo, id);
     }
 }

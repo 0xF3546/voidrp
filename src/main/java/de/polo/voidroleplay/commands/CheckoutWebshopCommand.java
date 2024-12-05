@@ -16,7 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Mayson1337
@@ -50,18 +52,37 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                     playerManager.addCoins(target, (int) amount);
                     return false;
                 }
-                Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE players SET coins = coins + ? WHERE REPLACE(uuid, '-', '') = ?");
-                statement.setInt(1, (int) amount);
-                statement.setString(2, uuid);
-                statement.executeUpdate();
-                statement.close();
-                connection.close();
+                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                        uuid,
+                        args[1],
+                        amount);
+                break;
+            case "premium":
+                if (target != null) {
+                    target.sendMessage("§8[§eShop§8]§a Du hast " + amount + " Tage Premium erhalten!");
+                    playerManager.redeemRank(target, "premium", (int) amount, "d");
+                    return false;
+                }
+                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                        uuid,
+                        args[1],
+                        amount);
                 break;
             case "spende":
                 OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(uuid.toString());
                 if (offlinePlayer == null) return false;
                 Bukkit.broadcastMessage("§c ❤ §6" + offlinePlayer.getName() + " hat " + amount + "€ gespendet!");
+                break;
+            case "gameboost":
+                if (target != null) {
+                    target.sendMessage("§8[§eShop§8]§a Du hast " + amount + "h Gameboost erhalten!");
+                    playerManager.addEXPBoost(target, (int) amount);
+                    return false;
+                }
+                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                        uuid,
+                        args[1],
+                        amount);
                 break;
         }
 
@@ -70,13 +91,41 @@ public class CheckoutWebshopCommand implements CommandExecutor {
 
     @SneakyThrows
     private void logBuy(String uuid, String product, float amount) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO webshop_logs (uuid, product, amount) VALUES (?, ?, ?)");
-        statement.setString(1, uuid);
-        statement.setString(2, product);
-        statement.setFloat(3, amount);
-        statement.execute();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO webshop_logs (uuid, product, amount) VALUES (?, ?, ?)",
+                uuid,
+                product,
+                amount);
+    }
+
+    public CompletableFuture<Void> loadShopBuys(Player player) {
+        return CompletableFuture.supplyAsync(() -> {
+            PlayerData playerData = playerManager.getPlayerData(player);
+            String uuid = player.getUniqueId().toString().replace("-", "").toLowerCase();
+            Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM player_shop_claims WHERE LOWER(uuid) = ?", uuid)
+                    .thenApply(result -> {
+                        for (int i = 0; i < result.size(); i++) {
+                            switch (result.get(i).get("type").toString().toLowerCase()) {
+                                case "coins":
+                                    playerManager.addCoins(player, (int) result.get(i).get("amount"));
+                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) result.get(i).get("amount") + " Coins erhalten!");
+                                    break;
+                                case "premium":
+                                    playerManager.redeemRank(player, "premium", (int) result.get(i).get("amount"), "d");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) result.get(i).get("amount") + " Tage Premium erhalten!");
+                                    break;
+                                case "gameboost":
+                                    try {
+                                        playerManager.addEXPBoost(player, (int) result.get(i).get("amount"));
+                                        player.sendMessage("§8[§eShop§8]§a Du hast " + (int) result.get(i).get("amount") + "h Gameboost erhalten!");
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    break;
+                            }
+                        }
+                        return null;
+                    });
+            return null;
+        });
     }
 }

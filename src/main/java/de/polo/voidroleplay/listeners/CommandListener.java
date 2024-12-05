@@ -55,6 +55,11 @@ public class CommandListener implements Listener {
         Player player = event.getPlayer();
         String command = args[0].substring(1);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData == null) {
+            player.sendMessage("§cEs gab Probleme beim laden deines Spielstandes.");
+            event.setCancelled(true);
+            return;
+        }
 
         // Check if the command starts with any blocked start
         for (String blockedStart : blockedStarts) {

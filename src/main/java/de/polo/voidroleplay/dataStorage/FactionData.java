@@ -75,6 +75,10 @@ public class FactionData {
     @Setter
     private boolean active;
 
+    @Getter
+    @Setter
+    private int equipPoints;
+
     @SneakyThrows
     public void loadReasons() {
         Connection connection = Main.getInstance().mySQL.getConnection();
@@ -277,14 +281,11 @@ public class FactionData {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET subGroup = ?, alliance = ? WHERE id = ?");
-        statement.setInt(1, subGroupId);
-        statement.setInt(2, allianceFaction);
-        statement.setInt(3, id);
-        statement.execute();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET subGroup = ?, alliance = ?, equipPoints = ? WHERE id = ?",
+                subGroupId,
+                allianceFaction,
+                equipPoints,
+                id);
     }
 
     @SneakyThrows

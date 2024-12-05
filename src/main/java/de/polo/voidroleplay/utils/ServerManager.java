@@ -263,6 +263,7 @@ public class ServerManager {
                             FactionData defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
+                                if (playerData == null) continue;
                                 if (playerData.getFaction() == null) continue;
                                 if (playerData.getFaction().equals(gangwarData.getAttacker()) || playerData.getFaction().equals(gangwarData.getGangZone().getOwner())) {
                                     if (playerData.getVariable("gangwar") != null) {
@@ -280,6 +281,7 @@ public class ServerManager {
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
+                    if (playerData == null) continue;
                     if (playerData.isDead()) {
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
                         utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
@@ -318,7 +320,6 @@ public class ServerManager {
     }
 
     private void setTablist(Player player) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         LocalDateTime time = Utils.getTime();
         player.setPlayerListHeader("\n§8▍ §6§lVoidRoleplay §8× §eReallife & Roleplay §8▍\n\n§7" + time.getHour() + ":" + time.getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
         player.setPlayerListFooter("§8__________________\n\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n§8» §9discord.gg/void-roleplay §8«");

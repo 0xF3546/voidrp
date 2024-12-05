@@ -692,6 +692,7 @@ public class GamePlay implements Listener {
 
         if (currentDateTime.getHour() == 0 && currentDateTime.getMinute() == 0) {
             for (PlayerData playerData : playerManager.getPlayers()) {
+                if (playerData == null) continue;
                 playerData.setAtmBlown(0);
             }
             Connection connection = mySQL.getConnection();
