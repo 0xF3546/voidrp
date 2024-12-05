@@ -4,21 +4,16 @@ import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.Server;
-import de.polo.voidroleplay.utils.enums.Gender;
-import de.polo.voidroleplay.utils.playerUtils.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.sql.*;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 

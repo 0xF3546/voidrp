@@ -49,7 +49,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class PlayerManager implements Listener, ServerTiming {
+public class PlayerManager implements Listener {
 
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
     private final HashMap<String, Boolean> playerMovement = new HashMap<>();
@@ -1062,7 +1062,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
                     return;
                 }
-                Server.Utils.kissPlayer(player, targetplayer);
+                kissPlayer(player, targetplayer);
                 player.closeInventory();
             }
         });
@@ -1305,16 +1305,6 @@ public class PlayerManager implements Listener, ServerTiming {
                 player.getUniqueId());
     }
 
-    @Override
-    public void PushMinuteTick() {
-
-    }
-
-    @Override
-    public void PushHourTick() {
-
-    }
-
     @SneakyThrows
     public void setPlayerSpawn(PlayerData playerData, String spawn) {
         PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET spawn = ? WHERE uuid = ?");
@@ -1397,6 +1387,16 @@ public class PlayerManager implements Listener, ServerTiming {
         connection.close();
 
         return count;
+    }
+
+    private void kissPlayer(Player player, Player targetplayer) {
+        if (player.getLocation().distance(targetplayer.getLocation()) < 5) {
+            ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " gibt " + targetplayer.getName() + " einen Kuss.");
+            player.spawnParticle(Particle.HEART, player.getLocation().add(0, 2, 0), 1);
+            targetplayer.spawnParticle(Particle.HEART, targetplayer.getLocation().add(0, 2, 0), 1);
+        } else {
+            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+        }
     }
 
 

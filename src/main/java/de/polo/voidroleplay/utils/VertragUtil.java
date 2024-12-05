@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.utils;
 
+import de.polo.voidroleplay.dataStorage.Agreement;
 import de.polo.voidroleplay.dataStorage.Company;
 import de.polo.voidroleplay.dataStorage.SubGroup;
 import de.polo.voidroleplay.game.base.housing.House;
@@ -27,10 +28,29 @@ public class VertragUtil {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final AdminManager adminManager;
+
+    private final List<Agreement> agreements = new ArrayList<>();
+
     public VertragUtil(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.adminManager = adminManager;
+    }
+
+    private Agreement getActiveAgreement(Player player) {
+        return agreements.stream().filter(x -> x.getContractor() == player || x.getContracted() == player).findFirst().orElse(null);
+    }
+
+    public void setAgreement(Player player, Player target, String type, Object vertrag) {
+        agreements.remove(getActiveAgreement(player));
+        agreements.remove(getActiveAgreement(target));
+        Agreement agreement = new Agreement(player, target, type, vertrag);
+        agreements.add(agreement);
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
+                player.getUniqueId(),
+                target.getUniqueId(),
+                type,
+                vertrag);
     }
 
     public static boolean setVertrag(Player player, Player target, String type, Object vertrag)  {
@@ -49,18 +69,6 @@ public class VertragUtil {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        /*if (current.get(target.getUniqueId().toString()) == null) {
-            vertrag_type.put(target.getUniqueId().toString(), type);
-            current.put(target.getUniqueId().toString(), vertrag);
-            Statement statement = MySQL.getStatement();
-            assert statement != null;
-            statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
-            return true;
-        } else {
-            current.remove(target.getUniqueId().toString(), vertrag);
-            vertrag_type.put(target.getUniqueId().toString(), type);
-            return false;
-        }*/
     }
 
     public static void deleteVertrag(Player player) {
