@@ -291,6 +291,10 @@ public class PlayerData {
     @Getter
     private PlayerWanted wanted;
 
+    @Getter
+    @Setter
+    private boolean isLeader;
+
     public PlayerData() {
     }
 

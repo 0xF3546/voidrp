@@ -31,7 +31,12 @@ public class PayDayUtils {
     public void givePayDay(Player player) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         double plus = 0;
-        double zinsen = Math.round(playerManager.bank(player) * 0.0075);
+        double zinsen;
+        if (playerData.getPermlevel() >= 20) {
+            zinsen = playerManager.bank(player) * 0.014;
+        } else {
+            zinsen = playerManager.bank(player) * 0.010;
+        }
         double steuern = 0;
         if (playerData.getRelationShip().containsValue("verheiratet")) {
             steuern = Math.round(playerManager.bank(player) * 0.0020);
@@ -45,21 +50,21 @@ public class PayDayUtils {
         int frakpayday = 0;
         plus = plus + zinsen - steuern + visumbonus;
         player.sendMessage("");
-        player.sendMessage("§7     ===§8[§2KONTOAUSZUG§8]§7===");
-        player.sendMessage(" ");
-        player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
-        player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
+        player.sendMessage("§9========§6PayDay§9========");
+        player.sendMessage("§9Alter Betrag§8: §6" + playerData.getBank() + "$");
+        player.sendMessage("§7 » §9Zinsen§8:§a +" + (int) zinsen + "$");
+        player.sendMessage("§7 » §9Steuern§8:§c -" + (int) steuern + "$");
+        player.sendMessage("§7 » §9Sozialbonus§8:§a +" + visumbonus + "$");
         if (playerData.getBank() >= 100000) {
             double reichensteuer = Math.round(playerManager.bank(player) * 0.015);
-            player.sendMessage("§8 ➥ §6Reichensteuer§8:§c -" + (int) reichensteuer + "$");
+            player.sendMessage("§7 » §9Reichensteuer§8:§c -" + (int) reichensteuer + "$");
             plus -= reichensteuer;
         }
-        player.sendMessage("§8 ➥ §6Sozialbonus§8:§a +" + visumbonus + "$");
         if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
             player.sendMessage(" ");
             frakpayday = factionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());
             if (factionManager.removeFactionMoney(playerData.getFaction(), frakpayday, "Gehalt " + player.getName())) {
-                player.sendMessage("§8 ➥ §6Gehalt [" + playerData.getFaction() + "]§8: §a+" + frakpayday + "$");
+                player.sendMessage("§§7 » §9Fraktionsgehalt§8: §a+" + frakpayday + "$");
                 plus += frakpayday;
             }
         }
@@ -68,22 +73,23 @@ public class PayDayUtils {
             if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
                 rent += houseData.getRenter().get(player.getUniqueId().toString());
                 if (rent > playerData.getBank()) {
-                    player.sendMessage("§8 ➥ §6Du konntest deine Miete für Haus " + houseData.getNumber() + " nicht begleichen.");
+                    player.sendMessage("§7 » §cDu konntest deine Miete für Haus " + houseData.getNumber() + " nicht begleichen.");
                     continue;
                 }
-                player.sendMessage("§8 ➥ §6Miete (Haus " + houseData.getNumber() + ")§8:§c -" + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
+                player.sendMessage("§7 » §9Miete (Haus " + houseData.getNumber() + ")§8:§c -" + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
                 houseData.setMoney(houseData.getMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
                 houseData.setTotalMoney(houseData.getTotalMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
-                Statement statement = Main.getInstance().mySQL.getStatement();
-                statement.executeUpdate("UPDATE `housing` SET `money` = " + houseData.getMoney() + ", `totalMoney` = " + houseData.getTotalMoney() + " WHERE `number` = " + houseData.getNumber());
+                Main.getInstance().getMySQL().updateAsync("UPDATE `housing` SET `money` = ?, `totalMoney` = ? WHERE `number` = ?",
+                        houseData.getMoney(),
+                        houseData.getTotalMoney(),
+                        houseData.getNumber());
                 plus -= houseData.getRenter().get(player.getUniqueId().toString());
             }
             if (houseData.getOwner() != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                     plus += houseData.getMoney();
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.executeUpdate("UPDATE `housing` SET `money` = 0 WHERE `number` = " + houseData.getNumber());
-                    player.sendMessage("§8 ➥ §6Mieteinnahmen (Haus " + houseData.getNumber() + ")§8: §a+" + houseData.getMoney() + "$");
+                    Main.getInstance().getMySQL().updateAsync("UPDATE `housing` SET `money` = 0 WHERE `number` = ?", houseData.getNumber());
+                    player.sendMessage("§7 » §9Mieteinnahmen (Haus " + houseData.getNumber() + ")§8: §a+" + houseData.getMoney() + "$");
                     houseData.setMoney(0);
                     if (houseData.isServerRoom()) {
                         float kWh = 0;
@@ -93,7 +99,7 @@ public class PayDayUtils {
                             miner.save();
                         }
                         float amount = kWh * ServerManager.getPayout("kwh");
-                        player.sendMessage("§8 ➥ §bStromkosten (Haus " + houseData.getNumber() + ")§8: §c-" + amount + "$");
+                        player.sendMessage("§7 » §9Stromkosten (Haus " + houseData.getNumber() + ")§8: §c-" + amount + "$");
                         plus -= kWh;
                     }
                 }
@@ -101,38 +107,38 @@ public class PayDayUtils {
         }
 
         if (playerData.isChurch()) {
-            player.sendMessage("§8 ➥ §6Kirchensteuer §8: §c-" + Main.getInstance().serverManager.getPayout("kirchensteuer") + "$");
+            player.sendMessage("§7 » §9Kirchensteuer §8: §c-" + Main.getInstance().serverManager.getPayout("kirchensteuer") + "$");
             plus -= Main.getInstance().serverManager.getPayout("kirchensteuer");
             factionManager.addFactionMoney("Kirche", Main.getInstance().serverManager.getPayout("kirchensteuer"), "Kirchensteuer " + player.getName());
         }
         if (playerData.getPermlevel() >= 40) {
-            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getRang() + ")§8: §a" + playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt") + "$");
+            player.sendMessage("§7 » §9Team-Gehalt§8: §a" + playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt") + "$");
             plus += playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt");
         }
         if (playerData.getSecondaryTeam() != null) {
-            player.sendMessage("§8 ➥ §6Team-Gehalt (" + playerData.getSecondaryTeam() + ")§8: §a+" + Main.getInstance().serverManager.getPayout("secondaryteam") + "$");
+            player.sendMessage("§7 » §9Team-Gehalt§8: §a+" + Main.getInstance().serverManager.getPayout("secondaryteam") + "$");
             plus += Main.getInstance().serverManager.getPayout("secondaryteam");
         }
         for (PlayerVehicleData vehicleData : Vehicles.playerVehicleDataMap.values()) {
             if (vehicleData.getUuid().equals(player.getUniqueId().toString())) {
                 VehicleData vehicleData1 = Vehicles.vehicleDataMap.get(vehicleData.getType());
-                player.sendMessage("§8 ➥ §6KFZ-Steuer (" + vehicleData.getType() + ")§8:§c -" + vehicleData1.getTax() + "$");
+                player.sendMessage("§7 » §9KFZ-Steuer (" + vehicleData.getType() + ")§8:§c -" + vehicleData1.getTax() + "$");
                 plus -= vehicleData1.getTax();
             }
         }
         if (playerData.hasAnwalt()) {
             int anwalt = Main.random(15, 55);
             player.sendMessage(" ");
-            player.sendMessage("§8 ➥ §6Anwaltskosten§8: §c-" + anwalt + "$");
+            player.sendMessage("§7 » §9Anwaltskosten§8: §c-" + anwalt + "$");
             anwalt -= plus;
         }
         plus -= rent;
         player.sendMessage(" ");
         plus = Math.round(plus);
         if (plus >= 0) {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(playerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(playerManager.bank(player) + (int) plus) + "$ §8(§a+" + (int) plus + "$§8)");
+            player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(playerManager.bank(player)) + "$ §7➡ §e" + new DecimalFormat("#,###").format(playerManager.bank(player) + (int) plus) + "$ §8(§c" + (int) plus + "$§8)");
+            player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c-" + (int) plus + "$§8)");
         }
         player.sendMessage(" ");
         playerManager.addBankMoney(player, (int) plus, "PayDay");

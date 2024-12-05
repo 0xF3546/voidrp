@@ -244,6 +244,7 @@ public class PlayerManager implements Listener {
                 if (result.getString("faction") != null) {
                     playerData.setFaction(result.getString("faction"));
                     playerData.setFactionGrade(result.getInt("faction_grade"));
+                    playerData.setLeader(result.getBoolean("isLeader"));
                 }
 
                 if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
@@ -445,7 +446,7 @@ public class PlayerManager implements Listener {
                     playerData.getDeathTime(),
                     playerData.isDead(),
                     playerData.getMinutes(),
-                    uuid);
+                    uuid.toString());
             if (playerData.isJailed()) {
                 mySQL.updateAsync("UPDATE Jail SET wps = ? WHERE uuid = ?", playerData.getHafteinheiten(), uuid);
             }
@@ -516,7 +517,7 @@ public class PlayerManager implements Listener {
             }
             if (current_hours >= needed_hours) {
                 needed_hours = needed_hours + 4;
-                mySQL.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = 0, needed_hours = ?, visum = ? WHERE uuid = ?", hours, needed_hours, visum, uuid);
+                mySQL.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = 0, needed_hours = ?, visum = ? WHERE uuid = ?", hours, needed_hours, visum, uuid.toString());
                 player.sendMessage(Prefix.MAIN + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                 playerData.setVisum(visum);
                 Main.getInstance().beginnerpass.didQuest(player, 4);
@@ -528,7 +529,7 @@ public class PlayerManager implements Listener {
             } else {
                 current_hours = current_hours + 1;
                 playerData.setCurrentHours(current_hours);
-                mySQL.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = ? WHERE uuid = ?", hours, current_hours, uuid);
+                mySQL.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = ? WHERE uuid = ?", hours, current_hours, uuid.toString());
             }
         } else {
             if (newMinutes == 56) {
@@ -572,7 +573,7 @@ public class PlayerManager implements Listener {
                 mySQL.updateAsync("UPDATE players SET player_rank = ?, player_permlevel = ? WHERE uuid = ?",
                         rankData.getRang(),
                         rankData.getPermlevel(),
-                        uuid);
+                        uuid.toString());
                 PlayerData playerData = playerDataMap.get(uuid);
                 playerData.setRang(rankData.getRang());
                 playerData.setPermlevel(rankData.getPermlevel());
