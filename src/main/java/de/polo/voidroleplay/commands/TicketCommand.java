@@ -41,7 +41,7 @@ public class TicketCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
         Ticket ticket = supportManager.getTicket(player);
         if (!playerManager.isTeam(player)) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (ticket == null) {

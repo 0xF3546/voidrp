@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -27,17 +28,17 @@ public class AdminReviveCommand implements CommandExecutor {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
                 if (targetplayer != null) {
                     utils.deathUtil.revivePlayer(targetplayer, false);
-                    player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 wiederbelebt.");
-                    targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
+                    player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 wiederbelebt.");
+                    targetplayer.sendMessage(Prefix.MAIN + "Du wurdest wiederbelebt.");
                 } else {
-                    player.sendMessage(Main.admin_error + "§c" + args[0] + "§7 ist nicht online.");
+                    player.sendMessage(Prefix.admin_error + "§c" + args[0] + "§7 ist nicht online.");
                 }
             } else {
                 utils.deathUtil.revivePlayer(player, false);
-                player.sendMessage(Main.admin_prefix + "Du hast dich wiederbelebt.");
+                player.sendMessage(Prefix.ADMIN + "Du hast dich wiederbelebt.");
             }
         } else {
-            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.admin_error + "Du bist nicht im Admindienst!");
         }
         return false;
     }

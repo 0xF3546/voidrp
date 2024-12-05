@@ -2,11 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.ServerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -61,11 +58,11 @@ public class MineCommand implements CommandExecutor {
                             quitJob(player);
                         }
                     } else {
-                        player.sendMessage(Main.error + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
+                        player.sendMessage(Prefix.ERROR + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
                     }
                 }
             } else {
-                player.sendMessage(Main.error_cantinteract);
+                player.sendMessage(Prefix.error_cantinteract);
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);

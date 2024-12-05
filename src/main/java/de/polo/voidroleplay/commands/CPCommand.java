@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,13 +21,13 @@ public class CPCommand implements CommandExecutor {
             try {
                 Statement statement = Main.getInstance().mySQL.getStatement();
                 statement.executeUpdate("UPDATE `players` SET `email` = '" + args[0] + "', password = '" + args[1] + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
-                player.sendMessage(Main.prefix + "§aDein Controlpanel-Zugang wurde geupdated.");
+                player.sendMessage(Prefix.MAIN + "§aDein Controlpanel-Zugang wurde geupdated.");
             } catch (SQLException e) {
-                player.sendMessage(Main.error + "§cEin Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
+                player.sendMessage(Prefix.ERROR + "§cEin Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
                 throw new RuntimeException(e);
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /cp [Email] [Passwort]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /cp [Email] [Passwort]");
         }
         return false;
     }

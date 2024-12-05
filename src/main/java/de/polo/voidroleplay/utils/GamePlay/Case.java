@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponType;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import org.bukkit.Material;
@@ -96,7 +97,7 @@ public class Case {
                     break;
                 case GOLD_INGOT:
                     if (playerData.getPermlevel() >= 40) {
-                        player.sendMessage(Main.prefix + "Da du bereits einen höheren Rang hast, erhälst du 125 Coins.");
+                        player.sendMessage(Prefix.MAIN + "Da du bereits einen höheren Rang hast, erhälst du 125 Coins.");
                         Main.getInstance().playerManager.addCoins(player, 125);
                     } else {
                         Main.getInstance().playerManager.redeemRank(player, "premium", 1, "d");

@@ -33,7 +33,7 @@ public class ContractCommand implements CommandExecutor {
         }
         if (playerData.getFaction() != null) {
             if (playerData.getFaction().equalsIgnoreCase("ICA")) {
-                player.sendMessage(Prefix.error_nopermission);
+                player.sendMessage(Prefix.ERROR_NOPERMISSION);
                 return false;
             }
         }

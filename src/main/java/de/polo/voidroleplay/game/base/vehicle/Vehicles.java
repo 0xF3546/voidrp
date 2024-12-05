@@ -219,11 +219,11 @@ public class Vehicles implements Listener, CommandExecutor {
                     if (lock == 1) {
                         vehicle.setLocked(false);
                         entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 0);
-                        player.sendMessage(Main.prefix + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §aaufgeschlossen§7!");
+                        player.sendMessage(Prefix.MAIN + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §aaufgeschlossen§7!");
                     } else {
                         vehicle.setLocked(true);
                         entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 1);
-                        player.sendMessage(Main.prefix + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §czugeschlossen§7!");
+                        player.sendMessage(Prefix.MAIN + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §czugeschlossen§7!");
                     }
                 }
             }
@@ -374,9 +374,9 @@ public class Vehicles implements Listener, CommandExecutor {
                                                 player.closeInventory();
                                                 Vehicles.fillVehicle((Vehicle) entity, null);
                                                 playerManager.removeMoney(player, price, "Tankrechnung " + type);
-                                                player.sendMessage(Main.prefix + "Du hast dein §6" + type + "§7 betankt. §c-" + price + "$");
+                                                player.sendMessage(Prefix.MAIN + "Du hast dein §6" + type + "§7 betankt. §c-" + price + "$");
                                             } else {
-                                                player.sendMessage(Main.error + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
+                                                player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
                                             }
                                         }
                                     }
@@ -453,10 +453,10 @@ public class Vehicles implements Listener, CommandExecutor {
                     player.closeInventory();
                     playerManager.removeMoney(player, price, "Tankrechnung " + vehicleData.getName());
                     Vehicles.fillVehicle((Vehicle) entity, playerData.getIntVariable("plusfuel"));
-                    player.sendMessage(Main.prefix + "Du hast dein §6" + vehicleData.getName() + "§7 betankt. §c-" + price + "$");
+                    player.sendMessage(Prefix.MAIN + "Du hast dein §6" + vehicleData.getName() + "§7 betankt. §c-" + price + "$");
                     SoundManager.successSound(player);
                 } else {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
+                    player.sendMessage( Prefix.ERROR + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
                 }
             }
         });
@@ -479,7 +479,7 @@ public class Vehicles implements Listener, CommandExecutor {
                 Minecart minecart = (Minecart) player.getVehicle();
                 if (minecart != null && minecart.isValid()) {
                     minecart.setVelocity(player.getFacing().getDirection().setY(0).multiply(1 + minecart.getVelocity().length() * 2));
-                    player.sendMessage(Main.prefix + "Du hast dein Auto gestartet.");
+                    player.sendMessage(Prefix.MAIN + "Du hast dein Auto gestartet.");
                 }
             }
             if (args[0].equalsIgnoreCase("lock")) {

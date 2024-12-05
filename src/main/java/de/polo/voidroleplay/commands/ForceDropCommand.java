@@ -27,7 +27,7 @@ public class ForceDropCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 100) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 

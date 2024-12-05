@@ -28,7 +28,7 @@ public class WantedInfoCommand implements CommandExecutor {
         Player player = (Player) commandSender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (!playerData.isExecutiveFaction()) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {

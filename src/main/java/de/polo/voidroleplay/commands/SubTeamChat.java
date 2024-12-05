@@ -29,7 +29,7 @@ public class SubTeamChat implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getSubTeam() == null || playerData.getFaction() == null) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {

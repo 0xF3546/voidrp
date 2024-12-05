@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,8 +41,8 @@ public class RedeemCommand implements CommandExecutor {
                         type = result.getString(3);
                         duration = result.getInt(4);
                         duration_type = result.getString(5);
-                        player.sendMessage(Main.prefix + "§bDu hast dein §9" + args[0] + "§b eingelöst");
-                        player.sendMessage(Main.prefix + "§eDanke für's Unterstützen vom Server!");
+                        player.sendMessage(Prefix.MAIN + "§bDu hast dein §9" + args[0] + "§b eingelöst");
+                        player.sendMessage(Prefix.MAIN + "§eDanke für's Unterstützen vom Server!");
                         switch (args[0].toLowerCase()) {
                             case "vip":
                                 playerManager.redeemRank(player, "VIP", result.getInt(4), result.getString(5));

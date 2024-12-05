@@ -369,7 +369,7 @@ public class PlayerManager implements Listener, ServerTiming {
                 if (playerData.getRankDuration() != null) {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     if (date.isBefore(LocalDateTime.now())) {
-                        player.sendMessage(Main.prefix + "Dein " + playerData.getRang() + " ist ausgelaufen.");
+                        player.sendMessage(Prefix.MAIN + "Dein " + playerData.getRang() + " ist ausgelaufen.");
                         mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId());
                         if (playerData.getBusiness() != null) {
                             BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
@@ -511,7 +511,7 @@ public class PlayerManager implements Listener, ServerTiming {
             if (current_hours >= needed_hours) {
                 needed_hours = needed_hours + 4;
                 mySQL.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = 0, needed_hours = ?, visum = ? WHERE uuid = ?", hours, needed_hours, visum, uuid);
-                player.sendMessage(Main.prefix + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
+                player.sendMessage(Prefix.MAIN + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                 playerData.setVisum(visum);
                 Main.getInstance().beginnerpass.didQuest(player, 4);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
@@ -526,11 +526,11 @@ public class PlayerManager implements Listener, ServerTiming {
             }
         } else {
             if (newMinutes == 56) {
-                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
+                player.sendMessage(Prefix.PayDay_prefix + "Du erhälst in 5 Minuten deinen PayDay.");
             } else if (newMinutes == 58) {
-                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
+                player.sendMessage(Prefix.PayDay_prefix + "Du erhälst in 3 Minuten deinen PayDay.");
             } else if (newMinutes == 60) {
-                player.sendMessage(Main.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
+                player.sendMessage(Prefix.PayDay_prefix + "Du erhälst in 1 Minute deinen PayDay.");
             }
         }
     }

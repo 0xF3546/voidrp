@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -44,7 +45,7 @@ public class GetVehCommand implements CommandExecutor {
                         int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
                         if (Integer.parseInt(args[0]) == (id)) {
                             entity.teleport(player.getLocation());
-                            player.sendMessage(Main.admin_prefix + "Du hast das Fahrzeug mit der ID §l" + args[0] + "§7 zu dir teleportiert.");
+                            player.sendMessage(Prefix.ADMIN + "Du hast das Fahrzeug mit der ID §l" + args[0] + "§7 zu dir teleportiert.");
                         }
                     }
                 } catch (Exception ex) {

@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
@@ -57,13 +58,13 @@ public class DailyBonusCommand implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
                 if (playerData.getDailyBonusRedeemed() != null) {
                     if (playerData.getDailyBonusRedeemed().getDayOfMonth() == LocalDateTime.now().getDayOfMonth()) {
-                        player.sendMessage(Main.prefix + "Du hast deinen Täglichen Bonus bereits abgeholt.");
+                        player.sendMessage(Prefix.MAIN + "Du hast deinen Täglichen Bonus bereits abgeholt.");
                         player.closeInventory();
                         return;
                     }
                 }
                 if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
-                    player.sendMessage(Main.error + "Du musst mindestens einen PayDay pro Tag erhalten haben um den Täglichen Bonus abzuholen.");
+                    player.sendMessage(Prefix.ERROR + "Du musst mindestens einen PayDay pro Tag erhalten haben um den Täglichen Bonus abzuholen.");
                     player.closeInventory();
                     return;
                 }
@@ -127,7 +128,7 @@ public class DailyBonusCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
         playerData.setDailyBonusRedeemed(LocalDateTime.now());
         player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.DAILY.getDisplayName()));
-        player.sendMessage(Main.prefix + "Du hast deine Tägliche Case erhalten.");
+        player.sendMessage(Prefix.MAIN + "Du hast deine Tägliche Case erhalten.");
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE players SET dailyBonusRedeemed = NOW() WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());

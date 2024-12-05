@@ -4,12 +4,9 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Company;
 import de.polo.voidroleplay.dataStorage.CompanyRole;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.CompanyManager;
+import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
 import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -62,14 +59,14 @@ public class CompanyCommand implements CommandExecutor, Listener {
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("chatblock", "company::name");
                 player.closeInventory();
-                player.sendMessage(Main.prefix + "Gib nun den Namen der Firma an.");
+                player.sendMessage(Prefix.MAIN + "Gib nun den Namen der Firma an.");
             }
         });
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Gründen (250.000$)")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (playerData.getBank() < 250000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
                     player.closeInventory();
                     return;
                 }
@@ -89,7 +86,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
                     company.createRole(role);
                     companyManager.setPlayerRole(playerData, role);
                 } else {
-                    player.sendMessage(Main.error + "Es gibt diese oder eine ähnliche Firma bereits.");
+                    player.sendMessage(Prefix.ERROR + "Es gibt diese oder eine ähnliche Firma bereits.");
                 }
                 player.closeInventory();
             }

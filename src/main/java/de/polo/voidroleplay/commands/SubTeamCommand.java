@@ -15,9 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
 public class SubTeamCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
@@ -34,12 +31,12 @@ public class SubTeamCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) commandSender;
         if (!playerManager.isInStaatsFrak(player)) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFactionGrade() < 5) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {

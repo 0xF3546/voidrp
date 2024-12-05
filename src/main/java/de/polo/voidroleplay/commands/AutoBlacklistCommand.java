@@ -1,7 +1,6 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.BlacklistData;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
@@ -9,7 +8,6 @@ import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,7 +40,7 @@ public class AutoBlacklistCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());

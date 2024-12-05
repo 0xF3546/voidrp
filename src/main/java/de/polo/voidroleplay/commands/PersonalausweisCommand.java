@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -41,7 +42,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                     Player targetplayer = Bukkit.getPlayer(args[1]);
                     if (targetplayer != null) {
                         if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
-                            player.sendMessage(Main.prefix + "Du hast §c" + targetplayer.getName() + "§7 deinen Personalausweis gezeigt.");
+                            player.sendMessage(Prefix.MAIN + "Du hast §c" + targetplayer.getName() + "§7 deinen Personalausweis gezeigt.");
                             targetplayer.sendMessage("");
                             targetplayer.sendMessage("§7     ===§8[§6FREMDER PERSONALAUSWEIS§8]§7===");
                             targetplayer.sendMessage(" ");

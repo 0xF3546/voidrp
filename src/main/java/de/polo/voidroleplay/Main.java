@@ -37,11 +37,6 @@ public final class Main extends JavaPlugin {
     public boolean isOnline = false;
 
     public static Plugin plugin = null;
-    public static final String prefix = "§8 » §7";
-    public static final String infoPrefix = "§b    Info§f: ";
-    public static final String admin_prefix = "§8[§cAdmin§8] §7";
-    public static final String error_cantinteract = "§8[§cFehler§8] §7Du kannst gerade nicht interagieren.";
-    public static final String PayDay_prefix = "§8[§aPayDay§8] §7";
     public static final String faction_prefix = "§8[§9Fraktion§8] §7";
     public static final String support_prefix = "§8[§3Support§8] §7";
     public static final String gamedesign_prefix = "§8[§9Gamedesign§8] §7";

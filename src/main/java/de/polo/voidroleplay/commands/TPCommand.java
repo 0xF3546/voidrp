@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,24 +25,24 @@ public class TPCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 70) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.admin_error + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /tp [Spieler]");
+            player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /tp [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (!targetplayer.isOnline()) {
-            player.sendMessage(Main.admin_error + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.admin_error + args[0] + " ist nicht online.");
             return false;
         }
         player.teleport(targetplayer.getLocation());
-        player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + targetplayer.getName() + "§7 teleportiert.");
+        player.sendMessage(Prefix.ADMIN + "Du hast dich zu §c" + targetplayer.getName() + "§7 teleportiert.");
         adminManager.send_message(player.getName() + " hat sich zu " + targetplayer.getName() + " Teleportiert.", ChatColor.RED);
         return false;
     }

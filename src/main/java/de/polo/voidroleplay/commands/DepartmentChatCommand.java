@@ -27,7 +27,7 @@ public class DepartmentChatCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());

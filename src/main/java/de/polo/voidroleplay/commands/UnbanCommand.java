@@ -4,6 +4,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,11 +40,11 @@ public class UnbanCommand implements CommandExecutor {
             Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM player_bans WHERE LOWER(name) = '" + args[0].toLowerCase() + "'");
             if (!res.next()) {
-                player.sendMessage(Main.error + "Der Spieler wurde nicht in der Banlist gefudnen.");
+                player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht in der Banlist gefudnen.");
                 return false;
             }
             adminManager.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", ChatColor.RED);
-            player.sendMessage(Main.admin_prefix + "Du hast " + res.getString(3) + " entbannt.");
+            player.sendMessage(Prefix.ADMIN + "Du hast " + res.getString(3) + " entbannt.");
             statement.execute("DELETE FROM player_bans WHERE LOWER(name) = '" + args[0].toLowerCase() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);

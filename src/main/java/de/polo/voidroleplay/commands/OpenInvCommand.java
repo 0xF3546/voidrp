@@ -3,11 +3,8 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.Storage;
-import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.enums.StorageType;
-import de.polo.voidroleplay.utils.enums.Storages;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +29,7 @@ public class OpenInvCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 80) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {

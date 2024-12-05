@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -41,7 +42,7 @@ public class TeamChatCommand implements CommandExecutor, TabCompleter {
         String msg = utils.stringArrayToString(args);
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (playerManager.getPlayerData(players.getUniqueId()).getPermlevel() >= 50) {
-                players.sendMessage(Main.admin_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);
+                players.sendMessage(Prefix.ADMIN + "§c" + playerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);
             }
         }
         return false;

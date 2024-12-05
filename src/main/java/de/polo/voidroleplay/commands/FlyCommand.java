@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -45,12 +46,12 @@ public class FlyCommand implements CommandExecutor {
         if (target.getAllowFlight()) {
             target.setFlying(false);
             target.setAllowFlight(false);
-            target.sendMessage(Main.admin_prefix + player.getName() + " hat dir Fly entfernt.");
+            target.sendMessage(Prefix.ADMIN + player.getName() + " hat dir Fly entfernt.");
             adminManager.send_message(player.getName() + " hat " + target.getName() + " Fly entfernt.", null);
         } else {
             target.setAllowFlight(true);
             target.setFlying(true);
-            target.sendMessage(Main.admin_prefix + player.getName() + " hat dir Fly gegeben.");
+            target.sendMessage(Prefix.ADMIN + player.getName() + " hat dir Fly gegeben.");
             adminManager.send_message(player.getName() + " hat " + target.getName() + " Fly gegeben.", null);
         }
         Utils.Tablist.updatePlayer(target);

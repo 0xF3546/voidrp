@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +34,7 @@ public class ApfelplantageCommand implements CommandExecutor {
                     player.sendMessage(prefix + "Du bist nun §cApfelsammler§7.");
                     player.sendMessage(prefix + "Pflücke nun die Äpfel von den Bäumen ab.");
                 } else {
-                    player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der §cApfelplantage§7!");
+                    player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der §cApfelplantage§7!");
                 }
             } else {
                 if (playerData.getVariable("job").equals("apfelsammler")) {
@@ -43,11 +44,11 @@ public class ApfelplantageCommand implements CommandExecutor {
                         quitJob(player);
                     }
                 } else {
-                    player.sendMessage(Main.error + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
+                    player.sendMessage(Prefix.ERROR + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
                 }
             }
         } else {
-            player.sendMessage(Main.error_cantinteract);
+            player.sendMessage(Prefix.error_cantinteract);
         }
         return false;
     }

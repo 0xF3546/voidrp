@@ -35,7 +35,7 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (!playerData.getFaction().equalsIgnoreCase("Polizei") && !playerData.getFaction().equalsIgnoreCase("FBI")) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (!playerData.isDuty()) {

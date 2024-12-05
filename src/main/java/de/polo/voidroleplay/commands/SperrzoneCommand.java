@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class SperrzoneCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (!playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei")) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         NaviData naviData = Navigation.getNearestNaviPoint(player.getLocation());

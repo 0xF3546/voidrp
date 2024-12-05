@@ -81,8 +81,8 @@ public class ReviveCommand implements CommandExecutor {
                     return false;
                 }
                 playerData.setVariable("isReviving", true);
-                targetplayer.sendMessage(Main.prefix + "Du wirst von " + player.getName() + " wiederbelebt.");
-                player.sendMessage(Main.prefix + "Du fängst an " + targetplayer.getName() + " wiederzubeleben.");
+                targetplayer.sendMessage(Prefix.MAIN + "Du wirst von " + player.getName() + " wiederbelebt.");
+                player.sendMessage(Prefix.MAIN + "Du fängst an " + targetplayer.getName() + " wiederzubeleben.");
                 ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " fängt an " + targetplayer.getName() + " wiederzubeleben.");
                 Progress.start(player, 6);
                 new BukkitRunnable() {
@@ -92,7 +92,7 @@ public class ReviveCommand implements CommandExecutor {
                             utils.deathUtil.revivePlayer(targetplayer, true);
                             targetplayer.teleport(player.getLocation());
                             playerManager.addExp(player, Main.random(2, 5));
-                            targetplayer.sendMessage(Main.prefix + "Du wurdest wiederbelebt.");
+                            targetplayer.sendMessage(Prefix.MAIN + "Du wurdest wiederbelebt.");
                             playerData.setVariable("isReviving", false);
                             try {
                                 factionManager.addFactionMoney("Medic", ServerManager.getPayout("revive"), "Revive durch " + player.getName());

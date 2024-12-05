@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -50,13 +51,13 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                player.sendMessage(Main.admin_prefix + "Du hast §c" + targetplayer.getName() + "§7 in die Fraktion §c" + frak + "§7 (Rang §c" + rang + "§7) gesetzt.");
-                targetplayer.sendMessage(Main.faction_prefix + "Du bist Rang §c" + rang + "§7 der Fraktion §c" + frak + "§7!");
+                player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 in die Fraktion §c" + frak + "§7 (Rang §c" + rang + "§7) gesetzt.");
+                targetplayer.sendMessage(Prefix.faction_prefix + "Du bist Rang §c" + rang + "§7 der Fraktion §c" + frak + "§7!");
             } else {
-                player.sendMessage(Main.admin_error + "Syntax-Fehler: /setfrak [Spieler] [Fraktion] [Rang]");
+                player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /setfrak [Spieler] [Fraktion] [Rang]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

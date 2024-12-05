@@ -4,6 +4,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -34,24 +35,24 @@ public class SpecCommand implements CommandExecutor {
                         player.setGameMode(GameMode.SPECTATOR);
                         player.setSpectatorTarget(targetplayer);
                         playerData.setVariable("isSpec", targetplayer.getUniqueId().toString());
-                        player.sendMessage(Main.admin_prefix + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
+                        player.sendMessage(Prefix.ADMIN + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
                         adminManager.send_message(player.getName() + " beobachtet nun " + targetplayer.getName(), ChatColor.RED);
                     } else {
-                        player.sendMessage(Main.admin_error + "Syntax-Fehler: /spec [Spieler]");
+                        player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /spec [Spieler]");
                     }
                 } else {
                     player.setGameMode(GameMode.SURVIVAL);
                     player.setAllowFlight(true);
-                    player.sendMessage(Main.admin_prefix + "Du hast den Spectator-Modus verlassen");
+                    player.sendMessage(Prefix.ADMIN + "Du hast den Spectator-Modus verlassen");
                     player.teleport(playerData.getLocationVariable("specLoc"));
                     playerData.setVariable("isSpec", null);
                     adminManager.send_message(player.getName() + " hat den Beobachter-Modus verlassen.", ChatColor.RED);
                 }
             } else {
-                player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst.");
+                player.sendMessage(Prefix.admin_error + "Du bist nicht im Admindienst.");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

@@ -831,7 +831,7 @@ public class TabletUtils implements Listener {
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("chatblock", "tablet::company::role::setname");
                 player.closeInventory();
-                player.sendMessage(Main.prefix + "Gib nun den Namen der Rolle an.");
+                player.sendMessage(Prefix.MAIN + "Gib nun den Namen der Rolle an.");
                 playerData.setVariable("temp_role", role);
             }
         });

@@ -24,7 +24,7 @@ public class PRTeamChat implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getSecondaryTeam() == null) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (playerData.getSecondaryTeam().equals("PR-Team") || playerData.isAduty()) {

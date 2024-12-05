@@ -167,7 +167,7 @@ public class DeathUtils {
                     locationManager.useLocation(player, playerData.getSpawn());
                 }
             }
-            player.sendMessage(Main.prefix + "Du bist im Krankenhaus aufgewacht.");
+            player.sendMessage(Prefix.MAIN + "Du bist im Krankenhaus aufgewacht.");
             playerData.setDead(false);
             playerData.setDeathTime(0);
             player.getInventory().clear();

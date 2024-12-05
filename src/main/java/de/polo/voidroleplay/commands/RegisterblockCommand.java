@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.utils.BlockManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -33,12 +34,12 @@ public class RegisterblockCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 90) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /registerblock [Typ] [Extra]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /registerblock [Typ] [Extra]");
             return false;
         }
 
@@ -62,7 +63,7 @@ public class RegisterblockCommand implements CommandExecutor {
                     sign.update();
                     registeredBlock.setInfo("house");
                     registeredBlock.setInfoValue(args[0]);
-                    player.sendMessage(Main.gamedesign_prefix + "Haus regestriert.");
+                    player.sendMessage(Prefix.gamedesign_prefix + "Haus regestriert.");
                 } else {
                     sign.setLine(0, "================");
                     sign.setLine(1, "Bankautomat");
@@ -77,7 +78,7 @@ public class RegisterblockCommand implements CommandExecutor {
 
         int id = blockManager.addBlock(registeredBlock);
 
-        player.sendMessage(Main.prefix + "Du hast ein/e/n " + block.getType() + " registriert als " + args[0] + " (#" + id + ").");
+        player.sendMessage(Prefix.MAIN + "Du hast ein/e/n " + block.getType() + " registriert als " + args[0] + " (#" + id + ").");
 
         return false;
     }

@@ -196,7 +196,7 @@ public class WinzerCommand implements CommandExecutor {
             int trees = 6;
             trees += (playerData.addonXP.getLumberjackLevel() / 2);
             player.sendMessage("§8[§5Winzer§8]§7 Begib dich zu den markierten Weinreben.");
-            player.sendMessage(Main.infoPrefix + "Nutze \"/rebstock\" falls du deinen Rebstock verloren hast.");
+            player.sendMessage(Prefix.infoPrefix + "Nutze \"/rebstock\" falls du deinen Rebstock verloren hast.");
             playerData.setIntVariable("winzer", 12);
             playerData.setIntVariable("winzer_harvested", 0);
             /*Scoreboard scoreboard = new Scoreboard(player);

@@ -6,6 +6,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,7 +38,7 @@ public class PlayerVoteListener implements Listener {
         adminManager.send_message(vote.getUsername() + " hat über " + vote.getServiceName() + " gevotet.", ChatColor.GRAY);
         if (player.isOnline()) {
             PlayerData playerData = playerManager.getPlayerData(player);
-            player.sendMessage(Main.prefix + "§6§lDanke§7 für deinen Vote!");
+            player.sendMessage(Prefix.MAIN + "§6§lDanke§7 für deinen Vote!");
             playerManager.addExp(player, Main.random(30, 50));
             votes.putIfAbsent(player.getUniqueId(), 1);
             if (votes.get(player.getUniqueId()) > 2) {

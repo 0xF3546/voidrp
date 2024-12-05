@@ -13,11 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class WantedCommand implements CommandExecutor {
@@ -33,7 +29,7 @@ public class WantedCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Polizei")) {

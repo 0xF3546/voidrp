@@ -30,25 +30,25 @@ public class AdminUnInviteCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.isAduty()) {
-            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.admin_error + "Du bist nicht im Admindienst!");
             return false;
         }
         if (!(args.length >= 1)) {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /auninvite [Spieler]");
+            player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /auninvite [Spieler]");
             return false;
         }
         if (playerData.getPermlevel() < 80) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         OfflinePlayer offlinePlayer = utils.getOfflinePlayer(args[0]);
         if (offlinePlayer == null) {
-            player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + args[0] + " wurde nicht gefunden.");
             return false;
         }
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(offlinePlayer.getUniqueId().toString());
         if (offlinePlayer.getName() == null) {
-            player.sendMessage(Main.error + "Der Spieler wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht gefunden.");
             return false;
         }
         if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
@@ -66,10 +66,10 @@ public class AdminUnInviteCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
             }
-            player.sendMessage(Main.admin_prefix + "Du hast " + offlinePlayer.getName() + " aus der Fraktion geworfen.");
+            player.sendMessage(Prefix.admin_error + "Du hast " + offlinePlayer.getName() + " aus der Fraktion geworfen.");
             return true;
         }
-        player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+        player.sendMessage(Prefix.ERROR + args[0] + " wurde nicht gefunden.");
         return false;
     }
 }

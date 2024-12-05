@@ -38,7 +38,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
         }
         if (args[0].equalsIgnoreCase("manage")) {
             if (locationManager.getDistanceBetweenCoords(player, "subgroup_manage") > 5) {
-                player.sendMessage(Main.error + "Du bist nicht in der nähe der Gruppierungsverwaltung");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Gruppierungsverwaltung");
                 return false;
             }
             openSubGroupMangeGUI(player);
@@ -56,7 +56,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
                     public void onClick(InventoryClickEvent event) {
                         player.closeInventory();
                         playerData.setVariable("chatblock", "subgroup::name");
-                        player.sendMessage(Main.prefix + "Gib nun den gewünschten Namen ein.");
+                        player.sendMessage(Prefix.MAIN + "Gib nun den gewünschten Namen ein.");
                     }
                 });
             } else {
@@ -65,7 +65,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
                     public void onClick(InventoryClickEvent event) {
                         player.closeInventory();
                         playerData.setVariable("chatblock", "subgroup::name");
-                        player.sendMessage(Main.prefix + "Gib nun den gewünschten Namen ein.");
+                        player.sendMessage(Prefix.MAIN + "Gib nun den gewünschten Namen ein.");
                     }
                 });
             }
@@ -76,17 +76,17 @@ public class SubGroupCommand implements CommandExecutor, Listener {
                     for (SubGroup subGroup : factionManager.subGroups.getSubGroups()) {
                         if (subGroup.getName() == null) continue;
                         if (subGroup.getName().equalsIgnoreCase(name)) {
-                            player.sendMessage(Main.error + "Es gibt bereits eine Gruppierung mit diesem Namen.");
+                            player.sendMessage(Prefix.ERROR + "Es gibt bereits eine Gruppierung mit diesem Namen.");
                             return;
                         }
                     }
                     if (playerData.getBank() < 50000) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank (50.000$).");
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank (50.000$).");
                         return;
                     }
                     player.closeInventory();
                     playerData.removeBankMoney(50000, "Gruppierungs-Gründung");
-                    player.sendMessage(Main.prefix + "Du hast eine Gruppierung gegründet.");
+                    player.sendMessage(Prefix.MAIN + "Du hast eine Gruppierung gegründet.");
                     SubGroup subGroup = new SubGroup();
                     subGroup.setName(name);
                     factionManager.subGroups.create(subGroup);

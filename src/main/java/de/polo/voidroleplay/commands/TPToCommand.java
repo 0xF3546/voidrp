@@ -5,6 +5,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Effect;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -35,14 +36,14 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
                     message.append(" ").append(arg);
                 }
                 locationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
-                player.sendMessage(Main.admin_prefix + "Du hast dich zu §c" + message + "§7 teleportiert.");
+                player.sendMessage(Prefix.ADMIN + "Du hast dich zu §c" + message + "§7 teleportiert.");
                 player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
             } else {
-                player.sendMessage(Main.admin_error + "Syntax-Fehler: /tpto [Punkt]");
+                player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /tpto [Punkt]");
             }
         } else {
-            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.admin_error + "Du bist nicht im Admindienst!");
         }
         return false;
     }

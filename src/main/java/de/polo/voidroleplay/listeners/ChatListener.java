@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.SupportManager;
@@ -91,17 +92,17 @@ public class ChatListener implements Listener {
                 switch (playerData.getVariable("chatblock").toString()) {
                     case "firstname":
                         playerData.setVariable("einreise_firstname", event.getMessage());
-                        player.sendMessage(Main.prefix + "Dein Vorname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
+                        player.sendMessage(Prefix.MAIN + "Dein Vorname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
                         playerData.setVariable("chatblock", null);
                         break;
                     case "lastname":
                         playerData.setVariable("einreise_lastname", event.getMessage());
-                        player.sendMessage(Main.prefix + "Dein Nachname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
+                        player.sendMessage(Prefix.MAIN + "Dein Nachname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
                         playerData.setVariable("chatblock", null);
                         break;
                     case "dob":
                         playerData.setVariable("einreise_dob", event.getMessage());
-                        player.sendMessage(Main.prefix + "Dein Geburtstag lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
+                        player.sendMessage(Prefix.MAIN + "Dein Geburtstag lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
                         playerData.setVariable("chatblock", null);
                         break;
                     default:

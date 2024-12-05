@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.game.faction.houseban;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.FactionManager;
@@ -71,7 +70,7 @@ public class Houseban implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (!factionManager.isPlayerInGoodFaction(player)) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
@@ -88,7 +87,7 @@ public class Houseban implements CommandExecutor, TabCompleter {
         }
         if (args[0].equalsIgnoreCase("remove")) {
             if (playerData.getFactionGrade() < 4) {
-                player.sendMessage(Prefix.error_nopermission);
+                player.sendMessage(Prefix.ERROR_NOPERMISSION);
                 return false;
             }
             if (args.length < 2) {

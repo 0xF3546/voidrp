@@ -2,7 +2,6 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.FactionManager;
 import de.polo.voidroleplay.utils.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Gender;
@@ -36,7 +35,7 @@ public class MarryCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (!playerData.getFaction().equalsIgnoreCase("Kirche")) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (playerData.getFactionGrade() < 4) {

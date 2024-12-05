@@ -45,7 +45,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
 
                 playerData.setAduty(false);
                 send_message(player.getName() + " hat den Admindienst verlassen.", ChatColor.RED);
-                player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §cverlassen§7.");
+                player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §cverlassen§7.");
                 player.setFlying(false);
                 player.setAllowFlight(false);
                 scoreboardAPI.removeScoreboard(player, "admin");
@@ -54,7 +54,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
 
                 send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
                 playerData.setAduty(true);
-                player.sendMessage(Prefix.admin_prefix + "Du hast den Admindienst §abetreten§7.");
+                player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §abetreten§7.");
                 player.setAllowFlight(true);
 
                 scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
@@ -75,14 +75,14 @@ public class AdminManager implements CommandExecutor, TabCompleter {
             switch (args[0].toLowerCase()) {
                 case "-v":
                     if (playerData.getVariable("isVanish") == null) {
-                        player.sendMessage(Main.admin_prefix + "Du bist nun im Vanish.");
+                        player.sendMessage(Prefix.ADMIN + "Du bist nun im Vanish.");
                         playerData.setVariable("isVanish", "D:");
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.hidePlayer(Main.getInstance(), player);
                         }
                         send_message(player.getName() + " hat den Vanish betreten.", null);
                     } else {
-                        player.sendMessage(Main.admin_prefix + "Du bist nun nicht mehr im Vanish.");
+                        player.sendMessage(Prefix.ADMIN + "Du bist nun nicht mehr im Vanish.");
                         playerData.setVariable("isVanish", null);
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.showPlayer(Main.getInstance(), player);

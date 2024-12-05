@@ -38,7 +38,7 @@ public class RegisterFactionBanner implements CommandExecutor {
         Player player = (Player) commandSender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 90) {
-            player.sendMessage(Prefix.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (strings.length < 1) {

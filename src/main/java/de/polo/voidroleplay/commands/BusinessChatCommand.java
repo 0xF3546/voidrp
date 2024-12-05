@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.BusinessManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,16 +25,16 @@ public class BusinessChatCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getBusiness() == null || playerData.getBusiness() == 0) {
-            player.sendMessage(Main.business_prefix + "Du bist in keinem Business.");
+            player.sendMessage(Prefix.business_prefix + "Du bist in keinem Business.");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /businesschat [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /businesschat [Nachricht]");
             return false;
         }
         BusinessData businessData = businessManager.getBusinessData(playerData.getBusiness());
         if (!businessData.isActive()) {
-            player.sendMessage(Main.error + "Dieses Business ist nicht aktiv.");
+            player.sendMessage(Prefix.ERROR + "Dieses Business ist nicht aktiv.");
             return false;
         }
         StringBuilder msg = new StringBuilder(args[0]);

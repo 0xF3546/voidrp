@@ -7,6 +7,7 @@ import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.ItemManager;
 import de.polo.voidroleplay.utils.LocationManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Gender;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -67,7 +68,7 @@ public class EinreiseCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("chatblock", "firstname");
-                player.sendMessage(Main.prefix + "Gib nun deinen §6Vornamen§7 in den §6Chat§7 ein!");
+                player.sendMessage(Prefix.MAIN + "Gib nun deinen §6Vornamen§7 in den §6Chat§7 ein!");
                 player.closeInventory();
             }
         });
@@ -75,7 +76,7 @@ public class EinreiseCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("chatblock", "lastname");
-                player.sendMessage(Main.prefix + "Gib nun deinen §6Nachnamen§7 in den §6Chat§7 ein!");
+                player.sendMessage(Prefix.MAIN + "Gib nun deinen §6Nachnamen§7 in den §6Chat§7 ein!");
                 player.closeInventory();
             }
         });
@@ -129,7 +130,7 @@ public class EinreiseCommand implements CommandExecutor {
                 statement.setString(5, player.getUniqueId().toString());
                 statement.executeUpdate();
 
-                player.sendMessage(Main.prefix + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
+                player.sendMessage(Prefix.MAIN + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                 playerManager.addExp(player, Main.random(100, 200));
                 Main.getInstance().utils.tutorial.createdAusweis(player);
                 player.playSound(player.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 0);

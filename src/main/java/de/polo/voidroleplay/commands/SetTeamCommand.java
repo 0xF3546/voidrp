@@ -37,15 +37,15 @@ public class SetTeamCommand implements CommandExecutor {
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 String rank = args[1];
                 if (ServerManager.rankDataMap.get(rank) == null) {
-                    player.sendMessage(Main.error + "Rang nicht gefunden.");
+                    player.sendMessage(Prefix.ERROR + "Rang nicht gefunden.");
                     return false;
                 }
                 if (offlinePlayer.isOnline()) {
                     Player targetplayer = Bukkit.getPlayer(offlinePlayer.getUniqueId());
-                    targetplayer.sendMessage(Main.admin_prefix + "Du bist nun §c" + rank + "§7!");
+                    targetplayer.sendMessage(Prefix.ADMIN + "Du bist nun §c" + rank + "§7!");
                     targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
                 }
-                player.sendMessage(Main.admin_prefix + offlinePlayer.getName() + " ist nun §c" + rank + "§7.");
+                player.sendMessage(Prefix.ADMIN + offlinePlayer.getName() + " ist nun §c" + rank + "§7.");
                 try {
                     Statement statement = Main.getInstance().mySQL.getStatement();
                     statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + offlinePlayer.getUniqueId() + "'");
@@ -56,10 +56,10 @@ public class SetTeamCommand implements CommandExecutor {
                 playerManager.setRang(offlinePlayer.getUniqueId(), rank);
                 adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
             } else {
-                player.sendMessage(Main.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
+                player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

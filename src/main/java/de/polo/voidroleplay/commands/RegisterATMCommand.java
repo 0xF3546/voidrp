@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.utils.AdminManager;
 import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -51,7 +52,7 @@ public class RegisterATMCommand implements CommandExecutor {
         statement.execute();
         ResultSet generatedKeys = statement.getGeneratedKeys();
         if (generatedKeys.next()) {
-            player.sendMessage(Main.admin_prefix + "Du hast einen ATM registriert #" + generatedKeys.getInt(1));
+            player.sendMessage(Prefix.gamedesign_prefix + "Du hast einen ATM registriert #" + generatedKeys.getInt(1));
             adminManager.send_message(player.getName() + " hat einen ATM registriert (ATM #" + generatedKeys.getInt(1) + ").", ChatColor.GOLD);
         }
 

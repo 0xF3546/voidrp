@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.LocationManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,9 +26,9 @@ public class LocationCommand implements CommandExecutor {
 
         if(p.hasPermission("lobby.admin")){
             locationManager.setLocation(String.valueOf(message), p);
-            p.sendMessage(Main.prefix + "Du hast die Location §c" + message + " §7gesetzt");
+            p.sendMessage(Prefix.MAIN + "Du hast die Location §c" + message + " §7gesetzt");
         } else {
-            p.sendMessage(Main.error_nopermission);
+            p.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }
