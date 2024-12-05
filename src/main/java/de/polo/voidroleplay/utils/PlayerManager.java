@@ -116,18 +116,12 @@ public class PlayerManager implements Listener, ServerTiming {
     }
 
     public void updatePlayer(String uuid, String name, String adress) {
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            String[] adresse = adress.split(":");
-            statement.executeUpdate("UPDATE `players` SET `player_name` = '" + name + "', `adress` = '" + adresse[0] + "' WHERE uuid = '" + uuid + "'");
-            PlayerData playerData = playerDataMap.get(uuid);
+        String[] adresse = adress.split(":");
+        mySQL.updateAsync("UPDATE players SET player_name = ?, adress = ? WHERE uuid = ?", name, adresse[0], uuid);
             /*if (playerData.getForumID() != null) {
                 Statement wcfStatement = MySQL.forum.getStatement();
                 wcfStatement.execute("UPDATE wcf1_user SET username = '" + name + "' WHERE userID = " + playerData.getForumID());
             }*/
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void loadPlayer(Player player) {
@@ -376,7 +370,7 @@ public class PlayerManager implements Listener, ServerTiming {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     if (date.isBefore(LocalDateTime.now())) {
                         player.sendMessage(Main.prefix + "Dein " + playerData.getRang() + " ist ausgelaufen.");
-                        statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + player.getUniqueId() + "'");
+                        mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId());
                         if (playerData.getBusiness() != null) {
                             BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
                             if (business != null) {
@@ -437,16 +431,22 @@ public class PlayerManager implements Listener, ServerTiming {
                     Main.getInstance().utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
                 }
             }
-            statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + playerData.getRang() + "', `level` = " + playerData.getLevel() + ", `exp` = " + playerData.getExp() + ", `needed_exp` = " + playerData.getNeeded_exp() + ", `deathTime` = " + playerData.getDeathTime() + ", `isDead` = " + playerData.isDead() + ", `lastLogin` = NOW(), playtime_minutes = " + playerData.getMinutes() + " WHERE `uuid` = '" + uuid + "'");
+            mySQL.updateAsync("UPDATE `players` SET `player_rank` = ?, `level` = ?, `exp` = ?, `needed_exp` = ?, `deathTime` = ?, `isDead` = ?, `lastLogin` = NOW(), playtime_minutes = ? WHERE `uuid` = ?",
+                    playerData.getRang(),
+                    playerData.getLevel(),
+                    playerData.getExp(),
+                    playerData.getNeeded_exp(),
+                    playerData.getDeathTime(),
+                    playerData.isDead(),
+                    playerData.getMinutes(),
+                    uuid);
             if (playerData.isJailed()) {
-                statement.executeUpdate("UPDATE `Jail` SET `hafteinheiten_verbleibend` = " + playerData.getHafteinheiten() + " WHERE `uuid` = '" + uuid + "'");
+                mySQL.updateAsync("UPDATE Jail SET wps = ? WHERE uuid = ?", playerData.getHafteinheiten(), uuid);
             }
 
             for (Weapon weapon : Main.getInstance().weapons.getWeapons().values()) {
                 if (weapon.getOwner().equals(player.getUniqueId())) {
-                    Statement statement1 = mySQL.getStatement();
-                    statement1.executeUpdate("UPDATE player_weapons SET ammo = " + weapon.getAmmo() + ", current_ammo = " + weapon.getCurrentAmmo() + " WHERE id = " + weapon.getId());
-                    statement1.close();
+                    mySQL.updateAsync("UPDATE player_weapons SET ammo = ?, current_ammo = ? WHERE id = ?", weapon.getAmmo(), weapon.getCurrentAmmo(), weapon.getId());
                 }
             }
 
@@ -561,27 +561,23 @@ public class PlayerManager implements Listener, ServerTiming {
 
 
     public void setRang(UUID uuid, String rank) {
-        try {
-            for (RankData rankData : ServerManager.rankDataMap.values()) {
-                if (rankData.getRang().equalsIgnoreCase(rank)) {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.executeUpdate("UPDATE `players` SET `player_rank` = '" + rankData.getRang() + "', `player_permlevel` = " + rankData.getPermlevel() + " WHERE uuid = '" + uuid + "'");
-                    PlayerData playerData = playerDataMap.get(uuid);
-                    playerData.setRang(rankData.getRang());
-                    playerData.setPermlevel(rankData.getPermlevel());
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player == null) {
-                        return;
-                    }
-                    Utils.Tablist.setTablist(player, null);
-                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                        playerData.setAduty(false);
-                        TeamSpeak.reloadPlayer(player.getUniqueId());
-                    });
+        for (RankData rankData : ServerManager.rankDataMap.values()) {
+            if (rankData.getRang().equalsIgnoreCase(rank)) {
+                mySQL.updateAsync("UPDATE players SET player_rank = ?, player_permlevel = ? WHERE uuid = ?",
+                        rankData.getRang(),
+                        rankData.getPermlevel(),
+                        uuid);
+                PlayerData playerData = playerDataMap.get(uuid);
+                playerData.setRang(rankData.getRang());
+                playerData.setPermlevel(rankData.getPermlevel());
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null) {
+                    return;
                 }
+                Utils.Tablist.setTablist(player, null);
+                playerData.setAduty(false);
+                TeamSpeak.reloadPlayer(player.getUniqueId());
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -681,19 +677,14 @@ public class PlayerManager implements Listener, ServerTiming {
                     }
                     if (playerData.getJailParole() > 0) {
                         playerData.setJailParole(playerData.getJailParole() - 1);
-                        PreparedStatement preparedStatement;
-                        if (playerData.getJailParole() == 0) {
-                            preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE Jail_Parole SET minutes_remaining = ? WHERE uuid = ?");
-                            preparedStatement.setInt(1, playerData.getJailParole());
-                            preparedStatement.setString(2, player.getUniqueId().toString());
-                            preparedStatement.executeUpdate();
+                        if (playerData.getJailParole() != 0) {
+                            mySQL.updateAsync("UPDATE Jail_Parole SET minutes_remaining = ? WHERE uuid = ?",
+                                    playerData.getJailParole(),
+                                    player.getUniqueId());
                         } else {
-                            preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM Jail_Parole WHERE uuid = ?");
-                            preparedStatement.setString(1, player.getUniqueId().toString());
-                            preparedStatement.execute();
+                            mySQL.deleteAsync("DELETE FROM Jail_Parole WHERE uuid = ?", player.getUniqueId());
                             player.sendMessage("§8[§cGefängnis§8]§7 Deine Bewährung ist abgelaufen.");
                         }
-                        preparedStatement.close();
                     }
                 }
 
@@ -782,8 +773,7 @@ public class PlayerManager implements Listener, ServerTiming {
                         // Datenbank- und Fraktionsaktualisierungen
                         try {
                             Main.getInstance().factionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
-                            Statement statement = mySQL.getStatement();
-                            statement.execute("UPDATE factions SET jointsMade = 0 WHERE id = " + factionData.getId());
+                            mySQL.updateAsync("UPDATE factions SET jointsMade = 0 WHERE id = ?", factionData.getId());
                             factionData.setJointsMade(0);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
@@ -846,10 +836,7 @@ public class PlayerManager implements Listener, ServerTiming {
         PlayerData playerData = getPlayerData(player);
         player.sendMessage("§8[§bEXP-Boost§8]§c Dein EXP-Boost ist ausgelaufen!");
         playerData.setBoostDuration(null);
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET boostDuration = NULL WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        statement.executeUpdate();
-        statement.close();
+        mySQL.updateAsync("UPDATE players SET boostDuration = NULL WHERE uuid = ?", player.getUniqueId());
     }
 
     public void addExp(Player player, Integer exp) {
@@ -1313,12 +1300,9 @@ public class PlayerManager implements Listener, ServerTiming {
     public void removeCoins(Player player, int amount) {
         PlayerData playerData = getPlayerData(player.getUniqueId());
         playerData.setCoins(playerData.getCoins() - amount);
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE players SET coins = coins - " + amount + " WHERE uuid = '" + player.getUniqueId() + "'");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        mySQL.updateAsync("UPDATE players SET coins = coins - ? WHERE uuid = ?",
+                amount,
+                player.getUniqueId());
     }
 
     @Override

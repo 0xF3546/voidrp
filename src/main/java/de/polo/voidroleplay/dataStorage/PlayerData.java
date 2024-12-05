@@ -672,11 +672,9 @@ public class PlayerData {
             player.sendMessage("§8[§3Karma§8]§b +" + amount + " Karma.");
         }
         karma += amount;
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE players SET karma = ? WHERE uuid = ?");
-        statement.setInt(1, karma);
-        statement.setString(2, uuid.toString());
-        statement.executeUpdate();
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
+                karma,
+                uuid);
     }
 
     @SneakyThrows
@@ -685,11 +683,9 @@ public class PlayerData {
             player.sendMessage("§8[§3Karma§8]§b -" + amount + " Karma.");
         }
         karma -= amount;
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE players SET karma = ? WHERE uuid = ?");
-        statement.setInt(1, karma);
-        statement.setString(2, uuid.toString());
-        statement.executeUpdate();
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
+                karma,
+                uuid);
     }
 
     @SneakyThrows
