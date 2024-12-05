@@ -563,7 +563,7 @@ public final class Main extends JavaPlugin {
             callCommand = new CallCommand(playerManager, utils);
             auflegenCommand = new AuflegenCommand(utils);
             jailtimeCommand = new JailtimeCommand(playerManager);
-            dropCommand = new DropCommand(playerManager);
+            dropCommand = new DropCommand(playerManager, factionManager);
             lebensmittelLieferantCommand = new LebensmittelLieferantCommand(playerManager, locationManager);
             banCommand = new BanCommand(playerManager, adminManager);
             unbanCommand = new UnbanCommand(playerManager, adminManager);

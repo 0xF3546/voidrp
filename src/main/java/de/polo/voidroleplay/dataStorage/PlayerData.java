@@ -378,7 +378,7 @@ public class PlayerData {
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
         while (result.next()) {
-            weapons.add(new PlayerWeapon(Weapon.valueOf(result.getString("weapon")),
+            weapons.add(new PlayerWeapon(result.getInt("id"), Weapon.valueOf(result.getString("weapon")),
                     result.getInt("wear"),
                     result.getInt("ammo"),
                     WeaponType.NORMAL));
@@ -844,6 +844,10 @@ public class PlayerData {
 
     public Collection<PlayerWeapon> getWeapons() {
         return weapons;
+    }
+
+    public PlayerWeapon getWeapon(Weapon weapon) {
+        return weapons.stream().filter(x -> x.getWeapon() == weapon).findFirst().orElse(null);
     }
 
     public void giveWeapon(PlayerWeapon playerWeapon) {

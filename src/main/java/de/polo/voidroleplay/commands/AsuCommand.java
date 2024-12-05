@@ -76,7 +76,7 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         List<String> text = new ArrayList<>();
-        if (args.length == 0) {
+        if (args.length == 1) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 text.add(player.getName());
             }

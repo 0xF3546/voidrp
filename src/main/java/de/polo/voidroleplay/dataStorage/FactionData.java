@@ -232,7 +232,7 @@ public class FactionData {
     public void addBankMoney(Integer amount, String reason) {
         setBank(getBank() + amount);
         Main.getInstance().getMySQL().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO factio_bank_logs (type, faction, amount, reason, isPlus) VALUES ('einzahlung', ?, ?, ?, true)",
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('einzahlung', ?, ?, ?, true)",
                 getName(),
                 amount,
                 reason);
@@ -242,7 +242,7 @@ public class FactionData {
         if (getBank() >= amount) {
             setBank(getBank() - amount);
             Main.getInstance().getMySQL().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
-            Main.getInstance().getMySQL().insertAsync("INSERT INTO factio_bank_logs (type, faction, amount, reason, isPlus) VALUES ('auszahlung', ?, ?, ?, false)",
+            Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('auszahlung', ?, ?, ?, false)",
                     getName(),
                     amount,
                     reason);

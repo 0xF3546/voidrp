@@ -42,6 +42,7 @@ import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -195,13 +196,16 @@ public class PlayerManager implements Listener {
                     LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     playerData.setRankDuration(localDateTime);
                 }
+                System.out.println(result.getDate("dailyBonusRedeemed"));
                 if (result.getDate("dailyBonusRedeemed") != null) {
-                    Date utilDate = new Date(result.getDate("dailyBonusRedeemed").getTime());
-                    playerData.setDailyBonusRedeemed(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                    java.sql.Date sqlDate = result.getDate("dailyBonusRedeemed");
+                    Instant instant = Instant.ofEpochMilli(sqlDate.getTime());
+                    playerData.setDailyBonusRedeemed(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
                 if (result.getDate("lastPayDay") != null) {
-                    Date utilDate = new Date(result.getDate("lastPayDay").getTime());
-                    playerData.setLastPayDay(utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                    java.sql.Date utilDate = result.getDate("lastPayDay");
+                    Instant instant = Instant.ofEpochMilli(utilDate.getTime());
+                    playerData.setLastPayDay(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
                 if (result.getDate("boostDuration") != null)
                     playerData.setBoostDuration(result.getTimestamp("boostDuration").toLocalDateTime());

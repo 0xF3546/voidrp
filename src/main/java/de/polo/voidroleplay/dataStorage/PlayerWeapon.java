@@ -25,6 +25,14 @@ public class PlayerWeapon {
     @Getter
     private final WeaponType weaponType;
 
+    public PlayerWeapon(int id, Weapon weapon, int wear, int ammo, WeaponType weaponType) {
+        this.id = id;
+        this.weapon = weapon;
+        this.wear = wear;
+        this.ammo = ammo;
+        this.weaponType = weaponType;
+    }
+
     public PlayerWeapon(Weapon weapon, int wear, int ammo, WeaponType weaponType) {
         this.weapon = weapon;
         this.wear = wear;

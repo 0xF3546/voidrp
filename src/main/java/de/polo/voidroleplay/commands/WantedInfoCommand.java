@@ -48,7 +48,7 @@ public class WantedInfoCommand implements CommandExecutor {
         WantedReason wantedReason = utils.getStaatUtil().getWantedReason(targetData.getWanted().getWantedId());
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(targetData.getWanted().getIssuer());
         player.sendMessage("§9HQ: Fahndung " + target.getName() + ": " + wantedReason.getReason() + " (" + wantedReason.getWanted() + " WPS)");
-        player.sendMessage("§9HQ: Fahndung " + target.getName() + ": Beamter: " + offlinePlayer.getName() + ", " + Utils.localDateTimeToReadableString(targetData.getWanted().getIssued()));
+        player.sendMessage("§9HQ: Beamter: " + offlinePlayer.getName() + ", " + Utils.localDateTimeToReadableString(targetData.getWanted().getIssued()));
         return false;
     }
 }

@@ -264,37 +264,35 @@ public class ShopCommand implements CommandExecutor {
     }
 
     private void BuyItem(Player player, int price, String type, String displayName, Material item, String info, int shopId) {
+        PlayerData playerData = playerManager.getPlayerData(player);
         if (playerManager.money(player) >= price) {
             try {
                 if (Objects.equals(type, "weapon")) {
-                    String weapon = displayName.toString().replace("&", "").replace("6", "");
-                    Main.getInstance().weapons.giveWeaponToCabinet(player, Weapon.valueOf(info), 0, 250);
-                    player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
-                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                    playerManager.removeMoney(player, price, "Kauf der Waffe: " + weapon);
-                } else if (Objects.equals(type, "ammo")) {
-                    String ammo = info;
-                    if (player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
-                        player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
-                        player.closeInventory();
-                        return;
+                    try {
+                        Weapon w = Weapon.valueOf(info.toUpperCase());
+                        String weapon = displayName.toString().replace("&", "").replace("6", "");
+                        Main.getInstance().weapons.giveWeaponToCabinet(player, w, 0, 250);
+                        player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
+                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
+                        playerManager.removeMoney(player, price, "Kauf der Waffe: " + weapon);
+                    } catch (Exception e) {
+                        player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten.");
+                        e.printStackTrace();
                     }
-                    for (Weapon weaponData : Weapon.values()) {
-                        if (weaponData == Weapon.valueOf(ammo)) {
-                            if (weaponData.getMaterial().equals(player.getEquipment().getItemInMainHand().getType())) {
-                                de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(player.getEquipment().getItemInMainHand());
-                                Main.getInstance().weapons.giveAmmo(player, weapon, weaponData.getMaxAmmo());
-                                player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
-                                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
-                                playerManager.removeMoney(player, price, "Kauf von Munition: " + weaponData.name());
-                            } else {
-                                player.sendMessage(Main.error + "Bitte halte die Waffe in der Hand!");
-                                player.closeInventory();
-                            }
+                } else if (Objects.equals(type, "ammo")) {
+                    try {
+                        Weapon weapon = Weapon.valueOf(info.toUpperCase());
+                        PlayerWeapon playerWeapon = playerData.getWeapon(weapon);
+                        if (playerWeapon == null) {
+                            player.sendMessage(Prefix.ERROR + "Du hast diese Waffe nicht im Waffenschrank.");
                             return;
                         }
+                        Main.getInstance().weapons.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
+                        player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
+                    } catch (Exception e) {
+                        player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten.");
+                        e.printStackTrace();
                     }
-                    player.sendMessage(Main.error + "Es konnte keine Waffe zur Munition gefunden werden.");
                 } else if (Objects.equals(type, "car")) {
                     Main.getInstance().vehicles.giveVehicle(player, info);
                     playerManager.removeMoney(player, price, "Kauf eines Fahrzeuges: " + info);

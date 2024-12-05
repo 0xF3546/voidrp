@@ -24,7 +24,7 @@ public class WeaponInfoCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
         for (PlayerWeapon playerWeapon : playerData.getWeapons()) {
             Weapon weapon = playerWeapon.getWeapon();
-            player.sendMessage("§8 - §b" + weapon.getName() + "§8:§7 A: " + playerWeapon.getAmmo() + " V: " + playerWeapon.getWear());
+            player.sendMessage("§8 - §b" + weapon.getClearName() + "§8:§7 A: " + playerWeapon.getAmmo() + " V: " + playerWeapon.getWear());
         }
         return false;
     }

@@ -51,7 +51,7 @@ public class ClearCommand implements CommandExecutor {
         }
         targetData.clearWanted();
         target.sendMessage("§cBeamter " + player.getName() + " hat deine Akte gelöscht.");
-        factionManager.sendCustomMessageToFactions("§9HQ: " + factionManager.getTitle(player) + " " + player.getName() + " hat " + target.getName() + " seine Akte erlassen.", "Polizei", "FBI");
+        factionManager.sendCustomMessageToFactions("§9HQ: " + factionManager.getTitle(player) + " " + player.getName() + " hat " + target.getName() + "'s Akte gelöscht.", "Polizei", "FBI");
         return false;
     }
 }

@@ -10,15 +10,20 @@ import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mayson1337
  * @version 1.0.0
  * @since 1.0.0
  */
-public class BlacklistReasonsCommand implements CommandExecutor {
+public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     public BlacklistReasonsCommand(PlayerManager playerManager, FactionManager factionManager) {
@@ -26,6 +31,7 @@ public class BlacklistReasonsCommand implements CommandExecutor {
         this.factionManager = factionManager;
 
         Main.registerCommand("blacklistreasons", this);
+        Main.addTabCompeter("blacklistreasons", this);
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -95,5 +101,15 @@ public class BlacklistReasonsCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /blacklistreasons [add/remove]");
         }
         return false;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        List<String> texts = new ArrayList<>();
+        if (args.length == 1) {
+            texts.add("add");
+            texts.add("remove");
+        }
+        return null;
     }
 }

@@ -271,5 +271,6 @@ commands:
     aliases: asu
   clear:
   weaponinfo:
+    aliases: winfo
   wantedinfo:
   equiptransport:
