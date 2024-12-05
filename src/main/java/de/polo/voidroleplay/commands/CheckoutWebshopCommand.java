@@ -14,10 +14,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -97,26 +94,26 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                 amount);
     }
 
-    public CompletableFuture<Void> loadShopBuys(Player player) {
-        return CompletableFuture.supplyAsync(() -> {
+    public void loadShopBuys(Player player) {
+        CompletableFuture.supplyAsync(() -> {
             PlayerData playerData = playerManager.getPlayerData(player);
             String uuid = player.getUniqueId().toString().replace("-", "").toLowerCase();
             Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM player_shop_claims WHERE LOWER(uuid) = ?", uuid)
                     .thenApply(result -> {
-                        for (int i = 0; i < result.size(); i++) {
-                            switch (result.get(i).get("type").toString().toLowerCase()) {
+                        for (java.util.Map<String, Object> stringObjectMap : result) {
+                            switch (stringObjectMap.get("type").toString().toLowerCase()) {
                                 case "coins":
-                                    playerManager.addCoins(player, (int) result.get(i).get("amount"));
-                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) result.get(i).get("amount") + " Coins erhalten!");
+                                    playerManager.addCoins(player, (int) stringObjectMap.get("amount"));
+                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) stringObjectMap.get("amount") + " Coins erhalten!");
                                     break;
                                 case "premium":
-                                    playerManager.redeemRank(player, "premium", (int) result.get(i).get("amount"), "d");
-                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) result.get(i).get("amount") + " Tage Premium erhalten!");
+                                    playerManager.redeemRank(player, "premium", (int) stringObjectMap.get("amount"), "d");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) stringObjectMap.get("amount") + " Tage Premium erhalten!");
                                     break;
                                 case "gameboost":
                                     try {
-                                        playerManager.addEXPBoost(player, (int) result.get(i).get("amount"));
-                                        player.sendMessage("§8[§eShop§8]§a Du hast " + (int) result.get(i).get("amount") + "h Gameboost erhalten!");
+                                        playerManager.addEXPBoost(player, (int) stringObjectMap.get("amount"));
+                                        player.sendMessage("§8[§eShop§8]§a Du hast " + (int) stringObjectMap.get("amount") + "h Gameboost erhalten!");
                                     } catch (SQLException e) {
                                         throw new RuntimeException(e);
                                     }
