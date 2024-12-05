@@ -49,7 +49,7 @@ public class JoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        event.setJoinMessage("");
+        event.joinMessage(Component.text(""));
         player.setGameMode(GameMode.SURVIVAL);
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
@@ -64,7 +64,6 @@ public class JoinListener implements Listener {
                 FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
                 player.sendMessage("§8 ➥ §6[FMOTD] " + factionData.getMotd());
             }
-            RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
             Utils.Tablist.setTablist(player, null);
             playerData.setUuid(player.getUniqueId());
             if (playerData.getPermlevel() >= 40) {
@@ -85,7 +84,7 @@ public class JoinListener implements Listener {
             serverManager.updateTablist(null);
         } else {
             player.sendMessage(" ");
-            player.sendMessage("§6VoidRoleplay §8»§7 Herzlich Wilkommen auf VoidRoleplay, " + player.getName() + ".");
+            player.sendMessage("§6VoidRoleplay §8»§7 Herzlich willkommen auf VoidRoleplay, " + player.getName() + ".");
             player.sendMessage(" ");
             locationManager.useLocation(player, "Spawn");
             adminManager.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
