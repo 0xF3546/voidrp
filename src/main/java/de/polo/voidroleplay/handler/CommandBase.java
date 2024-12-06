@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +46,10 @@ public abstract class CommandBase implements CommandExecutor {
         }
         try {
             execute(player, playerData, args);
+            PluginCommand pluginCommand = Main.getInstance().getCommand(command.name());
+            if (pluginCommand != null) {
+                pluginCommand.setExecutor(this);
+            }
         } catch (Exception e) {
             player.sendMessage("An error occurred: " + e.getMessage());
         }
