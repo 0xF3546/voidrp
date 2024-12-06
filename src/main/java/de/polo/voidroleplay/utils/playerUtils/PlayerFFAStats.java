@@ -11,12 +11,10 @@ import lombok.Setter;
  */
 public class PlayerFFAStats {
     @Getter
+    private final String uuid;
+    @Getter
     @Setter
     private int id;
-
-    @Getter
-    private final String uuid;
-
     @Getter
     @Setter
     private int kills;

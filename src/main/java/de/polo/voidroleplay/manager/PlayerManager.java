@@ -24,6 +24,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.PlayerTutorial;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -57,7 +58,7 @@ public class PlayerManager implements Listener {
     public final HashMap<String, Integer> player_rent = new HashMap<>();
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
     private final HashMap<String, Boolean> playerMovement = new HashMap<>();
-    private final List<PlaytimeReward> playtimeRewards = new ArrayList<>();
+    private final List<PlaytimeReward> playtimeRewards = new ObjectArrayList<>();
 
     private final MySQL mySQL;
 
@@ -140,7 +141,7 @@ public class PlayerManager implements Listener {
             if (result.next()) {
                 if (result.getString("player_name") != null) {
                     if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
-                        List<Integer> houses = new ArrayList<>();
+                        List<Integer> houses = new ObjectArrayList<>();
                         for (House house : HouseManager.houseDataMap.values()) {
                             if (house.getOwner() == null) continue;
                             if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
@@ -789,7 +790,7 @@ public class PlayerManager implements Listener {
         player.sendMessage(" ");
         player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
-        List<IGangzone> gangZones = new ArrayList<>();
+        List<IGangzone> gangZones = new ObjectArrayList<>();
         for (IGangzone gangzone : Main.getInstance().utils.gangwarUtils.getGangzones()) {
             if (gangzone.getOwner().equals(factionData.getName())) {
                 gangZones.add(gangzone);

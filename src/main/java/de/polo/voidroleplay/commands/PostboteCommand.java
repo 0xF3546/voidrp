@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,11 +18,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostboteCommand implements CommandExecutor {
-    private final List<Integer> array = new ArrayList<>();
+    private final List<Integer> array = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
 

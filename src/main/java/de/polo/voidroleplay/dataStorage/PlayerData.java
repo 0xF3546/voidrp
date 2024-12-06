@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
 import de.polo.voidroleplay.utils.playerUtils.PlayerPowerUpManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -34,11 +35,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerData {
     public final AddonXP addonXP = new AddonXP();
-    private final List<PlayerQuest> quests = new ArrayList<>();
-    private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
-    private final List<PlayerIllness> illnesses = new ArrayList<>();
-    private final List<PlayerWeapon> weapons = new ArrayList<>();
-    private final List<ClickedEventBlock> clickedEventBlocks = new ArrayList<>();
+    private final List<PlayerQuest> quests = new ObjectArrayList<>();
+    private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ObjectArrayList<>();
+    private final List<PlayerIllness> illnesses = new ObjectArrayList<>();
+    private final List<PlayerWeapon> weapons = new ObjectArrayList<>();
+    private final List<ClickedEventBlock> clickedEventBlocks = new ObjectArrayList<>();
     private final HashMap<String, Object> variables = new HashMap<>();
     private final HashMap<String, Integer> integer_variables = new HashMap<>();
     private final HashMap<String, Location> locationVariables = new HashMap<>();
@@ -245,7 +246,7 @@ public class PlayerData {
     @Setter
     private int karma;
     @Setter
-    private List<PlayerWorkstation> workstations = new ArrayList<>();
+    private List<PlayerWorkstation> workstations = new ObjectArrayList<>();
 
     @Getter
     @Setter

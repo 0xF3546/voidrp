@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,10 +24,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 public class ApothekeFunctions implements Listener {
-    private final List<Apotheke> apotheken = new ArrayList<>();
+    private final List<Apotheke> apotheken = new ObjectArrayList<>();
     private final MySQL mySQL;
     private final Utils utils;
     private final FactionManager factionManager;

@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.BlockManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -16,7 +17,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FDoorCommand implements CommandExecutor {
@@ -66,7 +66,7 @@ public class FDoorCommand implements CommandExecutor {
             Main.getInstance().gamePlay.openGOVRaidGUI(Main.getInstance().factionManager.getFactionData(faction), player);
             return false;
         }
-        List<RegisteredBlock> blocks = new ArrayList<>();
+        List<RegisteredBlock> blocks = new ObjectArrayList<>();
         for (RegisteredBlock block : blockManager.getBlocks()) {
             if (block.getInfo().equalsIgnoreCase("adoor_" + faction)) {
                 blocks.add(block);

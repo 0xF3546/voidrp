@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.VertragUtil;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -21,8 +22,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Streetwar implements CommandExecutor {
@@ -184,14 +185,14 @@ public class Streetwar implements CommandExecutor {
             }
             return false;
         }
-        ArrayList<Player> availablePlayers = new ArrayList<>();
+        List<Player> availablePlayers = new ObjectArrayList<>();
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
             if (playersData.getFaction().equalsIgnoreCase(args[0]) && playersData.getFactionGrade() >= 7) {
                 availablePlayers.add(players);
             }
         }
-        if (availablePlayers.size() == 0) {
+        if (availablePlayers.isEmpty()) {
             player.sendMessage(Main.error + "Es ist kein Fraktionsleader der Gegner-Partei online.");
             return false;
         }

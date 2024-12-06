@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.base.housing;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.PlayerWeapon;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.dataStorage.Weapon;
@@ -10,12 +10,14 @@ import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.HouseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -144,7 +146,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     public List<House> getAccessedHousing(Player player) {
-        List<House> access = new ArrayList<>();
+        List<House> access = new ObjectArrayList<>();
         for (House houseData : houseDataMap.values()) {
             if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) {
                 if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
@@ -200,7 +202,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     public Collection<House> getHouses(Player player) {
-        List<House> access = new ArrayList<>();
+        List<House> access = new ObjectArrayList<>();
         for (House houseData : houseDataMap.values()) {
             if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) continue;
 
@@ -230,7 +232,7 @@ public class HouseManager implements CommandExecutor, Listener {
             System.out.println(rBlock.getInfo() + " - " + rBlock.getInfoValue());
 
             Block block = rBlock.getLocation().getBlock();
-            System.out.println(block.getType().toString());
+            System.out.println(block.getType());
             if (block.getType().toString().contains("SIGN")) {
                 Sign sign = (Sign) block.getState();
                 try {
@@ -316,7 +318,7 @@ public class HouseManager implements CommandExecutor, Listener {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.sendMessage(Prefix.ERROR + "Aktuell haben wir keine Server zu verkaufen.");
-                return;/*
+                /*
                 if (!house.isServerRoom()) {
                     player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
                     return;
@@ -421,7 +423,6 @@ public class HouseManager implements CommandExecutor, Listener {
                     s.setHouseNumber(house.getNumber());
                     s.create();
                 }
-                ;
                 s.open(player);
             }
         });
@@ -474,7 +475,7 @@ public class HouseManager implements CommandExecutor, Listener {
                 for (ItemStack item : event.getPlayer().getInventory().getContents()) {
                     if (item == null) continue;
                     if (item.getType() == playerWeapon.getWeapon().getMaterial()
-                        && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
+                            && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
                         Weapon weapon = Main.getInstance().getWeaponManager().getWeaponFromItemStack(item);
                         if (weapon == null) continue;
                         if (Main.getInstance().getWeaponManager().takeOutAmmo(event.getPlayer(), playerWeapon, weapon, amount)) {

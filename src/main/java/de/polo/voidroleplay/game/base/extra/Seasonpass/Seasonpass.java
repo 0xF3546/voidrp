@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -20,7 +21,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Mayson1337
@@ -30,8 +34,8 @@ import java.util.*;
 public class Seasonpass implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final List<Quest> quests = new ArrayList<>();
-    private final List<Reward> rewards = new ArrayList<>();
+    private final List<Quest> quests = new ObjectArrayList<>();
+    private final List<Reward> rewards = new ObjectArrayList<>();
 
     public Seasonpass(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
@@ -176,7 +180,7 @@ public class Seasonpass implements CommandExecutor {
             return null;
         }
 
-        List<Quest> availableQuests = new ArrayList<>(quests);
+        List<Quest> availableQuests = new ObjectArrayList<>(quests);
         availableQuests.removeIf(quest -> playerData.getQuests().stream().anyMatch(playerQuest -> playerQuest.getQuestId() == quest.getId()));
 
         if (availableQuests.isEmpty()) {
@@ -184,8 +188,7 @@ public class Seasonpass implements CommandExecutor {
             return null;
         }
 
-        Random random = new Random();
-        int randomIndex = random.nextInt(availableQuests.size());
+        int randomIndex = ThreadLocalRandom.current().nextInt(availableQuests.size() + 1);
         Quest quest = availableQuests.get(randomIndex);
         if (quest.isBadFaction()) {
             if (playerData.getFaction() == null) return getRandomQuest(playerData);

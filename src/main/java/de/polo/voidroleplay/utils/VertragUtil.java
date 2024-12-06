@@ -11,6 +11,7 @@ import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -22,7 +23,11 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
@@ -32,7 +37,7 @@ public class VertragUtil {
     private final FactionManager factionManager;
     private final AdminManager adminManager;
 
-    private final List<Agreement> agreements = new ArrayList<>();
+    private final List<Agreement> agreements = new ObjectArrayList<>();
 
     public VertragUtil(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
         this.playerManager = playerManager;
@@ -185,7 +190,7 @@ public class VertragUtil {
                                 return;
                             }
                             String[] blutgruppen = {"A-", "A+", "B-", "B+", "AB-", "AB+", "0+", "0-"};
-                            String random = blutgruppen[new Random().nextInt(blutgruppen.length)];
+                            String random = blutgruppen[ThreadLocalRandom.current().nextInt(blutgruppen.length + 1)];
                             finalTargetplayer.sendMessage("§8[§cLabor§8]§e Die Blutgruppe ist " + random + "!");
                             player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
                             playerData.setBloodType(random);

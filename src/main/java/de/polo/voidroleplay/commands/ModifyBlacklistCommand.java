@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -19,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,10 +109,10 @@ public class ModifyBlacklistCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 2) {
-            List<String> reasons = new ArrayList<>();
+            List<String> reasons = new ObjectArrayList<>();
             Player player = (Player) sender;
             PlayerData playerData = playerManager.getPlayerData(player);
-            if (playerData.getFaction() == null) return new ArrayList<>();
+            if (playerData.getFaction() == null) return new ObjectArrayList<>();
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             for (BlacklistReason reason : factionData.getBlacklistReasons()) {
                 reasons.add(reason.getReason());

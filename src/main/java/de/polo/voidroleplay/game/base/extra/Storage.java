@@ -20,8 +20,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -30,7 +28,6 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public class Storage implements Listener {
-    private static final List<Storage> storages = new ArrayList<>();
     private int id;
     private String player;
     private int factionId = -1;

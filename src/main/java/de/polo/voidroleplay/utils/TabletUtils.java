@@ -10,6 +10,7 @@ import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +25,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
@@ -816,7 +816,7 @@ public class TabletUtils implements Listener {
                 public void onClick(InventoryClickEvent event) {
                     CompanyRole role = new CompanyRole();
                     role.setName("Neue Rolle");
-                    role.setPermissions(new ArrayList<>());
+                    role.setPermissions(new ObjectArrayList<>());
                     playerData.getCompany().createRole(role);
                     openRoles(player);
                 }

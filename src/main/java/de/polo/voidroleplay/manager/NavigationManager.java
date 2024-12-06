@@ -11,6 +11,7 @@ import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,7 +27,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NavigationManager implements CommandExecutor, TabCompleter, Listener {
@@ -359,7 +359,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            List<String> suggestions = new ArrayList<>();
+            List<String> suggestions = new ObjectArrayList<>();
             for (NaviData naviData : LocationManager.naviDataMap.values()) {
                 if (!naviData.isGroup()) {
                     suggestions.add(naviData.getName().substring(2));

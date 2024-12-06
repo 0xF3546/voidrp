@@ -11,6 +11,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -25,7 +26,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +34,7 @@ public class DeathUtils {
     private final HashMap<String, Boolean> deathPlayer = new HashMap<>();
     private final HashMap<String, Item> deathSkulls = new HashMap<>();
 
-    private final List<Corpse> corpses = new ArrayList<>();
+    private final List<Corpse> corpses = new ObjectArrayList<>();
 
     private final PlayerManager playerManager;
     private final AdminManager adminManager;

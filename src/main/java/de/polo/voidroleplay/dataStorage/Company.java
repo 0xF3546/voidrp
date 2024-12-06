@@ -2,6 +2,7 @@ package de.polo.voidroleplay.dataStorage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -10,12 +11,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 public class Company {
+    private final List<CompanyRole> roles = new ObjectArrayList<>();
     @Getter
     @Setter
     private int id;
@@ -28,8 +29,6 @@ public class Company {
     @Getter
     @Setter
     private int bank;
-
-    private final List<CompanyRole> roles = new ArrayList<>();
 
     public void addRole(CompanyRole role) {
         roles.add(role);

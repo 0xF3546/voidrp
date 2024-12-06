@@ -5,6 +5,7 @@ import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.GlobalStats;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,13 +29,13 @@ public class MilitaryDrop implements Listener {
     private final FactionManager factionManager;
     private final LocationManager locationManager;
 
-    private final List<Player> joinedPlayers = new ArrayList<>();
-    private final List<Player> alivePlayers = new ArrayList<>();
+    private final List<Player> joinedPlayers = new ObjectArrayList<>();
+    private final List<Player> alivePlayers = new ObjectArrayList<>();
 
     private final HashMap<FactionData, Integer> stats = new HashMap<>();
     private final HashMap<String, Location> factionSpawns = new HashMap<>();
-    private final List<Location> spawns = new ArrayList<>();
-    private final List<Location> chestSpawns = new ArrayList<>();
+    private final List<Location> spawns = new ObjectArrayList<>();
+    private final List<Location> chestSpawns = new ObjectArrayList<>();
     private final Location middleArena;
     private boolean freezePlayers = false;
     private boolean isRoundActive = false;
@@ -199,7 +200,7 @@ public class MilitaryDrop implements Listener {
     }
 
     private void sendRankingListToPlayers() {
-        List<Map.Entry<FactionData, Integer>> sortedStats = new ArrayList<>(stats.entrySet());
+        List<Map.Entry<FactionData, Integer>> sortedStats = new ObjectArrayList<>(stats.entrySet());
         sortedStats.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
         StringBuilder rankingMessage = new StringBuilder("§8[§cMilitärabsturz§8]§f Rangliste nach dieser Runde:\n");
@@ -218,7 +219,7 @@ public class MilitaryDrop implements Listener {
     }
 
     public Collection<Player> getFactionPlayers(String faction) {
-        List<Player> players = new ArrayList<>();
+        List<Player> players = new ObjectArrayList<>();
         for (Player player : joinedPlayers) {
             if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);
@@ -264,7 +265,7 @@ public class MilitaryDrop implements Listener {
     }
 
     private Collection<FactionData> getTeamsAlive() {
-        List<FactionData> factions = new ArrayList<>();
+        List<FactionData> factions = new ObjectArrayList<>();
         for (Player player : alivePlayers) {
             if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);
@@ -281,7 +282,7 @@ public class MilitaryDrop implements Listener {
     }
 
     private Collection<FactionData> getTeams() {
-        List<FactionData> factions = new ArrayList<>();
+        List<FactionData> factions = new ObjectArrayList<>();
         for (Player player : joinedPlayers) {
             if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);

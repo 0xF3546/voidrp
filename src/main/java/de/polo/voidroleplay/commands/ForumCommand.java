@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,7 @@ import org.bukkit.entity.Player;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ForumCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -56,7 +57,8 @@ public class ForumCommand implements CommandExecutor {
                     utils.sendActionBar(player, "§aAccount freigeschaltet.");
                     playerData.setForumID(forumID);
                     utils.sendActionBar(player, "§aWeise Forum-Rechte zu...");
-                    ArrayList<Integer> ranks = new ArrayList<>();
+                    List<Integer> ranks = new ObjectArrayList<>();
+                    ranks.indexOf(1);
                     RankData spielerData = ServerManager.rankDataMap.get("Spieler");
                     ranks.add(spielerData.getForumID());
                     RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());

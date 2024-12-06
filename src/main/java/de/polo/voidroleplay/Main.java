@@ -31,6 +31,7 @@ import org.dynmap.markers.MarkerAPI;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class Main extends JavaPlugin {
     public static final String faction_prefix = "§8[§9Fraktion§8] §7";
@@ -41,6 +42,7 @@ public final class Main extends JavaPlugin {
     public static final String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static final String business_prefix = "§8[§6Business§8]§7 ";
     public static Plugin plugin = null;
+    @Getter
     private static Main instance;
     public boolean isOnline = false;
     @Getter
@@ -100,7 +102,7 @@ public final class Main extends JavaPlugin {
     }
 
     public static int random(int min, int max) {
-        return min + (int) (Math.random() * ((max - min) + 1));
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
     public static char getRandomChar(String characters) {
@@ -110,10 +112,9 @@ public final class Main extends JavaPlugin {
     }
 
     public static String generateRandomCode(int length) {
-        Random random = new Random();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            int randomInt = random.nextInt(75) + 48;
+            int randomInt = ThreadLocalRandom.current().nextInt(75 + 1) + 48;
             if ((randomInt >= 48 && randomInt <= 57) || (randomInt >= 65 && randomInt <= 90) || (randomInt >= 97 && randomInt <= 122)) {
                 sb.append((char) randomInt);
             } else {
@@ -121,10 +122,6 @@ public final class Main extends JavaPlugin {
             }
         }
         return sb.toString();
-    }
-
-    public static Main getInstance() {
-        return instance;
     }
 
     public static void waitSeconds(int seconds, Runnable runnable) {
@@ -278,6 +275,16 @@ public final class Main extends JavaPlugin {
     }
 
     public class Commands {
+        private final Main main;
+        private final PlayerManager playerManager;
+        private final AdminManager adminManager;
+        private final LocationManager locationManager;
+        private final SupportManager supportManager;
+        private final Vehicles vehicles;
+        private final GamePlay gamePlay;
+        private final BusinessManager businessManager;
+        private final WeaponManager weaponManager;
+        private final CompanyManager companyManager;
         public SetTeamCommand setTeamCommand;
         public GeldbeutelCommand geldbeutelCommand;
         public PersonalausweisCommand personalausweisCommand;
@@ -480,16 +487,6 @@ public final class Main extends JavaPlugin {
         public RemoveLeaderRechteCommand removeLeaderRechteCommand;
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
-        private final Main main;
-        private final PlayerManager playerManager;
-        private final AdminManager adminManager;
-        private final LocationManager locationManager;
-        private final SupportManager supportManager;
-        private final Vehicles vehicles;
-        private final GamePlay gamePlay;
-        private final BusinessManager businessManager;
-        private final WeaponManager weaponManager;
-        private final CompanyManager companyManager;
 
         public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
             this.main = main;

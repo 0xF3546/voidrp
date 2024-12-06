@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -27,7 +28,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ServerManager {
     public static final boolean canDoJobsBoolean = true;
@@ -39,7 +43,7 @@ public class ServerManager {
     public static final Map<String, ContractData> contractDataMap = new HashMap<>();
     public static final Map<Integer, ShopData> shopDataMap = new HashMap<>();
     public static final Map<String, String> serverVariables = new HashMap<>();
-    public static final List<UUID> factionStorageWeaponsTookout = new ArrayList<>();
+    public static final List<UUID> factionStorageWeaponsTookout = new ObjectArrayList<>();
     private static final Map<String, PayoutData> payoutDataMap = new HashMap<>();
     public static Object[][] faction_grades;
 

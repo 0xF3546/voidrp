@@ -14,6 +14,7 @@ import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -29,12 +30,14 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class BankingUtils implements Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final List<ATM> atmList = new ArrayList<>();
+    private final List<ATM> atmList = new ObjectArrayList<>();
 
     @SneakyThrows
     public BankingUtils(PlayerManager playerManager, FactionManager factionManager) {

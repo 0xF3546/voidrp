@@ -107,7 +107,7 @@ public class Alliance implements CommandExecutor {
             endAlliance(playerData.getFaction());
             return false;
         }
-        ArrayList<Player> availablePlayers = new ArrayList<>();
+        ArrayList<Player> availablePlayers = new ObjectArrayList<>();
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
             if (playersData.getFaction() == null) continue;

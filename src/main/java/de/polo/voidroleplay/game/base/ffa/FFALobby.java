@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.game.base.ffa;
 
 import de.polo.voidroleplay.utils.enums.FFALobbyType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ public class FFALobby {
     @Getter
     private final int id;
 
-    private final List<FFASpawn> spawns = new ArrayList<>();
+    private final List<FFASpawn> spawns = new ObjectArrayList<>();
 
     @Getter
     @Setter

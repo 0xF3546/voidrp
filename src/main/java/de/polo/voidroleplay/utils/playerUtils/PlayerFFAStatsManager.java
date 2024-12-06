@@ -2,6 +2,7 @@ package de.polo.voidroleplay.utils.playerUtils;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Player;
 
@@ -9,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * @since 1.0.0
  */
 public class PlayerFFAStatsManager {
-    private final List<PlayerFFAStats> stats = new ArrayList<>();
+    private final List<PlayerFFAStats> stats = new ObjectArrayList<>();
 
     private final Player player;
 

@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.SubGroups;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -26,9 +27,9 @@ public class FactionManager {
     private final Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
     private final Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
     private final PlayerManager playerManager;
-    private final List<SubTeam> subTeams = new ArrayList<>();
+    private final List<SubTeam> subTeams = new ObjectArrayList<>();
     private final HashMap<Block, LocalDateTime> bannerSprayed = new HashMap<>();
-    private final List<SprayableBanner> sprayableBanners = new ArrayList<>();
+    private final List<SprayableBanner> sprayableBanners = new ObjectArrayList<>();
 
     public FactionManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
@@ -108,7 +109,7 @@ public class FactionManager {
                 factionData.setBannerColor(Material.valueOf(bannerTypeString));
 
                 JSONArray jsonArray = bannerObject.getJSONArray("patterns");
-                List<Pattern> patterns = new ArrayList<>();
+                List<Pattern> patterns = new ObjectArrayList<>();
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject patternObject = jsonArray.getJSONObject(i);
@@ -524,7 +525,7 @@ public class FactionManager {
     }
 
     public Collection<PlayerData> getFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath) {
-        List<PlayerData> players = new ArrayList<>();
+        List<PlayerData> players = new ObjectArrayList<>();
         for (PlayerData playerData : playerManager.getPlayers()) {
             if (playerData.getFaction() == null) continue;
             if (playerData.getFaction().equalsIgnoreCase(faction)) {
@@ -543,7 +544,7 @@ public class FactionManager {
         FactionData factionData = getFactionData(faction);
         if (factionData == null) return null;
 
-        List<FactionPlayerData> factionPlayers = new ArrayList<>();
+        List<FactionPlayerData> factionPlayers = new ObjectArrayList<>();
         PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM players WHERE faction = ?");
         statement.setString(1, factionData.getName());
         ResultSet result = statement.executeQuery();
@@ -608,7 +609,7 @@ public class FactionManager {
     }
 
     public Collection<SubTeam> getSubTeams(int factionId) {
-        List<SubTeam> teams = new ArrayList<>();
+        List<SubTeam> teams = new ObjectArrayList<>();
         for (SubTeam team : subTeams) {
             if (team.getFactionId() == factionId) teams.add(team);
         }

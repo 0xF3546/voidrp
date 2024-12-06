@@ -3,6 +3,7 @@ package de.polo.voidroleplay.game.base.housing;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.utils.enums.HouseType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -11,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class House {
     private HouseType houseType = HouseType.BASIC;
     @Getter
     @Setter
-    private List<Miner> activeMiner = new ArrayList<>();
+    private List<Miner> activeMiner = new ObjectArrayList<>();
     @Getter
     @Setter
     private boolean cookActive;

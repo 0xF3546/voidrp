@@ -19,6 +19,7 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Openable;
@@ -52,9 +53,9 @@ public class PlayerInteractListener implements Listener {
     private final BlockManager blockManager;
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
-    private final List<Molotov> molotovs = new ArrayList<>();
-    private final List<Block> sprungtuecher = new ArrayList<>();
-    private final List<Grenade> activeGrenades = new ArrayList<>();
+    private final List<Molotov> molotovs = new ObjectArrayList<>();
+    private final List<Block> sprungtuecher = new ObjectArrayList<>();
+    private final List<Grenade> activeGrenades = new ObjectArrayList<>();
 
     public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager) {
         this.playerManager = playerManager;
@@ -401,7 +402,7 @@ public class PlayerInteractListener implements Listener {
                                             @Override
                                             public void onClick(InventoryClickEvent event) {
                                                 Player player = (Player) event.getWhoClicked(); // Ensure we get the player from the event
-                                                List<Player> nearPlayers = new ArrayList<>();
+                                                List<Player> nearPlayers = new ObjectArrayList<>();
                                                 for (Player p : Bukkit.getOnlinePlayers()) {
                                                     if (p.getWorld() != player.getWorld()) continue;
                                                     if (player.getLocation().distance(p.getLocation()) < 5 && p != player) {

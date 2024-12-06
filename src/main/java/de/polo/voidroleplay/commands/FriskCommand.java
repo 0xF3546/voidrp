@@ -13,6 +13,7 @@ import de.polo.voidroleplay.utils.StaatUtil;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,7 +22,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FriskCommand implements CommandExecutor {
@@ -73,7 +73,7 @@ public class FriskCommand implements CommandExecutor {
     }
 
     private void openFriskInventory(Player player, Player targetplayer) {
-        List<ItemStack> items = new ArrayList<>();
+        List<ItemStack> items = new ObjectArrayList<>();
         for (ItemStack stack : targetplayer.getInventory().getContents()) {
             if (stack == null) continue;
             for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {

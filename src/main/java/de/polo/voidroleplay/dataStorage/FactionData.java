@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -16,7 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FactionData {
@@ -61,7 +61,7 @@ public class FactionData {
     private String motd;
     @Getter
     @Setter
-    private List<BlacklistReason> blacklistReasons = new ArrayList<>();
+    private List<BlacklistReason> blacklistReasons = new ObjectArrayList<>();
     @Getter
     @Setter
     private boolean active;

@@ -16,6 +16,7 @@ import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.MinerBlockType;
 import de.polo.voidroleplay.utils.enums.MinerItem;
 import de.polo.voidroleplay.utils.enums.PickaxeType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,7 +31,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -203,7 +203,7 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     private void rolloutBlocks(Material blockType) {
-        List<RegisteredBlock> blocks = new ArrayList<>();
+        List<RegisteredBlock> blocks = new ObjectArrayList<>();
         for (RegisteredBlock block : registeredBlocks) {
             if (block.getInfoValue() == null) continue;
             if (!MinerBlockType.valueOf(block.getInfoValue()).getBlock().equals(blockType)) continue;
@@ -216,7 +216,7 @@ public class MinerJobCommand implements CommandExecutor {
                 .map(RegisteredBlock::getBlock)
                 .filter(block -> block.getType() == Material.STONE)
                 .collect(Collectors.toList());
-        List<Block> nb = new ArrayList<>();
+        List<Block> nb = new ObjectArrayList<>();
         for (RegisteredBlock b : blocks) {
             if (!b.getBlock().getType().equals(Material.STONE)) continue;
             nb.add(b.getBlock());

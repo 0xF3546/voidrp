@@ -12,6 +12,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.Drug;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,14 +21,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PlantFunctions implements Listener {
-    private final List<Plant> plants = new ArrayList<>();
+    private final List<Plant> plants = new ObjectArrayList<>();
     private final MySQL mySQL;
     private final Utils utils;
     private final FactionManager factionManager;

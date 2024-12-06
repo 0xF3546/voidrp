@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,7 +26,11 @@ import org.bukkit.persistence.PersistentDataType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FFAUtils implements CommandExecutor, Listener {
     public static final Map<Integer, FFALobbyData> FFAlobbyDataMap = new HashMap<>();
@@ -166,15 +171,14 @@ public class FFAUtils implements CommandExecutor, Listener {
 
     public void useSpawn(Player player, int ffa) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        List<FFASpawnPoints> keysWithIdOne = new ArrayList<>();
+        List<FFASpawnPoints> keysWithIdOne = new ObjectArrayList<>();
         for (FFASpawnPoints spawnPoints : FFAspawnpointDataMap.values()) {
             if (spawnPoints.getLobby_type().equals(playerData.getVariable("current_lobby"))) {
                 keysWithIdOne.add(spawnPoints);
             }
         }
 
-        Random random = new Random();
-        int randomKeyIndex = random.nextInt(keysWithIdOne.size());
+        int randomKeyIndex = ThreadLocalRandom.current().nextInt(keysWithIdOne.size() + 1);
         FFASpawnPoints randomValue = keysWithIdOne.get(randomKeyIndex);
         player.teleport(new Location(randomValue.getWelt(), randomValue.getX(), randomValue.getY(), randomValue.getZ()));
     }

@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.shops.ShopData;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +16,10 @@ import org.bukkit.entity.Player;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LocationManager {
     public static final Map<String, LocationData> locationDataMap = new HashMap<>();
@@ -54,7 +58,7 @@ public class LocationManager {
         }
 
         ResultSet shop = statement.executeQuery("SELECT * FROM shops");
-        List<Object[]> shopList = new ArrayList<>();
+        List<Object[]> shopList = new ObjectArrayList<>();
         while (shop.next()) {
             Object[] row = new Object[8];
             row[0] = shop.getInt(1);

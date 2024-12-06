@@ -1,12 +1,13 @@
 package de.polo.voidroleplay.dataStorage;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import java.util.List;
 import java.util.UUID;
 
 public class PhoneCall {
     private UUID caller;
-    private List<UUID> participants = new ArrayList<>();
+    private List<UUID> participants = new ObjectArrayList<>();
 
 
     public UUID getCaller() {

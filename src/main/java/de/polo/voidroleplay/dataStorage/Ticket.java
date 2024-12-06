@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.dataStorage;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -8,7 +9,7 @@ public class Ticket {
     private int id;
     private String reason;
     private UUID creator;
-    private List<UUID> editors = new ArrayList<>();
+    private List<UUID> editors = new ObjectArrayList<>();
 
     public int getId() {
         return id;

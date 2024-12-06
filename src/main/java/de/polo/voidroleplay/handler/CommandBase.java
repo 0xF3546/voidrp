@@ -51,14 +51,17 @@ public abstract class CommandBase implements CommandExecutor {
         return true;
     }
 
-        protected PlayerData getContext(@NotNull Player player) {
+    protected PlayerData getContext(@NotNull Player player) {
         return Main.getInstance().getPlayerManager().getPlayerData(player);
     }
+
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Command {
         String name();
+
         int permissionLevel() default 0;
+
         String usage() default "/<command>";
     }
 

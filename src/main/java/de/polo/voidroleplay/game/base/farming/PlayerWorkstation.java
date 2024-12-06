@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Workstation;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +41,7 @@ public class PlayerWorkstation {
 
     @SneakyThrows
     public static Collection<PlayerWorkstation> getPlayerWorkstationsFromDatabase(UUID uuid) {
-        List<PlayerWorkstation> workstations = new ArrayList<>();
+        List<PlayerWorkstation> workstations = new ObjectArrayList<>();
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM workstations WHERE uuid = ?");
         statement.setString(1, uuid.toString());

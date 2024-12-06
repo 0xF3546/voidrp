@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -26,7 +27,7 @@ public class StaatUtil {
     public static final Map<String, JailData> jailDataMap = new HashMap<>();
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
     public static EvidenceChamber Asservatemkammer;
-    private final List<WantedReason> wantedReasons = new ArrayList<>();
+    private final List<WantedReason> wantedReasons = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;

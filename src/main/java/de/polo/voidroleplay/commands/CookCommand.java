@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,13 +17,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class CookCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
-    private final List<CookTimer> activeCooking = new ArrayList<>();
+    private final List<CookTimer> activeCooking = new ObjectArrayList<>();
 
     public CookCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;

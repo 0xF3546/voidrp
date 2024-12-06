@@ -26,12 +26,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
-    static Scoreboard sb;
     private static final HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
     private static final HashMap<String, Marker> markers = new HashMap<>();
+    static Scoreboard sb;
     @Getter
     public final NavigationManager navigationManager;
     @Getter
@@ -105,8 +105,7 @@ public class Utils {
     }
 
     public static boolean isRandom(int chance) {
-        Random random = new Random();
-        int randomNumber = random.nextInt(100);
+        int randomNumber = ThreadLocalRandom.current().nextInt(100 + 1);
 
         return randomNumber < chance;
     }

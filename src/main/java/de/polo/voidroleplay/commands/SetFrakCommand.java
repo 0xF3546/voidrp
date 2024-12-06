@@ -6,6 +6,7 @@ import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SetFrakCommand implements CommandExecutor, TabCompleter {
@@ -68,14 +68,14 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 2) {
-            List<String> factions = new ArrayList<>();
+            List<String> factions = new ObjectArrayList<>();
             for (FactionData factionData : factionManager.getFactions()) {
                 factions.add(factionData.getName());
             }
             return factions;
         }
         if (args.length == 3) {
-            List<String> grades = new ArrayList<>();
+            List<String> grades = new ObjectArrayList<>();
             for (int i = 0; i <= 8; i++) {
                 grades.add(Integer.toString(i));
             }

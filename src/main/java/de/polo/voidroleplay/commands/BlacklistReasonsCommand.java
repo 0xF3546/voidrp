@@ -7,6 +7,7 @@ import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,7 +107,7 @@ public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        List<String> texts = new ArrayList<>();
+        List<String> texts = new ObjectArrayList<>();
         if (args.length == 1) {
             texts.add("add");
             texts.add("remove");

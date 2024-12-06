@@ -20,7 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 /**
@@ -135,8 +135,7 @@ public class Drop {
     private void addItemsToChest() {
         if (chest != null) {
             Inventory inventory = chest.getInventory();
-            Random random = new Random();
-            int numberOfItems = random.nextInt(4) + 2;
+            int numberOfItems = ThreadLocalRandom.current().nextInt(4) + 2;
             for (int i = 0; i < numberOfItems; i++) {
                 inventory.addItem(items.get(i));
             }

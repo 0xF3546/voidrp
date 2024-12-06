@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LeadFrakCommand implements CommandExecutor, TabCompleter {
@@ -63,7 +63,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 2) {
-            List<String> factions = new ArrayList<>();
+            List<String> factions = new ObjectArrayList<>();
             for (FactionData factionData : factionManager.getFactions()) {
                 factions.add(factionData.getName());
             }

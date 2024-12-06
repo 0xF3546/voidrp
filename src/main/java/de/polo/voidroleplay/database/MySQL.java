@@ -2,6 +2,7 @@ package de.polo.voidroleplay.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ public class MySQL {
     static String password = null;
     static int port = 3306;
     private HikariDataSource dataSource;
+
     public MySQL() {
         loadDBData();
     }
@@ -153,7 +155,7 @@ public class MySQL {
                 System.out.println("Executing query: {} with args: {}" + query + Arrays.toString(args));
 
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    List<T> results = new ArrayList<>();
+                    List<T> results = new ObjectArrayList<>();
 
                     while (resultSet.next()) {
                         results.add(mapper.map(resultSet));
@@ -184,7 +186,7 @@ public class MySQL {
                 System.out.println("Executing query: " + query + " with args: " + Arrays.toString(args));
 
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    List<Map<String, Object>> results = new ArrayList<>();
+                    List<Map<String, Object>> results = new ObjectArrayList<>();
                     ResultSetMetaData metaData = resultSet.getMetaData();
                     int columnCount = metaData.getColumnCount();
 

@@ -25,6 +25,7 @@ import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.*;
@@ -53,26 +54,26 @@ public class GamePlay implements Listener {
     public final Alliance alliance;
     public final MilitaryDrop militaryDrop;
     public final HashMap<Dealer, Integer> rob = new HashMap<>();
-    public final List<Block> roadblocks = new ArrayList<>();
+    public final List<Block> roadblocks = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final Utils utils;
     private final MySQL mySQL;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
-    private final List<Dealer> dealers = new ArrayList<>();
+    private final List<Dealer> dealers = new ObjectArrayList<>();
     @Getter
     private final FFA ffa;
-    private final List<Dealer> currentDealer = new ArrayList<>();
+    private final List<Dealer> currentDealer = new ObjectArrayList<>();
     private final NPC npc;
-    private final List<GOVRaid> govRaids = new ArrayList<>();
-    private final List<PlayerDrugUsage> drugUsages = new ArrayList<>();
+    private final List<GOVRaid> govRaids = new ObjectArrayList<>();
+    private final List<PlayerDrugUsage> drugUsages = new ObjectArrayList<>();
     @Getter
     private final Crypto crypto;
+    private final HashMap<Player, LocalDateTime> masks = new HashMap<>();
     public Drop activeDrop = null;
     public LocalDateTime lastDrop = Utils.getTime();
     public Houseban houseban;
     public DisplayNameManager displayNameManager;
-    private final HashMap<Player, LocalDateTime> masks = new HashMap<>();
     private StaatsbankRob staatsbankRob = null;
     private boolean isStaatsbankRobBlocked = false;
 
@@ -391,7 +392,7 @@ public class GamePlay implements Listener {
         }
         lastDrop = Utils.getTime();
         if (activeDrop != null) activeDrop.cleanup();
-        List<LocationData> dropLocations = new ArrayList<>();
+        List<LocationData> dropLocations = new ObjectArrayList<>();
         for (LocationData locationData : locationManager.getLocations()) {
             if (locationData.getType() == null) continue;
             if (locationData.getType().equalsIgnoreCase("drop")) {
@@ -620,7 +621,7 @@ public class GamePlay implements Listener {
                         attacker.sendMessage(Main.error + "Du bist nicht in der nähe einer Fraktionstür.");
                         return;
                     }
-                    List<RegisteredBlock> blocks = new ArrayList<>();
+                    List<RegisteredBlock> blocks = new ObjectArrayList<>();
                     for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
                         if (block.getInfo().equalsIgnoreCase("adoor_" + factionData.getName())) {
                             blocks.add(block);

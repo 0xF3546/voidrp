@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.handler;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -13,7 +14,7 @@ public class TabCompletion {
 
     private TabCompletion(String[] args) {
         this.args = args;
-        this.suggestions = new ArrayList<>();
+        this.suggestions = new ObjectArrayList<>();
     }
 
     public static TabCompletion getBuilder(String[] args) {
@@ -44,12 +45,12 @@ public class TabCompletion {
             return suggestions.get(index);
         }
 
-        return new ArrayList<>();
+        return new ObjectArrayList<>();
     }
 
     private void ensureSize(int index) {
         while (suggestions.size() < index) {
-            suggestions.add(new ArrayList<>());
+            suggestions.add(new ObjectArrayList<>());
         }
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.database.MySQL;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,14 +17,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BlockManager {
     private final MySQL mySQL;
-    private final List<RegisteredBlock> registeredBlocks = new ArrayList<>();
+    private final List<RegisteredBlock> registeredBlocks = new ObjectArrayList<>();
 
     public BlockManager(MySQL mySQL) {
         this.mySQL = mySQL;
@@ -112,7 +112,7 @@ public class BlockManager {
     }
 
     public List<Block> getNearbyBlocks(Location location, double radius) {
-        List<Block> blocks = new ArrayList<>();
+        List<Block> blocks = new ObjectArrayList<>();
         int bx = location.getBlockX();
         int by = location.getBlockY();
         int bz = location.getBlockZ();

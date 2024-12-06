@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -18,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -31,8 +31,8 @@ import java.util.UUID;
 public class Beginnerpass implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final List<Quest> quests = new ArrayList<>();
-    private final List<Reward> rewards = new ArrayList<>();
+    private final List<Quest> quests = new ObjectArrayList<>();
+    private final List<Reward> rewards = new ObjectArrayList<>();
 
     public Beginnerpass(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;

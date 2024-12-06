@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.GlobalStats;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,7 +23,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +64,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
         if (args[0].equalsIgnoreCase("list")) {
             Map<String, Integer> factionBets = getFactionBets();
 
-            List<Map.Entry<String, Integer>> sortedFactionBets = new ArrayList<>(factionBets.entrySet());
+            List<Map.Entry<String, Integer>> sortedFactionBets = new ObjectArrayList<>(factionBets.entrySet());
             sortedFactionBets.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
             player.sendMessage("§7   ===§8[§3Bank§8]§7===");
             for (Map.Entry<String, Integer> entry : sortedFactionBets) {
@@ -131,7 +131,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
-            List<String> value = new ArrayList<>();
+            List<String> value = new ObjectArrayList<>();
             value.add("bet");
             value.add("list");
             return value;
@@ -141,7 +141,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
 
     public void rollAuction() {
         Map<String, Integer> factionBets = getFactionBets();
-        List<Map.Entry<String, Integer>> sortedFactionBets = new ArrayList<>(factionBets.entrySet());
+        List<Map.Entry<String, Integer>> sortedFactionBets = new ObjectArrayList<>(factionBets.entrySet());
         sortedFactionBets.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
         if (sortedFactionBets.isEmpty()) {

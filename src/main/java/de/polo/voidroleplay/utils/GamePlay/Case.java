@@ -7,16 +7,15 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Weapon;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class Case {
     private final Player player;
@@ -45,9 +44,8 @@ public class Case {
         Collections.shuffle(items);
 
         new BukkitRunnable() {
+            final List<ItemStack> contents = new ObjectArrayList<>(Collections.nCopies(27, new ItemStack(Material.AIR)));
             int ticksPassed = 0;
-            final List<ItemStack> contents = new ArrayList<>(Collections.nCopies(27, new ItemStack(Material.AIR)));
-            final Random random = new Random();
 
             @Override
             public void run() {

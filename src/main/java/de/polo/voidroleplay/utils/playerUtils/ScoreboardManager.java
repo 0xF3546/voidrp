@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -7,14 +8,13 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ScoreboardManager implements Listener {
 
-    private final List<PlayerScoreboard> playerScoreboards = new ArrayList<>();
+    private final List<PlayerScoreboard> playerScoreboards = new ObjectArrayList<>();
     private final Map<Player, PlayerScoreboard> activeScoreboards = new HashMap<>();
 
     public void createScoreboard(PlayerScoreboard playerScoreboard) {

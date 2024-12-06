@@ -2,18 +2,18 @@ package de.polo.voidroleplay.dataStorage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CompanyRole {
     private int id;
     private Company company;
     private String name;
-    private List<String> permissions = new ArrayList<>();
+    private List<String> permissions = new ObjectArrayList<>();
 
     public int getId() {
         return id;
