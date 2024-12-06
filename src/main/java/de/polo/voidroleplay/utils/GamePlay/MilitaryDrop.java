@@ -3,7 +3,7 @@ package de.polo.voidroleplay.utils.GamePlay;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.GlobalStats;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -33,16 +33,13 @@ public class MilitaryDrop implements Listener {
 
     private final HashMap<FactionData, Integer> stats = new HashMap<>();
     private final HashMap<String, Location> factionSpawns = new HashMap<>();
+    private final List<Location> spawns = new ArrayList<>();
+    private final List<Location> chestSpawns = new ArrayList<>();
+    private final Location middleArena;
     private boolean freezePlayers = false;
     private boolean isRoundActive = false;
     private int currentRound = 0;
-
-    private final List<Location> spawns = new ArrayList<>();
-    private final List<Location> chestSpawns = new ArrayList<>();
     private FactionData staat = null;
-
-    private final Location middleArena;
-
     private int arenaSize = 200;
 
     public MilitaryDrop(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {

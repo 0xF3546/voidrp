@@ -2,7 +2,6 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

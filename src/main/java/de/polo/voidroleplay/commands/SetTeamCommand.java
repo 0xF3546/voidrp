@@ -5,7 +5,8 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -20,11 +21,13 @@ import java.sql.Statement;
 public class SetTeamCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
+
     public SetTeamCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         Main.registerCommand("setgroup", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

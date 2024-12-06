@@ -14,11 +14,13 @@ import org.bukkit.entity.Player;
 public class AdminReviveCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public AdminReviveCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("adminrevive", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

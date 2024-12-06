@@ -30,7 +30,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public class Storage implements Listener {
-    private static List<Storage> storages = new ArrayList<>();
+    private static final List<Storage> storages = new ArrayList<>();
     private int id;
     private String player;
     private int factionId = -1;
@@ -51,6 +51,97 @@ public class Storage implements Listener {
     public Storage(StorageType storageType) {
         this.storageType = storageType;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+    }
+
+    @SneakyThrows
+    public static Storage load(int storageId) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
+        statement.setInt(1, storageId);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
+            storage.setId(resultSet.getInt("id"));
+            storage.setFactionId(resultSet.getInt("factionId"));
+            storage.setVehicleId(resultSet.getInt("vehicleId"));
+            storage.setPlayer(resultSet.getString("player"));
+            if (resultSet.getString("extra") != null) {
+                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
+            }
+            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
+            return storage;
+        }
+        return null;
+    }
+
+    @SneakyThrows
+    public static Storage getStorageByTypeAndPlayer(StorageType storageType, Player player, Object value) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE player = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        switch (storageType) {
+            case EXTRA:
+                Storages type = (Storages) value;
+                statement = connection.prepareStatement("SELECT * FROM storages WHERE player = ? AND extra = ?");
+                statement.setString(1, player.getUniqueId().toString());
+                statement.setString(2, type.name());
+                break;
+            case VEHICLE:
+                statement = connection.prepareStatement("SELECT * FROM storages WHERE vehicleId = ?");
+                statement.setInt(1, (int) value);
+                break;
+            case FACTION:
+                statement = connection.prepareStatement("SELECT * FROM storages WHERE factionId = ?");
+                statement.setInt(1, (int) value);
+                break;
+            case CRYSTAL_LABORATORY:
+            case HOUSE:
+                statement = connection.prepareStatement("SELECT * FROM storages WHERE houseNumber = ?");
+                statement.setInt(1, (int) value);
+                break;
+        }
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
+            storage.setId(resultSet.getInt("id"));
+            storage.setFactionId(resultSet.getInt("factionId"));
+            storage.setVehicleId(resultSet.getInt("vehicleId"));
+            storage.setPlayer(resultSet.getString("player"));
+            storage.setHouseNumber(resultSet.getInt("houseNumber"));
+            storage.setSize(resultSet.getInt("size"));
+            if (resultSet.getString("extra") != null) {
+                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
+            }
+            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
+            return storage;
+        }
+        return null;
+    }
+
+    @SneakyThrows
+    public static Storage getStorageById(int id) {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
+        statement.setInt(1, id);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
+            storage.setId(resultSet.getInt("id"));
+            storage.setFactionId(resultSet.getInt("factionId"));
+            storage.setVehicleId(resultSet.getInt("vehicleId"));
+            storage.setPlayer(resultSet.getString("player"));
+            storage.setHouseNumber(resultSet.getInt("houseNumber"));
+            storage.setSize(resultSet.getInt("size"));
+            if (resultSet.getString("extra") != null) {
+                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
+            }
+            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
+            return storage;
+        }
+        return null;
     }
 
     public int getId() {
@@ -148,6 +239,7 @@ public class Storage implements Listener {
             setId(key);
         }
     }
+
     public String getPlayer() {
         return player;
     }
@@ -185,103 +277,12 @@ public class Storage implements Listener {
         }
     }
 
-    @SneakyThrows
-    public static Storage load(int storageId) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
-        statement.setInt(1, storageId);
-        ResultSet resultSet = statement.executeQuery();
-
-        if (resultSet.next()) {
-            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
-            storage.setId(resultSet.getInt("id"));
-            storage.setFactionId(resultSet.getInt("factionId"));
-            storage.setVehicleId(resultSet.getInt("vehicleId"));
-            storage.setPlayer(resultSet.getString("player"));
-            if (resultSet.getString("extra") != null) {
-                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
-            }
-            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
-            return storage;
-        }
-        return null;
-    }
-
     public Storages getExtra() {
         return extra;
     }
 
     public void setExtra(Storages extra) {
         this.extra = extra;
-    }
-
-    @SneakyThrows
-    public static Storage getStorageByTypeAndPlayer(StorageType storageType, Player player, Object value) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE player = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        switch (storageType) {
-            case EXTRA:
-                Storages type = (Storages) value;
-                statement = connection.prepareStatement("SELECT * FROM storages WHERE player = ? AND extra = ?");
-                statement.setString(1, player.getUniqueId().toString());
-                statement.setString(2, type.name());
-                break;
-            case VEHICLE:
-                statement = connection.prepareStatement("SELECT * FROM storages WHERE vehicleId = ?");
-                statement.setInt(1, (int) value);
-                break;
-            case FACTION:
-                statement = connection.prepareStatement("SELECT * FROM storages WHERE factionId = ?");
-                statement.setInt(1, (int) value);
-                break;
-            case CRYSTAL_LABORATORY:
-            case HOUSE:
-                statement = connection.prepareStatement("SELECT * FROM storages WHERE houseNumber = ?");
-                statement.setInt(1, (int) value);
-                break;
-        }
-        ResultSet resultSet = statement.executeQuery();
-
-        if (resultSet.next()) {
-            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
-            storage.setId(resultSet.getInt("id"));
-            storage.setFactionId(resultSet.getInt("factionId"));
-            storage.setVehicleId(resultSet.getInt("vehicleId"));
-            storage.setPlayer(resultSet.getString("player"));
-            storage.setHouseNumber(resultSet.getInt("houseNumber"));
-            storage.setSize(resultSet.getInt("size"));
-            if (resultSet.getString("extra") != null) {
-                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
-            }
-            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
-            return storage;
-        }
-        return null;
-    }
-
-    @SneakyThrows
-    public static Storage getStorageById(int id) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
-        statement.setInt(1, id);
-        ResultSet resultSet = statement.executeQuery();
-
-        if (resultSet.next()) {
-            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
-            storage.setId(resultSet.getInt("id"));
-            storage.setFactionId(resultSet.getInt("factionId"));
-            storage.setVehicleId(resultSet.getInt("vehicleId"));
-            storage.setPlayer(resultSet.getString("player"));
-            storage.setHouseNumber(resultSet.getInt("houseNumber"));
-            storage.setSize(resultSet.getInt("size"));
-            if (resultSet.getString("extra") != null) {
-                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
-            }
-            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
-            return storage;
-        }
-        return null;
     }
 
     public boolean isCanOpen() {

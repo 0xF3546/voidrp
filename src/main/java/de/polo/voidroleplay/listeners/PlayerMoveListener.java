@@ -12,11 +12,13 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class PlayerMoveListener implements Listener {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public PlayerMoveListener(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();

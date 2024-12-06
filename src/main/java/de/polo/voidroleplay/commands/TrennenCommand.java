@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -17,18 +17,19 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TrennenCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
+
     public TrennenCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("trennen", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.getRelationShip().isEmpty()) {
-            for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
-            {
+            for (Map.Entry<String, String> entry : playerData.getRelationShip().entrySet()) {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
                 if (offlinePlayer.isOnline()) {
                     Player targetplayer = Bukkit.getPlayer(offlinePlayer.getName());

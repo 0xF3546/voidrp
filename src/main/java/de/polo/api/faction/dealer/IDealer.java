@@ -9,7 +9,10 @@ import org.bukkit.Location;
  */
 public interface IDealer {
     Location getLocation();
+
     String getName();
+
     boolean isFull();
+
     void setFull(boolean state);
 }

@@ -4,12 +4,14 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponType;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.GlobalStats;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
@@ -136,7 +138,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.STONE_HOE, 1, 0, "§7Sniper", "§8 ➥ §a" + (ServerManager.getPayout("equip_sniper") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int priceForFaction = (int) (ServerManager.getPayout("equip_sniper"));
+                    int priceForFaction = ServerManager.getPayout("equip_sniper");
                     try {
                         if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
                             priceForFaction = (int) (priceForFaction * 0.75);
@@ -167,7 +169,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cSniper-Munition", "§8 ➥ §a" + ServerManager.getPayout("equip_sniper_ammo") + "$")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int priceForFaction = (int) ServerManager.getPayout("equip_sniper_ammo");
+                    int priceForFaction = ServerManager.getPayout("equip_sniper_ammo");
                     try {
                         if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
                             priceForFaction = (int) (priceForFaction * 0.75);
@@ -254,7 +256,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Roadblocks zu kaufen.");
                         return;
                     }
-                    if (playerData.getBank() <100) {
+                    if (playerData.getBank() < 100) {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
@@ -334,7 +336,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("cuffs") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int priceForFaction = (int) (ServerManager.getPayout("cuffs"));
+                    int priceForFaction = ServerManager.getPayout("cuffs");
                     try {
                         if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
                             priceForFaction = (int) (priceForFaction * 0.75);
@@ -359,7 +361,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.ANTIBIOTIKUM.getMaterial(), 1, 0, RoleplayItem.ANTIBIOTIKUM.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("antibiotikum") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int priceForFaction = (int) (ServerManager.getPayout("antibiotikum"));
+                    int priceForFaction = ServerManager.getPayout("antibiotikum");
                     try {
                         if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
                             priceForFaction = (int) (priceForFaction * 0.75);
@@ -384,7 +386,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("tazer") + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    int priceForFaction = (int) (ServerManager.getPayout("tazer"));
+                    int priceForFaction = ServerManager.getPayout("tazer");
                     try {
                         if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
                             priceForFaction = (int) (priceForFaction * 0.75);
@@ -460,7 +462,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                                 player.sendMessage(Prefix.ERROR + "Du hast bereits ein Schild");
                                 return;
                             }
-                            int priceForFaction = (int) (ServerManager.getPayout("swat_shield"));
+                            int priceForFaction = ServerManager.getPayout("swat_shield");
                             try {
                                 if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
                                     priceForFaction = (int) (priceForFaction * 0.75);
@@ -488,7 +490,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("adrenaline_injection") + "$"))) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
-                        int priceForFaction = (int) (ServerManager.getPayout("adrenaline_injection"));
+                        int priceForFaction = ServerManager.getPayout("adrenaline_injection");
                         try {
                             if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
                                 priceForFaction = (int) (priceForFaction * 0.75);
@@ -602,7 +604,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         statement.setInt(1, id);
                         statement.setInt(2, factionData.getId());
                         statement.executeUpdate();
-                        factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehren auf " + Main.getInstance().utils.toDecimalFormat(id) + "$ gesetzt.");
+                        factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehren auf " + Utils.toDecimalFormat(id) + "$ gesetzt.");
                     } catch (Exception e) {
                         event.getPlayer().sendMessage(Main.error + "Dies ist keine Zahl!");
                     }
@@ -615,7 +617,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         statement.setInt(1, id);
                         statement.setInt(2, factionData.getId());
                         statement.executeUpdate();
-                        factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehr-Munition auf " + Main.getInstance().utils.toDecimalFormat(id) + "$ gesetzt.");
+                        factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehr-Munition auf " + Utils.toDecimalFormat(id) + "$ gesetzt.");
                     } catch (Exception e) {
                         event.getPlayer().sendMessage(Main.error + "Dies ist keine Zahl!");
                     }

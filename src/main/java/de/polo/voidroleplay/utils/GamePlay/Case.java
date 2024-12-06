@@ -13,13 +13,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class Case {
     private final Player player;
-    private InventoryManager inventoryManager;
     private final CaseType caseType;
     boolean spinning = false;
+    private InventoryManager inventoryManager;
+
     public Case(Player player, CaseType caseType) {
         this.player = player;
         this.caseType = caseType;
@@ -42,8 +46,8 @@ public class Case {
 
         new BukkitRunnable() {
             int ticksPassed = 0;
-            List<ItemStack> contents = new ArrayList<>(Collections.nCopies(27, new ItemStack(Material.AIR)));
-            Random random = new Random();
+            final List<ItemStack> contents = new ArrayList<>(Collections.nCopies(27, new ItemStack(Material.AIR)));
+            final Random random = new Random();
 
             @Override
             public void run() {

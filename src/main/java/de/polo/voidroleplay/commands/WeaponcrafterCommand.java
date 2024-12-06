@@ -25,11 +25,13 @@ import org.jetbrains.annotations.NotNull;
 public class WeaponcrafterCommand implements CommandExecutor {
     private final LocationManager locationManager;
     private final PlayerManager playerManager;
+
     public WeaponcrafterCommand(LocationManager locationManager, PlayerManager playerManager) {
         this.locationManager = locationManager;
         this.playerManager = playerManager;
         Main.registerCommand("waffenhersteller", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

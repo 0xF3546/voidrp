@@ -12,10 +12,12 @@ import org.bukkit.entity.Player;
 
 public class SpeedCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public SpeedCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("speed", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

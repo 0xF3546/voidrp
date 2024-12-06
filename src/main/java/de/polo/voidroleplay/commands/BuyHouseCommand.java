@@ -1,11 +1,11 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
-import de.polo.voidroleplay.manager.BlockManager;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
+import de.polo.voidroleplay.manager.BlockManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Location;
 import org.bukkit.World;

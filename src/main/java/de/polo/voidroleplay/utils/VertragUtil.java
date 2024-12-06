@@ -1,16 +1,16 @@
 package de.polo.voidroleplay.utils;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Agreement;
 import de.polo.voidroleplay.dataStorage.Company;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.SubGroup;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.game.base.housing.HouseManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -40,23 +40,7 @@ public class VertragUtil {
         this.adminManager = adminManager;
     }
 
-    private Agreement getActiveAgreement(Player player) {
-        return agreements.stream().filter(x -> x.getContractor() == player || x.getContracted() == player).findFirst().orElse(null);
-    }
-
-    public void setAgreement(Player player, Player target, String type, Object vertrag) {
-        agreements.remove(getActiveAgreement(player));
-        agreements.remove(getActiveAgreement(target));
-        Agreement agreement = new Agreement(player, target, type, vertrag);
-        agreements.add(agreement);
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
-                player.getUniqueId(),
-                target.getUniqueId(),
-                type,
-                vertrag);
-    }
-
-    public static boolean setVertrag(Player player, Player target, String type, Object vertrag)  {
+    public static boolean setVertrag(Player player, Player target, String type, Object vertrag) {
         if (current.get(target.getUniqueId().toString()) == null) {
             current.remove(target.getUniqueId().toString(), vertrag);
             vertrag_type.put(target.getUniqueId().toString(), type);
@@ -79,6 +63,22 @@ public class VertragUtil {
             current.remove(player.getUniqueId().toString());
             vertrag_type.remove(player.getUniqueId().toString());
         }
+    }
+
+    private Agreement getActiveAgreement(Player player) {
+        return agreements.stream().filter(x -> x.getContractor() == player || x.getContracted() == player).findFirst().orElse(null);
+    }
+
+    public void setAgreement(Player player, Player target, String type, Object vertrag) {
+        agreements.remove(getActiveAgreement(player));
+        agreements.remove(getActiveAgreement(target));
+        Agreement agreement = new Agreement(player, target, type, vertrag);
+        agreements.add(agreement);
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
+                player.getUniqueId(),
+                target.getUniqueId(),
+                type,
+                vertrag);
     }
 
     public void acceptVertrag(Player player) throws SQLException {
@@ -237,11 +237,11 @@ public class VertragUtil {
                     player.sendMessage("§6Du hast die einladung zu abgelehnt.");
                     break;
                 case "company_invite":
-                    Company company = Main.getInstance().companyManager.getCompanyById(Integer.parseInt(curr.toString()));
+                    Company company = Main.getInstance().companyManager.getCompanyById(Integer.parseInt(curr));
                     player.sendMessage("§6Du hast die einladung zu " + company.getName() + " abgelehnt.");
                     break;
                 case "subgroup_invite":
-                    SubGroup subGroup = Main.getInstance().factionManager.subGroups.getSubGroup(Integer.parseInt(curr.toString()));
+                    SubGroup subGroup = Main.getInstance().factionManager.subGroups.getSubGroup(Integer.parseInt(curr));
                     player.sendMessage("§6Du hast die einladung zu " + subGroup.getName() + " abgelehnt.");
                     break;
                 case "phonecall":

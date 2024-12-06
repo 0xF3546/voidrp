@@ -1,14 +1,17 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.api.faction.gangwar.IGangzone;
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Weapon;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
+import de.polo.voidroleplay.game.events.HourTickEvent;
+import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
@@ -19,9 +22,6 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
-import de.polo.voidroleplay.game.events.HourTickEvent;
-import de.polo.voidroleplay.game.events.MinuteTickEvent;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.PlayerTutorial;
 import lombok.SneakyThrows;
@@ -40,8 +40,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONObject;
 
-import java.sql.*;
 import java.sql.Date;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -54,10 +54,9 @@ import java.util.stream.Collectors;
 
 public class PlayerManager implements Listener {
 
+    public final HashMap<String, Integer> player_rent = new HashMap<>();
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
     private final HashMap<String, Boolean> playerMovement = new HashMap<>();
-    public final HashMap<String, Integer> player_rent = new HashMap<>();
-
     private final List<PlaytimeReward> playtimeRewards = new ArrayList<>();
 
     private final MySQL mySQL;
@@ -459,10 +458,6 @@ public class PlayerManager implements Listener {
                 }
             }
 
-            if (playerData.getLaboratory() != null) {
-                playerData.getLaboratory().save();
-            }
-
             playerData.getWorkstations().forEach(PlayerWorkstation::save);
             playerDataMap.remove(uuid);
             statement.close();
@@ -544,10 +539,6 @@ public class PlayerManager implements Listener {
         }
     }
 
-    private void registerBonus(Player player) {
-
-    }
-
     public void addMoney(Player player, int amount, String reason) throws SQLException {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         playerData.addMoney(amount, reason);
@@ -567,7 +558,6 @@ public class PlayerManager implements Listener {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         playerData.removeBankMoney(amount, reason);
     }
-
 
     public void setRang(UUID uuid, String rank) {
         for (RankData rankData : ServerManager.rankDataMap.values()) {
@@ -788,10 +778,6 @@ public class PlayerManager implements Listener {
                             throw new RuntimeException(e);
                         }
                     }
-                }
-
-                if (currentMinute % 15 == 0) {
-                    if (Main.getInstance().laboratory != null) Main.getInstance().laboratory.pushTick();
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);

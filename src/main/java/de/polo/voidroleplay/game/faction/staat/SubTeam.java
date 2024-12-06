@@ -7,14 +7,12 @@ import lombok.Setter;
 
 public class SubTeam {
     @Getter
-    @Setter
-    private int id;
-
-    @Getter
     private final int factionId;
-
     @Getter
     private final String name;
+    @Getter
+    @Setter
+    private int id;
 
     public SubTeam(int factionId, String name) {
         this.factionId = factionId;

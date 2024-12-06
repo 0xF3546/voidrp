@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.LocationData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.LocationData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -17,14 +17,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class TPToCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public TPToCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.registerCommand("tpto", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -38,7 +41,7 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
                 locationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
                 player.sendMessage(Prefix.ADMIN + "Du hast dich zu §c" + message + "§7 teleportiert.");
                 player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
-                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1,2);
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 2);
             } else {
                 player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /tpto [Punkt]");
             }
@@ -47,6 +50,7 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
         }
         return false;
     }
+
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

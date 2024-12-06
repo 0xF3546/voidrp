@@ -1,18 +1,19 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.ATM;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -28,10 +29,7 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class BankingUtils implements Listener {
     private final PlayerManager playerManager;
@@ -89,7 +87,7 @@ public class BankingUtils implements Listener {
                 player.closeInventory();
             }
         });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getBank()) + "$"))) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getBank()) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -189,7 +187,7 @@ public class BankingUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §6Firmenkonto", true, true);
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getCompany().getBank()) + "$"))) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getCompany().getBank()) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -285,7 +283,7 @@ public class BankingUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §" + factionData.getPrimaryColor() + "Fraktionskonto", true, true);
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Arrays.asList("§8 ➥ §a" + new DecimalFormat("#,###").format(factionData.getBank()) + "$"))) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(factionData.getBank()) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 

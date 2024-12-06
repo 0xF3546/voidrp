@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -28,7 +28,6 @@ public class Tutorial implements Listener {
             createdAusweis(player);
             return;
         }
-        ;
         PlayerTutorial playerTutorial = PlayerTutorial.getPlayerTutorial(playerData);
         if (playerTutorial == null) return;
         playerTutorial.setStage(1);
@@ -45,7 +44,7 @@ public class Tutorial implements Listener {
         if (playerTutorial.getStage() != 1) {
             usedAusweis(player);
             return;
-        };
+        }
         playerTutorial.setStage(2);
         player.sendMessage("§8[§9Tutorial§8]§7 Sehr gut gemacht!");
         Main.waitSeconds(1, () -> player.sendMessage("§8[§9Tutorial§8]§7 Nutze §8/§epersonalausweis§7 um deinen Personalausweis anzusehen."));
@@ -93,7 +92,6 @@ public class Tutorial implements Listener {
             endTutorial(player);
             return;
         }
-        ;
         playerTutorial.setStage(4);
         Main.waitSeconds(4, () -> {
             player.sendMessage("§8[§9Tutorial§8]§7 Solltest du noch §eFragen §7oder andere §eAnliegen§7 haben, nutze §8/§esupport [Anliegen]§7.");

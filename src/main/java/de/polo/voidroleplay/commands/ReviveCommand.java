@@ -1,11 +1,12 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Progress;
 import org.bukkit.Bukkit;
@@ -29,12 +30,14 @@ public class ReviveCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
     private final FactionManager factionManager;
+
     public ReviveCommand(PlayerManager playerManager, Utils utils, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.factionManager = factionManager;
         Main.registerCommand("revive", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -106,7 +109,7 @@ public class ReviveCommand implements CommandExecutor {
                             cancel();
                         }
                     }
-                }.runTaskLater(Main.getInstance(), 20*6);
+                }.runTaskLater(Main.getInstance(), 20 * 6);
             } else {
                 player.sendMessage(Main.error + "Kein Spieler in der nähe gefunden.");
             }

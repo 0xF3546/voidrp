@@ -14,15 +14,15 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class MySQL {
-    public MySQL() {
-        loadDBData();
-    }
     static final String url = "jdbc:mysql://185.117.3.65/minecraft?autoReconnect=true&useSSL=false";
+    private static final Logger logger = LoggerFactory.getLogger(MySQL.class);
     static String user = null;
     static String password = null;
     static int port = 3306;
     private HikariDataSource dataSource;
-    private static final Logger logger = LoggerFactory.getLogger(MySQL.class);
+    public MySQL() {
+        loadDBData();
+    }
 
     public void loadDBData() {
         File file = new File("plugins//roleplay//database.yml");
@@ -63,15 +63,6 @@ public class MySQL {
     public Statement getStatement() throws SQLException {
         Connection connection = getConnection();
         return connection.createStatement();
-    }
-    public interface forum {
-        String url = "jdbc:mysql://185.117.3.65/wcf?autoReconnect=true&useSSL=false";
-        int port = 3306;
-        static Statement getStatement() throws SQLException {
-            Connection connection = DriverManager.getConnection(url, user, password);
-
-            return connection.createStatement();
-        }
     }
 
     public CompletableFuture<ResultSet> queryThreaded(String query) {
@@ -159,7 +150,7 @@ public class MySQL {
                     statement.setObject(i + 1, args[i]);
                 }
 
-                System.out.println("Executing query: {} with args: {}" +  query + Arrays.toString(args));
+                System.out.println("Executing query: {} with args: {}" + query + Arrays.toString(args));
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     List<T> results = new ArrayList<>();
@@ -216,7 +207,6 @@ public class MySQL {
             return null;
         });
     }
-
 
     public CompletableFuture<Integer> insertAsync(String query, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
@@ -316,6 +306,17 @@ public class MySQL {
                 throw new RuntimeException("Database delete failed", e);
             }
         });
+    }
+
+    public interface forum {
+        String url = "jdbc:mysql://185.117.3.65/wcf?autoReconnect=true&useSSL=false";
+        int port = 3306;
+
+        static Statement getStatement() throws SQLException {
+            Connection connection = DriverManager.getConnection(url, user, password);
+
+            return connection.createStatement();
+        }
     }
 
 }

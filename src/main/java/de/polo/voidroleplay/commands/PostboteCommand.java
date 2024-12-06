@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -24,6 +24,7 @@ public class PostboteCommand implements CommandExecutor {
     private final List<Integer> array = new ArrayList<>();
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public PostboteCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
@@ -95,6 +96,7 @@ public class PostboteCommand implements CommandExecutor {
         }
         return false;
     }
+
     public boolean canGive(int number) {
         return !array.contains(number);
     }
@@ -122,27 +124,27 @@ public class PostboteCommand implements CommandExecutor {
     }
 
     public void dropTransport(Player player, int house) {
-            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            int payout = Main.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
-            player.sendMessage("§8[§ePostbote§8]§7 Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");
-            SoundManager.successSound(player);
-            playerManager.addExp(player, Main.random(1, 3));
-            playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
-            Main.getInstance().seasonpass.didQuest(player, 3);
-            //playerData.getScoreboard("postbote").updatePostboteScoreboard();
-            try {
-                playerManager.addBankMoney(player, payout, "Auszahlung Postbote");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            if (playerData.getIntVariable("post") <= 0) {
-                player.sendMessage("§8[§ePostbote§8]§7 Du hast alles abgegeben. Danke!");
-                playerData.setVariable("job", null);
-                quitJob(player, true);
-                //playerData.getScoreboard("postbote").killScoreboard();
-            }
-            array.add(house);
-            player.closeInventory();
-            Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        int payout = Main.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
+        player.sendMessage("§8[§ePostbote§8]§7 Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");
+        SoundManager.successSound(player);
+        playerManager.addExp(player, Main.random(1, 3));
+        playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
+        Main.getInstance().seasonpass.didQuest(player, 3);
+        //playerData.getScoreboard("postbote").updatePostboteScoreboard();
+        try {
+            playerManager.addBankMoney(player, payout, "Auszahlung Postbote");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if (playerData.getIntVariable("post") <= 0) {
+            player.sendMessage("§8[§ePostbote§8]§7 Du hast alles abgegeben. Danke!");
+            playerData.setVariable("job", null);
+            quitJob(player, true);
+            //playerData.getScoreboard("postbote").killScoreboard();
+        }
+        array.add(house);
+        player.closeInventory();
+        Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

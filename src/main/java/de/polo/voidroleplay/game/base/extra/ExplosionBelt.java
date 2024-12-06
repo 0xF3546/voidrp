@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 
-import java.time.LocalDateTime;
-
 public class ExplosionBelt {
 
     @Getter

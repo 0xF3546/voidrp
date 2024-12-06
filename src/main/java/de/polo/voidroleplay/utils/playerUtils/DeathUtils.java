@@ -1,14 +1,15 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Corpse;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -38,10 +39,23 @@ public class DeathUtils {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final LocationManager locationManager;
+
     public DeathUtils(PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         this.locationManager = locationManager;
+    }
+
+    public static boolean isDead(Player player) throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        String uuid = player.getUniqueId().toString();
+        ResultSet result = statement.executeQuery("SELECT `isDead` FROM `players` WHERE `uuid` = '" + uuid + "'");
+        boolean res = false;
+        if (result.next()) {
+            res = result.getBoolean(1);
+        }
+        return res;
     }
 
     public Item getDeathSkull(String UUID) {
@@ -55,6 +69,7 @@ public class DeathUtils {
     public void removeDeathSkull(String UUID) {
         deathSkulls.remove(UUID);
     }
+
     public void startDeathTimer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.isDead()) {
@@ -82,6 +97,7 @@ public class DeathUtils {
     public void killPlayer(Player player) {
         player.setHealth(0);
     }
+
     public void revivePlayer(Player player, boolean effects) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setCanInteract(false);
@@ -89,7 +105,7 @@ public class DeathUtils {
         playerData.setCuffed(false);
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
-        adminManager.send_message( player.getName() + " wurde wiederbelebt.", null);
+        adminManager.send_message(player.getName() + " wurde wiederbelebt.", null);
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }
@@ -126,7 +142,7 @@ public class DeathUtils {
             Main.getInstance().weaponManager.weaponUsages.put(player.getUniqueId(), Utils.getTime().plusMinutes(3));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 *6, 0, true, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 6, 0, true, false));
         }
     }
 
@@ -235,18 +251,5 @@ public class DeathUtils {
 
     public Collection<Corpse> getCorbses() {
         return corpses;
-    }
-
-
-    public static boolean isDead(Player player) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        String uuid = player.getUniqueId().toString();
-        ResultSet result = statement.executeQuery("SELECT `isDead` FROM `players` WHERE `uuid` = '" + uuid + "'");
-        boolean res = false;
-        if (result.next()) {
-            res = result.getBoolean(1);
-        }
-        return res;
     }
 }

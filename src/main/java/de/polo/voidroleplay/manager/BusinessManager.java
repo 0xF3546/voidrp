@@ -1,18 +1,23 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.dataStorage.BusinessData;
+import de.polo.voidroleplay.dataStorage.DBPlayerData;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class BusinessManager {
     private final PlayerManager playerManager;
     private final List<BusinessData> businesses = new ArrayList<>();
+
     public BusinessManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
@@ -21,6 +26,37 @@ public class BusinessManager {
             throw new RuntimeException(e);
         }
     }
+
+    public static void removeOfflinePlayerFromBusiness(String playername) throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        assert statement != null;
+        ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
+        if (result != null) {
+            statement.executeUpdate("UPDATE `players` SET `business` = NULL, `business_grade` = 0 WHERE `player_name` = '" + playername + "'");
+        }
+    }
+
+    public static String business_offlinePlayer(String playername) {
+        String val = null;
+        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
+            if (player.getName().equalsIgnoreCase(playername)) {
+                val = dbPlayerData.getFaction();
+            }
+        }
+        return val;
+    }
+
+    public static int getMemberCount(int business) {
+        int count = 0;
+        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
+            if (dbPlayerData.getBusiness().equals(business)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private void loadBusinesses() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM business");
@@ -53,34 +89,6 @@ public class BusinessManager {
         return null;
     }
 
-    public static void removeOfflinePlayerFromBusiness(String playername) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
-        if (result != null) {
-            statement.executeUpdate("UPDATE `players` SET `business` = NULL, `business_grade` = 0 WHERE `player_name` = '" + playername + "'");
-        }
-    }
-
-    public static String business_offlinePlayer(String playername) {
-        String val = null;
-        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-            if (player.getName().equalsIgnoreCase(playername)) {
-                val = dbPlayerData.getFaction();
-            }
-        }
-        return val;
-    }
-    public static int getMemberCount(int business) {
-        int count = 0;
-        for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
-            if (dbPlayerData.getBusiness().equals(business)) {
-                count++;
-            }
-        }
-        return count;
-    }
     @SneakyThrows
     public synchronized int createBusiness(BusinessData businessData) {
         Connection connection = Main.getInstance().mySQL.getConnection();

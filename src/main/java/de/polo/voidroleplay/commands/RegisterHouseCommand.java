@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.command.Command;
@@ -13,10 +13,12 @@ import java.sql.*;
 
 public class RegisterHouseCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public RegisterHouseCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("registerhouse", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

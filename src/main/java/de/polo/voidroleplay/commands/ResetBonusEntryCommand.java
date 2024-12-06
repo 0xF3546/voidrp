@@ -23,6 +23,7 @@ import java.util.List;
 public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
+
     public ResetBonusEntryCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -30,6 +31,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
         Main.registerCommand("resetbonusentry", this);
         Main.addTabCompeter("resetbonusentry", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

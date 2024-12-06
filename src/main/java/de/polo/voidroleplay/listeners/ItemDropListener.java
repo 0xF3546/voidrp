@@ -22,11 +22,13 @@ import java.util.List;
 public class ItemDropListener implements Listener {
     private final WeaponManager weaponManager;
     private final PlayerManager playerManager;
+
     public ItemDropListener(WeaponManager weaponManager, PlayerManager playerManager) {
         this.weaponManager = weaponManager;
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         ItemStack droppedItem = event.getItemDrop().getItemStack();

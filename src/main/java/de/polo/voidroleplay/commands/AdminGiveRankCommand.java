@@ -20,10 +20,12 @@ import java.sql.Statement;
 
 public class AdminGiveRankCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public AdminGiveRankCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("admingiverank", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -55,7 +57,7 @@ public class AdminGiveRankCommand implements CommandExecutor {
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
         FactionPlayerData factionPlayerData = ServerManager.factionPlayerDataMap.get(targetplayer.getUniqueId().toString());
         player.sendMessage("§8[§cAdmin§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
-        if (factionPlayerData != null)  {
+        if (factionPlayerData != null) {
             factionPlayerData.setFaction_grade(rang);
         }
         if (dbPlayerData != null) {

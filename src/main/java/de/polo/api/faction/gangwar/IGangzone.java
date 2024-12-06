@@ -9,11 +9,18 @@ import java.sql.Timestamp;
  */
 public interface IGangzone {
     String getName();
-    String getOwner();
+
     void setName(String zone);
+
+    String getOwner();
+
     void setOwner(String faction);
+
     int getId();
+
     void setId(int id);
+
     Timestamp getLastAttack();
+
     void setLastAttack(Timestamp attack);
 }

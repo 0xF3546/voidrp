@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
@@ -27,12 +27,14 @@ import java.util.UUID;
 public class BanCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
+
     public BanCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         Main.registerCommand("ban", this);
         Main.addTabCompeter("ban", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

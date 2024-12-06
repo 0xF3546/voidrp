@@ -8,17 +8,18 @@ public class SecondTickEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     @Getter
-    private int second;
+    private final int second;
+
     public SecondTickEvent(int second) {
         this.second = second;
     }
 
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    @Override
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

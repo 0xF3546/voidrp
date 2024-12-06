@@ -19,10 +19,12 @@ import java.util.UUID;
 
 public class ServicesCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public ServicesCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("services", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

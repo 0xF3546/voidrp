@@ -6,7 +6,8 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,9 +19,9 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class ArrestCommand implements CommandExecutor {
-    private PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+    private final PlayerManager playerManager;
 
     public ArrestCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;

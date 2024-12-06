@@ -10,10 +10,12 @@ import org.bukkit.entity.Player;
 
 public class TeamCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public TeamCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("team", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

@@ -1,14 +1,14 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,6 +24,7 @@ public class MuellmannCommand implements CommandExecutor {
     private final List<Integer> array = new ArrayList<>();
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public MuellmannCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
@@ -95,6 +96,7 @@ public class MuellmannCommand implements CommandExecutor {
         }
         return false;
     }
+
     public boolean canGet(int number) {
         return !array.contains(number);
     }

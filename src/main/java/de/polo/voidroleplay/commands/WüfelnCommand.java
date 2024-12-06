@@ -17,6 +17,7 @@ public class WüfelnCommand implements CommandExecutor {
     public WüfelnCommand() {
         Main.registerCommand("würfeln", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

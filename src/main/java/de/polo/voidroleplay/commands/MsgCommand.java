@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -10,11 +10,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class MsgCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
+
     public MsgCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("msg", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

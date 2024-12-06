@@ -24,6 +24,7 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final FactionManager factionManager;
+
     public SetFrakCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -31,6 +32,7 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
         Main.registerCommand("setfrak", this);
         Main.addTabCompeter("setfrak", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

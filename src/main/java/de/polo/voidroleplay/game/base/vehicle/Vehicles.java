@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.base.vehicle;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -30,7 +30,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.sql.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Vehicles implements Listener, CommandExecutor {
     public static final Map<String, VehicleData> vehicleDataMap = new HashMap<>();
@@ -39,6 +42,7 @@ public class Vehicles implements Listener, CommandExecutor {
 
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+    private final HashMap<Player, Double> playerSpeeds = new HashMap<>();
 
     public Vehicles(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
@@ -51,83 +55,6 @@ public class Vehicles implements Listener, CommandExecutor {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void loadVehicles() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM `vehicles`");
-        while (result.next()) {
-            VehicleData vehicleData = new VehicleData();
-            vehicleData.setId(result.getInt(1));
-            vehicleData.setName(result.getString(2));
-            vehicleData.setAcceleration(result.getFloat(3));
-            vehicleData.setMaxspeed(result.getInt(4));
-            vehicleData.setPrice(result.getInt(5));
-            vehicleData.setMaxFuel(result.getInt(6));
-            vehicleData.setTax(result.getInt(7));
-            vehicleDataMap.put(result.getString(2), vehicleData);
-        }
-    }
-
-    private void loadPlayerVehicles() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM `player_vehicles`");
-        while (result.next()) {
-            PlayerVehicleData playerVehicleData = new PlayerVehicleData();
-            playerVehicleData.setId(result.getInt("id"));
-            playerVehicleData.setUuid(result.getString("uuid"));
-            playerVehicleData.setType(result.getString("type"));
-            playerVehicleData.setKm(result.getInt("km"));
-            playerVehicleData.setFuel(result.getFloat("fuel"));
-            playerVehicleData.setParked(result.getBoolean("parked"));
-            playerVehicleData.setX(result.getInt("x"));
-            playerVehicleData.setY(result.getInt("y"));
-            playerVehicleData.setZ(result.getInt("z"));
-            playerVehicleData.setWelt(Bukkit.getWorld(result.getString(10)));
-            playerVehicleData.setYaw(result.getFloat("yaw"));
-            playerVehicleData.setPitch(result.getFloat("pitch"));
-            playerVehicleData.setGarage(result.getInt("garage"));
-            playerVehicleData.setFactionId(result.getInt("factionId"));
-            playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
-            vehicleIDByUUid.put(result.getString(2), result.getInt(1));
-        }
-    }
-
-    public void giveVehicle(Player player, String vehicle) throws SQLException {
-        VehicleData vehicleData = vehicleDataMap.get(vehicle);
-        assert vehicleData != null;
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.execute("INSERT INTO `player_vehicles` (`uuid`, `type`) VALUES ('" + player.getUniqueId() + "', '" + vehicleData.getName() + "')");
-        ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID()");
-        locationManager.useLocation(player, "vehicleshop_out");
-        if (result.next()) {
-            PlayerVehicleData playerVehicleData = new PlayerVehicleData();
-            playerVehicleData.setId(result.getInt(1));
-            playerVehicleData.setUuid(player.getUniqueId().toString());
-            playerVehicleData.setType(vehicle);
-            playerVehicleData.setKm(0);
-            playerVehicleData.setFuel(vehicleData.getMaxFuel());
-            playerVehicleData.setParked(false);
-            playerVehicleData.setX((int) player.getLocation().getX());
-            playerVehicleData.setY((int) player.getLocation().getY());
-            playerVehicleData.setZ((int) player.getLocation().getZ());
-            playerVehicleData.setWelt(player.getWorld());
-            playerVehicleData.setYaw(player.getLocation().getYaw());
-            playerVehicleData.setPitch(player.getLocation().getPitch());
-            playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
-            spawnVehicle(player, playerVehicleData);
-        }
-    }
-
-    @SneakyThrows
-    public void removeVehicleFromDatabase(int vehicleId) {
-        playerVehicleDataMap.remove(vehicleId);
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("DELETE FROM player_vehicles WHERE id = ?");
-        statement.setInt(1, vehicleId);
-        statement.execute();
-        statement.close();
-        connection.close();
     }
 
     public static void spawnPlayerVehicles(Player player) {
@@ -241,6 +168,100 @@ public class Vehicles implements Listener, CommandExecutor {
         }
     }
 
+    public static PlayerVehicleData getNearestVehicle(Location location) {
+        PlayerVehicleData nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+
+        for (PlayerVehicleData data : playerVehicleDataMap.values()) {
+            Location dataLocation = new Location(Bukkit.getWorld("World"), data.getX(), data.getY(), data.getZ());
+            double distance = dataLocation.distance(location);
+
+            if (nearest == null || distance < nearestDistance) {
+                nearest = data;
+                nearestDistance = distance;
+            }
+        }
+
+        return nearest;
+    }
+
+    private void loadVehicles() throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM `vehicles`");
+        while (result.next()) {
+            VehicleData vehicleData = new VehicleData();
+            vehicleData.setId(result.getInt(1));
+            vehicleData.setName(result.getString(2));
+            vehicleData.setAcceleration(result.getFloat(3));
+            vehicleData.setMaxspeed(result.getInt(4));
+            vehicleData.setPrice(result.getInt(5));
+            vehicleData.setMaxFuel(result.getInt(6));
+            vehicleData.setTax(result.getInt(7));
+            vehicleDataMap.put(result.getString(2), vehicleData);
+        }
+    }
+
+    private void loadPlayerVehicles() throws SQLException {
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM `player_vehicles`");
+        while (result.next()) {
+            PlayerVehicleData playerVehicleData = new PlayerVehicleData();
+            playerVehicleData.setId(result.getInt("id"));
+            playerVehicleData.setUuid(result.getString("uuid"));
+            playerVehicleData.setType(result.getString("type"));
+            playerVehicleData.setKm(result.getInt("km"));
+            playerVehicleData.setFuel(result.getFloat("fuel"));
+            playerVehicleData.setParked(result.getBoolean("parked"));
+            playerVehicleData.setX(result.getInt("x"));
+            playerVehicleData.setY(result.getInt("y"));
+            playerVehicleData.setZ(result.getInt("z"));
+            playerVehicleData.setWelt(Bukkit.getWorld(result.getString(10)));
+            playerVehicleData.setYaw(result.getFloat("yaw"));
+            playerVehicleData.setPitch(result.getFloat("pitch"));
+            playerVehicleData.setGarage(result.getInt("garage"));
+            playerVehicleData.setFactionId(result.getInt("factionId"));
+            playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
+            vehicleIDByUUid.put(result.getString(2), result.getInt(1));
+        }
+    }
+
+    public void giveVehicle(Player player, String vehicle) throws SQLException {
+        VehicleData vehicleData = vehicleDataMap.get(vehicle);
+        assert vehicleData != null;
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        statement.execute("INSERT INTO `player_vehicles` (`uuid`, `type`) VALUES ('" + player.getUniqueId() + "', '" + vehicleData.getName() + "')");
+        ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID()");
+        locationManager.useLocation(player, "vehicleshop_out");
+        if (result.next()) {
+            PlayerVehicleData playerVehicleData = new PlayerVehicleData();
+            playerVehicleData.setId(result.getInt(1));
+            playerVehicleData.setUuid(player.getUniqueId().toString());
+            playerVehicleData.setType(vehicle);
+            playerVehicleData.setKm(0);
+            playerVehicleData.setFuel(vehicleData.getMaxFuel());
+            playerVehicleData.setParked(false);
+            playerVehicleData.setX((int) player.getLocation().getX());
+            playerVehicleData.setY((int) player.getLocation().getY());
+            playerVehicleData.setZ((int) player.getLocation().getZ());
+            playerVehicleData.setWelt(player.getWorld());
+            playerVehicleData.setYaw(player.getLocation().getYaw());
+            playerVehicleData.setPitch(player.getLocation().getPitch());
+            playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
+            spawnVehicle(player, playerVehicleData);
+        }
+    }
+
+    @SneakyThrows
+    public void removeVehicleFromDatabase(int vehicleId) {
+        playerVehicleDataMap.remove(vehicleId);
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM player_vehicles WHERE id = ?");
+        statement.setInt(1, vehicleId);
+        statement.execute();
+        statement.close();
+        connection.close();
+    }
+
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event) {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
@@ -267,7 +288,7 @@ public class Vehicles implements Listener, CommandExecutor {
                     double speedMetersPerSecond = player.getVehicle().getVelocity().length();
                     double kmh = speedMetersPerSecond * 36;
                     scoreboardAPI.setScore(player, "vehicle", "§eKMH§8:", (int) kmh);
-                    scoreboardAPI.setScore(player, "vehicle", "§eKM§8:", (int) km * 2);
+                    scoreboardAPI.setScore(player, "vehicle", "§eKM§8:", km * 2);
                     scoreboardAPI.setScore(player, "vehicle", "§eTank§8:", (int) fuel);
                 });
 
@@ -298,8 +319,6 @@ public class Vehicles implements Listener, CommandExecutor {
             scoreboardAPI.removeScoreboard(player, "vehicle");
         }
     }
-
-    private final HashMap<Player, Double> playerSpeeds = new HashMap<>();
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
@@ -332,7 +351,6 @@ public class Vehicles implements Listener, CommandExecutor {
         }
     }
 
-
     @EventHandler
     public void onGasStationInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null) {
@@ -355,7 +373,7 @@ public class Vehicles implements Listener, CommandExecutor {
                                 float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
                                 VehicleData vehicleData = vehicleDataMap.get(type);
                                 int dif = vehicleData.getMaxFuel() - (int) fuel;
-                                playerData.setIntVariable("current_fuel", (int)fuel);
+                                playerData.setIntVariable("current_fuel", (int) fuel);
                                 playerData.setIntVariable("plusfuel", 0);
                                 InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §6Tankstelle", true, false);
 
@@ -455,7 +473,7 @@ public class Vehicles implements Listener, CommandExecutor {
                     player.sendMessage(Prefix.MAIN + "Du hast dein §6" + vehicleData.getName() + "§7 betankt. §c-" + price + "$");
                     SoundManager.successSound(player);
                 } else {
-                    player.sendMessage( Prefix.ERROR + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei (§a" + price + "$§7).");
                 }
             }
         });
@@ -621,22 +639,5 @@ public class Vehicles implements Listener, CommandExecutor {
                 }
             }
         }
-    }
-
-    public static PlayerVehicleData getNearestVehicle(Location location) {
-        PlayerVehicleData nearest = null;
-        double nearestDistance = Double.MAX_VALUE;
-
-        for (PlayerVehicleData data : playerVehicleDataMap.values()) {
-            Location dataLocation = new Location(Bukkit.getWorld("World"), data.getX(), data.getY(), data.getZ());
-            double distance = dataLocation.distance(location);
-
-            if (nearest == null || distance < nearestDistance) {
-                nearest = data;
-                nearestDistance = distance;
-            }
-        }
-
-        return nearest;
     }
 }

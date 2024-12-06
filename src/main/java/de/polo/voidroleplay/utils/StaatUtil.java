@@ -2,13 +2,14 @@ package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.JailData;
-import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.dataStorage.WantedReason;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -24,10 +25,8 @@ import java.util.*;
 public class StaatUtil {
     public static final Map<String, JailData> jailDataMap = new HashMap<>();
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
-    private final List<WantedReason> wantedReasons = new ArrayList<>();
-
     public static EvidenceChamber Asservatemkammer;
-
+    private final List<WantedReason> wantedReasons = new ArrayList<>();
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
@@ -93,7 +92,7 @@ public class StaatUtil {
             locationManager.useLocation(player, "gefaengnis");
             player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + wantedReason.getWanted() + " Hafteinheiten§7 inhaftiert.");
             playerData.setJailed(true);
-            factionManager.addFactionMoney(arresterData.getFaction(), Main.getInstance().serverManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
+            factionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
             playerData.setHafteinheiten(wantedReason.getWanted());
             Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
@@ -289,6 +288,7 @@ public class StaatUtil {
     public WantedReason getWantedReason(int id) {
         return wantedReasons.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
     }
+
     public Collection<WantedReason> getWantedReasons() {
         return wantedReasons;
     }

@@ -9,7 +9,6 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.database.MySQL;
 import lombok.SneakyThrows;
 
-import javax.swing.plaf.nimbus.State;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +21,7 @@ import java.util.UUID;
 public class CompanyManager {
     private final List<Company> companies = new ArrayList<>();
     private final MySQL mySQL;
+
     public CompanyManager(MySQL mySQL) {
         this.mySQL = mySQL;
         init();
@@ -49,7 +49,8 @@ public class CompanyManager {
                 String permissionsJson = roleResult.getString("permissions");
                 ObjectMapper mapper = new ObjectMapper();
                 try {
-                    List<String> permissions = mapper.readValue(permissionsJson, new TypeReference<List<String>>() {});
+                    List<String> permissions = mapper.readValue(permissionsJson, new TypeReference<List<String>>() {
+                    });
                     role.setPermissions(permissions);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -109,6 +110,7 @@ public class CompanyManager {
         }
         return null;
     }
+
     public CompanyRole getCompanyRoleById(int id) {
         for (Company c : companies) {
             for (CompanyRole r : c.getRoles()) {

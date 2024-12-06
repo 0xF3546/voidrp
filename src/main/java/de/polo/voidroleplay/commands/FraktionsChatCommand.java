@@ -5,7 +5,8 @@ import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -16,12 +17,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public FraktionsChatCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -29,6 +32,7 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
         Main.registerCommand("fraktionschat", this);
         Main.addTabCompeter("fraktionschat", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -39,7 +43,7 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
         }
         if (factionManager.faction(player) != null) {
             if (args.length >= 1) {
-                String msg = utils.stringArrayToString(args);
+                String msg = Utils.stringArrayToString(args);
                 String playerfac = factionManager.faction(player);
                 FactionData factionData = factionManager.getFactionData(playerfac);
                 for (Player players : Bukkit.getOnlinePlayers()) {

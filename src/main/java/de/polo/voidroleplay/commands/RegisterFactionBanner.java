@@ -26,12 +26,14 @@ import java.util.List;
 public class RegisterFactionBanner implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public RegisterFactionBanner(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
 
         Main.registerCommand("registerfactionbanner", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {

@@ -29,12 +29,14 @@ import java.util.Arrays;
 public class AnwaltCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public AnwaltCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
 
         Main.registerCommand("anwalt", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -79,7 +81,7 @@ public class AnwaltCommand implements CommandExecutor {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch`, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId() + "'");
-         int i = 0;
+        int i = 0;
         while (result.next()) {
             if (i == 26 && i == 18 && i == 22) {
                 i++;

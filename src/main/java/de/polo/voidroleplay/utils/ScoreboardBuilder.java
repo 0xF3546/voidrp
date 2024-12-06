@@ -29,7 +29,7 @@ public abstract class ScoreboardBuilder {
 
         this.scoreboard = player.getScoreboard();
 
-        if(this.scoreboard.getObjective("display") != null) {
+        if (this.scoreboard.getObjective("display") != null) {
             this.scoreboard.getObjective("display").unregister();
         }
 
@@ -40,9 +40,13 @@ public abstract class ScoreboardBuilder {
     }
 
     public abstract void createScoreboard();
+
     public abstract void createAdminScoreboard();
+
     public abstract void createMineScoreboard();
+
     public abstract void createLebensmittelLieferantenScoreboard();
+
     public abstract void createCarScoreboard(Vehicle vehicle);
 
     public abstract void update();
@@ -54,7 +58,7 @@ public abstract class ScoreboardBuilder {
     public void setScore(String content, int score) {
         Team team = getTeamByScore(score);
 
-        if(team == null) {
+        if (team == null) {
             return;
         }
 
@@ -67,8 +71,8 @@ public abstract class ScoreboardBuilder {
     }
 
     private EntryName getEntryNameByScore(int score) {
-        for(EntryName name : EntryName.values()) {
-            if(score == name.getEntry()) {
+        for (EntryName name : EntryName.values()) {
+            if (score == name.getEntry()) {
                 return name;
             }
         }
@@ -79,13 +83,13 @@ public abstract class ScoreboardBuilder {
     private Team getTeamByScore(int score) {
         EntryName name = getEntryNameByScore(score);
 
-        if(name == null) {
+        if (name == null) {
             return null;
         }
 
         Team team = scoreboard.getEntryTeam(name.getEntryName());
 
-        if(team != null) {
+        if (team != null) {
             return team;
         }
 
@@ -97,11 +101,11 @@ public abstract class ScoreboardBuilder {
     private void showScore(int score) {
         EntryName name = getEntryNameByScore(score);
 
-        if(name == null) {
+        if (name == null) {
             return;
         }
 
-        if(objective.getScore(name.getEntryName()).isScoreSet()) {
+        if (objective.getScore(name.getEntryName()).isScoreSet()) {
             return;
         }
 
@@ -111,11 +115,11 @@ public abstract class ScoreboardBuilder {
     private void hideScore(int score) {
         EntryName name = getEntryNameByScore(score);
 
-        if(name == null) {
+        if (name == null) {
             return;
         }
 
-        if(!objective.getScore(name.getEntryName()).isScoreSet()) {
+        if (!objective.getScore(name.getEntryName()).isScoreSet()) {
             return;
         }
 

@@ -25,11 +25,13 @@ import java.util.Arrays;
  */
 public class WorkstationCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public WorkstationCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("workstation", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -98,7 +100,7 @@ public class WorkstationCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
-                player.sendMessage("§8[§7Workstation§8]§a Du hast dich in die " +  workstation.getName() + " Workstation eingemietet.");
+                player.sendMessage("§8[§7Workstation§8]§a Du hast dich in die " + workstation.getName() + " Workstation eingemietet.");
                 PlayerWorkstation playerWorkstation = new PlayerWorkstation(player.getUniqueId(), workstation);
                 playerWorkstation.create();
                 playerData.addWorkstation(playerWorkstation);

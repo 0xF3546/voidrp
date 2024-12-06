@@ -26,6 +26,7 @@ import java.util.List;
 public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public BlacklistReasonsCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -33,6 +34,7 @@ public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
         Main.registerCommand("blacklistreasons", this);
         Main.addTabCompeter("blacklistreasons", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -49,7 +51,7 @@ public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
         if (args.length < 1) {
             player.sendMessage("§7   ===§8[§cBlacklist§8]§7===");
             for (BlacklistReason blacklistReason : factionData.getBlacklistReasons()) {
-                player.sendMessage("§8 ➥ §e" + blacklistReason.getId() + " §8✗ " +" §e" + blacklistReason.getReason() + "§8 | §e" + blacklistReason.getKills() + " Kills §8| §e" + blacklistReason.getPrice() + "$");
+                player.sendMessage("§8 ➥ §e" + blacklistReason.getId() + " §8✗ " + " §e" + blacklistReason.getReason() + "§8 | §e" + blacklistReason.getKills() + " Kills §8| §e" + blacklistReason.getPrice() + "$");
             }
             return false;
         }

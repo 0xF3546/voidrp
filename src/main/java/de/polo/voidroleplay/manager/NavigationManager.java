@@ -1,13 +1,16 @@
 package de.polo.voidroleplay.manager;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.playerUtils.SoundManager;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.dataStorage.LocationData;
+import de.polo.voidroleplay.dataStorage.NaviData;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -269,13 +272,13 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                     if (naviData.getLocation() == null) continue;
                     if (naviData.getLocation().equalsIgnoreCase(locationData.getName())) {
                         isNavi = true;
+                        break;
                     }
                 }
                 if (!isNavi) {
                     player.sendMessage(Prefix.ERROR + "Der Navipunkt wurde nicht gefunden.");
                     return;
                 }
-                ;
                 playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", nav);
                 if (!silent) player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu §c" + nav + "§7 gesetzt.");
                 final double length = 5.0;

@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,11 +9,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class JailtimeCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
+
     public JailtimeCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("jailtime", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

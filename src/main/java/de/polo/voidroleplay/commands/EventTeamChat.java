@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -14,11 +14,13 @@ import org.bukkit.entity.Player;
 public class EventTeamChat implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public EventTeamChat(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("eventteamchat", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -33,7 +35,7 @@ public class EventTeamChat implements CommandExecutor {
                 if (playersData.getSecondaryTeam() != null) {
                     if (playersData.getSecondaryTeam().equalsIgnoreCase("Event-Team") || playersData.getPermlevel() >= 70) {
                         if (playersData.getSecondaryTeam().equals("Event-Team") || playersData.isAduty() || playersData.getPermlevel() >= 70) {
-                            players.sendMessage("§8[§6Event-Team§8]§e " + player.getName() + "§8:§7 " + utils.stringArrayToString(args));
+                            players.sendMessage("§8[§6Event-Team§8]§e " + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
                         }
                     }
                 }

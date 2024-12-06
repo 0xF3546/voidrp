@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CheckInvCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
 
     public CheckInvCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;

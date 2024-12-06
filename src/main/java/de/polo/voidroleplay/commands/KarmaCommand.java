@@ -16,10 +16,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public class KarmaCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public KarmaCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("karma", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

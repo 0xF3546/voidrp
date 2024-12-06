@@ -6,7 +6,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,19 +22,21 @@ import java.sql.SQLException;
 
 public class MineCommand implements CommandExecutor {
     public final Material[] blocks = new Material[]{Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE};
-    public final String prefix ="§8[§7Mine§8] §7";
+    public final String prefix = "§8[§7Mine§8] §7";
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public MineCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.registerCommand("minenarbeiter", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (Main.getInstance().serverManager.canDoJobs()) {
+        if (ServerManager.canDoJobs()) {
             if (playerData.canInteract()) {
                 if (playerData.getVariable("job") == null) {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mine")) {

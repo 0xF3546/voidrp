@@ -12,11 +12,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class HouseLockListener implements Listener {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public HouseLockListener(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onHouseOpen(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();

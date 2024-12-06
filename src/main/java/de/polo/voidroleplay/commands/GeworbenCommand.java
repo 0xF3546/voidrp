@@ -24,6 +24,7 @@ public class GeworbenCommand implements CommandExecutor {
     public GeworbenCommand() {
         Main.registerCommand("geworben", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -51,7 +52,7 @@ public class GeworbenCommand implements CommandExecutor {
                     player.sendMessage(Prefix.MAIN + "Aktion erfolgreich!");
                     statement = connection.prepareStatement("UPDATE players SET geworben = ? WHERE uuid = ?");
                     statement.setString(1, offlinePlayer.getUniqueId().toString());
-                    statement.setString( 2, player.getUniqueId().toString());
+                    statement.setString(2, player.getUniqueId().toString());
                     statement.executeUpdate();
                     return false;
                 }

@@ -15,11 +15,13 @@ import org.bukkit.entity.Player;
 public class TPCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
+
     public TPCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         Main.registerCommand("tp", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

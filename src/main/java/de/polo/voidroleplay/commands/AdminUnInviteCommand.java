@@ -1,13 +1,14 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.DBPlayerData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -22,6 +23,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
     private final AdminManager adminManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public AdminUnInviteCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -29,6 +31,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
         this.utils = utils;
         Main.registerCommand("adminuninvite", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -45,7 +48,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        OfflinePlayer offlinePlayer = utils.getOfflinePlayer(args[0]);
+        OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
         if (offlinePlayer == null) {
             player.sendMessage(Prefix.ERROR + args[0] + " wurde nicht gefunden.");
             return false;

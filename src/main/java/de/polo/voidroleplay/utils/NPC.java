@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -16,10 +16,12 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class NPC implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public NPC(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("npc", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -48,6 +50,7 @@ public class NPC implements CommandExecutor {
         }
         return false;
     }
+
     public void spawnNPC(Location location, String name, String displayname, String command) {
         Villager villager = (Villager) location.getWorld().spawnEntity(location, EntityType.VILLAGER);
         NamespacedKey cmd = new NamespacedKey(Main.getInstance(), "command");

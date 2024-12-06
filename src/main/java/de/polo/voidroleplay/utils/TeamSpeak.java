@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.utils;
 
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import lombok.SneakyThrows;
@@ -14,7 +14,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.UUID;
 
 public class TeamSpeak {

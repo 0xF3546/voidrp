@@ -17,6 +17,7 @@ import java.util.List;
 public class SubGroups {
     private final FactionManager factionManager;
     private final List<SubGroup> subGroupList = new ArrayList<>();
+
     public SubGroups(FactionManager factionManager) {
         this.factionManager = factionManager;
         load();

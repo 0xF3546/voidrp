@@ -17,11 +17,13 @@ import org.bukkit.entity.Player;
 public class TicketsCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final SupportManager supportManager;
+
     public TicketsCommand(PlayerManager playerManager, SupportManager supportManager) {
         this.playerManager = playerManager;
         this.supportManager = supportManager;
         Main.registerCommand("tickets", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

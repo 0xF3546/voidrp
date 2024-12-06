@@ -17,11 +17,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class BanListCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
+
     public BanListCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("banlist", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;

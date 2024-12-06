@@ -11,6 +11,7 @@ public class ServerStopCommand implements CommandExecutor {
     public ServerStopCommand() {
         Main.registerCommand("serverstop", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -19,17 +20,17 @@ public class ServerStopCommand implements CommandExecutor {
             return false;
         }
         Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 15 Sekunden neu!");
-        Main.waitSeconds(5,() -> {
+        Main.waitSeconds(5, () -> {
             Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 10 Sekunden neu!");
-            Main.waitSeconds(5,() -> {
+            Main.waitSeconds(5, () -> {
                 Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 5 Sekunden neu!");
-                Main.waitSeconds(2,() -> {
+                Main.waitSeconds(2, () -> {
                     Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 3 Sekunden neu!");
-                    Main.waitSeconds(1,() -> {
+                    Main.waitSeconds(1, () -> {
                         Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 2 Sekunden neu!");
-                        Main.waitSeconds(1,() -> {
+                        Main.waitSeconds(1, () -> {
                             Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 1 Sekunden neu!");
-                            Main.waitSeconds(1,() -> {
+                            Main.waitSeconds(1, () -> {
                                 Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server stoppt jetzt!");
                                 Bukkit.shutdown();
                             });

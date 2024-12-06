@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
@@ -12,18 +12,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PlayerInfoCommand implements CommandExecutor {
-    private PlayerManager playerManager;
     private final FactionManager factionManager;
+    private final PlayerManager playerManager;
+
     public PlayerInfoCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("playerinfo", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length > 0) {
-                Player targetplayer = Bukkit.getPlayer(args[0]);
+            Player targetplayer = Bukkit.getPlayer(args[0]);
             if (targetplayer != null) {
                 PlayerData targetplayerdata = playerManager.getPlayerData(targetplayer.getUniqueId());
 
@@ -61,8 +63,8 @@ public class PlayerInfoCommand implements CommandExecutor {
                 player.sendMessage(Main.error + "Spieler nicht gefunden.");
             }
         } else {
-                player.sendMessage(Main.admin_error + "Syntax-Fehler: /playerinfo [Spieler]");
-            }
+            player.sendMessage(Main.admin_error + "Syntax-Fehler: /playerinfo [Spieler]");
+        }
         return false;
     }
 }

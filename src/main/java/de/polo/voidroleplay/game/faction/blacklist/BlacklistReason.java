@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.game.faction.blacklist;
 
-import de.polo.voidroleplay.commands.BlacklistReasonsCommand;
 import lombok.Getter;
 import lombok.Setter;
 

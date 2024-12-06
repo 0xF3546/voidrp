@@ -3,7 +3,9 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.VertragUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,17 +48,17 @@ public class RentCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Der Betrag muss zwischen 1-5.000$ liegen.");
                 return false;
             }
-        }  catch (Exception ex) {
+        } catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Der Betrag muss numerisch sein.");
             return false;
         }
-            if (VertragUtil.setVertrag(player, targetplayer, "rental", haus + "_" + args[1])) {
-                player.sendMessage("§8[§6Haus§8]§e Du hast " + targetplayer.getName() + " einen Mietvertrag ausgestellt.");
-                targetplayer.sendMessage("§6" + player.getName() + " hat dir einen Mietvertrag für Haus " + haus + " in höhe von " + args[1] + "$/PayDay angeboten.");
-                utils.vertragUtil.sendInfoMessage(targetplayer);
-            } else {
-                player.sendMessage(Main.error + "§7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
-            }
+        if (VertragUtil.setVertrag(player, targetplayer, "rental", haus + "_" + args[1])) {
+            player.sendMessage("§8[§6Haus§8]§e Du hast " + targetplayer.getName() + " einen Mietvertrag ausgestellt.");
+            targetplayer.sendMessage("§6" + player.getName() + " hat dir einen Mietvertrag für Haus " + haus + " in höhe von " + args[1] + "$/PayDay angeboten.");
+            utils.vertragUtil.sendInfoMessage(targetplayer);
+        } else {
+            player.sendMessage(Main.error + "§7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+        }
         return false;
     }
 }

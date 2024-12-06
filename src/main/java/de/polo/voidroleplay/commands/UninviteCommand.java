@@ -1,11 +1,12 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,6 +29,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final FactionManager factionManager;
+
     public UninviteCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -35,6 +37,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
         Main.registerCommand("uninvite", this);
         Main.addTabCompeter("uninvite", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

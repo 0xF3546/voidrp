@@ -10,14 +10,12 @@ public class CookTimer {
     @Getter
     private final Player player;
     @Getter
-    @Setter
-    private int minutes;
-
-    @Getter
     private final House house;
-
     @Getter
     private final Location location;
+    @Getter
+    @Setter
+    private int minutes;
 
     public CookTimer(Player player, int minutes, House house, Location location) {
         this.player = player;

@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.command.Command;
@@ -13,10 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class UseCommand implements CommandExecutor {
     private final GamePlay gamePlay;
+
     public UseCommand(GamePlay gamePlay) {
         this.gamePlay = gamePlay;
         Main.registerCommand("use", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

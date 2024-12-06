@@ -17,7 +17,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mayson1337
@@ -25,17 +28,47 @@ import java.util.*;
  * @since 1.0.0
  */
 public class PlayerWorkstation {
-    private int id = -1;
-
     public final Workstation Workstation;
     private final UUID uuid;
-
+    private int id = -1;
     private int input;
     private int output;
 
     public PlayerWorkstation(UUID uuid, Workstation workstation) {
         this.uuid = uuid;
         this.Workstation = workstation;
+    }
+
+    @SneakyThrows
+    public static Collection<PlayerWorkstation> getPlayerWorkstationsFromDatabase(UUID uuid) {
+        List<PlayerWorkstation> workstations = new ArrayList<>();
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM workstations WHERE uuid = ?");
+        statement.setString(1, uuid.toString());
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            System.out.println("LOADED WORKSTATION #" + result.getInt("id"));
+            PlayerWorkstation workstation = new PlayerWorkstation(uuid, de.polo.voidroleplay.utils.enums.Workstation.valueOf(result.getString("workstation")));
+            workstation.setId(result.getInt("id"));
+            workstation.setInput(result.getInt("input"));
+            workstation.setOutput(result.getInt("output"));
+            workstations.add(workstation);
+        }
+
+        return workstations;
+    }
+
+    public static boolean hasWorkstation(Player player, Workstation workstation) {
+        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+            if (playerData.getPlayer() == player) {
+                for (PlayerWorkstation playerWorkstation : playerData.getWorkstations()) {
+                    if (playerWorkstation.Workstation.equals(workstation)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public int getInput() {
@@ -175,37 +208,5 @@ public class PlayerWorkstation {
         statement.setInt(1, id);
         statement.execute();
         Main.getInstance().playerManager.getPlayerData(uuid).removeWorkstation(this);
-    }
-
-    @SneakyThrows
-    public static Collection<PlayerWorkstation> getPlayerWorkstationsFromDatabase(UUID uuid) {
-        List<PlayerWorkstation> workstations = new ArrayList<>();
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM workstations WHERE uuid = ?");
-        statement.setString(1, uuid.toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            System.out.println("LOADED WORKSTATION #" + result.getInt("id"));
-            PlayerWorkstation workstation = new PlayerWorkstation(uuid, de.polo.voidroleplay.utils.enums.Workstation.valueOf(result.getString("workstation")));
-            workstation.setId(result.getInt("id"));
-            workstation.setInput(result.getInt("input"));
-            workstation.setOutput(result.getInt("output"));
-            workstations.add(workstation);
-        }
-
-        return workstations;
-    }
-
-    public static boolean hasWorkstation(Player player, Workstation workstation) {
-        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
-            if (playerData.getPlayer() == player) {
-                for (PlayerWorkstation playerWorkstation : playerData.getWorkstations()) {
-                    if (playerWorkstation.Workstation.equals(workstation)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 }

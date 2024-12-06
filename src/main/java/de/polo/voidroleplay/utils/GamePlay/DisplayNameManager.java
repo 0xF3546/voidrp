@@ -1,8 +1,5 @@
 package de.polo.voidroleplay.utils.GamePlay;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import de.polo.voidroleplay.dataStorage.BlacklistData;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
@@ -14,6 +11,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DisplayNameManager {
 

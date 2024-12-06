@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.FactionPlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import org.bukkit.Bukkit;
@@ -20,10 +20,12 @@ import java.util.UUID;
 
 public class FrakInfoCommand implements CommandExecutor, TabCompleter {
     private final FactionManager factionManager;
+
     public FrakInfoCommand(FactionManager factionManager) {
         this.factionManager = factionManager;
         Main.registerCommand("frakinfo", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -60,6 +62,7 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
         }
         return false;
     }
+
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

@@ -23,12 +23,14 @@ public class ForumCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public ForumCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.utils = utils;
         Main.registerCommand("forum", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

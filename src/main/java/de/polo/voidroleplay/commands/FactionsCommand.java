@@ -17,11 +17,13 @@ import org.bukkit.entity.Player;
 public class FactionsCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public FactionsCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("factions", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

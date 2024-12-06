@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomItemInventoryCache {
 
-    private final ConcurrentHashMap<InventoryManager, Set<CustomItem>> customItemHashMap;
     private static CustomItemInventoryCache instance;
+    private final ConcurrentHashMap<InventoryManager, Set<CustomItem>> customItemHashMap;
 
     /**
      * Creates a new {@link CustomItemInventoryCache} instance.
@@ -22,6 +22,16 @@ public class CustomItemInventoryCache {
     }
 
     /**
+     * Returns the {@link CustomItemInventoryCache} instance.
+     *
+     * @return the {@link CustomItemInventoryCache} instance
+     * @since 1.0.0
+     */
+    public static CustomItemInventoryCache getInstance() {
+        return instance;
+    }
+
+    /**
      * Returns the {@link ConcurrentHashMap} that contains the {@link CustomItem}s.
      *
      * @return the {@link ConcurrentHashMap} that contains the {@link CustomItem}s
@@ -30,16 +40,6 @@ public class CustomItemInventoryCache {
      */
     public ConcurrentHashMap<InventoryManager, Set<CustomItem>> getCustomItemHashMap() {
         return customItemHashMap;
-    }
-
-    /**
-     * Returns the {@link CustomItemInventoryCache} instance.
-     *
-     * @return the {@link CustomItemInventoryCache} instance
-     * @since 1.0.0
-     */
-    public static CustomItemInventoryCache getInstance() {
-        return instance;
     }
 
     /**

@@ -5,12 +5,13 @@ import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Material;
@@ -41,10 +42,9 @@ public class PfeifenTransport implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
-
-    private LocalDateTime lastTransport = Utils.getTime();
     private final HashMap<String, Integer> transports = new HashMap<>();
     private final List<UUID> cooldownUser = new ArrayList<>();
+    private LocalDateTime lastTransport = Utils.getTime();
 
     public PfeifenTransport(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
@@ -54,6 +54,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         Main.registerCommand("pfeifentransport", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -85,9 +86,10 @@ public class PfeifenTransport implements CommandExecutor, Listener {
             if (!factionData.isActive()) continue;
             if (factionData.isBadFrak() || factionData.getName().equalsIgnoreCase("ICA")) {
                 int amountDelivered = 0;
-                if (transports.get(factionData.getName()) != null) amountDelivered = transports.get(factionData.getName());
+                if (transports.get(factionData.getName()) != null)
+                    amountDelivered = transports.get(factionData.getName());
                 if (amountDelivered >= 50) {
-                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§" +factionData.getPrimaryColor() + factionData.getFullname(), "§8 ➥ §c50§8/§c50")) {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§" + factionData.getPrimaryColor() + factionData.getFullname(), "§8 ➥ §c50§8/§c50")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
 

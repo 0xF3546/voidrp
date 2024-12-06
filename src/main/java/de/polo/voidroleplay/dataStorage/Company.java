@@ -29,7 +29,7 @@ public class Company {
     @Setter
     private int bank;
 
-    private List<CompanyRole> roles = new ArrayList<>();
+    private final List<CompanyRole> roles = new ArrayList<>();
 
     public void addRole(CompanyRole role) {
         roles.add(role);

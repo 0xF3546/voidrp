@@ -5,9 +5,14 @@ import org.bukkit.event.HandlerList;
 
 public class MinuteTickEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private int minute;
+    private final int minute;
+
     public MinuteTickEvent(int minute) {
         this.minute = minute;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public int getMinute() {
@@ -16,10 +21,6 @@ public class MinuteTickEvent extends Event {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

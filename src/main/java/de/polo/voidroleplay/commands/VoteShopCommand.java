@@ -24,11 +24,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class VoteShopCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public VoteShopCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("voteshop", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

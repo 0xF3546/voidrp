@@ -9,10 +9,12 @@ import org.bukkit.entity.Player;
 
 public class CancelSupportCommand implements CommandExecutor {
     private final SupportManager supportManager;
+
     public CancelSupportCommand(SupportManager supportManager) {
         this.supportManager = supportManager;
         Main.registerCommand("cancelsupport", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

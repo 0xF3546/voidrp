@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -14,11 +14,13 @@ import org.bukkit.entity.Player;
 public class LeaderChatCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public LeaderChatCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("leaderchat", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -35,7 +37,7 @@ public class LeaderChatCommand implements CommandExecutor {
             if (pData.getPermlevel() >= 70 || pData.getFactionGrade() >= 5) {
                 if (pData.getFaction() == null) continue;
                 Player targetplayer = Bukkit.getPlayer(pData.getUuid());
-                String msg = utils.stringArrayToString(args);
+                String msg = Utils.stringArrayToString(args);
                 targetplayer.sendMessage("§8[§6Leader§8]§e " + playerData.getFaction() + " " + player.getName() + ": " + msg);
             }
         }

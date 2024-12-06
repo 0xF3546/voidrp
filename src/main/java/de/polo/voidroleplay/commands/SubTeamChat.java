@@ -19,11 +19,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SubTeamChat implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public SubTeamChat(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("subteamchat", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

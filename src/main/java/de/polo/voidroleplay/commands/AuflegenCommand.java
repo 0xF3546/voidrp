@@ -9,10 +9,12 @@ import org.bukkit.entity.Player;
 
 public class AuflegenCommand implements CommandExecutor {
     private final Utils utils;
+
     public AuflegenCommand(Utils utils) {
         this.utils = utils;
         Main.registerCommand("auflegen", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

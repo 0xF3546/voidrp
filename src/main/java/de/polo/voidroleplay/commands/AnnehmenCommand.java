@@ -11,10 +11,12 @@ import java.sql.SQLException;
 
 public class AnnehmenCommand implements CommandExecutor {
     private final Utils utils;
+
     public AnnehmenCommand(Utils utils) {
         this.utils = utils;
         Main.registerCommand("annehmen", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

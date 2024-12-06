@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -17,9 +17,11 @@ import java.util.Random;
 
 public class Rubbellose {
     private final PlayerManager playerManager;
+
     public Rubbellose(PlayerManager playerManager) {
         this.playerManager = playerManager;
     }
+
     public void startGame(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.closeInventory();
@@ -28,8 +30,8 @@ public class Rubbellose {
         playerData.setIntVariable("rubbellose_wins", 0);
         Random random = new Random();
         int greenBlocksPlaced = 0;
-        for(int i=0; i<54; i++) {
-            if(i%9 == 0 || i%9 == 8 || i<9 || i>44) {
+        for (int i = 0; i < 54; i++) {
+            if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -38,7 +40,7 @@ public class Rubbellose {
                 });
             }
         }
-        for (int i=0; i<54; i++) {
+        for (int i = 0; i < 54; i++) {
             if (inventoryManager.getInventory().getItem(i) == null) {
                 if (greenBlocksPlaced < 4 && random.nextBoolean()) {
                     inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8")) {
@@ -60,7 +62,7 @@ public class Rubbellose {
                     inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
-                            ItemMeta meta = event.getCurrentItem().getItemMeta();;
+                            ItemMeta meta = event.getCurrentItem().getItemMeta();
                             meta.setDisplayName("§cVerloren!");
                             event.getCurrentItem().setItemMeta(meta);
                             event.getCurrentItem().setType(Material.RED_DYE);

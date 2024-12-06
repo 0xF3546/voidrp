@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.manager;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
@@ -34,14 +34,13 @@ public class ServerManager {
     public static final String error_cantDoJobs = Main.error + "Der Job ist Serverseitig bis nach Restart gesperrt.";
 
     public static final Map<String, RankData> rankDataMap = new HashMap<>();
-    private static final Map<String, PayoutData> payoutDataMap = new HashMap<>();
     public static final Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
     public static final Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
     public static final Map<String, ContractData> contractDataMap = new HashMap<>();
     public static final Map<Integer, ShopData> shopDataMap = new HashMap<>();
     public static final Map<String, String> serverVariables = new HashMap<>();
     public static final List<UUID> factionStorageWeaponsTookout = new ArrayList<>();
-
+    private static final Map<String, PayoutData> payoutDataMap = new HashMap<>();
     public static Object[][] faction_grades;
 
     private final PlayerManager playerManager;
@@ -64,6 +63,30 @@ public class ServerManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean canDoJobs() {
+        return Utils.getTime().getHour() != 1 || Utils.getTime().getMinute() < 55;
+    }
+
+    public static boolean canSpawnDrop() {
+        return Utils.getTime().getHour() != 1;
+    }
+
+    public static int getPayout(String type) {
+        return payoutDataMap.get(type).getPayout();
+    }
+
+    public static void setVariable(String variable, String value) {
+        if (serverVariables.get(variable) != null) {
+            serverVariables.replace(variable, value);
+        } else {
+            serverVariables.put(variable, value);
+        }
+    }
+
+    public static String getVariable(String variable) {
+        return serverVariables.get(variable);
     }
 
     private void loadRanks() throws SQLException {
@@ -294,14 +317,6 @@ public class ServerManager {
         }.runTaskTimer(Main.getInstance(), 20, 20);
     }
 
-    public static boolean canDoJobs() {
-        return Utils.getTime().getHour() != 1 || Utils.getTime().getMinute() < 55;
-    }
-
-    public static boolean canSpawnDrop() {
-        return Utils.getTime().getHour() != 1;
-    }
-
     public void savePlayers() throws SQLException {
         for (Player player : Bukkit.getOnlinePlayers()) {
             playerManager.savePlayer(player);
@@ -373,22 +388,6 @@ public class ServerManager {
                 }
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
-    }
-
-    public static int getPayout(String type) {
-        return payoutDataMap.get(type).getPayout();
-    }
-
-    public static void setVariable(String variable, String value) {
-        if (serverVariables.get(variable) != null) {
-            serverVariables.replace(variable, value);
-        } else {
-            serverVariables.put(variable, value);
-        }
-    }
-
-    public static String getVariable(String variable) {
-        return serverVariables.get(variable);
     }
 
     public RankData getRankData(String rank) {

@@ -2,13 +2,10 @@ package de.polo.voidroleplay.game.base.shops;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Company;
-import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import lombok.SneakyThrows;
 import org.bukkit.World;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,6 +123,7 @@ public class ShopData {
     public void setItems(List<ShopItem> items) {
         this.items = items;
     }
+
     public void removeItem(ShopItem shopItem) {
         items.remove(shopItem);
     }

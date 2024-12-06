@@ -12,6 +12,7 @@ public class VoteCommand implements CommandExecutor {
     public VoteCommand() {
         Main.registerCommand("vote", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

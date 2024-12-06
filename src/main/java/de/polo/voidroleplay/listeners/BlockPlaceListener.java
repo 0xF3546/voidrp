@@ -3,7 +3,6 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import lombok.SneakyThrows;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +16,7 @@ public class BlockPlaceListener implements Listener {
     public BlockPlaceListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onBlockBreak(BlockPlaceEvent event) {
         Player player = event.getPlayer();

@@ -17,11 +17,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class KirchensteuerCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public KirchensteuerCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("kirchensteuer", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

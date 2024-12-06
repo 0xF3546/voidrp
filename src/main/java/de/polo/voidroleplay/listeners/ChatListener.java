@@ -1,14 +1,14 @@
 package de.polo.voidroleplay.listeners;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PhoneCall;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Ticket;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
-import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,12 +21,14 @@ public class ChatListener implements Listener {
     private final PlayerManager playerManager;
     private final SupportManager supportManager;
     private final Utils utils;
+
     public ChatListener(PlayerManager playerManager, SupportManager supportManager, Utils utils) {
         this.playerManager = playerManager;
         this.supportManager = supportManager;
         this.utils = utils;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -38,17 +40,18 @@ public class ChatListener implements Listener {
         event.setCancelled(true);
         if (playerData.getVariable("chatblock") == null) {
             if (supportManager.isInConnection(player)) {
-                    Ticket ticket = supportManager.getTicket(player);
-                    for (Player p : supportManager.getPlayersInTicket(ticket)) {
-                        p.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
-                    }
+                Ticket ticket = supportManager.getTicket(player);
+                for (Player p : supportManager.getPlayersInTicket(ticket)) {
+                    p.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
+                }
 
             } else {
                 if (!playerData.isDead()) {
                     if (utils.phoneUtils.isInCall(player)) {
                         PhoneCall call = utils.phoneUtils.getCall(player);
                         for (Player p : utils.phoneUtils.getPlayersInCall(call)) {
-                            if (p != player) p.sendMessage("§8[§6Handy§8] " + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
+                            if (p != player)
+                                p.sendMessage("§8[§6Handy§8] " + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                         }
                     }
                     String msg = event.getMessage();

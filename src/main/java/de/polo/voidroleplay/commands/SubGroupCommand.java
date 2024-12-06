@@ -4,14 +4,14 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.SubGroup;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,6 +26,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
+
     public SubGroupCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -33,6 +34,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
         Main.registerCommand("subgroup", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

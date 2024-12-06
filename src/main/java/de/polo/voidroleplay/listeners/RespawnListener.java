@@ -2,8 +2,8 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,10 +12,12 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class RespawnListener implements Listener {
     private final PlayerManager playerManager;
+
     public RespawnListener(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();

@@ -27,11 +27,13 @@ import java.util.Arrays;
 public class DailyBonusCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public DailyBonusCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.registerCommand("dailybonus", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -80,7 +82,7 @@ public class DailyBonusCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
 
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Weitere Auswahl", true, true);
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.RED_DYE , 1, 0, "§c+40g Schmerzmittel")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c+40g Schmerzmittel")) {
             @SneakyThrows
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -100,7 +102,7 @@ public class DailyBonusCommand implements CommandExecutor {
                 connection.close();
             }
         });
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE , 1, 0, "§f+20g Kokain §7&§2 +20 veredelte Joints")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§f+20g Kokain §7&§2 +20 veredelte Joints")) {
             @SneakyThrows
             @Override
             public void onClick(InventoryClickEvent event) {

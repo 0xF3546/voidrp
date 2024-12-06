@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -29,21 +29,26 @@ import java.util.Date;
 public class EinreiseCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public EinreiseCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.registerCommand("einreise", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFirstname() == null || playerData.getLastname() == null) {
             LocalDate date = LocalDate.of(2000, 1, 1);
-            if (playerData.getVariable("einreise_firstname") == null) playerData.setVariable("einreise_firstname", "Vorname");
-            if(playerData.getVariable("einreise_lastname") == null) playerData.setVariable("einreise_lastname", "Nachname");
-            if(playerData.getVariable("einreise_gender") == null) playerData.setVariable("einreise_gender", Gender.MALE);
-            if(playerData.getVariable("einreise_dob") == null) playerData.setVariable("einreise_dob", date);
+            if (playerData.getVariable("einreise_firstname") == null)
+                playerData.setVariable("einreise_firstname", "Vorname");
+            if (playerData.getVariable("einreise_lastname") == null)
+                playerData.setVariable("einreise_lastname", "Nachname");
+            if (playerData.getVariable("einreise_gender") == null)
+                playerData.setVariable("einreise_gender", Gender.MALE);
+            if (playerData.getVariable("einreise_dob") == null) playerData.setVariable("einreise_dob", date);
             openEinrese(player);
         } else {
             player.sendMessage(Main.error + "Du hast bereits deine Papiere erhalten.");
@@ -115,7 +120,7 @@ public class EinreiseCommand implements CommandExecutor {
                 statement.setString(1, playerData.getFirstname());
                 statement.setString(2, playerData.getLastname());
                 LocalDate einreiseDob = playerData.getVariable("einreise_dob");
-                Instant instant = einreiseDob.atStartOfDay(ZoneId.systemDefault()).toInstant();;
+                Instant instant = einreiseDob.atStartOfDay(ZoneId.systemDefault()).toInstant();
                 playerData.setBirthday(Date.from(instant));
                 java.util.Date utilDate = playerData.getBirthday();
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());

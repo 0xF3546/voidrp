@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class BlacklistsCommand implements CommandExecutor {
     private final FactionManager factionManager;
+
     public BlacklistsCommand(FactionManager factionManager) {
         this.factionManager = factionManager;
         Main.registerCommand("blacklists", this);
@@ -33,7 +34,7 @@ public class BlacklistsCommand implements CommandExecutor {
         for (BlacklistData blacklistData : factionManager.getBlacklists()) {
             if (blacklistData.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
                 FactionData factionData = factionManager.getFactionData(blacklistData.getFaction());
-                TextComponent message = new TextComponent("§8 - §" + factionData.getPrimaryColor() + factionData.getFullname() + "§8: §a" + blacklistData.getPrice() + "$ §7| §c" + blacklistData.getKills() + " Kills §8| §7"  + blacklistData.getReason());
+                TextComponent message = new TextComponent("§8 - §" + factionData.getPrimaryColor() + factionData.getFullname() + "§8: §a" + blacklistData.getPrice() + "$ §7| §c" + blacklistData.getKills() + " Kills §8| §7" + blacklistData.getReason());
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/blacklist pay " + blacklistData.getFaction()));
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oBezahlen")));
                 player.spigot().sendMessage(message);

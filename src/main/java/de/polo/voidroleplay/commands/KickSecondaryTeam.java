@@ -24,11 +24,13 @@ import java.sql.PreparedStatement;
  */
 public class KickSecondaryTeam implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public KickSecondaryTeam(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("kicksecondaryteam", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

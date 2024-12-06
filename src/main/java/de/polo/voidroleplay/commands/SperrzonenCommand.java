@@ -20,11 +20,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SperrzonenCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public SperrzonenCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("sperrzonen", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

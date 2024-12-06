@@ -1,13 +1,13 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.shops.ShopData;
-import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.playerUtils.Progress;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.playerUtils.Progress;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,12 +20,14 @@ public class ShopRobCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
     private final FactionManager factionManager;
+
     public ShopRobCommand(PlayerManager playerManager, LocationManager locationManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         this.factionManager = factionManager;
         Main.registerCommand("shoprob", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

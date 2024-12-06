@@ -6,7 +6,8 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -24,15 +25,17 @@ import java.util.List;
  * @since 1.0.0
  */
 public class SperrzoneCommand implements CommandExecutor {
+    public static final List<String> sperrzonen = new ArrayList<>();
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
-    public static final List<String> sperrzonen = new ArrayList<>();
+
     public SperrzoneCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
 
         Main.registerCommand("sperrzone", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

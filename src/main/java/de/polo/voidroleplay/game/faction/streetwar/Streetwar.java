@@ -56,6 +56,15 @@ public class Streetwar implements CommandExecutor {
         }
     }
 
+    public static boolean isInStreetwar(String faction) {
+        for (StreetwarData streetwarData : streetwarDataMap.values()) {
+            if (streetwarData.getAttacker().equalsIgnoreCase(faction) || streetwarData.getDefender().equalsIgnoreCase(faction)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addPunkte(String faction, int points, String reason) {
         for (StreetwarData streetwarData : streetwarDataMap.values()) {
             if (streetwarData.getAttacker().equalsIgnoreCase(faction)) {
@@ -146,15 +155,6 @@ public class Streetwar implements CommandExecutor {
         FactionData attackerData = factionManager.getFactionData(attackerFaction);
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§c Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag abgelehnt.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§c " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " abgelehnt.");
-    }
-
-    public static boolean isInStreetwar(String faction) {
-        for (StreetwarData streetwarData : streetwarDataMap.values()) {
-            if (streetwarData.getAttacker().equalsIgnoreCase(faction) || streetwarData.getDefender().equalsIgnoreCase(faction)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

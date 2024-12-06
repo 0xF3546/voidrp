@@ -25,12 +25,14 @@ import org.jetbrains.annotations.NotNull;
 public class FixBlockCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final BlockManager blockManager;
+
     public FixBlockCommand(PlayerManager playerManager, BlockManager blockManager) {
         this.playerManager = playerManager;
         this.blockManager = blockManager;
 
         Main.registerCommand("fixblock", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

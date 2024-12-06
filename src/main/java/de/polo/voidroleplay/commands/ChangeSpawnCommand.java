@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -21,11 +21,13 @@ import java.util.List;
 public class ChangeSpawnCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public ChangeSpawnCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("changespawn", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -34,7 +36,7 @@ public class ChangeSpawnCommand implements CommandExecutor {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27,"§8 » §bSpawn ändern", true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bSpawn ändern", true, false);
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cKrankenhaus")) {
             @Override
             public void onClick(InventoryClickEvent event) {

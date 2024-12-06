@@ -8,17 +8,21 @@ import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import lombok.SneakyThrows;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -112,7 +116,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                     s.setExtra(storage);
                     s.setPlayer(player.getUniqueId().toString());
                     s.create();
-                };
+                }
                 s.open(player);
                 return;
             }
@@ -128,7 +132,6 @@ public class PlayerSwapHandItemsListener implements Listener {
                         s.setPlayer(player.getUniqueId().toString());
                         s.create();
                     }
-                    ;
                     s.open(player);
                     return;
                 }
@@ -197,7 +200,7 @@ public class PlayerSwapHandItemsListener implements Listener {
             }
         });
         int bargeldAmount = targetplayerData.getBargeld() / 4;
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", Arrays.asList("§8 ➥ §7" + utils.toDecimalFormat(bargeldAmount) + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"))) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", Arrays.asList("§8 ➥ §7" + Utils.toDecimalFormat(bargeldAmount) + "$", "", "§8[§6Linksklick§8]§7 Geld rauben"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
@@ -274,7 +277,6 @@ public class PlayerSwapHandItemsListener implements Listener {
                 public void onClick(InventoryClickEvent event) {
                     GangwarUtils gangwarUtils = Main.getInstance().utils.gangwarUtils;
                     FactionManager factionManager = Main.getInstance().factionManager;
-                    ;
                     if (playerData.getFaction() == null || Objects.equals(playerData.getFaction(), "Zivilist")) {
                         player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
                         return;
@@ -346,7 +348,7 @@ public class PlayerSwapHandItemsListener implements Listener {
     private void openBag(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Deine Tasche", true, true);
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + utils.toDecimalFormat(playerData.getBargeld()) + "$")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + Utils.toDecimalFormat(playerData.getBargeld()) + "$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -364,7 +366,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 utils.tabletUtils.openTablet(player);
             }
         });
-        inventoryManager.setItem(new CustomItem(21, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§eCoin-Shop", Arrays.asList("§8 ➥ §7Ränge, Cosmetics und vieles mehr!"))) {
+        inventoryManager.setItem(new CustomItem(21, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§eCoin-Shop", Collections.singletonList("§8 ➥ §7Ränge, Cosmetics und vieles mehr!"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openCoinShop(player, playerData);
@@ -512,7 +514,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
     private void openCoinShop(Player player, PlayerData playerData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eCoin-Shop", true, true);
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Arrays.asList("§8 ➥ §e" + utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Collections.singletonList("§8 ➥ §e" + Utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -558,7 +560,7 @@ public class PlayerSwapHandItemsListener implements Listener {
     public void openRankShop(Player player, PlayerData playerData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eRänge", true, true);
         Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eRänge");
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Arrays.asList("§8 ➥ §e" + utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Collections.singletonList("§8 ➥ §e" + Utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -599,12 +601,12 @@ public class PlayerSwapHandItemsListener implements Listener {
     private void openExtraShop(Player player, PlayerData playerData) {
         playerData.setVariable("current_inventory", "coinshop_extras");
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Extras", true, true);
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Arrays.asList("§8 ➥ §e" + utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Collections.singletonList("§8 ➥ §e" + Utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
             }
         });
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY4MTIxMTJkZDE4N2U3YzhkZGI1YzNiOGU4NTRlODJmMTkxOTc0MTRhOGNkYjU0MjAyMWYxYTQ5MTg5N2U1MyJ9fX0=", 1, 0, "§bHausslot", Arrays.asList("§8 » §e6.000 Coins"))) {
+        inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY4MTIxMTJkZDE4N2U3YzhkZGI1YzNiOGU4NTRlODJmMTkxOTc0MTRhOGNkYjU0MjAyMWYxYTQ5MTg5N2U1MyJ9fX0=", 1, 0, "§bHausslot", Collections.singletonList("§8 » §e6.000 Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 buy(player, "hausslot");
@@ -708,7 +710,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.sendMessage(Prefix.MAIN + "Du hast ein EXP-Upgrade gekauft.");
             }
         });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§7Steuern", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.TAX).getAmount() +"% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.TAX).getAmount() + Powerup.TAX.getUpgradeAmount()) + "%", "", "§b » §7Verringert die höhe der Steuern", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.TAX)) + "$"))) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§7Steuern", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.TAX).getAmount() + "% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.TAX).getAmount() + Powerup.TAX.getUpgradeAmount()) + "%", "", "§b » §7Verringert die höhe der Steuern", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.TAX)) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.TAX)) {

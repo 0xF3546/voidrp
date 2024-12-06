@@ -1,13 +1,16 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,6 +32,7 @@ public class FFAUtils implements CommandExecutor, Listener {
     public static final Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public FFAUtils(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
@@ -39,6 +43,18 @@ public class FFAUtils implements CommandExecutor, Listener {
             throw new RuntimeException(e);
         }
         Main.registerCommand("ffa", this);
+    }
+
+    public static void createLobby(Player player, int players, String password) {
+        FFALobbyData ffaLobbyData = new FFALobbyData();
+        ffaLobbyData.setId(FFAlobbyDataMap.size() + 1);
+        ffaLobbyData.setMaxPlayer(players);
+        ffaLobbyData.setName(player.getUniqueId().toString());
+        ffaLobbyData.setDisplayname("§6" + player.getName() + "'s Lobby");
+        if (password != null) ffaLobbyData.setPassword(password);
+        FFAlobbyDataMap.put(FFAlobbyDataMap.size() + 1, ffaLobbyData);
+        SoundManager.successSound(player);
+        player.closeInventory();
     }
 
     private void loadFFALobbys() throws SQLException {
@@ -68,6 +84,7 @@ public class FFAUtils implements CommandExecutor, Listener {
             FFAspawnpointDataMap.put(result.getString(2), ffaSpawnPoints);
         }
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -162,18 +179,6 @@ public class FFAUtils implements CommandExecutor, Listener {
         player.teleport(new Location(randomValue.getWelt(), randomValue.getX(), randomValue.getY(), randomValue.getZ()));
     }
 
-    public static void createLobby(Player player, int players, String password) {
-        FFALobbyData ffaLobbyData = new FFALobbyData();
-        ffaLobbyData.setId(FFAlobbyDataMap.size() + 1);
-        ffaLobbyData.setMaxPlayer(players);
-        ffaLobbyData.setName(player.getUniqueId().toString());
-        ffaLobbyData.setDisplayname("§6" + player.getName() + "'s Lobby");
-        if (password != null) ffaLobbyData.setPassword(password);
-        FFAlobbyDataMap.put(FFAlobbyDataMap.size() + 1, ffaLobbyData);
-        SoundManager.successSound(player);
-        player.closeInventory();
-    }
-
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
         Player player = event.getPlayer();
@@ -198,7 +203,8 @@ public class FFAUtils implements CommandExecutor, Listener {
                 itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + event.getPlayerData().getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§c Nicht vorhanden"));
             } else {
                 itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + event.getPlayerData().getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§a " + event.getPlayerData().getVariable("ffa_password")));
-            }            inv.getItem(13).setItemMeta(itemMeta);
+            }
+            inv.getItem(13).setItemMeta(itemMeta);
             inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen"));
             inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück"));
             inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen"));

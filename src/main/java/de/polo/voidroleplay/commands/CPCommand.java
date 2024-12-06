@@ -14,6 +14,7 @@ public class CPCommand implements CommandExecutor {
     public CPCommand() {
         Main.registerCommand("cp", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

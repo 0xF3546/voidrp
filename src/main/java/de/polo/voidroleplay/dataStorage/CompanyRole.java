@@ -54,6 +54,7 @@ public class CompanyRole {
     public void removePermission(String permission) {
         permissions.remove(permission);
     }
+
     public boolean hasPermission(String permission) {
         for (String perm : permissions) {
             if (perm.equalsIgnoreCase(permission)) {

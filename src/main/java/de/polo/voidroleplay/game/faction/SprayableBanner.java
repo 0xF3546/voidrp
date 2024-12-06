@@ -9,11 +9,10 @@ import java.time.LocalDateTime;
 public class SprayableBanner {
 
     @Getter
+    private final int registeredBlock;
+    @Getter
     @Setter
     private int id;
-    @Getter
-    private final int registeredBlock;
-
     @Getter
     @Setter
     private int faction;

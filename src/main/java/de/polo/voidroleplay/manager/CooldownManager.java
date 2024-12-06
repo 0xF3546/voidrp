@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class CooldownManager {
     private final Map<String, Long> cooldowns = new HashMap<>();
+    private final Map<String, Long> stringCooldowns = new HashMap<>();
 
     public boolean isOnCooldown(Player player, String key) {
         if (cooldowns.containsKey(getCooldownKey(player, key))) {
@@ -32,8 +33,6 @@ public class CooldownManager {
     private String getCooldownKey(Player player, String key) {
         return player.getName() + ":" + key;
     }
-
-    private final Map<String, Long> stringCooldowns = new HashMap<>();
 
     public boolean isOnStringCooldown(String string, Object key) {
         if (stringCooldowns.containsKey(getStringCooldownKey(string, key))) {

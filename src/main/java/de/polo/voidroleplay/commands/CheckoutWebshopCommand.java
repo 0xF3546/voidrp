@@ -24,11 +24,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public class CheckoutWebshopCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public CheckoutWebshopCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("checkout-webshop", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -66,7 +68,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                         amount);
                 break;
             case "spende":
-                OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(uuid.toString());
+                OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(uuid);
                 if (offlinePlayer == null) return false;
                 Bukkit.broadcastMessage("§c ❤ §6" + offlinePlayer.getName() + " hat " + amount + "€ gespendet!");
                 break;
@@ -104,16 +106,16 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                             switch (stringObjectMap.get("type").toString().toLowerCase()) {
                                 case "coins":
                                     playerManager.addCoins(player, (int) stringObjectMap.get("amount"));
-                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) stringObjectMap.get("amount") + " Coins erhalten!");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast " + stringObjectMap.get("amount") + " Coins erhalten!");
                                     break;
                                 case "premium":
                                     playerManager.redeemRank(player, "premium", (int) stringObjectMap.get("amount"), "d");
-                                    player.sendMessage("§8[§eShop§8]§a Du hast " + (int) stringObjectMap.get("amount") + " Tage Premium erhalten!");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast " + stringObjectMap.get("amount") + " Tage Premium erhalten!");
                                     break;
                                 case "gameboost":
                                     try {
                                         playerManager.addEXPBoost(player, (int) stringObjectMap.get("amount"));
-                                        player.sendMessage("§8[§eShop§8]§a Du hast " + (int) stringObjectMap.get("amount") + "h Gameboost erhalten!");
+                                        player.sendMessage("§8[§eShop§8]§a Du hast " + stringObjectMap.get("amount") + "h Gameboost erhalten!");
                                     } catch (SQLException e) {
                                         throw new RuntimeException(e);
                                     }

@@ -1,16 +1,16 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.VehicleData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.game.base.housing.HouseManager;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -107,17 +107,17 @@ public class PayDayUtils {
         }
 
         if (playerData.isChurch()) {
-            player.sendMessage("§7 » §9Kirchensteuer §8: §c-" + Main.getInstance().serverManager.getPayout("kirchensteuer") + "$");
-            plus -= Main.getInstance().serverManager.getPayout("kirchensteuer");
-            factionManager.addFactionMoney("Kirche", Main.getInstance().serverManager.getPayout("kirchensteuer"), "Kirchensteuer " + player.getName());
+            player.sendMessage("§7 » §9Kirchensteuer §8: §c-" + ServerManager.getPayout("kirchensteuer") + "$");
+            plus -= ServerManager.getPayout("kirchensteuer");
+            factionManager.addFactionMoney("Kirche", ServerManager.getPayout("kirchensteuer"), "Kirchensteuer " + player.getName());
         }
         if (playerData.getPermlevel() >= 40) {
-            player.sendMessage("§7 » §9Team-Gehalt§8: §a" + playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt") + "$");
-            plus += playerData.getPermlevel() * Main.getInstance().serverManager.getPayout("teamgehalt");
+            player.sendMessage("§7 » §9Team-Gehalt§8: §a" + playerData.getPermlevel() * ServerManager.getPayout("teamgehalt") + "$");
+            plus += playerData.getPermlevel() * ServerManager.getPayout("teamgehalt");
         }
         if (playerData.getSecondaryTeam() != null) {
-            player.sendMessage("§7 » §9Team-Gehalt§8: §a+" + Main.getInstance().serverManager.getPayout("secondaryteam") + "$");
-            plus += Main.getInstance().serverManager.getPayout("secondaryteam");
+            player.sendMessage("§7 » §9Team-Gehalt§8: §a+" + ServerManager.getPayout("secondaryteam") + "$");
+            plus += ServerManager.getPayout("secondaryteam");
         }
         for (PlayerVehicleData vehicleData : Vehicles.playerVehicleDataMap.values()) {
             if (vehicleData.getUuid().equals(player.getUniqueId().toString())) {

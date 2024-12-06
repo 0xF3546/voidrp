@@ -16,11 +16,21 @@ import java.util.UUID;
 public class ApfelplantageCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
+
     public ApfelplantageCommand(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.registerCommand("apfelsammler", this);
     }
+
+    public static void blockLeftClick(Player player, Block block) {
+        //todo leftclickListener für Äpfel
+    }
+
+    public static void quitJob(Player player) {
+
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = "§8[§cApfelplantage§8] §7";
@@ -51,13 +61,5 @@ public class ApfelplantageCommand implements CommandExecutor {
             player.sendMessage(Prefix.error_cantinteract);
         }
         return false;
-    }
-
-    public static void blockLeftClick(Player player, Block block) {
-        //todo leftclickListener für Äpfel
-    }
-
-    public static void quitJob(Player player) {
-
     }
 }

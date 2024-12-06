@@ -17,6 +17,7 @@ public class PlayerTutorial {
     private final Player player;
     private final PlayerData playerData;
     private int stage = 1;
+
     public PlayerTutorial(Player player, PlayerData playerData) {
         this.player = player;
         this.playerData = playerData;
@@ -28,6 +29,10 @@ public class PlayerTutorial {
         this.stage = stage;
     }
 
+    public static PlayerTutorial getPlayerTutorial(PlayerData playerData) {
+        if (playerData.getVariable("tutorial") == null) return null;
+        return playerData.getVariable("tutorial");
+    }
 
     public int getStage() {
         return stage;
@@ -56,10 +61,5 @@ public class PlayerTutorial {
 
         statement.close();
         connection.close();
-    }
-
-    public static PlayerTutorial getPlayerTutorial(PlayerData playerData) {
-        if (playerData.getVariable("tutorial") == null) return null;
-        return playerData.getVariable("tutorial");
     }
 }

@@ -1,20 +1,23 @@
 package de.polo.voidroleplay.listeners;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;

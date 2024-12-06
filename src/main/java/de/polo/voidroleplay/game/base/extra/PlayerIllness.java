@@ -7,11 +7,11 @@ import lombok.Setter;
 
 public class PlayerIllness {
 
+    @Getter
+    private final IllnessType illnessType;
     @Setter
     @Getter
     private int id;
-    @Getter
-    private final IllnessType illnessType;
 
     public PlayerIllness(IllnessType illnessType) {
         this.illnessType = illnessType;

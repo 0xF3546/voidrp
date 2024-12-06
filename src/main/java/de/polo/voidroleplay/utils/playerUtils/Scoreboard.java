@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils.playerUtils;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -81,7 +81,7 @@ public class Scoreboard {
         Runtime r = Runtime.getRuntime();
         scoreboardAPI.updateScoreboardTitle(player, "admin", "§cAdministration");
         scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
-        scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:",  (int)(r.totalMemory() - r.freeMemory()) / 1048576);
+        scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
         scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
     }
 

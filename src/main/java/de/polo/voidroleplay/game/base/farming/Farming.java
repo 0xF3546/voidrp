@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.game.base.farming;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.LocationData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -44,6 +44,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             throw new RuntimeException(e);
         }
     }
+
     private void loadData() throws SQLException {
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet res = statement.executeQuery("SELECT * FROM farming");
@@ -61,6 +62,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             farmingDataMap.put(res.getString(3), farmingData);
         }
     }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getType() != Material.LARGE_FERN) {
@@ -106,7 +108,8 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             inv.setItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHerstellen"));
             inv.setItem(16, ItemManager.createItem(farmingData.getItem(), 1, 0, farmingData.getItemName().replace("&", "§")));
             for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, ""));
+                if (inv.getItem(i) == null)
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, ""));
             }
             playerData.setVariable("current_inventory", "dealer_" + location.getInfo());
             player.openInventory(inv);
@@ -124,13 +127,15 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
             FarmingData farmingData = farmingDataMap.get(location.getInfo());
             Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eDealer§8 | §e" + farmingData.getDrug());
             for (int i = 0; i < 27; i++) {
-                if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, ""));
+                if (inv.getItem(i) == null)
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, ""));
             }
             playerData.setVariable("current_inventory", "dealer_" + location.getInfo());
             player.openInventory(inv);
         }
         return false;
     }
+
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

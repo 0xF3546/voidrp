@@ -23,6 +23,7 @@ import java.util.List;
 public class AsuCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public AsuCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
@@ -30,6 +31,7 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
         Main.registerCommand("asu", this);
         Main.addTabCompeter("asu", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;

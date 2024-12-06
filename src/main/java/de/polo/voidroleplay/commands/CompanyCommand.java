@@ -4,14 +4,14 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Company;
 import de.polo.voidroleplay.dataStorage.CompanyRole;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.CompanyManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,6 +26,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final CompanyManager companyManager;
     private final LocationManager locationManager;
+
     public CompanyCommand(PlayerManager playerManager, CompanyManager companyManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.companyManager = companyManager;
@@ -33,6 +34,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
         Main.registerCommand("company", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

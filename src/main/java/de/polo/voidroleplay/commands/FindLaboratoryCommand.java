@@ -16,6 +16,7 @@ public class FindLaboratoryCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
     private final LocationManager locationManager;
+
     public FindLaboratoryCommand(PlayerManager playerManager, Utils utils, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.utils = utils;

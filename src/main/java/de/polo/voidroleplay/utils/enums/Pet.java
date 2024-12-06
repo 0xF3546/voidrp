@@ -2,7 +2,6 @@ package de.polo.voidroleplay.utils.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.bukkit.entity.Animals;
 import org.bukkit.entity.EntityType;
 
 /**

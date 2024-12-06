@@ -38,7 +38,7 @@ public enum CaseType {
             ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§eWertanlage (1750$)"),
             ItemManager.createItem(Material.GOLD_NUGGET, 2, 0, "§eWertanlage (800$)"),
             ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§61 Tag Premium")
-    ));;
+    ));
 
     private final String DisplayName;
     private List<ItemStack> items;

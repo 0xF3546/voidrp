@@ -18,7 +18,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mayson1337
@@ -28,8 +31,9 @@ import java.util.*;
 public class Beginnerpass implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private List<Quest> quests = new ArrayList<>();
-    private List<Reward> rewards = new ArrayList<>();
+    private final List<Quest> quests = new ArrayList<>();
+    private final List<Reward> rewards = new ArrayList<>();
+
     public Beginnerpass(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -177,11 +181,13 @@ public class Beginnerpass implements CommandExecutor {
         } finally {
             preparedStatement.close();
             connection.close();
-        }    }
+        }
+    }
 
     public void didQuest(Player player, int questId) {
         didQuest(player, questId, 1);
     }
+
     @SneakyThrows
     public void didQuest(Player player, int questId, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);

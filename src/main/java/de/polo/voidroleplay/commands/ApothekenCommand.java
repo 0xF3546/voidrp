@@ -1,11 +1,11 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.manager.FactionManager;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,12 +16,14 @@ public class ApothekenCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final GamePlay gamePlay;
     private final FactionManager factionManager;
+
     public ApothekenCommand(PlayerManager playerManager, GamePlay gamePlay, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.gamePlay = gamePlay;
         this.factionManager = factionManager;
         Main.registerCommand("apotheken", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

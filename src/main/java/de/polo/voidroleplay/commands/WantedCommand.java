@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WantedReason;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
@@ -19,11 +19,13 @@ import java.util.UUID;
 public class WantedCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public WantedCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("wanteds", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

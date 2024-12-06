@@ -30,8 +30,9 @@ import java.util.*;
 public class Seasonpass implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private List<Quest> quests = new ArrayList<>();
-    private List<Reward> rewards = new ArrayList<>();
+    private final List<Quest> quests = new ArrayList<>();
+    private final List<Reward> rewards = new ArrayList<>();
+
     public Seasonpass(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;

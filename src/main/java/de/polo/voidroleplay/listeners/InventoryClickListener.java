@@ -1,13 +1,17 @@
 package de.polo.voidroleplay.listeners;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
-import org.bukkit.*;
+import de.polo.voidroleplay.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +20,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,6 +31,7 @@ public class InventoryClickListener implements Listener {
     private final FactionManager factionManager;
     private final Utils utils;
     private final LocationManager locationManager;
+
     public InventoryClickListener(PlayerManager playerManager, FactionManager factionManager, Utils utils, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;

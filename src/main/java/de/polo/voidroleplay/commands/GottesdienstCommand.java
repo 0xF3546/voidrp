@@ -20,11 +20,13 @@ import org.jetbrains.annotations.NotNull;
 public class GottesdienstCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public GottesdienstCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("gottesdienst", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

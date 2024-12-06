@@ -8,7 +8,8 @@ import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,15 +29,12 @@ import java.time.LocalDateTime;
 
 public class BombeCommand implements CommandExecutor, Listener {
 
+    public static boolean ACTIVE;
     private final PlayerManager playerManager;
     private final Utils utils;
     private final FactionManager factionManager;
-
-    private Bomb bomb = null;
-
-    public static boolean ACTIVE;
-
     public LocalDateTime lastBomb = Utils.getTime().minusHours(6);
+    private Bomb bomb = null;
 
     public BombeCommand(PlayerManager playerManager, Utils utils, FactionManager factionManager) {
         this.playerManager = playerManager;

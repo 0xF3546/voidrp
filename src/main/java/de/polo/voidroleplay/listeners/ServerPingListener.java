@@ -14,10 +14,12 @@ import java.sql.Statement;
 
 public class ServerPingListener implements Listener {
     private final FactionManager factionManager;
+
     public ServerPingListener(FactionManager factionManager) {
         this.factionManager = factionManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
         String firstline = "§6§lVoidRoleplay §8| §eReallife & Roleplay §8[§e1.16.5§8]";

@@ -11,6 +11,7 @@ public class ServerReloadCommand implements CommandExecutor {
     public ServerReloadCommand() {
         Main.registerCommand("serverreload", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -19,17 +20,17 @@ public class ServerReloadCommand implements CommandExecutor {
             return false;
         }
         Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 15 Sekunden!");
-        Main.waitSeconds(5,() -> {
+        Main.waitSeconds(5, () -> {
             Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 10 Sekunden!");
-            Main.waitSeconds(5,() -> {
+            Main.waitSeconds(5, () -> {
                 Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 5 Sekunden!");
-                Main.waitSeconds(2,() -> {
+                Main.waitSeconds(2, () -> {
                     Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 3 Sekunden!");
-                    Main.waitSeconds(1,() -> {
+                    Main.waitSeconds(1, () -> {
                         Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 2 Sekunden!");
-                        Main.waitSeconds(1,() -> {
+                        Main.waitSeconds(1, () -> {
                             Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 1 Sekunde!");
-                            Main.waitSeconds(1,() -> {
+                            Main.waitSeconds(1, () -> {
                                 for (Player p : Bukkit.getOnlinePlayers()) {
                                     p.kickPlayer("Server reloaded jetzt!");
                                 }

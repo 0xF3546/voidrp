@@ -38,7 +38,7 @@ public class TeamChatCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Main.admin_error + "Syntax-Error: /teamchat [Nachricht]");
             return false;
         }
-        String msg = utils.stringArrayToString(args);
+        String msg = Utils.stringArrayToString(args);
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (playerManager.getPlayerData(players.getUniqueId()).getPermlevel() >= 50) {
                 players.sendMessage(Prefix.ADMIN + "§c" + playerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);

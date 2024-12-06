@@ -28,11 +28,13 @@ import java.util.Objects;
 public class ReinforcementCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public ReinforcementCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("reinforcement", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

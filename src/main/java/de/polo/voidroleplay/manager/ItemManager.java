@@ -11,13 +11,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class ItemManager {
 
-    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname)
-    {
-        short neuesubid = (short)subid;
+    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname) {
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(material, anzahl, neuesubid);
         ItemMeta m = i.getItemMeta();
         m.setDisplayName(displayname);
@@ -25,9 +27,9 @@ public class ItemManager {
 
         return i;
     }
-    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname, String lore)
-    {
-        short neuesubid = (short)subid;
+
+    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname, String lore) {
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(material, anzahl, neuesubid);
         ItemMeta m = i.getItemMeta();
         m.setDisplayName(displayname);
@@ -39,9 +41,8 @@ public class ItemManager {
         return i;
     }
 
-    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname, List list)
-    {
-        short neuesubid = (short)subid;
+    public static ItemStack createItem(Material material, int anzahl, int subid, String displayname, List list) {
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(material, anzahl, neuesubid);
         ItemMeta m = i.getItemMeta();
         m.setDisplayName(displayname);
@@ -53,10 +54,9 @@ public class ItemManager {
         return i;
     }
 
-    public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname, String lore)
-    {
+    public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname, String lore) {
         UUID uuid = UUID.fromString(owner);
-        short neuesubid = (short)subid;
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
         SkullMeta skullMeta = (SkullMeta) i.getItemMeta();
         assert skullMeta != null;
@@ -72,10 +72,9 @@ public class ItemManager {
         return i;
     }
 
-    public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname)
-    {
+    public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname) {
         UUID uuid = UUID.fromString(owner);
-        short neuesubid = (short)subid;
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
         SkullMeta skullMeta = (SkullMeta) i.getItemMeta();
         assert skullMeta != null;
@@ -88,10 +87,9 @@ public class ItemManager {
         return i;
     }
 
-    public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname, List list)
-    {
+    public static ItemStack createItemHead(String owner, int anzahl, int subid, String displayname, List list) {
         UUID uuid = UUID.fromString(owner);
-        short neuesubid = (short)subid;
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
         SkullMeta skullMeta = (SkullMeta) i.getItemMeta();
         assert skullMeta != null;
@@ -106,9 +104,8 @@ public class ItemManager {
         return i;
     }
 
-    public static ItemStack createCustomHead(String texture, int anzahl, int subid, String displayname, List list)
-    {
-        short neuesubid = (short)subid;
+    public static ItemStack createCustomHead(String texture, int anzahl, int subid, String displayname, List list) {
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
         SkullMeta meta = (SkullMeta) i.getItemMeta();
 
@@ -137,9 +134,8 @@ public class ItemManager {
         return i;
     }
 
-    public static ItemStack createCustomHead(String texture, int anzahl, int subid, String displayname)
-    {
-        short neuesubid = (short)subid;
+    public static ItemStack createCustomHead(String texture, int anzahl, int subid, String displayname) {
+        short neuesubid = (short) subid;
         ItemStack i = new ItemStack(Material.PLAYER_HEAD, anzahl, neuesubid);
         SkullMeta meta = (SkullMeta) i.getItemMeta();
 
@@ -165,10 +161,6 @@ public class ItemManager {
         return i;
     }
 
-    private String getURLFromBase64(String base64) {
-        return new String(Base64.getDecoder().decode(base64.getBytes())).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "").replace("\"}}}", "");
-    }
-
     public static int getItem(Player player, Material material) {
         ItemStack[] contents = player.getInventory().getContents();
         int count = 0;
@@ -179,6 +171,7 @@ public class ItemManager {
         }
         return count;
     }
+
     public static int getCustomItemCount(Player player, RoleplayItem item) {
         ItemStack[] contents = player.getInventory().getContents();
         int count = 0;
@@ -191,6 +184,7 @@ public class ItemManager {
         }
         return count;
     }
+
     public static void removeItem(Player player, Material item, int count) {
         int remainingCount = count;
 
@@ -222,8 +216,6 @@ public class ItemManager {
             }
         }
     }
-
-
 
     public static void removeCustomItem(Player player, RoleplayItem item, int amount) {
         ItemStack[] contents = player.getInventory().getContents();
@@ -259,7 +251,6 @@ public class ItemManager {
         }
     }
 
-
     public static void addCustomItem(Player player, RoleplayItem item, int amount) {
         for (int i = 0; i < amount; i++) {
             player.getInventory().addItem(ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName()));
@@ -276,5 +267,9 @@ public class ItemManager {
         if (itemStack == null) return false;
         if (itemStack.getItemMeta() == null) return false;
         return (itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(roleplayItem.getDisplayName()) && itemStack.getType().equals(roleplayItem.getMaterial()));
+    }
+
+    private String getURLFromBase64(String base64) {
+        return new String(Base64.getDecoder().decode(base64.getBytes())).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "").replace("\"}}}", "");
     }
 }

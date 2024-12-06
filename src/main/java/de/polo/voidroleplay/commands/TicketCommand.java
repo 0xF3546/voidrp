@@ -4,13 +4,14 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.NaviData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -33,12 +34,14 @@ import java.util.UUID;
 public class TicketCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final SupportManager supportManager;
+
     public TicketCommand(PlayerManager playerManager, SupportManager supportManager) {
         this.playerManager = playerManager;
         this.supportManager = supportManager;
 
         Main.registerCommand("ticket", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

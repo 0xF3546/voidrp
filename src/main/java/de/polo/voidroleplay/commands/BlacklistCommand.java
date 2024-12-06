@@ -1,9 +1,9 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.BlacklistData;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
@@ -72,8 +72,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                 }
             }
             return false;
-        }
-        else if (args[0].equalsIgnoreCase("add")) {
+        } else if (args[0].equalsIgnoreCase("add")) {
             if (args.length >= 4) {
                 Player player1 = Bukkit.getPlayer(args[1]);
                 if (player1 == null) {
@@ -187,7 +186,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                                                     if (player1 != null) {
                                                         player1.sendMessage("§8[§cBlacklist§8] §" + factionData1.getPrimaryColor() + player.getName() + " hat sich freigekauft (§a" + blacklistData.getPrice() + "$§" + factionData1.getPrimaryColor() + ").");
                                                     }
-                                                    }
+                                                }
                                             }
                                         }
                                         factionManager.addFactionMoney(factionData1.getName(), blacklistData.getPrice(), "Blacklist-Zahlung " + player.getName());

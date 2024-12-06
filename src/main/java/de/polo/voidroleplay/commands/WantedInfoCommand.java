@@ -17,12 +17,14 @@ import org.jetbrains.annotations.NotNull;
 public class WantedInfoCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public WantedInfoCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
 
         Main.registerCommand("wantedinfo", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) commandSender;

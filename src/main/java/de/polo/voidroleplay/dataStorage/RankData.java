@@ -11,6 +11,7 @@ public class RankData {
     private int forumID;
     private ChatColor color;
     private String shortName;
+
     public int getId() {
         return id;
     }

@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.command.Command;
@@ -13,11 +13,13 @@ import org.bukkit.entity.Player;
 public class DropCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public DropCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("drop", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

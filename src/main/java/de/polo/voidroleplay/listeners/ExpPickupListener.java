@@ -11,10 +11,11 @@ public class ExpPickupListener implements Listener {
     public ExpPickupListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
-    public void onEntityTarget(EntityTargetEvent ev){
+    public void onEntityTarget(EntityTargetEvent ev) {
         Entity e = ev.getEntity();
-        if(e instanceof ExperienceOrb){
+        if (e instanceof ExperienceOrb) {
             ev.setCancelled(true);
             ev.setTarget(null);
         }

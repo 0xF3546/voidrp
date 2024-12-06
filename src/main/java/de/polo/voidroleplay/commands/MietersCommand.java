@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
@@ -23,11 +23,13 @@ import java.util.UUID;
 public class MietersCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public MietersCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("mieters", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

@@ -15,10 +15,12 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class EntityDamageByEntityListener implements Listener {
     private final PlayerManager playerManager;
+
     public EntityDamageByEntityListener(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {

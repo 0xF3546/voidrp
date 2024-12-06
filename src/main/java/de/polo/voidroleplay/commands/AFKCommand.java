@@ -15,10 +15,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AFKCommand implements CommandExecutor {
     private final Utils utils;
+
     public AFKCommand(Utils utils) {
         this.utils = utils;
         Main.registerCommand("afk", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

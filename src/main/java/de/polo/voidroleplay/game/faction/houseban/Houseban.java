@@ -34,7 +34,8 @@ import java.util.UUID;
 public class Houseban implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private List<PlayerHouseban> housebans = new ArrayList<>();
+    private final List<PlayerHouseban> housebans = new ArrayList<>();
+
     public Houseban(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;

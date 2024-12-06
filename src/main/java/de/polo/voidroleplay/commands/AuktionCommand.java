@@ -6,7 +6,9 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.GlobalStats;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,7 +22,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mayson1337
@@ -149,7 +154,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
 
         FactionData winningFaction = factionManager.getFactionData(winningFactionName);
         if (winningFaction == null) {
-            factionManager.sendCustomLeaderMessageToFactions("§8[§3Auktion§8]§7 Ein Fehler ist aufgetreten: Die gewinnende Fraktion konnte nicht gefunden werden.", new String[]{});
+            factionManager.sendCustomLeaderMessageToFactions("§8[§3Auktion§8]§7 Ein Fehler ist aufgetreten: Die gewinnende Fraktion konnte nicht gefunden werden.");
             return;
         }
 

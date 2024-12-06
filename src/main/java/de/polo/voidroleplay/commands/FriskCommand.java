@@ -4,12 +4,13 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.StaatUtil;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -99,7 +100,7 @@ public class FriskCommand implements CommandExecutor {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(stack.getType(), stack.getAmount(), 0, stack.getItemMeta().getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    targetplayer.sendMessage("§8 » §7" + factionManager.getTitle(player) + " "  + player.getName() + " hat dir " + stack.getItemMeta().getDisplayName() + "§7 konfisziert.");
+                    targetplayer.sendMessage("§8 » §7" + factionManager.getTitle(player) + " " + player.getName() + " hat dir " + stack.getItemMeta().getDisplayName() + "§7 konfisziert.");
                     player.sendMessage("§8 » §7Du hast " + targetplayer.getName() + " " + stack.getItemMeta().getDisplayName() + "§7 konfisziert.");
                     boolean isWeapon = false;
                     for (WeaponData data : WeaponManager.weaponDataMap.values()) {

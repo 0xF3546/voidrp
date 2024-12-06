@@ -2,10 +2,10 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.*;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,7 +38,7 @@ public class WinzerCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (Main.getInstance().serverManager.canDoJobs()) {
+        if (ServerManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "winzer") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §5Winzer", true, true);
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "winzer") && playerData.getVariable("job") == null) {
@@ -81,7 +81,7 @@ public class WinzerCommand implements CommandExecutor {
                             }
                         });
                     } else {
-                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("winzer_harvested") * Main.getInstance().serverManager.getPayout("winzer") + "$")) {
+                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("winzer_harvested") * ServerManager.getPayout("winzer") + "$")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
                                 player.closeInventory();
@@ -213,7 +213,7 @@ public class WinzerCommand implements CommandExecutor {
         Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
-        int payout = Main.getInstance().serverManager.getPayout("winzer") * playerData.getIntVariable("winzer_harvested");
+        int payout = ServerManager.getPayout("winzer") * playerData.getIntVariable("winzer_harvested");
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
         if (playerData.getIntVariable("winzer") <= 0) playerManager.addExp(player, Main.random(12, 20));

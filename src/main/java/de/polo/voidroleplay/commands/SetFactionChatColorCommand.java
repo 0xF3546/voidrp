@@ -34,6 +34,7 @@ public class SetFactionChatColorCommand implements CommandExecutor {
 
         Main.registerCommand("setfactionchatcolor", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

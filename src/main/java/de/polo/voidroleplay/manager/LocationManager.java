@@ -1,10 +1,13 @@
 package de.polo.voidroleplay.manager;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.shops.ShopData;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -31,6 +34,7 @@ public class LocationManager {
             throw new RuntimeException(e);
         }
     }
+
     private void loadLocations() throws SQLException {
         Statement statement = mySQL.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM locations");
@@ -116,7 +120,7 @@ public class LocationManager {
 
     }
 
-    public void setLocation(String name, Player p){
+    public void setLocation(String name, Player p) {
         Location loc = p.getLocation();
         try {
             Statement statement = mySQL.getStatement();
@@ -130,10 +134,10 @@ public class LocationManager {
             } else if (name.contains("isGarage")) {
                 p.sendMessage(Main.gamedesign_prefix + " Garage regestriert.");
                 statement.executeUpdate("INSERT INTO garage (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGarage", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
-            }  else if (name.contains("isFFA")) {
+            } else if (name.contains("isFFA")) {
                 p.sendMessage(Main.gamedesign_prefix + " FFA-Spawn regestriert.");
                 statement.executeUpdate("INSERT INTO ffa_spawnpoints (lobby_type, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isFFA", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
-            }  else if (name.contains("isDealer")) {
+            } else if (name.contains("isDealer")) {
                 p.sendMessage(Main.gamedesign_prefix + " Dealer regestriert.");
                 statement.executeUpdate("INSERT INTO dealer (x, y, z, yaw, pitch) VALUES (" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else {
@@ -148,12 +152,12 @@ public class LocationManager {
                 locationData.setPitch(p.getLocation().getPitch());
                 locationDataMap.put(name.replace(" ", ""), locationData);
             }
-            } catch (SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void useLocation(Player p, String name){
+    public void useLocation(Player p, String name) {
         LocationData locationData = locationDataMap.get(name.toLowerCase());
         World welt = Bukkit.getWorld(locationData.getWelt());
         p.teleport(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
@@ -230,6 +234,7 @@ public class LocationManager {
         }
         return null;
     }
+
     public Integer isPlayerNearGarage(Player player) {
         for (GarageData garageData : garageDataMap.values()) {
             if (player.getLocation().distance(new Location(garageData.getWelt(), garageData.getX(), garageData.getY(), garageData.getZ(), garageData.getYaw(), garageData.getPitch())) < 8) {
@@ -253,6 +258,7 @@ public class LocationManager {
         }
         return loc;
     }
+
     public Integer getNearestLocationId(Player player) {
         double distance = 30000;
         Integer loc = null;

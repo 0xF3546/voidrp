@@ -3,14 +3,14 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.GasStationData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.CompanyManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +27,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
     private final CompanyManager companyManager;
+
     public GasStationCommand(PlayerManager playerManager, LocationManager locationManager, CompanyManager companyManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
@@ -35,6 +36,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
         Main.registerCommand("gasstation", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -67,14 +69,14 @@ public class GasStationCommand implements CommandExecutor, Listener {
             openBusinessBuyOverview(player, gasStationData);
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27,"§8» §c" + gasStationData.getName() + " (Business)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + gasStationData.getName() + " (Business)", true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openGasStation(player, gasStationData);
             }
         });
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§3Information", Arrays.asList("§8 ➥ §bKasse§8:§7 " + gasStationData.getBank() + "$", "§8 ➥ §bLiter-Preis§8:§7 " + gasStationData.getLiterprice() + "$",  "§8 ➥ §bLiter§8:§7 " + gasStationData.getLiter() + "$"))) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§3Information", Arrays.asList("§8 ➥ §bKasse§8:§7 " + gasStationData.getBank() + "$", "§8 ➥ §bLiter-Preis§8:§7 " + gasStationData.getLiterprice() + "$", "§8 ➥ §bLiter§8:§7 " + gasStationData.getLiter() + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 

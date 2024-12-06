@@ -2,7 +2,6 @@ package de.polo.voidroleplay.game.base;
 
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.utils.ColorTranslator;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -12,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NameTagProviderImpl implements INameTagProvider {
-    private Scoreboard scoreboard;
-    private Map<String, Team> customTeams;
-    
+    private final Scoreboard scoreboard;
+    private final Map<String, Team> customTeams;
+
     public NameTagProviderImpl() {
         this.scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         this.customTeams = new HashMap<>();
@@ -24,7 +23,7 @@ public class NameTagProviderImpl implements INameTagProvider {
         this.scoreboard = scoreboard;
         this.customTeams = new HashMap<>();
     }
-    
+
     @Override
     public boolean setNametag(Player player, String name, String prefix, String suffix) {
         Team team = this.customTeams.get(name);

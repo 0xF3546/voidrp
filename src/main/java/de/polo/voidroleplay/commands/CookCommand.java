@@ -23,12 +23,14 @@ import java.util.List;
 public class CookCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final List<CookTimer> activeCooking = new ArrayList<>();
+
     public CookCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("cook", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         Player player = (Player) sender;

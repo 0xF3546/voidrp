@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 public class DepartmentChatCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public DepartmentChatCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;

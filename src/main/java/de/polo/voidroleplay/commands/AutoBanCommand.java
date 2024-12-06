@@ -17,8 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutoBanCommand implements CommandExecutor, TabCompleter {
-    private PlayerManager playerManager;
     public static ArrayList<String> banReasons = new ArrayList<>();
+    private final PlayerManager playerManager;
+
     public AutoBanCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
@@ -32,6 +33,7 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
         }
         Main.registerCommand("autoban", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -65,6 +67,7 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(Main.error + "Der Bangrund wurde nicht gefunden.");
         return false;
     }
+
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

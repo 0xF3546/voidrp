@@ -6,7 +6,8 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,6 +25,7 @@ public class Alliance implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public Alliance(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;

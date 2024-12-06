@@ -4,11 +4,12 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -63,10 +64,7 @@ public class ApothekeFunctions implements Listener {
     private boolean canAttack(Apotheke apotheke) {
         Duration duration = Duration.between(apotheke.getLastAttack(), LocalDateTime.now());
         long minutesDifference = duration.toMinutes();
-        if (minutesDifference < 60) {
-            return false;
-        }
-        return true;
+        return minutesDifference >= 60;
     }
 
     public long getMinuteDifference(Apotheke apotheke) {
@@ -94,7 +92,8 @@ public class ApothekeFunctions implements Listener {
         if (factionData.isBadFrak()) canAttack = true;
         String owner = "§9Staat";
         if (apotheke.isStaat()) {
-            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) canAttack = true;
+            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei"))
+                canAttack = true;
         }
         if (!apotheke.getOwner().equalsIgnoreCase("staat")) {
             factionData = factionManager.getFactionData(apotheke.getOwner());
@@ -200,7 +199,8 @@ public class ApothekeFunctions implements Listener {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §21000$§a Steuern aus Apotheken erhalten .");
+                                    if (player != null)
+                                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §21000$§a Steuern aus Apotheken erhalten .");
                                 }
                             }
                         }
@@ -211,7 +211,8 @@ public class ApothekeFunctions implements Listener {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
-                                    if (player != null) player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Pfeifen§a aus den aktuell übernommenen Apotheken erhalten.");
+                                    if (player != null)
+                                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Pfeifen§a aus den aktuell übernommenen Apotheken erhalten.");
                                 }
                             }
                         }

@@ -16,11 +16,13 @@ import org.jetbrains.annotations.NotNull;
 public class FlyCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
+
     public FlyCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         Main.registerCommand("fly", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

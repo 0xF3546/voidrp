@@ -1,12 +1,9 @@
 package de.polo.voidroleplay.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.database.MySQL;
-import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.game.faction.SprayableBanner;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,6 +24,7 @@ import java.util.stream.Collectors;
 public class BlockManager {
     private final MySQL mySQL;
     private final List<RegisteredBlock> registeredBlocks = new ArrayList<>();
+
     public BlockManager(MySQL mySQL) {
         this.mySQL = mySQL;
         init();
@@ -72,7 +70,7 @@ public class BlockManager {
         PreparedStatement statement = connection.prepareStatement("INSERT INTO blocks (info, infoValue, x, y, z, world) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, block.getInfo());
         statement.setString(2, block.getInfoValue());
-        statement.setDouble(3,block.getLocation().getX());
+        statement.setDouble(3, block.getLocation().getX());
         statement.setDouble(4, block.getLocation().getY());
         statement.setDouble(5, block.getLocation().getZ());
         statement.setString(6, block.getLocation().getWorld().getName());

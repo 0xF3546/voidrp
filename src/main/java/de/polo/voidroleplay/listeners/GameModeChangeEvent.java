@@ -13,6 +13,7 @@ public class GameModeChangeEvent implements Listener {
     public GameModeChangeEvent() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();

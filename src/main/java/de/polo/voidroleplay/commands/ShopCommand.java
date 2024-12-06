@@ -1,14 +1,16 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.PlayerWeapon;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.enums.ShopType;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -107,7 +109,7 @@ public class ShopCommand implements CommandExecutor {
             openBusinessBuyOverview(player, shopData);
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27,"§8» §c" + shopData.getName() + " (Business)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + shopData.getName() + " (Business)", true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -202,7 +204,7 @@ public class ShopCommand implements CommandExecutor {
                     player.getInventory().removeItem(cod);
                     playerData.addMoney(4, "Verkauf Kabeljau");
 
-                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Kabeljau verkauft und 4$ erhalten!");
+                    player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Kabeljau verkauft und 4$ erhalten!");
                 } else {
                     player.sendMessage(Main.error + "Du hast keinen Kabeljau im Inventar!");
                 }
@@ -216,7 +218,7 @@ public class ShopCommand implements CommandExecutor {
                     player.getInventory().removeItem(cod);
                     playerData.addMoney(25, "Verkauf Tropenfisch");
 
-                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Tropenfisch verkauft und 25$ erhalten!");
+                    player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Tropenfisch verkauft und 25$ erhalten!");
                 } else {
                     // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
                     player.sendMessage(Main.error + "Du hast keinen Tropenfisch im Inventar!");
@@ -235,7 +237,7 @@ public class ShopCommand implements CommandExecutor {
                     playerData.addMoney(40, "Verkauf Roher Lachs");
 
                     // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
-                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Rohen Lachs verkauft und 40$ erhalten!");
+                    player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Rohen Lachs verkauft und 40$ erhalten!");
                 } else {
                     // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
                     player.sendMessage(Main.error + "Du hast keinen Rohen Lachs im Inventar!");
@@ -254,7 +256,7 @@ public class ShopCommand implements CommandExecutor {
                     playerData.addMoney(85, "Verkauf Pufferfisch");
 
                     // Optional: Benachrichtigung, dass der Kabeljau verkauft wurde
-                    player.sendMessage("§8[§6" + shopData.getName()+ "§8] §7Du hast einen Pufferfisch verkauft und 85$ erhalten!");
+                    player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Pufferfisch verkauft und 85$ erhalten!");
                 } else {
                     // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
                     player.sendMessage(Main.error + "Du hast keinen Pufferfisch im Inventar!");
@@ -270,7 +272,7 @@ public class ShopCommand implements CommandExecutor {
                 if (Objects.equals(type, "weapon")) {
                     try {
                         Weapon w = Weapon.valueOf(info.toUpperCase());
-                        String weapon = displayName.toString().replace("&", "").replace("6", "");
+                        String weapon = displayName.replace("&", "").replace("6", "");
                         Main.getInstance().weaponManager.giveWeaponToCabinet(player, w, 0, 250);
                         player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);

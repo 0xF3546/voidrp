@@ -24,12 +24,14 @@ public class RegisterATMCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final MySQL mySQL;
+
     public RegisterATMCommand(PlayerManager playerManager, AdminManager adminManager, MySQL mySQL) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         this.mySQL = mySQL;
         Main.registerCommand("registeratm", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

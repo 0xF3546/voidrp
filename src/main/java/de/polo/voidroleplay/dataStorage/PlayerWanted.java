@@ -8,17 +8,14 @@ import java.util.UUID;
 
 public class PlayerWanted {
     @Getter
-    @Setter
-    private int id;
-
-    @Getter
     private final int wantedId;
-
     @Getter
     private final UUID issuer;
-
     @Getter
     private final LocalDateTime issued;
+    @Getter
+    @Setter
+    private int id;
 
     public PlayerWanted(int wantedId, UUID issuer, LocalDateTime issued) {
         this.wantedId = wantedId;

@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.manager;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
@@ -163,7 +163,8 @@ public class WeaponManager implements Listener {
                 return;
             }
         }
-        if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().equals(new ItemStack(Material.AIR))) return;
+        if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().equals(new ItemStack(Material.AIR)))
+            return;
         if (player.getEquipment().getItemInMainHand().getType().equals(RoleplayItem.TAZER.getMaterial()) && player.getEquipment().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.TAZER.getDisplayName())) {
             if (Main.getInstance().getCooldownManager().isOnCooldown(player, "tazer")) {
                 utils.sendActionBar(player, "§cWarte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "tazer") + " Sekunden.");
@@ -302,8 +303,8 @@ public class WeaponManager implements Listener {
 
         event.getItem().setItemMeta(meta);
 
-        long shootDuration =(long) weaponData.getShootDuration(); // In Sekunden
-        long delayTicks = (long) (shootDuration * 2); // In Ticks
+        long shootDuration = (long) weaponData.getShootDuration(); // In Sekunden
+        long delayTicks = shootDuration * 2; // In Ticks
         long delayMillis = delayTicks * 30; // In Millisekunden
 
         Instant cooldownExpiration = Instant.now().plusMillis(delayMillis);
@@ -369,6 +370,7 @@ public class WeaponManager implements Listener {
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getWeaponData().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
         stack.setItemMeta(meta);
     }
+
     private void giveWeapon(Player player, PlayerWeapon playerWeapon, Weapon weapon) {
         ItemStack item = new ItemStack(playerWeapon.getWeapon().getMaterial());
         ItemMeta meta = item.getItemMeta();
@@ -424,7 +426,7 @@ public class WeaponManager implements Listener {
                 });
     }
 
-    public void giveAmmo(Player player, Weapon weapon, int ammo){
+    public void giveAmmo(Player player, Weapon weapon, int ammo) {
         ItemStack item = null;
         for (ItemStack itemStack : player.getInventory().getContents()) {
             if (itemStack.getItemMeta().getDisplayName()

@@ -11,12 +11,13 @@ public class GetHeadCommand implements CommandExecutor {
     public GetHeadCommand() {
         Main.registerCommand("gethead", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (player.hasPermission("OP")) {
             if (!(args.length == 1)) {
-                player.sendMessage(Main.error +"Syntax-Fehler: /gethead [Value]");
+                player.sendMessage(Main.error + "Syntax-Fehler: /gethead [Value]");
                 return false;
             }
             player.getInventory().addItem(ItemManager.createCustomHead(args[0], 1, 0, "§6Kopf", null));

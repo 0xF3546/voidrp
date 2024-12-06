@@ -10,12 +10,12 @@ import java.util.UUID;
 
 public class InventoryManager {
 
-    private String name;
-    private int size;
-    private UUID uuid;
     public boolean canceled;
-    private boolean fillRest;
-    private Inventory inv;
+    private final String name;
+    private final int size;
+    private final UUID uuid;
+    private final boolean fillRest;
+    private final Inventory inv;
 
     /**
      * This constructor is used to create a new inventory for a player.

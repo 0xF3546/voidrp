@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
@@ -18,6 +18,7 @@ public class CloseTicketCommand implements CommandExecutor {
     private final SupportManager supportManager;
     private final AdminManager adminManager;
     private final Utils utils;
+
     public CloseTicketCommand(PlayerManager playerManager, SupportManager supportManager, AdminManager adminManager, Utils utils) {
         this.playerManager = playerManager;
         this.supportManager = supportManager;
@@ -25,6 +26,7 @@ public class CloseTicketCommand implements CommandExecutor {
         this.utils = utils;
         Main.registerCommand("closesupport", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -49,7 +51,7 @@ public class CloseTicketCommand implements CommandExecutor {
             targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
             utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
             player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
-            adminManager.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName()+ " geschlossen.", ChatColor.YELLOW);
+            adminManager.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", ChatColor.YELLOW);
         } else {
             player.sendMessage(Main.error_nopermission);
         }

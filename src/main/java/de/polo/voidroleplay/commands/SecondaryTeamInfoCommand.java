@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -26,6 +25,7 @@ public class SecondaryTeamInfoCommand implements CommandExecutor {
     public SecondaryTeamInfoCommand() {
         Main.registerCommand("secondaryteaminfo", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {

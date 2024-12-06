@@ -30,6 +30,7 @@ import java.util.List;
 public class ModifyBlacklistCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public ModifyBlacklistCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;

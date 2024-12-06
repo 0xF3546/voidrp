@@ -16,6 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class House {
+    @Getter
+    private final int maxServer;
+    @Getter
+    private final int maxMiner;
     @Setter
     private int id;
     @Setter
@@ -34,33 +38,21 @@ public class House {
     private int mieterSlots;
     @Setter
     private int totalSlots;
-
     @Getter
     @Setter
     private boolean serverRoom;
-
     @Getter
     @Setter
     private int server;
-
-    @Getter
-    private final int maxServer;
-
     @Getter
     @Setter
     private int miner;
-
     @Getter
     @Setter
     private HouseType houseType = HouseType.BASIC;
-
     @Getter
     @Setter
     private List<Miner> activeMiner = new ArrayList<>();
-
-    @Getter
-    private final int maxMiner;
-
     @Getter
     @Setter
     private boolean cookActive;

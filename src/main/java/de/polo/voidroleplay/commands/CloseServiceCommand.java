@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.ServiceData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.StaatUtil;
 import org.bukkit.Bukkit;
@@ -12,11 +12,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CloseServiceCommand implements CommandExecutor {
-    private PlayerManager playerManager;
+    private final PlayerManager playerManager;
+
     public CloseServiceCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("closeservice", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

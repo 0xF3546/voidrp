@@ -12,6 +12,7 @@ public class ProjectileHitListener implements Listener {
     public ProjectileHitListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();

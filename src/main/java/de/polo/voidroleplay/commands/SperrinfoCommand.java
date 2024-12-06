@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 public class SperrinfoCommand implements CommandExecutor {
 
-    private  final PlayerManager playerManager;
+    private final PlayerManager playerManager;
 
     public SperrinfoCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;

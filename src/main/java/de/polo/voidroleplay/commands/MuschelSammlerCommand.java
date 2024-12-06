@@ -2,14 +2,14 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
@@ -121,7 +122,7 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
             player.sendMessage(Main.error + "Vor dem restart kannst du diesen Job nicht mehr ausführen.");
             return;
         }
-        ItemStack item = ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel", Arrays.asList("§8 ➥ §8[§6Rechtsklick§8]§7 Muschel öffnen"));
+        ItemStack item = ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel", Collections.singletonList("§8 ➥ §8[§6Rechtsklick§8]§7 Muschel öffnen"));
         player.getInventory().addItem(item);
         event.getBlock().setType(Material.AIR);
         Main.waitSeconds(120, () -> {
@@ -130,10 +131,10 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
     }
 
     private void startJob(Player player) {
-            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            playerData.setVariable("job", "Muschelsammler");
-            player.sendMessage("§8[§eMuschelsammler§8]§7 Du hast den Job gestartet.");
-            player.sendMessage("§8[§eMuschelsammler§8]§7 Sammle nun Muscheln (Birkenholzknopf abbauen).");
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        playerData.setVariable("job", "Muschelsammler");
+        player.sendMessage("§8[§eMuschelsammler§8]§7 Du hast den Job gestartet.");
+        player.sendMessage("§8[§eMuschelsammler§8]§7 Sammle nun Muscheln (Birkenholzknopf abbauen).");
     }
 
     public void quitJob(Player player, boolean silent) {

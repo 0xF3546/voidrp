@@ -11,6 +11,7 @@ public class OOCCommand implements CommandExecutor {
     public OOCCommand() {
         Main.registerCommand("ooc", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -24,6 +25,6 @@ public class OOCCommand implements CommandExecutor {
                 players.sendMessage("§8[§cOOC§8] §c" + player.getName() + "§8: §7" + message);
             }
         }
-     return false;
+        return false;
     }
 }

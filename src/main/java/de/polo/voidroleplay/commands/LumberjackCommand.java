@@ -4,13 +4,13 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.enums.EXPType;
-import de.polo.voidroleplay.utils.playerUtils.Progress;
-import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.enums.EXPType;
+import de.polo.voidroleplay.utils.playerUtils.Progress;
+import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,11 +36,46 @@ public class LumberjackCommand implements CommandExecutor {
         Main.registerCommand("holzfäller", this);
     }
 
+    private static void removeTree(Location startLocation) {
+        Block startBlock = startLocation.getBlock();
+        removeWoodBlocks(startBlock);
+    }
+
+    private static void removeWoodBlocks(Block block) {
+        if (block.getType() == Material.OAK_LOG) {
+            block.setType(Material.AIR);
+            for (int xOffset = -1; xOffset <= 1; xOffset++) {
+                for (int yOffset = 0; yOffset <= 1; yOffset++) {
+                    for (int zOffset = -1; zOffset <= 1; zOffset++) {
+                        Block relativeBlock = block.getRelative(xOffset, yOffset, zOffset);
+                        removeWoodBlocks(relativeBlock);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void scheduleTreeRespawn(Location location) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                respawnTree(location);
+            }
+        }.runTaskLater(Main.getInstance(), 120 * 20);
+    }
+
+    private static void respawnTree(Location location) {
+        Block block = location.getBlock();
+        if (block.getType() == Material.AIR) {
+            block.setType(Material.OAK_LOG);
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (Main.getInstance().serverManager.canDoJobs()) {
+        if (ServerManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Holzfäller", true, true);
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller") && playerData.getVariable("job") == null) {
@@ -84,7 +119,7 @@ public class LumberjackCommand implements CommandExecutor {
                         });
                     } else {
                         if (playerData.getVariable("lumberjack::hasStripped") != null) {
-                            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * Main.getInstance().serverManager.getPayout("holz") + "$")) {
+                            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + playerData.getIntVariable("holzkg") * ServerManager.getPayout("holz") + "$")) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
                                     quitJob(player, false);
@@ -157,41 +192,6 @@ public class LumberjackCommand implements CommandExecutor {
         }
     }
 
-    private static void removeTree(Location startLocation) {
-        Block startBlock = startLocation.getBlock();
-        removeWoodBlocks(startBlock);
-    }
-
-    private static void removeWoodBlocks(Block block) {
-        if (block.getType() == Material.OAK_LOG) {
-            block.setType(Material.AIR);
-            for (int xOffset = -1; xOffset <= 1; xOffset++) {
-                for (int yOffset = 0; yOffset <= 1; yOffset++) {
-                    for (int zOffset = -1; zOffset <= 1; zOffset++) {
-                        Block relativeBlock = block.getRelative(xOffset, yOffset, zOffset);
-                        removeWoodBlocks(relativeBlock);
-                    }
-                }
-            }
-        }
-    }
-
-    private static void scheduleTreeRespawn(Location location) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                respawnTree(location);
-            }
-        }.runTaskLater(Main.getInstance(), 120 * 20);
-    }
-
-    private static void respawnTree(Location location) {
-        Block block = location.getBlock();
-        if (block.getType() == Material.AIR) {
-            block.setType(Material.OAK_LOG);
-        }
-    }
-
     public void quitJob(Player player, boolean silent) {
         Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
@@ -202,11 +202,11 @@ public class LumberjackCommand implements CommandExecutor {
             return;
         }
         playerData.setVariable("lumberjack::hasStripped", null);
-        int payout = Main.getInstance().serverManager.getPayout("holz") * playerData.getIntVariable("holzkg");
+        int payout = ServerManager.getPayout("holz") * playerData.getIntVariable("holzkg");
         player.sendMessage("§8[§7Holzfäller§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
         if (playerData.getIntVariable("holz") <= 0) playerManager.addExp(player, Main.random(12, 20));
-      //  playerData.getScoreboard("lumberjack").killScoreboard();
+        //  playerData.getScoreboard("lumberjack").killScoreboard();
         player.closeInventory();
         try {
             playerManager.addBankMoney(player, payout, "Auszahlung Holzfäller");

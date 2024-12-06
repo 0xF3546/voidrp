@@ -28,6 +28,7 @@ import java.util.List;
 public class AutoBlacklistCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public AutoBlacklistCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;

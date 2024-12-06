@@ -1,14 +1,15 @@
 package de.polo.voidroleplay.listeners;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.events.BreakPersistentBlockEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.Farmer;
 import de.polo.voidroleplay.utils.enums.PickaxeType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -25,7 +26,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class BlockBreakListener implements Listener {
     private final PlayerManager playerManager;
@@ -38,6 +42,7 @@ public class BlockBreakListener implements Listener {
         this.commands = commands;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
@@ -112,7 +117,6 @@ public class BlockBreakListener implements Listener {
 
                     if (Arrays.stream(PickaxeType.values()).anyMatch(x -> x.getMaterial().equals(event.getPlayer().getInventory().getItemInMainHand().getType()))) {
                         Main.getInstance().commands.minerJobCommand.blockBroke(player, event.getBlock());
-                        return;
                     }
                 }
             }

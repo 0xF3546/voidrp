@@ -15,11 +15,13 @@ import org.jetbrains.annotations.NotNull;
 public class SubGroupChatCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public SubGroupChatCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("subgroupchat", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

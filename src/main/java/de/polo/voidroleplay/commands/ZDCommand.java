@@ -18,6 +18,7 @@ public class ZDCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final FactionManager factionManager;
+
     public ZDCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;

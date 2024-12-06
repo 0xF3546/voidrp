@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 
@@ -21,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FactionData {
+    public Storage storage = new Storage(this);
+    public Upgrades upgrades = new Upgrades(this);
+    public factionEquip equip = new factionEquip(this);
     private int id;
     private String primaryColor;
     private String secondaryColor;
@@ -42,35 +44,24 @@ public class FactionData {
     private boolean isBadFrak;
     private int subGroupId;
     private int cooperationPartner;
-
     @Getter
     @Setter
     private ChatColor chatColor = ChatColor.GRAY;
-
     @Getter
     @Setter
     private List<Pattern> bannerPattern = null;
-
     @Getter
     @Setter
     private Material bannerColor = null;
-
     @Getter
     @Setter
     private int allianceFaction;
-
     @Getter
     @Setter
     private String motd;
-
     @Getter
     @Setter
     private List<BlacklistReason> blacklistReasons = new ArrayList<>();
-
-    public Storage storage = new Storage(this);
-    public Upgrades upgrades = new Upgrades(this);
-    public factionEquip equip = new factionEquip(this);
-
     @Getter
     @Setter
     private boolean active;
@@ -237,8 +228,9 @@ public class FactionData {
                 amount,
                 reason);
     }
+
     @SneakyThrows
-    public boolean removeFactionMoney(Integer amount, String reason)  {
+    public boolean removeFactionMoney(Integer amount, String reason) {
         if (getBank() >= amount) {
             setBank(getBank() - amount);
             Main.getInstance().getMySQL().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
@@ -342,17 +334,18 @@ public class FactionData {
     }
 
     public class Storage {
+        private final FactionData factionData;
         private int weed;
         private int joint;
         private int cocaine;
         private int kevlar;
-        private final FactionData factionData;
         private int noble_joint;
         private int proceedingAmount;
         @Getter
         @Setter
         private int crystal;
         private LocalDateTime proceedingStarted;
+
         public Storage(FactionData factionData) {
             this.factionData = factionData;
         }
@@ -402,6 +395,7 @@ public class FactionData {
         public void setNoble_joint(int noble_joint) {
             this.noble_joint = noble_joint;
         }
+
         public boolean proceedWeed(int amount) {
             if (getProceedingAmount() != 0) {
                 return false;
@@ -410,6 +404,7 @@ public class FactionData {
             setProceedingStarted(Utils.getTime());
             return true;
         }
+
         public int getProceedingAmount() {
             return proceedingAmount;
         }
@@ -494,15 +489,16 @@ public class FactionData {
 
     public class Upgrades {
         private final FactionData factionData;
-        public Upgrades(FactionData factionData) {
-            this.factionData = factionData;
-        }
         private int drugEarningLevel;
         private int taxLevel;
         private int weaponLevel;
         private float drugEarning;
         private int tax;
         private float weapon;
+
+        public Upgrades(FactionData factionData) {
+            this.factionData = factionData;
+        }
 
         public float getDrugEarning() {
             return drugEarning;
@@ -568,12 +564,12 @@ public class FactionData {
 
     public class factionEquip {
         private final FactionData factionData;
+        private int sturmgewehr;
+        private int sturmgewehr_ammo;
+
         public factionEquip(FactionData factionData) {
             this.factionData = factionData;
         }
-
-        private int sturmgewehr;
-        private int sturmgewehr_ammo;
 
         public int getSturmgewehr() {
             return sturmgewehr;

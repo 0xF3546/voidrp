@@ -18,6 +18,7 @@ public class EvidenceChamber {
     @Getter
     @Setter
     private int crystal;
+
     public EvidenceChamber(int weed, int joints, int cocaine, int noble_joints, int crystal) {
         this.weed = weed;
         this.joints = joints;

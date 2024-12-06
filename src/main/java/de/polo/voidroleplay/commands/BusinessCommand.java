@@ -14,11 +14,13 @@ import org.jetbrains.annotations.NotNull;
 public class BusinessCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final BusinessManager businessManager;
+
     public BusinessCommand(PlayerManager playerManager, BusinessManager businessManager) {
         this.playerManager = playerManager;
         this.businessManager = businessManager;
         Main.registerCommand("business", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

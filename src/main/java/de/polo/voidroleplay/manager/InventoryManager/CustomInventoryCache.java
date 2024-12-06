@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class CustomInventoryCache {
 
-    private HashMap<Player, InventoryManager> inventoryHashMap;
+    private final HashMap<Player, InventoryManager> inventoryHashMap;
 
     public CustomInventoryCache() {
         this.inventoryHashMap = new HashMap<>();

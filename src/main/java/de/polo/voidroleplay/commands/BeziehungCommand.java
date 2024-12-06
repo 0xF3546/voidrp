@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.VertragUtil;
@@ -15,11 +15,13 @@ import org.bukkit.entity.Player;
 public class BeziehungCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public BeziehungCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("beziehung", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -31,7 +33,7 @@ public class BeziehungCommand implements CommandExecutor {
                 player.sendMessage(Main.error + "Du kannst mit dir selbst keine Beziehung eingehen.");
                 return false;
             }
-            OfflinePlayer offlinePlayer = utils.getOfflinePlayer(args[0]);
+            OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
             if (offlinePlayer == null) {
                 player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
                 return false;

@@ -10,5 +10,5 @@ public enum StorageType {
     HOUSE,
     FACTION,
     EXTRA,
-    CRYSTAL_LABORATORY;
+    CRYSTAL_LABORATORY
 }

@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author Mayson1337
@@ -23,6 +24,7 @@ public class FAQCommand implements CommandExecutor {
     public FAQCommand() {
         Main.registerCommand("faq", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
@@ -64,7 +66,7 @@ public class FAQCommand implements CommandExecutor {
 
     private void openFarmingJobs(Player player) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6FAQ §8» §eFarming & Jobs");
-        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§7Farming", Arrays.asList("§8 ➥ §7Du kannst auf mehreren Feldern, wie z.B. Aramid, Farmen gehen. Schaue dafür ins Navi, begib dich zum Feld und baue die entsprechenden Blöcke ab."))) {
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§7Farming", Collections.singletonList("§8 ➥ §7Du kannst auf mehreren Feldern, wie z.B. Aramid, Farmen gehen. Schaue dafür ins Navi, begib dich zum Feld und baue die entsprechenden Blöcke ab."))) {
             @Override
             public void onClick(InventoryClickEvent event) {
             }
@@ -74,7 +76,7 @@ public class FAQCommand implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
             }
         });
-        inventoryManager.setItem(new CustomItem(2, ItemManager.createItem(Material.PAPER, 3, 0, "§7Jobs", Arrays.asList("§8 ➥ §7Im Navi findest du alle möglichen Arten von Jobs, diese werden dir beim annehmen des Jobs erklärt."))) {
+        inventoryManager.setItem(new CustomItem(2, ItemManager.createItem(Material.PAPER, 3, 0, "§7Jobs", Collections.singletonList("§8 ➥ §7Im Navi findest du alle möglichen Arten von Jobs, diese werden dir beim annehmen des Jobs erklärt."))) {
             @Override
             public void onClick(InventoryClickEvent event) {
             }

@@ -1,20 +1,19 @@
 package de.polo.voidroleplay;
 
+import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.extra.Beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
-import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.listeners.*;
-import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.commands.*;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryApiRegister;
+import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
 import lombok.Getter;
@@ -34,21 +33,16 @@ import java.sql.Statement;
 import java.util.Random;
 
 public final class Main extends JavaPlugin {
-    public boolean isOnline = false;
-
-    public static Plugin plugin = null;
     public static final String faction_prefix = "§8[§9Fraktion§8] §7";
     public static final String support_prefix = "§8[§3Support§8] §7";
     public static final String gamedesign_prefix = "§8[§9Gamedesign§8] §7";
-
     public static final String error_nopermission = "§8[§cFehler§8] §7Für den ausgeführten Befehl hast du keine Rechte.";
     public static final String error = "§8[§cFehler§8] §7";
     public static final String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static final String business_prefix = "§8[§6Business§8]§7 ";
-
-
-
+    public static Plugin plugin = null;
     private static Main instance;
+    public boolean isOnline = false;
     @Getter
     public MySQL mySQL;
     @Getter
@@ -75,7 +69,6 @@ public final class Main extends JavaPlugin {
     public WeaponManager weaponManager;
     public BlockManager blockManager;
     public GamePlay gamePlay;
-    public Laboratory laboratory;
     public CompanyManager companyManager;
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
@@ -92,6 +85,64 @@ public final class Main extends JavaPlugin {
 
     private ScoreboardManager scoreboardManager;
 
+    public static void registerCommand(String command, CommandExecutor c) {
+        org.bukkit.command.PluginCommand cmd = instance.getCommand(command);
+        if (cmd != null) {
+            cmd.setExecutor(c);
+        }
+    }
+
+    public static void addTabCompeter(String command, TabCompleter c) {
+        org.bukkit.command.PluginCommand cmd = instance.getCommand(command);
+        if (cmd != null) {
+            cmd.setTabCompleter(c);
+        }
+    }
+
+    public static int random(int min, int max) {
+        return min + (int) (Math.random() * ((max - min) + 1));
+    }
+
+    public static char getRandomChar(String characters) {
+        Random random = new Random();
+        int index = random.nextInt(characters.length());
+        return characters.charAt(index);
+    }
+
+    public static String generateRandomCode(int length) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int randomInt = random.nextInt(75) + 48;
+            if ((randomInt >= 48 && randomInt <= 57) || (randomInt >= 65 && randomInt <= 90) || (randomInt >= 97 && randomInt <= 122)) {
+                sb.append((char) randomInt);
+            } else {
+                i--;
+            }
+        }
+        return sb.toString();
+    }
+
+    public static Main getInstance() {
+        return instance;
+    }
+
+    public static void waitSeconds(int seconds, Runnable runnable) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        }.runTaskLater(getInstance(), seconds * 20L);
+    }
+
+    public static String getTime(int seconds) {
+        int minutes = seconds / 60;
+        int sec = seconds % 60;
+        return minutes + " Minuten & " + sec + " Sekunden";
+    }
+
+    @Override
     public void onLoad() {
         instance = this;
     }
@@ -111,7 +162,7 @@ public final class Main extends JavaPlugin {
         blockManager = new BlockManager(mySQL);
         houseManager = new HouseManager(playerManager, blockManager, locationManager);
         utils = new Utils(playerManager, adminManager, factionManager, locationManager, houseManager, new NavigationManager(playerManager), companyManager);
-        vehicles = new Vehicles(playerManager ,locationManager);
+        vehicles = new Vehicles(playerManager, locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
         computerUtils = new ComputerUtils(playerManager, factionManager);
@@ -177,7 +228,7 @@ public final class Main extends JavaPlugin {
         new RespawnListener(playerManager);
         new PlayerMoveListener(playerManager, utils);
         new PlayerLoginListener();
-        new PlayerInteractListener(playerManager, utils, commands, blockManager, factionManager, laboratory);
+        new PlayerInteractListener(playerManager, utils, commands, blockManager, factionManager);
         new PlayerInteractWithPlayerListener(playerManager);
         new ExpPickupListener();
         new ItemPickUpListener();
@@ -196,20 +247,6 @@ public final class Main extends JavaPlugin {
         new ConsumeListener(playerManager);
         new EntityToggleGlideListener();
 
-    }
-
-    public static void registerCommand(String command, CommandExecutor c) {
-        org.bukkit.command.PluginCommand cmd =  instance.getCommand(command);
-        if (cmd != null) {
-            cmd.setExecutor(c);
-        }
-    }
-
-    public static void addTabCompeter(String command, TabCompleter c) {
-        org.bukkit.command.PluginCommand cmd =  instance.getCommand(command);
-        if (cmd != null) {
-            cmd.setTabCompleter(c);
-        }
     }
 
     private void registerCommands() {
@@ -232,48 +269,6 @@ public final class Main extends JavaPlugin {
 
     }
 
-    public static int random(int min, int max) {
-        return min + (int) (Math.random() * ((max - min) + 1));
-    }
-
-    public static char getRandomChar(String characters) {
-        Random random = new Random();
-        int index = random.nextInt(characters.length());
-        return characters.charAt(index);
-    }
-
-    public static String generateRandomCode(int length) {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int randomInt = random.nextInt(75) + 48;
-            if ((randomInt >= 48 && randomInt <= 57) || (randomInt >= 65 && randomInt <= 90) || (randomInt >= 97 && randomInt <= 122)) {
-                sb.append((char) randomInt);
-            } else {
-                i--;
-            }
-        }
-        return sb.toString();
-    }
-
-    public static Main getInstance() {
-        return instance;
-    }
-
-    public static void waitSeconds(int seconds, Runnable runnable) {
-        new BukkitRunnable() {
-            public void run() {
-                runnable.run();
-            }
-        }.runTaskLater(getInstance(), seconds * 20L);
-    }
-
-    public static String getTime(int seconds) {
-        int minutes = seconds / 60;
-        int sec = seconds % 60;
-        return minutes + " Minuten & " + sec + " Sekunden";
-    }
-
     private void loadMarker() {
         for (FactionData factionData : factionManager.getFactions()) {
             Location location = locationManager.getLocation(factionData.getName());
@@ -283,33 +278,10 @@ public final class Main extends JavaPlugin {
     }
 
     public class Commands {
-        private Main main;
-        private PlayerManager playerManager;
-        private AdminManager adminManager;
-        private LocationManager locationManager;
-        private SupportManager supportManager;
-        private Vehicles vehicles;
-        private GamePlay gamePlay;
-        private BusinessManager businessManager;
-        private WeaponManager weaponManager;
-        private CompanyManager companyManager;
-        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
-            this.main = main;
-            this.playerManager = playerManager;
-            this.adminManager = adminManager;
-            this.locationManager = locationManager;
-            this.supportManager = supportManager;
-            this.vehicles = vehicles;
-            this.gamePlay = gamePlay;
-            this.businessManager = businessManager;
-            this.weaponManager = weaponManager;
-            this.companyManager = companyManager;
-            Init();
-        }
         public SetTeamCommand setTeamCommand;
-        public GeldbeutelCommand geldbeutelCommand ;
+        public GeldbeutelCommand geldbeutelCommand;
         public PersonalausweisCommand personalausweisCommand;
-        public  TeamChatCommand teamChatCommand;
+        public TeamChatCommand teamChatCommand;
         public LeadFrakCommand leadFrakCommand;
         public FraktionsChatCommand fraktionsChatCommand;
         public UninviteCommand uninviteCommand;
@@ -508,6 +480,31 @@ public final class Main extends JavaPlugin {
         public RemoveLeaderRechteCommand removeLeaderRechteCommand;
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
+        private final Main main;
+        private final PlayerManager playerManager;
+        private final AdminManager adminManager;
+        private final LocationManager locationManager;
+        private final SupportManager supportManager;
+        private final Vehicles vehicles;
+        private final GamePlay gamePlay;
+        private final BusinessManager businessManager;
+        private final WeaponManager weaponManager;
+        private final CompanyManager companyManager;
+
+        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
+            this.main = main;
+            this.playerManager = playerManager;
+            this.adminManager = adminManager;
+            this.locationManager = locationManager;
+            this.supportManager = supportManager;
+            this.vehicles = vehicles;
+            this.gamePlay = gamePlay;
+            this.businessManager = businessManager;
+            this.weaponManager = weaponManager;
+            this.companyManager = companyManager;
+            Init();
+        }
+
         private void Init() {
             minerJobCommand = new MinerJobCommand(playerManager, gamePlay, locationManager, factionManager);
             undertakerCommand = new UndertakerCommand(playerManager, locationManager);
@@ -520,7 +517,7 @@ public final class Main extends JavaPlugin {
             bombeCommand = new BombeCommand(playerManager, utils, factionManager);
             sprengguertelCommand = new SprengguertelCommand(playerManager, utils);
             setTeamCommand = new SetTeamCommand(playerManager, adminManager);
-            geldbeutelCommand  = new GeldbeutelCommand(playerManager);
+            geldbeutelCommand = new GeldbeutelCommand(playerManager);
             personalausweisCommand = new PersonalausweisCommand(playerManager, utils);
             teamChatCommand = new TeamChatCommand(playerManager, utils);
             leadFrakCommand = new LeadFrakCommand(playerManager, adminManager, factionManager);

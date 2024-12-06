@@ -25,12 +25,14 @@ import java.util.logging.Logger;
 
 /**
  * Drop class to handle drop events
- *
  */
 public class Drop {
 
     private static final Logger LOGGER = Logger.getLogger(Drop.class.getName());
-
+    public Location location;
+    public boolean isDropOpen = false;
+    public boolean dropEnded = false;
+    public Chest chest = null;
     List<ItemStack> items = Arrays.asList(
             ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 4, 0, "§7Gepackte Waffe", "§8 ➥ §cSturmgewehr"),
             ItemManager.createItem(Material.CLAY_BALL, 50, 0, "§7Magazin", "§8 ➥ §cSturmgewehr"),
@@ -54,10 +56,6 @@ public class Drop {
     private Block lastBlock = null;
     private int minutes = 8;
     private ArmorStand hologram = null;
-    public Location location;
-    public boolean isDropOpen = false;
-    public boolean dropEnded = false;
-    public Chest chest = null;
 
     public Drop(Location location) {
         lastBlock = location.getBlock();
@@ -93,6 +91,10 @@ public class Drop {
         Utils.createWebAreaMarker("", "Schmugglerkiste", "world", x, z);
     }
 
+    public int getMinutes() {
+        return this.minutes;
+    }
+
     public void setMinutes(int minutes) {
         if (minutes == 0) {
             if (!isDropOpen) {
@@ -112,10 +114,6 @@ public class Drop {
         if (hologram != null && !isDropOpen) {
             hologram.setCustomName("§c" + minutes + " Minuten verbleibend");
         }
-    }
-
-    public int getMinutes() {
-        return this.minutes;
     }
 
     public void cleanup() {

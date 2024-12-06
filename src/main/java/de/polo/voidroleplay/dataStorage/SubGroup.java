@@ -11,6 +11,7 @@ public class SubGroup {
     private int factionId;
     private String name;
     private int bank;
+
     public int getId() {
         return id;
     }

@@ -6,8 +6,8 @@ import org.bukkit.Bukkit;
 public class InventoryApiRegister {
 
     private static CustomInventoryCache customInventoryCache;
-    private CustomItemInventoryCache customItemInventoryCache;
-    private Main plugin;
+    private final CustomItemInventoryCache customItemInventoryCache;
+    private final Main plugin;
 
     public InventoryApiRegister(Main plugin) {
         this.plugin = plugin;

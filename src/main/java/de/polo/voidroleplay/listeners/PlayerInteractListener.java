@@ -1,18 +1,18 @@
 package de.polo.voidroleplay.listeners;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
-import de.polo.voidroleplay.utils.GamePlay.Case;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.GamePlay.Case;
+import de.polo.voidroleplay.utils.GamePlay.GamePlay;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -44,28 +44,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerInteractListener implements Listener {
+    private static final Random RANDOM = new Random();
     private final PlayerManager playerManager;
     private final Utils utils;
-    private final Laboratory laboratory;
     private final FactionManager factionManager;
     private final Main.Commands commands;
     private final BlockManager blockManager;
-
-    private static final Random RANDOM = new Random();
-
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
     private final List<Molotov> molotovs = new ArrayList<>();
     private final List<Block> sprungtuecher = new ArrayList<>();
     private final List<Grenade> activeGrenades = new ArrayList<>();
 
-    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager, Laboratory laboratory) {
+    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.commands = commands;
         this.blockManager = blockManager;
         this.factionManager = factionManager;
-        this.laboratory = laboratory;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -114,7 +110,7 @@ public class PlayerInteractListener implements Listener {
                         RegisteredBlock b = blockManager.getBlockById(eventBlock.getBlockId());
                         if (b.getInfoValue().equalsIgnoreCase(block.getInfoValue())) found++;
                     }
-                    int total = blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase(block.getInfo())  && x.getInfoValue().equalsIgnoreCase(block.getInfoValue())).collect(Collectors.toList()).size();
+                    int total = blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase(block.getInfo()) && x.getInfoValue().equalsIgnoreCase(block.getInfoValue())).collect(Collectors.toList()).size();
                     Main.getInstance().utils.sendActionBar(player, "§aDu hast ein Cookie gefunden! (" + found + "/" + total + " in " + block.getInfoValue() + ")");
                     if (found >= total) {
                         player.sendMessage("§8[§6Cookies§8]§a Du hast alle Cookies in " + block.getInfoValue() + " gefunden!");
@@ -133,7 +129,7 @@ public class PlayerInteractListener implements Listener {
                             if (!factionManager.isBannerRegistered(block)) {
                                 factionManager.updateBanner(block, factionData);
                             }
-                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen" + (factionManager.canSprayBanner(block) ? "" :" §8(§cx§8)"))) {
+                            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WHITE_BANNER, 1, 0, "§cÜbersprühen" + (factionManager.canSprayBanner(block) ? "" : " §8(§cx§8)"))) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
                                     player.closeInventory();
@@ -167,7 +163,7 @@ public class PlayerInteractListener implements Listener {
 
                                     player.sendMessage("§8[§bBanner§8]§7 Du hast den Banner §3" + block.getInfoValue() + "§7 übersprüht!");
                                     factionManager.updateBanner(block, factionData);
-                                    playerManager.addExp(player, Main.random(5,10));
+                                    playerManager.addExp(player, Main.random(5, 10));
                                 }
                             });
                         }
@@ -193,21 +189,6 @@ public class PlayerInteractListener implements Listener {
                                         System.out.println(blockFaction);
                                         FactionData defender = factionManager.getFactionData(blockFaction);
                                         Main.getInstance().gamePlay.openGOVRaidGUI(defender, player);
-                                    }
-                                }
-                            }
-
-                        } else if (rBlock.getInfo().equalsIgnoreCase("laboratory")) {
-                            int id = Integer.parseInt(rBlock.getInfoValue());
-                            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-                            if (!(factionData.getLaboratory() == id) && !laboratory.isDoorOpened(factionData)) {
-                                event.setCancelled(true);
-                                for (FactionData defender : factionManager.getFactions()) {
-                                    if (defender.getLaboratory() == id) {
-                                        if (!laboratory.isDoorOpened(factionData)) {
-                                            laboratory.openLaboratoryAsAttacker(player, defender);
-                                            return;
-                                        }
                                     }
                                 }
                             }
@@ -359,7 +340,6 @@ public class PlayerInteractListener implements Listener {
                                                 s.setHouseNumber(houseData.getNumber());
                                                 s.create();
                                             }
-                                            ;
                                             s.open(player);
                                         }
                                     });

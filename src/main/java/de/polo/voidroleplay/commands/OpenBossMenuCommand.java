@@ -26,11 +26,13 @@ import java.util.UUID;
 public class OpenBossMenuCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public OpenBossMenuCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("bossmenu", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -84,7 +86,7 @@ public class OpenBossMenuCommand implements CommandExecutor {
             playerData.setVariable("current_inventory", "edit_factionplayer_" + targetplayer.getUniqueId());
             Statement statement = Main.getInstance().mySQL.getStatement();
             ResultSet result = statement.executeQuery("SELECT `uuid`, `player_name`, `faction`, `faction_grade` FROM `players` WHERE `uuid` = '" + uuid + "'");
-            Inventory inv = Bukkit.createInventory(player, 27, "§8» §" +  factionData.getSecondaryColor() + "Mitglied bearbeiten");
+            Inventory inv = Bukkit.createInventory(player, 27, "§8» §" + factionData.getSecondaryColor() + "Mitglied bearbeiten");
             if (result.next()) {
                 inv.setItem(4, ItemManager.createItemHead(result.getString(1), 1, 0, "§8» §6" + result.getString(2), "§8 ➥ §eRang§8:§7 " + result.getInt(4)));
                 inv.setItem(11, ItemManager.createItem(Material.GLOWSTONE_DUST, 1, 0, "§cDegradieren"));
@@ -92,7 +94,8 @@ public class OpenBossMenuCommand implements CommandExecutor {
                 inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück"));
                 inv.setItem(22, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cKicken"));
                 for (int i = 0; i < 27; i++) {
-                    if (inv.getItem(i) == null) inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                    if (inv.getItem(i) == null)
+                        inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
                 }
             } else {
                 player.closeInventory();

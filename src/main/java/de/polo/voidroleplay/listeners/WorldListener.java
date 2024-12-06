@@ -21,6 +21,7 @@ public class WorldListener implements Listener {
     public WorldListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @SneakyThrows
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -113,6 +114,7 @@ public class WorldListener implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onVehicleDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) {

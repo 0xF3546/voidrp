@@ -17,6 +17,7 @@ public class ClearCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public ClearCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
@@ -24,6 +25,7 @@ public class ClearCommand implements CommandExecutor {
 
         Main.registerCommand("clear", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;

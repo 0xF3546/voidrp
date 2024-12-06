@@ -12,10 +12,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class InvSeeCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public InvSeeCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("invsee", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

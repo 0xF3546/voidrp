@@ -10,18 +10,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 public class SupportManager {
-    public static int TicketCount = 0;
     public static final List<String> playerTickets = new ArrayList<>();
-
-    private List<Ticket> Tickets = new ArrayList<>();
-
+    public static int TicketCount = 0;
     private final MySQL mySQL;
+    private final List<Ticket> Tickets = new ArrayList<>();
 
     public SupportManager(MySQL mySQL) {
-        this.mySQL  = mySQL;
+        this.mySQL = mySQL;
     }
 
     public boolean ticketCreated(Player player) {
@@ -102,6 +103,7 @@ public class SupportManager {
         }
         return true;
     }
+
     public Ticket getTicket(Player player) {
         for (Ticket ticket : Tickets) {
             if (ticket.getCreator() == player.getUniqueId()) {
@@ -129,9 +131,6 @@ public class SupportManager {
     }
 
     public boolean isInConnection(Player player) {
-        if (getTicket(player) != null) {
-            return true;
-        }
-        return false;
+        return getTicket(player) != null;
     }
 }

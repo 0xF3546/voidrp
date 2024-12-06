@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -17,12 +17,14 @@ public class SetRankPayDayCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final FactionManager factionManager;
+
     public SetRankPayDayCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         this.factionManager = factionManager;
         Main.registerCommand("setrankpayday", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

@@ -19,6 +19,7 @@ public class VertragCommand implements CommandExecutor {
     public VertragCommand() {
         Main.registerCommand("vertrag", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

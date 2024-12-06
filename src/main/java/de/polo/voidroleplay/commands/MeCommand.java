@@ -11,6 +11,7 @@ public class MeCommand implements CommandExecutor {
     public MeCommand() {
         Main.registerCommand("me", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -23,6 +24,6 @@ public class MeCommand implements CommandExecutor {
             message.append(" ").append(arg);
         }
         ChatUtils.sendMeMessageAtPlayer(player, message.toString());
-     return false;
+        return false;
     }
 }

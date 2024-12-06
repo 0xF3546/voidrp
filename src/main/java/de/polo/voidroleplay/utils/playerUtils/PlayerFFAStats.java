@@ -15,7 +15,7 @@ public class PlayerFFAStats {
     private int id;
 
     @Getter
-    private String uuid;
+    private final String uuid;
 
     @Getter
     @Setter

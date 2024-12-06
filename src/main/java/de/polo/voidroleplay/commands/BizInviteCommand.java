@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.BusinessData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.BusinessManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
@@ -18,12 +18,14 @@ public class BizInviteCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
     private final BusinessManager businessManager;
+
     public BizInviteCommand(PlayerManager playerManager, Utils utils, BusinessManager businessManager) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.businessManager = businessManager;
         Main.registerCommand("bizinvite", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

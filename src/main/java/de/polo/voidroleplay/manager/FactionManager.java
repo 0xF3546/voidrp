@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.manager;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.SubGroups;
@@ -21,14 +21,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class FactionManager {
+    public final SubGroups subGroups;
     private final Map<String, FactionData> factionDataMap = new HashMap<>();
     private final Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
     private final Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
     private final PlayerManager playerManager;
-    public final SubGroups subGroups;
     private final List<SubTeam> subTeams = new ArrayList<>();
     private final HashMap<Block, LocalDateTime> bannerSprayed = new HashMap<>();
     private final List<SprayableBanner> sprayableBanners = new ArrayList<>();
+
     public FactionManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
@@ -43,7 +44,8 @@ public class FactionManager {
     public Collection<FactionData> getFactions() {
         return factionDataMap.values();
     }
-    public Collection<BlacklistData> getBlacklists()  {
+
+    public Collection<BlacklistData> getBlacklists() {
         return blacklistDataMap.values();
     }
 
@@ -174,6 +176,7 @@ public class FactionManager {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         return playerData.getFactionGrade();
     }
+
     public void setPlayerInFrak(Player player, String frak, Integer rang) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setFaction(frak);
@@ -307,14 +310,17 @@ public class FactionManager {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction(p) + "_" + faction_grade(p));
         return factionGradeData.getName();
     }
+
     public String getRankName(String faction, int rang) {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rang);
         return factionGradeData.getName();
     }
+
     public Integer getPaydayFromFaction(String faction, Integer rank) {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         return factionGradeData.getPayday();
     }
+
     public boolean isPlayerInGoodFaction(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         return playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Medic") || playerData.getFaction().equalsIgnoreCase("Polizei");
@@ -330,10 +336,12 @@ public class FactionManager {
         FactionData factionData = factionDataMap.get(faction);
         factionData.addBankMoney(amount, reason);
     }
+
     public boolean removeFactionMoney(String faction, Integer amount, String reason) throws SQLException {
         FactionData factionData = factionDataMap.get(faction);
         return factionData.removeFactionMoney(amount, reason);
     }
+
     public void sendMessageToFaction(String faction, String message) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerManager.getPlayerData(player);
@@ -343,6 +351,7 @@ public class FactionManager {
             }
         }
     }
+
     public void sendCustomMessageToFactions(String message, String... factions) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (String faction : factions) {
@@ -381,6 +390,7 @@ public class FactionManager {
             }
         }
     }
+
     public boolean changeRankPayDay(String faction, int rank, int payday) throws SQLException {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
@@ -411,6 +421,7 @@ public class FactionManager {
             return false;
         }
     }
+
     public String getTitle(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         switch (playerData.getFaction()) {
@@ -446,8 +457,7 @@ public class FactionManager {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return false;
         if (playerManager.isInStaatsFrak(player)) return true;
-        if (Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction()) != null) return true;
-        return false;
+        return Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction()) != null;
     }
 
     public boolean isInBündnisWith(Player player, String faction) {
@@ -491,6 +501,7 @@ public class FactionManager {
         }
         return null;
     }
+
     public FactionData getFactionData(String faction) {
         for (FactionData factionData : factionDataMap.values()) {
             if (factionData.getName().equalsIgnoreCase(faction)) return factionData;
@@ -656,6 +667,7 @@ public class FactionManager {
     private SprayableBanner getSprayAbleBannerByBlockId(int id) {
         return sprayableBanners.stream().filter(b -> b.getRegisteredBlock() == id).findFirst().orElse(null);
     }
+
     public boolean canSprayBanner(RegisteredBlock block) {
         SprayableBanner banner = getSprayAbleBannerByBlockId(block.getId());
         if (banner == null) return false;
@@ -666,8 +678,7 @@ public class FactionManager {
         return getSprayAbleBannerByBlockId(block.getId()) != null;
     }
 
-    public Collection<SprayableBanner> getBanner()
-    {
+    public Collection<SprayableBanner> getBanner() {
         return sprayableBanners;
     }
 

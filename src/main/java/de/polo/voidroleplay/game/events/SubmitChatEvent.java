@@ -16,6 +16,10 @@ public class SubmitChatEvent extends Event {
         this.message = message;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public boolean isCancel() {
         return message.equalsIgnoreCase("cancel");
     }
@@ -35,19 +39,17 @@ public class SubmitChatEvent extends Event {
     public PlayerData getPlayerData() {
         return Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
     }
+
     public String getSubmitTo() {
         return Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).getVariable("chatblock");
     }
+
     public void end() {
         Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).setVariable("chatblock", null);
     }
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

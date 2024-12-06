@@ -10,13 +10,14 @@ import org.bukkit.entity.Player;
 
 public class LocationCommand implements CommandExecutor {
     private final LocationManager locationManager;
+
     public LocationCommand(LocationManager locationManager) {
         this.locationManager = locationManager;
         Main.registerCommand("setloc", this);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args){
+    public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
         Player p = (Player) sender;
 
         StringBuilder message = new StringBuilder();
@@ -24,7 +25,7 @@ public class LocationCommand implements CommandExecutor {
             message.append(" ").append(arg);
         }
 
-        if(p.hasPermission("lobby.admin")){
+        if (p.hasPermission("lobby.admin")) {
             locationManager.setLocation(String.valueOf(message), p);
             p.sendMessage(Prefix.MAIN + "Du hast die Location §c" + message + " §7gesetzt");
         } else {

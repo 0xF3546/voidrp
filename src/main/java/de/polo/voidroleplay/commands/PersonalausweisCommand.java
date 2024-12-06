@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -20,11 +20,13 @@ import java.util.*;
 public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public PersonalausweisCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
         Main.registerCommand("personalausweis", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -49,8 +51,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             targetplayer.sendMessage(" ");
                             targetplayer.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(playerData));
                             if (!playerData.getRelationShip().isEmpty()) {
-                                for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
-                                {
+                                for (Map.Entry<String, String> entry : playerData.getRelationShip().entrySet()) {
                                     if (entry.getValue().equalsIgnoreCase("beziehung")) {
                                         OfflinePlayer tplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
                                         targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Beziehung: " + tplayer.getName() + ")");
@@ -86,8 +87,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(" ");
                 player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(playerData));
                 if (!playerData.getRelationShip().isEmpty()) {
-                    for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
-                    {
+                    for (Map.Entry<String, String> entry : playerData.getRelationShip().entrySet()) {
                         if (entry.getValue().equalsIgnoreCase("beziehung")) {
                             OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
                             player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Beziehung: " + targetplayer.getName() + ")");
@@ -112,6 +112,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
         }
         return false;
     }
+
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

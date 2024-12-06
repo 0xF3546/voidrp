@@ -14,11 +14,13 @@ import org.bukkit.entity.Player;
 public class ShoutCommand implements CommandExecutor {
     private final Utils utils;
     private final PlayerManager playerManager;
+
     public ShoutCommand(Utils utils, PlayerManager playerManager) {
         this.utils = utils;
         this.playerManager = playerManager;
         Main.registerCommand("shout", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -34,12 +36,12 @@ public class ShoutCommand implements CommandExecutor {
         for (Player players : Bukkit.getOnlinePlayers()) {
             if (players.getLocation().getWorld() != player.getLocation().getWorld()) continue;
             if (player.getLocation().distance(players.getLocation()) <= 28) {
-                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + playerName + " schreit: " + utils.stringArrayToString(args) + "!");
+                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + playerName + " schreit: " + Utils.stringArrayToString(args) + "!");
             } else if (player.getLocation().distance(players.getLocation()) <= 38) {
-                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + playerName + " schreit: " + utils.stringArrayToString(args) + "!");
+                players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + playerName + " schreit: " + Utils.stringArrayToString(args) + "!");
             }
         }
-        ChatUtils.LogMessage(utils.stringArrayToString(args), player.getUniqueId());
+        ChatUtils.LogMessage(Utils.stringArrayToString(args), player.getUniqueId());
         return false;
     }
 }

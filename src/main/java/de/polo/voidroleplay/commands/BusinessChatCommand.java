@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.BusinessData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.BusinessManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
@@ -15,11 +15,13 @@ import org.bukkit.entity.Player;
 public class BusinessChatCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final BusinessManager businessManager;
+
     public BusinessChatCommand(PlayerManager playerManager, BusinessManager businessManager) {
         this.playerManager = playerManager;
         this.businessManager = businessManager;
         Main.registerCommand("businesschat", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

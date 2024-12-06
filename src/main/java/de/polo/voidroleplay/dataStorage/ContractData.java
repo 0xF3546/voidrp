@@ -5,6 +5,7 @@ public class ContractData {
     private String uuid;
     private int amount;
     private String setter;
+
     public int getId() {
         return id;
     }

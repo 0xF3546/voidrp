@@ -12,15 +12,13 @@ import java.time.LocalDateTime;
 
 public class Dealer implements IDealer {
     @Getter
+    private final int price;
+    @Getter
     @Setter
     private int id;
     @Getter
     @Setter
     private Location location;
-
-    @Getter
-    private final int price;
-
     @Getter
     @Setter
     private int sold = 0;
@@ -40,6 +38,10 @@ public class Dealer implements IDealer {
     @Setter
     private LocalDateTime lastAttack = Utils.getTime();
 
+    public Dealer() {
+        this.price = Main.random(1300, 1600);
+    }
+
     public String getOwner() {
         if (owner == null) {
             IGangzone gz = Main.getInstance().utils.gangwarUtils.getGangzoneByName(gangzone);
@@ -49,13 +51,10 @@ public class Dealer implements IDealer {
         return owner;
     }
 
-    public Dealer() {
-        this.price = Main.random(1300, 1600);
-    }
-
     public boolean canSell() {
         return sold < 8;
     }
+
     @Override
     public String getName() {
         return null;

@@ -14,7 +14,7 @@ import java.util.HashMap;
  * @since 1.0.0
  */
 public class GlobalStats {
-    private static HashMap<String, String> values = new HashMap<>();
+    private static final HashMap<String, String> values = new HashMap<>();
 
     @SneakyThrows
     public static void load() {
@@ -32,7 +32,7 @@ public class GlobalStats {
 
     @SneakyThrows
     public static void setValue(String key, String value, boolean save) {
-        values.replace(key ,value);
+        values.replace(key, value);
         if (!save) return;
         Connection connection = Main.getInstance().mySQL.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE globalvariables SET value = ? WHERE type = ?");

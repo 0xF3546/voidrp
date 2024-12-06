@@ -12,6 +12,7 @@ public class YoutubeCommand implements CommandExecutor {
     public YoutubeCommand() {
         Main.registerCommand("youtube", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;

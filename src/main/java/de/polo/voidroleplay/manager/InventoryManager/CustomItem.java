@@ -48,6 +48,7 @@ public abstract class CustomItem implements Listener {
      * @since 1.0.0
      */
     public abstract void onClick(InventoryClickEvent event);
+
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
 

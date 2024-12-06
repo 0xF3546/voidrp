@@ -16,6 +16,7 @@ public class PlayerLoginListener implements Listener {
     public PlayerLoginListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
@@ -36,7 +37,7 @@ public class PlayerLoginListener implements Listener {
                 }
                 event.setResult(PlayerLoginEvent.Result.KICK_BANNED);
                 if (!isPerm) {
-                    event.setKickMessage("§8 • §6VoidRoleplay§8 •\n\n§cDu bist vom Server gesperrt.\nGrund: " + res.getString(4) + "\nGebannt durch: " + res.getString(5) + "\nBan läuft ab: " + res.getString("formatted_timestamp")+ "\n\n§8 • §6VoidRoleplay§8 •");
+                    event.setKickMessage("§8 • §6VoidRoleplay§8 •\n\n§cDu bist vom Server gesperrt.\nGrund: " + res.getString(4) + "\nGebannt durch: " + res.getString(5) + "\nBan läuft ab: " + res.getString("formatted_timestamp") + "\n\n§8 • §6VoidRoleplay§8 •");
                 } else {
                     event.setKickMessage("§8 • §6VoidRoleplay§8 •\n\n§cDu bist Permanent vom Server gesperrt.\nGrund: " + res.getString(4) + "\nGebannt durch: " + res.getString(5) + "\n\n§8 • §6VoidRoleplay§8 •");
                 }

@@ -21,6 +21,7 @@ public class RegisterblockCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final MySQL mySQL;
     private final BlockManager blockManager;
+
     public RegisterblockCommand(PlayerManager playerManager, MySQL mySQL, BlockManager blockManager) {
         this.playerManager = playerManager;
         this.mySQL = mySQL;

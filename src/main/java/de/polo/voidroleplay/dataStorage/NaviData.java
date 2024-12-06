@@ -29,6 +29,7 @@ public class NaviData {
     public String getGroup() {
         return group;
     }
+
     public void setGroup(String newgroup) {
         group = newgroup;
     }

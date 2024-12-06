@@ -16,12 +16,14 @@ public class DutyCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
+
     public DutyCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.locationManager = locationManager;
         Main.registerCommand("duty", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

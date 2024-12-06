@@ -14,11 +14,13 @@ import org.jetbrains.annotations.NotNull;
 public class RebstockCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final NavigationManager navigationManager;
+
     public RebstockCommand(PlayerManager playerManager, NavigationManager navigationManager) {
         this.playerManager = playerManager;
         this.navigationManager = navigationManager;
         Main.registerCommand("rebstock", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;

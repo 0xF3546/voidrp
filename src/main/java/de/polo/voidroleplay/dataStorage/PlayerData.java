@@ -4,12 +4,11 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.extra.PlayerIllness;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.PlayerQuest;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
-import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerPetManager;
-import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.enums.Weapon;
+import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStatsManager;
 import de.polo.voidroleplay.utils.playerUtils.PlayerPowerUpManager;
 import lombok.Getter;
@@ -29,61 +28,48 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.Date;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerData {
+    public final AddonXP addonXP = new AddonXP();
+    private final List<PlayerQuest> quests = new ArrayList<>();
+    private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
+    private final List<PlayerIllness> illnesses = new ArrayList<>();
+    private final List<PlayerWeapon> weapons = new ArrayList<>();
+    private final List<ClickedEventBlock> clickedEventBlocks = new ArrayList<>();
+    private final HashMap<String, Object> variables = new HashMap<>();
+    private final HashMap<String, Integer> integer_variables = new HashMap<>();
+    private final HashMap<String, Location> locationVariables = new HashMap<>();
+    private final HashMap<String, Integer> skillLevel = new HashMap<>();
+    private final HashMap<String, Integer> skillExp = new HashMap<>();
+    private final HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
+    private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
+    private final HashMap<String, BossBar> bossBars = new HashMap<>();
     @Getter
     private PlayerPetManager playerPetManager;
-
     @Getter
     private PlayerFFAStatsManager playerFFAStatsManager;
-
     @Getter
     private PlayerPowerUpManager playerPowerUpManager;
-
     @Getter
     private Player player;
     @Setter
     @Getter
     private String spawn;
-
     @Getter
     @Setter
     private boolean sendAdminMessages = false;
-
     @Getter
     @Setter
     private int rewardId;
-
     @Getter
     @Setter
     private int rewardTime;
-
-    private final List<PlayerQuest> quests = new ArrayList<>();
-    private final List<de.polo.voidroleplay.game.base.extra.Beginnerpass.PlayerQuest> beginnerQuests = new ArrayList<>();
-    private final List<PlayerIllness> illnesses = new ArrayList<>();
-
-    private final List<PlayerWeapon> weapons = new ArrayList<>();
-
-    private final List<ClickedEventBlock> clickedEventBlocks = new ArrayList<>();
-
-    public PlayerData(Player player) {
-        this.player = player;
-        this.playerPetManager = new PlayerPetManager(this, player);
-        this.playerFFAStatsManager = new PlayerFFAStatsManager(player);
-        this.playerPowerUpManager = new PlayerPowerUpManager(player, this);
-        loadIllnesses();
-        loadClickedEventBlocks();
-        loadWeapons();
-        loadWanteds();
-    }
-
     @Getter
     @Setter
     private float crypto;
-
     @Setter
     @Getter
     private int id;
@@ -96,7 +82,6 @@ public class PlayerData {
     @Getter
     @Setter
     private String lastname;
-
     @Getter
     @Setter
     private int bargeld;
@@ -114,17 +99,9 @@ public class PlayerData {
     @Setter
     private String faction;
     private int faction_grade;
-
     @Getter
     @Setter
     private int eventPoints;
-
-    private final HashMap<String, Object> variables = new HashMap<>();
-    private final HashMap<String, Integer> integer_variables = new HashMap<>();
-    private final HashMap<String, Location> locationVariables = new HashMap<>();
-    private final HashMap<String, Integer> skillLevel = new HashMap<>();
-    private final HashMap<String, Integer> skillExp = new HashMap<>();
-    private final HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
     @Setter
     private boolean canInteract = true;
     private boolean isJailed;
@@ -144,8 +121,6 @@ public class PlayerData {
     @Setter
     @Getter
     private int needed_exp;
-    private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
-    private final HashMap<String, BossBar> bossBars = new HashMap<>();
     private boolean isDead = false;
     private boolean isStabilized = false;
     private boolean isHitmanDead = false;
@@ -225,9 +200,6 @@ public class PlayerData {
     private boolean cuffed;
     @Setter
     @Getter
-    private PlayerLaboratory laboratory;
-    @Setter
-    @Getter
     private Company company;
     @Setter
     @Getter
@@ -302,15 +274,26 @@ public class PlayerData {
     @Setter
     private int zd;
 
-    public PlayerData() {
+    public PlayerData(Player player) {
+        this.player = player;
+        this.playerPetManager = new PlayerPetManager(this, player);
+        this.playerFFAStatsManager = new PlayerFFAStatsManager(player);
+        this.playerPowerUpManager = new PlayerPowerUpManager(player, this);
+        loadIllnesses();
+        loadClickedEventBlocks();
+        loadWeapons();
+        loadWanteds();
     }
 
-    public void setBank(Integer bank) {
-        this.bank = bank;
+    public PlayerData() {
     }
 
     public Integer getBank() {
         return bank;
+    }
+
+    public void setBank(Integer bank) {
+        this.bank = bank;
     }
 
     @SneakyThrows
@@ -474,12 +457,12 @@ public class PlayerData {
         return illnesses.stream().filter(i -> i.getIllnessType().equals(illnessType)).findFirst().orElse(null);
     }
 
-    public void setFactionGrade(Integer faction_grade) {
-        this.faction_grade = faction_grade;
-    }
-
     public int getFactionGrade() {
         return faction_grade;
+    }
+
+    public void setFactionGrade(Integer faction_grade) {
+        this.faction_grade = faction_grade;
     }
 
     public <T> void setVariable(String variable, T value) {
@@ -601,7 +584,6 @@ public class PlayerData {
         isDuty = duty;
     }
 
-
     public void setLocationVariable(String variable, Location value) {
         if (this.locationVariables.get(variable) != null) {
             this.locationVariables.replace(variable, value);
@@ -614,7 +596,6 @@ public class PlayerData {
         return locationVariables.get(variable);
     }
 
-
     public boolean hasAnwalt() {
         return hasAnwalt;
     }
@@ -626,8 +607,6 @@ public class PlayerData {
     public void setAFK(boolean AFK) {
         isAFK = AFK;
     }
-
-    public final AddonXP addonXP = new AddonXP();
 
     public void setCuffed(boolean cuffed) {
         this.cuffed = cuffed;

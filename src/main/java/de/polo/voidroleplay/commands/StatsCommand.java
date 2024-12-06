@@ -13,10 +13,12 @@ import java.util.Objects;
 
 public class StatsCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public StatsCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("stats", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -39,7 +41,7 @@ public class StatsCommand implements CommandExecutor {
             player.sendMessage(" §8- §eGruppierung§8:§7 " + playerData.getSubGroup().getName());
         }
         PlaytimeReward playtimeReward = playerManager.getPlaytimeReward(playerData.getRewardId());
-        player.sendMessage("§8 - §eSpielzeitbelohnung§8: §7" + playtimeReward.getDisplayName() + " §8- §7" + playerData.getRewardTime() + "§7h verbleibend" + (playtimeReward.isPremiumOnly() ?  "§8[§6Premium§8]": ""));
+        player.sendMessage("§8 - §eSpielzeitbelohnung§8: §7" + playtimeReward.getDisplayName() + " §8- §7" + playerData.getRewardTime() + "§7h verbleibend" + (playtimeReward.isPremiumOnly() ? "§8[§6Premium§8]" : ""));
         return false;
     }
 }

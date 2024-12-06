@@ -1,15 +1,15 @@
 package de.polo.voidroleplay.utils;
 
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.VehicleData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
 import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -429,7 +429,8 @@ public class TabletUtils implements Listener {
     public void openJailApp(Player player, int page) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (!playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei")) return;
+        if (!playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei"))
+            return;
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §6Gefängnis §8- §6Seite§8:§7 " + page, true, true);
         int i = 0;
         int j = 0;
@@ -740,7 +741,6 @@ public class TabletUtils implements Listener {
                     statement.execute();
                     statement.close();
                     connection.close();
-                    ;
                 }
             });
         }

@@ -10,6 +10,7 @@ public class ShopItem {
     private int price;
     private String type;
     private String secondType;
+
     public ShopItem() {
 
     }

@@ -1,7 +1,6 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

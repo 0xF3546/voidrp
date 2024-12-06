@@ -2,7 +2,6 @@ package de.polo.voidroleplay.utils.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Material;
 
 /**

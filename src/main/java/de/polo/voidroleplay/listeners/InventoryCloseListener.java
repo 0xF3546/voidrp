@@ -10,13 +10,15 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class InventoryCloseListener implements Listener {
     private final PlayerManager playerManager;
+
     public InventoryCloseListener(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        Player player =  (Player) event.getPlayer();
+        Player player = (Player) event.getPlayer();
         if (!player.isOnline()) {
             return;
         }

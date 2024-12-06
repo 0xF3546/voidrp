@@ -2,7 +2,6 @@ package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.utils.enums.Drug;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,6 +21,7 @@ public class PlayerDrugUsage {
 
     @Getter
     private final LocalDateTime usage;
+
     public PlayerDrugUsage(UUID uuid, Drug drug, LocalDateTime usage) {
         this.uuid = uuid;
         this.drug = drug;

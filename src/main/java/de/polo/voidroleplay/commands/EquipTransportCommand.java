@@ -12,11 +12,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class EquipTransportCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public EquipTransportCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("equiptransport", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         Player player = (Player) sender;
@@ -27,7 +29,7 @@ public class EquipTransportCommand implements CommandExecutor {
             return false;
         }
         playerData.setVariable("job", "equip");
-        playerData.removeMoney(122000,"Equip-Transport");
+        playerData.removeMoney(122000, "Equip-Transport");
         player.sendMessage(Prefix.MAIN + "Du hast den Transport gestartet, begib dich zu deinem Equip-Punkt und nutze /drop");
         return false;
     }

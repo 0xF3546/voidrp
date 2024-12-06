@@ -21,11 +21,13 @@ import java.util.Objects;
 public class ComputerUtils implements Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public ComputerUtils(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onComputerUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();

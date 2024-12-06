@@ -20,11 +20,13 @@ import java.sql.PreparedStatement;
 public class PermbanCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
+
     public PermbanCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         Main.registerCommand("permban", this);
     }
+
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -70,7 +72,7 @@ public class PermbanCommand implements CommandExecutor {
         statement.execute();
         statement.close();
 
-        adminManager.insertNote("System", target.getUniqueId().toString(), "Spieler wurde gebannt (" + reason.toString() + ")");
+        adminManager.insertNote("System", target.getUniqueId().toString(), "Spieler wurde gebannt (" + reason + ")");
         return false;
     }
 }

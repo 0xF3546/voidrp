@@ -10,10 +10,12 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class HungerListener implements Listener {
     private final PlayerManager playerManager;
+
     public HungerListener(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
         //event.setCancelled(true);
@@ -24,7 +26,6 @@ public class HungerListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.isAduty()) {
             event.setCancelled(true);
-            return;
         }
     }
 }

@@ -6,7 +6,9 @@ import de.polo.voidroleplay.dataStorage.FactionPlayerData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.TeamSpeak;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -20,11 +22,13 @@ import java.sql.Statement;
 public class GiveRankCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
+
     public GiveRankCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.registerCommand("giverank", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -77,7 +81,7 @@ public class GiveRankCommand implements CommandExecutor {
             leaderLimit = 4;
         }
         if (leaders >= leaderLimit) {
-            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann nur " + leaderLimit +" Leader haben!");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann nur " + leaderLimit + " Leader haben!");
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());

@@ -1,8 +1,9 @@
 package de.polo.voidroleplay.listeners;
 
-import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.commands.ApfelplantageCommand;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.manager.AdminManager;
@@ -11,8 +12,9 @@ import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
+import de.polo.voidroleplay.utils.StaatUtil;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.PlayerPed;
-import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,8 +36,9 @@ QuitListener implements Listener {
     private final Main.Commands commands;
     private final ServerManager serverManager;
     private final SupportManager supportManager;
-    private PlayerQuit playerQuit;
     private final ScoreboardAPI scoreboardAPI;
+    private PlayerQuit playerQuit;
+
     public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager, ScoreboardAPI scoreboardAPI) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -46,6 +49,7 @@ QuitListener implements Listener {
         this.scoreboardAPI = scoreboardAPI;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
@@ -93,7 +97,7 @@ QuitListener implements Listener {
                         commands.lumberjackCommand.quitJob(player, true);
                         break;
                     case "apfelsammler":
-                        commands.apfelplantageCommand.quitJob(player);
+                        ApfelplantageCommand.quitJob(player);
                         break;
                     case "mine":
                         commands.mineCommand.quitJob(player);

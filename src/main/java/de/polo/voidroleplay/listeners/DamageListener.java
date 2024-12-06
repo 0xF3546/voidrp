@@ -1,10 +1,11 @@
 package de.polo.voidroleplay.listeners;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import org.bukkit.*;
+import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,10 +20,12 @@ import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 
 public class DamageListener implements Listener {
     private final PlayerManager playerManager;
+
     public DamageListener(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
+
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity().getType() == EntityType.ARMOR_STAND

@@ -13,11 +13,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class WeaponInfoCommand implements CommandExecutor {
     private final PlayerManager playerManager;
+
     public WeaponInfoCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
 
         Main.registerCommand("weaponinfo", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         Player player = (Player) sender;

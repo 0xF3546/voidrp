@@ -15,12 +15,14 @@ public class GovCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
+
     public GovCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.utils = utils;
         Main.registerCommand("gov", this);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
@@ -41,7 +43,7 @@ public class GovCommand implements CommandExecutor {
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage("§7§m====§8[§" + factionManager.getFactionPrimaryColor(playerfac) + "§l" + factionManager.getFactionFullname(playerfac) + "§8]§7§m====");
         Bukkit.broadcastMessage(" ");
-        Bukkit.broadcastMessage("§8➥§" + factionManager.getFactionSecondaryColor(playerfac) + " " + player.getName() + "§8: §7" + utils.stringArrayToString(args));
+        Bukkit.broadcastMessage("§8➥§" + factionManager.getFactionSecondaryColor(playerfac) + " " + player.getName() + "§8: §7" + Utils.stringArrayToString(args));
         Bukkit.broadcastMessage(" ");
         Bukkit.broadcastMessage("§7§m====§8[§" + factionManager.getFactionPrimaryColor(playerfac) + "§l" + factionManager.getFactionFullname(playerfac) + "§8]§7§m====");
         Bukkit.broadcastMessage(" ");

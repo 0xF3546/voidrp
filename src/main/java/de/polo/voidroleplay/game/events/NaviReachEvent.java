@@ -12,10 +12,15 @@ public class NaviReachEvent extends Event {
     private final Player player;
     private final String navi;
     private final Location location;
+
     public NaviReachEvent(Player player, String navi, Location location) {
         this.player = player;
         this.navi = navi;
         this.location = location;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public String getNavi() {
@@ -32,10 +37,6 @@ public class NaviReachEvent extends Event {
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

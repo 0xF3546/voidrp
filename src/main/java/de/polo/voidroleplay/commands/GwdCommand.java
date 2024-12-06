@@ -18,6 +18,7 @@ public class GwdCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final FactionManager factionManager;
+
     public GwdCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
@@ -25,6 +26,7 @@ public class GwdCommand implements CommandExecutor {
 
         Main.registerCommand("gwd", this);
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;

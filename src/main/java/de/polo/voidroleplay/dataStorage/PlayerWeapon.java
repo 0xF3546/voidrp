@@ -7,22 +7,18 @@ import lombok.Setter;
 
 public class PlayerWeapon {
     @Getter
+    private final Weapon weapon;
+    @Getter
+    private final WeaponType weaponType;
+    @Getter
     @Setter
     private int id;
-
-    @Getter
-    private final Weapon weapon;
-
     @Getter
     @Setter
     private int wear;
-
     @Getter
     @Setter
     private int ammo;
-
-    @Getter
-    private final WeaponType weaponType;
 
     public PlayerWeapon(int id, Weapon weapon, int wear, int ammo, WeaponType weaponType) {
         this.id = id;

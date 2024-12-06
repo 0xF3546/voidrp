@@ -46,8 +46,6 @@ public class FarmingData {
     }
 
 
-
-
     public String getItemName() {
         return itemName;
     }

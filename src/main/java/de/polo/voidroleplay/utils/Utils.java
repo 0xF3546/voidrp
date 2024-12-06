@@ -3,10 +3,13 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
-import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
+import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.playerUtils.*;
+import de.polo.voidroleplay.utils.playerUtils.BankingUtils;
+import de.polo.voidroleplay.utils.playerUtils.DeathUtils;
+import de.polo.voidroleplay.utils.playerUtils.PayDayUtils;
+import de.polo.voidroleplay.utils.playerUtils.Tutorial;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -16,7 +19,7 @@ import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
-import java.sql.*;
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,17 +29,9 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Utils {
-    @Getter
-    public DeathUtils deathUtil;
-    @Getter
-    public StaatUtil staatUtil;
-    @Getter
-    public VertragUtil vertragUtil;
-    @Getter
-    public HouseManager houseManager;
-    //public Shop shop;
-    @Getter
-    public Tutorial tutorial;
+    static Scoreboard sb;
+    private static final HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
+    private static final HashMap<String, Marker> markers = new HashMap<>();
     @Getter
     public final NavigationManager navigationManager;
     @Getter
@@ -51,8 +46,17 @@ public class Utils {
     public final GangwarUtils gangwarUtils;
     @Getter
     private final CompanyManager companyManager;
-    private static HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
-    private static HashMap<String, Marker> markers = new HashMap<>();
+    @Getter
+    public DeathUtils deathUtil;
+    @Getter
+    public StaatUtil staatUtil;
+    @Getter
+    public VertragUtil vertragUtil;
+    @Getter
+    public HouseManager houseManager;
+    //public Shop shop;
+    @Getter
+    public Tutorial tutorial;
 
     public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, NavigationManager navigationManager, CompanyManager companyManager) {
         deathUtil = new DeathUtils(playerManager, adminManager, locationManager);
@@ -67,21 +71,6 @@ public class Utils {
         tabletUtils = new TabletUtils(playerManager, factionManager, this, companyManager);
         phoneUtils = new PhoneUtils(playerManager, this);
         gangwarUtils = new GangwarUtils(playerManager, factionManager, locationManager);
-    }
-
-    public void sendActionBar(Player player, String message) {
-        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(message));
-    }
-
-    public void sendBossBar(Player player, String text) {
-    }
-
-    public int getCurrentMinute() {
-        return Calendar.getInstance().get(Calendar.MINUTE);
-    }
-
-    public int getCurrentHour() {
-        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     }
 
     public static String stringArrayToString(String[] args) {
@@ -111,139 +100,8 @@ public class Utils {
         return localDateTime;
     }
 
-    static Scoreboard sb;
-
-    public void loadTeams() {
-        sb = Bukkit.getScoreboardManager().getMainScoreboard();
-        for (RankData rankData : ServerManager.rankDataMap.values()) {
-            if (sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getShortName()) == null) {
-                sb.registerNewTeam(-rankData.getPermlevel() + "_" + rankData.getShortName());
-                sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getShortName()).setPrefix(rankData.getColor() + rankData.getShortName() + "§8 × §7");
-            }
-        }
-    }
-
-    public interface Tablist {
-
-        static void setTablist(Player player, String prefix) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            RankData rankData = Main.getInstance().serverManager.getRankData(playerData.getRang());
-            player.setDisplayName(Color.GRAY + player.getName());
-            String suffix = "";
-            if (rankData.getPermlevel() >= 40) {
-                suffix = "§c◉";
-            } else if (rankData.getPermlevel() >= 10) {
-                suffix = "§d◈";
-            }
-            if (prefix != null) {
-                prefix = " " + prefix;
-            } else {
-                prefix = "";
-            }
-            String name = "§7" + player.getName();
-            if (playerData.isDuty()) {
-                switch (playerData.getFaction().toLowerCase()) {
-                    case "polizei":
-                        name = "§9" + player.getName();
-                        break;
-                    case "fbi":
-                        name = "§1" + player.getName();
-                        break;
-                    case "medic":
-                        name = "§c" + player.getName();
-                        break;
-                    default:
-                        break;
-                }
-            }
-            player.setDisplayName(Color.GRAY + player.getName());
-            player.setPlayerListName(prefix + "§7" + name + " " + suffix);
-            player.setCustomName(Color.GRAY + player.getName());
-            player.setCustomNameVisible(true);
-        }
-
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-
-        static void updatePlayer(Player player) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            String suffix = "";
-            String prefix = "";
-            if (playerData.isAFK()) {
-                prefix = "§8[§5AFK§8]";
-            } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                prefix = "§8[§2GM§8]";
-            } else if (player.getAllowFlight() && !player.getGameMode().equals(GameMode.SPECTATOR) && !playerData.isAduty()) {
-                prefix = "§8[§5Fly§8]";
-            }
-
-            if (playerData.getPermlevel() >= 40) {
-                suffix = "§c◉";
-            } else if (playerData.getPermlevel() >= 10) {
-                suffix = "§d◈";
-            }
-            String color = "§7";
-            if (playerData.isDuty()) {
-                switch (playerData.getFaction().toLowerCase()) {
-                    case "polizei":
-                        color = "§9";
-                        break;
-                    case "fbi":
-                        color = "§1";
-                        break;
-                    case "medic":
-                        color = "§c";
-                        break;
-                    case "news":
-                        color = "§6";
-                        break;
-                }
-            }
-            if (Main.getInstance().gamePlay.getMaskState(player) == null) {
-                player.setDisplayName(prefix + color + player.getName());
-                player.setPlayerListName(prefix + color + player.getName() + " " + suffix);
-                player.setCustomName(prefix + color + player.getName());
-                player.setCustomNameVisible(true);
-            } else {
-                player.setCustomNameVisible(true);
-                player.setCustomName("§k" + player.getName());
-                player.setDisplayName("§k" + player.getName());
-            }
-        }
-    }
-
     public static int roundUpToMultipleOfNine(int num) {
         return ((num + 8) / 9) * 9;
-    }
-
-    public void setAFK(Player player, boolean state) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-        if (state) {
-            player.sendMessage("§5Du bist nun abwesend.");
-            playerData.setAFK(true);
-            player.setCollidable(false);
-        } else {
-            player.sendMessage("§5Du bist nicht mehr abwesend.");
-            playerData.setAFK(false);
-            playerData.setIntVariable("afk", 0);
-            if (!playerData.isAduty()) {
-                player.setCollidable(true);
-            }
-        }
-        Tablist.updatePlayer(player);
-    }
-
-    public LocalDateTime sqlDateToLocalDateTime(Date date) {
-        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return localDateTime;
-    }
-
-    public void summonCircle(Location location, int size, Particle particle) {
-        for (int d = 0; d <= 90; d += 1) {
-            Location particleLoc = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
-            particleLoc.setX(location.getX() + Math.cos(d) * size);
-            particleLoc.setZ(location.getZ() + Math.sin(d) * size);
-            location.getWorld().spawnParticle(particle, particleLoc, 1, new Particle.DustOptions(Color.WHITE, 5));
-        }
     }
 
     public static boolean isRandom(int chance) {
@@ -280,7 +138,7 @@ public class Utils {
         if (markers.get(markerLabel) != null) {
             System.out.println("REMOVING MARKER: " + markerLabel);
             removeMarker(markerLabel);
-        };
+        }
         MarkerAPI markerAPI = Main.getInstance().getMarkerAPI();
         MarkerSet markerSet = markerAPI.getMarkerSet(markerLabel);
         if (markerSet == null) {
@@ -345,5 +203,149 @@ public class Utils {
 
     public static Location getLocation(int x, int y, int z, World world, float yaw, float pitch) {
         return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    public void sendActionBar(Player player, String message) {
+        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(message));
+    }
+
+    public void sendBossBar(Player player, String text) {
+    }
+
+    public int getCurrentMinute() {
+        return Calendar.getInstance().get(Calendar.MINUTE);
+    }
+
+    public int getCurrentHour() {
+        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+    }
+
+    public void loadTeams() {
+        sb = Bukkit.getScoreboardManager().getMainScoreboard();
+        for (RankData rankData : ServerManager.rankDataMap.values()) {
+            if (sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getShortName()) == null) {
+                sb.registerNewTeam(-rankData.getPermlevel() + "_" + rankData.getShortName());
+                sb.getTeam(-rankData.getPermlevel() + "_" + rankData.getShortName()).setPrefix(rankData.getColor() + rankData.getShortName() + "§8 × §7");
+            }
+        }
+    }
+
+    public void setAFK(Player player, boolean state) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        if (state) {
+            player.sendMessage("§5Du bist nun abwesend.");
+            playerData.setAFK(true);
+            player.setCollidable(false);
+        } else {
+            player.sendMessage("§5Du bist nicht mehr abwesend.");
+            playerData.setAFK(false);
+            playerData.setIntVariable("afk", 0);
+            if (!playerData.isAduty()) {
+                player.setCollidable(true);
+            }
+        }
+        Tablist.updatePlayer(player);
+    }
+
+    public LocalDateTime sqlDateToLocalDateTime(Date date) {
+        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return localDateTime;
+    }
+
+    public void summonCircle(Location location, int size, Particle particle) {
+        for (int d = 0; d <= 90; d += 1) {
+            Location particleLoc = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ());
+            particleLoc.setX(location.getX() + Math.cos(d) * size);
+            particleLoc.setZ(location.getZ() + Math.sin(d) * size);
+            location.getWorld().spawnParticle(particle, particleLoc, 1, new Particle.DustOptions(Color.WHITE, 5));
+        }
+    }
+
+    public interface Tablist {
+
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+
+        static void setTablist(Player player, String prefix) {
+            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+            RankData rankData = Main.getInstance().serverManager.getRankData(playerData.getRang());
+            player.setDisplayName(Color.GRAY + player.getName());
+            String suffix = "";
+            if (rankData.getPermlevel() >= 40) {
+                suffix = "§c◉";
+            } else if (rankData.getPermlevel() >= 10) {
+                suffix = "§d◈";
+            }
+            if (prefix != null) {
+                prefix = " " + prefix;
+            } else {
+                prefix = "";
+            }
+            String name = "§7" + player.getName();
+            if (playerData.isDuty()) {
+                switch (playerData.getFaction().toLowerCase()) {
+                    case "polizei":
+                        name = "§9" + player.getName();
+                        break;
+                    case "fbi":
+                        name = "§1" + player.getName();
+                        break;
+                    case "medic":
+                        name = "§c" + player.getName();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            player.setDisplayName(Color.GRAY + player.getName());
+            player.setPlayerListName(prefix + "§7" + name + " " + suffix);
+            player.setCustomName(Color.GRAY + player.getName());
+            player.setCustomNameVisible(true);
+        }
+
+        static void updatePlayer(Player player) {
+            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+            String suffix = "";
+            String prefix = "";
+            if (playerData.isAFK()) {
+                prefix = "§8[§5AFK§8]";
+            } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
+                prefix = "§8[§2GM§8]";
+            } else if (player.getAllowFlight() && !player.getGameMode().equals(GameMode.SPECTATOR) && !playerData.isAduty()) {
+                prefix = "§8[§5Fly§8]";
+            }
+
+            if (playerData.getPermlevel() >= 40) {
+                suffix = "§c◉";
+            } else if (playerData.getPermlevel() >= 10) {
+                suffix = "§d◈";
+            }
+            String color = "§7";
+            if (playerData.isDuty()) {
+                switch (playerData.getFaction().toLowerCase()) {
+                    case "polizei":
+                        color = "§9";
+                        break;
+                    case "fbi":
+                        color = "§1";
+                        break;
+                    case "medic":
+                        color = "§c";
+                        break;
+                    case "news":
+                        color = "§6";
+                        break;
+                }
+            }
+            if (Main.getInstance().gamePlay.getMaskState(player) == null) {
+                player.setDisplayName(prefix + color + player.getName());
+                player.setPlayerListName(prefix + color + player.getName() + " " + suffix);
+                player.setCustomName(prefix + color + player.getName());
+                player.setCustomNameVisible(true);
+            } else {
+                player.setCustomNameVisible(true);
+                player.setCustomName("§k" + player.getName());
+                player.setDisplayName("§k" + player.getName());
+            }
+        }
     }
 }

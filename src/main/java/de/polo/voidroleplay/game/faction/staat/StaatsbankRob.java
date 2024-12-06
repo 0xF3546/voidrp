@@ -16,23 +16,19 @@ import java.util.List;
  */
 public class StaatsbankRob {
     @Getter
+    private final List<Integer> openVaults = new ArrayList<>();
+    @Getter
     @Setter
     private FactionData attacker;
-
     @Getter
     @Setter
     private int minutes = 0;
-
     @Getter
     @Setter
     private int vaults;
-
     @Getter
     @Setter
     private int vaultsOpen;
-
-    @Getter
-    private final List<Integer> openVaults = new ArrayList<>();
 
     public StaatsbankRob() {
         vaults = Main.random(12, 20);
@@ -47,6 +43,7 @@ public class StaatsbankRob {
         openVaults.add(vault);
         return true;
     }
+
     public boolean isVaultOpen(int vault) {
         return openVaults.contains(vault);
     }

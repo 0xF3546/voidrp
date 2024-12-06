@@ -17,12 +17,10 @@ import java.sql.PreparedStatement;
 public class PlayerPowerUp {
 
     @Getter
+    private final Powerup powerup;
+    @Getter
     @Setter
     private int id;
-
-    @Getter
-    private final Powerup powerup;
-
     @Getter
     @Setter
     private int amount;

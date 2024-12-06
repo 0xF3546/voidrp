@@ -16,16 +16,15 @@ import java.util.List;
 
 public class RoadBlockCommand implements CommandExecutor {
 
-    List<Block> roadblocks = Main.getInstance().gamePlay.roadblocks;
-
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
+    List<Block> roadblocks = Main.getInstance().gamePlay.roadblocks;
 
     public RoadBlockCommand(FactionManager factionManager, PlayerManager playerManager) {
         this.factionManager = factionManager;
         this.playerManager = playerManager;
 
-        Main.getInstance().registerCommand("rbreset", this);
+        Main.registerCommand("rbreset", this);
     }
 
     @Override
