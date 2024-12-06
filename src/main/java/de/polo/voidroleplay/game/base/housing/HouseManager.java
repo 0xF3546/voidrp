@@ -65,10 +65,10 @@ public class HouseManager implements CommandExecutor, Listener {
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
         while (locs.next()) {
             House houseData = new House(locs.getInt("number"), locs.getInt("maxServer"), locs.getInt("maxMiner"));
-            houseData.setId(locs.getInt(1));
-            houseData.setOwner(locs.getString(2));
-            houseData.setPrice(locs.getInt(4));
-            houseData.setTotalMoney(locs.getInt(7));
+            houseData.setId(locs.getInt("id"));
+            houseData.setOwner(locs.getString("owner"));
+            houseData.setPrice(locs.getInt("price"));
+            houseData.setTotalMoney(locs.getInt("money"));
             houseData.setMiner(locs.getInt("miner"));
             houseData.setServer(locs.getInt("server"));
             houseData.setServerRoom(locs.getBoolean("hasServerRoom"));
@@ -81,8 +81,8 @@ public class HouseManager implements CommandExecutor, Listener {
                 map.put(key, value);
             }
             houseData.setRenter(map);
-            houseData.setMoney(locs.getInt(6));
-            houseDataMap.put(locs.getInt(3), houseData);
+            houseData.setMoney(locs.getInt("money"));
+            houseDataMap.put(locs.getInt("number"), houseData);
         }
     }
 

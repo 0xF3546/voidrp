@@ -688,6 +688,6 @@ public class FactionManager {
             PlayerData playerData = playerManager.getPlayerData(offlinePlayer.getPlayer());
             playerData.setLeader(leader);
         }
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET leader = ? WHERE uuid = ?", offlinePlayer.getUniqueId().toString(), leader);
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET isLeader = ? WHERE uuid = ?", offlinePlayer.getUniqueId().toString(), leader);
     }
 }

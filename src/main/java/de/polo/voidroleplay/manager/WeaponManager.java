@@ -372,6 +372,7 @@ public class WeaponManager implements Listener {
     }
 
     private void giveWeapon(Player player, PlayerWeapon playerWeapon, Weapon weapon) {
+        System.out.println("WAFFEE");
         ItemStack item = new ItemStack(playerWeapon.getWeapon().getMaterial());
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -416,6 +417,7 @@ public class WeaponManager implements Listener {
                         w.getOwner().toString(), weapon.name(), weaponType.name())
                 .thenApply(key -> {
                     key.ifPresent(w::setId);
+                    System.out.println(key.get());
                     giveWeapon(player, new PlayerWeapon(
                             weapon,
                             wear,

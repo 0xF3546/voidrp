@@ -312,7 +312,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 });
                                 if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
-                                    inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
+                                    inventoryManager.setItem(new CustomItem(37, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             Main.getInstance().getHouseManager().openGunCabinet(player, houseData);
