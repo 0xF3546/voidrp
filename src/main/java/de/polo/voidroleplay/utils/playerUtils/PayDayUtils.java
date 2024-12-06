@@ -50,7 +50,7 @@ public class PayDayUtils {
         int frakpayday = 0;
         plus = plus + zinsen - steuern + visumbonus;
         player.sendMessage("");
-        player.sendMessage("§9========§6PayDay§9========");
+        player.sendMessage("§9======§6PayDay§9======");
         player.sendMessage("§9Alter Betrag§8: §6" + playerData.getBank() + "$");
         player.sendMessage("§7 » §9Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§7 » §9Steuern§8:§c -" + (int) steuern + "$");
@@ -61,7 +61,6 @@ public class PayDayUtils {
             plus -= reichensteuer;
         }
         if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
-            player.sendMessage(" ");
             frakpayday = factionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());
             if (factionManager.removeFactionMoney(playerData.getFaction(), frakpayday, "Gehalt " + player.getName())) {
                 player.sendMessage("§§7 » §9Fraktionsgehalt§8: §a+" + frakpayday + "$");
@@ -128,24 +127,20 @@ public class PayDayUtils {
         }
         if (playerData.hasAnwalt()) {
             int anwalt = Main.random(15, 55);
-            player.sendMessage(" ");
             player.sendMessage("§7 » §9Anwaltskosten§8: §c-" + anwalt + "$");
             anwalt -= plus;
         }
         plus -= rent;
-        player.sendMessage(" ");
         plus = Math.round(plus);
         if (plus >= 0) {
             player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§a+" + (int) plus + "$§8)");
         } else {
             player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c-" + (int) plus + "$§8)");
         }
-        player.sendMessage(" ");
         playerManager.addBankMoney(player, (int) plus, "PayDay");
         playerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
-            player.sendMessage(" ");
             player.sendMessage("§8[§6Bonus§8]§7 Du kannst nun deine Daily-Case beim Bonushändler abholen.");
             Main.getInstance().seasonpass.didQuest(player, 6);
         }
