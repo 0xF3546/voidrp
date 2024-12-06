@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.polo.voidroleplay.database.Database;
 import de.polo.voidroleplay.utils.BetterExecutor;
+import dev.vansen.singleline.SingleLine;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,21 +35,26 @@ public class MySQL implements Database {
         File file = new File("plugins//roleplay//database.yml");
         if (!file.exists()) {
             file.createNewFile();
-            FileConfiguration cfg = YamlConfiguration.loadConfiguration(new File("plugins//roleplay//database.yml"));
-            cfg.set("password", "Datenbank-Passwort");
-            cfg.set("user", "Datenbank-Benutzer");
-            cfg.save(file);
+            SingleLine.from(YamlConfiguration.loadConfiguration(new File("plugins//roleplay//database.yml")))
+                    .execute(cfg -> cfg.set("password", "Datenbank-Passwort"))
+                    .execute(cfg -> cfg.set("user", "Datenbank-Benutzer"))
+                    .async(cfg -> {
+                        try {
+                            cfg.save(file);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
             return;
         }
         FileConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(url);
-        config.setUsername(yaml.getString("user"));
-        config.setPassword(yaml.getString("password"));
-        config.setMaximumPoolSize(10000);
-        config.setIdleTimeout(30000);
-
-        dataSource = new HikariDataSource(config);
+        SingleLine.from(new HikariConfig())
+                .execute(config -> config.setJdbcUrl(url))
+                .execute(config -> config.setUsername(yaml.getString("user")))
+                .execute(config -> config.setPassword(yaml.getString("password")))
+                .execute(config -> config.setMaximumPoolSize(10000))
+                .execute(config -> config.setIdleTimeout(30000))
+                .execute(config -> dataSource = new HikariDataSource(config));
     }
 
     @Override
