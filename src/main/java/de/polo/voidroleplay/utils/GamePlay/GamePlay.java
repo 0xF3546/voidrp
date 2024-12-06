@@ -2,7 +2,7 @@ package de.polo.voidroleplay.utils.GamePlay;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.base.crypto.Crypto;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.ffa.FFA;

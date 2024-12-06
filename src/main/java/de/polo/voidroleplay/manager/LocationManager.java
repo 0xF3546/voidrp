@@ -2,7 +2,7 @@ package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;

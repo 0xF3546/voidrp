@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.SQLException;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Rubbellose {
     private final PlayerManager playerManager;
@@ -28,7 +28,6 @@ public class Rubbellose {
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§6§lRubbellos", true, false);
         playerData.setIntVariable("rubbellose_gemacht", 0);
         playerData.setIntVariable("rubbellose_wins", 0);
-        Random random = new Random();
         int greenBlocksPlaced = 0;
         for (int i = 0; i < 54; i++) {
             if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
@@ -42,7 +41,7 @@ public class Rubbellose {
         }
         for (int i = 0; i < 54; i++) {
             if (inventoryManager.getInventory().getItem(i) == null) {
-                if (greenBlocksPlaced < 4 && random.nextBoolean()) {
+                if (greenBlocksPlaced < 4 && ThreadLocalRandom.current().nextBoolean()) {
                     inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§8")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {

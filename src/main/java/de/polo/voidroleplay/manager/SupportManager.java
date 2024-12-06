@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.dataStorage.Ticket;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.database.impl.MySQL;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

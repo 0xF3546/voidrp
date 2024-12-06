@@ -6,7 +6,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Company;
 import de.polo.voidroleplay.dataStorage.CompanyRole;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.database.impl.MySQL;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 

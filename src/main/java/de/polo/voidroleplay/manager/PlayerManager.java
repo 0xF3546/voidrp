@@ -4,7 +4,7 @@ import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Weapon;
 import de.polo.voidroleplay.dataStorage.*;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.base.housing.House;

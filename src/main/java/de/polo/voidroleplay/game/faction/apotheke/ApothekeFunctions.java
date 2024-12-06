@@ -3,7 +3,7 @@ package de.polo.voidroleplay.game.faction.apotheke;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;

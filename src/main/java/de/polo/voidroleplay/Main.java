@@ -2,7 +2,7 @@ package de.polo.voidroleplay;
 
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.base.extra.Beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
@@ -109,19 +109,6 @@ public final class Main extends JavaPlugin {
         Random random = new Random();
         int index = random.nextInt(characters.length());
         return characters.charAt(index);
-    }
-
-    public static String generateRandomCode(int length) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int randomInt = ThreadLocalRandom.current().nextInt(75 + 1) + 48;
-            if ((randomInt >= 48 && randomInt <= 57) || (randomInt >= 65 && randomInt <= 90) || (randomInt >= 97 && randomInt <= 122)) {
-                sb.append((char) randomInt);
-            } else {
-                i--;
-            }
-        }
-        return sb.toString();
     }
 
     public static void waitSeconds(int seconds, Runnable runnable) {
@@ -263,7 +250,7 @@ public final class Main extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        mySQL.close();
     }
 
     private void loadMarker() {
