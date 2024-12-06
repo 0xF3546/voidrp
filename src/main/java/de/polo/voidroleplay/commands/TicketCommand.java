@@ -4,9 +4,13 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.NaviData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.NavigationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -66,7 +70,7 @@ public class TicketCommand implements CommandExecutor {
                     player.sendMessage(Prefix.support_prefix + "Du hast dich zu " + finalTarget.getName() + " teleportiert.");
                     Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", ChatColor.AQUA);
                 } else {
-                    NaviData nearest = Navigation.getNearestNaviPoint(finalTarget.getLocation());
+                    NaviData nearest = NavigationManager.getNearestNaviPoint(finalTarget.getLocation());
                     finalTarget.teleport(Main.getInstance().locationManager.getLocation(nearest.getLocation()));
                     player.sendMessage(Prefix.support_prefix + "Du hast " + finalTarget.getName() + " zu " + nearest.getName() + "§7 teleportiert.");
                     Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), ChatColor.AQUA);

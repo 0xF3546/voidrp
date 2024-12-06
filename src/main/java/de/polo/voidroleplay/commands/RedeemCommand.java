@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.command.Command;
@@ -54,7 +54,7 @@ public class RedeemCommand implements CommandExecutor {
                                 playerManager.redeemRank(player, "Gold", result.getInt(4), result.getString(5));
                                 break;
                             case "hausslot":
-                                utils.housing.addHausSlot(player);
+                                utils.houseManager.addHausSlot(player);
                                 break;
                             case "expbooster":
                                 playerManager.addEXPBoost(player, result.getInt(4));

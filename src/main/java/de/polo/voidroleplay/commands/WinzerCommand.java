@@ -2,10 +2,10 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,12 +25,12 @@ import java.sql.SQLException;
 public class WinzerCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
-    private final Navigation navigation;
+    private final NavigationManager navigationManager;
 
-    public WinzerCommand(PlayerManager playerManager, LocationManager locationManager, Navigation navigation) {
+    public WinzerCommand(PlayerManager playerManager, LocationManager locationManager, NavigationManager navigationManager) {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
-        this.navigation = navigation;
+        this.navigationManager = navigationManager;
         Main.registerCommand("winzer", this);
     }
 
@@ -181,7 +181,7 @@ public class WinzerCommand implements CommandExecutor {
             PlayerData playerData = playerManager.getPlayerData(player);
             player.sendMessage("§8[§5Winzer§8]§7 Hier ist ein neuer Rebstock.");
             playerData.setVariable("grapevine", targetBlock);
-            navigation.createNaviByCord(player, targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
+            navigationManager.createNaviByCord(player, targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
         } else {
             findGrapevine(player);
         }

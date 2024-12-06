@@ -1,11 +1,10 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

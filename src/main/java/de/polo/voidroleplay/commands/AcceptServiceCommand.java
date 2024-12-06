@@ -3,7 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.StaatUtil;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
@@ -32,7 +32,7 @@ public class AcceptServiceCommand implements CommandExecutor {
                     if (serviceData != null) {
                         if (serviceData.getAcceptedByUuid() == null) {
                             serviceData.setAcceptedByUuid(player.getUniqueId().toString());
-                            utils.navigation.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
+                            utils.navigationManager.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 PlayerData playersData = playerManager.getPlayerData(p);
                                 if (playersData.getFaction() == null) continue;

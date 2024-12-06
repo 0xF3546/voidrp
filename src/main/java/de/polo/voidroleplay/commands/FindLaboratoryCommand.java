@@ -2,8 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -36,7 +36,7 @@ public class FindLaboratoryCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Deine Fraktion hat kein Labor.");
             return false;
         }
-        utils.navigation.createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
+        utils.navigationManager.createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
         player.sendMessage("§aDein Labor wurde markiert.");
         return false;
     }

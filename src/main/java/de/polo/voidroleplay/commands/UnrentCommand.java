@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.game.base.housing.Housing;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -24,12 +24,12 @@ public class UnrentCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (args.length >= 2) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
-            House houseData = Housing.houseDataMap.get(Integer.parseInt(args[1]));
+            House houseData = HouseManager.houseDataMap.get(Integer.parseInt(args[1]));
             if (houseData != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                     if (houseData.getRenter().get(offlinePlayer.getUniqueId().toString()) != null) {
                         houseData.getRenter().remove(offlinePlayer.getUniqueId().toString());
-                        utils.housing.updateRenter(Integer.parseInt(args[1]));
+                        utils.houseManager.updateRenter(Integer.parseInt(args[1]));
                         player.sendMessage("§8[§6Haus§8]§a Du hast den Mietvertrag von " + offlinePlayer.getName() + " beendet.");
                         if (offlinePlayer.isOnline()) {
                             Player player1 = Bukkit.getPlayer(offlinePlayer.getUniqueId());

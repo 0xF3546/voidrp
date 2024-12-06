@@ -2,12 +2,14 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Bomb;
-import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.NavigationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -100,7 +102,7 @@ public class BombeCommand implements CommandExecutor, Listener {
         ItemManager.removeCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
         bomb = new Bomb(Utils.getTime(), block, 15);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), bomb.getColor()));
-        Bukkit.broadcastMessage("§8[§6News§8] §6Achtung! es wurde eine bombe gefunden, in der nähe von: " + Navigation.getNearestNaviPoint(bomb.getBlock().getLocation()).getName().replace("&", "§"));
+        Bukkit.broadcastMessage("§8[§6News§8] §6Achtung! es wurde eine bombe gefunden, in der nähe von: " + NavigationManager.getNearestNaviPoint(bomb.getBlock().getLocation()).getName().replace("&", "§"));
         ACTIVE = true;
         lastBomb = Utils.getTime();
 

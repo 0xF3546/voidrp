@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;

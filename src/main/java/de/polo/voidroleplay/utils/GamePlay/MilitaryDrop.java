@@ -2,6 +2,7 @@ package de.polo.voidroleplay.utils.GamePlay;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.*;
@@ -152,7 +153,7 @@ public class MilitaryDrop implements Listener {
     }
 
     private void equipPlayer(Player player) {
-        Main.getInstance().weapons.giveWeapon(player, de.polo.voidroleplay.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.MILITARY);
+        Main.getInstance().weaponManager.giveWeapon(player, de.polo.voidroleplay.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.MILITARY);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 15, 0, RoleplayItem.SNUFF.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 15, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
@@ -168,13 +169,13 @@ public class MilitaryDrop implements Listener {
         Main.getInstance().utils.deathUtil.revivePlayer(player, false);
         locationManager.useLocation(player, playerData.getFaction());
         for (ItemStack item : player.getInventory().getContents()) {
-            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+            for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.MILITARY) {
-                            Main.getInstance().weapons.removeWeapon(player, item);
+                            Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
                     }
                 }
@@ -402,13 +403,13 @@ public class MilitaryDrop implements Listener {
             if (player == null) continue;
             player.setGameMode(GameMode.SURVIVAL);
             for (ItemStack item : player.getInventory().getContents()) {
-                for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                     if (weaponData.getMaterial() != null && item != null) {
                         if (item.getType() == weaponData.getMaterial()) {
                             ItemMeta meta = item.getItemMeta();
-                            Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                            Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                             if (weapon.getWeaponType() == WeaponType.MILITARY) {
-                                Main.getInstance().weapons.removeWeapon(player, item);
+                                Main.getInstance().weaponManager.removeWeapon(player, item);
                             }
                         }
                     }

@@ -4,12 +4,12 @@ import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.Weapon;
-import de.polo.voidroleplay.utils.playerUtils.Shop;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -271,7 +271,7 @@ public class ShopCommand implements CommandExecutor {
                     try {
                         Weapon w = Weapon.valueOf(info.toUpperCase());
                         String weapon = displayName.toString().replace("&", "").replace("6", "");
-                        Main.getInstance().weapons.giveWeaponToCabinet(player, w, 0, 250);
+                        Main.getInstance().weaponManager.giveWeaponToCabinet(player, w, 0, 250);
                         player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                         playerManager.removeMoney(player, price, "Kauf der Waffe: " + weapon);
@@ -287,7 +287,7 @@ public class ShopCommand implements CommandExecutor {
                             player.sendMessage(Prefix.ERROR + "Du hast diese Waffe nicht im Waffenschrank.");
                             return;
                         }
-                        Main.getInstance().weapons.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
+                        Main.getInstance().weaponManager.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
                         player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                     } catch (Exception e) {
                         player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten.");

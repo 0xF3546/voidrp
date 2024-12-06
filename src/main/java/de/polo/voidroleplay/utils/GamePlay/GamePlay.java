@@ -12,9 +12,10 @@ import de.polo.voidroleplay.game.faction.houseban.Houseban;
 import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
 import de.polo.voidroleplay.game.faction.staat.GOVRaid;
 import de.polo.voidroleplay.game.faction.staat.StaatsbankRob;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -36,9 +37,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -748,14 +747,14 @@ public class GamePlay implements Listener {
                 }
                 break;
             case "ammo":
-                for (WeaponData weapon : Weapons.weaponDataMap.values()) {
+                for (WeaponData weapon : WeaponManager.weaponDataMap.values()) {
                     if (weapon.getName().equalsIgnoreCase(info)) {
                         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.MAGAZIN.getMaterial(), amount, 0, "§7Magazin", "§8 ➥ " + weapon.getName()));
                     }
                 }
                 break;
             case "gun":
-                for (WeaponData weapon : Weapons.weaponDataMap.values()) {
+                for (WeaponData weapon : WeaponManager.weaponDataMap.values()) {
                     if (weapon.getName().equalsIgnoreCase(info)) {
                         player.getInventory().addItem(ItemManager.createItem(weapon.getMaterial(), amount, 0, "§7Gepackte Waffe", "§8 ➥ " + weapon.getName()));
                     }

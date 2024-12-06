@@ -2,8 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.AdminManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

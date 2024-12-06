@@ -2,13 +2,12 @@ package de.polo.voidroleplay.game.base.vehicle;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.LocationManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.playerUtils.Scoreboard;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
 import lombok.SneakyThrows;
@@ -515,7 +514,7 @@ public class Vehicles implements Listener, CommandExecutor {
                         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§c" + data.getType())) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
-                                Main.getInstance().utils.navigation.createNaviByCord(player, data.getX(), data.getY(), data.getZ());
+                                Main.getInstance().utils.navigationManager.createNaviByCord(player, data.getX(), data.getY(), data.getZ());
                                 player.sendMessage("§aDein Fahrzeug wurde markiert.");
                             }
                         });

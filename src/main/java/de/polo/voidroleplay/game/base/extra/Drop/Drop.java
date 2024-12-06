@@ -4,8 +4,8 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.NaviData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.Navigation;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.*;
@@ -62,14 +62,14 @@ public class Drop {
     public Drop(Location location) {
         lastBlock = location.getBlock();
         this.location = location;
-        NaviData naviData = Navigation.getNearestNaviPoint(location);
+        NaviData naviData = NavigationManager.getNearestNaviPoint(location);
         Location naviLocation = Main.getInstance().locationManager.getLocation(naviData.getLocation());
         if (location.distance(naviLocation) > 100) {
             Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste verloren. Informanten haben die Koordinaten X: " + location.getX() + " Y: " + location.getY() + " Z: " + location.getZ() + " übermittelt.");
         } else {
             RegisteredBlock block = Main.getInstance().blockManager.getNearestBlockOfType(location, "house");
             if (block.getLocation().distance(location) < 30) {
-                House house = Main.getInstance().housing.getHouse(Integer.parseInt(block.getInfoValue()));
+                House house = Main.getInstance().houseManager.getHouse(Integer.parseInt(block.getInfoValue()));
                 Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der Nähe von Haus " + house.getNumber() + " verloren.");
             } else {
                 Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste in der Nähe von " + naviData.getName().replace("&", "§") + " §cverloren.");

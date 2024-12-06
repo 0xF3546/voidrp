@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.utils.enums;
 
-import de.polo.voidroleplay.utils.PlayerPetManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Entity;

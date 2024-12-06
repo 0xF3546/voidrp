@@ -4,8 +4,8 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.utils.BlockManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.BlockManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -55,7 +55,7 @@ public class FixBlockCommand implements CommandExecutor {
             }
         }
         if (registeredBlock.getInfo().equalsIgnoreCase("house")) {
-            House house = Main.getInstance().housing.getHouse(Integer.parseInt(registeredBlock.getInfoValue()));
+            House house = Main.getInstance().houseManager.getHouse(Integer.parseInt(registeredBlock.getInfoValue()));
             if (house.getOwner() == null) {
                 TileState state = (TileState) block.getState();
                 if (state instanceof Sign) {

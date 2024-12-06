@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;

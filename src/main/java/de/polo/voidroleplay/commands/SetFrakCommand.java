@@ -2,9 +2,9 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.utils.AdminManager;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

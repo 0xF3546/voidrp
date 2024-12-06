@@ -2,16 +2,14 @@ package de.polo.voidroleplay.utils.GamePlay;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import de.polo.voidroleplay.dataStorage.BlacklistData;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.ServerManager;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;

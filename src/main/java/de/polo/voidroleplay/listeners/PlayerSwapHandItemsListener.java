@@ -2,18 +2,21 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.*;
-import de.polo.voidroleplay.dataStorage.Weapon;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -26,7 +29,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.BlockIterator;
 
@@ -191,7 +193,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + targetplayerData.getGender().getTranslation());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                 player.sendMessage(" ");
-                player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(targetplayerData));
+                player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(targetplayerData));
             }
         });
         int bargeldAmount = targetplayerData.getBargeld() / 4;
@@ -333,7 +335,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
-                    Main.getInstance().utils.navigation.createNaviByCord(player, (int) dealer.getLocation().getX(), (int) dealer.getLocation().getY(), (int) dealer.getLocation().getZ());
+                    Main.getInstance().utils.navigationManager.createNaviByCord(player, (int) dealer.getLocation().getX(), (int) dealer.getLocation().getY(), (int) dealer.getLocation().getZ());
                 }
             });
             index++;
@@ -663,7 +665,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                     return;
                 }
                 playerManager.removeCoins(player, 6000);
-                utils.housing.addHausSlot(player);
+                utils.houseManager.addHausSlot(player);
                 player.closeInventory();
                 player.sendMessage("§8[§eCoin-Shop§8]§a Du hast einen Hausslot eingelöst!");
                 break;

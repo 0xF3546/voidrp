@@ -4,6 +4,10 @@ import de.polo.voidroleplay.dataStorage.Corpse;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
+import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Bukkit;
@@ -119,7 +123,7 @@ public class DeathUtils {
             return;
         }
         if (effects) {
-            Main.getInstance().weapons.weaponUsages.put(player.getUniqueId(), Utils.getTime().plusMinutes(3));
+            Main.getInstance().weaponManager.weaponUsages.put(player.getUniqueId(), Utils.getTime().plusMinutes(3));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 *6, 0, true, false));
@@ -221,7 +225,7 @@ public class DeathUtils {
         }
         corpse.getSkull().remove();
         playerData.setVariable("job::corpse::pickedup", true);
-        Main.getInstance().utils.navigation.createNaviByLocation(player, "undertaker");
+        Main.getInstance().utils.navigationManager.createNaviByLocation(player, "undertaker");
         player.sendMessage(Prefix.MAIN + "Du hast eine Leiche aufgesammelt, begib dich nun zum Bestatter.");
     }
 

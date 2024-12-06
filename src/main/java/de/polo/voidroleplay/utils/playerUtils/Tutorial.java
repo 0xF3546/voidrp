@@ -3,24 +3,21 @@ package de.polo.voidroleplay.utils.playerUtils;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
-import de.polo.voidroleplay.utils.Navigation;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.NavigationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.sql.SQLException;
-import java.sql.Statement;
-
 public class Tutorial implements Listener {
     private final PlayerManager playerManager;
-    private final Navigation navigation;
+    private final NavigationManager navigationManager;
 
-    public Tutorial(PlayerManager playerManager, Navigation navigation) {
+    public Tutorial(PlayerManager playerManager, NavigationManager navigationManager) {
         this.playerManager = playerManager;
-        this.navigation = navigation;
+        this.navigationManager = navigationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -37,7 +34,7 @@ public class Tutorial implements Listener {
         playerTutorial.setStage(1);
         Main.waitSeconds(4, () -> {
             player.sendMessage("§8[§9Tutorial§8]§7 Als erstes musst du dir einen Personalausweis erstellen. Gehe dazu in die Stadthalle, folge dazu einfach der Route!");
-            navigation.createNaviByCord(player, 133, 72, 157);
+            navigationManager.createNaviByCord(player, 133, 72, 157);
         });
     }
 
@@ -74,7 +71,7 @@ public class Tutorial implements Listener {
                 Main.waitSeconds(3, () -> {
                     player.sendMessage("§b   Info:§f Wenn du nun Shift + F drückst an der Stadthalle (Sneak und Item-Wechsel), öffnet sich ein Lager in welchem du Wertgegenstände lagern kannst.");
                     Main.waitSeconds(3, () -> {
-                        navigation.createNaviByLocation(player, "Shop-1");
+                        navigationManager.createNaviByLocation(player, "Shop-1");
                         player.sendMessage("§8[§9Tutorial§8]§7 Begib dich nun zum Shop. (/navi [Shop] Stadthalle)");
                     });
                 });

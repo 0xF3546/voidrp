@@ -5,9 +5,13 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponType;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import org.bukkit.Bukkit;
@@ -205,7 +209,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     }
 
     public void equipPlayer(Player player) {
-        Main.getInstance().weapons.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.GANGWAR, 500);
+        Main.getInstance().weaponManager.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.GANGWAR, 500);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 5, 0, RoleplayItem.SNUFF.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 5, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(Material.COOKED_BEEF, 16, 0, "§6Nahrung"));
@@ -225,9 +229,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     if (weaponData.getMaterial() != null && item != null) {
                         if (item.getType() == weaponData.getMaterial()) {
                             ItemMeta meta = item.getItemMeta();
-                            de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                            de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                             if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                                Main.getInstance().weapons.removeWeapon(player, item);
+                                Main.getInstance().weaponManager.removeWeapon(player, item);
                             }
                         }
                     }
@@ -254,9 +258,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                            Main.getInstance().weapons.removeWeapon(player, item);
+                            Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
                     }
                 }

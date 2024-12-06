@@ -2,9 +2,8 @@ package de.polo.voidroleplay.utils.GamePlay;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.WeaponType;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Weapon;
@@ -93,7 +92,7 @@ public class Case {
                     Main.getInstance().playerManager.addCoins(player, 100);
                     break;
                 case DIAMOND_HORSE_ARMOR:
-                    Main.getInstance().weapons.giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 25);
+                    Main.getInstance().weaponManager.giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 25);
                     break;
                 case GOLD_INGOT:
                     if (playerData.getPermlevel() >= 40) {

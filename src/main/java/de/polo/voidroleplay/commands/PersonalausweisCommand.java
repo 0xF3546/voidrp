@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
@@ -15,10 +15,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
@@ -51,7 +47,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation());
                             targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                             targetplayer.sendMessage(" ");
-                            targetplayer.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));
+                            targetplayer.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(playerData));
                             if (!playerData.getRelationShip().isEmpty()) {
                                 for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
                                 {
@@ -88,7 +84,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation());
                 player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
                 player.sendMessage(" ");
-                player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.housing.getHouseAccessAsString(playerData));
+                player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(playerData));
                 if (!playerData.getRelationShip().isEmpty()) {
                     for (Map.Entry<String, String> entry: playerData.getRelationShip().entrySet())
                     {

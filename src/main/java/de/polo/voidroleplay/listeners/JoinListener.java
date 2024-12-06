@@ -2,30 +2,23 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
-import de.polo.voidroleplay.game.faction.plants.Plant;
+import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.Interfaces.PlayerJoin;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
 import java.util.UUID;
 
 public class JoinListener implements Listener {

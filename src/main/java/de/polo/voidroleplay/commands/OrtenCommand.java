@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -69,7 +69,7 @@ public class OrtenCommand implements CommandExecutor {
                     cancel();
                     return;
                 }
-                utils.navigation.createNaviByCord(player, (int) targetplayer.getLocation().getX(), (int) targetplayer.getLocation().getY(), (int) targetplayer.getLocation().getZ());
+                utils.navigationManager.createNaviByCord(player, (int) targetplayer.getLocation().getX(), (int) targetplayer.getLocation().getY(), (int) targetplayer.getLocation().getZ());
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
         return false;

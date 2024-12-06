@@ -5,8 +5,10 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
@@ -976,7 +978,7 @@ public class PhoneUtils implements Listener {
     private void openFarmManager(Player player) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eFarmen");
         int i = 0;
-        for (House house : Main.getInstance().housing.getHouses(player)) {
+        for (House house : Main.getInstance().houseManager.getHouses(player)) {
             if (!house.isServerRoom()) return;
             for (Miner miner : house.getActiveMiner()) {
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Miner #" + miner.getId(), "§8 ➥ §7Haus " + house.getNumber())) {

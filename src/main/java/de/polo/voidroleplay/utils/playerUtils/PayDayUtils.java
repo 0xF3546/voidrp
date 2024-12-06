@@ -7,16 +7,16 @@ import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.VehicleData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.game.base.housing.Housing;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 
 public class PayDayUtils {
@@ -69,7 +69,7 @@ public class PayDayUtils {
             }
         }
         int rent = 0;
-        for (House houseData : Housing.houseDataMap.values()) {
+        for (House houseData : HouseManager.houseDataMap.values()) {
             if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
                 rent += houseData.getRenter().get(player.getUniqueId().toString());
                 if (rent > playerData.getBank()) {

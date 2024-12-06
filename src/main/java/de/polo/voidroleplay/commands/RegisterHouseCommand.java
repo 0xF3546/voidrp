@@ -3,7 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +36,7 @@ public class RegisterHouseCommand implements CommandExecutor {
                         house.setId(result.getInt(1));
                         house.setNumber(Integer.parseInt(args[0]));
                         house.setPrice(Integer.parseInt(args[1]));
-                        Main.getInstance().housing.addHouse(house);
+                        Main.getInstance().houseManager.addHouse(house);
                     }
                     statement.close();
                     connection.close();

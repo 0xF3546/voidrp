@@ -4,11 +4,10 @@ import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
-import de.polo.voidroleplay.utils.BlockManager;
-import de.polo.voidroleplay.game.base.housing.Housing;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.BlockManager;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -16,8 +15,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -54,11 +51,11 @@ public class BuyHouseCommand implements CommandExecutor {
                             if (!registeredBlock.getInfo().equalsIgnoreCase("house")) continue;
 
                             if (Integer.parseInt(args[0]) == Integer.parseInt(registeredBlock.getInfoValue())) {
-                                House houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
+                                House houseData = HouseManager.houseDataMap.get(Integer.parseInt(args[0]));
                                 if (houseData.getOwner() == null) {
                                     if (playerData.getBargeld() >= houseData.getPrice()) {
                                         int houes = 0;
-                                        for (House houseData1 : Housing.houseDataMap.values()) {
+                                        for (House houseData1 : HouseManager.houseDataMap.values()) {
                                             if (houseData1.getOwner() != null) {
                                                 if (houseData1.getOwner().equals(player.getUniqueId().toString())) {
                                                     houes++;

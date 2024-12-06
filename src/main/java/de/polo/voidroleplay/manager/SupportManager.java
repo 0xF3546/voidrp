@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.database.MySQL;

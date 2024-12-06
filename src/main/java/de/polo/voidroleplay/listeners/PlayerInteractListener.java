@@ -5,14 +5,14 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.utils.GamePlay.Case;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -21,10 +21,7 @@ import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
 import org.bukkit.*;
 import org.bukkit.block.*;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Openable;
-import org.bukkit.block.data.type.Door;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -93,7 +90,7 @@ public class PlayerInteractListener implements Listener {
             if (event.getClickedBlock() != null) {
                 if (event.getClickedBlock().getType() == Material.OAK_STAIRS || event.getClickedBlock().getType() == Material.ACACIA_STAIRS || event.getClickedBlock().getType() == Material.SPRUCE_STAIRS || event.getClickedBlock().getType() == Material.BIRCH_STAIRS || event.getClickedBlock().getType() == Material.JUNGLE_STAIRS || event.getClickedBlock().getType() == Material.DARK_OAK_STAIRS) {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) return;
-                    for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                    for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                         if (player.getInventory().getItemInMainHand().getType() == weaponData.getMaterial()) {
                             return;
                         }
@@ -228,7 +225,7 @@ public class PlayerInteractListener implements Listener {
                                 if (block.getType().toString().contains("SIGN")) {
                                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(block.getLocation());
                                     if (registeredBlock.getInfoValue() == null) continue;
-                                    if (!playerData.isAduty() && !utils.housing.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
+                                    if (!playerData.isAduty() && !utils.houseManager.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
                                         event.setCancelled(true);
                                     }
                                 }
@@ -321,7 +318,7 @@ public class PlayerInteractListener implements Listener {
                         }
                         RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                         if (block != null && block.getInfo() != null && Objects.equals(block.getInfo(), "house")) {
-                            House houseData = utils.housing.getHouse(Integer.parseInt(block.getInfoValue()));
+                            House houseData = utils.houseManager.getHouse(Integer.parseInt(block.getInfoValue()));
                             playerData.setIntVariable("current_house", houseData.getNumber());
                             InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
                             if (houseData.getOwner() != null) {
@@ -337,7 +334,7 @@ public class PlayerInteractListener implements Listener {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             // House houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
-                                            if (utils.housing.resetHouse(player, houseData.getNumber())) {
+                                            if (utils.houseManager.resetHouse(player, houseData.getNumber())) {
                                                 playerData.addMoney((int) (houseData.getPrice() * 0.8), "Haus-Verkauf (" + houseData.getNumber() + ")");
                                                 player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
                                                 player.closeInventory();
@@ -362,7 +359,7 @@ public class PlayerInteractListener implements Listener {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             if (!houseData.isServerRoom()) return;
-                                            Main.getInstance().housing.openHouseServerRoom(player, houseData);
+                                            Main.getInstance().houseManager.openHouseServerRoom(player, houseData);
                                         }
                                     });
                                 } else {

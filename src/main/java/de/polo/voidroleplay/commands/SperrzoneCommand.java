@@ -3,6 +3,9 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.NaviData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.NavigationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,7 +41,7 @@ public class SperrzoneCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        NaviData naviData = Navigation.getNearestNaviPoint(player.getLocation());
+        NaviData naviData = NavigationManager.getNearestNaviPoint(player.getLocation());
         Location location = locationManager.getLocation(naviData.getLocation());
         for (String point : sperrzonen) {
             if (args.length >= 1) {

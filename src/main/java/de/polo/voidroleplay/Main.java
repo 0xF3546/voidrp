@@ -4,19 +4,19 @@ import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.game.base.extra.Beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
-import de.polo.voidroleplay.game.base.housing.Housing;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.laboratory.Laboratory;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.utils.GamePlay.GamePlay;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryApiRegister;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryApiRegister;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
-import de.polo.voidroleplay.utils.playerUtils.Shop;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,11 +64,11 @@ public final class Main extends JavaPlugin {
     public VertragUtil vertragUtil;
     public SupportManager supportManager;
     public ComputerUtils computerUtils;
-    public Housing housing;
+    public HouseManager houseManager;
     public BusinessManager businessManager;
     public Vehicles vehicles;
     public Streetwar streetwar;
-    public Weapons weapons;
+    public WeaponManager weaponManager;
     public BlockManager blockManager;
     public GamePlay gamePlay;
     public Laboratory laboratory;
@@ -105,20 +105,20 @@ public final class Main extends JavaPlugin {
         adminManager = new AdminManager(playerManager, scoreboardAPI);
         factionManager = new FactionManager(playerManager);
         blockManager = new BlockManager(mySQL);
-        housing = new Housing(playerManager, blockManager, locationManager);
-        utils = new Utils(playerManager, adminManager, factionManager, locationManager, housing, new Navigation(playerManager), companyManager);
+        houseManager = new HouseManager(playerManager, blockManager, locationManager);
+        utils = new Utils(playerManager, adminManager, factionManager, locationManager, houseManager, new NavigationManager(playerManager), companyManager);
         vehicles = new Vehicles(playerManager ,locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
         computerUtils = new ComputerUtils(playerManager, factionManager);
         businessManager = new BusinessManager(playerManager);
         streetwar = new Streetwar(playerManager, factionManager, utils);
-        weapons = new Weapons(utils, playerManager);
+        weaponManager = new WeaponManager(utils, playerManager);
         isOnline = true;
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
         npc = new NPC(playerManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager, npc);
-        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weapons, companyManager);
+        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
         new InventoryApiRegister(this);
@@ -147,9 +147,6 @@ public final class Main extends JavaPlugin {
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM money_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM phone_messages WHERE datum < DATE_SUB(NOW(), INTERVAL 14 DAY)");
-
-            Shop.loadShopItems();
-
             //teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -170,7 +167,7 @@ public final class Main extends JavaPlugin {
         new InventoryClickListener(playerManager, factionManager, utils, locationManager);
         new HouseLockListener(playerManager, utils);
         new InventoryCloseListener(playerManager);
-        new ItemDropListener(weapons, playerManager);
+        new ItemDropListener(weaponManager, playerManager);
         new PlayerPickUpArrowListener();
         new PlayerVoteListener(playerManager, adminManager);
         new RespawnListener(playerManager);
@@ -290,9 +287,9 @@ public final class Main extends JavaPlugin {
         private Vehicles vehicles;
         private GamePlay gamePlay;
         private BusinessManager businessManager;
-        private Weapons weapons;
+        private WeaponManager weaponManager;
         private CompanyManager companyManager;
-        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, Weapons weapons, CompanyManager companyManager) {
+        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
             this.main = main;
             this.playerManager = playerManager;
             this.adminManager = adminManager;
@@ -301,7 +298,7 @@ public final class Main extends JavaPlugin {
             this.vehicles = vehicles;
             this.gamePlay = gamePlay;
             this.businessManager = businessManager;
-            this.weapons = weapons;
+            this.weaponManager = weaponManager;
             this.companyManager = companyManager;
             Init();
         }
@@ -358,7 +355,7 @@ public final class Main extends JavaPlugin {
         public UnbanCommand unbanCommand;
         public GetVehCommand getVehCommand;
         public GoToVehCommand goToVehCommand;
-        public Navigation navigation;
+        public NavigationManager navigationManager;
         public EinreiseCommand einreiseCommand;
         public RegisterHouseCommand registerHouseCommand;
         public ReinforcementCommand reinforcementCommand;
@@ -571,14 +568,14 @@ public final class Main extends JavaPlugin {
             unbanCommand = new UnbanCommand(playerManager, adminManager);
             getVehCommand = new GetVehCommand(playerManager);
             goToVehCommand = new GoToVehCommand(playerManager);
-            navigation = new Navigation(playerManager);
+            navigationManager = new NavigationManager(playerManager);
             einreiseCommand = new EinreiseCommand(playerManager, locationManager);
             registerHouseCommand = new RegisterHouseCommand(playerManager);
             reinforcementCommand = new ReinforcementCommand(playerManager, factionManager);
             buyHouseCommand = new BuyHouseCommand(playerManager, blockManager);
             mietersCommand = new MietersCommand(playerManager, utils);
             unrentCommand = new UnrentCommand(utils);
-            friskCommand = new FriskCommand(playerManager, weapons, factionManager);
+            friskCommand = new FriskCommand(playerManager, weaponManager, factionManager);
             blacklistCommand = new BlacklistCommand(playerManager, factionManager);
             redeemCommand = new RedeemCommand(playerManager, utils);
             whistleCommand = new WhistleCommand(utils, playerManager);
@@ -638,7 +635,7 @@ public final class Main extends JavaPlugin {
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
             businessCommand = new BusinessCommand(playerManager, businessManager);
-            equipCommand = new EquipCommand(playerManager, factionManager, locationManager, weapons);
+            equipCommand = new EquipCommand(playerManager, factionManager, locationManager, weaponManager);
             tsLinkCommand = new TSLinkCommand(playerManager);
             tsUnlinkCommand = new TSUnlinkCommand(playerManager);
             //teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
@@ -650,8 +647,8 @@ public final class Main extends JavaPlugin {
             ausziehenCommand = new AusziehenCommand(utils);
             companyCommand = new CompanyCommand(playerManager, companyManager, locationManager);
             dailyBonusCommand = new DailyBonusCommand(playerManager, locationManager);
-            winzerCommand = new WinzerCommand(playerManager, locationManager, navigation);
-            rebstockCommand = new RebstockCommand(playerManager, navigation);
+            winzerCommand = new WinzerCommand(playerManager, locationManager, navigationManager);
+            rebstockCommand = new RebstockCommand(playerManager, navigationManager);
             muschelSammlerCommand = new MuschelSammlerCommand(playerManager, locationManager);
             gasStationCommand = new GasStationCommand(playerManager, locationManager, companyManager);
             resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager, adminManager);

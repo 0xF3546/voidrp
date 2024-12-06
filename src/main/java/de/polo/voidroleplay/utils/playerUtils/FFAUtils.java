@@ -2,7 +2,10 @@ package de.polo.voidroleplay.utils.playerUtils;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.*;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -115,7 +118,7 @@ public class FFAUtils implements CommandExecutor, Listener {
             lobbyData.setPlayers(lobbyData.getPlayers() + 1);
             player.sendMessage("§8[§6FFA§8]§e Du betrittst: " + lobbyData.getDisplayname().replace("&", "§"));
             player.sendMessage("§8 ➥ §7Nutze §8/§effa leave §7um die Arena zu verlassen.");
-            Main.getInstance().weapons.giveWeapon(player, de.polo.voidroleplay.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.FFA);
+            Main.getInstance().weaponManager.giveWeapon(player, de.polo.voidroleplay.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.FFA);
             useSpawn(player, id);
         } else {
             player.sendMessage("§8[§6FFA§8]§c Diese Lobby ist voll!");
@@ -130,13 +133,13 @@ public class FFAUtils implements CommandExecutor, Listener {
         playerData.setIntVariable("current_lobby", null);
         playerData.setVariable("current_lobby", null);
         for (ItemStack item : player.getInventory().getContents()) {
-            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+            for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.FFA) {
-                            Main.getInstance().weapons.removeWeapon(player, item);
+                            Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
                     }
                 }

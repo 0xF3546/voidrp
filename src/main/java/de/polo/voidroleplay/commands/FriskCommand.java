@@ -3,9 +3,13 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -21,12 +25,12 @@ import java.util.List;
 
 public class FriskCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final Weapons weapons;
+    private final WeaponManager weaponManager;
     private final FactionManager factionManager;
 
-    public FriskCommand(PlayerManager playerManager, Weapons weapons, FactionManager factionManager) {
+    public FriskCommand(PlayerManager playerManager, WeaponManager weaponManager, FactionManager factionManager) {
         this.playerManager = playerManager;
-        this.weapons = weapons;
+        this.weaponManager = weaponManager;
         this.factionManager = factionManager;
 
         Main.registerCommand("frisk", this);
@@ -71,7 +75,7 @@ public class FriskCommand implements CommandExecutor {
         List<ItemStack> items = new ArrayList<>();
         for (ItemStack stack : targetplayer.getInventory().getContents()) {
             if (stack == null) continue;
-            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+            for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                 if (weaponData.getMaterial() == null) continue;
                 if (weaponData.getMaterial().equals(stack.getType())) {
                     items.add(stack);
@@ -98,9 +102,9 @@ public class FriskCommand implements CommandExecutor {
                     targetplayer.sendMessage("§8 » §7" + factionManager.getTitle(player) + " "  + player.getName() + " hat dir " + stack.getItemMeta().getDisplayName() + "§7 konfisziert.");
                     player.sendMessage("§8 » §7Du hast " + targetplayer.getName() + " " + stack.getItemMeta().getDisplayName() + "§7 konfisziert.");
                     boolean isWeapon = false;
-                    for (WeaponData data : Weapons.weaponDataMap.values()) {
+                    for (WeaponData data : WeaponManager.weaponDataMap.values()) {
                         if (stack.getType().equals(data.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(data.getName())) {
-                            weapons.removeWeapon(player, stack);
+                            weaponManager.removeWeapon(player, stack);
                             isWeapon = true;
                         }
                     }

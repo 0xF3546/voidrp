@@ -3,7 +3,7 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.PlayerIllness;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.enums.IllnessType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 
 public class ConsumeListener implements Listener {
 

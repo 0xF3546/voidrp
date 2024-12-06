@@ -1,12 +1,11 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.base.CookTimer;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.command.Command;
@@ -38,7 +37,7 @@ public class CookCommand implements CommandExecutor, Listener {
             player.sendMessage(Prefix.MAIN + "Du kochst noch " + cookTimer.getMinutes() + " Minuten.");
             return false;
         }
-        House house = Main.getInstance().housing.getNearestHouse(player.getLocation(), 5);
+        House house = Main.getInstance().houseManager.getNearestHouse(player.getLocation(), 5);
         if (house == null) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Hauses.");
             return false;
@@ -47,7 +46,7 @@ public class CookCommand implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Wohnwagens!");
             return false;
         }
-        if (!Main.getInstance().housing.canPlayerInteract(player, house.getNumber())) {
+        if (!Main.getInstance().houseManager.canPlayerInteract(player, house.getNumber())) {
             player.sendMessage(Prefix.ERROR + "Du hast kein Zugriff auf dieses Haus.");
             return false;
         }

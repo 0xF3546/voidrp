@@ -3,13 +3,13 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.WeaponData;
-import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.Weapons;
+import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -82,7 +82,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                                 playerData.setVariable("wantsToCuff", null);
                                 ItemManager.removeCustomItem(player, RoleplayItem.CUFF, 1);
                             } else {
-                                for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+                                for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                                     if (player.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
                                         return;
                                     }

@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.utils.enums;
 
-import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.manager.ItemManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;

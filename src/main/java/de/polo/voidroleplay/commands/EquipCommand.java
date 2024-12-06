@@ -3,11 +3,11 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.dataStorage.WeaponType;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.enums.Weapon;
@@ -28,13 +28,13 @@ public class EquipCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
-    private final Weapons weapons;
+    private final WeaponManager weaponManager;
 
-    public EquipCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager, Weapons weapons) {
+    public EquipCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager, WeaponManager weaponManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.locationManager = locationManager;
-        this.weapons = weapons;
+        this.weaponManager = weaponManager;
         Main.registerCommand("equip", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
@@ -155,7 +155,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
                     factionData.addBankMoney(priceForFaction, "Waffenkauf " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "Waffenkauf");
-                    weapons.giveWeapon(player, Weapon.SNIPER, WeaponType.NORMAL, 0, 0);
+                    weaponManager.giveWeapon(player, Weapon.SNIPER, WeaponType.NORMAL, 0, 0);
                 }
             });
         }
@@ -183,13 +183,13 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(Main.error + "Du hast nicht genug Geld.");
                         return;
                     }
-                    Weapon weaponData = weapons.getWeaponData(player.getEquipment().getItemInMainHand().getType());
+                    Weapon weaponData = weaponManager.getWeaponData(player.getEquipment().getItemInMainHand().getType());
                     if (weaponData == null) {
                         player.sendMessage(Main.error + "Halte die Waffe in der Hand.");
                         return;
                     }
-                    de.polo.voidroleplay.dataStorage.Weapon weapon = weapons.getWeaponFromItemStack(player.getEquipment().getItemInMainHand());
-                    weapons.giveAmmo(player, weapon, weaponData.getMaxAmmo());
+                    de.polo.voidroleplay.dataStorage.Weapon weapon = weaponManager.getWeaponFromItemStack(player.getEquipment().getItemInMainHand());
+                    weaponManager.giveAmmo(player, weapon, weaponData.getMaxAmmo());
                     factionData.removeFactionMoney(priceForFaction, "Waffenkauf " + player.getName());
                     factionData.addBankMoney(priceForFaction, "Munitionskauf " + player.getName());
                     playerData.removeBankMoney(priceForFaction, "Munitionskauf");

@@ -1,14 +1,13 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
-import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
-import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;

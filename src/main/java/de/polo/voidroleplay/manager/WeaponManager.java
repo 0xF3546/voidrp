@@ -1,12 +1,12 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import lombok.SneakyThrows;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +20,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -31,7 +30,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Weapons implements Listener {
+public class WeaponManager implements Listener {
     public static final Map<Material, WeaponData> weaponDataMap = new HashMap<>();
 
     private final HashMap<Integer, Weapon> weaponList = new HashMap<>();
@@ -41,7 +40,7 @@ public class Weapons implements Listener {
     public HashMap<UUID, LocalDateTime> weaponUsages = new HashMap<>();
     HashMap<Arrow, LocalDateTime> arrows = new HashMap<>();
 
-    public Weapons(Utils utils, PlayerManager playerManager) {
+    public WeaponManager(Utils utils, PlayerManager playerManager) {
         this.utils = utils;
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());

@@ -5,10 +5,13 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.Ticket;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
+import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
 import de.polo.voidroleplay.utils.Interfaces.PlayerQuit;
 import de.polo.voidroleplay.utils.enums.PlayerPed;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import org.bukkit.Bukkit;
@@ -22,7 +25,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class
 QuitListener implements Listener {

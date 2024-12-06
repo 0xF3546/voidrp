@@ -1,7 +1,6 @@
 package de.polo.voidroleplay.dataStorage;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.Weapons;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import lombok.Getter;
 import lombok.Setter;

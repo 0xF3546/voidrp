@@ -3,10 +3,9 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.game.faction.alliance.Alliance;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -71,7 +70,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         if (args.length >= 3) {
                             Location loc = new Location(player.getWorld(), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                             String type = args[5];
-                            Main.getInstance().utils.navigation.createNaviByCord(player, (int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
+                            Main.getInstance().utils.navigationManager.createNaviByCord(player, (int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
                             if (!type.equals("dep")) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
                                     PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());

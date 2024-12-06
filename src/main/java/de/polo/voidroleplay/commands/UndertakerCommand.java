@@ -3,9 +3,12 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.Corpse;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -91,7 +94,7 @@ public class UndertakerCommand implements CommandExecutor {
     }
 
     private void showRoute(Player player, Corpse corpse) {
-        Main.getInstance().utils.navigation.createNaviByCord(player, (int) corpse.getSkull().getLocation().getX(), (int) corpse.getSkull().getLocation().getY(), (int) corpse.getSkull().getLocation().getZ());
+        Main.getInstance().utils.navigationManager.createNaviByCord(player, (int) corpse.getSkull().getLocation().getX(), (int) corpse.getSkull().getLocation().getY(), (int) corpse.getSkull().getLocation().getZ());
     }
 
     private void handlePayout(Player player) {

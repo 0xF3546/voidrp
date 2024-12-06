@@ -1,10 +1,11 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.playerUtils.SoundManager;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import org.bukkit.*;
@@ -25,10 +26,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Navigation implements CommandExecutor, TabCompleter, Listener {
+public class NavigationManager implements CommandExecutor, TabCompleter, Listener {
     private final PlayerManager playerManager;
 
-    public Navigation(PlayerManager playerManager) {
+    public NavigationManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         Main.registerCommand("navi", this);
@@ -177,7 +178,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                                         public void onClick(InventoryClickEvent event) {
                                             player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + newNavi.getName().replace("&", "§") + "§7 gesetzt.");
                                             LocationData locationData = LocationManager.locationDataMap.get(newNavi.getLocation());
-                                            Main.getInstance().utils.navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                                            Main.getInstance().utils.navigationManager.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                                             player.closeInventory();
                                         }
                                     });
@@ -197,7 +198,7 @@ public class Navigation implements CommandExecutor, TabCompleter, Listener {
                             public void onClick(InventoryClickEvent event) {
                                 player.sendMessage("§8[§6GPS§8]§7 Du hast eine Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
                                 LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
-                                Main.getInstance().utils.navigation.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                                Main.getInstance().utils.navigationManager.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                                 player.closeInventory();
                             }
                         });

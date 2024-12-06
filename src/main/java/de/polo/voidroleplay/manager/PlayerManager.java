@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.dataStorage.*;
@@ -8,13 +8,16 @@ import de.polo.voidroleplay.database.MySQL;
 import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.game.base.housing.Housing;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
-import de.polo.voidroleplay.game.faction.laboratory.PlayerLaboratory;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.utils.GlobalStats;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.TeamSpeak;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.game.events.HourTickEvent;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
@@ -47,7 +50,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class PlayerManager implements Listener {
@@ -140,7 +142,7 @@ public class PlayerManager implements Listener {
                 if (result.getString("player_name") != null) {
                     if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
                         List<Integer> houses = new ArrayList<>();
-                        for (House house : Housing.houseDataMap.values()) {
+                        for (House house : HouseManager.houseDataMap.values()) {
                             if (house.getOwner() == null) continue;
                             if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
                                 houses.add(house.getId());
@@ -451,7 +453,7 @@ public class PlayerManager implements Listener {
                 mySQL.updateAsync("UPDATE Jail SET wps = ? WHERE uuid = ?", playerData.getHafteinheiten(), uuid);
             }
 
-            for (Weapon weapon : Main.getInstance().weapons.getWeapons().values()) {
+            for (Weapon weapon : Main.getInstance().weaponManager.getWeapons().values()) {
                 if (weapon.getOwner().equals(player.getUniqueId())) {
                     mySQL.updateAsync("UPDATE player_weapons SET ammo = ?, current_ammo = ? WHERE id = ?", weapon.getAmmo(), weapon.getCurrentAmmo(), weapon.getId());
                 }

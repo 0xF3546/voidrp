@@ -2,6 +2,9 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,8 +16,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class SetTeamCommand implements CommandExecutor {
     private final PlayerManager playerManager;

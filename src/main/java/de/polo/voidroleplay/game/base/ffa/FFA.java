@@ -2,11 +2,13 @@ package de.polo.voidroleplay.game.base.ffa;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.WeaponData;
 import de.polo.voidroleplay.dataStorage.WeaponType;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.FFALobbyType;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -260,18 +262,18 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                            Main.getInstance().weapons.removeWeapon(player, item);
+                            Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
                     }
                 }
             }
         }
         player.getInventory().clear();
-        Main.getInstance().weapons.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.FFA, 300);
+        Main.getInstance().weaponManager.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.FFA, 300);
         // Main.getInstance().weapons.giveWeapon(player, Weapon.HUNTING_RIFLE.getMaterial(), WeaponType.FFA);
-        Main.getInstance().weapons.giveWeapon(player, Weapon.PISTOL, WeaponType.FFA, 300);
+        Main.getInstance().weaponManager.giveWeapon(player, Weapon.PISTOL, WeaponType.FFA, 300);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 5, 0, RoleplayItem.SNUFF.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 5, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
@@ -295,9 +297,9 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weapons.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                            Main.getInstance().weapons.removeWeapon(player, item);
+                            Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
                     }
                 }

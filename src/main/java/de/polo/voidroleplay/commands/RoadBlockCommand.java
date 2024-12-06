@@ -1,12 +1,9 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.listeners.PlayerInteractListener;
-import de.polo.voidroleplay.utils.FactionManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import lombok.val;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;

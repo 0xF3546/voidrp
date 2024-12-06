@@ -1,11 +1,8 @@
 package de.polo.voidroleplay.utils.enums;
 
-import de.polo.voidroleplay.utils.ItemManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Mayson1337

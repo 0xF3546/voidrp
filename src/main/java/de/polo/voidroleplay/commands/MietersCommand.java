@@ -3,8 +3,8 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.game.base.housing.Housing;
-import de.polo.voidroleplay.utils.PlayerManager;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -33,9 +33,9 @@ public class MietersCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (args.length >= 1) {
-            House houseData = Housing.houseDataMap.get(Integer.parseInt(args[0]));
+            House houseData = HouseManager.houseDataMap.get(Integer.parseInt(args[0]));
             if (houseData != null) {
-                if (utils.housing.canPlayerInteract(player, Integer.parseInt(args[0]))) {
+                if (utils.houseManager.canPlayerInteract(player, Integer.parseInt(args[0]))) {
                     player.sendMessage("§7   ===§8[§6Haus " + args[0] + "§8]§7===");
                     player.sendMessage("§8 ➥ §eBesitzer§8:§7 " + Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner())).getName());
                     for (Map.Entry<String, Integer> entry : houseData.getRenter().entrySet()) {

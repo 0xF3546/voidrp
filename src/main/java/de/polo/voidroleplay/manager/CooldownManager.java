@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import org.bukkit.entity.Player;
 

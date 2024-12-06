@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.game.base.housing.Housing;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -29,7 +29,7 @@ public class AusziehenCommand implements CommandExecutor {
         }
         try {
             int houseNumber = Integer.parseInt(args[0]);
-            House houseData = Housing.houseDataMap.get(houseNumber);
+            House houseData = HouseManager.houseDataMap.get(houseNumber);
             if (houseData == null) {
                 player.sendMessage(Main.error + "Dieses Haus wurde nicht gefunden.");
                 return false;
@@ -40,7 +40,7 @@ public class AusziehenCommand implements CommandExecutor {
             }
             houseData.getRenter().remove(player.getUniqueId().toString());
 
-            utils.housing.updateRenter(houseNumber);
+            utils.houseManager.updateRenter(houseNumber);
             player.sendMessage("§8[§6Haus§8]§a Du hast den Mietvertrag von Haus " + args[0] + " beendet.");
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(houseData.getOwner());
             if (offlinePlayer.getName() == null) {

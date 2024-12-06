@@ -4,9 +4,13 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.InventoryManager.CustomItem;
-import de.polo.voidroleplay.utils.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
+import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Material;
@@ -115,7 +119,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         lastTransport = Utils.getTime();
         player.sendMessage(Prefix.MAIN + "Du startest den Transport, begib dich zum Navipunkt!");
         playerData.setVariable("transport::amount", amount);
-        Main.getInstance().utils.navigation.createNaviByLocation(player, factionData.getName());
+        Main.getInstance().utils.navigationManager.createNaviByLocation(player, factionData.getName());
         playerData.setVariable("job", "pfeifentransport");
         if (amount < 1 || amount > 50) {
             player.sendMessage(Prefix.ERROR + "Du kannst nur zwischen 1 und 50 Pfeifen transportieren");

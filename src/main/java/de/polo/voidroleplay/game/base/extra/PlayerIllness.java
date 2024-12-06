@@ -1,7 +1,6 @@
 package de.polo.voidroleplay.game.base.extra;
 
 
-import de.polo.voidroleplay.utils.PlayerPetManager;
 import de.polo.voidroleplay.utils.enums.IllnessType;
 import lombok.Getter;
 import lombok.Setter;

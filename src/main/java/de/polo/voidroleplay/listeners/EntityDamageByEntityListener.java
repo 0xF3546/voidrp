@@ -3,8 +3,8 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Weapons;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.WeaponManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class EntityDamageByEntityListener implements Listener {
         if (event.getDamager() instanceof Player) {
             Player damager = (Player) event.getDamager();
             WeaponData currentWeapon = null;
-            for (WeaponData weaponData : Weapons.weaponDataMap.values()) {
+            for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                 if (!damager.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
                     continue;
                 }

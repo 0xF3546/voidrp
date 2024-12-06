@@ -4,12 +4,12 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
-import de.polo.voidroleplay.game.base.housing.Housing;
+import de.polo.voidroleplay.game.base.housing.HouseManager;
+import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.playerUtils.*;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.scoreboard.Scoreboard;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.Marker;
@@ -21,7 +21,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
@@ -34,12 +33,12 @@ public class Utils {
     @Getter
     public VertragUtil vertragUtil;
     @Getter
-    public Housing housing;
+    public HouseManager houseManager;
     //public Shop shop;
     @Getter
     public Tutorial tutorial;
     @Getter
-    public final Navigation navigation;
+    public final NavigationManager navigationManager;
     @Getter
     public final PayDayUtils payDayUtils;
     @Getter
@@ -55,13 +54,13 @@ public class Utils {
     private static HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
     private static HashMap<String, Marker> markers = new HashMap<>();
 
-    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, Housing housing, Navigation navigation, CompanyManager companyManager) {
+    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, NavigationManager navigationManager, CompanyManager companyManager) {
         deathUtil = new DeathUtils(playerManager, adminManager, locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         staatUtil = new StaatUtil(playerManager, factionManager, locationManager, this);
-        this.navigation = navigation;
-        tutorial = new Tutorial(playerManager, navigation);
-        this.housing = housing;
+        this.navigationManager = navigationManager;
+        tutorial = new Tutorial(playerManager, navigationManager);
+        this.houseManager = houseManager;
         payDayUtils = new PayDayUtils(playerManager, factionManager);
         bankingUtils = new BankingUtils(playerManager, factionManager);
         this.companyManager = companyManager;

@@ -3,8 +3,8 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.WeaponData;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.Weapons;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.utils.enums.PickaxeType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.GameMode;
@@ -20,10 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ItemDropListener implements Listener {
-    private final Weapons weapons;
+    private final WeaponManager weaponManager;
     private final PlayerManager playerManager;
-    public ItemDropListener(Weapons weapons, PlayerManager playerManager) {
-        this.weapons = weapons;
+    public ItemDropListener(WeaponManager weaponManager, PlayerManager playerManager) {
+        this.weaponManager = weaponManager;
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
@@ -52,10 +52,10 @@ public class ItemDropListener implements Listener {
         }
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         if (playerData.getVariable("gangwar") != null) event.setCancelled(true);
-        WeaponData weaponData = Weapons.weaponDataMap.get(event.getItemDrop().getItemStack().getType());
+        WeaponData weaponData = WeaponManager.weaponDataMap.get(event.getItemDrop().getItemStack().getType());
         if (weaponData != null && event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(weaponData.getName())) {
             event.setCancelled(true);
-            weapons.reloadWeapon(event.getPlayer(), event.getItemDrop().getItemStack());
+            weaponManager.reloadWeapon(event.getPlayer(), event.getItemDrop().getItemStack());
         }
     }
 }

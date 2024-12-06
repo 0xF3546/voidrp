@@ -1,6 +1,6 @@
-package de.polo.voidroleplay.utils.InventoryManager;
+package de.polo.voidroleplay.manager.InventoryManager;
 
-import de.polo.voidroleplay.utils.ItemManager;
+import de.polo.voidroleplay.manager.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

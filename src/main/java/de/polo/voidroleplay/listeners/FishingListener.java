@@ -1,17 +1,13 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.utils.ItemManager;
-import de.polo.voidroleplay.utils.PlayerManager;
-import de.polo.voidroleplay.utils.enums.CaseType;
-import de.polo.voidroleplay.utils.enums.EXPType;
+import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class FishingListener implements Listener {
     private final PlayerManager playerManager;

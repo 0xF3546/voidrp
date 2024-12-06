@@ -1,8 +1,9 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.dataStorage.RankData;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

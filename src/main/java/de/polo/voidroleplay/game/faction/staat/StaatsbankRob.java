@@ -2,7 +2,6 @@ package de.polo.voidroleplay.game.faction.staat;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.utils.FactionManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
