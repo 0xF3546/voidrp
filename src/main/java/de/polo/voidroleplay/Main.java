@@ -54,7 +54,9 @@ public final class Main extends JavaPlugin {
     @Getter
     public CooldownManager cooldownManager;
     public TeamSpeak teamSpeak;
+    @Getter
     public PlayerManager playerManager;
+    @Getter
     public Utils utils;
     public AdminManager adminManager;
     public Commands commands;
