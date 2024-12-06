@@ -329,6 +329,14 @@ public class PlayerInteractListener implements Listener {
 
                                     }
                                 });
+                                if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
+                                    inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            Main.getInstance().getHouseManager().openGunCabinet(player, houseData);
+                                        }
+                                    });
+                                }
                                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                                     inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
                                         @Override

@@ -458,10 +458,14 @@ public class WeaponManager implements Listener {
         playerWeapon.save();
     }
 
-    public void takeOutAmmo(Player player, PlayerWeapon playerWeapon, Weapon weapon, int ammo) {
+    public boolean takeOutAmmo(Player player, PlayerWeapon playerWeapon, Weapon weapon, int ammo) {
+        if (playerWeapon.getAmmo() < ammo) {
+            return false;
+        }
         giveAmmo(player, weapon, ammo);
         playerWeapon.setAmmo(playerWeapon.getAmmo() - ammo);
         playerWeapon.save();
+        return true;
     }
 
     public void giveWeaponToCabinet(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, int ammo, int wear) {

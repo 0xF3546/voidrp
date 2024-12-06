@@ -2,10 +2,13 @@ package de.polo.voidroleplay.game.base.housing;
 
 import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.PlayerWeapon;
 import de.polo.voidroleplay.dataStorage.RegisteredBlock;
+import de.polo.voidroleplay.dataStorage.Weapon;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
@@ -434,6 +437,60 @@ public class HouseManager implements CommandExecutor, Listener {
             }
         });
 
+    }
+
+    public void openGunCabinet(Player player, House house) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWaffenschrank");
+        int i = 0;
+        for (PlayerWeapon playerWeapon : playerData.getWeapons()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklck§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.closeInventory();
+                    if (event.isLeftClick()) {
+                        Main.getInstance().getWeaponManager().takeOutWeapon(player, playerWeapon);
+                    } else {
+                        playerData.setVariable("chatblock", "weaponammo");
+                        playerData.setVariable("playerWeapon", playerWeapon);
+                    }
+                }
+            });
+            i++;
+        }
+    }
+
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo().equalsIgnoreCase("weaponammo")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                PlayerWeapon playerWeapon = event.getPlayerData().getVariable("playerWeapon");
+                for (ItemStack item : event.getPlayer().getInventory().getContents()) {
+                    if (item == null) continue;
+                    if (item.getType() == playerWeapon.getWeapon().getMaterial()
+                        && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
+                        Weapon weapon = Main.getInstance().getWeaponManager().getWeaponFromItemStack(item);
+                        if (weapon == null) continue;
+                        if (Main.getInstance().getWeaponManager().takeOutAmmo(event.getPlayer(), playerWeapon, weapon, amount)) {
+                            event.getPlayer().sendMessage(Prefix.MAIN + "Du hast deine Waffe mit " + amount + " beladen.");
+                        } else {
+                            event.getPlayer().sendMessage(Prefix.MAIN + "Deine Waffe hat nicht genug Schuss.");
+                        }
+                        return;
+                    }
+                }
+                event.getPlayer().sendMessage(Prefix.ERROR + "Du hast diese Waffe nicht dabei.");
+                event.end();
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
+            }
+        }
     }
 
     @EventHandler

@@ -64,10 +64,12 @@ public final class Main extends JavaPlugin {
     public VertragUtil vertragUtil;
     public SupportManager supportManager;
     public ComputerUtils computerUtils;
+    @Getter
     public HouseManager houseManager;
     public BusinessManager businessManager;
     public Vehicles vehicles;
     public Streetwar streetwar;
+    @Getter
     public WeaponManager weaponManager;
     public BlockManager blockManager;
     public GamePlay gamePlay;
