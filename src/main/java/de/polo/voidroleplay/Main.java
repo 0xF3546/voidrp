@@ -425,8 +425,6 @@ public final class Main extends JavaPlugin {
         //public GetSkinCommand getSkinCommand;
         public ApothekeCommand apothekeCommand;
         public ApothekenCommand apothekenCommand;
-        public PlantCommand plantCommand;
-        public PlantagenCommand plantagenCommand;
         public BusinessCommand businessCommand;
         public EquipCommand equipCommand;
         public TSLinkCommand tsLinkCommand;
@@ -505,6 +503,10 @@ public final class Main extends JavaPlugin {
         public AsuCommand asuCommand;
         public WantedInfoCommand wantedInfoCommand;
         public EquipTransportCommand equipTransportCommand;
+        public GiveLeaderRechteCommand giveLeaderRechteCommand;
+        public RemoveLeaderRechteCommand removeLeaderRechteCommand;
+        public GwdCommand gwdCommand;
+        public ZDCommand zdCommand;
         private void Init() {
             minerJobCommand = new MinerJobCommand(playerManager, gamePlay, locationManager, factionManager);
             undertakerCommand = new UndertakerCommand(playerManager, locationManager);
@@ -635,8 +637,6 @@ public final class Main extends JavaPlugin {
             registerATMCommand = new RegisterATMCommand(playerManager, adminManager, mySQL);
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
-            plantCommand = new PlantCommand(playerManager, locationManager, gamePlay);
-            plantagenCommand = new PlantagenCommand(gamePlay, utils, factionManager, locationManager);
             businessCommand = new BusinessCommand(playerManager, businessManager);
             equipCommand = new EquipCommand(playerManager, factionManager, locationManager, weapons);
             tsLinkCommand = new TSLinkCommand(playerManager);
@@ -704,6 +704,10 @@ public final class Main extends JavaPlugin {
             weaponInfoCommand = new WeaponInfoCommand(playerManager);
             wantedInfoCommand = new WantedInfoCommand(playerManager, utils);
             equipTransportCommand = new EquipTransportCommand(playerManager);
+            giveLeaderRechteCommand = new GiveLeaderRechteCommand(playerManager, factionManager, adminManager);
+            removeLeaderRechteCommand = new RemoveLeaderRechteCommand(playerManager, factionManager, adminManager);
+            gwdCommand = new GwdCommand(playerManager, adminManager, factionManager);
+            zdCommand = new ZDCommand(playerManager, adminManager, factionManager);
 
             main.registerCommands();
             main.registerListener(this);

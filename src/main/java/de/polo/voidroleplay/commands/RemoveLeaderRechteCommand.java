@@ -5,7 +5,6 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.utils.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,24 +12,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author Mayson1337
- * @version 1.0.0
- * @since 1.0.0
- */
-public class GiveLeaderRechteCommand implements CommandExecutor {
+public class RemoveLeaderRechteCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final AdminManager adminManager;
-    public GiveLeaderRechteCommand(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
+    public RemoveLeaderRechteCommand(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.adminManager = adminManager;
 
-        Main.registerCommand("giveleaderrechte", this);
+        Main.registerCommand("removeleaderrechte", this);
     }
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 90) {
@@ -50,10 +44,10 @@ public class GiveLeaderRechteCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Spieler wurde nicht gefunden.");
             return false;
         }
-        factionManager.setLeader(offlinePlayer, true);
-        adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte gegeben.",  ChatColor.DARK_PURPLE);
+        factionManager.setLeader(offlinePlayer, false);
+        adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte entzogen.",  ChatColor.DARK_PURPLE);
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
-            offlinePlayer.getPlayer().sendMessage(Component.text("§6" + player.getName() + " hat dir Leaderrechte gegeben!"));
+            offlinePlayer.getPlayer().sendMessage(Component.text("§6cDir wurden die Leaderrechte entzogen!"));
         }
         return false;
     }

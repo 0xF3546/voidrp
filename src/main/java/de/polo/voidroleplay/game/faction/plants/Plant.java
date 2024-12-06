@@ -1,7 +1,13 @@
 package de.polo.voidroleplay.game.faction.plants;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.utils.enums.Drug;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
@@ -12,89 +18,34 @@ import java.util.List;
 import java.util.UUID;
 
 public class Plant {
-    private int id;
-    private String owner;
-    private float multiplier;
-    private int storage;
-    private LocalDateTime lastAttack;
-    private Player attacker;
-    private String attackerFaction;
-    private List<UUID> tookOutThisHour = new ArrayList<>();
+    @Getter
+    private final FactionData planter;
 
-    public int getId() {
-        return id;
-    }
+    @Getter
+    private final LocalDateTime planted;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @Getter
+    private final Block block;
 
-    public String getOwner() {
-        return owner;
-    }
+    @Getter
+    private final Drug drug;
 
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
+    @Getter
+    @Setter
+    private int water;
 
-    public float getMultiplier() {
-        return multiplier;
-    }
+    @Getter
+    @Setter
+    private int fertilizer;
 
-    public void setMultiplier(float multiplier) {
-        this.multiplier = multiplier;
-    }
+    @Getter
+    @Setter
+    private int yield;
 
-    public int getStorage() {
-        return storage;
-    }
-
-    public void setStorage(int storage) {
-        this.storage = storage;
-    }
-
-    public LocalDateTime getLastAttack() {
-        return lastAttack;
-    }
-
-    public void setLastAttack(LocalDateTime lastAttack) {
-        this.lastAttack = lastAttack;
-    }
-
-    public Player getAttacker() {
-        return attacker;
-    }
-
-    public void setAttacker(Player attacker) {
-        this.attacker = attacker;
-    }
-
-    public String getAttackerFaction() {
-        return attackerFaction;
-    }
-
-    public void setAttackerFaction(String attackerFaction) {
-        this.attackerFaction = attackerFaction;
-    }
-
-    public void addTookout(UUID uuid) {
-        tookOutThisHour.add(uuid);
-    }
-
-    public void clearTookout() {
-        tookOutThisHour.clear();
-    }
-
-    public boolean hasTookout(UUID uuid) {
-        return tookOutThisHour.contains(uuid);
-    }
-
-    @SneakyThrows
-    public void save() {
-        Main.getInstance().getMySQL().updateAsync("UPDATE plantagen SET owner = ?, lastAttack = ?, storage = ? WHERE id = ?",
-                getOwner(),
-                getLastAttack(),
-                getStorage(),
-                getId());
+    public Plant(FactionData planter, LocalDateTime planted, Block block, Drug drug) {
+        this.planter = planter;
+        this.planted = planted;
+        this.block = block;
+        this.drug = drug;
     }
 }

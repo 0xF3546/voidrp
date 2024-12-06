@@ -179,9 +179,6 @@ commands:
   registerblock:
   apotheke:
   apotheken:
-  plant:
-  plants:
-    aliases: plantagen
   business:
   equip:
   fdoor:
@@ -274,3 +271,7 @@ commands:
     aliases: winfo
   wantedinfo:
   equiptransport:
+  giveleaderrechte:
+  removeleaderrechte:
+  gwd:
+  zd:

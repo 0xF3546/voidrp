@@ -295,6 +295,14 @@ public class PlayerData {
     @Setter
     private boolean isLeader;
 
+    @Getter
+    @Setter
+    private int gwd;
+
+    @Getter
+    @Setter
+    private int zd;
+
     public PlayerData() {
     }
 

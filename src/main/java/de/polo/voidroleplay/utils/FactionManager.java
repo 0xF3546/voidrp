@@ -669,4 +669,12 @@ public class FactionManager {
     {
         return sprayableBanners;
     }
+
+    public void setLeader(OfflinePlayer offlinePlayer, boolean leader) {
+        if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
+            PlayerData playerData = playerManager.getPlayerData(offlinePlayer.getPlayer());
+            playerData.setLeader(leader);
+        }
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET leader = ? WHERE uuid = ?", offlinePlayer.getUniqueId().toString(), leader);
+    }
 }
