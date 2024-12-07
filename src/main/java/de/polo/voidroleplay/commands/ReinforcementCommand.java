@@ -6,6 +6,7 @@ import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.PhoneUtils;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -39,8 +40,12 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
-            player.sendMessage(Prefix.ERROR + "Du hast kein Handy dabei!");
+        if (PhoneUtils.hasPhone(player)) {
+            player.sendMessage(PhoneUtils.error_nophone);
+            return false;
+        }
+        if (playerData.isFlightmode()) {
+            player.sendMessage(PhoneUtils.error_flightmode);
             return false;
         }
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {

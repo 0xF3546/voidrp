@@ -2,9 +2,11 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.PhoneUtils;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -37,8 +39,13 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         String uuid = player.getUniqueId().toString();
-        if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
-            player.sendMessage(Prefix.ERROR + "Du hast kein Handy dabei!");
+        if (!PhoneUtils.hasPhone(player)) {
+            player.sendMessage(PhoneUtils.error_nophone);
+            return false;
+        }
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.isFlightmode()) {
+            player.sendMessage(PhoneUtils.error_flightmode);
             return false;
         }
         if (factionManager.faction(player) != null) {
