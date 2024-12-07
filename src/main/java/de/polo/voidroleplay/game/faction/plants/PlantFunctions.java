@@ -18,6 +18,7 @@ import de.polo.voidroleplay.utils.enums.PlantType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -195,8 +196,8 @@ public class PlantFunctions implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (player.getInventory().getItemInMainHand().getType().equals(Material.WATER_BUCKET)
-            || player.getInventory().getItemInMainHand().getType().equals(Material.BONE_MEAL)) {
+        if ((player.getInventory().getItemInMainHand().getType().equals(Material.WATER_BUCKET)
+            || player.getInventory().getItemInMainHand().getType().equals(Material.BONE_MEAL)) && player.getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
         PlayerData playerData = playerManager.getPlayerData(player);
