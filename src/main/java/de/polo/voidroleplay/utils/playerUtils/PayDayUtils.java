@@ -39,9 +39,9 @@ public class PayDayUtils {
         }
         double steuern = 0;
         if (playerData.getRelationShip().containsValue("verheiratet")) {
-            steuern = Math.round(playerManager.bank(player) * 0.0015);
+            steuern = Math.round(playerManager.bank(player) * 0.015);
         } else {
-            steuern = Math.round(playerManager.bank(player) * 0.002);
+            steuern = Math.round(playerManager.bank(player) * 0.035);
         }
         int visumbonus = playerManager.visum(player) * 10;
         if (playerData.getPermlevel() >= 20) {
