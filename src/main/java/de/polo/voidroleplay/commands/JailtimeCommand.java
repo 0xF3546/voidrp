@@ -21,7 +21,7 @@ public class JailtimeCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.isJailed()) {
-            player.sendMessage("§8[§cGefängnis§8] §7Du bist noch §l" + playerData.getHafteinheiten() + "§7 Minuten im Gefängnis.");
+            player.sendMessage("§8[§6Gefängnis§8] §7Du bist noch " + playerData.getHafteinheiten() + " Minuten im Gefängnis.");
         } else {
             player.sendMessage(Main.error + "Du bist nicht im Gefängnis.");
         }

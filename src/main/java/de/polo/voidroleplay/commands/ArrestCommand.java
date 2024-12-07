@@ -46,7 +46,7 @@ public class ArrestCommand implements CommandExecutor {
                     if (targetPlayerData.isCuffed()) {
                         if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
                             try {
-                                if (utils.staatUtil.arrestPlayer(targetplayer, player)) {
+                                if (utils.staatUtil.arrestPlayer(targetplayer, player, false)) {
                                     if (targetPlayerData.isAduty()) {
                                         player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
                                         return false;

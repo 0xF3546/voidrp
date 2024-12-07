@@ -2,10 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.commands.BombeCommand;
-import de.polo.voidroleplay.dataStorage.BlacklistData;
-import de.polo.voidroleplay.dataStorage.ContractData;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.game.faction.streetwar.StreetwarData;
@@ -115,6 +112,13 @@ public class DeathListener implements Listener {
 
             Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
             utils.deathUtil.addDeathSkull(player.getUniqueId().toString(), item);
+            if (playerData.getWanted() != null && killer != null) {
+                WantedReason wantedReason = utils.staatUtil.getWantedReason(playerData.getWanted().getWantedId());
+                PlayerData killerData = playerManager.getPlayerData(killer);
+                if (killerData.isExecutiveFaction() && wantedReason.getWanted() >= 50) {
+                    utils.staatUtil.arrestPlayer(player, killer, true);
+                }
+            }
             if ((ServerManager.contractDataMap.get(playerUUID.toString()) != null
                     && killer != null
                     && Objects.equals(factionManager.faction(killer), "ICA"))
