@@ -116,7 +116,7 @@ public class PlantFunctions implements Listener {
         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.FERTILIZER.getMaterial(), 1, 0, "§2Düngern", "§8 ➥ §a" + plant.getFertilizer() + "§7/§a60")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (plant.getFertilizer() > 10) {
+                if (plant.getFertilizer() > 10 || ItemManager.getCustomItemCount(player, RoleplayItem.FERTILIZER) < 1) {
                     return;
                 }
                 ItemManager.removeCustomItem(player, RoleplayItem.FERTILIZER, 1);
@@ -130,7 +130,7 @@ public class PlantFunctions implements Listener {
         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.WATER.getMaterial(), 1, 0, "§bWässern", "§8 ➥ §3" + plant.getWater() + "§7/§360")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (plant.getWater() > 10) {
+                if (plant.getWater() > 10 || ItemManager.getCustomItemCount(player, RoleplayItem.WATER) < 1) {
                     return;
                 }
                 ItemManager.removeCustomItem(player, RoleplayItem.WATER, 1);
@@ -165,7 +165,7 @@ public class PlantFunctions implements Listener {
     private void openBurnPlant(Player player, Plant plant) {
         Collection<Plant> nearbyPlants = getNearbyPlants(player.getLocation());
         InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §c" + nearbyPlants.size() + " Plantagen");
-        inventoryManager.setItem(new CustomItem(5, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§cVerbrennen")) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§cVerbrennen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 Collection<PlayerData> nearbyExecutives = factionManager.getFactionMemberInRange("Polizei", player.getLocation(), 10, false);
