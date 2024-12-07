@@ -467,7 +467,10 @@ public class HouseManager implements CommandExecutor, Listener {
         inventoryManager.setItem(new CustomItem(3, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aEinzahlen", null)) {
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                player.closeInventory();
+                playerData.setVariable("chatblock", "house::putin");
+                playerData.setVariable("house", house);
+                player.sendMessage("§aGib den Betrag an, welchen du in die Hauskasse legen möchtest.");
             }
         });
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§a" + Utils.toDecimalFormat(house.getMoney()) + "$")) {
@@ -480,13 +483,60 @@ public class HouseManager implements CommandExecutor, Listener {
 
             @Override
             public void onClick(InventoryClickEvent event) {
-
+                player.closeInventory();
+                playerData.setVariable("chatblock", "house::putout");
+                playerData.setVariable("house", house);
+                player.sendMessage("§aGib den Betrag an, welchen du aus der Hauskasse enthnehmen möchtest.");
             }
         });
     }
 
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo().equalsIgnoreCase("house::putin")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            House house = event.getPlayerData().getVariable("house");
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                if (event.getPlayerData().getBargeld() < amount) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Bargeld.");
+                    return;
+                }
+                if (house.getMoney() + amount > 15000) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Du kannst nicht mehr als 15.000$ in der Hauskasse haben.");
+                    return;
+                }
+                event.getPlayer().sendMessage(Prefix.MAIN + "Du hast " + Utils.toDecimalFormat(amount) + "$ in die Hauskasse eingezahlt.");
+                house.addMoney(amount, "Einzahlung " + event.getPlayer().getName(), true);
+                event.getPlayerData().removeMoney(amount, "Hauskasse" + house.getNumber());
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
+            }
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("house::putout")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            House house = event.getPlayerData().getVariable("house");
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                if (house.getMoney() < amount) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "In der Hauskasse liegt nicht genug Geld.");
+                    return;
+                }
+                event.getPlayer().sendMessage(Prefix.MAIN + "Du hast " + Utils.toDecimalFormat(amount) + "$ aus der Hauskasse ausgezahlt.");
+                house.removeMoney(amount, "Auszahlung " + event.getPlayer().getName(), true);
+                event.getPlayerData().addMoney(amount, "Hauskasse" + house.getNumber());
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
+            }
+        }
         if (event.getSubmitTo().equalsIgnoreCase("weaponammo")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();

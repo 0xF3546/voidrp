@@ -11,6 +11,7 @@ import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -76,20 +77,12 @@ public class PayDayUtils {
                     continue;
                 }
                 player.sendMessage("§7 » §9Miete (Haus " + houseData.getNumber() + ")§8:§c -" + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
-                houseData.setMoney(houseData.getMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
-                houseData.setTotalMoney(houseData.getTotalMoney() + houseData.getRenter().get(player.getUniqueId().toString()));
-                Main.getInstance().getMySQL().updateAsync("UPDATE `housing` SET `money` = ?, `totalMoney` = ? WHERE `number` = ?",
-                        houseData.getMoney(),
-                        houseData.getTotalMoney(),
-                        houseData.getNumber());
-                plus -= houseData.getRenter().get(player.getUniqueId().toString());
+                houseData.addMoney(houseData.getMoney() + rent, player.getName() + " hat §6" + rent + "$§7 Miete gezahlt! §8(§6" + Utils.toDecimalFormat(houseData.getMoney()) + "§7/§615.000$§8)", false);
+                houseData.setTotalMoney(houseData.getTotalMoney() + rent);
+                plus -= rent;
             }
             if (houseData.getOwner() != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
-                    plus += houseData.getMoney();
-                    Main.getInstance().getMySQL().updateAsync("UPDATE `housing` SET `money` = 0 WHERE `number` = ?", houseData.getNumber());
-                    player.sendMessage("§7 » §9Mieteinnahmen (Haus " + houseData.getNumber() + ")§8: §a+" + houseData.getMoney() + "$");
-                    houseData.setMoney(0);
                     if (houseData.isServerRoom()) {
                         float kWh = 0;
                         for (Miner miner : houseData.getActiveMiner()) {

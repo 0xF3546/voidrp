@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -149,4 +151,25 @@ public class House {
         return mieterSlots;
     }
 
+    public void addMoney(int amount, String reason, boolean silent) {
+        setMoney(money + amount);
+        sendMessage(reason);
+        updateMoney();
+    }
+
+    public void removeMoney(int amount, String reason, boolean silent) {
+        setMoney(money - amount);
+        sendMessage(reason);
+        updateMoney();
+    }
+
+    private void updateMoney() {
+        Main.getInstance().getMySQL().updateAsync("UPDATE housing SET money = ?, totalmoney = ? WHERE number = ?", money, totalMoney, number);
+    }
+
+    private void sendMessage(String message) {
+        Player player = Bukkit.getPlayer(owner);
+        if (player == null) return;
+        player.sendMessage("§8[§6Haus " + number + "§8]§7 " + message);
+    }
 }
