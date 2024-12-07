@@ -45,20 +45,20 @@ public class FrakStatsCommand implements CommandExecutor {
             }
         }
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "Statistiken§8]§7===");
-        player.sendMessage("§8 - §eName§8:§7 " + factionData.getName());
-        player.sendMessage("§8 - §eVoller Name§8:§7 " + factionData.getFullname());
+        player.sendMessage("§8 - §6Name§8:§c " + factionData.getName());
+        player.sendMessage("§8 - §6Voller Name§8:§c " + factionData.getFullname());
         if (playerData.getFactionGrade() >= 4 || playerData.isAduty()) {
-            player.sendMessage("§8 - §eBank§8:§7 " + factionData.getBank() + "$");
+            player.sendMessage("§8 - §6Bank§8:§c " + factionData.getBank() + "$");
         }
-        player.sendMessage("§8 - §eEquip§8:§7 " + factionData.getEquipPoints() + " Punkte");
+        player.sendMessage("§8 - §6Equip§8:§c " + factionData.getEquipPoints() + " Punkte");
         int member = 0;
         for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
             if (factionPlayerData.getFaction().equals(factionData.getName())) {
                 member++;
             }
         }
-        player.sendMessage("§8 - §eMitglieder§8:§7 " + member + "/" + factionData.getMaxMember());
-        player.sendMessage("§8 - §ePayDay§8:§7 " + utils.getCurrentMinute() + "/60");
+        player.sendMessage("§8 - §6Mitglieder§8:§c " + member + "/" + factionData.getMaxMember());
+        player.sendMessage("§8 - §6PayDay§8:§c " + utils.getCurrentMinute() + "/60");
         return false;
     }
 }

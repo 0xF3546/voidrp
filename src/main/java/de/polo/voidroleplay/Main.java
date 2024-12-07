@@ -53,7 +53,7 @@ public final class Main extends JavaPlugin {
     @Getter
     public PlayerManager playerManager;
     @Getter
-    public Utils utils;
+    public static Utils utils;
     public AdminManager adminManager;
     public Commands commands;
     public FactionManager factionManager;
@@ -74,7 +74,7 @@ public final class Main extends JavaPlugin {
     public CompanyManager companyManager;
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
-    private NPC npc;
+    private NPCManager npc;
 
     @Getter
     private DynmapAPI dynmapAPI;
@@ -155,7 +155,7 @@ public final class Main extends JavaPlugin {
         weaponManager = new WeaponManager(utils, playerManager);
         isOnline = true;
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
-        npc = new NPC(playerManager);
+        npc = new NPCManager(playerManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager, npc);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);

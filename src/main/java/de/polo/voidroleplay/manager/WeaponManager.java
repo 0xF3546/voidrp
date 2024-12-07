@@ -411,6 +411,7 @@ public class WeaponManager implements Listener {
             );
             w.setPlayerWeapon(playerWeapon);
         }
+        System.out.println("GIVING AMMO");
 
         Main.getInstance().getMySQL()
                 .queryThreadedWithGeneratedKeys("INSERT INTO player_weapons (uuid, weapon, weaponType)",
