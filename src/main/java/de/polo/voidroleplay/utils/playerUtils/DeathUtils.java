@@ -144,6 +144,7 @@ public class DeathUtils {
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 6, 0, true, false));
         }
+        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
     }
 
     public void despawnPlayer(Player player) {
@@ -198,6 +199,7 @@ public class DeathUtils {
         playerManager.setPlayerMove(player, true);
         playerData.save();
         ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
+        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
     }
 
     private void spawnCorpse(Player player) {

@@ -107,7 +107,7 @@ public class StaatUtil {
         WantedReason wantedReason = getWantedReason(playerData.getWanted().getWantedId());
         if (playerData.getWanted() != null) {
             JailData jailData = new JailData();
-            locationManager.useLocation(player, "gefaengnis");
+            if (!deathArrest) locationManager.useLocation(player, "gefaengnis");
             if (deathArrest) {
                 player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wantedReason.getWanted() + " Minuten inhaftiert.");
             } else {
