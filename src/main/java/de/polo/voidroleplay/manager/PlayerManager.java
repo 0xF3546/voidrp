@@ -53,6 +53,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.polo.voidroleplay.Main.utils;
+
 public class PlayerManager implements Listener {
 
     public final HashMap<String, Integer> player_rent = new HashMap<>();
@@ -371,7 +373,7 @@ public class PlayerManager implements Listener {
                 }
                 if (tutorial != 0) {
                     playerData.setVariable("tutorial", new PlayerTutorial(player, playerData, tutorial));
-                    Main.getInstance().utils.tutorial.start(player);
+                    utils.tutorial.start(player);
                 }
                 if (playerData.getRankDuration() != null) {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -394,7 +396,7 @@ public class PlayerManager implements Listener {
                     Main.getInstance().factionManager.setDuty(player, true);
                 }
                 updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
-                if (playerData.isDead()) Main.getInstance().utils.deathUtil.killPlayer(player);
+                if (playerData.isDead()) utils.deathUtil.killPlayer(player);
 
                 /*
                 Labor: deaktiviert
@@ -408,7 +410,7 @@ public class PlayerManager implements Listener {
 
                 Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
-                Main.getInstance().utils.staatUtil.loadParole(player);
+                utils.staatUtil.loadParole(player);
                 Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
 
                 if (playerData.getFaction() != null) {
@@ -434,10 +436,10 @@ public class PlayerManager implements Listener {
         if (playerData != null) {
             assert statement != null;
             if (playerData.isDead()) {
-                Item skull = Main.getInstance().utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
+                Item skull = utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
                 if (skull != null) {
                     skull.remove();
-                    Main.getInstance().utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
+                    utils.deathUtil.removeDeathSkull(player.getUniqueId().toString());
                 }
             }
             mySQL.updateAsync("UPDATE `players` SET `player_rank` = ?, `level` = ?, `exp` = ?, `needed_exp` = ?, `deathTime` = ?, `isDead` = ?, `lastLogin` = NOW(), playtime_minutes = ? WHERE `uuid` = ?",
@@ -486,7 +488,7 @@ public class PlayerManager implements Listener {
         if (playerData.isJailed()) {
             playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
             if (playerData.getHafteinheiten() <= 0) {
-                Main.getInstance().utils.staatUtil.unarrestPlayer(player);
+                utils.staatUtil.unarrestPlayer(player);
             }
         }
         if (playerData.isAFK()) return;
@@ -505,7 +507,7 @@ public class PlayerManager implements Listener {
             playerData.setHours(playerData.getHours() + 1);
             playerData.setMinutes(0);
             playerData.setRewardTime(playerData.getRewardTime() - 1);
-            Main.getInstance().utils.payDayUtils.givePayDay(player);
+            utils.payDayUtils.givePayDay(player);
             if (playerData.getRewardTime() <= 0) {
                 giveReward(playerData);
                 PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
@@ -672,7 +674,7 @@ public class PlayerManager implements Listener {
                         int afkCounter = playerData.getIntVariable("afk") + 1;
                         playerData.setIntVariable("afk", afkCounter);
                         if (afkCounter >= 2) {
-                            Main.getInstance().utils.setAFK(player, true);
+                            utils.setAFK(player, true);
                         }
                     }
                     if (playerData.getJailParole() > 0) {
@@ -722,7 +724,7 @@ public class PlayerManager implements Listener {
                 }
 
                 if (currentMinute == 0) {
-                    int currentHour = Main.getInstance().utils.getCurrentHour();
+                    int currentHour = utils.getCurrentHour();
                     Bukkit.getPluginManager().callEvent(new HourTickEvent(currentHour));
 
                     // Batch-Operation für Fraktionsdaten-Update
@@ -735,7 +737,7 @@ public class PlayerManager implements Listener {
                         double plus = zinsen - steuern;
 
                         // Berechnung der Gebietseinnahmen
-                        for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {
+                        for (Gangwar gangwarData : utils.gangwarUtils.getGangwars()) {
                             if (gangwarData.getGangZone().getOwner().equals(factionData.getName())) {
                                 plus = plus + 150;
                             }
@@ -791,7 +793,7 @@ public class PlayerManager implements Listener {
         player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
         List<IGangzone> gangZones = new ObjectArrayList<>();
-        for (IGangzone gangzone : Main.getInstance().utils.gangwarUtils.getGangzones()) {
+        for (IGangzone gangzone : utils.gangwarUtils.getGangzones()) {
             if (gangzone.getOwner().equals(factionData.getName())) {
                 gangZones.add(gangzone);
             }
@@ -849,7 +851,7 @@ public class PlayerManager implements Listener {
         playerData.setExp(playerData.getExp() + exp);
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + (playerData.getLevel() + 1));
-            Main.getInstance().utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
+            utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
             playerData.setLevel(playerData.getLevel() + 1);
             Main.getInstance().beginnerpass.didQuest(player, 3);
             player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
@@ -859,10 +861,10 @@ public class PlayerManager implements Listener {
         } else {
             if (playerData.getBoostDuration() == null) {
                 player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
-                Main.getInstance().utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+                utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
             } else {
                 player.sendMessage("§" + Main.getRandomChar(characters) + "§l+" + exp + " EXP (2x)");
-                Main.getInstance().utils.sendActionBar(player, "§l+" + exp + " EXP (2x)");
+                utils.sendActionBar(player, "§l+" + exp + " EXP (2x)");
             }
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         }
@@ -874,19 +876,19 @@ public class PlayerManager implements Listener {
         switch (expType.getSkillType()) {
             case FISHING:
                 playerData.addonXP.addFishingXP(amount);
-                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp() + ")");
+                utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getFishingXP() + "/" + expType.getLevelUpXp() + ")");
                 break;
             case LUMBERJACK:
                 playerData.addonXP.addLumberjackXP(amount);
-                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getLumberjackXP() + "/" + expType.getLevelUpXp() + ")");
+                utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getLumberjackXP() + "/" + expType.getLevelUpXp() + ")");
                 break;
             case POPULARITY:
                 playerData.addonXP.addPopularity(amount);
-                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getPopularityXP() + "/" + expType.getLevelUpXp() + ")");
+                utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getPopularityXP() + "/" + expType.getLevelUpXp() + ")");
                 break;
             case MINER:
                 playerData.addonXP.addMinerXP(amount);
-                Main.getInstance().utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getMinerXP() + "/" + ((playerData.addonXP.getMinerLevel() + 1) * expType.getLevelUpXp()) + ")");
+                utils.sendActionBar(player, expType.getColor() + "+" + amount + " " + expType.getDisplayName() + "-XP (" + playerData.addonXP.getMinerXP() + "/" + ((playerData.addonXP.getMinerLevel() + 1) * expType.getLevelUpXp()) + ")");
                 break;
         }
     }
@@ -1148,7 +1150,7 @@ public class PlayerManager implements Listener {
                             player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
                             return;
                         }
-                        Main.getInstance().utils.staatUtil.checkBloodGroup(player, targetplayer);
+                        utils.staatUtil.checkBloodGroup(player, targetplayer);
                         player.closeInventory();
                     }
                 });
