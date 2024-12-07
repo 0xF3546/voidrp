@@ -2,9 +2,12 @@ package de.polo.voidroleplay.game.faction.plants;
 
 import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.utils.enums.Drug;
+import de.polo.voidroleplay.utils.enums.PlantType;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +22,7 @@ public class Plant {
     private final Block block;
 
     @Getter
-    private final Drug drug;
+    private final PlantType type;
 
     @Getter
     @Setter
@@ -33,10 +36,15 @@ public class Plant {
     @Setter
     private int yield;
 
-    public Plant(FactionData planter, LocalDateTime planted, Block block, Drug drug) {
+    @Getter
+    @Setter
+    private int time;
+
+    public Plant(FactionData planter, LocalDateTime planted, Block block, PlantType plantType) {
         this.planter = planter;
         this.planted = planted;
         this.block = block;
-        this.drug = drug;
+        this.type = plantType;
+        time = type.getTime();
     }
 }

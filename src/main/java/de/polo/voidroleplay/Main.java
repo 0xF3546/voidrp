@@ -242,6 +242,7 @@ public final class Main extends JavaPlugin {
         if (gamePlay != null && gamePlay.activeDrop != null) {
             gamePlay.activeDrop.cleanup();
         }
+        gamePlay.plant.cleanup();
         Main.getInstance().utils.deathUtil.cleanUpCorpses();
         System.out.println("Disabling VoidRoleplay");
         isOnline = false;

@@ -52,7 +52,11 @@ public enum RoleplayItem {
     MINER_PICKAXE_STONE("§7Stein Spitzhacke", Material.STONE_PICKAXE, false),
     MINER_PICKAXE_IRON("§7Eisen Spitzhacke", Material.IRON_PICKAXE, false),
     MINER_PICKAXE_DIA("§7Diamant Spitzhacke", Material.DIAMOND_PICKAXE, false),
-    FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false);
+    FEUERLÖSCHER("§7Feuerlöscher", Material.LEVER, false),
+    COCAINE_SEEDS("§fPulver-Samen", Material.PUMPKIN_SEEDS, true),
+    WEED_SEEDS("§2Gras-Samen", Material.PUMPKIN_SEEDS, true),
+    FERTILIZER("§2Dünger", Material.BONE_MEAL, false),
+    WATER("§bWasser", Material.WATER_BUCKET, false);
 
     private final String displayName;
     private final Material material;
