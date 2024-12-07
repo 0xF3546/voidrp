@@ -255,32 +255,6 @@ public class EquipCommand implements CommandExecutor, Listener {
             }
         }
 
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("adrenaline_injection") + "$"))) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                int priceForFaction = ServerManager.getPayout("adrenaline_injection");
-                try {
-                    if (Integer.parseInt(GlobalStats.getValue("weapondrop")) == factionData.getId()) {
-                        priceForFaction = (int) (priceForFaction * 0.75);
-                    }
-                } catch (Exception ex) {
-
-                }
-                if (factionData.getBank() < priceForFaction) {
-                    player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um Munition zu kaufen.");
-                    return;
-                }
-                if (playerData.getBank() < priceForFaction) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld.");
-                    return;
-                }
-                factionData.removeFactionMoney(priceForFaction, "Item-Kauf " + player.getName());
-                factionData.addBankMoney(priceForFaction, "Item-Kauf " + player.getName());
-                playerData.removeBankMoney(priceForFaction, "Item-Kauf");
-                ItemManager.addCustomItem(player, RoleplayItem.ADRENALINE_INJECTION, 1);
-            }
-        });
-
         if (playerData.getSubTeam() != null) {
             if (playerData.getSubTeam().getName().equalsIgnoreCase("Feuerwehr")) {
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.FEUERLÖSCHER.getMaterial(), 1, 0, RoleplayItem.FEUERLÖSCHER.getDisplayName())) {
