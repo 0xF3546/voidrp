@@ -293,4 +293,8 @@ public class LocationManager {
     public Collection<LocationData> getLocations() {
         return locationDataMap.values();
     }
+
+    public static boolean isLocationEqual(Location first, Location second) {
+        return (first.getX() == second.getX() && first.getY() == second.getY() && first.getZ() == second.getZ());
+    }
 }

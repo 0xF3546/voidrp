@@ -320,6 +320,14 @@ public class PlayerInteractListener implements Listener {
                                     });
                                 }
                                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
+                                    if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
+                                        inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Hauskasse öffnen", "§8 ➥ §a" + Utils.toDecimalFormat(houseData.getMoney()) + "$")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                Main.getInstance().getHouseManager().openHouseTreasury(player, houseData);
+                                            }
+                                        });
+                                    }
                                     inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {

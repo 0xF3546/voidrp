@@ -18,6 +18,7 @@ import de.polo.voidroleplay.utils.enums.PlantType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -53,7 +54,7 @@ public class PlantFunctions implements Listener {
 
     private Plant getPlantByBlock(Block block) {
         for (Plant plant : getPlants()) {
-            if (plant.getBlock() == block) return plant;
+            if (LocationManager.isLocationEqual(plant.getBlock().getLocation(), block.getLocation())) return plant;
         }
         return null;
     }
@@ -81,18 +82,19 @@ public class PlantFunctions implements Listener {
         if (aboveBlock.getType() != Material.AIR) {
             return "Es ist kein freier Punkt gefunden wurden.";
         }
-        Plant plant = new Plant(factionData, Utils.getTime(), block, plantType);
+        Plant plant = new Plant(factionData, Utils.getTime(), aboveBlock, plantType);
         aboveBlock.setType(Material.FERN);
         plants.add(plant);
         factionManager.sendCustomMessageToFaction("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plantType.getName() + "§2 Plantage gelegt.", factionData.getName());
-        return "Du hast eine " + plantType.name() + " Plantage gelegt.";
+        ItemManager.removeCustomItem(player, plantType.getPlantItem(), 1);
+        return "Du hast eine " + plantType.getName() + " Plantage gelegt.";
     }
 
     public void openPlant(Player player, Plant plant) {
         if (plant == null) return;
         FactionData factionData = plant.getPlanter();
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Plantage)", true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §2Plantage", true, false);
         int i = 0;
         if (plant.getTime() < 30) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(plant.getType().getDrug().getItem().getMaterial(), 1, 0, "§2Ernten", "§8 ➥ §a" + plant.getYield() + "g")) {
@@ -100,7 +102,7 @@ public class PlantFunctions implements Listener {
                 public void onClick(InventoryClickEvent event) {
                     plant.getBlock().setType(Material.AIR);
                     ItemManager.addCustomItem(player, plant.getType().getDrug().getItem(), plant.getYield());
-                    factionManager.sendCustomLeaderMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
+                    factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
                     plants.remove(plant);
                     player.closeInventory();
                     if (plant.getYield() >= 40) {
@@ -117,9 +119,9 @@ public class PlantFunctions implements Listener {
                     return;
                 }
                 ItemManager.removeCustomItem(player, RoleplayItem.FERTILIZER, 1);
-                factionManager.sendCustomLeaderMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage gedüngt.", factionData.getName());
+                factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage gedüngt.", factionData.getName());
                 playerManager.addExp(player, Main.random(8, 10));
-                plant.setYield(60);
+                plant.setFertilizer(60);
                 player.closeInventory();
             }
         });
@@ -131,7 +133,7 @@ public class PlantFunctions implements Listener {
                     return;
                 }
                 ItemManager.removeCustomItem(player, RoleplayItem.WATER, 1);
-                factionManager.sendCustomLeaderMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage gewässert.", factionData.getName());
+                factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage gewässert.", factionData.getName());
                 playerManager.addExp(player, Main.random(8, 10));
                 plant.setWater(60);
                 player.closeInventory();
@@ -151,18 +153,61 @@ public class PlantFunctions implements Listener {
         return plants;
     }
 
+    private Collection<Plant> getNearbyPlants(Location location) {
+        List<Plant> plants = new ObjectArrayList<>();
+        for (Plant plant : plants) {
+            if (plant.getBlock().getLocation().distance(location) < 10) plants.add(plant);
+        }
+        return plants;
+    }
+
+    private void openBurnPlant(Player player, Plant plant) {
+        Collection<Plant> nearbyPlants = getNearbyPlants(player.getLocation());
+        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §c" + nearbyPlants.size() + " Plantagen");
+        inventoryManager.setItem(new CustomItem(5, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§cVerbrennen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                Collection<PlayerData> nearbyExecutives = factionManager.getFactionMemberInRange("Polizei", player.getLocation(), 10, false);
+                nearbyExecutives.addAll(factionManager.getFactionMemberInRange("FBI", player.getLocation(), 10, false));
+                if (nearbyExecutives.size() < 4) {
+                    player.sendMessage(Prefix.ERROR + "Es sind nicht genug Beamte in der nähe.");
+                    return;
+                }
+                factionManager.sendCustomMessageToFactions("§9HQ: Es wurden " + nearbyPlants.size() + " Plantagen verbrand.", "Polizei", "FBI");
+                int xp = 100 * nearbyPlants.size();
+                xp = xp / nearbyExecutives.size();
+                for (PlayerData executive : nearbyExecutives) {
+                    playerManager.addExp(executive.getPlayer(), xp);
+                }
+                for (Plant p : nearbyPlants) {
+                    p.getBlock().setType(Material.FIRE);
+                }
+                Main.waitSeconds(10, () -> {
+                    for (Plant p : nearbyPlants) {
+                        p.getBlock().setType(Material.AIR);
+                        plants.remove(p);
+                    }
+                });
+            }
+        });
+    }
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (player.getInventory().getItemInMainHand().getType().equals(Material.WATER_BUCKET)
+            || player.getInventory().getItemInMainHand().getType().equals(Material.BONE_MEAL)) {
+            event.setCancelled(true);
+        }
         PlayerData playerData = playerManager.getPlayerData(player);
         if (!playerData.canInteract() || playerData.isCuffed() || playerData.getFaction() == null) return;
         if (event.getClickedBlock() == null) return;
+        if (Main.getInstance().getCooldownManager().isOnCooldown(player, "plant")) return;
+        System.out.println("AA");
         if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK) || event.getClickedBlock().getType().equals(Material.DIRT)) {
             PlantType drug = null;
-            if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.COCAINE_SEEDS)) {
-                drug = PlantType.COCAINE;
-            } else if (ItemManager.equals(player.getInventory().getItemInMainHand(), RoleplayItem.WEED_SEEDS)) {
-                drug = PlantType.WEED;
+            for (PlantType type : PlantType.values()) {
+                if (ItemManager.equals(player.getInventory().getItemInMainHand(), type.getPlantItem())) drug = type;
             }
             if (drug == null) {
                 return;
@@ -170,9 +215,17 @@ public class PlantFunctions implements Listener {
             player.sendMessage("§8[§6Plantage§8]§2 " + plant(player, drug, event.getClickedBlock()));
             return;
         }
+        System.out.println("SS");
         Plant plant = getPlantByBlock(event.getClickedBlock());
-        if (plant == null) return;
+        if (plant == null) {
+            return;
+        }
+        Main.getInstance().getCooldownManager().setCooldown(player, "plant", 1);
         if (!plant.getPlanter().getName().equalsIgnoreCase(playerData.getFaction())) {
+            if (playerData.isExecutiveFaction()) {
+                openBurnPlant(player, plant);
+                return;
+            }
             player.sendMessage(Prefix.ERROR + "Diese Plantage gehört nicht deiner Fraktion.");
             return;
         }
@@ -206,8 +259,8 @@ public class PlantFunctions implements Listener {
                 int inProgress = (int) plants.stream().filter(x -> x.getPlanter() == factionData).count() - wateredFertilized;
                 int degenerate = (int) plants.stream().filter(x -> x.getPlanter() == factionData && x.getTime() < 1).count();
                 if (inProgress >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + inProgress + " Plantagen befinden sich im Reifeprozess.", factionData.getName());
-                if (wateredFertilized >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + inProgress + " Plantagen müssen gewässert/gedüngt werden.", factionData.getName());
-                if (degenerate >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + inProgress + " Plantagen verkommen.", factionData.getName());
+                if (wateredFertilized >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + wateredFertilized + " Plantagen müssen gewässert/gedüngt werden.", factionData.getName());
+                if (degenerate >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + degenerate + " Plantagen verkommen.", factionData.getName());
             }
         }
     }

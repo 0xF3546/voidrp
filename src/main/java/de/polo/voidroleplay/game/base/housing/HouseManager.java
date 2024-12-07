@@ -461,6 +461,11 @@ public class HouseManager implements CommandExecutor, Listener {
         }
     }
 
+    public void openHouseTreasury(Player player, House house) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§6Hauskasse");
+    }
+
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
         if (event.getSubmitTo().equalsIgnoreCase("weaponammo")) {

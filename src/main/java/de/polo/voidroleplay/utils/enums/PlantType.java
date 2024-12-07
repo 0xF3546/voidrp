@@ -12,11 +12,12 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum PlantType {
-    COCAINE("Pulver", Drug.COCAINE, 180),
-    WEED("Gras", Drug.JOINT, 120);
+    COCAINE("Pulver", Drug.COCAINE, 180, RoleplayItem.COCAINE_SEEDS),
+    WEED("Gras", Drug.JOINT, 120, RoleplayItem.WEED_SEEDS);
 
     private final String name;
     private final Drug drug;
     private final int time;
+    private final RoleplayItem plantItem;
 
 }
