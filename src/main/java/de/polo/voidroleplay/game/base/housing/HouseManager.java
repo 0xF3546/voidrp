@@ -464,6 +464,25 @@ public class HouseManager implements CommandExecutor, Listener {
     public void openHouseTreasury(Player player, House house) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§6Hauskasse");
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aEinzahlen", null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(5, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§a" + Utils.toDecimalFormat(house.getMoney()) + "$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(6, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null)) {
+
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
     }
 
     @EventHandler

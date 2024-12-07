@@ -39,9 +39,9 @@ public class PayDayUtils {
         }
         double steuern = 0;
         if (playerData.getRelationShip().containsValue("verheiratet")) {
-            steuern = Math.round(playerManager.bank(player) * 0.015);
+            steuern = Math.round(playerManager.bank(player) * 0.008);
         } else {
-            steuern = Math.round(playerManager.bank(player) * 0.035);
+            steuern = Math.round(playerManager.bank(player) * 0.005);
         }
         int visumbonus = playerManager.visum(player) * 10;
         if (playerData.getPermlevel() >= 20) {
@@ -132,12 +132,12 @@ public class PayDayUtils {
         }
         plus -= rent;
         plus = Math.round(plus);
+        playerManager.addBankMoney(player, (int) plus, "PayDay");
         if (plus >= 0) {
             player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§a+" + (int) plus + "$§8)");
         } else {
             player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c-" + (int) plus + "$§8)");
         }
-        playerManager.addBankMoney(player, (int) plus, "PayDay");
         playerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {

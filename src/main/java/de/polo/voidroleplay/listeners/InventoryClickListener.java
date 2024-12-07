@@ -52,26 +52,9 @@ public class InventoryClickListener implements Listener {
         FactionData factionData = null;
         if (playerData.getVariable("current_inventory") == null) return;
         if (playerData.getFaction() != null) factionData = factionManager.getFactionData(playerData.getFaction());
-        if (Objects.equals(playerData.getVariable("current_inventory"), "bossmenu_" + playerData.getFaction())) {
-            event.setCancelled(true);
-            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                case NETHER_WART:
-                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
-                    break;
-                case GOLD_NUGGET:
-                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
-                    break;
-                case PLAYER_HEAD:
-                    Main.getInstance().commands.openBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
-                    break;
-            }
-        }
         if (playerData.getVariable("current_inventory").toString().contains("edit_factionplayer_")) {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                case NETHER_WART:
-                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, 1);
-                    break;
                 case REDSTONE:
                     UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);

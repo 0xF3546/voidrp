@@ -67,7 +67,7 @@ public class ForumCommand implements CommandExecutor {
                     }
                     if (playerData.getFaction() != null) {
                         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-                        if (playerData.getFactionGrade() >= 5) {
+                        if (playerData.isLeader()) {
                             ranks.add(factionData.getForumID_Leader());
                         } else {
                             ranks.add(factionData.getForumID());

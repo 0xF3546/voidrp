@@ -75,13 +75,13 @@ public class AdminGiveRankCommand implements CommandExecutor {
                 return false;
             }
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-            if (targetplayerData.getFactionGrade() >= 5) {
+            if (targetplayerData.isLeader()) {
                 if (rang < 5) {
                     TeamSpeak.reloadPlayer(targetplayerData.getUuid());
                 }
             }
             targetplayerData.setFactionGrade(rang);
-            if (targetplayerData.getFactionGrade() >= 5) {
+            if (targetplayerData.isLeader()) {
                 TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
             }
             target.sendMessage("§8[§cAdmin§8]§c " + playerData.getRang() + " " + player.getName() + " hat dir Rang " + rang + " gegeben! (Administrativ)");

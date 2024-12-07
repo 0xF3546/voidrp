@@ -308,7 +308,6 @@ public final class Main extends JavaPlugin {
         public TPCommand tpCommand;
         public TPHereCommand tpHereCommand;
         public SpeedCommand speedCommand;
-        public OpenBossMenuCommand openBossMenuCommand;
         public KickCommand kickCommand;
         public OOCCommand oocCommand;
         public PluginCommand pluginCommand;
@@ -536,7 +535,6 @@ public final class Main extends JavaPlugin {
             tpCommand = new TPCommand(playerManager, adminManager);
             tpHereCommand = new TPHereCommand(playerManager, adminManager);
             speedCommand = new SpeedCommand(playerManager);
-            openBossMenuCommand = new OpenBossMenuCommand(playerManager, factionManager);
             kickCommand = new KickCommand(playerManager);
             oocCommand = new OOCCommand();
             pluginCommand = new PluginCommand(playerManager);

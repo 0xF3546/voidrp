@@ -763,7 +763,7 @@ public class PlayerManager implements Listener {
                         // Batch-Operation für Fraktionsmitglieder
                         for (PlayerData playerData : playerDataMap.values()) {
                             if (playerData.getFaction() != null) {
-                                if (playerData.getFactionGrade() >= 5 && playerData.getFaction().equals(factionData.getName())) {
+                                if (playerData.isLeader() && playerData.getFaction().equals(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
                                     if (player == null) continue;
                                     sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction, (banner * 30));

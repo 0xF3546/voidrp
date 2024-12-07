@@ -35,7 +35,7 @@ public class SubTeamCommand implements CommandExecutor {
             return false;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (playerData.getFactionGrade() < 5) {
+        if (!playerData.isLeader()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }

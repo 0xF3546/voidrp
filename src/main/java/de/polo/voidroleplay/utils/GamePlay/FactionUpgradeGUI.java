@@ -36,7 +36,7 @@ public class FactionUpgradeGUI {
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, "§2Drogen-Multiplier", Arrays.asList("§8 ➥§e Aktuell§8:§7 " + factionData.upgrades.getDrugEarning() + "x", "§8 ➥§7Plantagen produzieren mehr Drogen", "", "§8 » §aUpgrade für " + Utils.toDecimalFormat(upgradeDrugPrice) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (playerData.getFactionGrade() < 5) {
+                if (!playerData.isLeader()) {
                     player.sendMessage(Main.error_nopermission);
                     return;
                 }
@@ -55,7 +55,7 @@ public class FactionUpgradeGUI {
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Steuer-Upgrade", Arrays.asList("§8 ➥§e Aktuell§8:§7 " + Utils.toDecimalFormat(factionData.upgrades.getTax()) + "$", "§8 ➥§7Erhöht den Freibetrag", "", "§8 » §aUpgrade für " + Utils.toDecimalFormat(upgradeTaxPrice) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (playerData.getFactionGrade() < 5) {
+                if (!playerData.isLeader()) {
                     player.sendMessage(Main.error_nopermission);
                     return;
                 }
@@ -74,7 +74,7 @@ public class FactionUpgradeGUI {
         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§cWaffen-Upgrade", Arrays.asList("§8 ➥§e Aktuell§8:§7 " + factionData.upgrades.getWeapon() + "%", "§8 ➥§7Reduziert die Waffenpreise", "", "§8 » §aUpgrade für " + Utils.toDecimalFormat(upgradeWeaponPrice) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (playerData.getFactionGrade() < 5) {
+                if (!playerData.isLeader()) {
                     player.sendMessage(Main.error_nopermission);
                     return;
                 }

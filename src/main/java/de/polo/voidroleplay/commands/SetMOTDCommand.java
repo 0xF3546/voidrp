@@ -37,7 +37,7 @@ public class SetMOTDCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        if (playerData.getFactionGrade() < 5) {
+        if (!playerData.isLeader()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }

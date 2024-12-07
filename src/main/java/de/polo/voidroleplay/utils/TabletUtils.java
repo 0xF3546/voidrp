@@ -106,9 +106,6 @@ public class TabletUtils implements Listener {
     public void openApp(Player player, String app) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         switch (app) {
-            case "fraktionsapp":
-                Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, 1);
-                break;
             case "aktenapp":
                 openAktenApp(player);
                 break;
@@ -323,7 +320,7 @@ public class TabletUtils implements Listener {
                     @SneakyThrows
                     @Override
                     public void onClick(InventoryClickEvent event) {
-                        if (playerData.getFactionGrade() >= 5) {
+                        if (playerData.isLeader()) {
                             if (event.isRightClick()) {
                                 player.sendMessage("§aDu hast die Akte " + value2 + " gelöscht.");
                                 statement.execute("DELETE FROM akten WHERE id = " + id);
@@ -358,7 +355,7 @@ public class TabletUtils implements Listener {
                 openAktenApp(player);
             }
         });
-        if (playerData.getFactionGrade() >= 5)
+        if (playerData.isLeader())
             inventoryManager.setItem(new CustomItem(22, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aAkte einfügen", null)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

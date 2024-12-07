@@ -151,8 +151,8 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(Main.error + args[0] + " ist nicht online.");
                 return false;
             }
-            if (playerData.getFactionGrade() < 5) {
-                player.sendMessage(Main.error + "Dieser Befehl ist erst ab Rang 5+ verfübar.");
+            if (playerData.getFactionGrade() < 4) {
+                player.sendMessage(Main.error + "Dieser Befehl ist erst ab Rang 4+ verfübar.");
                 return false;
             }
             boolean canDo = false;

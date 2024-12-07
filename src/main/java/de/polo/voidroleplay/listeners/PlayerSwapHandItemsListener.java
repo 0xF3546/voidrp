@@ -385,7 +385,7 @@ public class PlayerSwapHandItemsListener implements Listener {
             }
         });
 
-        if (playerData.getFaction() != null && playerData.getFactionGrade() >= 5) {
+        if (playerData.getFaction() != null && playerData.isLeader()) {
             inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.PAPER, 1, 0, "§cLeadermenü")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

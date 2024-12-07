@@ -33,7 +33,7 @@ public class GiveRankCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFactionGrade() < 5) {
+        if (!playerData.isLeader()) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -95,13 +95,13 @@ public class GiveRankCommand implements CommandExecutor {
         if (targetplayer.isOnline()) {
             Player target = Bukkit.getPlayer(args[0]);
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-            if (targetplayerData.getFactionGrade() >= 5) {
-                if (rang < 7) {
+            if (targetplayerData.isLeader()) {
+                if (rang < 5) {
                     TeamSpeak.reloadPlayer(targetplayerData.getUuid());
                 }
             }
             targetplayerData.setFactionGrade(rang);
-            if (targetplayerData.getFactionGrade() >= 5) {
+            if (targetplayerData.isLeader()) {
                 TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
             }
             target.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 " + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat dir Rang " + rang + " gegeben!");

@@ -52,6 +52,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
         targetplayer.sendMessage(Prefix.faction_prefix + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
         try {
             factionManager.setPlayerInFrak(targetplayer, frak, 6);
+            factionManager.setLeader(targetplayer, true);
             adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " gesetzt.", ChatColor.DARK_PURPLE);
         } catch (SQLException e) {
             throw new RuntimeException(e);
