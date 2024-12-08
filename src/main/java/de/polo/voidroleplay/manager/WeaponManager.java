@@ -2,6 +2,7 @@ package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.*;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
@@ -97,11 +98,7 @@ public class WeaponManager implements Listener {
             weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
             weapon.setId(result.getInt("id"));
             weapon.setOwner(UUID.fromString(result.getString("uuid")));
-            for (WeaponData weaponData : weaponDataMap.values()) {
-                if (weaponData.getId() == result.getInt("weapon")) {
-                    weapon.setWeaponData(weaponData);
-                }
-            }
+            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
             weaponList.put(weapon.getId(), weapon);
         }
     }
@@ -384,6 +381,7 @@ public class WeaponManager implements Listener {
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + playerWeapon.getWeapon().getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
+        weaponList.put(weapon.getId(), weapon);
     }
 
     public void giveWeapon(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, WeaponType weaponType) {
@@ -414,16 +412,20 @@ public class WeaponManager implements Listener {
         System.out.println("GIVING AMMO");
 
         Main.getInstance().getMySQL()
-                .insertAndGetKeyAsync("INSERT INTO player_weapons (uuid, weapon, weaponType)",
+                .insertAndGetKeyAsync("INSERT INTO player_weapons (uuid, weapon, weaponType) VALUES (?, ?, ?)",
                         w.getOwner().toString(), weapon.name(), weaponType.name())
                 .thenApply(key -> {
-                    key.ifPresent(w::setId);
-                    giveWeapon(player, new PlayerWeapon(
-                            weapon,
-                            wear,
-                            ammo,
-                            weaponType
-                    ), w);
+                    if (key.isPresent()) {
+                        w.setId(key.get());
+                        giveWeapon(player, new PlayerWeapon(
+                                weapon,
+                                wear,
+                                ammo,
+                                weaponType
+                        ), w);
+                    } else {
+                        player.sendMessage(Prefix.ERROR + "Es gab einen Fehler beim erstellen der Waffe.");
+                    }
                     return null;
                 });
     }
@@ -431,6 +433,7 @@ public class WeaponManager implements Listener {
     public void giveAmmo(Player player, Weapon weapon, int ammo) {
         ItemStack item = null;
         for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack == null) continue;
             if (itemStack.getItemMeta().getDisplayName()
                     .equals(weapon.getType().getName())
                     && itemStack.getType()
