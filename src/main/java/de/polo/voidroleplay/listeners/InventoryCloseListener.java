@@ -23,8 +23,8 @@ public class InventoryCloseListener implements Listener {
             return;
         }
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getVariable("jugendschutz") != null) {
-            player.kickPlayer("§cDa du den Jugendschutz nicht aktzeptieren konntest, kannst du auf dem Server §lnicht§c Spielen.\n§cBitte deine Erziehungsberechtigten um Erlabunis oder warte bis du 18 bist.");
-        }
+        if (playerData == null) return;
+        if (playerData.getVariable("jugendschutz") == null) return;
+        playerManager.kickPlayer(player, "§cDa du den Jugendschutz nicht aktzeptieren konntest, kannst du auf dem Server §lnicht§c Spielen.\n§cBitte deine Erziehungsberechtigten um Erlabunis oder warte bis du 18 bist.");
     }
 }
