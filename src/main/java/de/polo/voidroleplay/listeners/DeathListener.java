@@ -2,15 +2,18 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.commands.BombeCommand;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.storage.BlacklistData;
+import de.polo.voidroleplay.storage.ContractData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.game.faction.streetwar.StreetwarData;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
+import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import de.polo.voidroleplay.utils.player.ChatUtils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -112,13 +115,6 @@ public class DeathListener implements Listener {
 
             Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
             utils.deathUtil.addDeathSkull(player.getUniqueId().toString(), item);
-            if (playerData.getWanted() != null && killer != null) {
-                WantedReason wantedReason = utils.staatUtil.getWantedReason(playerData.getWanted().getWantedId());
-                PlayerData killerData = playerManager.getPlayerData(killer);
-                if (killerData.isExecutiveFaction() && wantedReason.getWanted() >= 50) {
-                    utils.staatUtil.arrestPlayer(player, killer, true);
-                }
-            }
             if ((ServerManager.contractDataMap.get(playerUUID.toString()) != null
                     && killer != null
                     && Objects.equals(factionManager.faction(killer), "ICA"))

@@ -1,9 +1,9 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.BusinessData;
-import de.polo.voidroleplay.dataStorage.DBPlayerData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.BusinessData;
+import de.polo.voidroleplay.storage.DBPlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.RankData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import de.polo.voidroleplay.utils.player.ScoreboardAPI;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

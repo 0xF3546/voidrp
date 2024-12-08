@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.game.base.ffa;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.WeaponType;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.WeaponType;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -13,7 +13,7 @@ import de.polo.voidroleplay.utils.enums.FFALobbyType;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
-import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStats;
+import de.polo.voidroleplay.utils.player.PlayerFFAStats;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -264,7 +264,7 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                             Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
@@ -299,7 +299,7 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                             Main.getInstance().weaponManager.removeWeapon(player, item);
                         }

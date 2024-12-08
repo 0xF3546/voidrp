@@ -1,21 +1,23 @@
 package de.polo.voidroleplay;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import de.polo.voidroleplay.commands.*;
-import de.polo.voidroleplay.dataStorage.FactionData;
 import de.polo.voidroleplay.database.impl.MySQL;
-import de.polo.voidroleplay.game.base.extra.Beginnerpass.Beginnerpass;
-import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
+import de.polo.voidroleplay.game.base.extra.beginnerpass.Beginnerpass;
+import de.polo.voidroleplay.game.base.extra.seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryApiRegister;
+import de.polo.voidroleplay.manager.inventory.InventoryApiRegister;
+import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
+import de.polo.voidroleplay.utils.gameplay.GamePlay;
+import de.polo.voidroleplay.utils.player.ScoreboardAPI;
+import de.polo.voidroleplay.utils.player.ScoreboardManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -75,6 +77,7 @@ public final class Main extends JavaPlugin {
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
     private NPCManager npc;
+    public ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
     @Getter
     private DynmapAPI dynmapAPI;

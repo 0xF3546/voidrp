@@ -1,16 +1,16 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.LocationData;
-import de.polo.voidroleplay.dataStorage.NaviData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.RegisteredBlock;
+import de.polo.voidroleplay.storage.LocationData;
+import de.polo.voidroleplay.storage.NaviData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.playerUtils.SoundManager;
+import de.polo.voidroleplay.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
 import org.bukkit.command.Command;

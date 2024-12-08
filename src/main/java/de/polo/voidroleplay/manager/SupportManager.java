@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.manager;
 
-import de.polo.voidroleplay.dataStorage.Ticket;
+import de.polo.voidroleplay.storage.Ticket;
 import de.polo.voidroleplay.database.impl.MySQL;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;

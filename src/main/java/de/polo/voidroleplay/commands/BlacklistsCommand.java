@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.BlacklistData;
-import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.storage.BlacklistData;
+import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.manager.FactionManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

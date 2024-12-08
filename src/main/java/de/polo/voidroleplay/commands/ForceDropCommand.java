@@ -1,9 +1,9 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.game.base.extra.Drop.Drop;
+import de.polo.voidroleplay.game.base.extra.drop.Drop;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,7 +35,7 @@ public class ForceDropCommand implements CommandExecutor {
 
         Drop drop = Main.getInstance().gamePlay.spawnDrop();
         if (drop == null) {
-            player.sendMessage(Prefix.ERROR + "Drop konnte nicht gespawnt werden.");
+            player.sendMessage(Prefix.ERROR + "drop konnte nicht gespawnt werden.");
             return false;
         }
         player.teleport(drop.location);

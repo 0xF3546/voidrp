@@ -10,4 +10,6 @@ public interface INameTagProvider {
     boolean clearAll();
 
     boolean setNametagForGroup(Player player, Iterable<Player> viewers, String name, String prefix, String suffix);
+
+    boolean clearNametagForGroup(Player player, Iterable<Player> viewers);
 }

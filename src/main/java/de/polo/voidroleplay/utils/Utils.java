@@ -1,15 +1,15 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.RankData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.playerUtils.BankingUtils;
-import de.polo.voidroleplay.utils.playerUtils.DeathUtils;
-import de.polo.voidroleplay.utils.playerUtils.PayDayUtils;
-import de.polo.voidroleplay.utils.playerUtils.Tutorial;
+import de.polo.voidroleplay.utils.player.BankingUtils;
+import de.polo.voidroleplay.utils.player.DeathUtils;
+import de.polo.voidroleplay.utils.player.PayDayUtils;
+import de.polo.voidroleplay.utils.player.Tutorial;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

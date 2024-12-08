@@ -1,7 +1,10 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.storage.JailData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.ServiceData;
+import de.polo.voidroleplay.storage.WantedReason;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
@@ -18,8 +21,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class StaatUtil {
@@ -82,50 +83,23 @@ public class StaatUtil {
         }
     }
 
-    private String calculateManhuntTime(PlayerWanted wanted) {
-        LocalDateTime jetzt = LocalDateTime.now();
-        Duration differenz = Duration.between(wanted.getIssued(), jetzt);
-
-        long minuten = differenz.toMinutes();
-        if (minuten < 60) {
-            return minuten + " Minute" + (minuten > 1 ? "n" : "");
-        }
-
-        long stunden = differenz.toHours();
-        if (stunden < 24) {
-            return stunden + " Stunde" + (stunden > 1 ? "n" : "");
-        }
-
-        long tage = differenz.toDays();
-        return tage + " Tag" + (tage > 1 ? "e" : "");
-    }
-
-    public boolean arrestPlayer(Player player, Player arrester, boolean deathArrest) throws SQLException {
+    public boolean arrestPlayer(Player player, Player arrester) throws SQLException {
         StringBuilder reason = new StringBuilder();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         PlayerData arresterData = playerManager.getPlayerData(arrester.getUniqueId());
         WantedReason wantedReason = getWantedReason(playerData.getWanted().getWantedId());
         if (playerData.getWanted() != null) {
             JailData jailData = new JailData();
-            if (!deathArrest) locationManager.useLocation(player, "gefaengnis");
-            if (deathArrest) {
-                player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wantedReason.getWanted() + " Minuten inhaftiert.");
-            } else {
-                player.sendMessage("§8[§6Gefängnis§8] §7Du bist nun für " + wantedReason.getWanted() + "  Minuten im Gefängnis..");
-            }
+            locationManager.useLocation(player, "gefaengnis");
+            player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + wantedReason.getWanted() + " Hafteinheiten§7 inhaftiert.");
             playerData.setJailed(true);
             factionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
             playerData.setHafteinheiten(wantedReason.getWanted());
             Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                if (playerData1.isExecutiveFaction()) {
-                    if (deathArrest) {
-                        players.sendMessage("§9HQ: " + player.getName() +" wurde von " + arrester.getName() + " getötet.");
-                    } else {
-                        players.sendMessage("§9HQ: " + factionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
-                    }
-                    players.sendMessage("§9HQ: Fahndungsgrund: " + wantedReason.getReason() + " | Fahndungszeit: " + calculateManhuntTime(playerData.getWanted()));
+                if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
+                    players.sendMessage("§8[§cGefängnis§8] §7" + factionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
                 }
             }
             Main.getInstance().getMySQL().queryThreaded("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), wantedReason.getWanted(), arrester.getUniqueId().toString());
@@ -160,7 +134,7 @@ public class StaatUtil {
         playerData.setHafteinheiten(0);
         jailDataMap.remove(player.getUniqueId().toString());
         Statement statement = Main.getInstance().mySQL.getStatement();
-        player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest entlassen.");
+        player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
         statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId() + "'");
         loadParole(player);
     }
