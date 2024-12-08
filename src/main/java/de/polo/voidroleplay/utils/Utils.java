@@ -280,19 +280,13 @@ public class Utils {
                 prefix = "";
             }
             String name = "§7" + player.getName();
-            if (playerData.isDuty()) {
+            if (playerData.isDuty() && playerData.getFaction() != null) {
                 switch (playerData.getFaction().toLowerCase()) {
-                    case "polizei":
-                        name = "§9" + player.getName();
-                        break;
-                    case "fbi":
-                        name = "§1" + player.getName();
-                        break;
-                    case "medic":
-                        name = "§c" + player.getName();
-                        break;
-                    default:
-                        break;
+                    case "polizei" -> name = "§9" + player.getName();
+                    case "fbi" -> name = "§1" + player.getName();
+                    case "medic" -> name = "§c" + player.getName();
+                    default -> {
+                    }
                 }
             }
             player.setDisplayName(Color.GRAY + player.getName());

@@ -225,7 +225,7 @@ public class WeaponManager implements Listener {
         NamespacedKey id = new NamespacedKey(Main.plugin, "id");
         Integer weaponId = event.getItem().getItemMeta().getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
         Weapon weapon = weaponList.get(weaponId);
-
+        if (weapon == null) return;
 
         if (!Instant.now().isAfter(weapon.getShootCooldown())) {
             return;
@@ -414,11 +414,10 @@ public class WeaponManager implements Listener {
         System.out.println("GIVING AMMO");
 
         Main.getInstance().getMySQL()
-                .queryThreadedWithGeneratedKeys("INSERT INTO player_weapons (uuid, weapon, weaponType)",
+                .insertAndGetKeyAsync("INSERT INTO player_weapons (uuid, weapon, weaponType)",
                         w.getOwner().toString(), weapon.name(), weaponType.name())
                 .thenApply(key -> {
                     key.ifPresent(w::setId);
-                    System.out.println(key.get());
                     giveWeapon(player, new PlayerWeapon(
                             weapon,
                             wear,
@@ -491,7 +490,7 @@ public class WeaponManager implements Listener {
         playerData.giveWeapon(playerWeapon);
         Main.getInstance()
                 .getMySQL()
-                .queryThreadedWithGeneratedKeys(
+                .insertAndGetKeyAsync(
                         "INSERT INTO player_gun_cabinet (uuid, weapon, wear, ammo) VALUES (?, ?, ?, ?)",
                         player.getUniqueId().toString(),
                         playerWeapon.getWeapon().name(),

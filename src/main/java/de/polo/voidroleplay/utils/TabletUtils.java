@@ -576,7 +576,13 @@ public class TabletUtils implements Listener {
 
     public void createNewAkte(Player player) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO wantedreasons (reason, wanted) VALUES (?, ?)", playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"));
+        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO wantedreasons (reason, wanted) VALUES (?, ?)", playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"))
+                .thenApply(key -> {
+                    if (key.isPresent()) {
+                        WantedReason wantedReason = new WantedReason(key.get(), playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"));
+                    }
+                    return null;
+                });
         player.sendMessage("§8[§aAkte§8]§7 Akte wurde hinzugefügt.");
         player.closeInventory();
     }
@@ -1014,7 +1020,7 @@ public class TabletUtils implements Listener {
                 event.end();
                 return;
             }
-            event.getPlayerData().setIntVariable("input_wanted", input);
+            event.getPlayerData().setVariable("input_wanted", input);
             createAkte(event.getPlayer());
             event.end();
         }

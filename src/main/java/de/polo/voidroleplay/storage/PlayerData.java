@@ -327,7 +327,10 @@ public class PlayerData {
         illnesses.add(playerIllness);
         if (save) {
             Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO player_illness (uuid, illness) VALUES (?, ?)", player.getUniqueId().toString(), playerIllness.getIllnessType().name())
-                    .thenAccept(key -> key.ifPresent(playerIllness::setId));
+                    .thenApply(key -> {
+                        key.ifPresent(playerIllness::setId);
+                        return null;
+                    });
         }
     }
 
@@ -808,7 +811,7 @@ public class PlayerData {
                         System.out.println("DELETE query completed.");
                         String insertQuery = "INSERT INTO player_wanteds (uuid, issuer, wantedId) VALUES (?, ?, ?)";
                         System.out.println("Preparing to execute INSERT query...");
-                        return Main.getInstance().getMySQL().queryThreadedWithGeneratedKeys(insertQuery,
+                        return Main.getInstance().getMySQL().insertAndGetKeyAsync(insertQuery,
                                 player.getUniqueId().toString(),
                                 playerWanted.getIssuer().toString(),
                                 playerWanted.getWantedId());

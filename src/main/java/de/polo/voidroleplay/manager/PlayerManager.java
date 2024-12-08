@@ -196,9 +196,9 @@ public class PlayerManager implements Listener {
                 playerData.setHouseSlot(result.getInt("houseSlot"));
                 playerData.setCurrentHours(result.getInt("current_hours"));
                 if (result.getDate("rankDuration") != null) {
-                    Date utilDate = new Date(result.getDate("rankDuration").getTime());
-                    LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    playerData.setRankDuration(localDateTime);
+                    java.sql.Date utilDate = new Date(result.getDate("rankDuration").getTime());
+                    Instant instant = Instant.ofEpochMilli(utilDate.getTime());
+                    playerData.setRankDuration(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
                 System.out.println(result.getDate("dailyBonusRedeemed"));
                 if (result.getDate("dailyBonusRedeemed") != null) {
@@ -340,9 +340,9 @@ public class PlayerManager implements Listener {
                     }
                 }
 
-                for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
+                /*for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
                     playerData.addWorkstation(workstation);
-                }
+                }*/
 
                 player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
                 player.setLevel(result.getInt("level"));

@@ -182,6 +182,26 @@ public class MySQL implements Database {
 
                 statement.executeUpdate();
 
+                try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        return Optional.of(resultSet.getInt(1));
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error executing query", e);
+            }
+            return Optional.empty();
+        }, BetterExecutor.executor);
+        /*return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                statement.executeUpdate();
+
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         int generatedKey = generatedKeys.getInt(1);
@@ -192,7 +212,7 @@ public class MySQL implements Database {
             } catch (SQLException e) {
                 throw new RuntimeException("Database insert failed", e);
             }
-        }, BetterExecutor.executor);
+        }, BetterExecutor.executor);*/
     }
 
     @Override
