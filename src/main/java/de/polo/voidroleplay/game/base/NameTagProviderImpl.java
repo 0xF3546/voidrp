@@ -81,8 +81,8 @@ public class NameTagProviderImpl implements INameTagProvider {
             teamPacket.getStrings().write(0, teamName);
             teamPacket.getIntegers().write(0, 0); // Action: Create team
             teamPacket.getChatComponents()
-                    .write(0, WrappedChatComponent.fromText(prefix)) // Prefix
-                    .write(1, WrappedChatComponent.fromText(suffix)); // Suffix
+                    .write(0, WrappedChatComponent.fromText(prefix.replace("&", "§"))) // Prefix
+                    .write(1, WrappedChatComponent.fromText(suffix.replace("&", "§"))); // Suffix
 
             PacketContainer addPlayersPacket = new PacketContainer(PacketType.Play.Server.SCOREBOARD_TEAM);
             addPlayersPacket.getStrings().write(0, teamName);
