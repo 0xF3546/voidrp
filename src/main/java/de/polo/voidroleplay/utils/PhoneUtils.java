@@ -11,6 +11,7 @@ import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.enums.Gender;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
@@ -83,15 +84,7 @@ public class PhoneUtils implements Listener {
     }
 
     public static boolean hasPhone(Player player) {
-        Inventory inv = player.getInventory();
-        Material phone = Material.IRON_NUGGET;
-        boolean returnval = false;
-        for (ItemStack item : inv.getContents()) {
-            if (item != null && item.getType() == phone) {
-                returnval = true;
-            }
-        }
-        return returnval;
+        return ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) >= 1;
     }
 
     @EventHandler
