@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.SubGroups;

@@ -1,15 +1,15 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.VehicleData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

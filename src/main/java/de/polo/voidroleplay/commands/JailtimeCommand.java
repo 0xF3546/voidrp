@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

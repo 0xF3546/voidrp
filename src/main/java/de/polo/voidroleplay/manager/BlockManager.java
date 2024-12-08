@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.RegisteredBlock;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.database.impl.MySQL;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;

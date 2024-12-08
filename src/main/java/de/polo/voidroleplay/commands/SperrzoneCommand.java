@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.NaviData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.NaviData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.PlayerManager;

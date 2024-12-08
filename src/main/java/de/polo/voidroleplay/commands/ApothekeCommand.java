@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
+import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

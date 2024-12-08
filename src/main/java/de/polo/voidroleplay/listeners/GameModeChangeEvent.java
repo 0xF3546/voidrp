@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

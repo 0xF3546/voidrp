@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import de.polo.voidroleplay.utils.player.ChatUtils;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.entity.Arrow;

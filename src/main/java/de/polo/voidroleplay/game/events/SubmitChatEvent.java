@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.events;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

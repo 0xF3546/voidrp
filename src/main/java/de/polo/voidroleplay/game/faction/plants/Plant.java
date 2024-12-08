@@ -1,13 +1,10 @@
 package de.polo.voidroleplay.game.faction.plants;
 
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.utils.enums.Drug;
+import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.utils.enums.PlantType;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.block.Block;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.time.LocalDateTime;
 

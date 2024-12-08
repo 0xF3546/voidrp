@@ -1,16 +1,16 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.Agreement;
-import de.polo.voidroleplay.dataStorage.Company;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.SubGroup;
+import de.polo.voidroleplay.storage.Agreement;
+import de.polo.voidroleplay.storage.Company;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.SubGroup;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;

@@ -1,17 +1,17 @@
 package de.polo.voidroleplay.game.base.housing;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.PlayerWeapon;
-import de.polo.voidroleplay.dataStorage.RegisteredBlock;
-import de.polo.voidroleplay.dataStorage.Weapon;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerWeapon;
+import de.polo.voidroleplay.storage.RegisteredBlock;
+import de.polo.voidroleplay.storage.Weapon;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.HouseType;

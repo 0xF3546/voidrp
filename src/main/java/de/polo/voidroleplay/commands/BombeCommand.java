@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.Bomb;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.Bomb;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;

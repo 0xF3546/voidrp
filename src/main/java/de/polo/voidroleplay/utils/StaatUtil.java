@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.JailData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.ServiceData;
-import de.polo.voidroleplay.dataStorage.WantedReason;
+import de.polo.voidroleplay.storage.JailData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.ServiceData;
+import de.polo.voidroleplay.storage.WantedReason;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;

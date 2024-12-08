@@ -1,9 +1,9 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.DBPlayerData;
-import de.polo.voidroleplay.dataStorage.FactionPlayerData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.DBPlayerData;
+import de.polo.voidroleplay.storage.FactionPlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.TeamSpeak;

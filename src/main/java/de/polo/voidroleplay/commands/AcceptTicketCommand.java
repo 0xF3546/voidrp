@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.Ticket;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.Ticket;
 import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;

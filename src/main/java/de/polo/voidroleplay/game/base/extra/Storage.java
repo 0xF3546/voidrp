@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.base.extra;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.InventoryUtils;
 import de.polo.voidroleplay.utils.enums.Powerup;
 import de.polo.voidroleplay.utils.enums.StorageType;

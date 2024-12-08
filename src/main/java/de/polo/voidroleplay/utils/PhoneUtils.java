@@ -1,17 +1,17 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PhoneCall;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PhoneCall;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.enums.Gender;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

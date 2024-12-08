@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.SubGroup;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.SubGroup;
 import de.polo.voidroleplay.manager.FactionManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;

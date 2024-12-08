@@ -1,16 +1,16 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
-import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.ShopType;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
+import de.polo.voidroleplay.utils.player.ScoreboardAPI;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -228,7 +228,7 @@ public class ServerManager {
                         playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.WEEKLY);
                         Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.WEEKLY);
                     }
-                    Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der Seasonpass wurde zurückgesetzt!");
+                    Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der seasonpass wurde zurückgesetzt!");
 
                     PreparedStatement ffaStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
                     ffaStatement.setString(1, FFAStatsType.WEEKLY.name());

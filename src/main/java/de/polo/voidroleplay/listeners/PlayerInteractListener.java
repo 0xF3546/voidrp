@@ -1,24 +1,24 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
-import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.extra.Storage;
+import de.polo.voidroleplay.game.base.extra.drop.Drop;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.GamePlay.Case;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
+import de.polo.voidroleplay.utils.gameplay.Case;
+import de.polo.voidroleplay.utils.gameplay.GamePlay;
+import de.polo.voidroleplay.utils.player.ChatUtils;
+import de.polo.voidroleplay.utils.player.Rubbellose;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
 import org.bukkit.block.*;
@@ -228,7 +228,7 @@ public class PlayerInteractListener implements Listener {
                         Drop drop = Main.getInstance().gamePlay.activeDrop;
                         if (drop.location.distance(event.getClickedBlock().getLocation()) < 1) {
                             if (!drop.isDropOpen) {
-                                player.sendMessage("§8[§cDrop§8]§7 Der Drop ist noch nicht offen!");
+                                player.sendMessage("§8[§cDrop§8]§7 Der drop ist noch nicht offen!");
                                 event.setCancelled(true);
                                 return;
                             } else {

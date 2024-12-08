@@ -1,14 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.PlayerWeapon;
-import de.polo.voidroleplay.dataStorage.WeaponType;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.WeaponType;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.GlobalStats;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;

@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.base.shops;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.Company;
+import de.polo.voidroleplay.storage.Company;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
