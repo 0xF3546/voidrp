@@ -26,6 +26,16 @@ public class HungerListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.isAduty()) {
             event.setCancelled(true);
+            return;
+        }
+
+        int currentFoodLevel = player.getFoodLevel();
+        int newFoodLevel = event.getFoodLevel();
+
+        if (newFoodLevel < currentFoodLevel) {
+            // reduce the hunger loss by half
+            int reducedLoss = (currentFoodLevel - newFoodLevel) / 2;
+            event.setFoodLevel(currentFoodLevel - reducedLoss);
         }
     }
 }
