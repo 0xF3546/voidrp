@@ -549,7 +549,7 @@ public class TabletUtils implements Listener {
     public void createAkte(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aAkte einfügen");
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", playerData.getVariable("input_akte") != null ? "§8 ➥ §e" + playerData.getVariable("input_akte") : "§8 ➥ §cNicht angegeben")) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", playerData.getVariable("input_reason") != null ? "§8 ➥ §e" + playerData.getVariable("input_reason") : "§8 ➥ §cNicht angegeben")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("chatblock", "createakte_reason");
@@ -557,7 +557,7 @@ public class TabletUtils implements Listener {
                 player.sendMessage("§8[§aAkte§8]§7 Gib nun den Namen der Akte an.");
             }
         });
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.CHEST, 1, 0, "§Wantedpunkte", playerData.getVariable("input_wanted") != null ? "§8 ➥ §e" + playerData.getVariable("input_wanted") : "§8 ➥ §cNicht angegeben")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.CHEST, 1, 0, "§aWantedpunkte", playerData.getVariable("input_wanted") != null ? "§8 ➥ §e" + playerData.getVariable("input_wanted") : "§8 ➥ §cNicht angegeben")) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("chatblock", "createakte_wanted");
@@ -574,7 +574,7 @@ public class TabletUtils implements Listener {
         });
     }
 
-    public void createNewAkte(Player player) throws SQLException {
+    public void createNewAkte(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO wantedreasons (reason, wanted) VALUES (?, ?)", playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"))
                 .thenApply(key -> {

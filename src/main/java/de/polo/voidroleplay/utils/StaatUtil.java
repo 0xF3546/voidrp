@@ -115,7 +115,7 @@ public class StaatUtil {
             }
             playerData.setJailed(true);
             factionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
-            playerData.setHafteinheiten(wantedReason.getWanted());
+            playerData.setHafteinheiten(wantedReason.getWanted() / 3);
             Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
@@ -128,9 +128,9 @@ public class StaatUtil {
                     players.sendMessage("§9HQ: Fahndungsgrund: " + wantedReason.getReason() + " | Fahndungszeit: " + calculateManhuntTime(playerData.getWanted()));
                 }
             }
-            Main.getInstance().getMySQL().queryThreaded("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), wantedReason.getWanted(), arrester.getUniqueId().toString());
+            jailData.setHafteinheiten(playerData.getHafteinheiten());
+            Main.getInstance().getMySQL().queryThreaded("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailData.getHafteinheiten(), arrester.getUniqueId().toString());
             jailData.setUuid(player.getUniqueId().toString());
-            jailData.setHafteinheiten(wantedReason.getWanted());
             jailData.setReason(String.valueOf(reason));
             jailDataMap.put(player.getUniqueId().toString(), jailData);
             playerData.clearWanted();

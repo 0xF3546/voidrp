@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
@@ -218,6 +219,7 @@ public class FactionManager {
         LocalDateTime cooldown = Utils.getTime().plusHours(6);
         if (playerData != null) {
             Player player = Bukkit.getPlayer(uuid);
+            if (playerData.getFactionGrade() < 4) playerData.setFactionCooldown(cooldown);
             playerData.setFaction(null);
             playerData.setFactionGrade(0);
             playerData.setDuty(false);
@@ -231,7 +233,6 @@ public class FactionManager {
                 player.setCustomName("§7" + player.getName());
                 player.setCustomNameVisible(true);
             }
-            playerData.setFactionCooldown(cooldown);
             for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
                 if (offlinePlayer.getName() != null) {
@@ -242,11 +243,40 @@ public class FactionManager {
                 }
             }
         }
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, `factionCooldown` = '" + cooldown + "' WHERE `uuid` = '" + uuid + "'");
+        updateFactionCooldownIfApplicable(uuid);
+
         ServerManager.factionPlayerDataMap.remove(uuid.toString());
         TeamSpeak.reloadPlayer(uuid);
+    }
+
+    private void updateFactionCooldownIfApplicable(UUID uuid) {
+        LocalDateTime cooldown = Utils.getTime().plusHours(6);
+        MySQL mySQL = Main.getInstance().mySQL;
+
+        // Abfrage des Rangs des Spielers
+        mySQL.executeQueryAsync("SELECT `faction_grade` FROM `players` WHERE `uuid` = ?", uuid.toString())
+                .thenAccept(result -> {
+                    if (result != null && !result.isEmpty()) {
+                        Map<String, Object> playerData = result.get(0);
+                        int factionGrade = (int) playerData.get("faction_grade");
+
+                        if (factionGrade < 4) {
+                            mySQL.updateAsync(
+                                    "UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, `factionCooldown` = ? WHERE `uuid` = ?",
+                                    cooldown.toString(), uuid.toString()
+                            ).thenRun(() -> {
+                                ServerManager.factionPlayerDataMap.remove(uuid.toString());
+                                TeamSpeak.reloadPlayer(uuid);
+                            }).exceptionally(e -> {
+                                e.printStackTrace();
+                                return null;
+                            });
+                        }
+                    }
+                }).exceptionally(e -> {
+                    e.printStackTrace();
+                    return null;
+                });
     }
 
     public void removePlayerFromFrak(Player player) throws SQLException {

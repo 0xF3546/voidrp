@@ -312,7 +312,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 });
                                 if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
-                                    inventoryManager.setItem(new CustomItem(37, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
+                                    inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             Main.getInstance().getHouseManager().openGunCabinet(player, houseData);
@@ -321,7 +321,7 @@ public class PlayerInteractListener implements Listener {
                                 }
                                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                                     if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
-                                        inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Hauskasse öffnen", "§8 ➥ §a" + Utils.toDecimalFormat(houseData.getMoney()) + "$")) {
+                                        inventoryManager.setItem(new CustomItem(41, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Hauskasse öffnen", "§8 ➥ §a" + Utils.toDecimalFormat(houseData.getMoney()) + "$")) {
                                             @Override
                                             public void onClick(InventoryClickEvent event) {
                                                 Main.getInstance().getHouseManager().openHouseTreasury(player, houseData);

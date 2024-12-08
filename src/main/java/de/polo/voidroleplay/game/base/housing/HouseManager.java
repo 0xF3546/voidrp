@@ -445,7 +445,7 @@ public class HouseManager implements CommandExecutor, Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWaffenschrank");
         int i = 0;
         for (PlayerWeapon playerWeapon : playerData.getWeapons()) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklck§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklick§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
