@@ -38,10 +38,10 @@ public class SMSCommand implements CommandExecutor {
                     player.sendMessage(Main.error + "Syntax-Fehler: /sms [Spieler] [Nachricht]");
                 }
             } else {
-                player.sendMessage(PhoneUtils.error_flightmode);
+                player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             }
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
         return false;
     }

@@ -38,11 +38,11 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (PhoneUtils.hasPhone(player)) {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
             return false;
         }
         if (playerData.isFlightmode()) {
-            player.sendMessage(PhoneUtils.error_flightmode);
+            player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             return false;
         }
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {

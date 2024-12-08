@@ -58,10 +58,10 @@ public class CallCommand implements CommandExecutor {
                     player.sendMessage(Main.error + "Syntax-Fehler: /call [Spieler]");
                 }
             } else {
-                player.sendMessage(PhoneUtils.error_flightmode);
+                player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             }
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
         return false;
     }

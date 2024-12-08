@@ -37,12 +37,12 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         String uuid = player.getUniqueId().toString();
         if (!PhoneUtils.hasPhone(player)) {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
             return false;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.isFlightmode()) {
-            player.sendMessage(PhoneUtils.error_flightmode);
+            player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             return false;
         }
         if (factionManager.faction(player) != null) {

@@ -35,8 +35,8 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public class PhoneUtils implements Listener {
-    public static final String error_nophone = "§8[§6Handy§8] §cDas kannst du aktuell nicht machen.";
-    public static final String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
+    public static final String ERROR_NO_PHONE = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
+    public static final String ERROR_FLIGHTMODE = "§8[§6Handy§8] §cDu bist im Flugmodus.";
     private static final List<PhoneCall> phoneCalls = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final Utils utils;
@@ -63,7 +63,7 @@ public class PhoneUtils implements Listener {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
     }
 
@@ -79,7 +79,7 @@ public class PhoneUtils implements Listener {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
     }
 
