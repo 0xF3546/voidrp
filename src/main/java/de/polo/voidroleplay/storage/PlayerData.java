@@ -714,6 +714,7 @@ public class PlayerData {
     }
 
     public boolean isExecutiveFaction() {
+        if (faction == null) return false;
         return faction.equalsIgnoreCase("FBI") || faction.equalsIgnoreCase("Polizei");
     }
 
