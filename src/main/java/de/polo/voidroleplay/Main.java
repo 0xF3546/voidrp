@@ -1,5 +1,7 @@
 package de.polo.voidroleplay;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.base.extra.beginnerpass.Beginnerpass;
@@ -75,6 +77,7 @@ public final class Main extends JavaPlugin {
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
     private NPCManager npc;
+    public ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
     @Getter
     private DynmapAPI dynmapAPI;
