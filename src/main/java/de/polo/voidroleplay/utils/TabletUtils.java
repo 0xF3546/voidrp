@@ -548,28 +548,35 @@ public class TabletUtils implements Listener {
 
     public void createAkte(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Inventory inv = Bukkit.createInventory(player, 27, "§8 » §aAkte einfügen");
-        playerData.setVariable("current_inventory", "tablet");
-        playerData.setVariable("current_app", "createakte");
-        if (playerData.getVariable("input_akte") == null) {
-            inv.setItem(11, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", "§8 ➥ §cNicht angegeben"));
-        } else {
-            inv.setItem(11, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", "§8 ➥ §e" + playerData.getVariable("input_akte")));
-        }
-        inv.setItem(13, ItemManager.createItem(Material.CHEST, 1, 0, "§aHafteinheiten", "§8 ➥ §e" + playerData.getIntVariable("input_hafteinheiten")));
-        inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§aGeldstrafe", "§8 ➥ §e" + playerData.getIntVariable("input_geldstrafe")));
-        inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen"));
-        for (int i = 0; i < 27; i++) {
-            if (inv.getItem(i) == null)
-                inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
-        }
-        player.openInventory(inv);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aAkte einfügen");
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", playerData.getVariable("input_akte") != null ? "§8 ➥ §e" + playerData.getVariable("input_akte") : "§8 ➥ §cNicht angegeben")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "createakte_reason");
+                player.closeInventory();
+                player.sendMessage("§8[§aAkte§8]§7 Gib nun den Namen der Akte an.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.CHEST, 1, 0, "§Wantedpunkte", playerData.getVariable("input_wanted") != null ? "§8 ➥ §e" + playerData.getVariable("input_wanted") : "§8 ➥ §cNicht angegeben")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerData.setVariable("chatblock", "createakte_wanted");
+                player.closeInventory();
+                player.sendMessage("§8[§aAkte§8]§7 Gib nun die Wantedpunkte an.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aBestätigen")) {
+            @SneakyThrows
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                createNewAkte(player);
+            }
+        });
     }
 
     public void createNewAkte(Player player) throws SQLException {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.execute("INSERT INTO akten (akte, hafteinheiten, geldstrafe) VALUES ('" + playerData.getVariable("input_akte") + "', " + playerData.getIntVariable("input_hafteinheiten") + ", " + playerData.getIntVariable("input_geldstrafe") + ")");
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO wantedreasons (reason, wanted) VALUES (?, ?)", playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"));
         player.sendMessage("§8[§aAkte§8]§7 Akte wurde hinzugefügt.");
         player.closeInventory();
     }
@@ -983,17 +990,17 @@ public class TabletUtils implements Listener {
             openAktenList(event.getPlayer(), 1, event.getMessage());
             event.end();
         }
-        if (event.getSubmitTo().equals("createakte_akte")) {
+        if (event.getSubmitTo().equals("createakte_reason")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();
                 event.end();
                 return;
             }
-            event.getPlayerData().setVariable("input_akte", event.getMessage());
+            event.getPlayerData().setVariable("input_reason", event.getMessage());
             createAkte(event.getPlayer());
             event.end();
         }
-        if (event.getSubmitTo().equals("createakte_hafteinheiten")) {
+        if (event.getSubmitTo().equals("createakte_wanted")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();
                 event.end();
@@ -1007,25 +1014,7 @@ public class TabletUtils implements Listener {
                 event.end();
                 return;
             }
-            event.getPlayerData().setIntVariable("input_hafteinheiten", input);
-            createAkte(event.getPlayer());
-            event.end();
-        }
-        if (event.getSubmitTo().equals("createakte_geldstrafe")) {
-            if (event.isCancel()) {
-                event.sendCancelMessage();
-                event.end();
-                return;
-            }
-            int input = 0;
-            try {
-                input = Integer.parseInt(event.getMessage());
-            } catch (IllegalArgumentException e) {
-                event.getPlayer().sendMessage(Main.error + "Du hast keine gültige Zahl angegeben");
-                event.end();
-                return;
-            }
-            event.getPlayerData().setIntVariable("input_geldstrafe", input);
+            event.getPlayerData().setIntVariable("input_wanted", input);
             createAkte(event.getPlayer());
             event.end();
         }

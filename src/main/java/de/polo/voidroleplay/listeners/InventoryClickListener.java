@@ -175,27 +175,6 @@ public class InventoryClickListener implements Listener {
                         utils.tabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") + 1);
                         break;
                 }
-            } else if (Objects.equals(playerData.getVariable("current_app"), "createakte")) {
-                switch (event.getSlot()) {
-                    case 11:
-                        playerData.setVariable("chatblock", "createakte_akte");
-                        player.closeInventory();
-                        player.sendMessage("§8[§aAkte§8]§7 Gib nun den Namen der Akte an.");
-                        break;
-                    case 13:
-                        playerData.setVariable("chatblock", "createakte_hafteinheiten");
-                        player.closeInventory();
-                        player.sendMessage("§8[§aAkte§8]§7 Gib nun die Hafteinheiten an.");
-                        break;
-                    case 15:
-                        playerData.setVariable("chatblock", "createakte_geldstrafe");
-                        player.closeInventory();
-                        player.sendMessage("§8[§aAkte§8]§7 Gib nun die Geldstrafe an an.");
-                        break;
-                    case 26:
-                        utils.tabletUtils.createNewAkte(player);
-                        break;
-                }
             }
         }
         if (Objects.equals(playerData.getVariable("current_inventory"), "handy")) {
