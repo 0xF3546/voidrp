@@ -580,6 +580,7 @@ public class TabletUtils implements Listener {
                 .thenApply(key -> {
                     if (key.isPresent()) {
                         WantedReason wantedReason = new WantedReason(key.get(), playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"));
+                        utils.staatUtil.addWantedReason(wantedReason);
                     }
                     return null;
                 });
