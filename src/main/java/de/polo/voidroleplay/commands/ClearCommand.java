@@ -36,6 +36,7 @@ public class ClearCommand implements CommandExecutor {
         }
         if (playerData.getFactionGrade() < 2) {
             player.sendMessage(Prefix.ERROR + "Dafür musst du Rang 2+ sein!");
+            return false;
         }
         if (args.length < 1) {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /clear [Spieler]");
