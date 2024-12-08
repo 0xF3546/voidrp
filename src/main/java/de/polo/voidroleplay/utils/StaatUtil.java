@@ -323,4 +323,8 @@ public class StaatUtil {
     public WantedReason getWantedReason(String reason) {
         return wantedReasons.stream().filter(x -> x.getReason().equalsIgnoreCase(reason)).findFirst().orElse(null);
     }
+
+    public void addWantedReason(WantedReason wantedReason) {
+        wantedReasons.add(wantedReason);
+    }
 }

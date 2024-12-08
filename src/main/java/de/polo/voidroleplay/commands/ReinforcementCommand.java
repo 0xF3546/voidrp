@@ -37,7 +37,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (PhoneUtils.hasPhone(player)) {
+        if (!PhoneUtils.hasPhone(player)) {
             player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
             return false;
         }

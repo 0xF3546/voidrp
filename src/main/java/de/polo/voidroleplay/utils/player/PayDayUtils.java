@@ -129,7 +129,7 @@ public class PayDayUtils {
         if (plus >= 0) {
             player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c-" + (int) plus + "$§8)");
+            player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c" + (int) plus + "$§8)");
         }
         playerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
