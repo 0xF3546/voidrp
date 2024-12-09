@@ -192,18 +192,22 @@ public class ServerManager {
                 continue;
             }
             shopDataMap.put(locs.getInt(1), shopData);
-            Statement nStatement = Main.getInstance().mySQL.getStatement();
-            ResultSet i = nStatement.executeQuery("SELECT * FROM shop_items WHERE shop = " + shopData.getId());
-            while (i.next()) {
-                ShopItem item = new ShopItem();
-                item.setId(i.getInt("id"));
-                item.setShop(i.getInt("shop"));
-                item.setMaterial(Material.valueOf(i.getString("material")));
-                item.setDisplayName(i.getString("name"));
-                item.setPrice(i.getInt("price"));
-                item.setType(i.getString("type"));
-                item.setSecondType(i.getString("type2"));
-                shopData.addItem(item);
+            try {
+                Statement nStatement = Main.getInstance().mySQL.getStatement();
+                ResultSet i = nStatement.executeQuery("SELECT * FROM shop_items WHERE shop = " + shopData.getId());
+                while (i.next()) {
+                    ShopItem item = new ShopItem();
+                    item.setId(i.getInt("id"));
+                    item.setShop(i.getInt("shop"));
+                    item.setMaterial(Material.valueOf(i.getString("material")));
+                    item.setDisplayName(i.getString("name"));
+                    item.setPrice(i.getInt("price"));
+                    item.setType(i.getString("type"));
+                    item.setSecondType(i.getString("type2"));
+                    shopData.addItem(item);
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
             }
         }
         statement.close();

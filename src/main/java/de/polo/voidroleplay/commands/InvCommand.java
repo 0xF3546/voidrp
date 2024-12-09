@@ -32,7 +32,7 @@ public class InvCommand extends CommandBase {
         int i = 0;
         for (Drug drug : Drug.values()) {
             PlayerInventoryItem item = playerData.getInventory().getByTypeOrEmpty(drug.getItem());
-            inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(item.getItem().getMaterial(), 1, 0, item.getItem().getDisplayName(), "§8 ➥ §7" + item.getAmount() + " Stück")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(item.getItem().getMaterial(), 1, 0, item.getItem().getDisplayName(), "§8 ➥ §7" + item.getAmount() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (item.getAmount() < 1) {

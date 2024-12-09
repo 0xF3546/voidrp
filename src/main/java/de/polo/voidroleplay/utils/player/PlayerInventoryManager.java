@@ -26,7 +26,7 @@ public class PlayerInventoryManager {
     }
 
     private void load() {
-        Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM player_inventory_items WHERE uuid = ?", playerData.getUuid().toString())
+        Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM player_inventory_items WHERE uuid = ?", playerData.getPlayer().getUniqueId().toString())
                 .thenAccept(result -> {
                     if (result != null && !result.isEmpty()) {
                         for (Map<String, Object> itemValue : result) {
@@ -46,6 +46,7 @@ public class PlayerInventoryManager {
     }
 
     public void setSizeToDatabase(int size) {
+        setSize(size);
         Main.getInstance().getMySQL().updateAsync("UPDATE players SET inventorySize = ? WHERE uuid = ?", size, playerData.getUuid().toString());
     }
 

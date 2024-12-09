@@ -313,7 +313,7 @@ public class Utils {
                 suffix = "§d◈";
             }
             String color = "§7";
-            if (playerData.isDuty()) {
+            if (playerData.isDuty() && playerData.getFaction() != null) {
                 switch (playerData.getFaction().toLowerCase()) {
                     case "polizei":
                         color = "§9";

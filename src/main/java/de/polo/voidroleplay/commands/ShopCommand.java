@@ -59,6 +59,7 @@ public class ShopCommand implements CommandExecutor {
                     public void onClick(InventoryClickEvent event) {
                     }
                 });
+                if (shopData.getType() == null) continue;
                 if (i == 45 && playerData.getCompany() != null && shopData.getType() != ShopType.BLACKMARKET) {
                     if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId())) {
                         inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eBusiness-Übersicht")) {
@@ -85,11 +86,11 @@ public class ShopCommand implements CommandExecutor {
                 if (inventory.getInventory().getItem(j) != null) {
                     j++;
                 }
-                if (item.getType().equalsIgnoreCase("inventory")) {
-                    inventory.setItem(new CustomItem(j, ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§"), "§8 ➥ §a" + item.getPrice() * (inventory.getSize() + 25) + "$")) {
+                if (item.getType() != null && item.getType().equalsIgnoreCase("inventory")) {
+                    inventory.setItem(new CustomItem(j, ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§"), "§8 ➥ §a" + item.getPrice() * (playerData.getInventory().getSize() + 25) + "$")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
-                            BuyItem(player, item.getPrice() * inventory.getSize() + 25, item.getType(), item.getDisplayName(), item.getMaterial(), item.getSecondType(), item.getShop());
+                            BuyItem(player, item.getPrice() * (playerData.getInventory().getSize() + 25), item.getType(), item.getDisplayName(), item.getMaterial(), item.getSecondType(), item.getShop());
                         }
                     });
                 } else {
@@ -303,6 +304,7 @@ public class ShopCommand implements CommandExecutor {
                 } else if (Objects.equals(type, "inventory")){
                     playerData.getInventory().setSizeToDatabase(playerData.getInventory().getSize() + 25);
                     player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Du hast ein Inventar-Upgrade für §a" + price + "$§7 gekauft.");
+                    playerManager.removeMoney(player, price, "Kauf eines Inventar-Upgrades: " + info);
                 } else {
                     playerManager.removeMoney(player, price, "Kauf von: " + item);
                     player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName.replace("&", "§")));
