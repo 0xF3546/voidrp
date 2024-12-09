@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
@@ -18,17 +19,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class InvCommand implements CommandExecutor {
-    private final PlayerManager playerManager;
-    public InvCommand(PlayerManager playerManager) {
-        this.playerManager = playerManager;
+@CommandBase.CommandMeta(name = "inv", usage = "/inv")
+public class InvCommand extends CommandBase {
 
-        Main.registerCommand("inv", this);
+    public InvCommand(@NotNull CommandMeta meta) {
+        super(meta);
     }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player);
+    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bInventar");
         int i = 0;
         for (Drug drug : Drug.values()) {
@@ -45,6 +44,5 @@ public class InvCommand implements CommandExecutor {
             });
             i++;
         }
-        return false;
     }
 }
