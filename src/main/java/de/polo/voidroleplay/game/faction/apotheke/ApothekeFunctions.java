@@ -262,14 +262,13 @@ public class ApothekeFunctions implements Listener {
                             }
                         }
                     } else {
-                        factionData.storage.setJoint(factionData.storage.getJoint() + plus);
-                        factionData.storage.save();
+                        factionData.addBankMoney(1000, "Apotheken");
                         for (PlayerData playerData : playerManager.getPlayers()) {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
                                     if (player != null)
-                                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Pfeifen§a aus den aktuell übernommenen Apotheken erhalten.");
+                                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §21000$ Schutzgeld§a aus den aktuell übernommenen Apotheken erhalten.");
                                 }
                             }
                         }
