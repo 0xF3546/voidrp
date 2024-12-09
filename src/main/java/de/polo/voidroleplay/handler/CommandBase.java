@@ -1,8 +1,9 @@
 package de.polo.voidroleplay.handler;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -16,34 +17,40 @@ import java.lang.annotation.Target;
 
 public abstract class CommandBase implements CommandExecutor {
 
-    private final Command command;
+    private final CommandMeta meta;
 
-    public CommandBase(@NotNull Command command) {
-        this.command = command;
+    public CommandBase(@NotNull CommandMeta meta) {
+        this.meta = meta;
     }
 
-    public abstract void execute(@NotNull Player player, @NotNull PlayerData context, @NotNull String[] args) throws Exception;
+    /**
+     * Diese Methode wird von spezifischen Befehlen überschrieben, um ihre Logik zu implementieren.
+     */
+    public abstract void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception;
 
-    protected void showSyntax(@NotNull CommandSender sender) {
-        sender.sendMessage(Prefix.ERROR + "Syntax-Fehler: " + command.usage());
-    }
-
-    //@Override
+    /**
+     * Bukkit-Methode zur Befehlsausführung.
+     */
+    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be executed by a player.");
+            sender.sendMessage(Prefix.ERROR + "Dieser Befehl kann nur von Spielern ausgeführt werden.");
             return true;
         }
 
         Player player = (Player) sender;
         PlayerData playerData = Main.getInstance().getPlayerManager().getPlayerData(player);
+
         if (playerData == null) {
+            player.sendMessage(Prefix.ERROR + "Spielerdaten konnten nicht geladen werden.");
             return true;
         }
-        if (playerData.getPermlevel() < command.permissionLevel()) {
+
+        if (playerData.getPermlevel() < meta.permissionLevel()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
         }
+
         try {
             execute(player, playerData, args);
             PluginCommand pluginCommand = Main.getInstance().getCommand(command.name());
@@ -51,20 +58,26 @@ public abstract class CommandBase implements CommandExecutor {
                 pluginCommand.setExecutor(this);
             }
         } catch (Exception e) {
-            player.sendMessage("An error occurred: " + e.getMessage());
+            player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten: " + e.getMessage());
+            e.printStackTrace();
         }
         return true;
     }
 
-        protected PlayerData getContext(@NotNull Player player) {
-        return Main.getInstance().getPlayerManager().getPlayerData(player);
-    }
-    @Target(ElementType.TYPE)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Command {
-        String name();
-        int permissionLevel() default 0;
-        String usage() default "/<command>";
+    /**
+     * Zeigt die Syntax des Befehls an.
+     */
+    protected void showSyntax(@NotNull CommandSender sender) {
+        sender.sendMessage(Prefix.ERROR + "Syntax: " + meta.usage());
     }
 
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface CommandMeta {
+        String name();
+
+        int permissionLevel() default 0;
+
+        String usage() default "/<command>";
+    }
 }

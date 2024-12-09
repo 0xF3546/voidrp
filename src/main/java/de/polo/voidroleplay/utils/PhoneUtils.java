@@ -1,17 +1,19 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PhoneCall;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PhoneCall;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.enums.Gender;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.player.ChatUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,9 +35,9 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public class PhoneUtils implements Listener {
-    public static final String error_nophone = "§8[§6Handy§8] §cDas kannst du aktuell nicht machen.";
-    public static final String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
-    private static final List<PhoneCall> phoneCalls = new ArrayList<>();
+    public static final String ERROR_NO_PHONE = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
+    public static final String ERROR_FLIGHTMODE = "§8[§6Handy§8] §cDu bist im Flugmodus.";
+    private static final List<PhoneCall> phoneCalls = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final Utils utils;
 
@@ -61,7 +63,7 @@ public class PhoneUtils implements Listener {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
     }
 
@@ -77,20 +79,12 @@ public class PhoneUtils implements Listener {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
     }
 
     public static boolean hasPhone(Player player) {
-        Inventory inv = player.getInventory();
-        Material phone = Material.IRON_NUGGET;
-        boolean returnval = false;
-        for (ItemStack item : inv.getContents()) {
-            if (item != null && item.getType() == phone) {
-                returnval = true;
-            }
-        }
-        return returnval;
+        return ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) >= 1;
     }
 
     @EventHandler
@@ -289,6 +283,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
                 }
 
+                @Override
                 @SneakyThrows
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
@@ -394,6 +389,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§6SMS§8]§7 Gib nun die Nachricht an.");
                 }
 
+                @Override
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checkmessages")) {
                         return;
@@ -488,6 +484,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§6Kontakte§8]§7 Gib nun den Namen des Kontaktes ein.");
                 }
 
+                @Override
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equals("contactsearch")) {
                         return;
@@ -671,7 +668,7 @@ public class PhoneUtils implements Listener {
     }
 
     public List<Player> getPlayersInCall(PhoneCall call) {
-        List<Player> players = new ArrayList<>();
+        List<Player> players = new ObjectArrayList<>();
 
         players.add(Bukkit.getPlayer(call.getCaller()));
 
@@ -1095,6 +1092,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
                 }
 
+                @Override
                 @SneakyThrows
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
@@ -1174,7 +1172,7 @@ public class PhoneUtils implements Listener {
             matchStatement.setString(1, player.getUniqueId().toString());
             matchStatement.setString(2, player.getUniqueId().toString());
             ResultSet matchResult = matchStatement.executeQuery();
-            List<String> matches = new ArrayList<>();
+            List<String> matches = new ObjectArrayList<>();
             while (matchResult.next()) {
                 String matchedUUID = matchResult.getString("uuid").equals(player.getUniqueId().toString()) ? matchResult.getString("target") : matchResult.getString("uuid");
                 matches.add("§8 ➥ §e" + Bukkit.getOfflinePlayer(UUID.fromString(matchedUUID)).getName() + " §8- §7" + Utils.localDateTimeToReadableString(Utils.toLocalDateTime(matchResult.getDate("matched"))));

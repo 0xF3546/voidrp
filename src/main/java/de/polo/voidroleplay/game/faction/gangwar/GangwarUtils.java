@@ -2,12 +2,12 @@ package de.polo.voidroleplay.game.faction.gangwar;
 
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.WeaponType;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.WeaponType;
 import de.polo.voidroleplay.manager.FactionManager;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -15,6 +15,7 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
@@ -34,11 +35,14 @@ import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class GangwarUtils implements CommandExecutor, TabCompleter {
-    private final List<Gangwar> gangWars = new ArrayList<>();
-    private final List<IGangzone> gangZones = new ArrayList<>();
+    private final List<Gangwar> gangWars = new ObjectArrayList<>();
+    private final List<IGangzone> gangZones = new ObjectArrayList<>();
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
@@ -229,7 +233,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     if (weaponData.getMaterial() != null && item != null) {
                         if (item.getType() == weaponData.getMaterial()) {
                             ItemMeta meta = item.getItemMeta();
-                            de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                            de.polo.voidroleplay.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                             if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                                 Main.getInstance().weaponManager.removeWeapon(player, item);
                             }
@@ -258,7 +262,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                             Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
@@ -428,7 +432,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            List<String> suggestions = new ArrayList<>();
+            List<String> suggestions = new ObjectArrayList<>();
             suggestions.add("info");
             suggestions.add("attack");
             //suggestions.add("join");
@@ -437,7 +441,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             return suggestions;
         }
         if (args.length == 2) {
-            List<String> suggestions = new ArrayList<>();
+            List<String> suggestions = new ObjectArrayList<>();
             for (IGangzone gangZone : gangZones) {
                 suggestions.add(gangZone.getName());
             }

@@ -1,13 +1,12 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
-import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.PhoneUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -21,7 +20,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,8 +37,12 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) < 1) {
-            player.sendMessage(Prefix.ERROR + "Du hast kein Handy dabei!");
+        if (!PhoneUtils.hasPhone(player)) {
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
+            return false;
+        }
+        if (playerData.isFlightmode()) {
+            player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             return false;
         }
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
@@ -169,9 +171,10 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
         }
     }
 
+    @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            List<String> suggestions = new ArrayList<>();
+            List<String> suggestions = new ObjectArrayList<>();
             suggestions.add("-d");
             suggestions.add("-p");
             suggestions.add("-e");

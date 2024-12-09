@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
@@ -29,7 +29,7 @@ public class EquipTransportCommand implements CommandExecutor {
             return false;
         }
         playerData.setVariable("job", "equip");
-        playerData.removeMoney(122000, "Equip-Transport");
+        playerData.removeMoney(12200, "Equip-Transport");
         player.sendMessage(Prefix.MAIN + "Du hast den Transport gestartet, begib dich zu deinem Equip-Punkt und nutze /drop");
         return false;
     }

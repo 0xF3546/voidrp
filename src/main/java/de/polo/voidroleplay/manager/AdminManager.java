@@ -1,10 +1,11 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.RankData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import de.polo.voidroleplay.utils.player.ScoreboardAPI;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdminManager implements CommandExecutor, TabCompleter {
@@ -157,7 +157,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
-            List<String> suggestions = new ArrayList<>();
+            List<String> suggestions = new ObjectArrayList<>();
             suggestions.add("-v");
             return suggestions;
         }

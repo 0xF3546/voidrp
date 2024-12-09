@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
@@ -52,26 +52,9 @@ public class InventoryClickListener implements Listener {
         FactionData factionData = null;
         if (playerData.getVariable("current_inventory") == null) return;
         if (playerData.getFaction() != null) factionData = factionManager.getFactionData(playerData.getFaction());
-        if (Objects.equals(playerData.getVariable("current_inventory"), "bossmenu_" + playerData.getFaction())) {
-            event.setCancelled(true);
-            switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                case NETHER_WART:
-                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") - 1);
-                    break;
-                case GOLD_NUGGET:
-                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, playerData.getIntVariable("current_page") + 1);
-                    break;
-                case PLAYER_HEAD:
-                    Main.getInstance().commands.openBossMenuCommand.editPlayerViaBoss(player, event.getCurrentItem());
-                    break;
-            }
-        }
         if (playerData.getVariable("current_inventory").toString().contains("edit_factionplayer_")) {
             event.setCancelled(true);
             switch (Objects.requireNonNull(event.getCurrentItem()).getType()) {
-                case NETHER_WART:
-                    Main.getInstance().commands.openBossMenuCommand.openBossMenu(player, 1);
-                    break;
                 case REDSTONE:
                     UUID uuid = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
@@ -190,27 +173,6 @@ public class InventoryClickListener implements Listener {
                         break;
                     case GOLD_NUGGET:
                         utils.tabletUtils.openVehiclesApp(player, playerData.getIntVariable("current_page") + 1);
-                        break;
-                }
-            } else if (Objects.equals(playerData.getVariable("current_app"), "createakte")) {
-                switch (event.getSlot()) {
-                    case 11:
-                        playerData.setVariable("chatblock", "createakte_akte");
-                        player.closeInventory();
-                        player.sendMessage("§8[§aAkte§8]§7 Gib nun den Namen der Akte an.");
-                        break;
-                    case 13:
-                        playerData.setVariable("chatblock", "createakte_hafteinheiten");
-                        player.closeInventory();
-                        player.sendMessage("§8[§aAkte§8]§7 Gib nun die Hafteinheiten an.");
-                        break;
-                    case 15:
-                        playerData.setVariable("chatblock", "createakte_geldstrafe");
-                        player.closeInventory();
-                        player.sendMessage("§8[§aAkte§8]§7 Gib nun die Geldstrafe an an.");
-                        break;
-                    case 26:
-                        utils.tabletUtils.createNewAkte(player);
                         break;
                 }
             }

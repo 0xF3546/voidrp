@@ -1,21 +1,23 @@
 package de.polo.voidroleplay.game.base.housing;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerWeapon;
-import de.polo.voidroleplay.dataStorage.RegisteredBlock;
-import de.polo.voidroleplay.dataStorage.Weapon;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerWeapon;
+import de.polo.voidroleplay.storage.RegisteredBlock;
+import de.polo.voidroleplay.storage.Weapon;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.HouseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -63,10 +65,10 @@ public class HouseManager implements CommandExecutor, Listener {
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
         while (locs.next()) {
             House houseData = new House(locs.getInt("number"), locs.getInt("maxServer"), locs.getInt("maxMiner"));
-            houseData.setId(locs.getInt(1));
-            houseData.setOwner(locs.getString(2));
-            houseData.setPrice(locs.getInt(4));
-            houseData.setTotalMoney(locs.getInt(7));
+            houseData.setId(locs.getInt("id"));
+            houseData.setOwner(locs.getString("owner"));
+            houseData.setPrice(locs.getInt("price"));
+            houseData.setTotalMoney(locs.getInt("money"));
             houseData.setMiner(locs.getInt("miner"));
             houseData.setServer(locs.getInt("server"));
             houseData.setServerRoom(locs.getBoolean("hasServerRoom"));
@@ -79,8 +81,8 @@ public class HouseManager implements CommandExecutor, Listener {
                 map.put(key, value);
             }
             houseData.setRenter(map);
-            houseData.setMoney(locs.getInt(6));
-            houseDataMap.put(locs.getInt(3), houseData);
+            houseData.setMoney(locs.getInt("money"));
+            houseDataMap.put(locs.getInt("number"), houseData);
         }
     }
 
@@ -144,7 +146,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     public List<House> getAccessedHousing(Player player) {
-        List<House> access = new ArrayList<>();
+        List<House> access = new ObjectArrayList<>();
         for (House houseData : houseDataMap.values()) {
             if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) {
                 if (houseData.getRenter().get(player.getUniqueId().toString()) != null) {
@@ -200,7 +202,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     public Collection<House> getHouses(Player player) {
-        List<House> access = new ArrayList<>();
+        List<House> access = new ObjectArrayList<>();
         for (House houseData : houseDataMap.values()) {
             if (!Objects.equals(houseData.getOwner(), player.getUniqueId().toString())) continue;
 
@@ -230,7 +232,7 @@ public class HouseManager implements CommandExecutor, Listener {
             System.out.println(rBlock.getInfo() + " - " + rBlock.getInfoValue());
 
             Block block = rBlock.getLocation().getBlock();
-            System.out.println(block.getType().toString());
+            System.out.println(block.getType());
             if (block.getType().toString().contains("SIGN")) {
                 Sign sign = (Sign) block.getState();
                 try {
@@ -316,7 +318,7 @@ public class HouseManager implements CommandExecutor, Listener {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.sendMessage(Prefix.ERROR + "Aktuell haben wir keine Server zu verkaufen.");
-                return;/*
+                /*
                 if (!house.isServerRoom()) {
                     player.sendMessage(Prefix.ERROR + "Du hast keinen Server-Raum!");
                     return;
@@ -421,7 +423,6 @@ public class HouseManager implements CommandExecutor, Listener {
                     s.setHouseNumber(house.getNumber());
                     s.create();
                 }
-                ;
                 s.open(player);
             }
         });
@@ -444,11 +445,19 @@ public class HouseManager implements CommandExecutor, Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWaffenschrank");
         int i = 0;
         for (PlayerWeapon playerWeapon : playerData.getWeapons()) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklck§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklick§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
                     if (event.isLeftClick()) {
+                        for (ItemStack item : player.getInventory().getContents()) {
+                            if (item == null) continue;
+                            if (item.getType() == playerWeapon.getWeapon().getMaterial()
+                                    && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
+                                player.sendMessage(Prefix.ERROR + "Du hast diese Waffe bereits bei dir.");
+                                return;
+                            }
+                        }
                         Main.getInstance().getWeaponManager().takeOutWeapon(player, playerWeapon);
                     } else {
                         playerData.setVariable("chatblock", "weaponammo");
@@ -460,8 +469,82 @@ public class HouseManager implements CommandExecutor, Listener {
         }
     }
 
+    public void openHouseTreasury(Player player, House house) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        InventoryManager inventoryManager = new InventoryManager(player, 9, "§6Hauskasse");
+        inventoryManager.setItem(new CustomItem(3, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aEinzahlen", null)) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                playerData.setVariable("chatblock", "house::putin");
+                playerData.setVariable("house", house);
+                player.sendMessage("§aGib den Betrag an, welchen du in die Hauskasse legen möchtest.");
+            }
+        });
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§a" + Utils.toDecimalFormat(house.getMoney()) + "$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+
+            }
+        });
+        inventoryManager.setItem(new CustomItem(5, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null)) {
+
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                playerData.setVariable("chatblock", "house::putout");
+                playerData.setVariable("house", house);
+                player.sendMessage("§aGib den Betrag an, welchen du aus der Hauskasse enthnehmen möchtest.");
+            }
+        });
+    }
+
     @EventHandler
     public void onChatSubmit(SubmitChatEvent event) {
+        if (event.getSubmitTo().equalsIgnoreCase("house::putin")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            House house = event.getPlayerData().getVariable("house");
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                if (event.getPlayerData().getBargeld() < amount) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Bargeld.");
+                    return;
+                }
+                if (house.getMoney() + amount > 15000) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Du kannst nicht mehr als 15.000$ in der Hauskasse haben.");
+                    return;
+                }
+                event.getPlayer().sendMessage(Prefix.MAIN + "Du hast " + Utils.toDecimalFormat(amount) + "$ in die Hauskasse eingezahlt.");
+                house.addMoney(amount, "Einzahlung " + event.getPlayer().getName(), true);
+                event.getPlayerData().removeMoney(amount, "Hauskasse" + house.getNumber());
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
+            }
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("house::putout")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            House house = event.getPlayerData().getVariable("house");
+            try {
+                int amount = Integer.parseInt(event.getMessage());
+                if (house.getMoney() < amount) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "In der Hauskasse liegt nicht genug Geld.");
+                    return;
+                }
+                event.getPlayer().sendMessage(Prefix.MAIN + "Du hast " + Utils.toDecimalFormat(amount) + "$ aus der Hauskasse ausgezahlt.");
+                house.removeMoney(amount, "Auszahlung " + event.getPlayer().getName(), true);
+                event.getPlayerData().addMoney(amount, "Hauskasse" + house.getNumber());
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
+            }
+        }
         if (event.getSubmitTo().equalsIgnoreCase("weaponammo")) {
             if (event.isCancel()) {
                 event.sendCancelMessage();
@@ -473,8 +556,9 @@ public class HouseManager implements CommandExecutor, Listener {
                 PlayerWeapon playerWeapon = event.getPlayerData().getVariable("playerWeapon");
                 for (ItemStack item : event.getPlayer().getInventory().getContents()) {
                     if (item == null) continue;
+                    System.out.println(item.getItemMeta().displayName());
                     if (item.getType() == playerWeapon.getWeapon().getMaterial()
-                        && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
+                            && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
                         Weapon weapon = Main.getInstance().getWeaponManager().getWeaponFromItemStack(item);
                         if (weapon == null) continue;
                         if (Main.getInstance().getWeaponManager().takeOutAmmo(event.getPlayer(), playerWeapon, weapon, amount)) {
@@ -482,6 +566,7 @@ public class HouseManager implements CommandExecutor, Listener {
                         } else {
                             event.getPlayer().sendMessage(Prefix.MAIN + "Deine Waffe hat nicht genug Schuss.");
                         }
+                        event.end();
                         return;
                     }
                 }
@@ -489,6 +574,7 @@ public class HouseManager implements CommandExecutor, Listener {
                 event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
+                e.printStackTrace();
             }
         }
     }

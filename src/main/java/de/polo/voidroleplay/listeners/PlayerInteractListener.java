@@ -1,24 +1,25 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
-import de.polo.voidroleplay.game.base.extra.Drop.Drop;
 import de.polo.voidroleplay.game.base.extra.Storage;
+import de.polo.voidroleplay.game.base.extra.drop.Drop;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
-import de.polo.voidroleplay.utils.GamePlay.Case;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
-import de.polo.voidroleplay.utils.playerUtils.Rubbellose;
+import de.polo.voidroleplay.utils.gameplay.Case;
+import de.polo.voidroleplay.utils.gameplay.GamePlay;
+import de.polo.voidroleplay.utils.player.ChatUtils;
+import de.polo.voidroleplay.utils.player.Rubbellose;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Openable;
@@ -52,9 +53,9 @@ public class PlayerInteractListener implements Listener {
     private final BlockManager blockManager;
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
-    private final List<Molotov> molotovs = new ArrayList<>();
-    private final List<Block> sprungtuecher = new ArrayList<>();
-    private final List<Grenade> activeGrenades = new ArrayList<>();
+    private final List<Molotov> molotovs = new ObjectArrayList<>();
+    private final List<Block> sprungtuecher = new ObjectArrayList<>();
+    private final List<Grenade> activeGrenades = new ObjectArrayList<>();
 
     public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager) {
         this.playerManager = playerManager;
@@ -227,7 +228,7 @@ public class PlayerInteractListener implements Listener {
                         Drop drop = Main.getInstance().gamePlay.activeDrop;
                         if (drop.location.distance(event.getClickedBlock().getLocation()) < 1) {
                             if (!drop.isDropOpen) {
-                                player.sendMessage("§8[§cDrop§8]§7 Der Drop ist noch nicht offen!");
+                                player.sendMessage("§8[§cDrop§8]§7 Der drop ist noch nicht offen!");
                                 event.setCancelled(true);
                                 return;
                             } else {
@@ -311,7 +312,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 });
                                 if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
-                                    inventoryManager.setItem(new CustomItem(20, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
+                                    inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             Main.getInstance().getHouseManager().openGunCabinet(player, houseData);
@@ -319,6 +320,14 @@ public class PlayerInteractListener implements Listener {
                                     });
                                 }
                                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
+                                    if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
+                                        inventoryManager.setItem(new CustomItem(41, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Hauskasse öffnen", "§8 ➥ §a" + Utils.toDecimalFormat(houseData.getMoney()) + "$")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                Main.getInstance().getHouseManager().openHouseTreasury(player, houseData);
+                                            }
+                                        });
+                                    }
                                     inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
@@ -401,7 +410,7 @@ public class PlayerInteractListener implements Listener {
                                             @Override
                                             public void onClick(InventoryClickEvent event) {
                                                 Player player = (Player) event.getWhoClicked(); // Ensure we get the player from the event
-                                                List<Player> nearPlayers = new ArrayList<>();
+                                                List<Player> nearPlayers = new ObjectArrayList<>();
                                                 for (Player p : Bukkit.getOnlinePlayers()) {
                                                     if (p.getWorld() != player.getWorld()) continue;
                                                     if (player.getLocation().distance(p.getLocation()) < 5 && p != player) {

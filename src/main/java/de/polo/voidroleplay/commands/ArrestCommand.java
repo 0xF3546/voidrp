@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -46,7 +46,7 @@ public class ArrestCommand implements CommandExecutor {
                     if (targetPlayerData.isCuffed()) {
                         if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
                             try {
-                                if (utils.staatUtil.arrestPlayer(targetplayer, player)) {
+                                if (utils.staatUtil.arrestPlayer(targetplayer, player, false)) {
                                     if (targetPlayerData.isAduty()) {
                                         player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
                                         return false;

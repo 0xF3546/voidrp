@@ -1,12 +1,14 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
+import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.utils.SubGroups;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -26,9 +28,9 @@ public class FactionManager {
     private final Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
     private final Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
     private final PlayerManager playerManager;
-    private final List<SubTeam> subTeams = new ArrayList<>();
+    private final List<SubTeam> subTeams = new ObjectArrayList<>();
     private final HashMap<Block, LocalDateTime> bannerSprayed = new HashMap<>();
-    private final List<SprayableBanner> sprayableBanners = new ArrayList<>();
+    private final List<SprayableBanner> sprayableBanners = new ObjectArrayList<>();
 
     public FactionManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
@@ -108,7 +110,7 @@ public class FactionManager {
                 factionData.setBannerColor(Material.valueOf(bannerTypeString));
 
                 JSONArray jsonArray = bannerObject.getJSONArray("patterns");
-                List<Pattern> patterns = new ArrayList<>();
+                List<Pattern> patterns = new ObjectArrayList<>();
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject patternObject = jsonArray.getJSONObject(i);
@@ -217,6 +219,7 @@ public class FactionManager {
         LocalDateTime cooldown = Utils.getTime().plusHours(6);
         if (playerData != null) {
             Player player = Bukkit.getPlayer(uuid);
+            if (playerData.getFactionGrade() < 4) playerData.setFactionCooldown(cooldown);
             playerData.setFaction(null);
             playerData.setFactionGrade(0);
             playerData.setDuty(false);
@@ -230,7 +233,6 @@ public class FactionManager {
                 player.setCustomName("§7" + player.getName());
                 player.setCustomNameVisible(true);
             }
-            playerData.setFactionCooldown(cooldown);
             for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
                 if (offlinePlayer.getName() != null) {
@@ -241,11 +243,40 @@ public class FactionManager {
                 }
             }
         }
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, `factionCooldown` = '" + cooldown + "' WHERE `uuid` = '" + uuid + "'");
+        updateFactionCooldownIfApplicable(uuid);
+
         ServerManager.factionPlayerDataMap.remove(uuid.toString());
         TeamSpeak.reloadPlayer(uuid);
+    }
+
+    private void updateFactionCooldownIfApplicable(UUID uuid) {
+        LocalDateTime cooldown = Utils.getTime().plusHours(6);
+        MySQL mySQL = Main.getInstance().mySQL;
+
+        // Abfrage des Rangs des Spielers
+        mySQL.executeQueryAsync("SELECT `faction_grade` FROM `players` WHERE `uuid` = ?", uuid.toString())
+                .thenAccept(result -> {
+                    if (result != null && !result.isEmpty()) {
+                        Map<String, Object> playerData = result.get(0);
+                        int factionGrade = (int) playerData.get("faction_grade");
+
+                        if (factionGrade < 4) {
+                            mySQL.updateAsync(
+                                    "UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, `factionCooldown` = ? WHERE `uuid` = ?",
+                                    cooldown.toString(), uuid.toString()
+                            ).thenRun(() -> {
+                                ServerManager.factionPlayerDataMap.remove(uuid.toString());
+                                TeamSpeak.reloadPlayer(uuid);
+                            }).exceptionally(e -> {
+                                e.printStackTrace();
+                                return null;
+                            });
+                        }
+                    }
+                }).exceptionally(e -> {
+                    e.printStackTrace();
+                    return null;
+                });
     }
 
     public void removePlayerFromFrak(Player player) throws SQLException {
@@ -369,7 +400,7 @@ public class FactionManager {
             for (String faction : factions) {
                 PlayerData playerData = playerManager.getPlayerData(player);
                 if (playerData.getFaction() == null) continue;
-                if (playerData.getFactionGrade() < 5) continue;
+                if (!playerData.isLeader()) continue;
                 if (playerData.getFaction().equalsIgnoreCase(faction)) {
                     player.sendMessage(message);
                 }
@@ -524,7 +555,7 @@ public class FactionManager {
     }
 
     public Collection<PlayerData> getFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath) {
-        List<PlayerData> players = new ArrayList<>();
+        List<PlayerData> players = new ObjectArrayList<>();
         for (PlayerData playerData : playerManager.getPlayers()) {
             if (playerData.getFaction() == null) continue;
             if (playerData.getFaction().equalsIgnoreCase(faction)) {
@@ -543,7 +574,7 @@ public class FactionManager {
         FactionData factionData = getFactionData(faction);
         if (factionData == null) return null;
 
-        List<FactionPlayerData> factionPlayers = new ArrayList<>();
+        List<FactionPlayerData> factionPlayers = new ObjectArrayList<>();
         PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM players WHERE faction = ?");
         statement.setString(1, factionData.getName());
         ResultSet result = statement.executeQuery();
@@ -608,7 +639,7 @@ public class FactionManager {
     }
 
     public Collection<SubTeam> getSubTeams(int factionId) {
-        List<SubTeam> teams = new ArrayList<>();
+        List<SubTeam> teams = new ObjectArrayList<>();
         for (SubTeam team : subTeams) {
             if (team.getFactionId() == factionId) teams.add(team);
         }
@@ -687,6 +718,6 @@ public class FactionManager {
             PlayerData playerData = playerManager.getPlayerData(offlinePlayer.getPlayer());
             playerData.setLeader(leader);
         }
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET leader = ? WHERE uuid = ?", offlinePlayer.getUniqueId().toString(), leader);
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET isLeader = ? WHERE uuid = ?", leader, offlinePlayer.getUniqueId().toString());
     }
 }

@@ -1,12 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.FactionPlayerData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.FactionPlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -15,7 +16,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class MemberCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -40,7 +44,7 @@ public class MemberCommand implements CommandExecutor {
             for (FactionPlayerData factionPlayerData : factionManager.getFactionMember(playerData.getFaction())) {
                 if (factionPlayerData.getFaction().equals(playerData.getFaction())) {
                     int grade = factionPlayerData.getFaction_grade();
-                    sort.computeIfAbsent(grade, k -> new ArrayList<>()).add(factionPlayerData);
+                    sort.computeIfAbsent(grade, k -> new ObjectArrayList<>()).add(factionPlayerData);
                 }
             }
 
@@ -59,7 +63,7 @@ public class MemberCommand implements CommandExecutor {
                             player.sendMessage("§8 → §a" + offlinePlayer.getName());
                         } else {
                             String lastLoginTime = Utils.localDateTimeToReadableString(lastLogin);
-                            if (playerData.getFactionGrade() >= 5) {
+                            if (playerData.isLeader()) {
                                 player.sendMessage("§8 → §c" + offlinePlayer.getName() + " - (" + lastLoginTime + ")");
                             } else {
                                 player.sendMessage("§8 → §c" + offlinePlayer.getName());

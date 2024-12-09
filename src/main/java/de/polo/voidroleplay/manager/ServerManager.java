@@ -1,16 +1,17 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
-import de.polo.voidroleplay.utils.GamePlay.MilitaryDrop;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.ShopType;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
+import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
+import de.polo.voidroleplay.utils.player.ScoreboardAPI;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -27,7 +28,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ServerManager {
     public static final boolean canDoJobsBoolean = true;
@@ -39,7 +43,7 @@ public class ServerManager {
     public static final Map<String, ContractData> contractDataMap = new HashMap<>();
     public static final Map<Integer, ShopData> shopDataMap = new HashMap<>();
     public static final Map<String, String> serverVariables = new HashMap<>();
-    public static final List<UUID> factionStorageWeaponsTookout = new ArrayList<>();
+    public static final List<UUID> factionStorageWeaponsTookout = new ObjectArrayList<>();
     private static final Map<String, PayoutData> payoutDataMap = new HashMap<>();
     public static Object[][] faction_grades;
 
@@ -224,7 +228,7 @@ public class ServerManager {
                         playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.WEEKLY);
                         Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.WEEKLY);
                     }
-                    Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der Seasonpass wurde zurückgesetzt!");
+                    Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der seasonpass wurde zurückgesetzt!");
 
                     PreparedStatement ffaStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
                     ffaStatement.setString(1, FFAStatsType.WEEKLY.name());
@@ -243,7 +247,7 @@ public class ServerManager {
                         ffaMonStatement.close();
                     }
                 }
-                if (now.getMinute() == 45 && now.getHour() == 1 && now.getSecond() == 0) {
+                /*if (now.getMinute() == 45 && now.getHour() == 1 && now.getSecond() == 0) {
                     Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 15 Minuten neu!");
                 }
                 if (now.getMinute() == 55 && now.getHour() == 1 && now.getSecond() == 0) {
@@ -258,7 +262,7 @@ public class ServerManager {
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
                     return;
-                }
+                }*/
                 for (LocationData locationData : locationManager.getLocations()) {
                     if (locationData.getType() == null) continue;
                     if (locationData.getInfo() == null) continue;

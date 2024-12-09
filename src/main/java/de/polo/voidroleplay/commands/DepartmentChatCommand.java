@@ -1,10 +1,11 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.PhoneUtils;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,6 +30,14 @@ public class DepartmentChatCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
+            return false;
+        }
+        if (!PhoneUtils.hasPhone(player)) {
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
+            return false;
+        }
+        if (playerData.isFlightmode()) {
+            player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());

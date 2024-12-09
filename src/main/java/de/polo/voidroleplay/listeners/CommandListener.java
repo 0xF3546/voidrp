@@ -1,10 +1,11 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.playerUtils.ChatUtils;
+import de.polo.voidroleplay.utils.player.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,7 +66,7 @@ public class CommandListener implements Listener {
         for (String blockedStart : blockedStarts) {
             if (command.startsWith(blockedStart)) {
                 event.setCancelled(true);
-                player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 ist nicht erlaubt.");
+                player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;
             }
         }
@@ -74,7 +75,7 @@ public class CommandListener implements Listener {
         for (String blockedContain : blockedContains) {
             if (msg.contains(blockedContain)) {
                 event.setCancelled(true);
-                player.sendMessage(Main.error + "Der Befehl §c" + msg + "§7 ist nicht erlaubt.");
+                player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;
             }
         }

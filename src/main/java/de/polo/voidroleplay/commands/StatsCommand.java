@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
 import de.polo.voidroleplay.manager.PlayerManager;
 import org.bukkit.command.Command;
@@ -24,24 +24,24 @@ public class StatsCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.sendMessage("§7    ===§8[§6Statistiken§8]§7===");
-        player.sendMessage(" §8- §eLevel§8:§7 " + playerData.getLevel() + " (" + playerData.getExp() + "/" + playerData.getNeeded_exp() + ")");
-        player.sendMessage(" §8- §eVisum§8:§7 " + playerData.getVisum());
-        player.sendMessage(" §8- §eBargeld§8:§7 " + playerData.getBargeld() + "$");
-        player.sendMessage(" §8- §ePayDay§8:§7 " + playerManager.paydayDuration(player) + "/60");
-        player.sendMessage(" §8- §eSpielzeit§8:§7 " + playerData.getHours() + " Stunden & " + playerData.getMinutes() + " Minuten");
+        player.sendMessage(" §8- §6Level§8:§c " + playerData.getLevel() + " (" + playerData.getExp() + "/" + playerData.getNeeded_exp() + ")");
+        player.sendMessage(" §8- §6Visum§8:§c " + playerData.getVisum());
+        player.sendMessage(" §8- §6Bargeld§8:§c " + playerData.getBargeld() + "$");
+        player.sendMessage(" §8- §6PayDay§8:§c " + playerManager.paydayDuration(player) + "/60");
+        player.sendMessage(" §8- §6Spielzeit§8:§c " + playerData.getHours() + " Stunden & " + playerData.getMinutes() + " Minuten");
         if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
-            player.sendMessage(" §8- §eFraktion§8:§7 " + playerData.getFaction() + " (" + playerData.getFactionGrade() + "/6)");
+            player.sendMessage(" §8- §6Fraktion§8:§c " + playerData.getFaction() + " (" + playerData.getFactionGrade() + "/6)");
         } else {
-            player.sendMessage(" §8- §eFraktion§8:§7 Zivilist");
+            player.sendMessage(" §8- §6Fraktion§8:§c Zivilist");
         }
-        player.sendMessage(" §8- §eRang§8:§7 " + playerData.getRang());
-        player.sendMessage(" §8- §eNummer§8:§7 " + playerData.getNumber());
-        player.sendMessage(" §8- §eVotes§8:§7 " + playerData.getVotes());
+        player.sendMessage(" §8- §6Rang§8:§c " + playerData.getRang());
+        player.sendMessage(" §8- §6Nummer§8:§c " + playerData.getNumber());
+        player.sendMessage(" §8- §6Votes§8:§c " + playerData.getVotes());
         if (playerData.getSubGroupId() != 0) {
-            player.sendMessage(" §8- §eGruppierung§8:§7 " + playerData.getSubGroup().getName());
+            player.sendMessage(" §8- §6Gruppierung§8:§c " + playerData.getSubGroup().getName());
         }
         PlaytimeReward playtimeReward = playerManager.getPlaytimeReward(playerData.getRewardId());
-        player.sendMessage("§8 - §eSpielzeitbelohnung§8: §7" + playtimeReward.getDisplayName() + " §8- §7" + playerData.getRewardTime() + "§7h verbleibend" + (playtimeReward.isPremiumOnly() ? "§8[§6Premium§8]" : ""));
+        player.sendMessage("§8 - §6Spielzeitbelohnung§8: §c" + playtimeReward.getDisplayName() + " §8- §c" + playerData.getRewardTime() + "h verbleibend" + (playtimeReward.isPremiumOnly() ? "§8[§6Premium§8]" : ""));
         return false;
     }
 }

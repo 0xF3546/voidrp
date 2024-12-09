@@ -1,22 +1,22 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.SubGroup;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.SubGroup;
 import de.polo.voidroleplay.manager.FactionManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class SubGroups {
     private final FactionManager factionManager;
-    private final List<SubGroup> subGroupList = new ArrayList<>();
+    private final List<SubGroup> subGroupList = new ObjectArrayList<>();
 
     public SubGroups(FactionManager factionManager) {
         this.factionManager = factionManager;

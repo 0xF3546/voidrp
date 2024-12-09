@@ -1,12 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LeadFrakCommand implements CommandExecutor, TabCompleter {
@@ -52,6 +52,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
         targetplayer.sendMessage(Prefix.faction_prefix + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
         try {
             factionManager.setPlayerInFrak(targetplayer, frak, 6);
+            factionManager.setLeader(targetplayer, true);
             adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " gesetzt.", ChatColor.DARK_PURPLE);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -63,7 +64,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 2) {
-            List<String> factions = new ArrayList<>();
+            List<String> factions = new ObjectArrayList<>();
             for (FactionData factionData : factionManager.getFactions()) {
                 factions.add(factionData.getName());
             }

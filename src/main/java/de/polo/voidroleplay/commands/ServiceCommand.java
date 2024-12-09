@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.PhoneUtils;
@@ -46,7 +46,7 @@ public class ServiceCommand implements CommandExecutor {
                         player.sendMessage(Main.error + "Syntax-Fehler: /service [§l110/112§7] [Nachricht]");
                     }
                 } else {
-                    player.sendMessage(PhoneUtils.error_flightmode);
+                    player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
                 }
             } else {
                 player.sendMessage(Main.error + "Du hast bereits einen Service offen.");

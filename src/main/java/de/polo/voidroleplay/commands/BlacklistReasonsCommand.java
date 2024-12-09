@@ -1,12 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,8 +56,8 @@ public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args[0].equalsIgnoreCase("add")) {
-            if (playerData.getFactionGrade() < 5) {
-                player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 6!");
+            if (!playerData.isLeader()) {
+                player.sendMessage(Prefix.ERROR + "Das geht als Leader!");
                 return false;
             }
             if (args.length < 4) {
@@ -79,8 +79,8 @@ public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(Prefix.ERROR + "Der Preis/Kills müssen numerisch sein.");
             }
         } else if (args[0].equalsIgnoreCase("remove")) {
-            if (playerData.getFactionGrade() < 5) {
-                player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 6!");
+            if (!playerData.isLeader()) {
+                player.sendMessage(Prefix.ERROR + "Das geht nur als Leader!");
                 return false;
             }
             if (args.length < 2) {
@@ -107,7 +107,7 @@ public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        List<String> texts = new ArrayList<>();
+        List<String> texts = new ObjectArrayList<>();
         if (args.length == 1) {
             texts.add("add");
             texts.add("remove");

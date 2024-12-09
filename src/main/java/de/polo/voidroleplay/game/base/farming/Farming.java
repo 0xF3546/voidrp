@@ -1,12 +1,13 @@
 package de.polo.voidroleplay.game.base.farming;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.LocationData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.LocationData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -24,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Farming implements Listener, CommandExecutor, TabCompleter {
     public static final Map<String, FarmingData> farmingDataMap = new HashMap<>();
@@ -140,7 +144,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            List<String> suggestions = new ArrayList<>();
+            List<String> suggestions = new ObjectArrayList<>();
             suggestions.add("openverarbeiter");
             suggestions.add("opendealer");
 

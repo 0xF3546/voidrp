@@ -12,7 +12,8 @@ public enum Weapon {
     HUNTING_RIFLE("§cJagdgewehr", "Jagdgewehr", Material.GOLDEN_HORSE_ARMOR, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0f, 6, 24, 2.5f, 5, 30, 0, false),
     PISTOL("§aPistole", "Pistole", Material.GOLDEN_SHOVEL, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 12, 18, 2, 3, 7, 0, false),
     MARKSMAN("§cMarksman", "Marksman", Material.LEATHER_HORSE_ARMOR, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.9f, 4, 24, 3, 5, 8, 0, false),
-    SNIPER("§7Scharfschützengewehr", "Scharfschützengewehr", Material.STONE_HOE, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.2f, 4, 60, 4, 4, 50, 0, false);
+    SNIPER("§7Scharfschützengewehr", "Scharfschützengewehr", Material.STONE_HOE, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.2f, 4, 60, 4, 4, 50, 0, false),
+    SHOTGUN("§eShotgun", "Shotgun", Material.IRON_HOE, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.2f, 4, 60, 4, 4 , 50, 0, false);
 
 
     private final String name;

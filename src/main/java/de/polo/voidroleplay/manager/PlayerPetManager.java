@@ -1,9 +1,10 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.enums.Pet;
 import de.polo.voidroleplay.utils.enums.PlayerPed;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Player;
@@ -11,7 +12,6 @@ import org.bukkit.entity.Player;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
 public class PlayerPetManager {
     private final PlayerData playerData;
     private final Player player;
-    private final List<PlayerPed> pets = new ArrayList<>();
+    private final List<PlayerPed> pets = new ObjectArrayList<>();
 
     public PlayerPetManager(PlayerData playerData, Player player) {
         this.playerData = playerData;

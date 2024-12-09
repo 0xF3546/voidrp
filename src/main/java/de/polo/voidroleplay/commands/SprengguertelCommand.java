@@ -1,12 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.ExplosionBelt;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -17,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SprengguertelCommand implements CommandExecutor, Listener {
@@ -25,7 +25,7 @@ public class SprengguertelCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final Utils utils;
 
-    private final List<ExplosionBelt> explosionBelts = new ArrayList<>();
+    private final List<ExplosionBelt> explosionBelts = new ObjectArrayList<>();
 
     public SprengguertelCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;

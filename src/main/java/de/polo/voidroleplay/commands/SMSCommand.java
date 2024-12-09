@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.PhoneUtils;
 import de.polo.voidroleplay.utils.Utils;
@@ -38,10 +38,10 @@ public class SMSCommand implements CommandExecutor {
                     player.sendMessage(Main.error + "Syntax-Fehler: /sms [Spieler] [Nachricht]");
                 }
             } else {
-                player.sendMessage(PhoneUtils.error_flightmode);
+                player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             }
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
         return false;
     }

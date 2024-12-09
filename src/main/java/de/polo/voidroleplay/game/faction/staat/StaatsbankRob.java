@@ -1,12 +1,12 @@
 package de.polo.voidroleplay.game.faction.staat;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.storage.FactionData;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class StaatsbankRob {
     @Getter
-    private final List<Integer> openVaults = new ArrayList<>();
+    private final List<Integer> openVaults = new ObjectArrayList<>();
     @Getter
     @Setter
     private FactionData attacker;

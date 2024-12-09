@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
+import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.manager.FactionManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +22,7 @@ public class ServerPingListener implements Listener {
 
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
-        String firstline = "§6§lVoidRoleplay §8| §eReallife & Roleplay §8[§e1.16.5§8]";
+        String firstline = "§6§lVoidRoleplay V2 §8| §eReallife & Roleplay §8[§e1.16.5§8]";
         String secondline = "§8➥ §cRoleplay mit Stil. §8 × §bⓘ §adiscord.gg/void-roleplay";
         String motd = null;
 

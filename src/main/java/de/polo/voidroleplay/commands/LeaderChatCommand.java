@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -25,7 +25,7 @@ public class LeaderChatCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFactionGrade() < 5 && playerData.getPermlevel() < 70) {
+        if (!playerData.isLeader() && playerData.getPermlevel() < 70) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -34,7 +34,7 @@ public class LeaderChatCommand implements CommandExecutor {
             return false;
         }
         for (PlayerData pData : playerManager.getPlayers()) {
-            if (pData.getPermlevel() >= 70 || pData.getFactionGrade() >= 5) {
+            if (pData.getPermlevel() >= 70 || pData.isLeader()) {
                 if (pData.getFaction() == null) continue;
                 Player targetplayer = Bukkit.getPlayer(pData.getUuid());
                 String msg = Utils.stringArrayToString(args);

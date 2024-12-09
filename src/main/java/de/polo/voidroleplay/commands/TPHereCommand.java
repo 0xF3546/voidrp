@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
@@ -46,7 +46,7 @@ public class TPHereCommand implements CommandExecutor {
         targetplayer.teleport(player.getLocation());
         player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 zu dir teleportiert.");
         targetplayer.sendMessage(Prefix.MAIN + "§c" + playerData.getRang() + " " + player.getName() + "§7 hat dich zu sich teleportiert.");
-        adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " zu sich Teleportiert.", ChatColor.RED);
+        adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " zu sich teleportiert.", ChatColor.RED);
         return false;
     }
 }

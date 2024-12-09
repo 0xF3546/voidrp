@@ -1,15 +1,13 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.JailData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.ServiceData;
-import de.polo.voidroleplay.dataStorage.WantedReason;
+import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -20,13 +18,15 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class StaatUtil {
     public static final Map<String, JailData> jailDataMap = new HashMap<>();
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
     public static EvidenceChamber Asservatemkammer;
-    private final List<WantedReason> wantedReasons = new ArrayList<>();
+    private final List<WantedReason> wantedReasons = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
@@ -82,28 +82,55 @@ public class StaatUtil {
         }
     }
 
-    public boolean arrestPlayer(Player player, Player arrester) throws SQLException {
+    private String calculateManhuntTime(PlayerWanted wanted) {
+        LocalDateTime now = LocalDateTime.now();
+        Duration diff = Duration.between(now, wanted.getIssued());
+
+        long minutes = diff.toMinutes();
+        if (minutes < 60) {
+            return minutes + " Minute" + (minutes > 1 ? "n" : "");
+        }
+
+        long hours = diff.toHours();
+        if (hours < 24) {
+            return hours + " Stunde" + (hours > 1 ? "n" : "");
+        }
+
+        long days = diff.toDays();
+        return days + " Tag" + (days > 1 ? "e" : "");
+    }
+
+    public boolean arrestPlayer(Player player, Player arrester, boolean deathArrest) throws SQLException {
         StringBuilder reason = new StringBuilder();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         PlayerData arresterData = playerManager.getPlayerData(arrester.getUniqueId());
         WantedReason wantedReason = getWantedReason(playerData.getWanted().getWantedId());
         if (playerData.getWanted() != null) {
             JailData jailData = new JailData();
-            locationManager.useLocation(player, "gefaengnis");
-            player.sendMessage("§8[§cGefängnis§8] §7Du wurdest für §6" + wantedReason.getWanted() + " Hafteinheiten§7 inhaftiert.");
+            if (!deathArrest) locationManager.useLocation(player, "gefaengnis");
+            if (deathArrest) {
+                player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wantedReason.getWanted() + " Minuten inhaftiert.");
+            } else {
+                player.sendMessage("§8[§6Gefängnis§8] §7Du bist nun für " + wantedReason.getWanted() + "  Minuten im Gefängnis..");
+            }
             playerData.setJailed(true);
             factionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
-            playerData.setHafteinheiten(wantedReason.getWanted());
+            playerData.setHafteinheiten(wantedReason.getWanted() / 3);
             Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
-                if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                    players.sendMessage("§8[§cGefängnis§8] §7" + factionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
+                if (playerData1.isExecutiveFaction()) {
+                    if (deathArrest) {
+                        players.sendMessage("§9HQ: " + player.getName() +" wurde von " + arrester.getName() + " getötet.");
+                    } else {
+                        players.sendMessage("§9HQ: " + factionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
+                    }
+                    players.sendMessage("§9HQ: Fahndungsgrund: " + wantedReason.getReason() + " | Fahndungszeit: " + calculateManhuntTime(playerData.getWanted()));
                 }
             }
-            Main.getInstance().getMySQL().queryThreaded("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), wantedReason.getWanted(), arrester.getUniqueId().toString());
+            jailData.setHafteinheiten(playerData.getHafteinheiten());
+            Main.getInstance().getMySQL().queryThreaded("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailData.getHafteinheiten(), arrester.getUniqueId().toString());
             jailData.setUuid(player.getUniqueId().toString());
-            jailData.setHafteinheiten(wantedReason.getWanted());
             jailData.setReason(String.valueOf(reason));
             jailDataMap.put(player.getUniqueId().toString(), jailData);
             playerData.clearWanted();
@@ -295,5 +322,9 @@ public class StaatUtil {
 
     public WantedReason getWantedReason(String reason) {
         return wantedReasons.stream().filter(x -> x.getReason().equalsIgnoreCase(reason)).findFirst().orElse(null);
+    }
+
+    public void addWantedReason(WantedReason wantedReason) {
+        wantedReasons.add(wantedReason);
     }
 }

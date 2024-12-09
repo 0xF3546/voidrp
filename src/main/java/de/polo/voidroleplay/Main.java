@@ -1,21 +1,23 @@
 package de.polo.voidroleplay;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import de.polo.voidroleplay.commands.*;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.database.MySQL;
-import de.polo.voidroleplay.game.base.extra.Beginnerpass.Beginnerpass;
-import de.polo.voidroleplay.game.base.extra.Seasonpass.Seasonpass;
+import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.game.base.extra.beginnerpass.Beginnerpass;
+import de.polo.voidroleplay.game.base.extra.seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryApiRegister;
+import de.polo.voidroleplay.manager.inventory.InventoryApiRegister;
+import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.utils.*;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardAPI;
-import de.polo.voidroleplay.utils.playerUtils.ScoreboardManager;
+import de.polo.voidroleplay.utils.gameplay.GamePlay;
+import de.polo.voidroleplay.utils.player.ScoreboardAPI;
+import de.polo.voidroleplay.utils.player.ScoreboardManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,6 +33,7 @@ import org.dynmap.markers.MarkerAPI;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class Main extends JavaPlugin {
     public static final String faction_prefix = "§8[§9Fraktion§8] §7";
@@ -41,6 +44,7 @@ public final class Main extends JavaPlugin {
     public static final String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static final String business_prefix = "§8[§6Business§8]§7 ";
     public static Plugin plugin = null;
+    @Getter
     private static Main instance;
     public boolean isOnline = false;
     @Getter
@@ -51,7 +55,7 @@ public final class Main extends JavaPlugin {
     @Getter
     public PlayerManager playerManager;
     @Getter
-    public Utils utils;
+    public static Utils utils;
     public AdminManager adminManager;
     public Commands commands;
     public FactionManager factionManager;
@@ -72,7 +76,8 @@ public final class Main extends JavaPlugin {
     public CompanyManager companyManager;
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
-    private NPC npc;
+    private NPCManager npc;
+    public ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
     @Getter
     private DynmapAPI dynmapAPI;
@@ -100,31 +105,13 @@ public final class Main extends JavaPlugin {
     }
 
     public static int random(int min, int max) {
-        return min + (int) (Math.random() * ((max - min) + 1));
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
     public static char getRandomChar(String characters) {
         Random random = new Random();
         int index = random.nextInt(characters.length());
         return characters.charAt(index);
-    }
-
-    public static String generateRandomCode(int length) {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int randomInt = random.nextInt(75) + 48;
-            if ((randomInt >= 48 && randomInt <= 57) || (randomInt >= 65 && randomInt <= 90) || (randomInt >= 97 && randomInt <= 122)) {
-                sb.append((char) randomInt);
-            } else {
-                i--;
-            }
-        }
-        return sb.toString();
-    }
-
-    public static Main getInstance() {
-        return instance;
     }
 
     public static void waitSeconds(int seconds, Runnable runnable) {
@@ -171,7 +158,7 @@ public final class Main extends JavaPlugin {
         weaponManager = new WeaponManager(utils, playerManager);
         isOnline = true;
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
-        npc = new NPC(playerManager);
+        npc = new NPCManager(playerManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager, npc);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
@@ -258,6 +245,7 @@ public final class Main extends JavaPlugin {
         if (gamePlay != null && gamePlay.activeDrop != null) {
             gamePlay.activeDrop.cleanup();
         }
+        gamePlay.plant.cleanup();
         Main.getInstance().utils.deathUtil.cleanUpCorpses();
         System.out.println("Disabling VoidRoleplay");
         isOnline = false;
@@ -266,7 +254,7 @@ public final class Main extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        mySQL.close();
     }
 
     private void loadMarker() {
@@ -278,6 +266,16 @@ public final class Main extends JavaPlugin {
     }
 
     public class Commands {
+        private final Main main;
+        private final PlayerManager playerManager;
+        private final AdminManager adminManager;
+        private final LocationManager locationManager;
+        private final SupportManager supportManager;
+        private final Vehicles vehicles;
+        private final GamePlay gamePlay;
+        private final BusinessManager businessManager;
+        private final WeaponManager weaponManager;
+        private final CompanyManager companyManager;
         public SetTeamCommand setTeamCommand;
         public GeldbeutelCommand geldbeutelCommand;
         public PersonalausweisCommand personalausweisCommand;
@@ -313,7 +311,6 @@ public final class Main extends JavaPlugin {
         public TPCommand tpCommand;
         public TPHereCommand tpHereCommand;
         public SpeedCommand speedCommand;
-        public OpenBossMenuCommand openBossMenuCommand;
         public KickCommand kickCommand;
         public OOCCommand oocCommand;
         public PluginCommand pluginCommand;
@@ -480,16 +477,6 @@ public final class Main extends JavaPlugin {
         public RemoveLeaderRechteCommand removeLeaderRechteCommand;
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
-        private final Main main;
-        private final PlayerManager playerManager;
-        private final AdminManager adminManager;
-        private final LocationManager locationManager;
-        private final SupportManager supportManager;
-        private final Vehicles vehicles;
-        private final GamePlay gamePlay;
-        private final BusinessManager businessManager;
-        private final WeaponManager weaponManager;
-        private final CompanyManager companyManager;
 
         public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
             this.main = main;
@@ -551,7 +538,6 @@ public final class Main extends JavaPlugin {
             tpCommand = new TPCommand(playerManager, adminManager);
             tpHereCommand = new TPHereCommand(playerManager, adminManager);
             speedCommand = new SpeedCommand(playerManager);
-            openBossMenuCommand = new OpenBossMenuCommand(playerManager, factionManager);
             kickCommand = new KickCommand(playerManager);
             oocCommand = new OOCCommand();
             pluginCommand = new PluginCommand(playerManager);

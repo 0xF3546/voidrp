@@ -1,22 +1,22 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.BusinessData;
-import de.polo.voidroleplay.dataStorage.DBPlayerData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.BusinessData;
+import de.polo.voidroleplay.storage.DBPlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class BusinessManager {
     private final PlayerManager playerManager;
-    private final List<BusinessData> businesses = new ArrayList<>();
+    private final List<BusinessData> businesses = new ObjectArrayList<>();
 
     public BusinessManager(PlayerManager playerManager) {
         this.playerManager = playerManager;

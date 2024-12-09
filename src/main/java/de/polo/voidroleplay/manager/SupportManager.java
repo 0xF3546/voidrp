@@ -1,7 +1,8 @@
 package de.polo.voidroleplay.manager;
 
-import de.polo.voidroleplay.dataStorage.Ticket;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.storage.Ticket;
+import de.polo.voidroleplay.database.impl.MySQL;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -10,16 +11,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 public class SupportManager {
-    public static final List<String> playerTickets = new ArrayList<>();
+    public static final List<String> playerTickets = new ObjectArrayList<>();
     public static int TicketCount = 0;
     private final MySQL mySQL;
-    private final List<Ticket> Tickets = new ArrayList<>();
+    private final List<Ticket> Tickets = new ObjectArrayList<>();
 
     public SupportManager(MySQL mySQL) {
         this.mySQL = mySQL;
@@ -119,7 +119,7 @@ public class SupportManager {
     }
 
     public List<Player> getPlayersInTicket(Ticket ticket) {
-        List<Player> players = new ArrayList<>();
+        List<Player> players = new ObjectArrayList<>();
 
         players.add(Bukkit.getPlayer(ticket.getCreator()));
 

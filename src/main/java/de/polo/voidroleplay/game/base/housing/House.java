@@ -3,17 +3,20 @@ package de.polo.voidroleplay.game.base.housing;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.crypto.Miner;
 import de.polo.voidroleplay.utils.enums.HouseType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class House {
     @Getter
@@ -52,7 +55,7 @@ public class House {
     private HouseType houseType = HouseType.BASIC;
     @Getter
     @Setter
-    private List<Miner> activeMiner = new ArrayList<>();
+    private List<Miner> activeMiner = new ObjectArrayList<>();
     @Getter
     @Setter
     private boolean cookActive;
@@ -149,4 +152,25 @@ public class House {
         return mieterSlots;
     }
 
+    public void addMoney(int amount, String reason, boolean silent) {
+        setMoney(money + amount);
+        if (!silent) sendMessage(reason);
+        updateMoney();
+    }
+
+    public void removeMoney(int amount, String reason, boolean silent) {
+        setMoney(money - amount);
+        if (!silent) sendMessage(reason);
+        updateMoney();
+    }
+
+    private void updateMoney() {
+        Main.getInstance().getMySQL().updateAsync("UPDATE housing SET money = ?, totalmoney = ? WHERE number = ?", money, totalMoney, number);
+    }
+
+    private void sendMessage(String message) {
+        Player player = Bukkit.getPlayer(UUID.fromString(owner));
+        if (player == null) return;
+        player.sendMessage("§8[§6Haus " + number + "§8]§7 " + message);
+    }
 }

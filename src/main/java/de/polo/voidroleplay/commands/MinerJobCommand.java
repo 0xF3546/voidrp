@@ -1,21 +1,22 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.RegisteredBlock;
 import de.polo.voidroleplay.manager.FactionManager;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.GamePlay.GamePlay;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.enums.MinerBlockType;
 import de.polo.voidroleplay.utils.enums.MinerItem;
 import de.polo.voidroleplay.utils.enums.PickaxeType;
+import de.polo.voidroleplay.utils.gameplay.GamePlay;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,7 +31,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,13 +159,13 @@ public class MinerJobCommand implements CommandExecutor {
         int rand = Main.random(1, 100);
         if (Main.random(1, 100) == 1) {
             amount = amount * 4;
-            player.sendMessage("§8[§eMiner-Drop§8]§a Du hast 4x XP bekommen!");
+            player.sendMessage("§8[§eMiner-drop§8]§a Du hast 4x XP bekommen!");
         } else if (rand >= 5 && rand <= 10) {
-            player.sendMessage("§8[§eMiner-Drop§8]§a Du kannst 30 Sekunden schneller abbauen!");
+            player.sendMessage("§8[§eMiner-drop§8]§a Du kannst 30 Sekunden schneller abbauen!");
             player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 30 * 20, 1));
         } else if (rand < 4) {
             int am = Main.random(2, 4);
-            player.sendMessage("§8[§eMiner-Drop§8]§a Du hast " + am + " mehr " + minerBlockType.getDisplayName() + " §a erhalten.");
+            player.sendMessage("§8[§eMiner-drop§8]§a Du hast " + am + " mehr " + minerBlockType.getDisplayName() + " §a erhalten.");
             player.getInventory().addItem(ItemManager.createItem(minerBlockType.getOutputItem().getMaterial(), am, 0, minerBlockType.getOutputItem().getDisplayName()));
         }
         playerManager.addExp(player, EXPType.SKILL_MINER, amount);
@@ -203,7 +203,7 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     private void rolloutBlocks(Material blockType) {
-        List<RegisteredBlock> blocks = new ArrayList<>();
+        List<RegisteredBlock> blocks = new ObjectArrayList<>();
         for (RegisteredBlock block : registeredBlocks) {
             if (block.getInfoValue() == null) continue;
             if (!MinerBlockType.valueOf(block.getInfoValue()).getBlock().equals(blockType)) continue;
@@ -216,7 +216,7 @@ public class MinerJobCommand implements CommandExecutor {
                 .map(RegisteredBlock::getBlock)
                 .filter(block -> block.getType() == Material.STONE)
                 .collect(Collectors.toList());
-        List<Block> nb = new ArrayList<>();
+        List<Block> nb = new ObjectArrayList<>();
         for (RegisteredBlock b : blocks) {
             if (!b.getBlock().getType().equals(Material.STONE)) continue;
             nb.add(b.getBlock());

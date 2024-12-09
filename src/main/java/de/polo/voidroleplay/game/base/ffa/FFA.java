@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.game.base.ffa;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.WeaponType;
-import de.polo.voidroleplay.manager.InventoryManager.CustomItem;
-import de.polo.voidroleplay.manager.InventoryManager.InventoryManager;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.WeaponType;
+import de.polo.voidroleplay.manager.inventory.CustomItem;
+import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -13,7 +13,8 @@ import de.polo.voidroleplay.utils.enums.FFALobbyType;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
-import de.polo.voidroleplay.utils.playerUtils.PlayerFFAStats;
+import de.polo.voidroleplay.utils.player.PlayerFFAStats;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,6 +33,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -43,10 +45,10 @@ public class FFA implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
 
-    private final List<FFALobby> lobbies = new ArrayList<>();
+    private final List<FFALobby> lobbies = new ObjectArrayList<>();
 
-    private final List<Player> joinedPlayers = new ArrayList<>();
-    private final List<PlayerFFAStats> playerFFAStats = new ArrayList<>();
+    private final List<Player> joinedPlayers = new ObjectArrayList<>();
+    private final List<PlayerFFAStats> playerFFAStats = new ObjectArrayList<>();
 
     public FFA(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
@@ -219,7 +221,7 @@ public class FFA implements CommandExecutor {
     }
 
     private Collection<Player> getPlayersInLobby(int lobby) {
-        List<Player> players = new ArrayList<>();
+        List<Player> players = new ObjectArrayList<>();
         for (PlayerData playerData : playerManager.getPlayers()) {
             if (playerData.getVariable("ffa") == null) continue;
             FFALobby ffaLobby = playerData.getVariable("ffa");
@@ -262,7 +264,7 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                             Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
@@ -297,7 +299,7 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.voidroleplay.dataStorage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.voidroleplay.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
                             Main.getInstance().weaponManager.removeWeapon(player, item);
                         }
@@ -337,7 +339,7 @@ public class FFA implements CommandExecutor {
     }
 
     private Collection<Player> getPlayersInLobby(FFALobby lobby) {
-        List<Player> players = new ArrayList<>();
+        List<Player> players = new ObjectArrayList<>();
         for (Player player : joinedPlayers) {
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getVariable("ffa") == null) continue;
@@ -348,9 +350,8 @@ public class FFA implements CommandExecutor {
     }
 
     private FFASpawn getRandomSpawn(FFALobby lobby) {
-        Random random = new Random();
         List<FFASpawn> spawns = lobby.getSpawns();
-        int randomIndex = random.nextInt(spawns.size());
+        int randomIndex = ThreadLocalRandom.current().nextInt(spawns.size() + 1);
         return spawns.get(randomIndex);
     }
 

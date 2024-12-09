@@ -1,14 +1,15 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.FactionData;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.RankData;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RankData;
+import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,7 @@ import org.bukkit.entity.Player;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ForumCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -56,7 +57,8 @@ public class ForumCommand implements CommandExecutor {
                     utils.sendActionBar(player, "§aAccount freigeschaltet.");
                     playerData.setForumID(forumID);
                     utils.sendActionBar(player, "§aWeise Forum-Rechte zu...");
-                    ArrayList<Integer> ranks = new ArrayList<>();
+                    List<Integer> ranks = new ObjectArrayList<>();
+                    ranks.indexOf(1);
                     RankData spielerData = ServerManager.rankDataMap.get("Spieler");
                     ranks.add(spielerData.getForumID());
                     RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
@@ -65,7 +67,7 @@ public class ForumCommand implements CommandExecutor {
                     }
                     if (playerData.getFaction() != null) {
                         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-                        if (playerData.getFactionGrade() >= 5) {
+                        if (playerData.isLeader()) {
                             ranks.add(factionData.getForumID_Leader());
                         } else {
                             ranks.add(factionData.getForumID());

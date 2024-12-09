@@ -1,12 +1,12 @@
 package de.polo.voidroleplay.game.base.shops;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.Company;
+import de.polo.voidroleplay.storage.Company;
 import de.polo.voidroleplay.utils.enums.ShopType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.World;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ShopData {
@@ -21,7 +21,7 @@ public class ShopData {
     private ShopType type;
     private int company;
     private int bank;
-    private List<ShopItem> items = new ArrayList<>();
+    private List<ShopItem> items = new ObjectArrayList<>();
 
     public int getId() {
         return id;

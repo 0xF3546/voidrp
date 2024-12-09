@@ -3,10 +3,11 @@ package de.polo.voidroleplay.manager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.Company;
-import de.polo.voidroleplay.dataStorage.CompanyRole;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.database.MySQL;
+import de.polo.voidroleplay.storage.Company;
+import de.polo.voidroleplay.storage.CompanyRole;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.database.impl.MySQL;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -14,12 +15,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class CompanyManager {
-    private final List<Company> companies = new ArrayList<>();
+    private final List<Company> companies = new ObjectArrayList<>();
     private final MySQL mySQL;
 
     public CompanyManager(MySQL mySQL) {

@@ -1,15 +1,15 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.RankData;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.utils.playerUtils.BankingUtils;
-import de.polo.voidroleplay.utils.playerUtils.DeathUtils;
-import de.polo.voidroleplay.utils.playerUtils.PayDayUtils;
-import de.polo.voidroleplay.utils.playerUtils.Tutorial;
+import de.polo.voidroleplay.utils.player.BankingUtils;
+import de.polo.voidroleplay.utils.player.DeathUtils;
+import de.polo.voidroleplay.utils.player.PayDayUtils;
+import de.polo.voidroleplay.utils.player.Tutorial;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -26,12 +26,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
-    static Scoreboard sb;
     private static final HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
     private static final HashMap<String, Marker> markers = new HashMap<>();
+    static Scoreboard sb;
     @Getter
     public final NavigationManager navigationManager;
     @Getter
@@ -105,8 +105,7 @@ public class Utils {
     }
 
     public static boolean isRandom(int chance) {
-        Random random = new Random();
-        int randomNumber = random.nextInt(100);
+        int randomNumber = ThreadLocalRandom.current().nextInt(100 + 1);
 
         return randomNumber < chance;
     }
@@ -281,19 +280,13 @@ public class Utils {
                 prefix = "";
             }
             String name = "§7" + player.getName();
-            if (playerData.isDuty()) {
+            if (playerData.isDuty() && playerData.getFaction() != null) {
                 switch (playerData.getFaction().toLowerCase()) {
-                    case "polizei":
-                        name = "§9" + player.getName();
-                        break;
-                    case "fbi":
-                        name = "§1" + player.getName();
-                        break;
-                    case "medic":
-                        name = "§c" + player.getName();
-                        break;
-                    default:
-                        break;
+                    case "polizei" -> name = "§9" + player.getName();
+                    case "fbi" -> name = "§1" + player.getName();
+                    case "medic" -> name = "§c" + player.getName();
+                    default -> {
+                    }
                 }
             }
             player.setDisplayName(Color.GRAY + player.getName());

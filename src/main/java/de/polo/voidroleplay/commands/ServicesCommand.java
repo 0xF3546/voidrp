@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.dataStorage.PlayerData;
-import de.polo.voidroleplay.dataStorage.ServiceData;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.ServiceData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.StaatUtil;
 import net.md_5.bungee.api.chat.ClickEvent;

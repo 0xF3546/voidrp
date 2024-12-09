@@ -1,12 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.dataStorage.PlayerData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UninviteCommand implements CommandExecutor, TabCompleter {
@@ -42,7 +42,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getFactionGrade() < 5) {
+        if (!playerData.isLeader()) {
             player.sendMessage(Main.error_nopermission);
             return false;
         }
@@ -85,7 +85,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
             PreparedStatement statement = connection.prepareStatement("SELECT player_name FROM players WHERE faction = ?");
             statement.setString(1, playerData.getFaction());
             ResultSet result = statement.executeQuery();
-            List<String> names = new ArrayList<>();
+            List<String> names = new ObjectArrayList<>();
             while (result.next()) {
                 names.add(result.getString("player_name"));
             }
