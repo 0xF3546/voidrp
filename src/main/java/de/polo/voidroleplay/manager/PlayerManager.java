@@ -234,6 +234,7 @@ public class PlayerManager implements Listener {
                 playerData.setCrypto(result.getFloat("crypto"));
                 playerData.setRewardTime(result.getInt("rewardTime"));
                 playerData.setRewardId(result.getInt("rewardId"));
+                playerData.getInventory().setSize(result.getInt("inventorySize"));
                 if (!result.getBoolean("tpNewmap")) {
                     Main.getInstance().locationManager.useLocation(player, "stadthalle");
                     player.sendMessage("§8 ✈ §aWillkommen auf der neuen Map!");

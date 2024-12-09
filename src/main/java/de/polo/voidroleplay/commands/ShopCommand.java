@@ -51,6 +51,7 @@ public class ShopCommand implements CommandExecutor {
     private void openShop(Player player, ShopData shopData) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventory = new InventoryManager(player, 54, "§8» §c" + shopData.getName(), true, false);
+
         for (int i = 0; i < 54; i++) {
             if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
                 inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
@@ -81,24 +82,25 @@ public class ShopCommand implements CommandExecutor {
         int j = 10;
         for (ShopItem item : shopData.getItems()) {
             if (item.getShop() == shopData.getId()) {
-                if (inventory.getInventory().getItem(j) == null) {
-                    inventory.setItem(new CustomItem(j, ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§"), "§8 ➥ §a" + item.getPrice() + "$")) {
-                        @Override
-                        public void onClick(InventoryClickEvent event) {
-                            BuyItem(player, item.getPrice(), item.getType(), item.getDisplayName(), item.getMaterial(), item.getSecondType(), item.getShop());
-                        }
-                    });
-                    j++;
-                } else {
-                    j++;
-                    inventory.setItem(new CustomItem(j, ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§"), "§8 ➥ §a" + item.getPrice() + "$")) {
-                        @Override
-                        public void onClick(InventoryClickEvent event) {
-                            BuyItem(player, item.getPrice(), item.getType(), item.getDisplayName(), item.getMaterial(), item.getSecondType(), item.getShop());
-                        }
-                    });
+                if (inventory.getInventory().getItem(j) != null) {
                     j++;
                 }
+                if (item.getType().equalsIgnoreCase("inventory")) {
+                    inventory.setItem(new CustomItem(j, ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§"), "§8 ➥ §a" + item.getPrice() * (inventory.getSize() + 25) + "$")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            BuyItem(player, item.getPrice() * inventory.getSize() + 25, item.getType(), item.getDisplayName(), item.getMaterial(), item.getSecondType(), item.getShop());
+                        }
+                    });
+                } else {
+                    inventory.setItem(new CustomItem(j, ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§"), "§8 ➥ §a" + item.getPrice() + "$")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            BuyItem(player, item.getPrice(), item.getType(), item.getDisplayName(), item.getMaterial(), item.getSecondType(), item.getShop());
+                        }
+                    });
+                }
+                j++;
             }
         }
     }
@@ -298,6 +300,9 @@ public class ShopCommand implements CommandExecutor {
                 } else if (Objects.equals(type, "car")) {
                     Main.getInstance().vehicles.giveVehicle(player, info);
                     playerManager.removeMoney(player, price, "Kauf eines Fahrzeuges: " + info);
+                } else if (Objects.equals(type, "inventory")){
+                    playerData.getInventory().setSizeToDatabase(playerData.getInventory().getSize() + 25);
+                    player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Du hast ein Inventar-Upgrade für §a" + price + "$§7 gekauft.");
                 } else {
                     playerManager.removeMoney(player, price, "Kauf von: " + item);
                     player.getInventory().addItem(ItemManager.createItem(item, 1, 0, displayName.replace("&", "§")));

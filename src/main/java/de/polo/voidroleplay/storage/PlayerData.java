@@ -38,7 +38,7 @@ public class PlayerData {
     public final AddonXP addonXP = new AddonXP();
 
     @Getter
-    private final PlayerInventoryManager inventory;
+    private PlayerInventoryManager inventory;
     private final List<PlayerQuest> quests = new ObjectArrayList<>();
     private final List<de.polo.voidroleplay.game.base.extra.beginnerpass.PlayerQuest> beginnerQuests = new ObjectArrayList<>();
     private final List<PlayerIllness> illnesses = new ObjectArrayList<>();

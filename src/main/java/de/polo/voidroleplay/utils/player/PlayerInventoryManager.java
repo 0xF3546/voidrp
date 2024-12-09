@@ -4,6 +4,8 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +15,10 @@ public class PlayerInventoryManager {
     private final List<PlayerInventoryItem> items = new ObjectArrayList<>();
 
     private final PlayerData playerData;
+
+    @Getter
+    @Setter
+    private int size;
 
     public PlayerInventoryManager(PlayerData playerData) {
         this.playerData = playerData;
@@ -39,12 +45,24 @@ public class PlayerInventoryManager {
         Main.getInstance().getMySQL().updateAsync("UPDATE player_inventory_items SET amount = ? WHERE id = ?", item.getAmount(), item.getId());
     }
 
-    public void addItem(PlayerInventoryItem item) {
+    public void setSizeToDatabase(int size) {
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET inventorySize = ? WHERE uuid = ?", size, playerData.getUuid().toString());
+    }
+
+    private int getWeight() {
+        int weight = 0;
+        for (PlayerInventoryItem item : items) {
+            weight += item.getAmount();
+        }
+        return weight;
+    }
+    public boolean addItem(PlayerInventoryItem item) {
+        if (getWeight() + item.getAmount() > getSize()) return false;
         PlayerInventoryItem cachedItem = getByType(item.getItem());
         if (cachedItem != null) {
             cachedItem.setAmount(cachedItem.getAmount() + 1);
             updateItem(cachedItem);
-            return;
+            return true;
         }
         Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO player_inventory_items (uuid, item, amount) VALUES (?, ?, ?)", playerData.getUuid().toString(), item.getItem().name(), item.getAmount())
                 .thenApply(key -> {
@@ -54,6 +72,7 @@ public class PlayerInventoryManager {
                     }
                     return null;
                 });
+        return true;
     }
 
     public void removeItem(PlayerInventoryItem item) {
