@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.PlayerWanted;
 import de.polo.voidroleplay.storage.WantedReason;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AsuCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -77,7 +79,7 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        List<String> text = new ObjectArrayList<>();
+        /*List<String> text = new ObjectArrayList<>();
         if (args.length == 1) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 text.add(player.getName());
@@ -87,7 +89,13 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
             for (WantedReason reason : utils.getStaatUtil().getWantedReasons()) {
                 text.add(reason.getReason());
             }
-        }
-        return text;
+        }*/
+        return TabCompletion
+                .getBuilder(args)
+                .addAtIndex(1, Bukkit.getOnlinePlayers().stream()
+                        .map(Player::getName).collect(Collectors.toList()))
+                .addAtIndex(2, utils.getStaatUtil().getWantedReasons().stream()
+                        .map(WantedReason::getReason).collect(Collectors.toList()))
+                .build();
     }
 }
