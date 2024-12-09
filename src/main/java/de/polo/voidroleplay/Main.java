@@ -477,6 +477,7 @@ public final class Main extends JavaPlugin {
         public RemoveLeaderRechteCommand removeLeaderRechteCommand;
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
+        public InvCommand invCommand;
 
         public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
             this.main = main;
@@ -692,6 +693,7 @@ public final class Main extends JavaPlugin {
             removeLeaderRechteCommand = new RemoveLeaderRechteCommand(playerManager, factionManager, adminManager);
             gwdCommand = new GwdCommand(playerManager, adminManager, factionManager);
             zdCommand = new ZDCommand(playerManager, adminManager, factionManager);
+            invCommand = new InvCommand(playerManager);
 
             main.registerCommands();
             main.registerListener(this);

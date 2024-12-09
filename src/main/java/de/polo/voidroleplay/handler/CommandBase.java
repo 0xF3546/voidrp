@@ -53,7 +53,7 @@ public abstract class CommandBase implements CommandExecutor {
 
         try {
             execute(player, playerData, args);
-            PluginCommand pluginCommand = Main.getInstance().getCommand(command.name());
+            PluginCommand pluginCommand = Main.getInstance().getCommand(command.getName());
             if (pluginCommand != null) {
                 pluginCommand.setExecutor(this);
             }
