@@ -57,4 +57,6 @@ public interface INameTagProvider {
      * @param footer the text to display at the bottom of the Tablist for all players.
      */
     void updateTabForAll(String header, String footer);
+
+    void updateForFaction(String faction);
 }

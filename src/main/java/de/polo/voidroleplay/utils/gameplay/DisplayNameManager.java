@@ -15,6 +15,8 @@ import org.bukkit.scoreboard.Team;
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.polo.voidroleplay.Main.nameTagProvider;
+
 public class DisplayNameManager {
 
     private final Map<Player, String> playerScoreboards = new HashMap<>();
@@ -37,7 +39,12 @@ public class DisplayNameManager {
     }
 
     public void reloadDisplayNames(Player player) {
-        clearPlayerScoreboard(player);
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) {
+            return;
+        }
+        nameTagProvider.updateForFaction(playerData.getFaction());
+        /*clearPlayerScoreboard(player);
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
             return;
@@ -94,7 +101,7 @@ public class DisplayNameManager {
             team.addEntry(pPlayer.getName());
         }
 
-        scoreboardAPI.updateScoreboardTitle(player, scoreboardName, "Faction Display");
+        scoreboardAPI.updateScoreboardTitle(player, scoreboardName, "Faction Display");*/
     }
 
     public void clearPlayerScoreboard(Player player) {

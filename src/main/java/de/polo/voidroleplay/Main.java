@@ -2,8 +2,10 @@ package de.polo.voidroleplay;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.game.base.NameTagProviderImpl;
 import de.polo.voidroleplay.game.base.extra.beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
@@ -63,7 +65,7 @@ public final class Main extends JavaPlugin {
     public Commands commands;
     public FactionManager factionManager;
     public ServerManager serverManager;
-    public LocationManager locationManager;
+    public static LocationManager locationManager;
     public VertragUtil vertragUtil;
     public SupportManager supportManager;
     public ComputerUtils computerUtils;
@@ -92,6 +94,7 @@ public final class Main extends JavaPlugin {
     private ScoreboardAPI scoreboardAPI;
 
     private ScoreboardManager scoreboardManager;
+    public static INameTagProvider nameTagProvider = new NameTagProviderImpl();
 
     public static void registerCommand(String command, CommandExecutor c) {
         org.bukkit.command.PluginCommand cmd = instance.getCommand(command);
@@ -270,8 +273,9 @@ public final class Main extends JavaPlugin {
     }
 
     private void registerAnnotatedCommands() {
-        Set<Class<? extends CommandBase>> commands = Collections.singleton(
-                de.polo.voidroleplay.commands.InvCommand.class
+        Set<Class<? extends CommandBase>> commands = Set.of(
+                de.polo.voidroleplay.commands.InvCommand.class,
+                HochseefischerCommand.class
         );
 
 

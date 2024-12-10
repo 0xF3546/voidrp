@@ -5,6 +5,10 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import de.polo.api.nametags.INameTagProvider;
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.PlayerData;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -108,6 +112,23 @@ public class NameTagProviderImpl implements INameTagProvider {
     public void updateTabForAll(final String header, final String footer) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             setTabHeaderFooter(player, header, footer);
+        }
+    }
+
+    public void updateForFaction(String faction) {
+        FactionData factionData = Main.getInstance().factionManager.getFactionData(faction);
+        if (factionData == null) return;
+        List<Player> viewers = new ObjectArrayList<>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+            if (playerData == null) continue;
+            if (playerData.getFaction() == null) continue;
+            if (!playerData.getFaction().equalsIgnoreCase(faction)) continue;
+            clearNametag(player);
+            viewers.add(player);
+        }
+        for (Player player : viewers) {
+            setNametagForViewers(player, viewers, "§" + factionData.getPrimaryColor(), "");
         }
     }
 }
