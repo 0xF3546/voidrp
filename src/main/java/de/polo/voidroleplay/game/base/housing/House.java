@@ -168,7 +168,7 @@ public class House {
         Main.getInstance().getMySQL().updateAsync("UPDATE housing SET money = ?, totalmoney = ? WHERE number = ?", money, totalMoney, number);
     }
 
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         Player player = Bukkit.getPlayer(UUID.fromString(owner));
         if (player == null) return;
         player.sendMessage("§8[§6Haus " + number + "§8]§7 " + message);
