@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.PlayerPetManager;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.player.PlayerFFAStatsManager;
+import de.polo.voidroleplay.utils.player.PlayerInventoryManager;
 import de.polo.voidroleplay.utils.player.PlayerPowerUpManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -35,6 +36,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerData {
     public final AddonXP addonXP = new AddonXP();
+
+    @Getter
+    private PlayerInventoryManager inventory;
     private final List<PlayerQuest> quests = new ObjectArrayList<>();
     private final List<de.polo.voidroleplay.game.base.extra.beginnerpass.PlayerQuest> beginnerQuests = new ObjectArrayList<>();
     private final List<PlayerIllness> illnesses = new ObjectArrayList<>();
@@ -280,6 +284,7 @@ public class PlayerData {
         this.playerPetManager = new PlayerPetManager(this, player);
         this.playerFFAStatsManager = new PlayerFFAStatsManager(player);
         this.playerPowerUpManager = new PlayerPowerUpManager(player, this);
+        inventory = new PlayerInventoryManager(this);
         loadIllnesses();
         loadClickedEventBlocks();
         loadWeapons();
@@ -327,7 +332,10 @@ public class PlayerData {
         illnesses.add(playerIllness);
         if (save) {
             Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO player_illness (uuid, illness) VALUES (?, ?)", player.getUniqueId().toString(), playerIllness.getIllnessType().name())
-                    .thenAccept(key -> key.ifPresent(playerIllness::setId));
+                    .thenApply(key -> {
+                        key.ifPresent(playerIllness::setId);
+                        return null;
+                    });
         }
     }
 
@@ -808,7 +816,7 @@ public class PlayerData {
                         System.out.println("DELETE query completed.");
                         String insertQuery = "INSERT INTO player_wanteds (uuid, issuer, wantedId) VALUES (?, ?, ?)";
                         System.out.println("Preparing to execute INSERT query...");
-                        return Main.getInstance().getMySQL().queryThreadedWithGeneratedKeys(insertQuery,
+                        return Main.getInstance().getMySQL().insertAndGetKeyAsync(insertQuery,
                                 player.getUniqueId().toString(),
                                 playerWanted.getIssuer().toString(),
                                 playerWanted.getWantedId());

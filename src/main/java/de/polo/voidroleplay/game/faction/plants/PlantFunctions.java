@@ -203,7 +203,6 @@ public class PlantFunctions implements Listener {
         if (!playerData.canInteract() || playerData.isCuffed() || playerData.getFaction() == null) return;
         if (event.getClickedBlock() == null) return;
         if (Main.getInstance().getCooldownManager().isOnCooldown(player, "plant")) return;
-        System.out.println("AA");
         if (event.getClickedBlock().getType().equals(Material.GRASS_BLOCK) || event.getClickedBlock().getType().equals(Material.DIRT)) {
             PlantType drug = null;
             for (PlantType type : PlantType.values()) {
@@ -215,7 +214,6 @@ public class PlantFunctions implements Listener {
             player.sendMessage("§8[§6Plantage§8]§2 " + plant(player, drug, event.getClickedBlock()));
             return;
         }
-        System.out.println("SS");
         Plant plant = getPlantByBlock(event.getClickedBlock());
         if (plant == null) {
             return;

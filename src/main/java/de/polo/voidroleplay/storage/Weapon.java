@@ -9,8 +9,6 @@ import java.util.UUID;
 public class Weapon {
     private int id;
     private UUID owner;
-    private WeaponData weaponData;
-
     @Getter
     @Setter
     private de.polo.voidroleplay.utils.enums.Weapon type;
@@ -42,14 +40,6 @@ public class Weapon {
 
     public void setAmmo(int ammo) {
         this.ammo = ammo;
-    }
-
-    public WeaponData getWeaponData() {
-        return weaponData;
-    }
-
-    public void setWeaponData(WeaponData weaponData) {
-        this.weaponData = weaponData;
     }
 
     public WeaponType getWeaponType() {

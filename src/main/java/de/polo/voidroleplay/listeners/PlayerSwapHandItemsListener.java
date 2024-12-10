@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
@@ -305,6 +306,12 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             });
         }
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                Main.getInstance().getHouseManager().openGunCabinet(player, new House(0, 0, 0));
+            }
+        });
         /*inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.VILLAGER_SPAWN_EGG, 1, 0, "§cDealer suchen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -474,7 +481,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
             }
         });
-        String faction = playerData.getFaction() + "(" + playerData.getFactionGrade() + "/8)";
+        String faction = playerData.getFaction() + " (" + playerData.getFactionGrade() + "/6)";
         if (playerData.getFaction() == null) {
             faction = "Zivilist";
         }

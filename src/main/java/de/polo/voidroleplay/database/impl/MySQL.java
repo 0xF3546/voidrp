@@ -180,18 +180,21 @@ public class MySQL implements Database {
                     statement.setObject(i + 1, args[i]);
                 }
 
-                statement.executeUpdate();
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected == 0) {
+                    throw new SQLException("Insert failed, no rows affected.");
+                }
 
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        int generatedKey = generatedKeys.getInt(1);
-                        return Optional.of(generatedKey);
+                try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        return Optional.of(resultSet.getInt(1));
                     }
                 }
-                return Optional.empty();
             } catch (SQLException e) {
-                throw new RuntimeException("Database insert failed", e);
+                e.printStackTrace();
+                throw new RuntimeException("Error executing query", e);
             }
+            return Optional.empty();
         }, BetterExecutor.executor);
     }
 

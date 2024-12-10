@@ -445,11 +445,19 @@ public class HouseManager implements CommandExecutor, Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWaffenschrank");
         int i = 0;
         for (PlayerWeapon playerWeapon : playerData.getWeapons()) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklck§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklick§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
                     if (event.isLeftClick()) {
+                        for (ItemStack item : player.getInventory().getContents()) {
+                            if (item == null) continue;
+                            if (item.getType() == playerWeapon.getWeapon().getMaterial()
+                                    && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
+                                player.sendMessage(Prefix.ERROR + "Du hast diese Waffe bereits bei dir.");
+                                return;
+                            }
+                        }
                         Main.getInstance().getWeaponManager().takeOutWeapon(player, playerWeapon);
                     } else {
                         playerData.setVariable("chatblock", "weaponammo");
@@ -548,6 +556,7 @@ public class HouseManager implements CommandExecutor, Listener {
                 PlayerWeapon playerWeapon = event.getPlayerData().getVariable("playerWeapon");
                 for (ItemStack item : event.getPlayer().getInventory().getContents()) {
                     if (item == null) continue;
+                    System.out.println(item.getItemMeta().displayName());
                     if (item.getType() == playerWeapon.getWeapon().getMaterial()
                             && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
                         Weapon weapon = Main.getInstance().getWeaponManager().getWeaponFromItemStack(item);
@@ -557,6 +566,7 @@ public class HouseManager implements CommandExecutor, Listener {
                         } else {
                             event.getPlayer().sendMessage(Prefix.MAIN + "Deine Waffe hat nicht genug Schuss.");
                         }
+                        event.end();
                         return;
                     }
                 }
@@ -564,6 +574,7 @@ public class HouseManager implements CommandExecutor, Listener {
                 event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
+                e.printStackTrace();
             }
         }
     }

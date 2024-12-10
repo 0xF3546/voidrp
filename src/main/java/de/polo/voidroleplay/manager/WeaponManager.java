@@ -2,6 +2,7 @@ package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.*;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
@@ -97,11 +98,7 @@ public class WeaponManager implements Listener {
             weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
             weapon.setId(result.getInt("id"));
             weapon.setOwner(UUID.fromString(result.getString("uuid")));
-            for (WeaponData weaponData : weaponDataMap.values()) {
-                if (weaponData.getId() == result.getInt("weapon")) {
-                    weapon.setWeaponData(weaponData);
-                }
-            }
+            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
             weaponList.put(weapon.getId(), weapon);
         }
     }
@@ -128,14 +125,6 @@ public class WeaponManager implements Listener {
         Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
         Weapon weapon = weaponList.get(id);
         return weapon;
-    }
-
-    public de.polo.voidroleplay.utils.enums.Weapon getWeaponData(Material material) {
-        for (de.polo.voidroleplay.utils.enums.Weapon weaponData : de.polo.voidroleplay.utils.enums.Weapon.values()) {
-            if (weaponData.getMaterial() == null) continue;
-            if (weaponData.getMaterial().equals(material)) return weaponData;
-        }
-        return null;
     }
 
     public HashMap<Integer, Weapon> getWeapons() {
@@ -202,10 +191,11 @@ public class WeaponManager implements Listener {
 
         }
 
-        WeaponData weaponData = weaponDataMap.get(player.getEquipment().getItemInMainHand().getType());
-        if (weaponData == null) {
+        Weapon gun = getWeaponFromItemStack(player.getEquipment().getItemInMainHand());
+        if (gun == null) {
             return;
         }
+        de.polo.voidroleplay.utils.enums.Weapon weaponData = gun.getType();
         /*if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
             if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 NamespacedKey isReloading = new NamespacedKey(Main.plugin, "isReloading");
@@ -225,7 +215,7 @@ public class WeaponManager implements Listener {
         NamespacedKey id = new NamespacedKey(Main.plugin, "id");
         Integer weaponId = event.getItem().getItemMeta().getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
         Weapon weapon = weaponList.get(weaponId);
-
+        if (weapon == null) return;
 
         if (!Instant.now().isAfter(weapon.getShootCooldown())) {
             return;
@@ -240,7 +230,7 @@ public class WeaponManager implements Listener {
 
         ItemMeta meta = event.getItem().getItemMeta();
         // Shooting logic
-        if (weaponData.getType().equalsIgnoreCase("shotgun")) {
+        if (weaponData == de.polo.voidroleplay.utils.enums.Weapon.SHOTGUN) {
             double spread = 10.0;
 
             Vector direction = player.getEyeLocation().getDirection().normalize();
@@ -256,11 +246,11 @@ public class WeaponManager implements Listener {
                         (Math.random() - 0.5) * 2 * spread / 100
                 )).normalize();
 
-                arrow.setVelocity(spreadDirection.multiply(weaponData.getArrowVelocity()));
+                arrow.setVelocity(spreadDirection.multiply(weaponData.getVelocity()));
                 arrow.setShooter(player);
                 arrow.setDamage(weaponData.getDamage());
                 arrow.setGravity(false);
-                arrow.setKnockbackStrength(weaponData.getKnockback());
+                arrow.setKnockbackStrength((int) weaponData.getKnockback());
 
                 Location particleLocation = player.getEyeLocation().clone().add(spreadDirection.clone().multiply(1));
                 player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.BLACK, 1));
@@ -275,11 +265,11 @@ public class WeaponManager implements Listener {
             player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.BLACK, 1));
 
             if (shooter instanceof Player) {
-                arrow.setVelocity(direction.multiply(weaponData.getArrowVelocity()));
+                arrow.setVelocity(direction.multiply(weaponData.getVelocity()));
                 arrow.setShooter(shooter);
                 arrow.setDamage(weaponData.getDamage());
                 arrow.setGravity(false);
-                arrow.setKnockbackStrength(weaponData.getKnockback());
+                arrow.setKnockbackStrength((int) weaponData.getKnockback());
             }
         }
 
@@ -293,12 +283,12 @@ public class WeaponManager implements Listener {
                 nearbyPlayer.playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, volume, weaponData.getSoundPitch());
             }
         }*/
-        Bukkit.getWorld("World").playSound(location, weaponData.getWeaponSound(), SoundCategory.MASTER, 1, weaponData.getSoundPitch());
+        Bukkit.getWorld("World").playSound(location, weaponData.getSound(), SoundCategory.MASTER, 1, weaponData.getSoundPitch());
 
         int newAmmo = weapon.getCurrentAmmo() - 1;
         weapon.setCurrentAmmo(newAmmo);
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + weapon.getWeaponData().getMaxAmmo()));
-        String actionBarText = "§e" + newAmmo + "§8/§6" + weapon.getWeaponData().getMaxAmmo();
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo()));
+        String actionBarText = "§e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo();
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
 
         event.getItem().setItemMeta(meta);
@@ -349,25 +339,25 @@ public class WeaponManager implements Listener {
     public void reload(Player player, ItemStack weapon, Integer id) {
         Weapon w = weaponList.get(id);
         if (!w.getWeaponType().isNeedsAmmoToReload()) {
-            w.setCurrentAmmo(w.getWeaponData().getMaxAmmo());
+            w.setCurrentAmmo(w.getType().getMaxAmmo());
         } else {
-            if (w.getAmmo() >= w.getWeaponData().getMaxAmmo()) {
-                int dif = w.getWeaponData().getMaxAmmo() - w.getCurrentAmmo();
-                w.setCurrentAmmo(w.getWeaponData().getMaxAmmo());
+            if (w.getAmmo() >= w.getType().getMaxAmmo()) {
+                int dif = w.getType ().getMaxAmmo() - w.getCurrentAmmo();
+                w.setCurrentAmmo(w.getType().getMaxAmmo());
                 w.setAmmo(w.getAmmo() - dif);
             } else {
-                w.setCurrentAmmo(w.getWeaponData().getMaxAmmo() - w.getAmmo());
+                w.setCurrentAmmo(w.getType().getMaxAmmo() - w.getAmmo());
                 w.setAmmo(0);
             }
         }
         w.setReloading(false);
-        utils.sendActionBar(player, w.getWeaponData().getName() + "§7 wurde nachgeladen!");
+        utils.sendActionBar(player, w.getType().getName() + "§7 wurde nachgeladen!");
         updateWeaponLore(w, weapon);
     }
 
     private void updateWeaponLore(Weapon weapon, ItemStack stack) {
         ItemMeta meta = stack.getItemMeta();
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getWeaponData().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
+        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getType().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
         stack.setItemMeta(meta);
     }
 
@@ -384,6 +374,7 @@ public class WeaponManager implements Listener {
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + playerWeapon.getWeapon().getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
+        weaponList.put(weapon.getId(), weapon);
     }
 
     public void giveWeapon(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, WeaponType weaponType) {
@@ -411,20 +402,21 @@ public class WeaponManager implements Listener {
             );
             w.setPlayerWeapon(playerWeapon);
         }
-        System.out.println("GIVING AMMO");
-
         Main.getInstance().getMySQL()
-                .queryThreadedWithGeneratedKeys("INSERT INTO player_weapons (uuid, weapon, weaponType)",
+                .insertAndGetKeyAsync("INSERT INTO player_weapons (uuid, weapon, weaponType) VALUES (?, ?, ?)",
                         w.getOwner().toString(), weapon.name(), weaponType.name())
                 .thenApply(key -> {
-                    key.ifPresent(w::setId);
-                    System.out.println(key.get());
-                    giveWeapon(player, new PlayerWeapon(
-                            weapon,
-                            wear,
-                            ammo,
-                            weaponType
-                    ), w);
+                    if (key.isPresent()) {
+                        w.setId(key.get());
+                        giveWeapon(player, new PlayerWeapon(
+                                weapon,
+                                wear,
+                                ammo,
+                                weaponType
+                        ), w);
+                    } else {
+                        player.sendMessage(Prefix.ERROR + "Es gab einen Fehler beim erstellen der Waffe.");
+                    }
                     return null;
                 });
     }
@@ -432,6 +424,7 @@ public class WeaponManager implements Listener {
     public void giveAmmo(Player player, Weapon weapon, int ammo) {
         ItemStack item = null;
         for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack == null) continue;
             if (itemStack.getItemMeta().getDisplayName()
                     .equals(weapon.getType().getName())
                     && itemStack.getType()
@@ -491,7 +484,7 @@ public class WeaponManager implements Listener {
         playerData.giveWeapon(playerWeapon);
         Main.getInstance()
                 .getMySQL()
-                .queryThreadedWithGeneratedKeys(
+                .insertAndGetKeyAsync(
                         "INSERT INTO player_gun_cabinet (uuid, weapon, wear, ammo) VALUES (?, ?, ?, ?)",
                         player.getUniqueId().toString(),
                         playerWeapon.getWeapon().name(),

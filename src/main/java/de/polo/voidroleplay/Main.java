@@ -10,6 +10,7 @@ import de.polo.voidroleplay.game.base.farming.Farming;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
+import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.manager.inventory.InventoryApiRegister;
@@ -32,7 +33,9 @@ import org.dynmap.markers.MarkerAPI;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Main extends JavaPlugin {
@@ -182,6 +185,7 @@ public final class Main extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
         }
+        registerAnnotatedCommands();
         getLogger().info("§VOIDROLEPLAY ROLEPLAY STARTED.");
         plugin = Bukkit.getPluginManager().getPlugin("VoidRoleplay");
         try {
@@ -262,6 +266,31 @@ public final class Main extends JavaPlugin {
             Location location = locationManager.getLocation(factionData.getName());
             if (location == null) continue;
             Utils.createMarker("sign", factionData.getFullname(), "world", location.getX(), location.getY(), location.getZ());
+        }
+    }
+
+    private void registerAnnotatedCommands() {
+        Set<Class<? extends CommandBase>> commands = Collections.singleton(
+                de.polo.voidroleplay.commands.InvCommand.class
+        );
+
+
+        for (Class<? extends CommandBase> commandClass : commands) {
+            CommandBase.CommandMeta meta = commandClass.getAnnotation(CommandBase.CommandMeta.class);
+
+            if (meta == null) {
+                getLogger().warning("Command " + commandClass.getName() + " hat keine @CommandMeta Annotation.");
+                continue;
+            }
+
+            try {
+                CommandBase command = commandClass.getDeclaredConstructor(CommandBase.CommandMeta.class)
+                        .newInstance(meta);
+                getLogger().info("Befehl registriert: /" + meta.name());
+            } catch (Exception e) {
+                getLogger().severe("Fehler beim Registrieren des Befehls " + commandClass.getName() + ": " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 

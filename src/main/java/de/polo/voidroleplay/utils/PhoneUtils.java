@@ -11,6 +11,7 @@ import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.enums.Gender;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
@@ -34,8 +35,8 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public class PhoneUtils implements Listener {
-    public static final String error_nophone = "§8[§6Handy§8] §cDas kannst du aktuell nicht machen.";
-    public static final String error_flightmode = "§8[§6Handy§8] §cDu bist im Flugmodus.";
+    public static final String ERROR_NO_PHONE = "§8[§6Handy§8] §cDu hast kein Handy dabei.";
+    public static final String ERROR_FLIGHTMODE = "§8[§6Handy§8] §cDu bist im Flugmodus.";
     private static final List<PhoneCall> phoneCalls = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final Utils utils;
@@ -62,7 +63,7 @@ public class PhoneUtils implements Listener {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
     }
 
@@ -78,20 +79,12 @@ public class PhoneUtils implements Listener {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
-            player.sendMessage(PhoneUtils.error_nophone);
+            player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
         }
     }
 
     public static boolean hasPhone(Player player) {
-        Inventory inv = player.getInventory();
-        Material phone = Material.IRON_NUGGET;
-        boolean returnval = false;
-        for (ItemStack item : inv.getContents()) {
-            if (item != null && item.getType() == phone) {
-                returnval = true;
-            }
-        }
-        return returnval;
+        return ItemManager.getCustomItemCount(player, RoleplayItem.SMARTPHONE) >= 1;
     }
 
     @EventHandler

@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -89,58 +90,110 @@ public class ApothekeFunctions implements Listener {
     public void openApotheke(Player player, int id) {
         Apotheke apotheke = getById(id);
         if (apotheke == null) return;
-        boolean canAttack = false;
-        PlayerData playerData = playerManager.getPlayerData(player);
-        if (playerData.getFaction() == null) return;
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        if (factionData.isBadFrak()) canAttack = true;
-        String owner = "§9Staat";
-        if (apotheke.isStaat()) {
-            if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei"))
-                canAttack = true;
-        }
-        if (!apotheke.getOwner().equalsIgnoreCase("staat")) {
-            factionData = factionManager.getFactionData(apotheke.getOwner());
-            owner = "§" + factionData.getPrimaryColor() + factionData.getFullname();
-        }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cApotheke (" + owner + "§c)", true, true);
-        if (!canAttack) return;
-        if (canAttack(apotheke)) {
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", Arrays.asList("§8 ➥ §7Besitzer§8: " + owner, "§8 ➥ §cKlicke zum attackieren"))) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    if (isInAttack(apotheke.getOwner())) {
-                        player.sendMessage(Prefix.ERROR + "Diese Fraktion ist aktuell in einem Überfall.");
-                        return;
-                    }
-                    if (apotheke.getOwner().equalsIgnoreCase(playerData.getFaction())) {
-                        player.sendMessage(Main.error + "Du kannst deine eigene Apotheken nicht einschüchtern.");
-                        return;
-                    }
-                    player.closeInventory();
-                    apotheke.setLastAttack(LocalDateTime.now());
-                    if (apotheke.isStaat()) {
-                        factionManager.sendCustomMessageToFaction("Polizei", "§8[§cApotheke-" + apotheke.getId() + "§8]§c Es wurde ein Überfall auf eine Apotheke gemeldet.");
-                    }
-                    if (!apotheke.getOwner().equalsIgnoreCase("staat")) {
-                        factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Jemand versucht deine Apotheke zu übernehmen.");
-                    }
-                    factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Ihr fangt an die Apotheke zu übernehmen!");
-                    player.sendMessage("§8[§cApotheke§8]§7 Warte nun 10 Minuten, verlasse dabei die Apotheke nicht.");
-                    apotheke.setAttacker(player);
-                    apotheke.setAttackerFaction(playerData.getFaction());
-                    rob.put(apotheke, 0);
-                }
-            });
-        } else {
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation", Arrays.asList("§8 ➥ §7Besitzer§8: " + owner, "§8 ➥ §7Attackierbar§8:§e " + getMinuteDifference(apotheke) + "min"))) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
 
+        PlayerData playerData = playerManager.getPlayerData(player);
+        String owner = "§9Staat";
+        boolean canAttack = false;
+
+        FactionData apothekeFactionData = apotheke.isStaat() ? null : factionManager.getFactionData(apotheke.getOwner());
+        FactionData playerFactionData = playerData.getFaction() != null
+                ? factionManager.getFactionData(playerData.getFaction())
+                : null;
+
+        if (apothekeFactionData != null) {
+            owner = "§" + apothekeFactionData.getPrimaryColor() + apothekeFactionData.getFullname();
+            canAttack = apothekeFactionData.isBadFrak();
+        }
+
+        if (apotheke.isStaat() && playerFactionData != null
+                && (playerFactionData.getFullname().equalsIgnoreCase("FBI") || playerFactionData.getFullname().equalsIgnoreCase("Polizei"))) {
+            canAttack = true;
+        }
+
+        InventoryManager inventoryManager = new InventoryManager(player, 27,
+                "§8 » §cApotheke (" + owner + "§c)", true, true);
+
+        boolean finalCanAttack = canAttack;
+        CustomItem infoItem = new CustomItem(
+                26,
+                ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation",
+                        Arrays.asList("§8 ➥ §7Besitzer§8: " + owner,
+                                finalCanAttack ? "§8 ➥ §7Attackierbar§8: §e" + getMinuteDifference(apotheke) + "min" : ""))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (canAttack(apotheke) && finalCanAttack) {
+                    handleAttack(player, playerData, apotheke);
+                }
+            }
+        };
+
+        inventoryManager.setItem(infoItem);
+
+        String NO_MONEY = Prefix.ERROR + "Du hast nicht genug Bargeld dabei.";
+
+        int i = 0;
+        if (playerData.getFaction() != null && playerData.getFaction().equalsIgnoreCase("FBI")) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.ADRENALINE_INJECTION.getMaterial(), 1, 0, RoleplayItem.ADRENALINE_INJECTION.getDisplayName(), "§8 ➥ §a125$")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getBargeld() < 125) {
+                        player.sendMessage(NO_MONEY);
+                        return;
+                    }
+                    playerData.removeMoney(125, "Kauf Adrenalin Spritze");
+                    ItemManager.addCustomItem(player, RoleplayItem.ADRENALINE_INJECTION, 1);
                 }
             });
+            i++;
         }
+        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName(), "§8 ➥ §a55$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 55) {
+                    player.sendMessage(NO_MONEY);
+                    return;
+                }
+                playerData.removeMoney(55, "Kauf Adrenalin Spritze");
+                ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 1);
+            }
+        });
+        i++;
     }
+
+    private void handleAttack(Player player, PlayerData playerData, Apotheke apotheke) {
+        if (isInAttack(apotheke.getOwner())) {
+            player.sendMessage(Prefix.ERROR + "Diese Fraktion ist aktuell in einem Überfall.");
+            return;
+        }
+        if (apotheke.getOwner().equalsIgnoreCase(playerData.getFaction())) {
+            player.sendMessage(Main.error + "Du kannst deine eigenen Apotheken nicht einschüchtern.");
+            return;
+        }
+
+        // Angriff starten
+        player.closeInventory();
+        apotheke.setLastAttack(LocalDateTime.now());
+
+        // Nachrichten an Fraktionen senden
+        if (apotheke.isStaat()) {
+            factionManager.sendCustomMessageToFaction("Polizei",
+                    "§8[§cApotheke-" + apotheke.getId() + "§8]§c Es wurde ein Überfall auf eine Apotheke gemeldet.");
+        } else {
+            factionManager.sendCustomMessageToFaction(apotheke.getOwner(),
+                    "§8[§cApotheke-" + apotheke.getId() + "§8]§c Jemand versucht deine Apotheke zu übernehmen.");
+        }
+        factionManager.sendCustomMessageToFaction(playerData.getFaction(),
+                "§8[§cApotheke-" + apotheke.getId() + "§8]§a Ihr fangt an die Apotheke zu übernehmen!");
+
+        // Spieler benachrichtigen
+        player.sendMessage("§8[§cApotheke§8]§7 Warte nun 10 Minuten, verlasse dabei die Apotheke nicht.");
+
+        // Überfall registrieren
+        apotheke.setAttacker(player);
+        apotheke.setAttackerFaction(playerData.getFaction());
+        rob.put(apotheke, 0);
+    }
+
 
     public Collection<Apotheke> getApotheken() {
         return apotheken;
@@ -209,14 +262,13 @@ public class ApothekeFunctions implements Listener {
                             }
                         }
                     } else {
-                        factionData.storage.setJoint(factionData.storage.getJoint() + plus);
-                        factionData.storage.save();
+                        factionData.addBankMoney(1000, "Apotheken");
                         for (PlayerData playerData : playerManager.getPlayers()) {
                             if (playerData.getFaction() != null) {
                                 if (playerData.getFaction().equalsIgnoreCase(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
                                     if (player != null)
-                                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §2" + plus + " Pfeifen§a aus den aktuell übernommenen Apotheken erhalten.");
+                                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§a Deine Fraktion hat §21000$ Schutzgeld§a aus den aktuell übernommenen Apotheken erhalten.");
                                 }
                             }
                         }

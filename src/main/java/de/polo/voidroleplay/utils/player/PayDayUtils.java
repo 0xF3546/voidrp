@@ -80,6 +80,7 @@ public class PayDayUtils {
                 houseData.addMoney(houseData.getMoney() + rent, player.getName() + " hat §6" + rent + "$§7 Miete gezahlt! §8(§6" + Utils.toDecimalFormat(houseData.getMoney()) + "§7/§615.000$§8)", false);
                 houseData.setTotalMoney(houseData.getTotalMoney() + rent);
                 plus -= rent;
+                rent = 0;
             }
             if (houseData.getOwner() != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {
@@ -129,7 +130,7 @@ public class PayDayUtils {
         if (plus >= 0) {
             player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c-" + (int) plus + "$§8)");
+            player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c" + (int) plus + "$§8)");
         }
         playerManager.addExp(player, Main.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);

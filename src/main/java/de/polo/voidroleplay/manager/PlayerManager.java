@@ -196,9 +196,9 @@ public class PlayerManager implements Listener {
                 playerData.setHouseSlot(result.getInt("houseSlot"));
                 playerData.setCurrentHours(result.getInt("current_hours"));
                 if (result.getDate("rankDuration") != null) {
-                    Date utilDate = new Date(result.getDate("rankDuration").getTime());
-                    LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    playerData.setRankDuration(localDateTime);
+                    java.sql.Date utilDate = new Date(result.getDate("rankDuration").getTime());
+                    Instant instant = Instant.ofEpochMilli(utilDate.getTime());
+                    playerData.setRankDuration(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
                 System.out.println(result.getDate("dailyBonusRedeemed"));
                 if (result.getDate("dailyBonusRedeemed") != null) {
@@ -234,6 +234,7 @@ public class PlayerManager implements Listener {
                 playerData.setCrypto(result.getFloat("crypto"));
                 playerData.setRewardTime(result.getInt("rewardTime"));
                 playerData.setRewardId(result.getInt("rewardId"));
+                playerData.getInventory().setSize(result.getInt("inventorySize"));
                 if (!result.getBoolean("tpNewmap")) {
                     Main.getInstance().locationManager.useLocation(player, "stadthalle");
                     player.sendMessage("§8 ✈ §aWillkommen auf der neuen Map!");
@@ -340,9 +341,9 @@ public class PlayerManager implements Listener {
                     }
                 }
 
-                for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
+                /*for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
                     playerData.addWorkstation(workstation);
-                }
+                }*/
 
                 player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
                 player.setLevel(result.getInt("level"));
@@ -789,37 +790,28 @@ public class PlayerManager implements Listener {
     private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction, int banner) {
         player.sendMessage(" ");
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
-        player.sendMessage(" ");
-        player.sendMessage("§8 ➥ §6Zinsen§8:§a +" + (int) zinsen + "$");
-        player.sendMessage("§8 ➥ §6Steuern§8:§c -" + (int) steuern + "$");
+        player.sendMessage("§8 ➥ §Zinsen§8:§a +" + (int) zinsen + "$");
+        player.sendMessage("§8 ➥ §9Steuern§8:§c -" + (int) steuern + "$");
         List<IGangzone> gangZones = new ObjectArrayList<>();
         for (IGangzone gangzone : utils.gangwarUtils.getGangzones()) {
             if (gangzone.getOwner().equals(factionData.getName())) {
                 gangZones.add(gangzone);
             }
         }
-        if (gangZones.size() >= 1) {
-            player.sendMessage(" ");
-        }
         for (IGangzone gangzone : gangZones) {
             if (gangzone.getOwner().equals(factionData.getName())) {
                 plus += 150;
-                player.sendMessage("§8 ➥ §6Gebietseinnahmen (" + gangzone.getName() + ")§8:§a +" + 150 + "$");
+                player.sendMessage("§8 ➥ §9Gebietseinnahmen (" + gangzone.getName() + ")§8:§a +" + 150 + "$");
             }
         }
-        if (factionData.hasLaboratory()) {
-            player.sendMessage(" ");
-            player.sendMessage("§8 ➥ §7Zigarren§8:§a +" + factionData.getJointsMade() + " Stück");
-        }
         if (auction != 0) {
-            player.sendMessage("§8 ➥ §3Bank§8:§a +" + auction + "$");
+            player.sendMessage("§8 ➥ §9Bank§8:§a +" + auction + "$");
         }
-        player.sendMessage("§8 ➥ §bBanner§8:§a +" + banner + "$");
-        player.sendMessage(" ");
+        player.sendMessage("§8 ➥ §99anner§8:§a +" + banner + "$");
         if (plus >= 0) {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§8 ➥ §6Kontostand§8:§e " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
         }
         player.sendMessage(" ");
     }

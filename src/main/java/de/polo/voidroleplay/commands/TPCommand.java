@@ -45,7 +45,7 @@ public class TPCommand implements CommandExecutor {
         }
         player.teleport(targetplayer.getLocation());
         player.sendMessage(Prefix.ADMIN + "Du hast dich zu §c" + targetplayer.getName() + "§7 teleportiert.");
-        adminManager.send_message(player.getName() + " hat sich zu " + targetplayer.getName() + " Teleportiert.", ChatColor.RED);
+        adminManager.send_message(player.getName() + " hat sich zu " + targetplayer.getName() + " teleportiert.", ChatColor.RED);
         return false;
     }
 }
