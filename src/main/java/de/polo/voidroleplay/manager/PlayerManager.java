@@ -462,6 +462,10 @@ public class PlayerManager implements Listener {
                 }
             }
 
+            if (playerData.isDead()) {
+                player.teleport(playerData.getDeathLocation());
+            }
+
             playerData.getWorkstations().forEach(PlayerWorkstation::save);
             playerDataMap.remove(uuid);
             statement.close();
@@ -790,7 +794,7 @@ public class PlayerManager implements Listener {
     private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction, int banner) {
         player.sendMessage(" ");
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
-        player.sendMessage("§8 ➥ §Zinsen§8:§a +" + (int) zinsen + "$");
+        player.sendMessage("§8 ➥ §9Zinsen§8:§a +" + (int) zinsen + "$");
         player.sendMessage("§8 ➥ §9Steuern§8:§c -" + (int) steuern + "$");
         List<IGangzone> gangZones = new ObjectArrayList<>();
         for (IGangzone gangzone : utils.gangwarUtils.getGangzones()) {
@@ -807,7 +811,7 @@ public class PlayerManager implements Listener {
         if (auction != 0) {
             player.sendMessage("§8 ➥ §9Bank§8:§a +" + auction + "$");
         }
-        player.sendMessage("§8 ➥ §99anner§8:§a +" + banner + "$");
+        player.sendMessage("§8 ➥ §9Banner§8:§a +" + banner + "$");
         if (plus >= 0) {
             player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
         } else {

@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +24,9 @@ public class RespawnListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         float flySpeed = 0;
+        if (event.isBedSpawn()) {
+            event.setRespawnLocation(null);
+        }
         if (!playerData.isDead()) {
             if (MilitaryDrop.ACTIVE) {
                 if (!Main.getInstance().gamePlay.militaryDrop.isPlayerInEvent(player)) {
@@ -36,9 +40,18 @@ public class RespawnListener implements Listener {
             Main.getInstance().gamePlay.getFfa().handleDeath(player);
             return;
         }*/
-        event.setRespawnLocation(playerData.getDeathLocation());
         player.sendTitle("§cDu bist gestorben.", null, 1, 12, 1);
-        player.setGameMode(GameMode.SPECTATOR);
+        // player.setGameMode(GameMode.SPECTATOR);
         player.setFlySpeed(flySpeed);
+        if (playerData.getKarma() < -50) {
+            event.setRespawnLocation(Main.getInstance().locationManager.getLocation("hell"));
+            Main.getInstance().locationManager.useLocation(player,"hell");
+        } else if (playerData.getKarma() >= 50) {
+            event.setRespawnLocation(Main.getInstance().locationManager.getLocation("heaven"));
+            Main.getInstance().locationManager.useLocation(player,"heaven");
+        } else {
+            event.setRespawnLocation(Main.getInstance().locationManager.getLocation("cemetery"));
+            Main.getInstance().locationManager.useLocation(player, "cemetery");
+        }
     }
 }
