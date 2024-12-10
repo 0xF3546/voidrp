@@ -19,6 +19,7 @@ import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -459,6 +460,7 @@ public class HouseManager implements CommandExecutor, Listener {
                             }
                         }
                         Main.getInstance().getWeaponManager().takeOutWeapon(player, playerWeapon);
+                        player.sendMessage(Component.text(Prefix.MAIN + "Gib an wie viel Munition du entnehmen willst."));
                     } else {
                         playerData.setVariable("chatblock", "weaponammo");
                         playerData.setVariable("playerWeapon", playerWeapon);
