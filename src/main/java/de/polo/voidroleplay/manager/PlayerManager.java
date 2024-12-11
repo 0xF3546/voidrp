@@ -25,7 +25,9 @@ import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import de.polo.voidroleplay.utils.player.PlayerTutorial;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -61,6 +63,7 @@ public class PlayerManager implements Listener {
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
     private final HashMap<String, Boolean> playerMovement = new HashMap<>();
     private final List<PlaytimeReward> playtimeRewards = new ObjectArrayList<>();
+    private final ObjectList<LoyaltyBonusTimer> loyaltyBonusCache = new ObjectArrayList<>();
 
     private final MySQL mySQL;
 
@@ -423,7 +426,12 @@ public class PlayerManager implements Listener {
                         }
                     }
                 }
-
+                if (getLoyaltyTimer(player.getUniqueId()) != null) {
+                    player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Da du dich innerhalb von 3 Minuten eingeloggt hast, läuft dein Treuebonus weiter."));
+                } else {
+                    LoyaltyBonusTimer loyaltyBonusTimer = new LoyaltyBonusTimer(player.getUniqueId());
+                    loyaltyBonusCache.add(loyaltyBonusTimer);
+                }
                 Main.getInstance().commands.checkoutWebshopCommand.loadShopBuys(player);
             }
         } catch (SQLException e) {
@@ -431,9 +439,17 @@ public class PlayerManager implements Listener {
         }
     }
 
+    private LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {
+        return loyaltyBonusCache.stream().filter(x -> x.getUuid() == uuid).findFirst().orElse(null);
+    }
+
     public void savePlayer(Player player) throws SQLException {
         UUID uuid = player.getUniqueId();
         PlayerData playerData = playerDataMap.get(uuid);
+        LoyaltyBonusTimer loyaltyBonusTimer = getLoyaltyTimer(player.getUniqueId());
+        if (loyaltyBonusTimer != null) {
+            loyaltyBonusTimer.setStopped(Utils.getTime());
+        }
         if (playerData != null) {
             if (playerData.isDead()) {
                 Item skull = utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
@@ -654,6 +670,12 @@ public class PlayerManager implements Listener {
         return playerData.getRang();
     }
 
+    private void giveLoyaltyBonus(Player player) {
+        PlayerData playerData = getPlayerData(player);
+        player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du hast, für deine Treue, einen Treuepunkt erhalten!"));
+        player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du hast jetzt " + playerData.getLoyaltyBonus() + " Treuepunkte."));
+    }
+
     public void startTimeTracker() {
         new BukkitRunnable() {
             @SneakyThrows
@@ -663,6 +685,17 @@ public class PlayerManager implements Listener {
                 Bukkit.getPluginManager().callEvent(new MinuteTickEvent(currentMinute));
 
                 // Batch-Operation für Spielerdaten-Update
+                for (LoyaltyBonusTimer loyaltyBonusTimer : loyaltyBonusCache) {
+                    Player player = Bukkit.getPlayer(loyaltyBonusTimer.getUuid());
+                    if (player != null) {
+                        if (!loyaltyBonusTimer.getStopped().plusMinutes(120).isAfter(Utils.getTime())) continue;
+                        loyaltyBonusTimer.setStarted(Utils.getTime());
+                        giveLoyaltyBonus(player);
+                        continue;
+                    }
+                    if (!loyaltyBonusTimer.getStopped().plusMinutes(3).isAfter(Utils.getTime())) continue;
+                    loyaltyBonusCache.remove(loyaltyBonusTimer);
+                }
                 Map<UUID, PlayerData> playerDataMap = new HashMap<>();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = getPlayerData(player.getUniqueId());
