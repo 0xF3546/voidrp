@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.ServerManager;
@@ -14,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -23,6 +25,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -37,8 +40,8 @@ import static de.polo.voidroleplay.Main.plugin;
 
 @CommandBase.CommandMeta(name = "hochseefischer", usage = "/hochseefischer")
 public class HochseefischerCommand extends CommandBase implements Listener {
-    private final HashMap<Player, Boat> spawnedBoats = new HashMap<>();
-    private final ObjectList<Location> spawnLocations = new ObjectArrayList<>();
+    private static final HashMap<Player, Boat> spawnedBoats = new HashMap<>();
+    private static final ObjectList<Location> spawnLocations = new ObjectArrayList<>();
     public HochseefischerCommand(@NotNull CommandMeta meta) {
         super(meta);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
@@ -116,6 +119,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         player.sendMessage(Component.text());
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         playerData.setVariable("job", "hochseefischer");
+        playerData.setVariable("hochseefischer_kg", 0);
     }
 
     private void quitJob(Player player, boolean silent) {
@@ -126,8 +130,24 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         playerData.setVariable("job", null);
     }
 
+    public static Collection<Location> getLocations() {
+        return spawnLocations;
+    }
+    public static Collection<Player> getPlayers() {
+        return spawnedBoats.keySet();
+    }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         quitJob(event.getPlayer(), true);
+    }
+
+    @EventHandler
+    public void onSecond(SecondTickEvent event) {
+        for (Player player : spawnedBoats.keySet()) {
+            for (Location location : spawnLocations) {
+                player.spawnParticle(Particle.WATER_SPLASH, location, 0);
+            }
+        }
     }
 }
