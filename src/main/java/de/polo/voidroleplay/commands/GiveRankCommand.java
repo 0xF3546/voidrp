@@ -16,9 +16,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.sql.Statement;
-
 public class GiveRankCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
@@ -86,12 +83,7 @@ public class GiveRankCommand implements CommandExecutor {
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE players SET faction_grade = " + rang + " WHERE uuid = '" + targetplayer.getUniqueId() + "'");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction_grade = ? WHERE uuid = ?", rang, targetplayer.getUniqueId().toString());
         if (targetplayer.isOnline()) {
             Player target = Bukkit.getPlayer(args[0]);
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());

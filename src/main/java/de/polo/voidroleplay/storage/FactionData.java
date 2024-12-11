@@ -384,8 +384,14 @@ public class FactionData {
 
         @SneakyThrows
         public void save() {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("UPDATE faction_storage SET weed = " + getWeed() + ", joint = " + getJoint() + ", cocaine = " + getCocaine() + ", kevlar = " + getKevlar() + ", noble_joint = " + getNoble_joint() + ", crystal = " + getCrystal() + " WHERE factionId = " + factionData.getId());
+            Main.getInstance().getMySQL().updateAsync("UPDATE faction_storage SET weed = ?, joint = ?, cocaine = ?, kevlar = ?, noble_joint = ? crystal = ? WHERE factionId = ?",
+                    getWeed(),
+                    getJoint(),
+                    getCocaine(),
+                    getKevlar(),
+                    getNoble_joint(),
+                    getCrystal(),
+                    factionData.getId());
         }
 
         public int getNoble_joint() {
@@ -532,8 +538,7 @@ public class FactionData {
 
         @SneakyThrows
         public void save() {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE faction_upgrades SET drug_earning = " + getDrugEarningLevel() + ", tax = " + getTaxLevel() + ", weapon = " + getWeaponLevel() + " WHERE factionId = " + factionData.getId());
+            Main.getInstance().getMySQL().updateAsync("UPDATE faction_upgrades SET drug_earning = ?, tax = ?, weapon = ? WHERE factionId = ?", getDrugEarningLevel(), getTaxLevel(), getWeaponLevel(), factionData.getId());
             calculate();
         }
 

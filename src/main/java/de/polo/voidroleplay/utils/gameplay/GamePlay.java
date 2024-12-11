@@ -39,9 +39,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -95,7 +92,6 @@ public class GamePlay implements Listener {
         ffa = new FFA(playerManager, locationManager);
         crypto = new Crypto();
         this.npc = npc;
-        Statement statement = mySQL.getStatement();
 
         /*
         Dealer System: deaktiviert
@@ -510,11 +506,7 @@ public class GamePlay implements Listener {
                 if (playerData == null) continue;
                 playerData.setAtmBlown(0);
             }
-            Connection connection = mySQL.getConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE players SET atmBlown = 0");
-            statement.execute();
-            statement.close();
-            connection.close();
+            Main.getInstance().getMySQL().updateAsync("UPDATE players SET atmBlown = ?");
         }
 
         for (Dealer dealer : rob.keySet()) {

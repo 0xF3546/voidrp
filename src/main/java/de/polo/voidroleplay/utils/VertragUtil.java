@@ -53,14 +53,8 @@ public class VertragUtil {
         vertrag_type.put(target.getUniqueId().toString(), type);
         current.put(target.getUniqueId().toString(), vertrag);
         Statement statement = null;
-        try {
-            statement = Main.getInstance().mySQL.getStatement();
-            assert statement != null;
-            statement.execute("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VALUES ('" + player.getUniqueId() + "', '" + target.getUniqueId() + "', '" + type + "', '" + vertrag + "', '" + new Date() + "')");
-            return true;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VAUES (?, ?, ?, ?, ?)", player.getUniqueId().toString(), target.getUniqueId().toString(), type, vertrag, new Date().toString());
+        return true;
     }
 
     public static void deleteVertrag(Player player) {
@@ -83,7 +77,7 @@ public class VertragUtil {
                 player.getUniqueId(),
                 target.getUniqueId(),
                 type,
-                vertrag);
+                vertrag.toString());
     }
 
     public void acceptVertrag(Player player) throws SQLException {
@@ -146,12 +140,11 @@ public class VertragUtil {
                         HashMap<String, String> hmap2 = new HashMap<>();
                         hmap2.put(targetplayer.getUniqueId().toString(), "beziehung");
                         playerData.setRelationShip(hmap2);
-                        Statement statement = Main.getInstance().mySQL.getStatement();
                         JSONObject object = new JSONObject(playerData.getRelationShip());
-                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object.toString(), player.getUniqueId().toString());
 
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
-                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "' WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
+                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
@@ -170,12 +163,11 @@ public class VertragUtil {
                         hmap2.put(targetplayer.getUniqueId().toString(), "verlobt");
                         playerData.getRelationShip().clear();
                         playerData.setRelationShip(hmap2);
-                        Statement statement = Main.getInstance().mySQL.getStatement();
                         JSONObject object = new JSONObject(playerData.getRelationShip());
-                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
+                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object.toString(), player.getUniqueId().toString());
 
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
-                        statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "' WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
+                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
                         player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
                     }
@@ -195,9 +187,8 @@ public class VertragUtil {
                             player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
                             playerData.setBloodType(random);
                             Main.getInstance().beginnerpass.didQuest(player, 21);
+                            Main.getInstance().getMySQL().updateAsync("UPDATE players SET bloodtype = ? WHERE uuid = ?", random, player.getUniqueId().toString());
                             try {
-                                Statement statement = Main.getInstance().mySQL.getStatement();
-                                statement.executeUpdate("UPDATE players SET bloodtype = '" + random + "' WHERE uuid = '" + player.getUniqueId() + "'");
                                 playerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
                                 factionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + finalTargetplayer.getName() + " (Blutgruppe)");
                             } catch (SQLException e) {

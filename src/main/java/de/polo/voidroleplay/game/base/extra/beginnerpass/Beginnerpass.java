@@ -157,31 +157,25 @@ public class Beginnerpass implements CommandExecutor {
     }
 
     @SneakyThrows
-    private void addQuest(PlayerData playerData, Quest quest) {
-        PlayerQuest playerQuest = new PlayerQuest(quest.getId(), 0);
+    public void addQuest(PlayerData playerData, Quest quest) {
         Player player = playerData.getPlayer();
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO beginnerpass_player_quests (uuid, questId) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1, player.getUniqueId().toString());
-        preparedStatement.setInt(2, quest.getId());
+        String insertQuery = "INSERT INTO beginnerpass_player_quests (uuid, questId) VALUES (?, ?)";
 
-        int affectedRows = preparedStatement.executeUpdate();
-        if (affectedRows == 0) {
-            throw new SQLException("Creating quest failed, no rows affected.");
-        }
-
-        try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                playerQuest.setId(generatedKeys.getInt(1));
-                playerData.addBeginnerQuest(playerQuest); // Ensure this updates the quest list
+        Main.getInstance().getMySQL().insertAndGetKeyAsync(insertQuery,
+                player.getUniqueId().toString(),
+                quest.getId()
+        ).thenAccept(optionalKey -> {
+            if (optionalKey.isPresent()) {
+                int questId = optionalKey.get();
+                PlayerQuest playerQuest = new PlayerQuest(questId, 0);
+                playerData.addBeginnerQuest(playerQuest); // Updates the quest list
             } else {
-                throw new SQLException("Creating PlayerQuest failed, no ID obtained.");
+                throw new RuntimeException("Creating PlayerQuest failed, no ID obtained.");
             }
-        } finally {
-            preparedStatement.close();
-            connection.close();
-        }
+        }).exceptionally(ex -> {
+            ex.printStackTrace(); // Log the error for debugging
+            return null;
+        });
     }
 
     public void didQuest(Player player, int questId) {
@@ -202,13 +196,9 @@ public class Beginnerpass implements CommandExecutor {
                 Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
                 SoundManager.successSound(player);
             }
-            Connection connection = Main.getInstance().mySQL.getConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?");
-            statement.setInt(1, playerQuest.getState());
-            statement.setInt(2, playerQuest.getId());
-            statement.executeUpdate();
-            statement.close();
-            connection.close();
+            Main.getInstance().getMySQL().updateAsync("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?",
+                    playerQuest.getState(),
+                    playerQuest.getId());
         }
     }
 }

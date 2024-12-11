@@ -1,5 +1,6 @@
 package de.polo.voidroleplay.manager;
 
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.Ticket;
 import de.polo.voidroleplay.database.impl.MySQL;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,6 +15,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SupportManager {
     public static final List<String> playerTickets = new ObjectArrayList<>();
@@ -34,34 +36,27 @@ public class SupportManager {
         return false;
     }
 
-    @SneakyThrows
-    public Ticket createTicket(Player player, String reason) {
+    public CompletableFuture<Ticket> createTicketAsync(Player player, String reason) {
         Ticket ticket = new Ticket();
-
-        Connection connection = mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO tickets (creator, reason) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-
-        statement.setString(1, player.getUniqueId().toString());
-        statement.setString(2, reason);
-        statement.executeUpdate();
-
-        ResultSet generatedKeys = statement.getGeneratedKeys();
-
-        if (generatedKeys.next()) {
-            int lastInsertedId = generatedKeys.getInt(1);
-            ticket.setId(lastInsertedId);
-            System.out.println(lastInsertedId);
-        }
-
         ticket.setCreator(player.getUniqueId());
         ticket.setReason(reason);
 
-        Tickets.add(ticket);
-
-        statement.close();
-        connection.close();
-
-        return ticket;
+        return Main.getInstance().getMySQL().insertAndGetKeyAsync(
+                "INSERT INTO tickets (creator, reason) VALUES (?, ?)",
+                player.getUniqueId().toString(),
+                reason
+        ).thenApply(optionalKey -> {
+            if (optionalKey.isPresent()) {
+                ticket.setId(optionalKey.get());
+                Tickets.add(ticket);
+            } else {
+                throw new RuntimeException("Failed to create ticket: no ID returned from database.");
+            }
+            return ticket;
+        }).exceptionally(ex -> {
+            ex.printStackTrace(); // Log the error for debugging
+            throw new RuntimeException("Failed to create ticket", ex);
+        });
     }
 
     public Collection<Ticket> getTickets() {

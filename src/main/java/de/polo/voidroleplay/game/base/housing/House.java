@@ -99,14 +99,12 @@ public class House {
 
     @SneakyThrows
     public void addMiner(Miner miner) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO crypto_miner (houseNumber) VALUE (?)", Statement.RETURN_GENERATED_KEYS);
-        statement.setInt(1, number);
-        statement.execute();
-        ResultSet result = statement.getGeneratedKeys();
-        if (result.next()) {
-            miner.setId(result.getInt(1));
-        }
+        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO crypto_miner (houseNumber) VALUE (?)",
+                number)
+                .thenApply(key -> {
+                    key.ifPresent(miner::setId);
+                    return null;
+                });
         activeMiner.add(miner);
         setMiner(getMiner() + 1);
         save();

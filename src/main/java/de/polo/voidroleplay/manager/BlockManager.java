@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.database.impl.MySQL;
@@ -66,25 +67,19 @@ public class BlockManager {
     @SneakyThrows
     public int addBlock(RegisteredBlock block) {
         registeredBlocks.add(block);
-        Connection connection = mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO blocks (info, infoValue, x, y, z, world) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        statement.setString(1, block.getInfo());
-        statement.setString(2, block.getInfoValue());
-        statement.setDouble(3, block.getLocation().getX());
-        statement.setDouble(4, block.getLocation().getY());
-        statement.setDouble(5, block.getLocation().getZ());
-        statement.setString(6, block.getLocation().getWorld().getName());
+        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO blocks (info, infoValue, x, y, z, world) VALUES (?, ?, ?, ?, ?, ?)",
+                        block.getInfo(),
+                        block.getInfoValue(),
+                        block.getLocation().getX(),
+                        block.getLocation().getY(),
+                        block.getLocation().getZ(),
+                        block.getLocation().getWorld().getName())
+                .thenApply(key -> {
+                    key.ifPresent(block::setId);
+                    return null;
+                });
 
-        statement.execute();
-
-        ResultSet generatedKeys = statement.getGeneratedKeys();
-        if (generatedKeys.next()) {
-            return generatedKeys.getInt(1);
-        }
-
-        statement.close();
-        connection.close();
-        return -1;
+        return block.getId();
     }
 
     public RegisteredBlock getNearestBlockOfType(Location location, String type) {

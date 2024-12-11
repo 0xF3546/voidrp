@@ -432,10 +432,8 @@ public class PlayerManager implements Listener {
 
     public void savePlayer(Player player) throws SQLException {
         UUID uuid = player.getUniqueId();
-        Statement statement = Main.getInstance().mySQL.getStatement();
         PlayerData playerData = playerDataMap.get(uuid);
         if (playerData != null) {
-            assert statement != null;
             if (playerData.isDead()) {
                 Item skull = utils.deathUtil.getDeathSkull(player.getUniqueId().toString());
                 if (skull != null) {
@@ -468,7 +466,6 @@ public class PlayerManager implements Listener {
 
             playerData.getWorkstations().forEach(PlayerWorkstation::save);
             playerDataMap.remove(uuid);
-            statement.close();
         } else {
             System.out.println("Spieler " + player.getName() + "'s playerData konnte nicht gefunden werden.");
         }

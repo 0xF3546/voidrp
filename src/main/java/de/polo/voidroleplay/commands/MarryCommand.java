@@ -13,8 +13,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 
 /**
@@ -113,16 +111,11 @@ public class MarryCommand implements CommandExecutor {
                     firstplayerData.setLastname(secondplayerData.getLastname());
                     firstplayer.sendMessage("§8 » §7Dein Nachname lautet nun \"" + firstplayerData.getLastname() + "\".");
                 }
-                try {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    JSONObject object = new JSONObject(firstplayerData.getRelationShip());
-                    statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "', `lastname` = '" + firstplayerData.getLastname() + "' WHERE `uuid` = '" + firstplayer.getUniqueId() + "'");
+                JSONObject object = new JSONObject(firstplayerData.getRelationShip());
+                Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ?, lastname = ? WHERE uuid = ?", object.toString(), firstplayerData.getLastname(), firstplayer.getUniqueId().toString());
 
-                    JSONObject object2 = new JSONObject(secondplayerData.getRelationShip());
-                    statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object2 + "', `lastname` = '" + secondplayerData.getLastname() + "'  WHERE `uuid` = '" + secondplayer.getUniqueId() + "'");
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+                JSONObject object2 = new JSONObject(secondplayerData.getRelationShip());
+                Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ?, lastname = ? WHERE uuid = ?", object2.toString(), secondplayerData.getLastname(), secondplayer.getUniqueId().toString());
             } else {
                 player.sendMessage(Main.error + secondplayer.getName() + " & " + firstplayer.getName() + " sind nicht verlobt.");
             }

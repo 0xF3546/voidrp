@@ -15,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class ContractCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -86,8 +85,7 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             try {
                 playerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
-                Statement statement = Main.getInstance().mySQL.getStatement();
-                statement.executeUpdate("UPDATE `contract` SET `amount` = " + contractData.getAmount() + " WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
+                Main.getInstance().getMySQL().updateAsync("UPDATE contract SET amount = ? WHERE uuid = ?", contractData.getAmount(), targetplayer.getUniqueId().toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -101,8 +99,7 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             try {
                 playerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
-                Statement statement = Main.getInstance().mySQL.getStatement();
-                statement.execute("INSERT INTO `contract` (`uuid`, `amount`, `setter`) VALUES ('" + targetplayer.getUniqueId() + "', " + price + ", '" + player.getUniqueId() + "')");
+                Main.getInstance().getMySQL().insertAsync("INSERT INTO contract (uuid, amount, setter) VALUES (?, ?, ?)", targetplayer.getUniqueId().toString(), price, player.getUniqueId().toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

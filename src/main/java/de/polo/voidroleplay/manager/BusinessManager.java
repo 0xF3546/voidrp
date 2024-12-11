@@ -77,9 +77,7 @@ public class BusinessManager {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setBusiness(null);
         playerData.setBusiness_grade(0);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `business` = NULL, `business_grade` = 0 WHERE `uuid` = '" + player.getUniqueId() + "'");
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET business = NULL, business_grade = ? WHERE uuid = ?", player.getUniqueId().toString());
     }
 
     public BusinessData getBusinessData(int id) {

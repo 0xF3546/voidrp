@@ -117,30 +117,33 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                 for (int i = 4; i < args.length; i++) {
                     reason = reason + " " + args[i];
                 }
-                try {
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyy '|' HH:mm:ss ");
-                    String newDate = formatter.format(new Date());
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.execute("INSERT INTO `blacklist` (`uuid`, `faction`, `kills`, `price`, `date`, `reason`) VALUES ('" + player1.getUniqueId() + "', '" + factionData.getName() + "', " + kills + ", " + price + ", '" + newDate + "', '" + reason + "')");
-                    ResultSet checkId = statement.executeQuery("SELECT `id` FROM `blacklist` WHERE `uuid` = '" + player1.getUniqueId() + "' AND `date` = '" + newDate + "'");
-                    if (checkId.next()) {
+                SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyy '|' HH:mm:ss ");
+                String newDate = formatter.format(new Date());
+                String finalReason = reason;
+                Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO blacklist (uuid, faction, kills, price, date, reason) VALUES (?, ?, ?, ?, ?, ?)",
+                        player1.getUniqueId().toString(),
+                        factionData.getName(),
+                        kills,
+                        price,
+                        newDate,
+                        reason
+                ).thenApply(key -> {
+                    if (key.isPresent()) {
                         BlacklistData blacklistData = new BlacklistData();
                         blacklistData.setDate(newDate);
                         blacklistData.setPrice(price);
-                        blacklistData.setReason(reason);
+                        blacklistData.setReason(finalReason);
                         blacklistData.setKills(kills);
                         blacklistData.setFaction(factionData.getName());
-                        blacklistData.setId(checkId.getInt(1));
+                        blacklistData.setId(key.get());
                         blacklistData.setUuid(player1.getUniqueId().toString());
-                        factionManager.addBlacklist(checkId.getInt(1), blacklistData);
+                        factionManager.addBlacklist(key.get(), blacklistData);
+                        factionManager.sendMessageToFaction(factionData.getName(), factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " auf die Blacklist gesetzt.");
+                        player1.sendMessage("§8[§cBlacklist§8]§c Du wurdest auf die Blacklist von " + factionData.getFullname() + " gesetzt.");
+                        player1.sendMessage("§8[§cBlacklist§8]§c " + kills + " Kills §8| §c" + price + "$§8 | §c" + finalReason);
                     }
-                    factionManager.sendMessageToFaction(factionData.getName(), factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " auf die Blacklist gesetzt.");
-                    player1.sendMessage("§8[§cBlacklist§8]§c Du wurdest auf die Blacklist von " + factionData.getFullname() + " gesetzt.");
-                    player1.sendMessage("§8[§cBlacklist§8]§c " + kills + " Kills §8| §c" + price + "$§8 | §c" + reason);
-                } catch (SQLException e) {
-                    player.sendMessage(Main.error + "Bitte versuche es später erneut.");
-                    throw new RuntimeException(e);
-                }
+                    return null;
+                });
             }
         } else if (args[0].equalsIgnoreCase("remove")) {
             Player player1 = Bukkit.getPlayer(args[1]);
@@ -159,16 +162,10 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                 if (blacklistData.getUuid().equals(player1.getUniqueId().toString()) && blacklistData.getFaction().equals(factionData.getName())) {
                     canDo = true;
-
-                    try {
-                        Statement statement = Main.getInstance().mySQL.getStatement();
-                        statement.execute("DELETE FROM `blacklist` WHERE `id` = " + blacklistData.getId());
-                        factionManager.sendMessageToFaction(factionData.getName(), "§c" + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " von der Blacklist gelöscht.");
-                        factionManager.removeBlacklist(blacklistData.getId());
-                        player1.sendMessage("§8[§cBlacklist§8]§7 " + player.getName() + " hat dich von der Blacklist der " + factionData.getFullname() + " gelöscht");
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Main.getInstance().getMySQL().deleteAsync("DELETE FROM blacklist WHERE id = ?", blacklistData.getId());
+                    factionManager.sendMessageToFaction(factionData.getName(), "§c" + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " von der Blacklist gelöscht.");
+                    factionManager.removeBlacklist(blacklistData.getId());
+                    player1.sendMessage("§8[§cBlacklist§8]§7 " + player.getName() + " hat dich von der Blacklist der " + factionData.getFullname() + " gelöscht");
                     return false;
                 }
             }

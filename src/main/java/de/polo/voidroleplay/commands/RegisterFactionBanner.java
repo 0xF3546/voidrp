@@ -76,13 +76,9 @@ public class RegisterFactionBanner implements CommandExecutor {
         }
         factionData.setBannerPattern(banner.getPatterns());
         factionData.setBannerColor(banner.getType());
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET banner = ? WHERE id = ?");
-        statement.setString(1, bannerObject.toString());
-        statement.setInt(2, factionData.getId());
-        statement.executeUpdate();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET banner = ? WHERE id = ?",
+                bannerObject.toString(),
+                factionData.getId());
         return false;
     }
 }

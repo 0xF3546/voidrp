@@ -47,7 +47,7 @@ public class UnbanCommand implements CommandExecutor {
             }
             adminManager.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", ChatColor.RED);
             player.sendMessage(Prefix.ADMIN + "Du hast " + res.getString(3) + " entbannt.");
-            statement.execute("DELETE FROM player_bans WHERE LOWER(name) = '" + args[0].toLowerCase() + "'");
+            Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_bans WHERE LOWER(name) = ?", args[0].toLowerCase());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
