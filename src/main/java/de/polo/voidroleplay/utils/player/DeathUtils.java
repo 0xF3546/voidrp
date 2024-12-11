@@ -100,6 +100,9 @@ public class DeathUtils {
 
     public void revivePlayer(Player player, boolean effects) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.getVariable("inventory::base") != null) {
+            player.getInventory().setContents(playerData.getVariable("inventory::base"));
+        }
         playerData.setCanInteract(false);
         playerData.setDead(false);
         playerData.setCuffed(false);
@@ -150,6 +153,7 @@ public class DeathUtils {
 
     public void despawnPlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        playerData.setVariable("inventory::base", null);
         deathPlayer.remove(player.getUniqueId().toString());
         player.setGameMode(GameMode.SURVIVAL);
         playerData.setDeathTime(300);
