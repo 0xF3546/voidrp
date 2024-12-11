@@ -275,7 +275,8 @@ public final class Main extends JavaPlugin {
     private void registerAnnotatedCommands() {
         Set<Class<? extends CommandBase>> commands = Set.of(
                 de.polo.voidroleplay.commands.InvCommand.class,
-                HochseefischerCommand.class
+                HochseefischerCommand.class,
+                AdventskalenderCommand.class
         );
 
 
