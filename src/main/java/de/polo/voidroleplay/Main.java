@@ -1,7 +1,5 @@
 package de.polo.voidroleplay;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.impl.MySQL;
@@ -82,7 +80,6 @@ public final class Main extends JavaPlugin {
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
     private NPCManager npc;
-    public ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
     @Getter
     private DynmapAPI dynmapAPI;
@@ -142,6 +139,14 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        if (!Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
+            getLogger().severe("ProtocolLib not found!");
+            getLogger().severe("Please install ProtocolLib to use this plugin.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         mySQL = new MySQL();
         scoreboardManager = new ScoreboardManager();
         scoreboardAPI = new ScoreboardAPI(scoreboardManager);
