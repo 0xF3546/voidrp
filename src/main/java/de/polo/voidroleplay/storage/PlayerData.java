@@ -279,6 +279,10 @@ public class PlayerData {
     @Setter
     private int zd;
 
+    @Getter
+    @Setter
+    private int loyaltyBonus;
+
     public PlayerData(Player player) {
         this.player = player;
         this.playerPetManager = new PlayerPetManager(this, player);
@@ -689,36 +693,24 @@ public class PlayerData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ?, subTeam = ?, rewardId = ?, rewardTime = ? WHERE id = ?");
-        statement.setInt(1, getBusiness());
-        statement.setInt(2, getDeathTime());
-        statement.setBoolean(3, isDead());
-        int companyId = 0;
-        if (company != null) {
-            companyId = company.getId();
-        }
-        statement.setInt(4, companyId);
-        statement.setInt(5, getAtmBlown());
-        statement.setInt(6, subGroupId);
-        statement.setInt(7, subGroupGrade);
-        statement.setInt(8, karma);
-        statement.setBoolean(9, isChurch);
-        statement.setBoolean(10, isBaptized);
-        Timestamp timestamp = Timestamp.valueOf(lastContract);
-        statement.setTimestamp(11, timestamp);
-        statement.setInt(12, votes);
-        String formattedBoostDuration = factionCooldown.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        statement.setString(13, formattedBoostDuration);
-        if (subTeam == null) {
-            statement.setInt(14, -1);
-        } else {
-            statement.setInt(14, subTeam.getId());
-        }
-        statement.setInt(15, rewardId);
-        statement.setInt(16, rewardTime);
-        statement.setInt(17, getId());
-        statement.executeUpdate();
-        statement.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ?, subTeam = ?, rewardId = ?, rewardTime = ? WHERE id = ?",
+                getBusiness(),
+                getDeathTime(),
+                isDead(),
+                (company != null) ? company.getId() : 0,
+                getAtmBlown(),
+                subGroupId,
+                subGroupGrade,
+                karma,
+                isChurch,
+                isBaptized,
+                Timestamp.valueOf(lastContract).toString(),
+                votes,
+                factionCooldown.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                (subTeam != null) ? subTeam.getId() : -1,
+                rewardId,
+                rewardTime,
+                getId());
     }
 
     public boolean isExecutiveFaction() {

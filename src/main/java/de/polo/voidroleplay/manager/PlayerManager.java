@@ -319,6 +319,7 @@ public class PlayerManager implements Listener {
                 playerData.setBloodType(result.getString("bloodtype"));
                 playerData.setForumID(result.getInt("forumID"));
                 playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
+                playerData.setLoyaltyBonus(result.getInt("loyaltyBonus"));
 
                 playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
 
