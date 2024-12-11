@@ -43,6 +43,7 @@ public class StatsCommand implements CommandExecutor {
         PlaytimeReward playtimeReward = playerManager.getPlaytimeReward(playerData.getRewardId());
         player.sendMessage("§8 - §6Spielzeitbelohnung§8: §c" + playtimeReward.getDisplayName() + " §8- §c" + playerData.getRewardTime() + "h verbleibend" + (playtimeReward.isPremiumOnly() ? "§8[§6Premium§8]" : ""));
         player.sendMessage("§8 - §6Inventar§8: §c" + playerData.getInventory().getItems().size() + "/" + playerData.getInventory().getSize());
+        player.sendMessage("§8 - §6Treuepunkte§8:§c " + playerData.getLoyaltyBonus());
         return false;
     }
 }
