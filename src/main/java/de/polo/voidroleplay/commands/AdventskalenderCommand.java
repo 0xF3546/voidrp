@@ -6,6 +6,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,7 +16,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
+
+import static de.polo.voidroleplay.Main.locationManager;
 
 @CommandBase.CommandMeta(name = "adventskalender")
 public class AdventskalenderCommand extends CommandBase {
@@ -42,8 +47,16 @@ public class AdventskalenderCommand extends CommandBase {
     @Override
     public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§cAdventskalender", true, false);
-
-        for (int i = 0; i < 27; i++) {
+        if (locationManager.getDistanceBetweenCoords(player, "adventskalender") > 5) {
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe vom Weihnachtsmann.");
+            return;
+        }
+        if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
+            player.sendMessage(Prefix.ERROR + "Du musst mindestens einen PayDay pro Tag erhalten haben um den Adventskalender zu öffnen abzuholen.");
+            player.closeInventory();
+            return;
+        }
+        for (int i = 0; i < 24; i++) {
             int day = i + 1;
             int finalI = i;
             CompletableFuture.runAsync(() -> {
@@ -54,6 +67,13 @@ public class AdventskalenderCommand extends CommandBase {
                     inventoryManager.setItem(new CustomItem(finalI, ItemManager.createItem(material, 1, 0, "§cTag " + day)) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
+                            LocalDate today = LocalDate.now();
+                            int currentDay = today.getDayOfMonth();
+
+                            if (day > currentDay) {
+                                player.sendMessage(PREFIX + "§cDu kannst dieses Türchen erst am " + day + ". Dezember öffnen!");
+                                return;
+                            }
                             if (alreadyOpened) {
                                 player.sendMessage("§cDieses Türchen wurde bereits geöffnet!");
                                 return;

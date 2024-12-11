@@ -101,7 +101,7 @@ public class InviteCommand implements CommandExecutor {
     private void inviteToBusiness(Player player, Player targetplayer) {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerManager.getPlayerData(targetplayer.getUniqueId()).getBusiness() != 0) {
-            player.sendMessage("§8[§6Business§8] §c" + targetplayer.getName() + "§7 ist bereits in einem Business.");
+            player.sendMessage("§8[§6Business§8] §c" + targetplayer.getName() + " ist bereits in einem Business.");
             return;
         }
         BusinessData businessData = businessManager.getBusinessData(playerData.getBusiness());
@@ -123,7 +123,7 @@ public class InviteCommand implements CommandExecutor {
     private void inviteToCompany(Player player, Player targetplayer) {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerManager.getPlayerData(targetplayer.getUniqueId()).getCompany() != null) {
-            player.sendMessage("§8[§6Firma§8] §c" + targetplayer.getName() + "§7 ist bereits in einer Firma.");
+            player.sendMessage("§8[§6Firma§8] §c" + targetplayer.getName() + " ist bereits in einer Firma.");
             return;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "company_invite", playerData.getCompany().getId())) {
@@ -145,7 +145,7 @@ public class InviteCommand implements CommandExecutor {
         }
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         if (targetplayerData.getFaction() != null) {
-            player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + "§7 ist bereits in einer Fraktion.");
+            player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + " ist bereits in einer Fraktion.");
             return;
         }
         if (Utils.getTime().isBefore(targetplayerData.getFactionCooldown())) {

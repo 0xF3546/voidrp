@@ -39,6 +39,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
         }
         String uuid = args[0];
         float amount = Float.parseFloat(args[2]);
+        uuid = uuid.replace("-", "");
         Player target = null;
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getUniqueId().toString().replace("-", "").equalsIgnoreCase(uuid)) target = player;

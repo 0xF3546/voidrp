@@ -64,7 +64,7 @@ public class CommandListener implements Listener {
 
         // Check if the command starts with any blocked start
         for (String blockedStart : blockedStarts) {
-            if (command.startsWith(blockedStart)) {
+            if (command.startsWith(blockedStart) && !playerData.isAduty()) {
                 event.setCancelled(true);
                 player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;
@@ -73,7 +73,7 @@ public class CommandListener implements Listener {
 
         // Check if the command contains any blocked substring
         for (String blockedContain : blockedContains) {
-            if (msg.contains(blockedContain)) {
+            if (msg.contains(blockedContain) && !playerData.isAduty()) {
                 event.setCancelled(true);
                 player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;

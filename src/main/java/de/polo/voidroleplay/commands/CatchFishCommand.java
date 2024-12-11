@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+@CommandBase.CommandMeta(name = "catchfish")
 public class CatchFishCommand extends CommandBase implements Listener {
     private final HashMap<Player, LocalDateTime> caughts = new HashMap<>();
     private final String PREFIX = "§8[§bHochseefischer§8]§7 ";

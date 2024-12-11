@@ -13,10 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class MySQL implements Database {
@@ -126,6 +123,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<List<Map<String, Object>>> executeQueryAsync(String query, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
+            System.out.println("Executing query: " + query + " with args: " + Arrays.toString(args));
             try (Connection connection = getConnection();
                  PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -145,9 +143,11 @@ public class MySQL implements Database {
                         }
                         results.add(row);
                     }
+                    System.out.println("Query successful, results: " + results);
                     return results;
                 }
             } catch (SQLException e) {
+                System.err.println("SQL Exception: " + e.getMessage());
                 e.printStackTrace();
             }
             return null;
@@ -201,14 +201,24 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<Integer> updateAsync(String query, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
+            System.out.println("Executing update query: " + query);
+            System.out.println("With arguments: " + Arrays.toString(args));
+
             try (Connection connection = getConnection();
                  PreparedStatement statement = connection.prepareStatement(query)) {
 
                 for (int i = 0; i < args.length; i++) {
                     statement.setObject(i + 1, args[i]);
                 }
-                return statement.executeUpdate();
+
+                int rowsAffected = statement.executeUpdate();
+                System.out.println("Update successful, rows affected: " + rowsAffected);
+
+                return rowsAffected;
             } catch (SQLException e) {
+                System.err.println("Database update failed: " + e.getMessage());
+                e.printStackTrace();
+
                 throw new RuntimeException("Database update failed", e);
             }
         }, BetterExecutor.executor);

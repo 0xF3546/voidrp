@@ -39,7 +39,9 @@ public class InvCommand extends CommandBase {
                         player.sendMessage(Prefix.ERROR + "Du hast nicht genug dabei.");
                         return;
                     }
+                    playerData.getInventory().removeItem(drug.getItem(), 1);
                     GamePlay.useDrug(player, drug);
+                    player.closeInventory();
                 }
             });
             i++;

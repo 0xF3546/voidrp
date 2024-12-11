@@ -53,7 +53,8 @@ public class EntityDamageByEntityListener implements Listener {
             if ((event.getEntity().getType() == EntityType.ARMOR_STAND
                     || event.getEntity().getType() == EntityType.ITEM_FRAME
                     || event.getEntity().getType() == EntityType.PAINTING
-                    || event.getEntity().getType() == EntityType.MINECART)
+                    || event.getEntity().getType() == EntityType.MINECART
+                    || event.getEntity().getType() == EntityType.BOAT)
                     && !playerManager.getPlayerData(event.getDamager().getUniqueId()).isAduty()) {
                 event.setCancelled(true);
             }
@@ -61,7 +62,8 @@ public class EntityDamageByEntityListener implements Listener {
         if ((event.getEntity().getType() == EntityType.ARMOR_STAND
                 || event.getEntity().getType() == EntityType.ITEM_FRAME
                 || event.getEntity().getType() == EntityType.PAINTING
-                || event.getEntity().getType() == EntityType.MINECART)
+                || event.getEntity().getType() == EntityType.MINECART
+                || event.getEntity().getType() == EntityType.BOAT)
                 && !playerManager.getPlayerData(event.getDamager().getUniqueId()).isAduty()) {
             event.setCancelled(true);
         }

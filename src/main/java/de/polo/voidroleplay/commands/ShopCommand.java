@@ -292,6 +292,7 @@ public class ShopCommand implements CommandExecutor {
                             player.sendMessage(Prefix.ERROR + "Du hast diese Waffe nicht im Waffenschrank.");
                             return;
                         }
+                        playerManager.removeMoney(player, price, "Kauf von Munition: " + info);
                         Main.getInstance().weaponManager.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
                         player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                     } catch (Exception e) {

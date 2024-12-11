@@ -258,11 +258,21 @@ public class FactionManager {
                     if (result != null && !result.isEmpty()) {
                         Map<String, Object> playerData = result.get(0);
                         int factionGrade = (int) playerData.get("faction_grade");
-
                         if (factionGrade < 4) {
                             mySQL.updateAsync(
                                     "UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, `factionCooldown` = ? WHERE `uuid` = ?",
                                     cooldown.toString(), uuid.toString()
+                            ).thenRun(() -> {
+                                ServerManager.factionPlayerDataMap.remove(uuid.toString());
+                                TeamSpeak.reloadPlayer(uuid);
+                            }).exceptionally(e -> {
+                                e.printStackTrace();
+                                return null;
+                            });
+                        } else {
+                            mySQL.updateAsync(
+                                    "UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, WHERE `uuid` = ?",
+                                    uuid.toString()
                             ).thenRun(() -> {
                                 ServerManager.factionPlayerDataMap.remove(uuid.toString());
                                 TeamSpeak.reloadPlayer(uuid);

@@ -281,6 +281,7 @@ public final class Main extends JavaPlugin {
         Set<Class<? extends CommandBase>> commands = Set.of(
                 de.polo.voidroleplay.commands.InvCommand.class,
                 HochseefischerCommand.class,
+                CatchFishCommand.class,
                 AdventskalenderCommand.class
         );
 

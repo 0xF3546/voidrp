@@ -674,6 +674,8 @@ public class PlayerManager implements Listener {
         PlayerData playerData = getPlayerData(player);
         player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du hast, für deine Treue, einen Treuepunkt erhalten!"));
         player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du hast jetzt " + playerData.getLoyaltyBonus() + " Treuepunkte."));
+        playerData.setLoyaltyBonus(playerData.getLoyaltyBonus());
+        mySQL.updateAsync("UPDATE players SET loyaltyBonus = ? WHERE uuid = ?", playerData.getLoyaltyBonus(), player.getUniqueId().toString());
     }
 
     public void startTimeTracker() {
@@ -688,11 +690,13 @@ public class PlayerManager implements Listener {
                 for (LoyaltyBonusTimer loyaltyBonusTimer : loyaltyBonusCache) {
                     Player player = Bukkit.getPlayer(loyaltyBonusTimer.getUuid());
                     if (player != null) {
-                        if (!loyaltyBonusTimer.getStopped().plusMinutes(120).isAfter(Utils.getTime())) continue;
+                        if (loyaltyBonusTimer.getStarted() == null) loyaltyBonusTimer.setStarted(Utils.getTime());
+                        if (!Utils.getTime().isAfter(loyaltyBonusTimer.getStarted().plusMinutes(120))) continue;
                         loyaltyBonusTimer.setStarted(Utils.getTime());
                         giveLoyaltyBonus(player);
                         continue;
                     }
+                    if (loyaltyBonusTimer.getStopped() == null) loyaltyBonusTimer.setStopped(Utils.getTime());
                     if (!loyaltyBonusTimer.getStopped().plusMinutes(3).isAfter(Utils.getTime())) continue;
                     loyaltyBonusCache.remove(loyaltyBonusTimer);
                 }

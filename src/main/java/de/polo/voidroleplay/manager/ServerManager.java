@@ -343,7 +343,7 @@ public class ServerManager {
 
     private void setTablist(Player player) {
         LocalDateTime time = Utils.getTime();
-        player.setPlayerListHeader("\n§8▍ §6§lVoidRoleplay §8× §eReallife & Roleplay §8▍\n\n§7" + time.getHour() + ":" + time.getMinute() + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
+        player.setPlayerListHeader("\n§8▍ §6§lVoidRoleplay V2 §8× §eReallife & Roleplay §8▍\n\n§7" + (time.getHour() < 10 ? "0" + time.getHour() : time.getHour()) + ":" + (time.getMinute() < 10 ? "0" + time.getMinute() : time.getMinute()) + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
         player.setPlayerListFooter("§8__________________\n\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n§8» §9discord.gg/void-roleplay §8«");
 
     }
