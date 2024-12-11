@@ -17,7 +17,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class BuyHouseCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -65,8 +64,7 @@ public class BuyHouseCommand implements CommandExecutor {
                                         try {
                                             if (playerData.getHouseSlot() > houes) {
                                                 playerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
-                                                Statement statement = Main.getInstance().mySQL.getStatement();
-                                                statement.executeUpdate("UPDATE `housing` SET `owner` = '" + player.getUniqueId() + "' WHERE `number` = " + houseData.getNumber());
+                                                Main.getInstance().getMySQL().updateAsync("UPDATE housing SET owner = ? WHERE number = ?", player.getUniqueId().toString(), houseData.getNumber());
                                                 houseData.setOwner(player.getUniqueId().toString());
                                                 sign.setLine(2, "§0" + player.getName());
                                                 sign.update();

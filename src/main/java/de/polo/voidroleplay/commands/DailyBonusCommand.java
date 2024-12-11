@@ -19,8 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -94,12 +92,7 @@ public class DailyBonusCommand implements CommandExecutor {
                 ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 40);
                 playerManager.addCoins(player, 500);
                 playerManager.addExp(player, 3000);
-                Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = true WHERE uuid = ?");
-                statement.setString(1, player.getUniqueId().toString());
-                statement.execute();
-                statement.close();
-                connection.close();
+                Main.getInstance().getMySQL().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
             }
         });
         inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§f+20g Kokain §7&§2 +20 veredelte Joints")) {
@@ -115,12 +108,7 @@ public class DailyBonusCommand implements CommandExecutor {
                 ItemManager.addCustomItem(player, RoleplayItem.CIGAR, 20);
                 playerManager.addCoins(player, 500);
                 playerManager.addExp(player, 3000);
-                Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = true WHERE uuid = ?");
-                statement.setString(1, player.getUniqueId().toString());
-                statement.execute();
-                statement.close();
-                connection.close();
+                Main.getInstance().getMySQL().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
             }
         });
     }
@@ -131,11 +119,6 @@ public class DailyBonusCommand implements CommandExecutor {
         playerData.setDailyBonusRedeemed(LocalDateTime.now());
         player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.DAILY.getDisplayName()));
         player.sendMessage(Prefix.MAIN + "Du hast deine Tägliche Case erhalten.");
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE players SET dailyBonusRedeemed = NOW() WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        statement.execute();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET dailyBonusRedeemed = NOW() WHERE uuid = ?", player.getUniqueId().toString());
     }
 }

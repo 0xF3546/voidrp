@@ -140,9 +140,16 @@ public class PlayerVehicleData {
 
     @SneakyThrows
     public void save() {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + getKm() + ", `fuel` = " + getFuel() + ", `x` = " + getX() + ", `y` = " + getY() + ", `z` = " + getZ() + ", `welt` = '" + getWelt() + "', `yaw` = " + getYaw() + ", `pitch` = " + getPitch() + " WHERE `id` = " + getId());
-
+        Main.getInstance().getMySQL().updateAsync("UPDATE player_vehicles SET km = ?, fuel = ?, x = ?, y = ?, z = ?, welt = ?, yaw = ?, pitch = ? WHERE id = ?",
+                km,
+                fuel,
+                x,
+                y,
+                z,
+                welt,
+                yaw,
+                pitch,
+                id);
     }
 
     public boolean isLocked() {

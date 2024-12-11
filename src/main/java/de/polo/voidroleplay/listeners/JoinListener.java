@@ -21,6 +21,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.UUID;
 
+import static de.polo.voidroleplay.Main.nameTagProvider;
+
 public class JoinListener implements Listener {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;

@@ -39,9 +39,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -95,7 +92,6 @@ public class GamePlay implements Listener {
         ffa = new FFA(playerManager, locationManager);
         crypto = new Crypto();
         this.npc = npc;
-        Statement statement = mySQL.getStatement();
 
         /*
         Dealer System: deaktiviert
@@ -240,7 +236,10 @@ public class GamePlay implements Listener {
                     event.getPlayer().sendMessage(Main.error + "So viel befindet sich nicht im Lager.");
                     return;
                 }
-                ItemManager.addCustomItem(event.getPlayer(), item, amount);
+                if (!event.getPlayerData().getInventory().addItem(item, amount)) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Inventarplatz.");
+                    return;
+                }
                 factionData.storage.removeItem(item, amount);
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 ausgelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
@@ -266,11 +265,10 @@ public class GamePlay implements Listener {
                     item = RoleplayItem.FACTION_PIPE;
                 }
                 FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
-                if (ItemManager.getCustomItemCount(event.getPlayer(), item) < amount) {
-                    event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
+                if (!event.getPlayerData().getInventory().removeItem(item, amount)) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel hast du nicht dabei.");
                     return;
                 }
-                ItemManager.removeCustomItem(event.getPlayer(), item, amount);
                 factionData.storage.addItem(item, amount);
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 eingelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
@@ -296,8 +294,10 @@ public class GamePlay implements Listener {
                     event.getPlayer().sendMessage(Main.error + "So viel befindet sich nicht in der Asservatenkammer.");
                     return;
                 }
+                if (!event.getPlayerData().getInventory().addItem(item, amount)) {
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Inventarplatz.");
+                }
                 factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 aus der Asservatenkammer genommen.", "FBI", "Polizei");
-                ItemManager.addCustomItem(event.getPlayer(), item, amount);
                 StaatUtil.Asservatemkammer.removeItem(item, amount);
                 StaatUtil.Asservatemkammer.save();
             } catch (Exception e) {
@@ -349,8 +349,11 @@ public class GamePlay implements Listener {
                     event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
                     return;
                 }
+                if (!event.getPlayerData().getInventory().removeItem(item, amount)) {
+                    event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
+                    return;
+                }
                 factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 in die Asservatenkammer eingelagert.", "FBI", "Polizei");
-                ItemManager.removeCustomItem(event.getPlayer(), item, amount);
                 StaatUtil.Asservatemkammer.addItem(item, amount);
                 StaatUtil.Asservatemkammer.save();
             } catch (Exception e) {
@@ -503,11 +506,7 @@ public class GamePlay implements Listener {
                 if (playerData == null) continue;
                 playerData.setAtmBlown(0);
             }
-            Connection connection = mySQL.getConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE players SET atmBlown = 0");
-            statement.execute();
-            statement.close();
-            connection.close();
+            Main.getInstance().getMySQL().updateAsync("UPDATE players SET atmBlown = ?");
         }
 
         for (Dealer dealer : rob.keySet()) {

@@ -253,7 +253,6 @@ public class FactionManager {
         LocalDateTime cooldown = Utils.getTime().plusHours(6);
         MySQL mySQL = Main.getInstance().mySQL;
 
-        // Abfrage des Rangs des Spielers
         mySQL.executeQueryAsync("SELECT `faction_grade` FROM `players` WHERE `uuid` = ?", uuid.toString())
                 .thenAccept(result -> {
                     if (result != null && !result.isEmpty()) {

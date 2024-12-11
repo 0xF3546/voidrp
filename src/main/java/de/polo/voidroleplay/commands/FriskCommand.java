@@ -13,6 +13,7 @@ import de.polo.voidroleplay.utils.StaatUtil;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
+import de.polo.voidroleplay.utils.player.PlayerInventoryItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -73,7 +74,9 @@ public class FriskCommand implements CommandExecutor {
     }
 
     private void openFriskInventory(Player player, Player targetplayer) {
+        PlayerData playerData = playerManager.getPlayerData(targetplayer);
         List<ItemStack> items = new ObjectArrayList<>();
+        List<PlayerInventoryItem> playerInventoryItems = new ObjectArrayList<>();
         for (ItemStack stack : targetplayer.getInventory().getContents()) {
             if (stack == null) continue;
             for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
@@ -90,8 +93,12 @@ public class FriskCommand implements CommandExecutor {
                 }
             }
         }
+        for (PlayerInventoryItem item : playerData.getInventory().getItems()) {
+            if (!item.getItem().isFriskItem()) continue;
+            playerInventoryItems.add(item);
+        }
 
-        int iCount = Utils.roundUpToMultipleOfNine(items.size());
+        int iCount = Utils.roundUpToMultipleOfNine(items.size() + playerInventoryItems.size());
         if (iCount == 0) iCount = 9;
 
         InventoryManager inventoryManager = new InventoryManager(player, iCount, "§8 » §b" + targetplayer.getName() + " (" + items.size() + " Gegenstände)", true, true);
@@ -109,19 +116,31 @@ public class FriskCommand implements CommandExecutor {
                             isWeapon = true;
                         }
                     }
-                    if (stack.getType().equals(RoleplayItem.PIPE.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.PIPE.getDisplayName())) {
-                        StaatUtil.Asservatemkammer.setJoints(StaatUtil.Asservatemkammer.getJoints() + stack.getAmount());
-                    }
-                    if (stack.getType().equals(RoleplayItem.SNUFF.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.SNUFF.getDisplayName())) {
-                        StaatUtil.Asservatemkammer.setCocaine(StaatUtil.Asservatemkammer.getCocaine() + stack.getAmount());
-                    }
-                    if (stack.getType().equals(RoleplayItem.PIPE_TOBACCO.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.PIPE_TOBACCO.getDisplayName())) {
-                        StaatUtil.Asservatemkammer.setWeed(StaatUtil.Asservatemkammer.getWeed() + stack.getAmount());
-                    }
-                    if (stack.getType().equals(RoleplayItem.CIGAR.getMaterial()) && stack.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.CIGAR.getDisplayName())) {
-                        StaatUtil.Asservatemkammer.setNoble_joints(StaatUtil.Asservatemkammer.getNoble_joints() + stack.getAmount());
-                    }
                     targetplayer.getInventory().remove(stack);
+                    openFriskInventory(player, targetplayer);
+                }
+            });
+            i++;
+        }
+        for (PlayerInventoryItem item : playerInventoryItems) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(item.getItem().getMaterial(), item.getAmount(), 0, item.getItem().getDisplayName())) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    targetplayer.sendMessage("§8 » §7" + factionManager.getTitle(player) + " " + player.getName() + " hat dir " + item.getItem().getDisplayName() + "§7 konfisziert.");
+                    player.sendMessage("§8 » §7Du hast " + targetplayer.getName() + " " + item.getItem().getDisplayName() + "§7 konfisziert.");
+                    if (item.getItem().equals(RoleplayItem.PIPE)) {
+                        StaatUtil.Asservatemkammer.setJoints(StaatUtil.Asservatemkammer.getJoints() + item.getAmount());
+                    }
+                    if (item.getItem().equals(RoleplayItem.SNUFF)) {
+                        StaatUtil.Asservatemkammer.setCocaine(StaatUtil.Asservatemkammer.getCocaine() + item.getAmount());
+                    }
+                    if (item.getItem().equals(RoleplayItem.PIPE_TOBACCO)) {
+                        StaatUtil.Asservatemkammer.setWeed(StaatUtil.Asservatemkammer.getWeed() + item.getAmount());
+                    }
+                    if (item.getItem().equals(RoleplayItem.CIGAR)) {
+                        StaatUtil.Asservatemkammer.setNoble_joints(StaatUtil.Asservatemkammer.getNoble_joints() + item.getAmount());
+                    }
+                    playerData.getInventory().removeItem(item);
                     openFriskInventory(player, targetplayer);
                     StaatUtil.Asservatemkammer.save();
                 }

@@ -65,7 +65,6 @@ public class DeathListener implements Listener {
         }
 
         Main.getInstance().gamePlay.clearDrugUsages(player);
-        assert player != null;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         boolean removeKarma = true;
         event.setKeepInventory(true);
@@ -74,7 +73,7 @@ public class DeathListener implements Listener {
         if (BombeCommand.ACTIVE) {
             if (ItemManager.getCustomItemCount(player, RoleplayItem.DRAHT) >= 1) {
                 ItemStack draht = ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), Main.getInstance().commands.bombeCommand.getBomb().getColor());
-                player.getWorld().dropItemNaturally(player.getLocation(), draht);
+                player.getWorld().dropItemNaturally(playerData.getDeathLocation(), draht);
                 ItemManager.removeCustomItem(player, RoleplayItem.DRAHT, 1);
             }
         } else {
@@ -88,12 +87,14 @@ public class DeathListener implements Listener {
             playerData.setDead(true);
             playerData.setDeathTime(5);
             Main.getInstance().gamePlay.getFfa().handleDeath(player);
+            return;
         } else {
             if (!playerData.isDead()) {
                 adminManager.send_message(player.getName() + " starb.", null);
             } else {
                 adminManager.send_message(player.getName() + " starb. (Rejoin)", null);
             }
+            playerData.setVariable("inventory::base", player.getInventory().getContents());
             utils.deathUtil.startDeathTimer(player);
             if (!playerData.isDead()) {
                 playerData.setDead(true);
@@ -108,7 +109,7 @@ public class DeathListener implements Listener {
 
             UUID playerUUID = player.getUniqueId();
 
-            Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
+            Item item = playerData.getDeathLocation().getWorld().dropItemNaturally(playerData.getDeathLocation(), skull);
             utils.deathUtil.addDeathSkull(player.getUniqueId().toString(), item);
             if (playerData.getWanted() != null && killer != null) {
                 WantedReason wantedReason = utils.staatUtil.getWantedReason(playerData.getWanted().getWantedId());
@@ -145,8 +146,7 @@ public class DeathListener implements Listener {
                 ServerManager.contractDataMap.remove(playerUUID.toString());
 
                 try {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + player.getUniqueId() + "'");
+                    Main.getInstance().getMySQL().deleteAsync("DELETE FROM contract WHERE uuid = ?", player.getUniqueId().toString());
                     factionManager.addFactionMoney("ICA", contractData.getAmount(), "Kopfgeld " + player.getName());
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

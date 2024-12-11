@@ -371,13 +371,13 @@ public class ServerManager {
                             }
                             break;
                         case 2:
-                            TextComponent forum = new TextComponent("§8[§6Forum§8]§e Bist du schon Mitglied in unserem Forum?");
-                            forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forum.voidroleplay.de"));
-                            forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oForum öffnen")));
+                            TextComponent forum = new TextComponent("§8[§9Discord§8]§3 Bist du schon auf unserem Discord?");
+                            forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
+                            forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             Bukkit.spigot().broadcast(forum);
-                            TextComponent forum2 = new TextComponent("§8[§6Forum§8]§e Fraktionen, Informationen, Spiele - Werde Teil unserer Foren-Community!");
-                            forum2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://forum.voidroleplay.de"));
-                            forum2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oForum öffnen")));
+                            TextComponent forum2 = new TextComponent("§8[§9Discord§8]§3 Fraktionen");
+                            forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
+                            forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 player.spigot().sendMessage(forum2);
                             }

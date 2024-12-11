@@ -40,9 +40,9 @@ public class PayDayUtils {
         }
         double steuern = 0;
         if (playerData.getRelationShip().containsValue("verheiratet")) {
-            steuern = Math.round(playerManager.bank(player) * 0.008);
+            steuern = Math.round(playerManager.bank(player) * 0.006);
         } else {
-            steuern = Math.round(playerManager.bank(player) * 0.005);
+            steuern = Math.round(playerManager.bank(player) * 0.008);
         }
         int visumbonus = playerManager.visum(player) * 10;
         if (playerData.getPermlevel() >= 20) {
@@ -74,10 +74,14 @@ public class PayDayUtils {
                 rent += houseData.getRenter().get(player.getUniqueId().toString());
                 if (rent > playerData.getBank()) {
                     player.sendMessage("§7 » §cDu konntest deine Miete für Haus " + houseData.getNumber() + " nicht begleichen.");
+                    houseData.sendMessage(player.getName() + " konnte seine Miete nicht begleichen.");
+                    continue;
+                }
+                if (houseData.getMoney() >= 15000) {
                     continue;
                 }
                 player.sendMessage("§7 » §9Miete (Haus " + houseData.getNumber() + ")§8:§c -" + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
-                houseData.addMoney(houseData.getMoney() + rent, player.getName() + " hat §6" + rent + "$§7 Miete gezahlt! §8(§6" + Utils.toDecimalFormat(houseData.getMoney()) + "§7/§615.000$§8)", false);
+                houseData.addMoney(rent, player.getName() + " hat §6" + rent + "$§7 Miete gezahlt! §8(§6" + Utils.toDecimalFormat(houseData.getMoney()) + "§7/§615.000$§8)", false);
                 houseData.setTotalMoney(houseData.getTotalMoney() + rent);
                 plus -= rent;
                 rent = 0;

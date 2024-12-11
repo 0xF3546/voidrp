@@ -382,16 +382,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     }
                 }
             }
-            try {
-                Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE gangwar SET lastAttack = NOW() WHERE zone = ?");
-                preparedStatement.setString(1, gangwarData.getGangZone().getName());
-                preparedStatement.execute();
-                preparedStatement.close();
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            Main.getInstance().getMySQL().updateAsync("UPDATE gangwar SET lastAttack = NOW() WHERE zone = ?", gangwarData.getGangZone().getName());
         } else {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 String playersFaction = playerManager.getPlayerData(players.getUniqueId()).getFaction();
@@ -409,17 +400,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             }
             gangwarData.getGangZone().setOwner(attackerData.getName());
             Main.getInstance().blockManager.updateBlocksAtScenario("gangwar-" + gangwarData.getGangZone().getName(), attackerData);
-            try {
-                Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE gangwar SET lastAttack = NOW(), owner = ? WHERE zone = ?");
-                preparedStatement.setString(1, attackerData.getName());
-                preparedStatement.setString(2, gangwarData.getGangZone().getName());
-                preparedStatement.execute();
-                preparedStatement.close();
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            Main.getInstance().getMySQL().updateAsync("UPDATE gangwar SET lastAttack = NOW(), owner = ? WHERE zone = ?", attackerData.getName(), gangwarData.getGangZone().getName());
         }
         gangwarData.setAttacker(null);
         attackerData.setCurrent_gangwar(null);

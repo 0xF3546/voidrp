@@ -10,9 +10,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.sql.Statement;
-
 public class SetSecondaryTeamCommand implements CommandExecutor {
     private final PlayerManager playerManager;
 
@@ -33,13 +30,7 @@ public class SetSecondaryTeamCommand implements CommandExecutor {
                     targetplayerData.setSecondaryTeam(args[1]);
                     targetplayer.sendMessage("§8[§6" + args[1] + "§8]§e " + player.getName() + " hat dich in das Team hinzugefügt.");
                     player.sendMessage("§8[§6" + args[1] + "§8]§e Du hast " + targetplayer.getName() + " in das Team hinzugefügt.");
-                    try {
-                        Statement statement = Main.getInstance().mySQL.getStatement();
-                        statement.executeUpdate("UPDATE `players` SET `secondaryTeam` = '" + args[1] + "' WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
-                        statement.close();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Main.getInstance().getMySQL().updateAsync("UPDATE players SET secondaryTeam = ? WHERE uuid = ?", args[1], targetplayer.getUniqueId().toString());
                     TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
                 } else {
                     player.sendMessage(Main.error + args[0] + " ist nicht online.");

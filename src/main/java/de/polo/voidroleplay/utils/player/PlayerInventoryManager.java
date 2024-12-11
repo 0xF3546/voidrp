@@ -57,6 +57,17 @@ public class PlayerInventoryManager {
         }
         return weight;
     }
+
+    public boolean addItem(RoleplayItem item, int amount) {
+        PlayerInventoryItem inventoryItem = getByType(item);
+        if (inventoryItem == null) {
+            inventoryItem = new PlayerInventoryItem(item, amount);
+        } else {
+            inventoryItem.setAmount(inventoryItem.getAmount() + amount);
+        }
+        return addItem(inventoryItem);
+    }
+
     public boolean addItem(PlayerInventoryItem item) {
         if (getWeight() + item.getAmount() > getSize()) return false;
         PlayerInventoryItem cachedItem = getByType(item.getItem());
@@ -76,13 +87,21 @@ public class PlayerInventoryManager {
         return true;
     }
 
+    public boolean removeItem(RoleplayItem item, int amount) {
+        PlayerInventoryItem inventoryItem = getByType(item);
+        if (inventoryItem == null) return false;
+        if (inventoryItem.getAmount() < amount) return false;
+        inventoryItem.setAmount(inventoryItem.getAmount() - amount);
+        if (inventoryItem.getAmount() <= 0) {
+            removeItem(inventoryItem);
+            return true;
+        }
+        updateItem(inventoryItem);
+        return true;
+    }
+
     public void removeItem(PlayerInventoryItem item) {
         PlayerInventoryItem cachedItem = getByType(item.getItem());
-        if (cachedItem != null && cachedItem.getAmount() > 1) {
-            cachedItem.setAmount(cachedItem.getAmount() - 1);
-            updateItem(cachedItem);
-            return;
-        }
         Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_inventory_items WHERE id = ?", item.getId());
         items.remove(item);
     }

@@ -42,7 +42,12 @@ public class TabCompletion {
 
         int index = args.length - 1;
         if (index < suggestions.size()) {
-            return suggestions.get(index);
+            List<String> currentSuggestions = suggestions.get(index);
+            String input = args[index];
+
+            return currentSuggestions.stream()
+                    .filter(suggestion -> suggestion.startsWith(input))
+                    .collect(Collectors.toList());
         }
 
         return new ObjectArrayList<>();

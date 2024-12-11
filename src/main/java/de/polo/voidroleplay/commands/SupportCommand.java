@@ -1,9 +1,9 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.Ticket;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
+import de.polo.voidroleplay.utils.Prefix;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -33,23 +33,25 @@ public class SupportCommand implements CommandExecutor {
                 for (int i = 1; i < args.length; i++) {
                     msg.append(' ').append(args[i]);
                 }
-                Ticket ticket = supportManager.createTicket(player, String.valueOf(msg));
+                supportManager.createTicketAsync(player, String.valueOf(msg))
+                                .thenAccept(ticket -> {
+                                    player.sendMessage(Prefix.support_prefix + "Du hast ein Ticket §aerstellt§7. §o(TicketID: #" + ticket.getId() + ")");
+                                    for (Player players : Bukkit.getOnlinePlayers()) {
+                                        if (playerManager.isTeam(players)) {
+                                            players.sendMessage(Main.support_prefix + "§a" + player.getName() + "§7 hat ein Ticket erstellt. Grund: " + msg);
 
-                player.sendMessage(Main.support_prefix + "Du hast ein Ticket §aerstellt§7. §o(TicketID: #" + ticket.getId() + ")");
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (playerManager.isTeam(players)) {
-                        players.sendMessage(Main.support_prefix + "§a" + player.getName() + "§7 hat ein Ticket erstellt. Grund: " + msg);
+                                            TextComponent annehmen = new TextComponent("§aTicket annehmen");
+                                            annehmen.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a" + player.getName() + "'s Ticket annehmen")));
+                                            annehmen.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptsupport " + player.getName()));
 
-                        TextComponent annehmen = new TextComponent("§aTicket annehmen");
-                        annehmen.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a" + player.getName() + "'s Ticket annehmen")));
-                        annehmen.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptsupport " + player.getName()));
+                                            TextComponent message = new TextComponent(Main.support_prefix);
+                                            message.addExtra(annehmen);
 
-                        TextComponent message = new TextComponent(Main.support_prefix);
-                        message.addExtra(annehmen);
+                                            players.spigot().sendMessage(message);
+                                        }
+                                    }
+                                });
 
-                        players.spigot().sendMessage(message);
-                    }
-                }
             } else {
                 player.sendMessage(Main.support_prefix + "Du hast bereits ein Ticket offen.");
             }

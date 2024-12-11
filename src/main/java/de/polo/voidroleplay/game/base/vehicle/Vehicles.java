@@ -92,10 +92,8 @@ public class Vehicles implements Listener, CommandExecutor {
             if (entity.getType() == EntityType.MINECART) {
                 NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
                     int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
-                    statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + km + ", `fuel` = " + fuel + ", `x` = " + entity.getLocation().getX() + ", `y` = " + entity.getLocation().getY() + ", `z` = " + entity.getLocation().getZ() + ", `welt` = 'world', `yaw` = " + entity.getLocation().getYaw() + ", `pitch` = " + entity.getLocation().getPitch() + " WHERE `id` = " + id);
                     PlayerVehicleData playerVehicleData = playerVehicleDataMap.get(id);
                     playerVehicleData.setKm(km);
                     playerVehicleData.setFuel(fuel);
@@ -104,6 +102,7 @@ public class Vehicles implements Listener, CommandExecutor {
                     playerVehicleData.setZ((int) entity.getLocation().getZ());
                     playerVehicleData.setYaw(entity.getLocation().getYaw());
                     playerVehicleData.setPitch(entity.getLocation().getPitch());
+                    playerVehicleData.save();
                     entity.remove();
                 }
             }
@@ -115,11 +114,9 @@ public class Vehicles implements Listener, CommandExecutor {
             if (entity.getType() == EntityType.MINECART) {
                 NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), uuid)) {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
                     int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
                     int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
-                    statement.executeUpdate("UPDATE `player_vehicles` SET `km` = " + km + ", `fuel` = " + fuel + ", `x` = " + entity.getLocation().getX() + ", `y` = " + entity.getLocation().getY() + ", `z` = " + entity.getLocation().getZ() + ", `welt` = 'world', `yaw` = " + entity.getLocation().getYaw() + ", `pitch` = " + entity.getLocation().getPitch() + " WHERE `id` = " + id);
                     PlayerVehicleData playerVehicleData = playerVehicleDataMap.get(id);
                     playerVehicleData.setKm(km);
                     playerVehicleData.setFuel(fuel);
@@ -128,6 +125,7 @@ public class Vehicles implements Listener, CommandExecutor {
                     playerVehicleData.setZ((int) entity.getLocation().getZ());
                     playerVehicleData.setYaw(entity.getLocation().getYaw());
                     playerVehicleData.setPitch(entity.getLocation().getPitch());
+                    playerVehicleData.save();
                     entity.remove();
                 }
             }
@@ -254,12 +252,7 @@ public class Vehicles implements Listener, CommandExecutor {
     @SneakyThrows
     public void removeVehicleFromDatabase(int vehicleId) {
         playerVehicleDataMap.remove(vehicleId);
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("DELETE FROM player_vehicles WHERE id = ?");
-        statement.setInt(1, vehicleId);
-        statement.execute();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_vehicles WHERE id = ?", vehicleId);
     }
 
     @EventHandler

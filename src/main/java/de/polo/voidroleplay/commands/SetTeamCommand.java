@@ -15,9 +15,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.sql.Statement;
-
 public class SetTeamCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
@@ -50,13 +47,8 @@ public class SetTeamCommand implements CommandExecutor {
                     targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
                 }
                 player.sendMessage(Prefix.ADMIN + offlinePlayer.getName() + " ist nun §c" + rank + "§7.");
-                try {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
-                    statement.executeUpdate("UPDATE players SET rankDuration = null WHERE uuid = '" + offlinePlayer.getUniqueId() + "'");
-                    playerData.setRankDuration(null);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+                Main.getInstance().getMySQL().updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
+                playerData.setRankDuration(null);
                 playerManager.setRang(offlinePlayer.getUniqueId(), rank);
                 adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
             } else {

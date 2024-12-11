@@ -129,7 +129,7 @@ public class StaatUtil {
                 }
             }
             jailData.setHafteinheiten(playerData.getHafteinheiten());
-            Main.getInstance().getMySQL().queryThreaded("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailData.getHafteinheiten(), arrester.getUniqueId().toString());
+            Main.getInstance().getMySQL().insertAsync("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailData.getHafteinheiten(), arrester.getUniqueId().toString());
             jailData.setUuid(player.getUniqueId().toString());
             jailData.setReason(String.valueOf(reason));
             jailDataMap.put(player.getUniqueId().toString(), jailData);
@@ -142,12 +142,7 @@ public class StaatUtil {
 
     @SneakyThrows
     public void clearPlayerAkte(Player pLayer) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("DELETE FROM player_akten WHERE uuid = ?");
-        statement.setString(1, pLayer.getUniqueId().toString());
-        statement.execute();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_akten WHERE uuid = ?", pLayer.getUniqueId().toString());
     }
 
     @SneakyThrows
@@ -161,7 +156,7 @@ public class StaatUtil {
         jailDataMap.remove(player.getUniqueId().toString());
         Statement statement = Main.getInstance().mySQL.getStatement();
         player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
-        statement.execute("DELETE FROM `Jail` WHERE `uuid` = '" + player.getUniqueId() + "'");
+        Main.getInstance().getMySQL().deleteAsync("DELETE FROM Jail WHERE uuid = ?", player.getUniqueId().toString());
         loadParole(player);
     }
 

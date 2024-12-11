@@ -100,6 +100,9 @@ public class DeathUtils {
 
     public void revivePlayer(Player player, boolean effects) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.getVariable("inventory::base") != null) {
+            player.getInventory().setContents(playerData.getVariable("inventory::base"));
+        }
         playerData.setCanInteract(false);
         playerData.setDead(false);
         playerData.setCuffed(false);
@@ -113,7 +116,8 @@ public class DeathUtils {
         if (player.isSleeping()) player.wakeup(true);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
-        player.setGameMode(GameMode.SURVIVAL);
+        //player.setGameMode(GameMode.SURVIVAL);
+        player.teleport(playerData.getDeathLocation());
         playerData.setHitmanDead(false);
         playerData.setStabilized(false);
         try {
@@ -149,6 +153,7 @@ public class DeathUtils {
 
     public void despawnPlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        playerData.setVariable("inventory::base", null);
         deathPlayer.remove(player.getUniqueId().toString());
         player.setGameMode(GameMode.SURVIVAL);
         playerData.setDeathTime(300);
@@ -203,12 +208,13 @@ public class DeathUtils {
     }
 
     private void spawnCorpse(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
         ItemStack skull = new ItemStack(Material.WITHER_SKELETON_SKULL);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         assert meta != null;
         meta.setDisplayName("§8Leiche");
         skull.setItemMeta(meta);
-        Item item = player.getLocation().getWorld().dropItemNaturally(player.getLocation(), skull);
+        Item item = playerData.getDeathLocation().getWorld().dropItemNaturally(playerData.getDeathLocation(), skull);
         Corpse corpse = new Corpse(item, player.getUniqueId(), Utils.getTime());
         corpses.add(corpse);
     }

@@ -1,5 +1,9 @@
 package de.polo.voidroleplay.storage;
 
+import de.polo.voidroleplay.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
 public class LocationData {
     private int id;
     private String name;
@@ -90,5 +94,9 @@ public class LocationData {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public Location getLocation() {
+        return Utils.getLocation(getX(), getY(), getZ(), Bukkit.getWorld(getWelt()), yaw, pitch);
     }
 }

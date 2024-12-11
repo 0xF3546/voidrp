@@ -99,14 +99,12 @@ public class House {
 
     @SneakyThrows
     public void addMiner(Miner miner) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO crypto_miner (houseNumber) VALUE (?)", Statement.RETURN_GENERATED_KEYS);
-        statement.setInt(1, number);
-        statement.execute();
-        ResultSet result = statement.getGeneratedKeys();
-        if (result.next()) {
-            miner.setId(result.getInt(1));
-        }
+        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO crypto_miner (houseNumber) VALUE (?)",
+                number)
+                .thenApply(key -> {
+                    key.ifPresent(miner::setId);
+                    return null;
+                });
         activeMiner.add(miner);
         setMiner(getMiner() + 1);
         save();
@@ -168,7 +166,7 @@ public class House {
         Main.getInstance().getMySQL().updateAsync("UPDATE housing SET money = ?, totalmoney = ? WHERE number = ?", money, totalMoney, number);
     }
 
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         Player player = Bukkit.getPlayer(UUID.fromString(owner));
         if (player == null) return;
         player.sendMessage("§8[§6Haus " + number + "§8]§7 " + message);

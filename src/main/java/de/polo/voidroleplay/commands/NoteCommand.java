@@ -81,17 +81,12 @@ public class NoteCommand implements CommandExecutor {
             player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
             return false;
         }
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            StringBuilder msg = new StringBuilder(args[1]);
-            for (int i = 2; i < args.length; i++) {
-                msg.append(" ").append(args[i]);
-            }
-            statement.execute("INSERT INTO notes (uuid, target, note) VALUES ('" + player.getUniqueId() + "', '" + offlinePlayer.getUniqueId() + "', '" + msg + "')");
-            player.sendMessage("§8[§eNote§8]§a Eintrag für Spieler \"" + offlinePlayer.getName() + "\" hinzugefügt.");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        StringBuilder msg = new StringBuilder(args[1]);
+        for (int i = 2; i < args.length; i++) {
+            msg.append(" ").append(args[i]);
         }
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO notes (uuid, target, note) VALUES (?, ?, ?)", player.getUniqueId().toString(), offlinePlayer.getUniqueId().toString(), msg.toString());
+        player.sendMessage("§8[§eNote§8]§a Eintrag für Spieler \"" + offlinePlayer.getName() + "\" hinzugefügt.");
         return false;
     }
 }

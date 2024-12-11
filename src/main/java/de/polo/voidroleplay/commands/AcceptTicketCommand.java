@@ -68,9 +68,7 @@ public class AcceptTicketCommand implements CommandExecutor {
         Utils.Tablist.setTablist(player, "§8[§6R§8]");
         Utils.Tablist.setTablist(targetplayer, "§8[§6R§8]");
         Ticket ticket = supportManager.getTicket(player);
-        Statement statement = mySQL.getStatement();
-        statement.execute("UPDATE tickets SET editor = '" + player.getUniqueId() + "', editedAt = NOW() WHERE id = " + ticket.getId());
-        statement.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE tickets SET editor = ?. editedAt = NOW() WHERE id = ?", player.getUniqueId().toString(), ticket.getId());
         return false;
     }
 }

@@ -14,10 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Arrays;
 
 public class RegisterATMCommand implements CommandExecutor {
@@ -47,19 +43,14 @@ public class RegisterATMCommand implements CommandExecutor {
         }
         int blockId = Integer.parseInt(args[0]);
         String atmName = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        Connection connection = mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO atm (blockId, name) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-        statement.setInt(1, blockId);
-        statement.setString(2, atmName);
-        statement.execute();
-        ResultSet generatedKeys = statement.getGeneratedKeys();
-        if (generatedKeys.next()) {
-            player.sendMessage(Prefix.gamedesign_prefix + "Du hast einen ATM registriert #" + generatedKeys.getInt(1));
-            adminManager.send_message(player.getName() + " hat einen ATM registriert (ATM #" + generatedKeys.getInt(1) + ").", ChatColor.GOLD);
-        }
-
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO atm (blockId, name) VALUES (?, ?)", blockId, atmName)
+                .thenApply(key -> {
+                    if (key.isPresent()) {
+                        player.sendMessage(Prefix.gamedesign_prefix + "Du hast einen ATM registriert #" + key.get());
+                        adminManager.send_message(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", ChatColor.GOLD);
+                    }
+                    return null;
+                });
         return false;
     }
 }

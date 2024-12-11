@@ -695,9 +695,12 @@ public class PhoneUtils implements Listener {
 
     public void addNumberToContacts(Player player, Player targetplayer) throws SQLException {
         String uuid = player.getUniqueId().toString();
-        Statement statement = Main.getInstance().mySQL.getStatement();
         PlayerData playerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-        statement.executeQuery("INSERT INTO `phone_contacts` (`uuid`, `contact_name`, `contact_number`, `contact_uuid`) VALUES ('" + player.getUniqueId() + "', '" + targetplayer.getName() + "', " + playerData.getNumber() + ", '" + targetplayer.getUniqueId() + "')");
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO phone_contacts (uuid, contact_name, contact_number, contact_uuid) VALUES (?, ?, ?, ?)",
+                player.getUniqueId().toString(),
+                targetplayer.getName(),
+                playerData.getNumber(),
+                targetplayer.getUniqueId().toString());
     }
 
     public void callNumber(Player player, Player players) throws SQLException {
@@ -729,12 +732,11 @@ public class PhoneUtils implements Listener {
             player.sendMessage(Main.error + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen werden.");
         }
         PlayerData targetplayerData = playerManager.getPlayerData(players.getUniqueId());
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.execute("INSERT INTO `phone_messages` (`uuid`, `contact_uuid`, `message`, `number`) VALUES ('" + players.getUniqueId() + "', '" + player.getUniqueId() + "', '" + message + "', " + targetplayerData.getId() + ");");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO phone_messages (uuid, contact_uuid, message, number) VALUES (?, ?, ?, ?)",
+                players.getUniqueId().toString(),
+                player.getUniqueId().toString(),
+                message,
+                targetplayerData.getId());
     }
 
     public void closeCall(Player player) {
@@ -1277,20 +1279,10 @@ public class PhoneUtils implements Listener {
     @SneakyThrows
     private void recordSwipe(String swiperUuid, String targetUuid, boolean swipeRight) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-            try {
-                Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO app_dating_swipes (swiper_uuid, target_uuid, swipe_right) VALUES (?, ?, ?)"
-                );
-                statement.setString(1, swiperUuid);
-                statement.setString(2, targetUuid);
-                statement.setBoolean(3, swipeRight);
-                statement.execute();
-                statement.close();
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            Main.getInstance().getMySQL().insertAsync("INSERT INTO app_dating_swipes (swiper_uuid, target_uuid, swipe_right) VALUES (?, ?, ?)",
+                    swiperUuid,
+                    targetUuid,
+                    swipeRight);
         });
     }
 
