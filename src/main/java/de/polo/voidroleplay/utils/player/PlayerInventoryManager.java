@@ -100,7 +100,7 @@ public class PlayerInventoryManager {
         return true;
     }
 
-    private void removeItem(PlayerInventoryItem item) {
+    public void removeItem(PlayerInventoryItem item) {
         PlayerInventoryItem cachedItem = getByType(item.getItem());
         Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_inventory_items WHERE id = ?", item.getId());
         items.remove(item);
