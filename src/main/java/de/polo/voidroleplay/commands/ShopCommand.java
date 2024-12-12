@@ -154,7 +154,7 @@ public class ShopCommand implements CommandExecutor {
     private void openBusinessBuyOverview(Player player, ShopData shopData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + shopData.getName() + " (Business kaufen)", true, true);
         PlayerData playerData = playerManager.getPlayerData(player);
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PAPER, 1, 0, "§3Statistiken", Arrays.asList("§8 ➥§bTyp§8:§7 " + shopData.getType(), "§8 ➥§bPreis§8:§7 3.250.000$"))) {
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PAPER, 1, 0, "§3Statistiken", Arrays.asList("§8 ➥§bTyp§8:§7 " + shopData.getType().getName(), "§8 ➥§bPreis§8:§7 3.250.000$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -164,12 +164,12 @@ public class ShopCommand implements CommandExecutor {
             inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aKaufen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (playerData.getCompany().getBank() < 3250000) {
+                    if (playerData.getCompany().getBank() < shopData.getType().getPrice()) {
                         player.sendMessage(Prefix.ERROR + "Deine Firma hat nicht genug Kapital um sich dieses Business zu leisten.");
                         return;
                     }
                     player.closeInventory();
-                    player.sendMessage("§8[§6" + playerData.getCompany().getName() + "§8]§a Ihr habt das Business \"" + shopData.getType() + " " + shopData.getName() + "\".");
+                    player.sendMessage("§8[§6" + playerData.getCompany().getName() + "§8]§a Ihr habt das Business \"" + shopData.getType().getName() + " " + shopData.getName() + "\".");
                     shopData.setCompany(playerData.getCompany().getId());
                     shopData.save();
                 }

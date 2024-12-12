@@ -6,10 +6,14 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ShopType {
-    GUN,
-    VEHICLE,
-    SUPERMARKET,
-    BLACKMARKET,
-    GARDENER,
-    FOODSTORE
+    GUN("Waffenladen", 950000),
+    VEHICLE("Autohaus", 950000),
+    SUPERMARKET("Supermarkt", 950000),
+    BLACKMARKET("Schwarzmarkt", 950000),
+    GARDENER("Gärtner", 950000),
+    FOODSTORE("Lebensmittelgeschäft", 950000),
+    BAR("Bar", 950000);
+
+    private final String name;
+    private final int price;
 }
