@@ -445,6 +445,16 @@ public class WeaponManager implements Listener {
         item.setItemMeta(meta);
     }
 
+    public void giveAmmo(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, int amount) {
+        for (ItemStack stack : player.getInventory().getContents()) {
+            if (stack == null) continue;
+            if (stack.getType() != weapon.getMaterial()) continue;
+            Weapon w = getWeaponFromItemStack(stack);
+            if (w == null) continue;
+            giveAmmo(player, w, amount);
+        }
+    }
+
     public void giveAmmoToCabinet(PlayerWeapon playerWeapon, int ammo) {
         playerWeapon.setAmmo(playerWeapon.getAmmo() + ammo);
         playerWeapon.save();

@@ -169,6 +169,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     // weaponManager.giveAmmo(player, Weapon.SNIPER, 10);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
+                    weaponManager.giveAmmo(player, Weapon.SNIPER, Weapon.SNIPER.getMaxAmmo());
                     logBuy(player, "Sniper Munition");
                 }
             });
