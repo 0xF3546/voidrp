@@ -391,6 +391,7 @@ public class WeaponManager implements Listener {
         w.setAmmo(ammo);
         w.setCurrentAmmo(0);
         w.setWeaponType(weaponType);
+        w.setType(weapon);
         w.setReloading(false);
 
         if (weaponType == WeaponType.NORMAL) {

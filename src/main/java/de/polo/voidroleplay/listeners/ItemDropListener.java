@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.utils.enums.PickaxeType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -54,10 +55,11 @@ public class ItemDropListener implements Listener {
         }
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
         if (playerData.getVariable("gangwar") != null) event.setCancelled(true);
-        WeaponData weaponData = WeaponManager.weaponDataMap.get(event.getItemDrop().getItemStack().getType());
-        if (weaponData != null && event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(weaponData.getName())) {
-            event.setCancelled(true);
-            weaponManager.reloadWeapon(event.getPlayer(), event.getItemDrop().getItemStack());
+        for (Weapon weapon : Weapon.values()) {
+            if (weapon.getMaterial() == event.getItemDrop().getItemStack().getType()) {
+                event.setCancelled(true);
+                weaponManager.reloadWeapon(event.getPlayer(), event.getItemDrop().getItemStack());
+            }
         }
     }
 }

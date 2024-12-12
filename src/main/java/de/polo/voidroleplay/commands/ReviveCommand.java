@@ -79,6 +79,7 @@ public class ReviveCommand implements CommandExecutor {
                 }
                 if (!playerData.isDuty()) {
                     player.sendMessage(Prefix.ERROR + "Du bist nicht im Dienst.");
+                    return false;
                 }
                 UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
                 Player targetplayer = Bukkit.getPlayer(uuid);

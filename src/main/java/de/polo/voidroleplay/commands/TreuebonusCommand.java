@@ -22,6 +22,6 @@ public class TreuebonusCommand extends CommandBase {
         LoyaltyBonusTimer timer = Main.getInstance().getPlayerManager().getLoyaltyTimer(player.getUniqueId());
         long diff = Duration.between(timer.getStarted(), Utils.getTime()).toMinutes();
         diff = 120 - diff;
-        player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du erhälst in " + diff + " deinen Treuebonus."));
+        player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du erhälst in " + diff + " Minuten deinen Treuebonus."));
     }
 }

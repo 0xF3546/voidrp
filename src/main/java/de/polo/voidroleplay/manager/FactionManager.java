@@ -192,7 +192,7 @@ public class FactionManager {
             playerData.setFactionJoin(Utils.getTime());
             Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction = ?, faction_grade = ?, factionJoin = ? WHERE uuid = ?", frak, rang, Utils.getTime().toString(), player.getUniqueId().toString());
         } else {
-            Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction = ?, faction_grade = ?WHERE uuid = ?", frak, rang, player.getUniqueId().toString());
+            Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction = ?, faction_grade = ? WHERE uuid = ?", frak, rang, player.getUniqueId().toString());
         }
         boolean found = false;
         Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);

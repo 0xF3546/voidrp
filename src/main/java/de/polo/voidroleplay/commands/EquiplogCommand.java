@@ -35,7 +35,7 @@ public class EquiplogCommand extends CommandBase implements TabCompleter {
                             player.sendMessage("§8 - §7" + offlinePlayer.getName() + " " + res.get("item"));
                         }
                     });
-        } else if (args[1].equalsIgnoreCase("calculate")) {
+        } else if (args[0].equalsIgnoreCase("calculate")) {
             Main.getInstance().getMySQL().executeQueryAsync(
                     "SELECT player, SUM(itemPoints) as totalPoints FROM faction_equip_logs WHERE factionId = ? GROUP BY player",
                     factionData.getId()

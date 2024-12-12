@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

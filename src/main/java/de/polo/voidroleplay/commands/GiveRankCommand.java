@@ -70,6 +70,7 @@ public class GiveRankCommand implements CommandExecutor {
             }
         } catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Fehler beim setzen der Ränge, bitte warte bis der Server neugestartet wurde.");
+            return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
