@@ -91,7 +91,7 @@ public class VertragUtil {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
-                    factionManager.setPlayerInFrak(player, curr.toString(), 0);
+                    factionManager.setPlayerInFrak(player, curr.toString(), 0, true);
                     factionManager.sendMessageToFaction(curr.toString(), player.getName() + " ist der Fraktion beigetreten");
                     adminManager.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
                     Main.getInstance().beginnerpass.didQuest(player, 1);

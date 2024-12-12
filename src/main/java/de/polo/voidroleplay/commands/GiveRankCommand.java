@@ -64,22 +64,12 @@ public class GiveRankCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR_NOPERMISSION);
                 return false;
             }
+            if (targetData.getFactionJoin().plusWeeks(rang).isBefore(Utils.getTime())) {
+                player.sendMessage(Prefix.ERROR + "Der Spieler ist noch nicht lang genug in der Fraktion.");
+                return false;
+            }
         } catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Fehler beim setzen der Ränge, bitte warte bis der Server neugestartet wurde.");
-        }
-        int leaders = 0;
-        if (rang >= 7) {
-            for (FactionPlayerData fpd : factionManager.getFactionMember(playerData.getFaction())) {
-                if (fpd.getFaction_grade() >= 7) leaders++;
-            }
-        }
-        int leaderLimit = 3;
-        if (playerData.getFaction().equalsIgnoreCase("Medic") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-            leaderLimit = 4;
-        }
-        if (leaders >= leaderLimit) {
-            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann nur " + leaderLimit + " Leader haben!");
-            return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");

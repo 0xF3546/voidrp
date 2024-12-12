@@ -283,6 +283,10 @@ public class PlayerData {
     @Setter
     private int loyaltyBonus;
 
+    @Getter
+    @Setter
+    private LocalDateTime factionJoin;
+
     public PlayerData(Player player) {
         this.player = player;
         this.playerPetManager = new PlayerPetManager(this, player);

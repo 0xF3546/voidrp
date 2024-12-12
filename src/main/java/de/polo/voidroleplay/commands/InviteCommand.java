@@ -148,7 +148,7 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + " ist bereits in einer Fraktion.");
             return;
         }
-        if (Utils.getTime().isBefore(targetplayerData.getFactionCooldown())) {
+        if (targetplayerData.getFactionCooldown() != null && Utils.getTime().isBefore(targetplayerData.getFactionCooldown())) {
             player.sendMessage(Prefix.ERROR + "Der Spieler kann noch nicht invited werden!");
             return;
         }

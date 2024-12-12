@@ -232,7 +232,8 @@ public class PlayerManager implements Listener {
                 playerData.setVotes(result.getInt("votes"));
                 playerData.setChurch(result.getBoolean("isChurch"));
                 playerData.setBaptized(result.getBoolean("isBaptized"));
-                playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+                if (result.getDate("factionCooldown") != null) playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+                playerData.setFactionJoin(Utils.toLocalDateTime(result.getDate("factionJoin")));
                 playerData.setEventPoints(result.getInt("eventPoints"));
                 playerData.setCrypto(result.getFloat("crypto"));
                 playerData.setRewardTime(result.getInt("rewardTime"));
