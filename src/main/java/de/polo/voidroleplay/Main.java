@@ -1,5 +1,7 @@
 package de.polo.voidroleplay;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.impl.MySQL;
@@ -84,7 +86,7 @@ public final class Main extends JavaPlugin {
     private ScoreboardAPI scoreboardAPI;
 
     private ScoreboardManager scoreboardManager;
-    public static INameTagProvider nameTagProvider = new NameTagProviderImpl();
+    public static INameTagProvider nameTagProvider;
 
     public static void registerCommand(String command, CommandExecutor c) {
         org.bukkit.command.PluginCommand cmd = instance.getCommand(command);
@@ -141,6 +143,8 @@ public final class Main extends JavaPlugin {
         }
 
         mySQL = new MySQL();
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        nameTagProvider = new NameTagProviderImpl(protocolManager);
         scoreboardManager = new ScoreboardManager();
         scoreboardAPI = new ScoreboardAPI(scoreboardManager);
         companyManager = new CompanyManager(mySQL);
