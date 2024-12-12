@@ -440,7 +440,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    private LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {
+    public LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {
         return loyaltyBonusCache.stream().filter(x -> x.getUuid() == uuid).findFirst().orElse(null);
     }
 

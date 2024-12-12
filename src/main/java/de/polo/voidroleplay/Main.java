@@ -280,7 +280,8 @@ public final class Main extends JavaPlugin {
                 HochseefischerCommand.class,
                 CatchFishCommand.class,
                 AdventskalenderCommand.class,
-                EquiplogCommand.class
+                EquiplogCommand.class,
+                TreuebonusCommand.class
         );
 
 
