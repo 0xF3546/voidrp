@@ -50,7 +50,7 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
                 }
                 player.sendMessage("§8 »§7 Es sind §a" + count + " Fraktionsmitglieder§7 der Fraktion §" + factionData.getPrimaryColor() + factionData.getName() + "§7 online.");
             } else {
-                player.sendMessage(Main.error + "Die Fraktion \"" + args[0] + "\" konnte nicht gefunden werden.");
+                player.sendMessage(Prefix.ERROR + "Die Fraktion \"" + args[0] + "\" konnte nicht gefunden werden.");
             }
         } else {
             player.sendMessage("§7   ===§8[§6Fraktionen§8]§7===");

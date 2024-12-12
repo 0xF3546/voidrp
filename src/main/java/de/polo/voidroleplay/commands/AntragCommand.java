@@ -25,26 +25,26 @@ public class AntragCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /antrag [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /antrag [Spieler]");
             return false;
         }
         Player player1 = Bukkit.getPlayer(args[0]);
         if (player1 == null) {
-            player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+            player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
             return false;
         }
         if (player.getLocation().distance(player1.getLocation()) > 5) {
-            player.sendMessage(Main.error + player1.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + player1.getName() + " ist nicht in deiner nähe.");
             return false;
         }
         PlayerData targetplayerData = playerManager.getPlayerData(player1.getUniqueId());
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getRelationShip().get(player1.getUniqueId().toString()) == null) {
-            player.sendMessage(Main.error + player1.getName() + " & du seid nicht in einer Beziehung.");
+            player.sendMessage(Prefix.ERROR + player1.getName() + " & du seid nicht in einer Beziehung.");
             return false;
         }
         if (targetplayerData.getRelationShip().get(player.getUniqueId().toString()) == null) {
-            player.sendMessage(Main.error + player1.getName() + " & du seid nicht in einer Beziehung.");
+            player.sendMessage(Prefix.ERROR + player1.getName() + " & du seid nicht in einer Beziehung.");
             return false;
         }
         VertragUtil.deleteVertrag(player1);
@@ -53,7 +53,7 @@ public class AntragCommand implements CommandExecutor {
             player1.sendMessage("§d" + player.getName() + " möchte sich mit dir verloben.");
             utils.vertragUtil.sendInfoMessage(player1);
         } else {
-            player.sendMessage(Main.error + "Es ist ein Fehler unterlaufen.");
+            player.sendMessage(Prefix.ERROR + "Es ist ein Fehler unterlaufen.");
         }
         return false;
     }

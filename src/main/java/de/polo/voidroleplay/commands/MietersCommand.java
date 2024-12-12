@@ -55,13 +55,13 @@ public class MietersCommand implements CommandExecutor {
                         }
                     }
                 } else {
-                    player.sendMessage(Main.error + "Du kannst auf dieses Haus nicht zugreifen.");
+                    player.sendMessage(Prefix.ERROR + "Du kannst auf dieses Haus nicht zugreifen.");
                 }
             } else {
-                player.sendMessage(Main.error + "Dieses Haus wurde nicht gefunden.");
+                player.sendMessage(Prefix.ERROR + "Dieses Haus wurde nicht gefunden.");
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /mieters [Haus]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /mieters [Haus]");
         }
         return false;
     }

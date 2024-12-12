@@ -7,6 +7,7 @@ import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -40,29 +41,29 @@ public class AcceptTicketCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 40) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.support_prefix + "Syntax-Fehler: /acceptsupport [Spieler]");
+            player.sendMessage(Prefix.SUPPORT + "Syntax-Fehler: /acceptsupport [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.support_prefix + "§c" + args[0] + "§7 ist §cnicht §7online.");
+            player.sendMessage(Prefix.SUPPORT + "§c" + args[0] + "§7 ist §cnicht §7online.");
             return false;
         }
         if (supportManager.isInConnection(player)) {
-            player.sendMessage(Main.error + "Du bearbeitest bereits ein Ticket.");
+            player.sendMessage(Prefix.ERROR + "Du bearbeitest bereits ein Ticket.");
             return false;
         }
         if (!supportManager.ticketCreated(targetplayer)) {
-            player.sendMessage(Main.support_prefix + "§c" + targetplayer.getName() + "§7 hat kein Ticket erstellt.");
+            player.sendMessage(Prefix.SUPPORT + "§c" + targetplayer.getName() + "§7 hat kein Ticket erstellt.");
             return false;
         }
         supportManager.createTicketConnection(targetplayer, player);
-        targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
-        player.sendMessage(Main.support_prefix + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
+        targetplayer.sendMessage(Prefix.SUPPORT + "§c" + playerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
+        player.sendMessage(Prefix.SUPPORT + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
         adminManager.sendGuideMessage(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName() + ".", ChatColor.YELLOW);
         utils.sendActionBar(targetplayer, "§a§lDein Ticket wurde angenommen!");
         Utils.Tablist.setTablist(player, "§8[§6R§8]");

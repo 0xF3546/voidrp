@@ -35,16 +35,16 @@ public class SupportCommand implements CommandExecutor {
                 }
                 supportManager.createTicketAsync(player, String.valueOf(msg))
                                 .thenAccept(ticket -> {
-                                    player.sendMessage(Prefix.support_prefix + "Du hast ein Ticket §aerstellt§7. §o(TicketID: #" + ticket.getId() + ")");
+                                    player.sendMessage(Prefix.SUPPORT + "Du hast ein Ticket §aerstellt§7. §o(TicketID: #" + ticket.getId() + ")");
                                     for (Player players : Bukkit.getOnlinePlayers()) {
                                         if (playerManager.isTeam(players)) {
-                                            players.sendMessage(Main.support_prefix + "§a" + player.getName() + "§7 hat ein Ticket erstellt. Grund: " + msg);
+                                            players.sendMessage(Prefix.SUPPORT + "§a" + player.getName() + "§7 hat ein Ticket erstellt. Grund: " + msg);
 
                                             TextComponent annehmen = new TextComponent("§aTicket annehmen");
                                             annehmen.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a" + player.getName() + "'s Ticket annehmen")));
                                             annehmen.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/acceptsupport " + player.getName()));
 
-                                            TextComponent message = new TextComponent(Main.support_prefix);
+                                            TextComponent message = new TextComponent(Prefix.SUPPORT);
                                             message.addExtra(annehmen);
 
                                             players.spigot().sendMessage(message);
@@ -53,10 +53,10 @@ public class SupportCommand implements CommandExecutor {
                                 });
 
             } else {
-                player.sendMessage(Main.support_prefix + "Du hast bereits ein Ticket offen.");
+                player.sendMessage(Prefix.SUPPORT + "Du hast bereits ein Ticket offen.");
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /support [Anliegen]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /support [Anliegen]");
         }
         return false;
     }

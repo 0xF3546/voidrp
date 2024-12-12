@@ -47,16 +47,16 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
                         factionManager.setPlayerInFrak(targetplayer, frak, rang);
                         adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " (Rang " + rang + ") gesetzt.", ChatColor.DARK_PURPLE);
                     } else {
-                        player.sendMessage(Main.admin_error + "Syntax-Fehler: /setfraktion [Spieler] [Fraktion] [Rang(1-8)]");
+                        player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /setfraktion [Spieler] [Fraktion] [Rang(1-8)]");
                         return false;
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
                 player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 in die Fraktion §c" + frak + "§7 (Rang §c" + rang + "§7) gesetzt.");
-                targetplayer.sendMessage(Prefix.faction_prefix + "Du bist Rang §c" + rang + "§7 der Fraktion §c" + frak + "§7!");
+                targetplayer.sendMessage(Prefix.FACTION + "Du bist Rang §c" + rang + "§7 der Fraktion §c" + frak + "§7!");
             } else {
-                player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /setfrak [Spieler] [Fraktion] [Rang]");
+                player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /setfrak [Spieler] [Fraktion] [Rang]");
             }
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);

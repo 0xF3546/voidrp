@@ -38,7 +38,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 90) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
@@ -55,7 +55,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + "Der Spieler ist nicht online.");
+            player.sendMessage(Prefix.ERROR + "Der Spieler ist nicht online.");
             return false;
         }
         PlayerData targetData = playerManager.getPlayerData(targetplayer);

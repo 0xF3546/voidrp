@@ -102,31 +102,31 @@ public class FFA implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave/leaderboard]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /ffa [join/leave/leaderboard]");
             return false;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
         if (args[0].equalsIgnoreCase("join")) {
             if (playerData.getVariable("ffa") != null) {
-                player.sendMessage(Main.error + "Du bist bereits in einem FFA.");
+                player.sendMessage(Prefix.ERROR + "Du bist bereits in einem FFA.");
                 return false;
             }
             if (locationManager.getDistanceBetweenCoords(player, "ffa") < 5) {
                 openFFAMenu(player);
             } else {
-                player.sendMessage(Main.error + "Du bist nicht in der nähe der FFA-Arena!");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der FFA-Arena!");
             }
         } else if (args[0].equalsIgnoreCase("leave")) {
             if (playerData.getVariable("ffa") != null) {
                 player.sendMessage("§8[§cFFA§8]§a Du hast die FFA-Arena verlassen.");
                 leaveFFA(player);
             } else {
-                player.sendMessage(Main.error + "Du bist nicht in FFA.");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in FFA.");
             }
         } else if (args[0].equalsIgnoreCase("leaderboard")) {
             openLeaderboard(player, FFAStatsType.ALL_TIME);
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /ffa [join/leave/leaderboard]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /ffa [join/leave/leaderboard]");
         }
         return false;
     }
@@ -234,7 +234,7 @@ public class FFA implements CommandExecutor {
     public void joinFFA(Player player, FFALobby lobby) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.isDead()) {
-            player.sendMessage(Main.error + "Du kannst aktuell keinem FFA beitreten.");
+            player.sendMessage(Prefix.ERROR + "Du kannst aktuell keinem FFA beitreten.");
             return;
         }
         if (lobby.getSpawns().size() == 0) {

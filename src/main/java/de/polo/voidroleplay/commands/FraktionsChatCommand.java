@@ -56,10 +56,10 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Syntax-Error: /fraktionschat [Nachricht]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Error: /fraktionschat [Nachricht]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

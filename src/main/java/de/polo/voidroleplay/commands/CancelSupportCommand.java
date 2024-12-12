@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.SupportManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,12 +22,12 @@ public class CancelSupportCommand implements CommandExecutor {
         if (supportManager.ticketCreated(player)) {
             if (supportManager.isInConnection(player)) {
                 supportManager.deleteTicket(player);
-                player.sendMessage(Main.support_prefix + "Du hast dein Ticket §cgelöscht§7.");
+                player.sendMessage(Prefix.SUPPORT + "Du hast dein Ticket §cgelöscht§7.");
             } else {
-                player.sendMessage(Main.support_prefix + "Dein Ticket wird bereits bearbeitet.");
+                player.sendMessage(Prefix.SUPPORT + "Dein Ticket wird bereits bearbeitet.");
             }
         } else {
-            player.sendMessage(Main.error + "Du hast kein Ticket erstellt.");
+            player.sendMessage(Prefix.ERROR + "Du hast kein Ticket erstellt.");
         }
         return false;
     }

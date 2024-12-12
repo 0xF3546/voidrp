@@ -36,7 +36,7 @@ public class FDoorCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         String faction = playerData.getFaction();
@@ -55,11 +55,11 @@ public class FDoorCommand implements CommandExecutor {
             }
         }
         if (locationManager.getLocation("fdoor_" + faction) == null) {
-            player.sendMessage(Main.error + "Deine Fraktion hat keine Fraktionstür.");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion hat keine Fraktionstür.");
             return false;
         }
         if (locationManager.getDistanceBetweenCoords(player, "fdoor_" + faction) > 5) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe deine Fraktionstür.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deine Fraktionstür.");
             return false;
         }
         if (playerManager.isInStaatsFrak(player)) {

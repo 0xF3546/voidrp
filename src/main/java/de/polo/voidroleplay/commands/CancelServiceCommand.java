@@ -29,7 +29,7 @@ public class CancelServiceCommand implements CommandExecutor {
         if (serviceData != null) {
             utils.staatUtil.cancelService(player);
         } else {
-            player.sendMessage(Main.error + "Du hast keinen Service offen.");
+            player.sendMessage(Prefix.ERROR + "Du hast keinen Service offen.");
         }
         return false;
     }

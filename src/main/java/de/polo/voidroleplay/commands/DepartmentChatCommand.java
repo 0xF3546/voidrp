@@ -59,7 +59,7 @@ public class DepartmentChatCommand implements CommandExecutor {
             if (alliance == null) return false;
             factionManager.sendCustomMessageToFactions("§c" + playerData.getFaction() + " " + player.getName() + "§8:§7 " + msg, alliance.getName(), playerData.getFaction());
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /departmentchat [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /departmentchat [Nachricht]");
         }
 
         return false;

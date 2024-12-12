@@ -49,7 +49,7 @@ public class MineCommand implements CommandExecutor {
                             playerData.setScoreboard("mine", scoreboard);*/
                             player.getInventory().addItem(ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§6Spitzhacke"));
                         } else {
-                            player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Mine§7!");
+                            player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Mine§7!");
                         }
                     } else {
                         player.sendMessage("§8[§7Mine§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");

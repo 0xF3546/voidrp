@@ -35,17 +35,17 @@ public class NoteCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 60) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /note [Spieler] [<Eintrag>]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /note [Spieler] [<Eintrag>]");
             return false;
         }
         if (args.length == 1) {
             OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
             if (offlinePlayer == null) {
-                player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
+                player.sendMessage(Prefix.ERROR + "Der Spieler konnte nicht gefunden werden.");
                 return false;
             }
             try {
@@ -78,7 +78,7 @@ public class NoteCommand implements CommandExecutor {
         }
         OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
         if (offlinePlayer == null) {
-            player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
+            player.sendMessage(Prefix.ERROR + "Der Spieler konnte nicht gefunden werden.");
             return false;
         }
         StringBuilder msg = new StringBuilder(args[1]);

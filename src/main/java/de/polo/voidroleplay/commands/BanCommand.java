@@ -39,9 +39,9 @@ public class BanCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        String syntax_error = Main.admin_error + "Syntax-Fehler: /ban [name/uuid] [Wert] [Zeit] [Grund]";
+        String syntax_error = Prefix.ADMIN_ERROR + "Syntax-Fehler: /ban [name/uuid] [Wert] [Zeit] [Grund]";
         if (playerData.getPermlevel() < 70) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 3) {

@@ -17,12 +17,12 @@ public class GetHeadCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (player.hasPermission("OP")) {
             if (!(args.length == 1)) {
-                player.sendMessage(Main.error + "Syntax-Fehler: /gethead [Value]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /gethead [Value]");
                 return false;
             }
             player.getInventory().addItem(ItemManager.createCustomHead(args[0], 1, 0, "§6Kopf", null));
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

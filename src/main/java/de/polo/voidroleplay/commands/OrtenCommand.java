@@ -26,7 +26,7 @@ public class OrtenCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.getFaction().equals("FBI") && !playerData.getFaction().equalsIgnoreCase("ICA")) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (playerData.getVariable("ortet") != null) {
@@ -36,16 +36,16 @@ public class OrtenCommand implements CommandExecutor {
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /orten [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /orten [Spieler]");
             return false;
         }
         if (player.getName().equalsIgnoreCase(args[0])) {
-            player.sendMessage(Main.error + "Du kannst dich selbst nicht Orten.");
+            player.sendMessage(Prefix.ERROR + "Du kannst dich selbst nicht Orten.");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + "Der Spieler wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht gefunden.");
             return false;
         }
         playerData.setVariable("ortet", targetplayer);
@@ -59,7 +59,7 @@ public class OrtenCommand implements CommandExecutor {
                     return;
                 }
                 if (!targetplayer.isOnline()) {
-                    player.sendMessage(Main.error + "Es konnte keine Verbindung zum Handy hergestellt werden.");
+                    player.sendMessage(Prefix.ERROR + "Es konnte keine Verbindung zum Handy hergestellt werden.");
                     return;
                 }
                 if (playerManager.getPlayerData(targetplayer.getUniqueId()).isFlightmode()) {

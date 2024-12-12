@@ -31,27 +31,27 @@ public class AdminGiveRankCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 90) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /agiverank [Spieler] [Rang]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /agiverank [Spieler] [Rang]");
             return false;
         }
         OfflinePlayer targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + args[0] + " wurde nicht gefunden.");
             return false;
         }
         int rang;
         try {
             rang = Integer.parseInt(args[1]);
         } catch (IllegalArgumentException e) {
-            player.sendMessage(Main.error + "Der Rang muss eine Zahl sein!");
+            player.sendMessage(Prefix.ERROR + "Der Rang muss eine Zahl sein!");
             return false;
         }
         if (0 > rang || rang > 6) {
-            player.sendMessage(Main.error + "Der Rang muss von 0-6 sein!");
+            player.sendMessage(Prefix.ERROR + "Der Rang muss von 0-6 sein!");
             return false;
         }
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());

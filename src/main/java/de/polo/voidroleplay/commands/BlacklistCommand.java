@@ -40,12 +40,12 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.hasBlacklist() && !args[0].equalsIgnoreCase("pay")) {
-            player.sendMessage(Main.error + "Deine Fraktion hat keine Blacklist.");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion hat keine Blacklist.");
             return false;
         }
         if (args.length == 0) {
@@ -62,7 +62,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (!(args.length >= 2)) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /blacklist [add/remove/pay/all] [Spieler/Fraktion] [<Kills>] [<Preis>] [<Grund>]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /blacklist [add/remove/pay/all] [Spieler/Fraktion] [<Kills>] [<Preis>] [<Grund>]");
             return false;
         }
         if (args[0].equalsIgnoreCase("all")) {
@@ -80,21 +80,21 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             if (args.length >= 4) {
                 Player player1 = Bukkit.getPlayer(args[1]);
                 if (player1 == null) {
-                    player.sendMessage(Main.error + args[0] + " ist nicht online.");
+                    player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
                     return false;
                 }
                 if (playerData.getFactionGrade() < 3) {
-                    player.sendMessage(Main.error + "Dieser Befehl ist erst ab Rang 3+ verfübar.");
+                    player.sendMessage(Prefix.ERROR + "Dieser Befehl ist erst ab Rang 3+ verfübar.");
                     return false;
                 }
                 if (player1.getName().equals(player.getName())) {
-                    player.sendMessage(Main.error + "Du kannst dich selbst nicht auf die Blacklist setzen.");
+                    player.sendMessage(Prefix.ERROR + "Du kannst dich selbst nicht auf die Blacklist setzen.");
                     return false;
                 }
                 PlayerData targetPlayerData = playerManager.getPlayerData(player1);
                 if (targetPlayerData.getFaction() != null) {
                     if (targetPlayerData.getFaction().equalsIgnoreCase(playerData.getFaction())) {
-                        player.sendMessage(Main.error + "Fraktionsmitglieder können nicht auf die Blacklist.");
+                        player.sendMessage(Prefix.ERROR + "Fraktionsmitglieder können nicht auf die Blacklist.");
                         return false;
                     }
                 }
@@ -108,7 +108,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                     }
                 }
                 if (!canDo) {
-                    player.sendMessage(Main.error + player1.getName() + " ist bereits auf der Blacklist.");
+                    player.sendMessage(Prefix.ERROR + player1.getName() + " ist bereits auf der Blacklist.");
                     return false;
                 }
                 int price = Integer.parseInt(args[3]);
@@ -151,11 +151,11 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
             if (player1 == null) {
-                player.sendMessage(Main.error + args[0] + " ist nicht online.");
+                player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
                 return false;
             }
             if (playerData.getFactionGrade() < 4) {
-                player.sendMessage(Main.error + "Dieser Befehl ist erst ab Rang 4+ verfübar.");
+                player.sendMessage(Prefix.ERROR + "Dieser Befehl ist erst ab Rang 4+ verfübar.");
                 return false;
             }
             boolean canDo = false;
@@ -169,7 +169,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                     return false;
                 }
             }
-            player.sendMessage(Main.error + player1.getName() + " ist nicht auf der Blacklist.");
+            player.sendMessage(Prefix.ERROR + player1.getName() + " ist nicht auf der Blacklist.");
         } else if (args[0].equalsIgnoreCase("pay")) {
             for (FactionData factionData1 : factionManager.getFactions()) {
                 if (factionData1.getName().equalsIgnoreCase(args[1]) || factionData1.getFullname().equalsIgnoreCase(args[1])) {
@@ -199,19 +199,19 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                                         throw new RuntimeException(e);
                                     }
                                 } else {
-                                    player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                                     return false;
                                 }
                             }
                         }
                     }
-                    player.sendMessage(Main.error + "Du bist nicht auf dieser Blacklist.");
+                    player.sendMessage(Prefix.ERROR + "Du bist nicht auf dieser Blacklist.");
                     return false;
                 }
             }
-            player.sendMessage(Main.error + "Die Fraktion konnte nicht gefunden werden.");
+            player.sendMessage(Prefix.ERROR + "Die Fraktion konnte nicht gefunden werden.");
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /blacklist add [Spieler] [Kills] [Preis] [Grund]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /blacklist add [Spieler] [Kills] [Preis] [Grund]");
         }
 
         return false;

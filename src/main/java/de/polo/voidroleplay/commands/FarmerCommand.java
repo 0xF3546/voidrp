@@ -116,7 +116,7 @@ public class FarmerCommand implements CommandExecutor {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Farm§7!");
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Farm§7!");
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);
@@ -225,7 +225,7 @@ public class FarmerCommand implements CommandExecutor {
                 player.closeInventory();
             }
         } else {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe der Mühle.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Mühle.");
         }
     }
 }

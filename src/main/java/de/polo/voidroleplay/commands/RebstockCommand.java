@@ -26,11 +26,11 @@ public class RebstockCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getVariable("job") == null) {
-            player.sendMessage(Main.error + "Du nicht den Winzer Job nicht angenommen.");
+            player.sendMessage(Prefix.ERROR + "Du nicht den Winzer Job nicht angenommen.");
             return false;
         }
         if (!playerData.getVariable("job").toString().equalsIgnoreCase("Winzer")) {
-            player.sendMessage(Main.error + "Du nicht den Winzer Job nicht angenommen.");
+            player.sendMessage(Prefix.ERROR + "Du nicht den Winzer Job nicht angenommen.");
             return false;
         }
         Block block = playerData.getVariable("grapevine");

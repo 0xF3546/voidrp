@@ -26,7 +26,7 @@ public class ShoutCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /shout [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /shout [Nachricht]");
             return false;
         }
         String playerName = player.getName();

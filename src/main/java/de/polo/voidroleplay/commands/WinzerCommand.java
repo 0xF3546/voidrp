@@ -91,7 +91,7 @@ public class WinzerCommand implements CommandExecutor {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Winzer§7!");
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Winzer§7!");
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);

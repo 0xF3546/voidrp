@@ -51,7 +51,7 @@ public class EinreiseCommand implements CommandExecutor {
             if (playerData.getVariable("einreise_dob") == null) playerData.setVariable("einreise_dob", date);
             openEinrese(player);
         } else {
-            player.sendMessage(Main.error + "Du hast bereits deine Papiere erhalten.");
+            player.sendMessage(Prefix.ERROR + "Du hast bereits deine Papiere erhalten.");
         }
         return false;
     }
@@ -59,7 +59,7 @@ public class EinreiseCommand implements CommandExecutor {
     public void openEinrese(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (locationManager.getDistanceBetweenCoords(player, "einreise") > 10) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe der Einreise.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Einreise.");
             return;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §6Void Roleplay Einreiseamt", true, true);
@@ -104,11 +104,11 @@ public class EinreiseCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (playerData.getVariable("einreise_firstname").toString().equalsIgnoreCase("Vorname")) {
-                    player.sendMessage(Main.error + "Die Eingaben sind Ungültig (Vorname).");
+                    player.sendMessage(Prefix.ERROR + "Die Eingaben sind Ungültig (Vorname).");
                     return;
                 }
                 if (playerData.getVariable("einreise_lastname").toString().equalsIgnoreCase("Nachname")) {
-                    player.sendMessage(Main.error + "Die Eingaben sind Ungültig (Nachname).");
+                    player.sendMessage(Prefix.ERROR + "Die Eingaben sind Ungültig (Nachname).");
                     return;
                 }
                 player.closeInventory();

@@ -37,7 +37,7 @@ public class ForumCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /forum [link/unlink]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /forum [link/unlink]");
             return false;
         }
         switch (args[0].toLowerCase()) {
@@ -46,7 +46,7 @@ public class ForumCommand implements CommandExecutor {
                     Statement statement = MySQL.forum.getStatement();
                     ResultSet res = statement.executeQuery("SELECT userID from wcf1_user WHERE username = '" + player.getName() + "'");
                     if (!res.next()) {
-                        player.sendMessage(Main.error + "Es wurde kein Forum-Account mit dem Namen \"" + player.getName() + "\" gefunden.");
+                        player.sendMessage(Prefix.ERROR + "Es wurde kein Forum-Account mit dem Namen \"" + player.getName() + "\" gefunden.");
                         return false;
                     }
                     int forumID = res.getInt(1);
@@ -82,7 +82,7 @@ public class ForumCommand implements CommandExecutor {
                     player.sendMessage("§8[§6Forum§8]§a Du hast dein Forum-Account verknüpft & freigeschaltet.");
 
                 } catch (SQLException e) {
-                    player.sendMessage(Main.error + "Etwas ist schief gelaufen...");
+                    player.sendMessage(Prefix.ERROR + "Etwas ist schief gelaufen...");
                     throw new RuntimeException(e);
                 }
                 break;

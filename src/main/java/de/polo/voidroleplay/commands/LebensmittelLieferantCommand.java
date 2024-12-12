@@ -37,7 +37,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
                     scoreboard.createLebensmittelLieferantenScoreboard();
                     playerData.setScoreboard("lebensmittellieferant", scoreboard);*/
             } else {
-                player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe des §aLebensmittel-Lieferanten§7 Jobs!");
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe des §aLebensmittel-Lieferanten§7 Jobs!");
             }
         } else {
             if (playerData.getVariable("job").equals("lieferant")) {
@@ -47,7 +47,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
                     quitJob(player);
                 }
             } else {
-                player.sendMessage(Main.error + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
+                player.sendMessage(Prefix.ERROR + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
             }
         }
         return false;
@@ -70,7 +70,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
             }
             player.sendMessage("§aLieferant §8» §7Danke für die Lieferung! §a+" + payout + "$");
         } else {
-            player.sendMessage(Main.error + "Du bist bei keinem Shop.");
+            player.sendMessage(Prefix.ERROR + "Du bist bei keinem Shop.");
         }
     }
 

@@ -38,7 +38,7 @@ public class DailyBonusCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (locationManager.getDistanceBetweenCoords(player, "dailybonus") > 5) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe des Bonus-Händlers.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Bonus-Händlers.");
             return false;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBonushändler", true, true);

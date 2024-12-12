@@ -164,17 +164,17 @@ public class Streetwar implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.isLeader()) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.canDoGangwar()) {
-            player.sendMessage(Main.error + "Deine Fraktion kann keinen Streetwar starten.");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann keinen Streetwar starten.");
             return false;
         }
         if (args.length < 1) {
             if (!isInStreetwar(factionData.getName())) {
-                player.sendMessage(Main.error + "Syntax-Fehler: /streetwar [Fraktion]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /streetwar [Fraktion]");
                 return false;
             }
             for (StreetwarData streetwarData : streetwarDataMap.values()) {
@@ -193,21 +193,21 @@ public class Streetwar implements CommandExecutor {
             }
         }
         if (availablePlayers.isEmpty()) {
-            player.sendMessage(Main.error + "Es ist kein Fraktionsleader der Gegner-Partei online.");
+            player.sendMessage(Prefix.ERROR + "Es ist kein Fraktionsleader der Gegner-Partei online.");
             return false;
         }
         FactionData defenderData = factionManager.getFactionData(playerManager.getPlayerData(availablePlayers.get(0).getUniqueId()).getFaction());
         if (!defenderData.canDoGangwar()) {
-            player.sendMessage(Main.error + "Die Gegner-Partei kann keinen Streetwar starten.");
+            player.sendMessage(Prefix.ERROR + "Die Gegner-Partei kann keinen Streetwar starten.");
             return false;
         }
         if (playerData.getFaction().equalsIgnoreCase(args[0])) {
-            player.sendMessage(Main.error + "Du kannst keinen Streetwar gegen deine eigene Fraktion starten.");
+            player.sendMessage(Prefix.ERROR + "Du kannst keinen Streetwar gegen deine eigene Fraktion starten.");
             return false;
         }
         for (StreetwarData streetwarData : streetwarDataMap.values()) {
             if (streetwarData.getDefender().equalsIgnoreCase(args[0]) || streetwarData.getAttacker().equalsIgnoreCase(args[0])) {
-                player.sendMessage(Main.error + "Die Gegner-Partei befindet sich bereits im Streetwar.");
+                player.sendMessage(Prefix.ERROR + "Die Gegner-Partei befindet sich bereits im Streetwar.");
                 return false;
             }
         }
@@ -221,7 +221,7 @@ public class Streetwar implements CommandExecutor {
             }
         }
         if (!sendMessage) {
-            player.sendMessage(Main.error + "Es befindet sich kein Fraktionsleader in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + "Es befindet sich kein Fraktionsleader in deiner nähe.");
             return false;
         }
         player.sendMessage("§8[§6Streetwar§8]§a Du hast die Fraktion zum Streetwar herausgefordert.");

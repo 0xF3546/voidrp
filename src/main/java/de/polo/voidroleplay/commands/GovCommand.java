@@ -29,15 +29,15 @@ public class GovCommand implements CommandExecutor {
         String playerfac = factionManager.faction(player);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerManager.isInStaatsFrak(player)) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (playerData.getFactionGrade() < 4) {
-            player.sendMessage(Main.error + "Du musst mindestens Rang 4+ sein.");
+            player.sendMessage(Prefix.ERROR + "Du musst mindestens Rang 4+ sein.");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /gov [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /gov [Nachricht]");
             return false;
         }
         Bukkit.broadcastMessage(" ");

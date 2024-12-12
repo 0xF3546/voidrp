@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +19,7 @@ public class DeleteBrokenEntitiesCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if (!player.hasPermission("*")) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 
@@ -31,23 +32,23 @@ public class DeleteBrokenEntitiesCommand implements CommandExecutor {
                 String villager_name = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING);
                 if (villager_name == null) {
                     entity.remove();
-                    player.sendMessage(Main.gamedesign_prefix + "Ein NPC wurde gelöscht.");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Ein NPC wurde gelöscht.");
                 }
             } else if (entity instanceof Vehicle) {
                 NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
                 if (entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER) == null) {
                     entity.remove();
-                    player.sendMessage(Main.gamedesign_prefix + "Fahrzeug wurde gelöscht.");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Fahrzeug wurde gelöscht.");
                 }
             } else if (entity instanceof ArmorStand) {
                 NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
                 if (entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER) == null) {
                     entity.remove();
-                    player.sendMessage(Main.gamedesign_prefix + "Rüstungsständer wurde gelöscht.");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Rüstungsständer wurde gelöscht.");
                 }
             } else if (entity instanceof Arrow) {
                 entity.remove();
-                player.sendMessage(Main.gamedesign_prefix + "Ein Pfeil wurde gelöscht.");
+                player.sendMessage(Prefix.GAMEDESIGN + "Ein Pfeil wurde gelöscht.");
             }
         }
         return true;

@@ -31,11 +31,11 @@ public class TeamChatCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         String uuid = player.getUniqueId().toString();
         if (playerManager.getPlayerData(player.getUniqueId()).getPermlevel() < 50) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.admin_error + "Syntax-Error: /teamchat [Nachricht]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Error: /teamchat [Nachricht]");
             return false;
         }
         String msg = Utils.stringArrayToString(args);

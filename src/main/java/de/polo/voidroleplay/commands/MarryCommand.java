@@ -87,7 +87,7 @@ public class MarryCommand implements CommandExecutor {
         if (firstplayerData.getRelationShip().get(secondplayer.getUniqueId().toString()).equals("verlobt")) {
             if (secondplayerData.getRelationShip().get(firstplayer.getUniqueId().toString()).equals("verlobt")) {
                 if (firstplayerData.getGender() == secondplayerData.getGender()) {
-                    player.sendMessage(Main.error + "Personen mit dem gleichen Geschlecht können nicht heiraten.");
+                    player.sendMessage(Prefix.ERROR + "Personen mit dem gleichen Geschlecht können nicht heiraten.");
                     return false;
                 }
                 firstplayer.sendMessage("§6Du und " + secondplayer.getName() + " sind jetzt verheiratet.");
@@ -117,10 +117,10 @@ public class MarryCommand implements CommandExecutor {
                 JSONObject object2 = new JSONObject(secondplayerData.getRelationShip());
                 Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ?, lastname = ? WHERE uuid = ?", object2.toString(), secondplayerData.getLastname(), secondplayer.getUniqueId().toString());
             } else {
-                player.sendMessage(Main.error + secondplayer.getName() + " & " + firstplayer.getName() + " sind nicht verlobt.");
+                player.sendMessage(Prefix.ERROR + secondplayer.getName() + " & " + firstplayer.getName() + " sind nicht verlobt.");
             }
         } else {
-            player.sendMessage(Main.error + firstplayer.getName() + " & " + secondplayer.getName() + " seid nicht verlobt.");
+            player.sendMessage(Prefix.ERROR + firstplayer.getName() + " & " + secondplayer.getName() + " seid nicht verlobt.");
         }
         return false;
     }

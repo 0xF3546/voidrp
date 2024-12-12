@@ -39,13 +39,6 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Main extends JavaPlugin {
-    public static final String faction_prefix = "§8[§9Fraktion§8] §7";
-    public static final String support_prefix = "§8[§3Support§8] §7";
-    public static final String gamedesign_prefix = "§8[§9Gamedesign§8] §7";
-    public static final String error_nopermission = "§8[§cFehler§8] §7Für den ausgeführten Befehl hast du keine Rechte.";
-    public static final String error = "§8[§cFehler§8] §7";
-    public static final String admin_error = "§8[§c§lADMIN§8] §cFehler§8 » §7";
-    public static final String business_prefix = "§8[§6Business§8]§7 ";
     public static Plugin plugin = null;
     @Getter
     private static Main instance;

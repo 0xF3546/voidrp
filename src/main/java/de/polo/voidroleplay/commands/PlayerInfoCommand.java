@@ -60,10 +60,10 @@ public class PlayerInfoCommand implements CommandExecutor {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Spieler nicht gefunden.");
+                player.sendMessage(Prefix.ERROR + "Spieler nicht gefunden.");
             }
         } else {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /playerinfo [Spieler]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /playerinfo [Spieler]");
         }
         return false;
     }

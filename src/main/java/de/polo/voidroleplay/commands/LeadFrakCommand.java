@@ -43,13 +43,13 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /leadfrak [Spieler] [Fraktion]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /leadfrak [Spieler] [Fraktion]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         String frak = args[1];
         player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 in die Fraktion §c" + frak + "§7 gesetzt.");
-        targetplayer.sendMessage(Prefix.faction_prefix + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
+        targetplayer.sendMessage(Prefix.FACTION + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
         try {
             factionManager.setPlayerInFrak(targetplayer, frak, 6);
             factionManager.setLeader(targetplayer, true);

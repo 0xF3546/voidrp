@@ -27,11 +27,11 @@ public class SubGroupChatCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getSubGroupId() == 0) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error_nopermission + "Syntax-Fehler: /subgroupchat [Nachricht]");
+            player.sendMessage(Prefix.ERROR_NOPERMISSION + "Syntax-Fehler: /subgroupchat [Nachricht]");
             return false;
         }
         SubGroup subGroup = playerData.getSubGroup();

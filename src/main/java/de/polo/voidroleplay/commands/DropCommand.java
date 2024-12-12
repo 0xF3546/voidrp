@@ -40,7 +40,7 @@ public class DropCommand implements CommandExecutor {
                     break;
             }
         } else {
-            player.sendMessage(Main.error + "Du hast keinen Job angenommen.");
+            player.sendMessage(Prefix.ERROR + "Du hast keinen Job angenommen.");
         }
         return false;
     }

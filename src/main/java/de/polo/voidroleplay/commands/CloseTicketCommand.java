@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,21 +40,21 @@ public class CloseTicketCommand implements CommandExecutor {
                     Utils.Tablist.updatePlayer(players);
                 }
                 if (supportManager.getTicket(player).getEditors().contains(players.getUniqueId()) && player != players) {
-                    players.sendMessage(Main.support_prefix + "§aDas Ticket wurde von §2" + player.getName() + "§a geschlossen.");
+                    players.sendMessage(Prefix.SUPPORT + "§aDas Ticket wurde von §2" + player.getName() + "§a geschlossen.");
                     Utils.Tablist.updatePlayer(players);
                 }
             }
             if (!supportManager.deleteTicketConnection(player, targetplayer)) {
-                player.sendMessage(Main.support_prefix + "Du bearbeitest kein Ticket.");
+                player.sendMessage(Prefix.SUPPORT + "Du bearbeitest kein Ticket.");
                 return false;
             }
             Utils.Tablist.updatePlayer(player);
-            targetplayer.sendMessage(Main.support_prefix + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
+            targetplayer.sendMessage(Prefix.SUPPORT + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
             utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
-            player.sendMessage(Main.support_prefix + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
+            player.sendMessage(Prefix.SUPPORT + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
             adminManager.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", ChatColor.YELLOW);
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

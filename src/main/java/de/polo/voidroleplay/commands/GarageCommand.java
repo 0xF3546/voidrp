@@ -25,7 +25,7 @@ public class GarageCommand implements CommandExecutor {
         if (station != 0) {
             vehicles.openGarage(player, station, true);
         } else {
-            player.sendMessage(Main.error + "Du bist bei keiner Garage.");
+            player.sendMessage(Prefix.ERROR + "Du bist bei keiner Garage.");
         }
         return false;
     }

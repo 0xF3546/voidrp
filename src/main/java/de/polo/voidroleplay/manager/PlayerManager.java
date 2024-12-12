@@ -992,7 +992,7 @@ public class PlayerManager implements Listener {
                 playerData.setPermlevel(10);
                 break;
             default:
-                player.sendMessage(Main.error + "§cFehler. Bitte einen Administratoren kontaktieren.");
+                player.sendMessage(Prefix.ERROR + "§cFehler. Bitte einen Administratoren kontaktieren.");
                 break;
         }
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -1279,13 +1279,13 @@ public class PlayerManager implements Listener {
                             throw new RuntimeException(e);
                         }
                     } else {
-                        event.getPlayer().sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                        event.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                     }
                 } else {
-                    event.getPlayer().sendMessage(Main.error + "Der Betrag muss >= 1 sein.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Der Betrag muss >= 1 sein.");
                 }
             } else {
-                event.getPlayer().sendMessage(Main.error + "Der Spieler ist nicht in deiner nähe.");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Der Spieler ist nicht in deiner nähe.");
             }
             event.end();
         }
@@ -1424,7 +1424,7 @@ public class PlayerManager implements Listener {
             player.spawnParticle(Particle.HEART, player.getLocation().add(0, 2, 0), 1);
             targetplayer.spawnParticle(Particle.HEART, targetplayer.getLocation().add(0, 2, 0), 1);
         } else {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
         }
     }
 

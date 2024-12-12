@@ -67,22 +67,22 @@ public class ContractsCommand implements CommandExecutor, TabCompleter {
                                                 throw new RuntimeException(e);
                                             }
                                         } else {
-                                            player.sendMessage(Main.error + "Deine Fraktion kann das Kopfgeld nicht zahlen.");
+                                            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann das Kopfgeld nicht zahlen.");
                                         }
                                     } catch (SQLException e) {
                                         throw new RuntimeException(e);
                                     }
                                 } else {
-                                    player.sendMessage(Main.error_nopermission);
+                                    player.sendMessage(Prefix.ERROR_NOPERMISSION);
                                 }
                             } else {
-                                player.sendMessage(Main.error + targetplayer.getName() + " hat kein Kopfgeld.");
+                                player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat kein Kopfgeld.");
                             }
                         } else {
-                            player.sendMessage(Main.error + args[1] + " ist nicht online!");
+                            player.sendMessage(Prefix.ERROR + args[1] + " ist nicht online!");
                         }
                     } else {
-                        player.sendMessage(Main.error + "Syntax-Fehler: /contracts remove [Spieler]");
+                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /contracts remove [Spieler]");
                     }
                 }
             } else {
@@ -95,7 +95,7 @@ public class ContractsCommand implements CommandExecutor, TabCompleter {
                 }
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

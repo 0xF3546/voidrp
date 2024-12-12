@@ -34,23 +34,23 @@ public class ShopRobCommand implements CommandExecutor {
         int shopId = locationManager.isNearShop(player);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVisum() < 3) {
-            player.sendMessage(Main.error + "Du kannst erst mit Visum 3 Shops ausrauben!");
+            player.sendMessage(Prefix.ERROR + "Du kannst erst mit Visum 3 Shops ausrauben!");
             return false;
         }
         if (shopId == 0) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe eines Shops.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Shops.");
             return false;
         }
         if (ServerManager.serverVariables.get("shoprob") != null) {
-            player.sendMessage(Main.error + "Es ist bereits ein Shoprob im Gange");
+            player.sendMessage(Prefix.ERROR + "Es ist bereits ein Shoprob im Gange");
             return false;
         }
         if (Main.getInstance().getCooldownManager().isOnCooldown(player, "shoprob")) {
-            player.sendMessage(Main.error + "Du kannst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "shoprob")) + " wieder einen Shop ausrauben.");
+            player.sendMessage(Prefix.ERROR + "Du kannst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "shoprob")) + " wieder einen Shop ausrauben.");
             return false;
         }
         if (Main.getInstance().getCooldownManager().isOnStringCooldown("shop_" + shopId, "shoprob")) {
-            player.sendMessage(Main.error + "Dieser Shop kann erst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingStringTime("shop_" + shopId, "shoprob")) + " wieder ausgeraubt werden.");
+            player.sendMessage(Prefix.ERROR + "Dieser Shop kann erst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingStringTime("shop_" + shopId, "shoprob")) + " wieder ausgeraubt werden.");
             return false;
         }
         player.sendMessage("§8[§cShoprob§8]§7 Du fängst an den Shop auszurauben, warte 60 Sekunden!");

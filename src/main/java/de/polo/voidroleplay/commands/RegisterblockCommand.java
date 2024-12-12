@@ -64,7 +64,7 @@ public class RegisterblockCommand implements CommandExecutor {
                     sign.update();
                     registeredBlock.setInfo("house");
                     registeredBlock.setInfoValue(args[0]);
-                    player.sendMessage(Prefix.gamedesign_prefix + "Haus regestriert.");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Haus regestriert.");
                 } else {
                     sign.setLine(0, "================");
                     sign.setLine(1, "Bankautomat");

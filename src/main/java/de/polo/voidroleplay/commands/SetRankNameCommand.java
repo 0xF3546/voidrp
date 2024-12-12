@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,17 +38,17 @@ public class SetRankNameCommand implements CommandExecutor {
                         newName.append(" ").append(args[i]);
                     }
                     if (factionManager.changeRankName(playerData.getFaction(), Integer.parseInt(args[0]), newName.toString())) {
-                        player.sendMessage(Main.faction_prefix + "Rangname von Rang §l" + args[0] + "§7 zu §l" + newName + "§7 geändert.");
+                        player.sendMessage(Prefix.FACTION + "Rangname von Rang §l" + args[0] + "§7 zu §l" + newName + "§7 geändert.");
                         adminManager.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + newName + " gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                player.sendMessage(Main.faction_prefix + "Syntax-Fehler: /setrankname [Rang] [Name]");
+                player.sendMessage(Prefix.FACTION + "Syntax-Fehler: /setrankname [Rang] [Name]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

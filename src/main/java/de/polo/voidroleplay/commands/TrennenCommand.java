@@ -44,7 +44,7 @@ public class TrennenCommand implements CommandExecutor {
 
             }
         } else {
-            player.sendMessage(Main.error + "Du bist in keiner Beziehung.");
+            player.sendMessage(Prefix.ERROR + "Du bist in keiner Beziehung.");
         }
         return false;
     }

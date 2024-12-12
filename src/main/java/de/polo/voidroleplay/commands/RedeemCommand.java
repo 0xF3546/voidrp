@@ -66,17 +66,17 @@ public class RedeemCommand implements CommandExecutor {
                         statement.execute("DELETE FROM `payments` WHERE `id` = " + id);
                         statement.execute("INSERT INTO `payments_claimed` (`user`, `type`, `duration`, `duration_type`) VALUES ('" + player.getUniqueId() + "', '" + type + "', " + duration + ", '" + duration_type + "')");
                     } else {
-                        player.sendMessage(Main.error + "Dieser Kauf konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Dieser Kauf konnte nicht gefunden werden.");
                     }
                     Main.getInstance().getCooldownManager().setCooldown(player, "redeem", 5);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                player.sendMessage(Main.error + "Warte noch einen Moment, bis du den Befehl ausführst...");
+                player.sendMessage(Prefix.ERROR + "Warte noch einen Moment, bis du den Befehl ausführst...");
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /redeem [VIP/Premium/Gold/Hausslot/EXPBooster]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /redeem [VIP/Premium/Gold/Hausslot/EXPBooster]");
         }
         return false;
     }

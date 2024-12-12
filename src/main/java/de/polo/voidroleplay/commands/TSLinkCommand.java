@@ -20,7 +20,7 @@ public class TSLinkCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /tslink [Eindeutige ID]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /tslink [Eindeutige ID]");
             return false;
         }
         player.sendMessage("§8[§3TeamSpeak§8]§b Dir wurde eine Nachricht im TS3 geschickt!");

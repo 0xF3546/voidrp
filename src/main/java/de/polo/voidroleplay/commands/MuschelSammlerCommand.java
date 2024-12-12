@@ -42,7 +42,7 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (locationManager.getDistanceBetweenCoords(player, "muschelsammler") > 5) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe des Muschelsammlers.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Muschelsammlers.");
             return false;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eMuschelsammler", true, true);
@@ -118,7 +118,7 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
             return;
         }
         if (!ServerManager.canDoJobs()) {
-            player.sendMessage(Main.error + "Vor dem restart kannst du diesen Job nicht mehr ausführen.");
+            player.sendMessage(Prefix.ERROR + "Vor dem restart kannst du diesen Job nicht mehr ausführen.");
             return;
         }
         ItemStack item = ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel", Collections.singletonList("§8 ➥ §8[§6Rechtsklick§8]§7 Muschel öffnen"));

@@ -89,7 +89,7 @@ public class PostboteCommand implements CommandExecutor {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe des Nachrichtengebäudes§7!");
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe des Nachrichtengebäudes§7!");
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);

@@ -558,7 +558,7 @@ public class PhoneUtils implements Listener {
                 }
             } else {
                 player.closeInventory();
-                player.sendMessage(Main.error + "Spieler konnte nicht geladen werden.");
+                player.sendMessage(Prefix.ERROR + "Spieler konnte nicht geladen werden.");
             }
         } else {
             Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt erstellen");
@@ -715,10 +715,10 @@ public class PhoneUtils implements Listener {
                 utils.vertragUtil.sendInfoMessage(players);
                 players.playSound(players.getLocation(), Sound.MUSIC_CREATIVE, 1, 0);
             } else {
-                player.sendMessage(Main.error + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
+                player.sendMessage(Prefix.ERROR + "Die gewünschte Rufnummer ist zurzeit nicht erreichbar.");
             }
         } else {
-            player.sendMessage(Main.error + "Dein Handy konnte keine Verbindung aufbauen. §o(Systemfehler)");
+            player.sendMessage(Prefix.ERROR + "Dein Handy konnte keine Verbindung aufbauen. §o(Systemfehler)");
         }
     }
 
@@ -729,7 +729,7 @@ public class PhoneUtils implements Listener {
             player.playSound(player.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
             players.playSound(players.getLocation(), Sound.BLOCK_WEEPING_VINES_STEP, 1, 0);
         } else {
-            player.sendMessage(Main.error + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen werden.");
+            player.sendMessage(Prefix.ERROR + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen werden.");
         }
         PlayerData targetplayerData = playerManager.getPlayerData(players.getUniqueId());
         Main.getInstance().getMySQL().insertAsync("INSERT INTO phone_messages (uuid, contact_uuid, message, number) VALUES (?, ?, ?, ?)",

@@ -88,7 +88,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (!(args.length >= 1)) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /farming [openverarbeiter/opendealer]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /farming [openverarbeiter/opendealer]");
             return false;
         }
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
@@ -100,7 +100,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
                 }
             }
             if (location == null) {
-                player.sendMessage(Main.error + "Du bist nicht in der nähe eines Verarbeiters.");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Verarbeiters.");
                 return false;
             }
             FarmingData farmingData = farmingDataMap.get(location.getInfo());
@@ -125,7 +125,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
                 }
             }
             if (location == null) {
-                player.sendMessage(Main.error + "Du bist nicht in der nähe eines Dealers.");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Dealers.");
                 return false;
             }
             FarmingData farmingData = farmingDataMap.get(location.getInfo());

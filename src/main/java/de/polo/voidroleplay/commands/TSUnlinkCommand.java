@@ -35,7 +35,7 @@ public class TSUnlinkCommand implements CommandExecutor {
             player.sendMessage("§8[§3TeamSpeak§8]§b Du bist nun nicht mehr verifiziert.");
             TeamSpeak.unlinkPlayer(player.getUniqueId());
         } else {
-            player.sendMessage(Main.error + "Du bist nicht verifiziert auf dem TeamSpeak.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht verifiziert auf dem TeamSpeak.");
         }
         return false;
     }

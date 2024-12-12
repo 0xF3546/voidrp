@@ -39,11 +39,11 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 70) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Main.error + "/aban [Spieler] [Grund]");
+            player.sendMessage(Prefix.ERROR + "/aban [Spieler] [Grund]");
             return false;
         }
         for (int i = 0; i < banReasons.size(); i++) {
@@ -64,7 +64,7 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
         }
-        player.sendMessage(Main.error + "Der Bangrund wurde nicht gefunden.");
+        player.sendMessage(Prefix.ERROR + "Der Bangrund wurde nicht gefunden.");
         return false;
     }
 

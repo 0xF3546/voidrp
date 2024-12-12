@@ -56,7 +56,7 @@ public class ServicesCommand implements CommandExecutor {
                 }
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

@@ -166,7 +166,7 @@ public class ApothekeFunctions implements Listener {
             return;
         }
         if (apotheke.getOwner().equalsIgnoreCase(playerData.getFaction())) {
-            player.sendMessage(Main.error + "Du kannst deine eigenen Apotheken nicht einschüchtern.");
+            player.sendMessage(Prefix.ERROR + "Du kannst deine eigenen Apotheken nicht einschüchtern.");
             return;
         }
 

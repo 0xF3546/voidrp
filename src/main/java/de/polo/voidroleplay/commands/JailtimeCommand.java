@@ -23,7 +23,7 @@ public class JailtimeCommand implements CommandExecutor {
         if (playerData.isJailed()) {
             player.sendMessage("§8[§6Gefängnis§8] §7Du bist noch " + playerData.getHafteinheiten() + " Minuten im Gefängnis.");
         } else {
-            player.sendMessage(Main.error + "Du bist nicht im Gefängnis.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Gefängnis.");
         }
         return false;
     }

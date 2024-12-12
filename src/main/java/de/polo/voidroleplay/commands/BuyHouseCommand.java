@@ -71,17 +71,17 @@ public class BuyHouseCommand implements CommandExecutor {
                                                 player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + houseData.getPrice() + "$ gekauft!");
                                                 Main.getInstance().beginnerpass.didQuest(player, 11);
                                             } else {
-                                                player.sendMessage(Main.error + "Du hast nicht genug Haus-Slots.");
+                                                player.sendMessage(Prefix.ERROR + "Du hast nicht genug Haus-Slots.");
                                             }
                                         } catch (SQLException e) {
-                                            player.sendMessage(Main.error + "Ein Fehler ist unterlaufen, versuche es später erneut.");
+                                            player.sendMessage(Prefix.ERROR + "Ein Fehler ist unterlaufen, versuche es später erneut.");
                                             throw new RuntimeException(e);
                                         }
                                     } else {
-                                        player.sendMessage(Main.error + "Du hast nicht genug Bargeld (" + houseData.getPrice() + "$).");
+                                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Bargeld (" + houseData.getPrice() + "$).");
                                     }
                                 } else {
-                                    player.sendMessage(Main.error + "Dieses Haus ist bereits verkauft.");
+                                    player.sendMessage(Prefix.ERROR + "Dieses Haus ist bereits verkauft.");
                                 }
 
                             }
@@ -90,7 +90,7 @@ public class BuyHouseCommand implements CommandExecutor {
                 }
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /buyhouse [Haus]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /buyhouse [Haus]");
         }
         return false;
     }

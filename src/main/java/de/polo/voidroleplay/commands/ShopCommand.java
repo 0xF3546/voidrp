@@ -165,7 +165,7 @@ public class ShopCommand implements CommandExecutor {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getCompany().getBank() < 3250000) {
-                        player.sendMessage(Main.error + "Deine Firma hat nicht genug Kapital um sich dieses Business zu leisten.");
+                        player.sendMessage(Prefix.ERROR + "Deine Firma hat nicht genug Kapital um sich dieses Business zu leisten.");
                         return;
                     }
                     player.closeInventory();
@@ -209,7 +209,7 @@ public class ShopCommand implements CommandExecutor {
 
                     player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Kabeljau verkauft und 4$ erhalten!");
                 } else {
-                    player.sendMessage(Main.error + "Du hast keinen Kabeljau im Inventar!");
+                    player.sendMessage(Prefix.ERROR + "Du hast keinen Kabeljau im Inventar!");
                 }
             }
         });
@@ -224,7 +224,7 @@ public class ShopCommand implements CommandExecutor {
                     player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Tropenfisch verkauft und 25$ erhalten!");
                 } else {
                     // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
-                    player.sendMessage(Main.error + "Du hast keinen Tropenfisch im Inventar!");
+                    player.sendMessage(Prefix.ERROR + "Du hast keinen Tropenfisch im Inventar!");
                 }
             }
         });
@@ -243,7 +243,7 @@ public class ShopCommand implements CommandExecutor {
                     player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Rohen Lachs verkauft und 40$ erhalten!");
                 } else {
                     // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
-                    player.sendMessage(Main.error + "Du hast keinen Rohen Lachs im Inventar!");
+                    player.sendMessage(Prefix.ERROR + "Du hast keinen Rohen Lachs im Inventar!");
                 }
             }
         });
@@ -262,7 +262,7 @@ public class ShopCommand implements CommandExecutor {
                     player.sendMessage("§8[§6" + shopData.getName() + "§8] §7Du hast einen Pufferfisch verkauft und 85$ erhalten!");
                 } else {
                     // Optional: Benachrichtigung, dass der Spieler keinen Kabeljau hat
-                    player.sendMessage(Main.error + "Du hast keinen Pufferfisch im Inventar!");
+                    player.sendMessage(Prefix.ERROR + "Du hast keinen Pufferfisch im Inventar!");
                 }
             }
         });
@@ -313,7 +313,7 @@ public class ShopCommand implements CommandExecutor {
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                 }
             } catch (SQLException e) {
-                player.sendMessage(Main.error + "Fehler. Bitte kontaktiere die Entwicklung.");
+                player.sendMessage(Prefix.ERROR + "Fehler. Bitte kontaktiere die Entwicklung.");
                 throw new RuntimeException(e);
             }
         } else {

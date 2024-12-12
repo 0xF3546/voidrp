@@ -74,10 +74,10 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                             }
                             targetplayer.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + playerManager.visum(player));
                         } else {
-                            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in der nähe.");
+                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe.");
                         }
                     } else {
-                        player.sendMessage(Main.error + "Es wurde kein Spieler mit diesem Namen gefunden.");
+                        player.sendMessage(Prefix.ERROR + "Es wurde kein Spieler mit diesem Namen gefunden.");
                     }
                 }
             } else {
@@ -112,7 +112,7 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
                 utils.tutorial.usedAusweis(player);
             }
         } else {
-            player.sendMessage(Main.error + "Du besitzt noch keinen Personalausweis.");
+            player.sendMessage(Prefix.ERROR + "Du besitzt noch keinen Personalausweis.");
         }
         return false;
     }

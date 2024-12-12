@@ -233,7 +233,7 @@ public class GamePlay implements Listener {
                     item = RoleplayItem.FACTION_PIPE;
                 }
                 if (factionData.storage.getAmount(item) < amount) {
-                    event.getPlayer().sendMessage(Main.error + "So viel befindet sich nicht im Lager.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel befindet sich nicht im Lager.");
                     return;
                 }
                 if (!event.getPlayerData().getInventory().addItem(item, amount)) {
@@ -244,7 +244,7 @@ public class GamePlay implements Listener {
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 ausgelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
             } catch (Exception e) {
-                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
         }
         if (event.getSubmitTo().equalsIgnoreCase("drugstorage::in")) {
@@ -273,7 +273,7 @@ public class GamePlay implements Listener {
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 eingelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
             } catch (Exception e) {
-                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
         }
         if (event.getSubmitTo().equalsIgnoreCase("evidence::out")) {
@@ -291,7 +291,7 @@ public class GamePlay implements Listener {
                 }
                 RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
                 if (StaatUtil.Asservatemkammer.getAmount(item) < amount) {
-                    event.getPlayer().sendMessage(Main.error + "So viel befindet sich nicht in der Asservatenkammer.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel befindet sich nicht in der Asservatenkammer.");
                     return;
                 }
                 if (!event.getPlayerData().getInventory().addItem(item, amount)) {
@@ -301,7 +301,7 @@ public class GamePlay implements Listener {
                 StaatUtil.Asservatemkammer.removeItem(item, amount);
                 StaatUtil.Asservatemkammer.save();
             } catch (Exception e) {
-                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
         }
         if (event.getSubmitTo().equalsIgnoreCase("evidence::burn")) {
@@ -319,7 +319,7 @@ public class GamePlay implements Listener {
                 }
                 RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
                 if (StaatUtil.Asservatemkammer.getAmount(item) < amount) {
-                    event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel hast du nicht dabei.");
                     return;
                 }
                 factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 verbrannt.", "FBI", "Polizei");
@@ -328,7 +328,7 @@ public class GamePlay implements Listener {
                 factionManager.addFactionMoney("FBI", amount * 3, "Verbrennung von Drogen durch " + event.getPlayer().getName());
                 playerManager.addExp(event.getPlayer(), amount);
             } catch (Exception e) {
-                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
         }
         if (event.getSubmitTo().equalsIgnoreCase("evidence::in")) {
@@ -346,18 +346,18 @@ public class GamePlay implements Listener {
                 }
                 RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
                 if (ItemManager.getCustomItemCount(event.getPlayer(), item) < amount) {
-                    event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel hast du nicht dabei.");
                     return;
                 }
                 if (!event.getPlayerData().getInventory().removeItem(item, amount)) {
-                    event.getPlayer().sendMessage(Main.error + "So viel hast du nicht dabei.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel hast du nicht dabei.");
                     return;
                 }
                 factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 in die Asservatenkammer eingelagert.", "FBI", "Polizei");
                 StaatUtil.Asservatemkammer.addItem(item, amount);
                 StaatUtil.Asservatemkammer.save();
             } catch (Exception e) {
-                event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
         }
         if (event.getSubmitTo().equalsIgnoreCase("proceedweed")) {
@@ -376,13 +376,13 @@ public class GamePlay implements Listener {
                 PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
                 FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                 if (amount > factionData.storage.getWeed()) {
-                    event.getPlayer().sendMessage(Main.error + "So viel Marihuana hat deine Fraktion nicht.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel Marihuana hat deine Fraktion nicht.");
                     return;
                 }
                 factionData.storage.proceedWeed(amount);
                 factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 " + factionManager.getRankName(factionData.getName(), playerData.getFactionGrade()) + " " + event.getPlayer().getName() + " hat die Verarbeitung von " + amount + " Pfeifentabak im Labor gestartet.");
             } catch (IllegalArgumentException e) {
-                event.getPlayer().sendMessage(Main.error + "Die Zahl ist nicht numerisch");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl ist nicht numerisch");
                 return;
             }
             event.end();
@@ -617,7 +617,7 @@ public class GamePlay implements Listener {
                 }
                 if (nearestDoorBlock == null) {
                     if (locationManager.getDistanceBetweenCoords(attacker, "fdoor_" + factionData.getName()) > 5) {
-                        attacker.sendMessage(Main.error + "Du bist nicht in der nähe einer Fraktionstür.");
+                        attacker.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Fraktionstür.");
                         return;
                     }
                     List<RegisteredBlock> blocks = new ObjectArrayList<>();
@@ -897,7 +897,7 @@ public class GamePlay implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 3) {
-                        player.sendMessage(Main.error + "Das geht erst ab Rang 3.");
+                        player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 3.");
                         return;
                     }
                     playerData.setVariable("chatblock", "drugstorage::out");
@@ -944,7 +944,7 @@ public class GamePlay implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 4) {
-                        player.sendMessage(Main.error + "Das geht erst ab Rang 4.");
+                        player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 4.");
                         return;
                     }
                     playerData.setVariable("chatblock", "evidence::out");
@@ -989,7 +989,7 @@ public class GamePlay implements Listener {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (playerData.getFactionGrade() < 4) {
-                            player.sendMessage(Main.error + "Das geht erst ab Rang 4!");
+                            player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 4!");
                             return;
                         }
                         playerData.setVariable("chatblock", "proceedweed");

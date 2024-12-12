@@ -75,7 +75,7 @@ public class MemberCommand implements CommandExecutor {
             }
             player.sendMessage(" ");
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

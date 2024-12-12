@@ -44,19 +44,19 @@ public class AcceptServiceCommand implements CommandExecutor {
                             }
                             targetplayer.sendMessage("§8[§6Notruf§8]§a Dein Notruf wird von " + player.getName() + " bearbeitet.");
                         } else {
-                            player.sendMessage(Main.error + "Der Service wird bereits bearbeitet.");
+                            player.sendMessage(Prefix.ERROR + "Der Service wird bereits bearbeitet.");
                         }
                     } else {
-                        player.sendMessage(Main.error + targetplayer.getName() + " hat keinen Service offen.");
+                        player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat keinen Service offen.");
                     }
                 } else {
-                    player.sendMessage(Main.error + args[0] + " ist nicht online.");
+                    player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
                 }
             } else {
-                player.sendMessage(Main.error + "Syntax-Fehler: /acceptservice [Spieler]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /acceptservice [Spieler]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

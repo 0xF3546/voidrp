@@ -36,10 +36,10 @@ public class NPCManager implements CommandExecutor {
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("remove")) {
                     if (args.length >= 2) {
-                        player.sendMessage(Main.gamedesign_prefix + "Trying to remove NPC...");
+                        player.sendMessage(Prefix.GAMEDESIGN + "Trying to remove NPC...");
                         deleteNPC(player, args[1]);
                     } else {
-                        player.sendMessage(Main.gamedesign_prefix + "Syntax error: /npc remove [Name]");
+                        player.sendMessage(Prefix.GAMEDESIGN + "Syntax error: /npc remove [Name]");
                     }
                 } else if (args[0].equalsIgnoreCase("create")) {
                     if (args.length >= 3) {
@@ -47,19 +47,19 @@ public class NPCManager implements CommandExecutor {
                         String skinName = args[2];
                         String command = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
 
-                        player.sendMessage(Main.gamedesign_prefix + "Trying to create NPC...");
+                        player.sendMessage(Prefix.GAMEDESIGN + "Trying to create NPC...");
                         createNPC(player, npcName, skinName, command);
                     } else {
-                        player.sendMessage(Main.gamedesign_prefix + "Syntax error: /npc create [Name] [Skin] [Command]");
+                        player.sendMessage(Prefix.GAMEDESIGN + "Syntax error: /npc create [Name] [Skin] [Command]");
                     }
                 } else {
-                    player.sendMessage(Main.gamedesign_prefix + "Invalid subcommand. Use /npc [create/remove].");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Invalid subcommand. Use /npc [create/remove].");
                 }
             } else {
-                player.sendMessage(Main.gamedesign_prefix + "Syntax error: /npc [create/remove] [Name] [Skin] [Command]");
+                player.sendMessage(Prefix.GAMEDESIGN + "Syntax error: /npc [create/remove] [Name] [Skin] [Command]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
 
         return true;
@@ -78,7 +78,7 @@ public class NPCManager implements CommandExecutor {
             skinTrait.setSkinName(skinName); // Set the custom skin
         }
 
-        player.sendMessage(Main.gamedesign_prefix + "NPC " + name + " created with skin " + skinName + ".");
+        player.sendMessage(Prefix.GAMEDESIGN + "NPC " + name + " created with skin " + skinName + ".");
     }
 
     public void deleteNPC(Player player, String name) {
@@ -89,14 +89,14 @@ public class NPCManager implements CommandExecutor {
             if (npc.getName().equalsIgnoreCase(name)) {
                 npc.despawn();
                 registry.deregister(npc);
-                player.sendMessage(Main.gamedesign_prefix + "NPC " + name + " has been removed.");
+                player.sendMessage(Prefix.GAMEDESIGN + "NPC " + name + " has been removed.");
                 found = true;
                 break;
             }
         }
 
         if (!found) {
-            player.sendMessage(Main.gamedesign_prefix + "No NPC found with the name " + name + ".");
+            player.sendMessage(Prefix.GAMEDESIGN + "No NPC found with the name " + name + ".");
         }
     }
 }

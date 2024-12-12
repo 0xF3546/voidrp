@@ -31,24 +31,24 @@ public class BizInviteCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getBusiness() == null || playerData.getBusiness() == 0) {
-            player.sendMessage(Main.error + "Du bist in keinem Business");
+            player.sendMessage(Prefix.ERROR + "Du bist in keinem Business");
             return false;
         }
         if (!(playerData.getBusiness_grade() >= 4)) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (!(args.length >= 1)) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /bizinvite [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /bizinvite [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
         if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
         }
         if (playerManager.getPlayerData(targetplayer.getUniqueId()).getBusiness() != 0) {
@@ -57,7 +57,7 @@ public class BizInviteCommand implements CommandExecutor {
         }
         BusinessData businessData = businessManager.getBusinessData(playerData.getBusiness());
         if (BusinessManager.getMemberCount(playerData.getBusiness()) >= businessData.getMaxMember()) {
-            player.sendMessage(Main.error + "Dein Business ist voll!");
+            player.sendMessage(Prefix.ERROR + "Dein Business ist voll!");
             return false;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {

@@ -93,7 +93,7 @@ public class FFAUtils implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        player.sendMessage(Main.error + "FFA ist gerade nicht Spielbar.");
+        player.sendMessage(Prefix.ERROR + "FFA ist gerade nicht Spielbar.");
         return false;
     }
 

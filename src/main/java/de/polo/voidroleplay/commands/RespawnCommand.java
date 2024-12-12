@@ -37,7 +37,7 @@ public class RespawnCommand implements CommandExecutor {
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Prefix.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (!(args.length >= 1)) {

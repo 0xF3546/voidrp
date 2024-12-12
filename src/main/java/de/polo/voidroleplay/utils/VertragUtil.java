@@ -146,7 +146,7 @@ public class VertragUtil {
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
                         Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "verlobt":
@@ -169,7 +169,7 @@ public class VertragUtil {
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
                         Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "blutgruppe":
@@ -196,7 +196,7 @@ public class VertragUtil {
                             }
                         });
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "streetwar":
@@ -212,7 +212,7 @@ public class VertragUtil {
             }
             deleteVertrag(player);
         } else {
-            player.sendMessage(Main.error + "Dir wird nichts angeboten.");
+            player.sendMessage(Prefix.ERROR + "Dir wird nichts angeboten.");
         }
     }
 
@@ -258,7 +258,7 @@ public class VertragUtil {
                         player.sendMessage("§cDu hast die Anfrage abgelehnt.");
                         targetplayer.sendMessage("§c" + player.getName() + " hat die Anfrage abgelehnt.");
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "blutgruppe":
@@ -266,7 +266,7 @@ public class VertragUtil {
                         player.sendMessage("§cDu hast die Anfrage abgelehnt.");
                         targetplayer.sendMessage("§e" + player.getName() + " hat die Anfrage abgelehnt.");
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                 case "streetwar":
                     Main.getInstance().streetwar.denyStreetwar(player, curr);
@@ -281,7 +281,7 @@ public class VertragUtil {
             }
             deleteVertrag(player);
         } else {
-            player.sendMessage(Main.error + "Dir wird nichts angeboten.");
+            player.sendMessage(Prefix.ERROR + "Dir wird nichts angeboten.");
         }
     }
 

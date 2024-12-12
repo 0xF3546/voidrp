@@ -39,16 +39,16 @@ public class UnrentCommand implements CommandExecutor {
                             player1.sendMessage("§8[§6Haus§8]§c " + player.getName() + " hat dich aus Haus " + houseData.getNumber() + " rausgeschmissen!");
                         }
                     } else {
-                        player.sendMessage(Main.error + offlinePlayer.getName() + " mietet nicht bei dir.");
+                        player.sendMessage(Prefix.ERROR + offlinePlayer.getName() + " mietet nicht bei dir.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Du kannst auf dieses Haus nicht zugreifen.");
+                    player.sendMessage(Prefix.ERROR + "Du kannst auf dieses Haus nicht zugreifen.");
                 }
             } else {
-                player.sendMessage(Main.error + "Dieses Haus wurde nicht gefunden.");
+                player.sendMessage(Prefix.ERROR + "Dieses Haus wurde nicht gefunden.");
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /unrent [Spieler-UUID] [Haus]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /unrent [Spieler-UUID] [Haus]");
         }
         return false;
     }

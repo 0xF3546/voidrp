@@ -488,7 +488,7 @@ public class FactionManager {
             Utils.Tablist.updatePlayer(player);
 
         } catch (SQLException e) {
-            player.sendMessage(Main.error + "Fehler.");
+            player.sendMessage(Prefix.ERROR + "Fehler.");
             throw new RuntimeException(e);
         }
     }

@@ -33,11 +33,11 @@ public class PermbanCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 80) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /permban [Spieler] [Grund]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /permban [Spieler] [Grund]");
             return false;
         }
         OfflinePlayer target = null;
@@ -49,7 +49,7 @@ public class PermbanCommand implements CommandExecutor {
             }
         }
         if (target == null) {
-            player.sendMessage(Main.error + "Der Spieler wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht gefunden.");
             return false;
         }
         StringBuilder reason = new StringBuilder(args[1]);

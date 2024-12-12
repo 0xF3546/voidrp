@@ -35,7 +35,7 @@ import java.util.UUID;
 
 public class ServerManager {
     public static final boolean canDoJobsBoolean = true;
-    public static final String error_cantDoJobs = Main.error + "Der Job ist Serverseitig bis nach Restart gesperrt.";
+    public static final String error_cantDoJobs = Prefix.ERROR + "Der Job ist Serverseitig bis nach Restart gesperrt.";
 
     public static final Map<String, RankData> rankDataMap = new HashMap<>();
     public static final Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();

@@ -16,7 +16,7 @@ public class ServerReloadCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (!player.hasPermission("op")) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server Reloaded in 15 Sekunden!");

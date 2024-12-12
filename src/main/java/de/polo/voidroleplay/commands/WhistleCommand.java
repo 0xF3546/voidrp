@@ -26,7 +26,7 @@ public class WhistleCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /whistle [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /whistle [Nachricht]");
             return false;
         }
         String playerName = player.getName();

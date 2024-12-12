@@ -42,19 +42,19 @@ public class CloseServiceCommand implements CommandExecutor {
                             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
                             targetplayerData.setVariable("service", null);
                         } else {
-                            player.sendMessage(Main.error + "Der Service wird nicht von dir bearbeitet.");
+                            player.sendMessage(Prefix.ERROR + "Der Service wird nicht von dir bearbeitet.");
                         }
                     } else {
-                        player.sendMessage(Main.error + targetplayer.getName() + " hat keinen Service offen.");
+                        player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat keinen Service offen.");
                     }
                 } else {
-                    player.sendMessage(Main.error + args[0] + " ist nicht online.");
+                    player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
                 }
             } else {
-                player.sendMessage(Main.error + "Syntax-Fehler: /closeservice [Spieler]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /closeservice [Spieler]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

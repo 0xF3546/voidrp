@@ -27,7 +27,7 @@ public class PluginCommand implements CommandExecutor {
             player.sendMessage("§6Plugins§8:§7 " + Arrays.toString(Bukkit.getPluginManager().getPlugins()));
             return true;
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

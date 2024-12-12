@@ -295,7 +295,7 @@ public class StaatUtil {
             return;
         }
         if (targetPlayerData.getBargeld() < 200) {
-            player.sendMessage(Main.error + targetplayer.getName() + " hat nicht genug Geld dabei! (200$)");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat nicht genug Geld dabei! (200$)");
             return;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "blutgruppe", player.getUniqueId().toString())) {
@@ -303,7 +303,7 @@ public class StaatUtil {
             targetplayer.sendMessage("§eMediziner " + player.getName() + " möchte deine Blutgruppe testen.");
             utils.vertragUtil.sendInfoMessage(targetplayer);
         } else {
-            player.sendMessage(Main.error + targetplayer.getName() + " hat einen Vertrag offen.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat einen Vertrag offen.");
         }
     }
 

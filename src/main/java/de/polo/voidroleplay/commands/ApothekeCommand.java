@@ -28,7 +28,7 @@ public class ApothekeCommand implements CommandExecutor {
         Player player = (Player) sender;
         for (Apotheke apotheke : gamePlay.apotheke.getApotheken()) {
             if (locationManager.getLocation("apotheke-" + apotheke.getId()) == null) {
-                player.sendMessage(Main.error + "Du bist nicht in der nähe einer Apotheke!");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Apotheke!");
                 return false;
             }
             if (locationManager.getDistanceBetweenCoords(player, "apotheke-" + apotheke.getId()) < 5) {
@@ -36,7 +36,7 @@ public class ApothekeCommand implements CommandExecutor {
                 return false;
             }
         }
-        player.sendMessage(Main.error + "Du bist nicht in der nähe einer Apotheke!");
+        player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Apotheke!");
         return false;
     }
 }

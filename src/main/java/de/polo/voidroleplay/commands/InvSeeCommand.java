@@ -23,16 +23,16 @@ public class InvSeeCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 60) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /invsee [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /invsee [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + "Der Spieler ist nicht online.");
+            player.sendMessage(Prefix.ERROR + "Der Spieler ist nicht online.");
             return false;
         }
         player.openInventory(targetplayer.getInventory());

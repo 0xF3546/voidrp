@@ -46,11 +46,11 @@ public class EquipCommand implements CommandExecutor, Listener {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
+            player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
             return false;
         }
         if (locationManager.getDistanceBetweenCoords(player, "equip_" + playerData.getFaction()) > 5) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe deines Equip-Punktes.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deines Equip-Punktes.");
             return false;
         }
         if (playerData.getFaction().equalsIgnoreCase("Kirche")) {
@@ -332,15 +332,15 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 4) {
-                        player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprengstoff zu kaufen!");
+                        player.sendMessage(Prefix.ERROR + "Du musst mindestens rang 4 sein um einen Sprengstoff zu kaufen!");
                         return;
                     }
                     if (factionData.getBank() < 2500) {
-                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
+                        player.sendMessage(Prefix.ERROR + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 2500) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
                         return;
                     }
                     playerData.removeBankMoney(2500, "Sprengstoff-Kauf");
@@ -351,15 +351,15 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 3) {
-                        player.sendMessage(Main.error + "Du musst mindestens rang 3 sein um eine Granate zu kaufen!");
+                        player.sendMessage(Prefix.ERROR + "Du musst mindestens rang 3 sein um eine Granate zu kaufen!");
                         return;
                     }
                     if (factionData.getBank() < 1500) {
-                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
+                        player.sendMessage(Prefix.ERROR + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 1500) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
                         return;
                     }
                     playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
@@ -370,15 +370,15 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 4) {
-                        player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
+                        player.sendMessage(Prefix.ERROR + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
                         return;
                     }
                     if (factionData.getBank() < 5000) {
-                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
+                        player.sendMessage(Prefix.ERROR + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 5000) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
                         return;
                     }
                     playerData.removeBankMoney(5000, "Sprenggürtel-Kauf");
@@ -419,7 +419,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         statement.executeUpdate();
                         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehren auf " + Utils.toDecimalFormat(id) + "$ gesetzt.");
                     } catch (Exception e) {
-                        event.getPlayer().sendMessage(Main.error + "Dies ist keine Zahl!");
+                        event.getPlayer().sendMessage(Prefix.ERROR + "Dies ist keine Zahl!");
                     }
                     break;
                 case "sturmgewehr_ammo":
@@ -432,7 +432,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         statement.executeUpdate();
                         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehr-Munition auf " + Utils.toDecimalFormat(id) + "$ gesetzt.");
                     } catch (Exception e) {
-                        event.getPlayer().sendMessage(Main.error + "Dies ist keine Zahl!");
+                        event.getPlayer().sendMessage(Prefix.ERROR + "Dies ist keine Zahl!");
                     }
                     break;
             }
