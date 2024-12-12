@@ -14,9 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -54,11 +51,7 @@ public class KickSecondaryTeam implements CommandExecutor {
             target.setSecondaryTeam(null);
         }
         player.sendMessage(Prefix.MAIN + "Du hast " + offlinePlayer.getName() + " aus seinem Sub-Team gekickt.");
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE players SET secondaryTeam = NULL WHERE uuid = ?");
-        statement.setString(1, offlinePlayer.getUniqueId().toString());
-        statement.execute();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET secondaryTeam = NULL WHERE uuid = ?", player.getUniqueId().toString());
         TeamSpeak.reloadPlayer(offlinePlayer.getUniqueId());
         return false;
     }

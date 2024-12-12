@@ -18,8 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -115,19 +113,18 @@ public class EinreiseCommand implements CommandExecutor {
                 playerData.setFirstname(playerData.getVariable("einreise_firstname"));
                 playerData.setLastname(playerData.getVariable("einreise_lastname"));
                 playerData.setGender(playerData.getVariable("einreise_gender"));
-                Connection connection = Main.getInstance().mySQL.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE `players` SET `firstname` = ?, `lastname` = ?, `birthday` = ?, `gender` = ? WHERE `uuid` = ?");
-                statement.setString(1, playerData.getFirstname());
-                statement.setString(2, playerData.getLastname());
                 LocalDate einreiseDob = playerData.getVariable("einreise_dob");
                 Instant instant = einreiseDob.atStartOfDay(ZoneId.systemDefault()).toInstant();
                 playerData.setBirthday(Date.from(instant));
                 java.util.Date utilDate = playerData.getBirthday();
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-                statement.setDate(3, sqlDate);
-                statement.setString(4, playerData.getGender().name());
-                statement.setString(5, player.getUniqueId().toString());
-                statement.executeUpdate();
+                Main.getInstance().getMySQL().updateAsync("UPDATE `players` SET `firstname` = ?, `lastname` = ?, `birthday` = ?, `gender` = ? WHERE `uuid` = ?",
+                        playerData.getFirstname(),
+                        playerData.getLastname(),
+                        sqlDate,
+                        playerData.getGender().name(),
+                        player.getUniqueId().toString()
+                        );
 
                 player.sendMessage(Prefix.MAIN + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                 playerManager.addExp(player, Main.random(100, 200));

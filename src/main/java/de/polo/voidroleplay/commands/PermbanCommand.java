@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,9 +14,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
 public class PermbanCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -62,15 +60,12 @@ public class PermbanCommand implements CommandExecutor {
             Player targetOnPlayer = Bukkit.getPlayer(target.getUniqueId());
             targetOnPlayer.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest Permanent vom Server gebannt.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoidRoleplay §8•");
         }
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO player_bans (uuid, name, reason, punisher, isPermanent) VALUES (?, ?, ?, ?, ?)");
-        statement.setString(1, target.getUniqueId().toString());
-        statement.setString(2, target.getName());
-        statement.setString(3, reason.toString());
-        statement.setString(4, player.getName());
-        statement.setInt(5, 1);
-        statement.execute();
-        statement.close();
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO player_bans (uuid, name, reason, punisher, isPermanent) VALUES (?, ?, ?, ?, ?)",
+                target.getUniqueId().toString(),
+                target.getName(),
+                reason.toString(),
+                player.getName(),
+                1);
 
         adminManager.insertNote("System", target.getUniqueId().toString(), "Spieler wurde gebannt (" + reason + ")");
         return false;
