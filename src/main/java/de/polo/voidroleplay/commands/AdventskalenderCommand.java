@@ -60,7 +60,7 @@ public class AdventskalenderCommand extends CommandBase {
             return;
         }
         if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
-            player.sendMessage(Prefix.ERROR + "Du musst mindestens einen PayDay pro Tag erhalten haben um den Adventskalender zu öffnen abzuholen.");
+            player.sendMessage(Prefix.ERROR + "Du musst mindestens einen PayDay pro Tag erhalten haben um den Adventskalender öffnen zu können.");
             player.closeInventory();
             return;
         }
