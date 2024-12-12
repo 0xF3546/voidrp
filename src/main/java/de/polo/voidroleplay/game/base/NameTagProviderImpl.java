@@ -17,7 +17,11 @@ import java.util.List;
 
 public class NameTagProviderImpl implements INameTagProvider {
 
-    private final ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+    private final ProtocolManager protocolManager;
+
+    public NameTagProviderImpl(ProtocolManager protocolManager) {
+        this.protocolManager = protocolManager;
+    }
 
     @Override
     public void setNametag(final Player player, final String prefix, final String suffix) {
