@@ -56,7 +56,7 @@ public class GiveRankCommand implements CommandExecutor {
         }
         PlayerData targetData = factionManager.getFactionOfPlayer(targetplayer.getUniqueId());
         try {
-            if (!targetData.getFaction().equals(playerData.getFaction()) || targetData.getFaction() == null) {
+            if (targetData.getFaction() == null || !targetData.getFaction().equals(playerData.getFaction())) {
                 player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner Fraktion.");
                 return false;
             }
