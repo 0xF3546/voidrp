@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -52,6 +53,11 @@ public class CookCommand implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du hast kein Zugriff auf dieses Haus.");
             return false;
         }
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getInventory().getByTypeOrEmpty(RoleplayItem.SCHMERZMITTEL).getAmount() < 10) {
+            player.sendMessage(Prefix.ERROR + "Du benötigst 10 Schmerzmittel.");
+            return false;
+        }
         CookTimer timer = new CookTimer(player, 10, house, player.getLocation());
         activeCooking.add(timer);
         player.sendMessage(Prefix.MAIN + "Du hast das Kochen gestartet.");
@@ -82,7 +88,14 @@ public class CookCommand implements CommandExecutor, Listener {
                 timer.setMinutes(timer.getMinutes() - 1);
                 continue;
             }
-            ItemManager.addCustomItem(timer.getPlayer(), RoleplayItem.CRYSTAL, Main.random(8, 13));
+            PlayerData playerData = playerManager.getPlayerData(timer.getPlayer());
+            if (playerData.getInventory().getByTypeOrEmpty(RoleplayItem.SCHMERZMITTEL).getAmount() < 10) {
+                iterator.remove();
+                timer.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Schmerzmittel.");
+                continue;
+            }
+            playerData.getInventory().addItem(RoleplayItem.CRYSTAL, Main.random(8, 13));
+            playerData.getInventory().removeItem(RoleplayItem.SCHMERZMITTEL, 10);
             timer.getPlayer().sendMessage(Prefix.MAIN + "Das kochen wurde beendet.");
             playerManager.addExp(timer.getPlayer(), Main.random(80, 130));
             iterator.remove();

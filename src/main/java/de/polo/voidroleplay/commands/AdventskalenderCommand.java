@@ -102,97 +102,88 @@ public class AdventskalenderCommand extends CommandBase {
     private void checkedDate(Player player, int day) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         switch (day) {
-            case 1:
+            case 1 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61.000$§7 erhalten!");
                 playerData.addMoney(1000, "Advent #1");
-                break;
-            case 2:
+            }
+            case 2 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61 Schutzweste§7 erhalten!");
                 ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
-                break;
-            case 3:
+            }
+            case 3 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §6100 XP§7 erhalten!");
                 Main.getInstance().playerManager.addExp(player, 100);
-                break;
-            case 4:
+            }
+            case 4 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61 Tag Premium§7 erhalten!");
                 Main.getInstance().playerManager.redeemRank(player, "Premium", 1, "d");
-                break;
-            case 14:
-            case 5:
+            }
+            case 14, 5 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §6300 Coins§7 erhalten!");
                 Main.getInstance().playerManager.addCoins(player, 300);
-                break;
-            case 6:
+            }
+            case 6, 9 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61.250$§7 erhalten!");
                 playerData.addMoney(1250, "Advent #6");
-                break;
-            case 7:
-            case 17:
+            }
+            case 7, 17 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §63 Stunden Gameboost§7 erhalten!");
                 Main.getInstance().playerManager.addEXPBoost(player, 3);
-                break;
-            case 8:
+            }
+            case 8 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §cWeihnachtsmann-Mütze§7 erhalten!");
-                ItemStack helmet = new ItemStack (Material.LEATHER_HELMET);
+                ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
                 LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
                 meta.setColor(Color.RED);
                 meta.setDisplayName("§cWeihnachtsmütze");
                 helmet.setItemMeta(meta);
                 player.getInventory().addItem(helmet);
-                break;
-            case 9:
-                player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61 Schutzweste§7 erhalten!");
-                ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
-                break;
-            case 10:
+            }
+            case 10 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61.500$§7 erhalten!");
                 playerData.addMoney(1500, "Advent #10");
-                break;
-            case 11:
+            }
+            case 11 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §6150 XP§7 erhalten!");
                 Main.getInstance().playerManager.addExp(player, 150);
-                break;
-            case 12:
+            }
+            case 12 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §6" + Weapon.ASSAULT_RIFLE.getClearName() + "§7 erhalten!");
                 Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 10);
-                break;
-            case 21:
-            case 13:
+            }
+            case 21, 13 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §6Schwere Schutzweste§7 erhalten!");
                 ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
-                break;
-            case 19:
-            case 15:
+            }
+            case 19, 15 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61000 XP§7 erhalten!");
                 Main.getInstance().playerManager.addExp(player, 1000);
-                break;
-            case 16:
+            }
+            case 16 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61 1 Tag Premium§7 erhalten!");
                 Main.getInstance().playerManager.redeemRank(player, "Premium", 3, "d");
-                break;
-            case 18:
+            }
+            case 18 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §6" + Weapon.SHOTGUN.getClearName() + " (A: 20, V: 4)§7 erhalten!");
                 Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.SHOTGUN, 20, 4);
-                break;
-            case 20:
-            case 22:
+            }
+            case 20, 22 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §61 Weihnachts-Case§7 erhalten!");
                 player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.CHRISTMAS.getDisplayName()));
-                break;
-            case 23:
+            }
+            case 23 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §610 Votepunkte§7 erhalten!");
                 playerData.setVotes(playerData.getVotes() + 10);
                 Main.getInstance().getMySQL().updateAsync("UPDATE players SET votes = ? WHERE uuid = ?", playerData.getVotes(), player.getUniqueId().toString());
-                break;
-            case 24:
+            }
+            case 24 -> {
                 player.sendMessage(PREFIX + "Du hast das §c§l" + day + " Türchen§7 geöffnet und §61 Levelup, Schwere Schutzweste, " + Weapon.MARKSMAN.getClearName() + " (A: 30, V: 3), 5000$ & 3 Tage Premium§7 erhalten! Frohe Weihnachten!");
                 Main.getInstance().playerManager.addExp(player, playerData.getNeeded_exp() - playerData.getExp());
                 ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
                 Main.getInstance().playerManager.redeemRank(player, "Premium", 3, "d");
                 Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 30, 3);
                 playerData.addMoney(5000, "Advent #24");
-                break;
+            }
         }
     }
 

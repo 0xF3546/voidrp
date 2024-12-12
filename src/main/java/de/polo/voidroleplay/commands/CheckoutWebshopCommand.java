@@ -46,7 +46,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
         }
         String uuid = args[0];
         float amount = 0;
-        if (args.length >= 2) {
+        if (args.length > 2) {
             amount = Float.parseFloat(args[2]);
         }
         uuid = uuid.replace("-", "");
@@ -97,6 +97,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
             case "pack-starter":
                 if (target != null) {
                     PlayerData playerData = playerManager.getPlayerData(target);
+                    target.sendMessage("§8[§eShop§8]§a Du hast Pack-Starter erhalten!");
                     playerData.addMoney(25000, "Starterpack");
                     Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.ASSAULT_RIFLE, 0, 250);
                     Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 0, 10);
@@ -113,6 +114,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                 break;
             case "pack-vortex":
                 if (target != null) {
+                    target.sendMessage("§8[§eShop§8]§a Du hast Pack-Vortex erhalten!");
                     PlayerData playerData = playerManager.getPlayerData(target);
                     playerData.addMoney(6666, "Vortexpack");
                     Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 120, 10);
@@ -127,6 +129,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
             case "pack-christmas":
                 if (target != null) {
                     PlayerData playerData = playerManager.getPlayerData(target);
+                    target.sendMessage("§8[§eShop§8]§a Du hast Pack-Christmas erhalten!");
                     playerData.addMoney(14444, "Weihnachtspack");
                     ItemStack helmet = new ItemStack (Material.LEATHER_HELMET);
                     LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
@@ -182,6 +185,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                                     break;
                                 case "pack-starter": {
                                     playerData.addMoney(25000, "Starterpack");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast Pack-Starter erhalten!");
                                     Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 250);
                                     Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 0, 10);
                                     ItemManager.addCustomItem(player, RoleplayItem.DRINK_WATER, 20);
@@ -196,17 +200,20 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                                 }
                                 case "pack-vortex":
                                     playerData.addMoney(6666, "Vortexpack");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast Pack-Vortex erhalten!");
                                     Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 120, 10);
                                     ItemManager.addItem(player, Material.IRON_HELMET, "§fEisenhelm", 1);
                                     return false;
                                 case "pack-christmas":
                                     playerData.addMoney(14444, "Weihnachtspack");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast Pack-Christmas erhalten!");
                                     ItemStack helmet = new ItemStack (Material.LEATHER_HELMET);
                                     LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
                                     meta.setColor(Color.RED);
                                     meta.setDisplayName("§9Blaue Wollmütze");
                                     helmet.setItemMeta(meta);
-                                    player.getInventory().addItem(helmet);                                    ItemManager.addItem(player, Material.SNOWBALL, "§fSchneeball", 64);
+                                    player.getInventory().addItem(helmet);
+                                    ItemManager.addItem(player, Material.SNOWBALL, "§fSchneeball", 64);
                                     playerManager.addCoins(player, 2000);
                                     return false;
                             }

@@ -848,31 +848,19 @@ public class GamePlay implements Listener {
 
         public void openEvidence(Player player) {
             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Asservatenkammer", true, true);
-            inventoryManager.setItem(new CustomItem(9, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 1, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getWeed() + "g")) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    interactEvidence(player, RoleplayItem.PIPE_TOBACCO);
-                }
-            });
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 1, 0, RoleplayItem.PIPE.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getJoints() + " Stück")) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    interactEvidence(player, RoleplayItem.PIPE);
-                }
-            });
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getCocaine() + "g")) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getCocaine() + "g")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     interactEvidence(player, RoleplayItem.SNUFF);
                 }
             });
-            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 1, 0, RoleplayItem.CIGAR.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getNoble_joints() + " Stück")) {
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 1, 0, RoleplayItem.CIGAR.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getNoble_joints() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     interactEvidence(player, RoleplayItem.CIGAR);
                 }
             });
-            inventoryManager.setItem(new CustomItem(17, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, RoleplayItem.CRYSTAL.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getCrystal() + " Stück")) {
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, RoleplayItem.CRYSTAL.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getCrystal() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     interactEvidence(player, RoleplayItem.CRYSTAL);
@@ -965,58 +953,19 @@ public class GamePlay implements Listener {
             PlayerData playerData = playerManager.getPlayerData(player);
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Drogenlager (" + factionData.getName() + ")", true, true);
-            if (factionData.storage.getProceedingStarted() != null) {
-                LocalDateTime now = LocalDateTime.now();
-                LocalDateTime proceedingStarted = factionData.storage.getProceedingStarted();
-
-                LocalDateTime targetTime = proceedingStarted.plusHours(2);
-
-                Duration duration = Duration.between(now, targetTime);
-                long totalSecondsRemaining = duration.getSeconds();
-                long hoursRemaining = totalSecondsRemaining / 3600;
-                long minutesRemaining = (totalSecondsRemaining % 3600) / 60;
-                long secondsRemaining = totalSecondsRemaining % 60;
-
-                String timeString = String.format("%02d Stunden, %02d Minuten und %02d Sekunden", hoursRemaining, minutesRemaining, secondsRemaining);
-
-                inventoryManager.setItem(new CustomItem(9, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 1, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName(), Arrays.asList("§8 ➥ §7" + factionData.storage.getWeed() + "g", "", "§8 » §fVerarbeitung endet in " + timeString))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                    }
-                });
-            } else {
-                inventoryManager.setItem(new CustomItem(9, ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 1, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName(), Arrays.asList("§8 ➥ §7" + factionData.storage.getWeed() + "g", "", "§8 » §cKlicke zum verarbeiten"))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-                        if (playerData.getFactionGrade() < 4) {
-                            player.sendMessage(Prefix.ERROR + "Das geht erst ab Rang 4!");
-                            return;
-                        }
-                        playerData.setVariable("chatblock", "proceedweed");
-                        player.sendMessage("§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 Gib an wie viel Marihuana verarbeitet werden soll.");
-                        player.closeInventory();
-                    }
-                });
-            }
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 1, 0, RoleplayItem.PIPE.getDisplayName(), "§8 ➥ §7" + factionData.storage.getJoint() + " Stück")) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    interactDrugStorage(player, RoleplayItem.PIPE);
-                }
-            });
-            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCocaine() + "g")) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCocaine() + "g")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     interactDrugStorage(player, RoleplayItem.SNUFF);
                 }
             });
-            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 1, 0, RoleplayItem.CIGAR.getDisplayName(), "§8 ➥ §7" + factionData.storage.getNoble_joint() + " Stück")) {
+            inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 1, 0, RoleplayItem.CIGAR.getDisplayName(), "§8 ➥ §7" + factionData.storage.getNoble_joint() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     interactDrugStorage(player, RoleplayItem.CIGAR);
                 }
             });
-            inventoryManager.setItem(new CustomItem(17, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, RoleplayItem.CRYSTAL.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCrystal() + " Stück")) {
+            inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, RoleplayItem.CRYSTAL.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCrystal() + " Stück")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     interactDrugStorage(player, RoleplayItem.CRYSTAL);

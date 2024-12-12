@@ -376,7 +376,7 @@ public class ServerManager {
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             Bukkit.spigot().broadcast(forum);
-                            TextComponent forum2 = new TextComponent("§8[§9Discord§8]§3 Fraktionen");
+                            TextComponent forum2 = new TextComponent("§8[§9Discord§8]§3 Fraktionen, Ankündigungen, Changelogs uvm.!");
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             for (Player player : Bukkit.getOnlinePlayers()) {

@@ -269,7 +269,7 @@ public class PlayerManager implements Listener {
                     Main.waitSeconds(1, () -> {
                         InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
                         playerData.setVariable("originClass", this);
-                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
+                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
                                 playerData.setVariable("jugendschutz", null);
@@ -793,6 +793,18 @@ public class PlayerManager implements Listener {
 
                         }
 
+                        List<IGangzone> gangZones = new ObjectArrayList<>();
+                        for (IGangzone gangzone : utils.gangwarUtils.getGangzones()) {
+                            if (gangzone.getOwner().equals(factionData.getName())) {
+                                gangZones.add(gangzone);
+                            }
+                        }
+                        for (IGangzone gangzone : gangZones) {
+                            if (gangzone.getOwner().equals(factionData.getName())) {
+                                plus += 150;
+                            }
+                        }
+
                         int banner = 0;
                         for (SprayableBanner sprayableBanner : Main.getInstance().factionManager.getBanner()) {
                             if (sprayableBanner.getFaction() == factionData.getId()) {
@@ -890,6 +902,7 @@ public class PlayerManager implements Listener {
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
+            mySQL.updateAsync("UPDATE players SET level = ?, exp = ? WHERE uuid = ?", playerData.getLevel(), playerData.getExp(), player.getUniqueId().toString());
         } else {
             if (playerData.getBoostDuration() == null) {
                 player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
@@ -899,6 +912,7 @@ public class PlayerManager implements Listener {
                 utils.sendActionBar(player, "§l+" + exp + " EXP (2x)");
             }
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            mySQL.updateAsync("UPDATE players SET exp = ? WHERE uuid = ?", playerData.getExp(), player.getUniqueId().toString());
         }
         player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
     }

@@ -68,20 +68,21 @@ public class VertragUtil {
         return agreements.stream().filter(x -> x.getContractor() == player || x.getContracted() == player).findFirst().orElse(null);
     }
 
-    public void setAgreement(Player player, Player target, String type, Object vertrag) {
+    public void setAgreement(Player player, Player target, Agreement agreement) {
         agreements.remove(getActiveAgreement(player));
         agreements.remove(getActiveAgreement(target));
-        Agreement agreement = new Agreement(player, target, type, vertrag);
         agreements.add(agreement);
         Main.getInstance().getMySQL().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
                 player.getUniqueId(),
                 target.getUniqueId(),
-                type,
-                vertrag.toString());
+                agreement.getType(),
+                "");
     }
 
     public void acceptVertrag(Player player) throws SQLException {
         Object curr = current.get(player.getUniqueId().toString());
+        Agreement agreement = getActiveAgreement(player);
+        if (agreement != null) agreement.accept();
         if (curr != null) {
             Player targetplayer = null;
             try {
@@ -218,6 +219,8 @@ public class VertragUtil {
 
     public void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString()).toString();
+        Agreement agreement = getActiveAgreement(player);
+        if (agreement != null) agreement.deny();
         if (curr != null) {
             Player targetplayer = null;
             PlayerData playerData = playerManager.getPlayerData(player);

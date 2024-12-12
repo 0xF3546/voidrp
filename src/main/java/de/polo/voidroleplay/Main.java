@@ -281,7 +281,8 @@ public final class Main extends JavaPlugin {
                 CatchFishCommand.class,
                 AdventskalenderCommand.class,
                 EquiplogCommand.class,
-                TreuebonusCommand.class
+                TreuebonusCommand.class,
+                SellDrugCommand.class
         );
 
 

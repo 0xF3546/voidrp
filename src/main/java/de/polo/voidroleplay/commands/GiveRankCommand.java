@@ -64,7 +64,7 @@ public class GiveRankCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR_NOPERMISSION);
                 return false;
             }
-            if (targetData.getFactionJoin().plusWeeks(rang).isBefore(Utils.getTime())) {
+            if (targetData.getFactionJoin().plusWeeks(rang).isAfter(Utils.getTime())) {
                 player.sendMessage(Prefix.ERROR + "Der Spieler ist noch nicht lang genug in der Fraktion.");
                 return false;
             }

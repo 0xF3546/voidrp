@@ -44,7 +44,7 @@ public class DailyBonusCommand implements CommandExecutor {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBonushändler", true, true);
 
         if (!playerData.hasReceivedBonus()) {
-            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aRelease-Bonus erhalten", Arrays.asList("§8 ➥ §b3.000 EXP", "§8 ➥ §a12.500$", "§8 ➥ §e500 Coins", "", "§8 ➥ §aKlicke um mehr auszuwählen"))) {
+            inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aRelease-Bonus erhalten", Arrays.asList("§8 ➥ §b1.000 EXP", "§8 ➥ §a10.000$", "§8 ➥ §e200 Coins", "", "§8 ➥ §aKlicke um mehr auszuwählen"))) {
                 @SneakyThrows
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -86,28 +86,28 @@ public class DailyBonusCommand implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
                 playerData.setReceivedBonus(true);
-                player.sendMessage("§8[§6Release§8]§a Du erhälst 3.000 EXP, 12.500$, 40g Schmerzmittel und 500 Coins.");
-                playerManager.addExp(player, 3000);
-                playerData.addMoney(12500, "Release-Reward");
-                ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 40);
-                playerManager.addCoins(player, 500);
-                playerManager.addExp(player, 3000);
+                player.sendMessage("§8[§6Release§8]§a Du erhälst 1.000 EXP, 10.000$, 40g Schmerzmittel und 200 Coins.");
+                playerManager.addExp(player, 1000);
+                playerData.addMoney(10000, "Release-Reward");
+                playerData.getInventory().addItem(RoleplayItem.SCHMERZMITTEL, 40);
+                playerManager.addCoins(player, 200);
+                playerManager.addExp(player, 1000);
                 Main.getInstance().getMySQL().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
             }
         });
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§f+20g Kokain §7&§2 +20 veredelte Joints")) {
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§7+20 Schnupftabak§7 & §2 +20 Zigarren")) {
             @SneakyThrows
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
                 playerData.setReceivedBonus(true);
-                player.sendMessage("§8[§6Release§8]§a Du erhälst 3.000 EXP, 12.500$, 20g Kokain, 20g veredelte Joints und 500 Coins.");
-                playerManager.addExp(player, 3000);
-                playerData.addMoney(12500, "Release-Reward");
-                ItemManager.addCustomItem(player, RoleplayItem.SNUFF, 20);
-                ItemManager.addCustomItem(player, RoleplayItem.CIGAR, 20);
-                playerManager.addCoins(player, 500);
-                playerManager.addExp(player, 3000);
+                player.sendMessage("§8[§6Release§8]§a Du erhälst 1.000 EXP, 10.000$, 20 Zigarren, 20 Schnupftabak und 200 Coins.");
+                playerManager.addExp(player, 1000);
+                playerData.addMoney(10000, "Release-Reward");
+                playerData.getInventory().addItem(RoleplayItem.SNUFF, 20);
+                playerData.getInventory().addItem(RoleplayItem.CIGAR, 20);
+                playerManager.addCoins(player, 200);
+                playerManager.addExp(player, 1000);
                 Main.getInstance().getMySQL().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
             }
         });

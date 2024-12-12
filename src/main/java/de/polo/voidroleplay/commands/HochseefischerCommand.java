@@ -132,12 +132,13 @@ public class HochseefischerCommand extends CommandBase implements Listener {
 
     private void quitJob(Player player, boolean silent) {
         Boat boat = spawnedBoats.get(player);
+        Main.getInstance().getCooldownManager().setCooldown(player, "hochseefischer", 1200);
         if (boat != null) boat.remove();
         spawnedBoats.remove(player);
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         playerData.setVariable("job", null);
         int amount = playerData.getVariable("hochseefischer_kg");
-        Main.getInstance().getPlayerManager().addExp(player, amount * 3);
+        Main.getInstance().getPlayerManager().addExp(player, amount * 2);
         playerData.addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
     }
 

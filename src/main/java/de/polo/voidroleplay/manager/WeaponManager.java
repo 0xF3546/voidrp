@@ -123,8 +123,7 @@ public class WeaponManager implements Listener {
     public Weapon getWeaponFromItemStack(ItemStack stack) {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
-        Weapon weapon = weaponList.get(id);
-        return weapon;
+        return weaponList.get(id);
     }
 
     public HashMap<Integer, Weapon> getWeapons() {
