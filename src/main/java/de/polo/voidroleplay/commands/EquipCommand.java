@@ -124,7 +124,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
                 factionData.setEquipPoints(factionData.getEquipPoints() - 5);
                 factionData.save();
-                logBuy(player, "Schutzweste");
+                logBuy(player, "Schutzweste", 5);
             }
         });
         i++;
@@ -139,7 +139,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 8);
                     factionData.save();
-                    logBuy(player, "Schwere Schutzweste");
+                    logBuy(player, "Schwere Schutzweste", 8);
                 }
             });
             i++;
@@ -155,7 +155,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     weaponManager.giveWeapon(player, Weapon.SNIPER, WeaponType.NORMAL);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 10);
                     factionData.save();
-                    logBuy(player, "Sniper");
+                    logBuy(player, "Sniper", 10);
                 }
             });
             i++;
@@ -170,7 +170,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
                     weaponManager.giveAmmo(player, Weapon.SNIPER, Weapon.SNIPER.getMaxAmmo());
-                    logBuy(player, "Sniper Munition");
+                    logBuy(player, "Sniper Munition", 10);
                 }
             });
             i++;
@@ -186,7 +186,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 4);
                     factionData.save();
-                    logBuy(player, "SWAT-Schild");
+                    logBuy(player, "SWAT-Schild", 4);
                 }
             });
             i++;
@@ -203,7 +203,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.PFEFFERSPRAY, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
-                    logBuy(player, "Pfefferspray");
+                    logBuy(player, "Pfefferspray", 1);
                 }
             });
             i++;
@@ -219,7 +219,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
-                    logBuy(player, "Handschellen");
+                    logBuy(player, "Handschellen", 1);
                 }
             });
             i++;
@@ -233,7 +233,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.TAZER, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
-                    logBuy(player, "Tazer");
+                    logBuy(player, "Tazer", 1);
                 }
             });
             i++;
@@ -248,7 +248,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.WINGSUIT, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 2);
                         factionData.save();
-                        logBuy(player, "Wingsuit");
+                        logBuy(player, "Wingsuit", 2);
                     }
                 });
                 i++;
@@ -267,7 +267,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.FEUERLÖSCHER, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Feuerlöscher");
+                        logBuy(player, "Feuerlöscher", 1);
                     }
                 });
                 i++;
@@ -281,7 +281,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.FEUERWEHR_AXT, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Feuerwehr-Axt");
+                        logBuy(player, "Feuerwehr-Axt", 1);
                     }
                 });
                 i++;
@@ -295,7 +295,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.SPRUNGTUCH, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Sprungtuch");
+                        logBuy(player, "Sprungtuch", 1);
                     }
                 });
                 i++;
@@ -311,7 +311,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.SPRUNGTUCH, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Sprungtuch");
+                        logBuy(player, "Sprungtuch", 1);
                     }
                 });
                 i++;
@@ -319,10 +319,10 @@ public class EquipCommand implements CommandExecutor, Listener {
         }
     }
 
-    private void logBuy(Player player, String item) {
+    private void logBuy(Player player, String item, int equipPoints) {
         PlayerData playerData = playerManager.getPlayerData(player);
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_equip_logs (player, item, factionId) VALUES (?, ?, ?)", player.getUniqueId().toString(), item, factionData.getId());
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_equip_logs (player, item, factionId, itemPoints) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), item, factionData.getId(), equipPoints);
     }
 
     private void openExtraShop(Player player, PlayerData playerData, FactionData factionData) {
