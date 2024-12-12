@@ -233,9 +233,7 @@ public class PlayerInteractListener implements Listener {
                                 return;
                             } else {
                                 if (event.getClickedBlock().getState() instanceof Chest && drop.isDropOpen) {
-                                    Chest chest = (Chest) event.getClickedBlock().getState();
-                                    Inventory chestInventory = chest.getInventory();
-                                    player.openInventory(chestInventory);
+                                    drop.open(player);
                                 }
                             }
                         }
