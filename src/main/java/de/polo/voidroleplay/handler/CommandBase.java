@@ -52,6 +52,14 @@ public abstract class CommandBase implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
         }
+        if (meta.adminDuty() && !playerData.isAduty()) {
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
+            return true;
+        }
+        if (meta.leader() && !playerData.isLeader()) {
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
+            return true;
+        }
 
         try {
             execute(player, playerData, args);
@@ -81,5 +89,7 @@ public abstract class CommandBase implements CommandExecutor {
         int permissionLevel() default 0;
 
         String usage() default "/<command>";
+        boolean adminDuty() default false;
+        boolean leader() default false;
     }
 }

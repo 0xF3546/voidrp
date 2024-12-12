@@ -279,7 +279,8 @@ public final class Main extends JavaPlugin {
                 de.polo.voidroleplay.commands.InvCommand.class,
                 HochseefischerCommand.class,
                 CatchFishCommand.class,
-                AdventskalenderCommand.class
+                AdventskalenderCommand.class,
+                EquiplogCommand.class
         );
 
 
