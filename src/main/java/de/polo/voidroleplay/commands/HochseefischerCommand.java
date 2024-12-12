@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
@@ -27,10 +28,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
-import static de.polo.voidroleplay.Main.locationManager;
-import static de.polo.voidroleplay.Main.plugin;
+import static de.polo.voidroleplay.Main.*;
 
 /**
  * @author Mayson1337
@@ -42,12 +44,14 @@ import static de.polo.voidroleplay.Main.plugin;
 public class HochseefischerCommand extends CommandBase implements Listener {
     private static final HashMap<Player, Boat> spawnedBoats = new HashMap<>();
     private static final ObjectList<Location> spawnLocations = new ObjectArrayList<>();
+
     public HochseefischerCommand(@NotNull CommandMeta meta) {
         super(meta);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         for (LocationData locationData : locationManager.getLocations().stream().filter(x -> x.getType() != null && x.getType().equalsIgnoreCase("hochseefischer")).toList()) {
             spawnLocations.add(locationData.getLocation());
         }
+
     }
 
     @Override
@@ -118,8 +122,12 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         spawnedBoats.put(player, boat);
         player.sendMessage(Component.text());
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        List<Location> playerLocations = new ObjectArrayList<>();
+        playerData.setVariable("job::hochseefischer::locations", playerLocations);
         playerData.setVariable("job", "hochseefischer");
         playerData.setVariable("hochseefischer_kg", 0);
+        Location location = getNearstLocation(player);
+        utils.getNavigationManager().createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
     private void quitJob(Player player, boolean silent) {
@@ -128,13 +136,33 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         spawnedBoats.remove(player);
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         playerData.setVariable("job", null);
+        int amount = playerData.getVariable("hochseefischer_kg");
+        Main.getInstance().getPlayerManager().addExp(player, amount * 3);
+        playerData.addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
     }
 
     public static Collection<Location> getLocations() {
         return spawnLocations;
     }
+
     public static Collection<Player> getPlayers() {
         return spawnedBoats.keySet();
+    }
+
+    public static Location getNearstLocation(Player player) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        System.out.println(getLocations().size());
+        List<Location> playerLocations = playerData.getVariable("job::hochseefischer::locations");
+        Location nearestLocation = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (Location location : HochseefischerCommand.getLocations()) {
+            double distance = player.getLocation().distance(location);
+            if (distance < nearestDistance && !playerLocations.contains(location)) {
+                nearestDistance = distance;
+                nearestLocation = location;
+            }
+        }
+        return nearestLocation;
     }
 
     @EventHandler
@@ -144,10 +172,25 @@ public class HochseefischerCommand extends CommandBase implements Listener {
 
     @EventHandler
     public void onSecond(SecondTickEvent event) {
+        Random random = new Random();
         for (Player player : spawnedBoats.keySet()) {
             for (Location location : spawnLocations) {
-                player.spawnParticle(Particle.WATER_SPLASH, location, 0);
+                for (int i = 0; i < 10; i++) {
+                    Location randomLocation = getRandomLocationInRadius(location, 5, random);
+                    player.spawnParticle(Particle.WATER_SPLASH, randomLocation, 2);
+                }
             }
         }
     }
+
+    private Location getRandomLocationInRadius(Location center, double radius, Random random) {
+        double angle = random.nextDouble() * 2 * Math.PI;
+        double distance = random.nextDouble() * radius;
+
+        double offsetX = Math.cos(angle) * distance;
+        double offsetZ = Math.sin(angle) * distance;
+
+        return center.clone().add(offsetX, 1, offsetZ);
+    }
+
 }

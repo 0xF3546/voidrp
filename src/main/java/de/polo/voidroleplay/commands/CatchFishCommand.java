@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+import static de.polo.voidroleplay.Main.utils;
+
 @CommandBase.CommandMeta(name = "catchfish")
 public class CatchFishCommand extends CommandBase implements Listener {
     private final HashMap<Player, LocalDateTime> caughts = new HashMap<>();
@@ -44,17 +46,19 @@ public class CatchFishCommand extends CommandBase implements Listener {
         Location nearestLocation = null;
         double nearestDistance = Double.MAX_VALUE;
         List<Location> playerLocations = playerData.getVariable("job::hochseefischer::locations");
-        if (playerLocations == null) {
-            playerLocations = new ObjectArrayList<>();
-            updateLocations(playerData, playerLocations);
-        }
-
         for (Location location : HochseefischerCommand.getLocations()) {
             double distance = player.getLocation().distance(location);
             if (distance < nearestDistance) {
                 nearestDistance = distance;
                 nearestLocation = location;
             }
+        }
+        if (nearestLocation == null) {
+            return;
+        }
+        if (nearestLocation.distance(player.getLocation()) > 5) {
+            player.sendMessage(Component.text(PREFIX + "Es ist keine Fangstelle in der nähe."));
+            return;
         }
         if (playerLocations.contains(nearestLocation)) {
             player.sendMessage(PREFIX + "Du warst an der Stelle bereits fischen.");
@@ -90,16 +94,22 @@ public class CatchFishCommand extends CommandBase implements Listener {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         int random = Main.random(10, 20);
         playerData.setVariable("hochseefischer_kg", (int) playerData.getVariable("hochseefischer_kg") + random);
-        player.sendMessage(PREFIX + "Du hast §6" + random + "kg Fisch gefangen.");
+        player.sendMessage(PREFIX + "Du hast §6" + random + "kg§7 Fisch gefangen.");
+        Location location = HochseefischerCommand.getNearstLocation(player);
+        if (location == null) {
+            player.sendMessage(PREFIX + "Du bist fertig. Gehe nun zurück zum Hochseefischer.");
+            return;
+        }
+        utils.getNavigationManager().createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
     @EventHandler
     public void onSecond(SecondTickEvent event) {
         for (Player player : HochseefischerCommand.getPlayers()) {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
-            player.sendActionBar(Component.text("§bEs befinden sich §6" + playerData.getVariable("hochseefischer_kg") + "kg§b Fisch im Boot."));
-            if (caughts.get(player) != null) continue;
-            if (!caughts.get(player).plusSeconds(20).isAfter(Utils.getTime())) continue;
+            player.sendActionBar(Component.text("§3Es befinden sich " + playerData.getVariable("hochseefischer_kg") + "kg Fisch im Boot."));
+            if (caughts.get(player) == null) continue;
+            if (!caughts.get(player).plusSeconds(20).isBefore(Utils.getTime())) continue;
             caughts.remove(player);
             caughtFish(player);
         }
