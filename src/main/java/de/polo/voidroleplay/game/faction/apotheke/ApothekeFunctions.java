@@ -10,9 +10,11 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.Prescription;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -118,7 +121,7 @@ public class ApothekeFunctions implements Listener {
                 26,
                 ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation",
                         Arrays.asList("§8 ➥ §7Besitzer§8: " + owner,
-                                finalCanAttack ? (getMinuteDifference(apotheke) >= 60 ? "§8 » §cKlicke zum attackieren": "§8 ➥ §7Attackierbar§8: §e" + getMinuteDifference(apotheke) + "min") : ""))) {
+                                finalCanAttack ? (getMinuteDifference(apotheke) >= 60 || getMinuteDifference(apotheke) <= 0 ? "§8 » §cKlicke zum attackieren": "§8 ➥ §7Attackierbar§8: §e" + getMinuteDifference(apotheke) + "min") : ""))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (canAttack(apotheke) && finalCanAttack) {
@@ -146,15 +149,20 @@ public class ApothekeFunctions implements Listener {
             });
             i++;
         }
-        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName(), "§8 ➥ §a55$")) {
+        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§cRezept einlösen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (playerData.getBargeld() < 55) {
-                    player.sendMessage(NO_MONEY);
-                    return;
+                for (ItemStack stack : player.getInventory().getContents()) {
+                    if (stack == null) continue;
+                    if (!stack.getType().equals(Material.PAPER)) continue;
+                    for (Prescription prescription : Prescription.values()) {
+                        if (stack.getItemMeta().getDisplayName().contains(prescription.getName())) {
+                            playerData.getInventory().addItem(prescription.getDrug().getItem(), stack.getAmount());
+                            player.getInventory().remove(stack);
+                            player.sendMessage(Component.text("§6Du hast ein " + prescription.getName() + " Rezept eingelöst."));
+                        }
+                    }
                 }
-                playerData.removeMoney(55, "Kauf Schmerzmittel");
-                playerData.getInventory().addItem(RoleplayItem.SCHMERZMITTEL, 1);
             }
         });
         i++;

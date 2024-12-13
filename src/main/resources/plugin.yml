@@ -282,3 +282,5 @@ commands:
   equiplog:
   treuebonus:
   selldrug:
+  giveprescription:
+    aliases: giverezept
