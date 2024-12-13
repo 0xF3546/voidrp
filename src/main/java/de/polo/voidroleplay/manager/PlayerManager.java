@@ -948,21 +948,17 @@ public class PlayerManager implements Listener {
             playerData.setBoostDuration(playerData.getBoostDuration().plusHours(hours));
         }
 
-        // Format the boostDuration as a string
         String formattedBoostDuration = playerData.getBoostDuration().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        // Use PreparedStatement to prevent SQL injection and handle SQL syntax properly
-        String query = "UPDATE `players` SET `boostDuration` = ? WHERE `uuid` = ?";
-        try (PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement(query)) {
-            preparedStatement.setString(1, formattedBoostDuration);
-            preparedStatement.setString(2, player.getUniqueId().toString());
-            preparedStatement.executeUpdate();
-        }
+        mySQL.updateAsync("UPDATE players SET boostDuration = ? WHERE uuid = ?", formattedBoostDuration, player.getUniqueId().toString());
     }
 
     @SneakyThrows
     public void redeemRank(Player player, String type, int duration, String duration_type) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
+        if (playerData.getPermlevel() >= 40) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Du erhälst keinen Rang, da du bereits einen höheren hast. Melde dich bei einem Administrator, wenn du diesen jedoch erhalten möchtest."));
+            return;
+        }
         switch (type.toLowerCase()) {
             case "vip":
                 if (playerData.getRang().equals("VIP") || playerData.getRang().equals("Spieler")) {
@@ -1010,9 +1006,11 @@ public class PlayerManager implements Listener {
                 player.sendMessage(Prefix.ERROR + "§cFehler. Bitte einen Administratoren kontaktieren.");
                 break;
         }
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        System.out.println(playerData.getRankDuration());
-        statement.executeUpdate("UPDATE `players` SET `rankDuration` = '" + playerData.getRankDuration() + "', `player_rank` = '" + playerData.getRang() + "', `player_permlevel` = " + playerData.getPermlevel() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        mySQL.updateAsync("UPDATE players SET rankDuration = ?, player_rank = ?, player_permlevel = ? WHERE uuid = ?",
+                playerData.getRankDuration().toString(),
+                playerData.getRang(),
+                playerData.getPermlevel(),
+                player.getUniqueId().toString());
         TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
