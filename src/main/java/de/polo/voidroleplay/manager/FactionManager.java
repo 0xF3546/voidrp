@@ -321,19 +321,17 @@ public class FactionManager {
                 }
             }
         }
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + uuid + "'");
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction = NULL, faction_grade = 0, isDuty = false WHERE uuid = ?",
+                uuid);
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
         TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
     public void removeOfflinePlayerFromFrak(OfflinePlayer player) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
         ServerManager.factionPlayerDataMap.remove(player.getUniqueId().toString());
-        LocalDateTime cooldown = Utils.getTime().plusHours(6);
-        statement.executeUpdate("UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
+        LocalDateTime cooldown = Utils.getTime().plusHours(18);
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction = NULL, faction_grade = 0, isDuty = false WHERE uuid = ?",
+                player.getUniqueId().toString());
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setFactionCooldown(cooldown);
         TeamSpeak.reloadPlayer(player.getUniqueId());
@@ -443,11 +441,10 @@ public class FactionManager {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
             factionGradeData.setPayday(payday);
-            PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE faction_grades SET payday = ? WHERE faction = ? AND grade = ?");
-            statement.setInt(1, payday);
-            statement.setString(2, faction);
-            statement.setInt(3, rank);
-            statement.executeUpdate();
+            Main.getInstance().getMySQL().updateAsync("UPDATE faction_grades SET payday = ? WHERE faction = ? AND grade = ?",
+                    payday,
+                    faction,
+                    rank);
             return true;
         } else {
             return false;
@@ -458,12 +455,10 @@ public class FactionManager {
         FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
         if (factionGradeData != null) {
             factionGradeData.setName(name);
-            PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE faction_grades SET name = ? WHERE faction = ? AND grade = ?");
-            statement.setString(1, name);
-            statement.setString(2, faction);
-            statement.setInt(3, rank);
-            statement.executeUpdate();
-            statement.close();
+            Main.getInstance().getMySQL().updateAsync("UPDATE faction_grades SET name = ? WHERE faction = ? AND grade = ?",
+                    name,
+                    faction,
+                    rank);
             return true;
         } else {
             return false;
@@ -485,20 +480,11 @@ public class FactionManager {
 
     public void setDuty(Player player, boolean state) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        try {
-            playerData.setDuty(state);
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            if (state) {
-                statement.executeUpdate("UPDATE `players` SET `isDuty` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
-            } else {
-                statement.executeUpdate("UPDATE `players` SET `isDuty` = false WHERE `uuid` = '" + player.getUniqueId() + "'");
-            }
-            Utils.Tablist.updatePlayer(player);
-
-        } catch (SQLException e) {
-            player.sendMessage(Prefix.ERROR + "Fehler.");
-            throw new RuntimeException(e);
-        }
+        playerData.setDuty(state);
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET isDuty = ? WHERE uuid = ?",
+                state,
+                player.getUniqueId().toString());
+        Utils.Tablist.updatePlayer(player);
     }
 
     public boolean isInBündnis(Player player) {
@@ -647,12 +633,8 @@ public class FactionManager {
 
     @SneakyThrows
     public void deleteSubTeam(SubTeam subTeam) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("DELETE FROM faction_subteams WHERE id = ?");
-        statement.setInt(1, subTeam.getId());
-        statement.execute();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("DELETE FROM faction_subteams WHERE id = ?",
+                subTeam.getId());
         subTeams.remove(subTeam);
     }
 
@@ -668,26 +650,16 @@ public class FactionManager {
     public void setFactionMOTD(int factionId, String motd) {
         FactionData factionData = getFactionData(factionId);
         factionData.setMotd(motd);
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET motd = ? WHERE id = ?");
-        statement.setString(1, motd);
-        statement.setInt(2, factionId);
-        statement.executeUpdate();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET motd = ? WHERE id = ?",
+                motd, factionId);
     }
 
     @SneakyThrows
     public void setFactionChatColor(int factionId, ChatColor color) {
         FactionData factionData = getFactionData(factionId);
         factionData.setChatColor(color);
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE factions SET chatColor = ? WHERE id = ?");
-        statement.setString(1, color.name());
-        statement.setInt(2, factionId);
-        statement.executeUpdate();
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET chatColor = ? WHERE id = ?",
+                color.name(), factionId);
     }
 
     @SneakyThrows
@@ -695,18 +667,14 @@ public class FactionManager {
         SprayableBanner banner = getSprayAbleBannerByBlockId(block.getId());
         if (banner == null) {
             SprayableBanner b = new SprayableBanner(block.getId(), faction.getId());
-            Connection connection = Main.getInstance().mySQL.getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO faction_banner (registeredBlock, factionId) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, block.getId());
-            statement.setInt(2, faction.getId());
-            statement.execute();
-            ResultSet res = statement.getGeneratedKeys();
-            if (res.next()) {
-                b.setId(res.getInt(1));
-            }
-            sprayableBanners.add(b);
-            statement.close();
-            connection.close();
+            Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO faction_banner (registeredBlock, factionId) VALUES (?, ?)")
+                    .thenApply(key -> {
+                        if (key.isPresent()) {
+                            b.setId(key.get());
+                            sprayableBanners.add(b);
+                        }
+                        return null;
+                    });
             return;
         }
         banner.setLastSpray(Utils.getTime());
