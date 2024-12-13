@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.List;
 
+@Deprecated(forRemoval = true)
 public class NameTagProviderImpl implements INameTagProvider {
 
     private final ProtocolManager protocolManager;
