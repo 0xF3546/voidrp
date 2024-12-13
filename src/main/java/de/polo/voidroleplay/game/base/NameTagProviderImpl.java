@@ -88,9 +88,17 @@ public class NameTagProviderImpl implements INameTagProvider {
 
             String teamName = "team_" + player.getUniqueId().toString().substring(0, 8);
 
-            packet.getStrings().write(0, teamName);
-            packet.getIntegers().write(1, 1); // Mode: 1 = Remove Team
+            // Schreibe den Teamnamen, wenn möglich
+            if (packet.getStrings().size() > 0) {
+                packet.getStrings().write(0, teamName);
+            }
 
+            // Schreibe den Modus (1 = Remove Team), wenn genügend Integer-Felder vorhanden sind
+            if (packet.getIntegers().size() > 1) {
+                packet.getIntegers().write(1, 1);
+            }
+
+            // Sende das Paket an alle Spieler
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 protocolManager.sendServerPacket(onlinePlayer, packet);
             }
