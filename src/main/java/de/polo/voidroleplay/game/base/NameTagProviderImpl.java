@@ -1,6 +1,5 @@
 package de.polo.voidroleplay.game.base;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
@@ -28,18 +27,26 @@ public class NameTagProviderImpl implements INameTagProvider {
         try {
             PacketContainer packet = protocolManager.createPacket(com.comphenix.protocol.PacketType.Play.Server.SCOREBOARD_TEAM);
 
-            // Team name (must be unique)
             String teamName = "team_" + player.getUniqueId().toString().substring(0, 8);
 
-            packet.getStrings().write(0, teamName); // Team name
-            packet.getStrings().write(1, prefix.replace("&", "§"));  // Prefix
-            packet.getStrings().write(2, suffix.replace("&", "§"));  // Suffix
+            if (packet.getStrings().size() > 0) {
+                packet.getStrings().write(0, teamName);
+            }
+            if (packet.getStrings().size() > 1) {
+                packet.getStrings().write(1, prefix.replace("&", "§"));
+            }
+            if (packet.getStrings().size() > 2) {
+                packet.getStrings().write(2, suffix.replace("&", "§"));
+            }
 
-            // Player(s) to add to the team
-            packet.getSpecificModifier(Collection.class).write(0, List.of(player.getName()));
-            packet.getIntegers().write(1, 0); // Mode: 0 = Create Team
+            if (packet.getSpecificModifier(Collection.class).size() > 0) {
+                packet.getSpecificModifier(Collection.class).write(0, List.of(player.getName()));
+            }
 
-            // Send the packet to all online players
+            if (packet.getIntegers().size() > 1) {
+                packet.getIntegers().write(1, 0); // Mode: 0 = Create Team
+            }
+
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 protocolManager.sendServerPacket(onlinePlayer, packet);
             }
@@ -68,6 +75,7 @@ public class NameTagProviderImpl implements INameTagProvider {
             if (packet.getSpecificModifier(Collection.class).size() > 0) {
                 packet.getSpecificModifier(Collection.class).write(0, List.of(player.getName()));
             }
+
             if (packet.getIntegers().size() > 1) {
                 packet.getIntegers().write(1, 0); // Mode: 0 = Create Team
             }
@@ -78,7 +86,6 @@ public class NameTagProviderImpl implements INameTagProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -88,17 +95,14 @@ public class NameTagProviderImpl implements INameTagProvider {
 
             String teamName = "team_" + player.getUniqueId().toString().substring(0, 8);
 
-            // Schreibe den Teamnamen, wenn möglich
             if (packet.getStrings().size() > 0) {
                 packet.getStrings().write(0, teamName);
             }
 
-            // Schreibe den Modus (1 = Remove Team), wenn genügend Integer-Felder vorhanden sind
             if (packet.getIntegers().size() > 1) {
-                packet.getIntegers().write(1, 1);
+                packet.getIntegers().write(1, 1); // Mode: 1 = Remove Team
             }
 
-            // Sende das Paket an alle Spieler
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 protocolManager.sendServerPacket(onlinePlayer, packet);
             }
@@ -122,8 +126,12 @@ public class NameTagProviderImpl implements INameTagProvider {
             WrappedChatComponent headerComponent = WrappedChatComponent.fromText(header);
             WrappedChatComponent footerComponent = WrappedChatComponent.fromText(footer);
 
-            packet.getChatComponents().write(0, headerComponent); // Header
-            packet.getChatComponents().write(1, footerComponent); // Footer
+            if (packet.getChatComponents().size() > 0) {
+                packet.getChatComponents().write(0, headerComponent);
+            }
+            if (packet.getChatComponents().size() > 1) {
+                packet.getChatComponents().write(1, footerComponent);
+            }
 
             protocolManager.sendServerPacket(player, packet);
         } catch (Exception e) {
