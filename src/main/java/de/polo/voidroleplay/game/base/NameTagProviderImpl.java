@@ -103,13 +103,21 @@ public class NameTagProviderImpl implements INameTagProvider {
                 packet.getIntegers().write(1, 1); // Mode: 1 = Remove Team
             }
 
+            if (packet.getSpecificModifier(Collection.class).size() > 0) {
+                packet.getSpecificModifier(Collection.class).write(0, List.of(player.getName()));
+            }
+
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 protocolManager.sendServerPacket(onlinePlayer, packet);
             }
+        } catch (ClassCastException e) {
+            System.err.println("[ERROR] Incompatible packet structure for SCOREBOARD_TEAM. Ensure ProtocolLib is updated.");
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void clearAllNametags() {
