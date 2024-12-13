@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.BlacklistData;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -221,15 +222,8 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> suggestions = new ObjectArrayList<>();
-            suggestions.add("all");
-            suggestions.add("add");
-            suggestions.add("remove");
-            suggestions.add("pay");
-
-            return suggestions;
-        }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, List.of("all", "add", "remove", "pay"))
+                .build();
     }
 }

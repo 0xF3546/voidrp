@@ -14,6 +14,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Objects;
 
 public abstract class CommandBase implements CommandExecutor {
 
@@ -56,6 +57,12 @@ public abstract class CommandBase implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
             return true;
         }
+        if (!Objects.equals(meta.faction(), "")) {
+            if (playerData.getFaction() == null || !playerData.getFaction().equalsIgnoreCase(meta.faction())) {
+                player.sendMessage(Prefix.ERROR_NOPERMISSION);
+            }
+            return true;
+        }
         if (meta.leader() && !playerData.isLeader()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
@@ -91,5 +98,6 @@ public abstract class CommandBase implements CommandExecutor {
         String usage() default "/<command>";
         boolean adminDuty() default false;
         boolean leader() default false;
+        String faction() default "";
     }
 }

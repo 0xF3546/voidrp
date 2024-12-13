@@ -82,7 +82,10 @@ public class VertragUtil {
     public void acceptVertrag(Player player) throws SQLException {
         Object curr = current.get(player.getUniqueId().toString());
         Agreement agreement = getActiveAgreement(player);
-        if (agreement != null) agreement.accept();
+        if (agreement != null) {
+            agreement.accept();
+            return;
+        }
         if (curr != null) {
             Player targetplayer = null;
             try {
@@ -220,7 +223,10 @@ public class VertragUtil {
     public void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString()).toString();
         Agreement agreement = getActiveAgreement(player);
-        if (agreement != null) agreement.deny();
+        if (agreement != null) {
+            agreement.deny();
+            return;
+        }
         if (curr != null) {
             Player targetplayer = null;
             PlayerData playerData = playerManager.getPlayerData(player);
