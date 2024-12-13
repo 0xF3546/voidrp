@@ -33,6 +33,7 @@ public class HungerListener implements Listener {
 
         if (newFoodLevel < currentFoodLevel) {
             // reduce the hunger loss by half
+            // set Math(max(1, ...)) to another value to change the hunger loss (e.g., 0.5)
             int reducedLoss = Math.max(1, (currentFoodLevel - newFoodLevel) / 2);
             event.setFoodLevel(currentFoodLevel - reducedLoss);
         }
