@@ -95,6 +95,7 @@ public class DeathListener implements Listener {
                 adminManager.send_message(player.getName() + " starb. (Rejoin)", null);
             }
             playerData.setVariable("inventory::base", player.getInventory().getContents());
+            player.getInventory().clear();
             utils.deathUtil.startDeathTimer(player);
             if (!playerData.isDead()) {
                 playerData.setDead(true);

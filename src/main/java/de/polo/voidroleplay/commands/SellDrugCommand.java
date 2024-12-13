@@ -52,7 +52,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
         }
         Drug drug = null;
         for (Drug d : Drug.values()) {
-            if (d.name().equalsIgnoreCase(args[1]) || d.getItem().name().equalsIgnoreCase(args[1])) {
+            if (d.name().equalsIgnoreCase(args[1]) || d.getItem().getClearName().equalsIgnoreCase(args[1]) || d.getItem().name().equalsIgnoreCase(args[1])) {
                 drug = d;
             }
         }
@@ -72,9 +72,9 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
             }
             Drug finalDrug = drug;
             PlayerData targetData = Main.getInstance().playerManager.getPlayerData(target);
-            target.sendMessage(Prefix.MAIN + player.getName() + " biete dir" + finalDrug.name() + " für " + amount + "$ an.");
+            target.sendMessage(Prefix.MAIN + player.getName() + " biete dir" + finalDrug.getItem().getClearName() + " für " + amount + "$ an.");
             utils.vertragUtil.sendInfoMessage(target);
-            player.sendMessage(Prefix.MAIN + "Du hast " + target.getName() + " " + finalDrug.name() + " für " + amount + "$ angeboten.");
+            player.sendMessage(Prefix.MAIN + "Du hast " + target.getName() + " " + finalDrug.getItem().getClearName() + " für " + amount + "$ angeboten.");
             Agreement agreement = new Agreement(player, target, "selldrug", () -> {
                 if (targetData.getBargeld() < amount) {
                     target.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Geld dabei."));

@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
+import de.polo.voidroleplay.utils.player.ChatUtils;
 import de.polo.voidroleplay.utils.player.PlayerInventoryItem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,6 +31,7 @@ public class InvCommand extends CommandBase {
     public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bInventar");
         int i = 0;
+        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() +  " öffnet sein Inventar.");
         for (Drug drug : Drug.values()) {
             PlayerInventoryItem item = playerData.getInventory().getByTypeOrEmpty(drug.getItem());
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(item.getItem().getMaterial(), 1, 0, item.getItem().getDisplayName(), "§8 ➥ §7" + item.getAmount() + " Stück")) {
