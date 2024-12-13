@@ -93,6 +93,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
                 player.sendMessage("§8[§2Werbung§8]§a Werbung erfolgreich geschalten. §c-" + price + "$");
                 Bukkit.broadcastMessage("§8[§2Werbung§8] §7" + player.getName() + "§8:§f " + event.getMessage());
                 playerManager.removeMoney(player, price, "Werbung");
+                Main.getInstance().factionManager.addFactionMoney("News", price, "Werbung - " + player.getName());
             } else {
                 player.sendMessage(Prefix.ERROR + "Du benötigst " + price + "$.");
             }

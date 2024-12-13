@@ -49,7 +49,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
         }
         Prescription prescription = null;
         for (Prescription p : Prescription.values()) {
-            if (p.getName().equalsIgnoreCase(args[2])) {
+            if (p.getName().equalsIgnoreCase(args[1])) {
                 prescription = p;
             }
         }
@@ -69,7 +69,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
                         return;
                     }
                     targetData.removeMoney(300, "Rezept - " + finalPrescription.getName());
-                    ItemStack stack = ItemManager.createItem(Material.PAPER, Main.random(finalPrescription.getMinAmount(), finalPrescription.getMaxAmount()), 0, "§c" + finalPrescription.getName());
+                    ItemStack stack = ItemManager.createItem(Material.PAPER, 1, 0, "§c" + finalPrescription.getName());
                     target.getInventory().addItem(stack);
                     target.sendMessage(Component.text("§eDu hast ein " + finalPrescription.getName() + " Rezept gekauft."));
                     player.sendMessage(Component.text("§c" + target.getName() + " hat das Angebot angenommen."));
@@ -88,13 +88,14 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
 
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        Player player = (Player) sender;
         return TabCompletion.getBuilder(args)
                 .addAtIndex(1, Bukkit.getOnlinePlayers().stream()
                         .filter(x -> x.getLocation().distance(player.getLocation()) < 10)
                         .map(Player::getName)
                         .toList())
-                .addAtIndex(Arrays.stream(Prescription.values())
+                .addAtIndex(2, Arrays.stream(Prescription.values())
                         .map(Prescription::getName)
                         .toList())
                 .build();

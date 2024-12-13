@@ -252,7 +252,7 @@ public class ServerManager {
                         ffaMonStatement.close();
                     }
                 }
-                /*if (now.getMinute() == 45 && now.getHour() == 1 && now.getSecond() == 0) {
+                if (now.getMinute() == 45 && now.getHour() == 1 && now.getSecond() == 0) {
                     Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 15 Minuten neu!");
                 }
                 if (now.getMinute() == 55 && now.getHour() == 1 && now.getSecond() == 0) {
@@ -267,7 +267,7 @@ public class ServerManager {
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
                     return;
-                }*/
+                }
                 for (LocationData locationData : locationManager.getLocations()) {
                     if (locationData.getType() == null) continue;
                     if (locationData.getInfo() == null) continue;

@@ -117,7 +117,7 @@ public class DeathUtils {
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         //player.setGameMode(GameMode.SURVIVAL);
-        player.teleport(playerData.getDeathLocation());
+        if (playerData.getDeathLocation() != null) player.teleport(playerData.getDeathLocation());
         playerData.setHitmanDead(false);
         playerData.setStabilized(false);
         try {

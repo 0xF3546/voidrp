@@ -89,7 +89,7 @@ public class Seasonpass implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player);
+        /*PlayerData playerData = playerManager.getPlayerData(player);
         while (playerData.getQuests().size() < 14) {
             Quest newQuest = getRandomQuest(playerData);
             if (newQuest == null) {
@@ -156,7 +156,8 @@ public class Seasonpass implements CommandExecutor {
                     }
                 });
             }
-        }
+        }*/
+        player.sendMessage(Prefix.ERROR + "Das Feature ist im Umbau.");
         return false;
     }
 
