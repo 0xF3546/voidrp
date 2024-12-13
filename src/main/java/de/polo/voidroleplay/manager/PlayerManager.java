@@ -55,6 +55,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.polo.voidroleplay.Main.locationManager;
 import static de.polo.voidroleplay.Main.utils;
 
 public class PlayerManager implements Listener {
@@ -240,14 +241,8 @@ public class PlayerManager implements Listener {
                 playerData.setRewardId(result.getInt("rewardId"));
                 playerData.getInventory().setSize(result.getInt("inventorySize"));
                 if (!result.getBoolean("tpNewmap")) {
-                    Main.getInstance().locationManager.useLocation(player, "stadthalle");
-                    player.sendMessage("§8 ✈ §aWillkommen auf der neuen Map!");
-                    Connection connection = Main.getInstance().mySQL.getConnection();
-                    PreparedStatement ps = connection.prepareStatement("UPDATE players SET tpNewmap = true WHERE uuid = ?");
-                    ps.setString(1, uuid.toString());
-                    ps.execute();
-                    ps.close();
-                    connection.close();
+                    locationManager.useLocation(player, "stadthalle");
+                    mySQL.updateAsync("UPDATE players SET tpNewmap = true WHERE uuid = ?", player.getUniqueId().toString());
                 }
 
                 if (result.getString("faction") != null) {
@@ -275,13 +270,8 @@ public class PlayerManager implements Listener {
                                 playerData.setVariable("jugendschutz", null);
                                 player.closeInventory();
                                 player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
-                                Statement statement = null;
-                                try {
-                                    statement = Main.getInstance().mySQL.getStatement();
-                                    statement.executeUpdate("UPDATE `players` SET `jugendschutz` = true, `jugendschutz_accepted` = NOW() WHERE `uuid` = '" + player.getUniqueId() + "'");
-                                } catch (SQLException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                mySQL.updateAsync("UPDATE players SET jugendschutz = true, jugendschutz_accepted = NOW() WHERE uuid = ?",
+                                        player.getUniqueId().toString());
                                 player.closeInventory();
                             }
                         });
@@ -1014,28 +1004,6 @@ public class PlayerManager implements Listener {
         TeamSpeak.reloadPlayer(player.getUniqueId());
     }
 
-    public void setJob(Player player, String job) {
-        PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setJob(job);
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `job` = '" + job + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void resetJob(Player player) {
-        PlayerData playerData = playerDataMap.get(player.getUniqueId());
-        playerData.setJob(null);
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE `players` SET `job` = null WHERE `uuid` = '" + player.getUniqueId() + "'");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public boolean isInStaatsFrak(Player player) {
         PlayerData playerData = playerDataMap.get(player.getUniqueId());
         if (playerData.getFaction() == null) return false;
@@ -1331,12 +1299,9 @@ public class PlayerManager implements Listener {
         PlayerData playerData = getPlayerData(player.getUniqueId());
         playerData.setCoins(playerData.getCoins() + amount);
         player.sendMessage("§e+" + amount + " Coins");
-        try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
-            statement.executeUpdate("UPDATE players SET coins = coins + " + amount + " WHERE uuid = '" + player.getUniqueId() + "'");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        mySQL.updateAsync("UPDATE players SET coins = coins + ? WHERE uuid = ?",
+                amount,
+                player.getUniqueId().toString());
     }
 
     public void removeCoins(Player player, int amount) {
@@ -1349,14 +1314,12 @@ public class PlayerManager implements Listener {
 
     @SneakyThrows
     public void setPlayerSpawn(PlayerData playerData, String spawn) {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET spawn = ? WHERE uuid = ?");
         if (spawn.equalsIgnoreCase("krankenhaus")) {
             spawn = null;
         }
-        statement.setString(1, spawn);
-        statement.setString(2, playerData.getUuid().toString());
-        statement.executeUpdate();
-        statement.close();
+        mySQL.updateAsync("UPDATE players SET spawn = ? WHERE uuid = ?",
+                spawn,
+                playerData.getUuid().toString());
         playerData.setSpawn(spawn);
     }
 
