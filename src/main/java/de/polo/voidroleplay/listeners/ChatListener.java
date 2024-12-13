@@ -42,7 +42,7 @@ public class ChatListener implements Listener {
             if (supportManager.isInConnection(player)) {
                 Ticket ticket = supportManager.getTicket(player);
                 for (Player p : supportManager.getPlayersInTicket(ticket)) {
-                    p.sendMessage(Main.support_prefix + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
+                    p.sendMessage(Prefix.SUPPORT + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                 }
 
             } else {

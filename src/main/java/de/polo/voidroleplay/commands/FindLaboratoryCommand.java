@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -29,12 +30,12 @@ public class FindLaboratoryCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         Location location = locationManager.getLocation(playerData.getFaction() + "_laboratory");
         if (location == null) {
-            player.sendMessage(Main.error + "Deine Fraktion hat kein Labor.");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion hat kein Labor.");
             return false;
         }
         utils.navigationManager.createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());

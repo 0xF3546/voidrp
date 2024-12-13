@@ -232,7 +232,8 @@ public class PlayerManager implements Listener {
                 playerData.setVotes(result.getInt("votes"));
                 playerData.setChurch(result.getBoolean("isChurch"));
                 playerData.setBaptized(result.getBoolean("isBaptized"));
-                playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+                if (result.getDate("factionCooldown") != null) playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+                playerData.setFactionJoin(Utils.toLocalDateTime(result.getDate("factionJoin")));
                 playerData.setEventPoints(result.getInt("eventPoints"));
                 playerData.setCrypto(result.getFloat("crypto"));
                 playerData.setRewardTime(result.getInt("rewardTime"));
@@ -268,7 +269,7 @@ public class PlayerManager implements Listener {
                     Main.waitSeconds(1, () -> {
                         InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
                         playerData.setVariable("originClass", this);
-                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
+                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
                                 playerData.setVariable("jugendschutz", null);
@@ -439,7 +440,7 @@ public class PlayerManager implements Listener {
         }
     }
 
-    private LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {
+    public LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {
         return loyaltyBonusCache.stream().filter(x -> x.getUuid() == uuid).findFirst().orElse(null);
     }
 
@@ -792,6 +793,18 @@ public class PlayerManager implements Listener {
 
                         }
 
+                        List<IGangzone> gangZones = new ObjectArrayList<>();
+                        for (IGangzone gangzone : utils.gangwarUtils.getGangzones()) {
+                            if (gangzone.getOwner().equals(factionData.getName())) {
+                                gangZones.add(gangzone);
+                            }
+                        }
+                        for (IGangzone gangzone : gangZones) {
+                            if (gangzone.getOwner().equals(factionData.getName())) {
+                                plus += 150;
+                            }
+                        }
+
                         int banner = 0;
                         for (SprayableBanner sprayableBanner : Main.getInstance().factionManager.getBanner()) {
                             if (sprayableBanner.getFaction() == factionData.getId()) {
@@ -889,6 +902,7 @@ public class PlayerManager implements Listener {
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
+            mySQL.updateAsync("UPDATE players SET level = ?, exp = ? WHERE uuid = ?", playerData.getLevel(), playerData.getExp(), player.getUniqueId().toString());
         } else {
             if (playerData.getBoostDuration() == null) {
                 player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
@@ -898,6 +912,7 @@ public class PlayerManager implements Listener {
                 utils.sendActionBar(player, "§l+" + exp + " EXP (2x)");
             }
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            mySQL.updateAsync("UPDATE players SET exp = ? WHERE uuid = ?", playerData.getExp(), player.getUniqueId().toString());
         }
         player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
     }
@@ -992,7 +1007,7 @@ public class PlayerManager implements Listener {
                 playerData.setPermlevel(10);
                 break;
             default:
-                player.sendMessage(Main.error + "§cFehler. Bitte einen Administratoren kontaktieren.");
+                player.sendMessage(Prefix.ERROR + "§cFehler. Bitte einen Administratoren kontaktieren.");
                 break;
         }
         Statement statement = Main.getInstance().mySQL.getStatement();
@@ -1279,13 +1294,13 @@ public class PlayerManager implements Listener {
                             throw new RuntimeException(e);
                         }
                     } else {
-                        event.getPlayer().sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                        event.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                     }
                 } else {
-                    event.getPlayer().sendMessage(Main.error + "Der Betrag muss >= 1 sein.");
+                    event.getPlayer().sendMessage(Prefix.ERROR + "Der Betrag muss >= 1 sein.");
                 }
             } else {
-                event.getPlayer().sendMessage(Main.error + "Der Spieler ist nicht in deiner nähe.");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Der Spieler ist nicht in deiner nähe.");
             }
             event.end();
         }
@@ -1424,7 +1439,7 @@ public class PlayerManager implements Listener {
             player.spawnParticle(Particle.HEART, player.getLocation().add(0, 2, 0), 1);
             targetplayer.spawnParticle(Particle.HEART, targetplayer.getLocation().add(0, 2, 0), 1);
         } else {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
         }
     }
 

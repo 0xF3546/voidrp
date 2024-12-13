@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -73,7 +74,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
                 });
             }
         } else {
-            player.sendMessage(Main.error + "Du bist nicht am Nachrichtengebäude.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht am Nachrichtengebäude.");
         }
         return false;
     }
@@ -93,7 +94,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
                 Bukkit.broadcastMessage("§8[§2Werbung§8] §7" + player.getName() + "§8:§f " + event.getMessage());
                 playerManager.removeMoney(player, price, "Werbung");
             } else {
-                player.sendMessage(Main.error + "Du benötigst " + price + "$.");
+                player.sendMessage(Prefix.ERROR + "Du benötigst " + price + "$.");
             }
             event.end();
         }

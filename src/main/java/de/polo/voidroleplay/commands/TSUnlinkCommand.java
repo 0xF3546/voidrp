@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,7 +36,7 @@ public class TSUnlinkCommand implements CommandExecutor {
             player.sendMessage("§8[§3TeamSpeak§8]§b Du bist nun nicht mehr verifiziert.");
             TeamSpeak.unlinkPlayer(player.getUniqueId());
         } else {
-            player.sendMessage(Main.error + "Du bist nicht verifiziert auf dem TeamSpeak.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht verifiziert auf dem TeamSpeak.");
         }
         return false;
     }

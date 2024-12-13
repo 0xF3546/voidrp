@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -43,7 +44,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         GasStationData gasStationData = locationManager.getGasStationInRadius(player);
         if (gasStationData == null) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe einer Tankstelle.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Tankstelle.");
             return false;
         }
         openGasStation(player, gasStationData);
@@ -121,7 +122,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getCompany().getBank() < 3250000) {
-                        player.sendMessage(Main.error + "Deine Firma hat nicht genug Kapital um sich dieses Business zu leisten.");
+                        player.sendMessage(Prefix.ERROR + "Deine Firma hat nicht genug Kapital um sich dieses Business zu leisten.");
                         return;
                     }
                     player.closeInventory();
@@ -163,7 +164,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
             gasStationData.setLiterprice(price);
             gasStationData.save();
         } catch (Exception e) {
-            event.getPlayer().sendMessage(Main.error + "Die Zahl muss numerisch sein.");
+            event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
         }
     }
 }

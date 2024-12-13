@@ -58,25 +58,25 @@ public class ArrestCommand implements CommandExecutor {
                                     player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
                                     Main.getInstance().seasonpass.didQuest(targetplayer, 8);
                                 } else {
-                                    player.sendMessage(Main.error + targetplayer.getName() + " wird nicht gesucht.");
+                                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " wird nicht gesucht.");
                                 }
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
                         } else {
-                            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
                         }
                     } else {
-                        player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in Handschellen.");
+                        player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in Handschellen.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "§c" + args[0] + " ist nicht online.");
+                    player.sendMessage(Prefix.ERROR + "§c" + args[0] + " ist nicht online.");
                 }
             } else {
-                player.sendMessage(Main.error + "Syntax-Fehler: /arrest [Spieler]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /arrest [Spieler]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

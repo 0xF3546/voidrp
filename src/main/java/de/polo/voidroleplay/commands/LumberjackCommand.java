@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.EXPType;
 import de.polo.voidroleplay.utils.player.Progress;
 import de.polo.voidroleplay.utils.player.SoundManager;
@@ -158,7 +159,7 @@ public class LumberjackCommand implements CommandExecutor {
                     });
                 }
             } else {
-                player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Holzfällerei§7!");
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Holzfällerei§7!");
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);

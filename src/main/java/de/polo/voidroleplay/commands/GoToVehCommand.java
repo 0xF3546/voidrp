@@ -27,15 +27,15 @@ public class GoToVehCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 60) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /gotovehicle [ID]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /gotovehicle [ID]");
             return false;
         }
         for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {

@@ -5,6 +5,7 @@ import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.storage.NaviData;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -13,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -33,26 +35,6 @@ public class Drop {
     public boolean isDropOpen = false;
     public boolean dropEnded = false;
     public Chest chest = null;
-    List<ItemStack> items = Arrays.asList(
-            ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 4, 0, "§7Gepackte Waffe", "§8 ➥ §cSturmgewehr"),
-            ItemManager.createItem(Material.CLAY_BALL, 50, 0, "§7Magazin", "§8 ➥ §cSturmgewehr"),
-            ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§7Gepackte Waffe", "§8 ➥ §cMarksman"),
-            ItemManager.createItem(Material.CLAY_BALL, 10, 0, "§7Magazin", "§8 ➥ §cMarksman"),
-            ItemManager.createItem(Material.IRON_HORSE_ARMOR, 2, 0, "§7Gepackte Waffe", "§8 ➥ §eMaschinenpistolen"),
-            ItemManager.createItem(Material.CLAY_BALL, 50, 0, "§7Magazin", "§8 ➥ §eMaschinenpistolen"),
-            ItemManager.createItem(Material.GOLDEN_HORSE_ARMOR, 2, 0, "§7Gepackte Waffe", "§8 ➥ §cFlinte"),
-            ItemManager.createItem(Material.CLAY_BALL, 15, 0, "§7Magazin", "§8 ➥ §cFlinte"),
-            ItemManager.createItem(RoleplayItem.HEAVY_BULLETPROOF.getMaterial(), 1, 0, RoleplayItem.HEAVY_BULLETPROOF.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.BULLETPROOF.getMaterial(), 3, 0, RoleplayItem.BULLETPROOF.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.WAFFENTEIL.getMaterial(), 85, 0, RoleplayItem.WAFFENTEIL.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.WAFFENTEIL.getMaterial(), 45, 0, RoleplayItem.WAFFENTEIL.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 20, 0, RoleplayItem.SNUFF.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 100, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 28, 0, RoleplayItem.SNUFF.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.PIPE_TOBACCO.getMaterial(), 130, 0, RoleplayItem.PIPE_TOBACCO.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 27, 0, RoleplayItem.PIPE.getDisplayName()),
-            ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 20, 0, RoleplayItem.PIPE.getDisplayName())
-    );
     private Block lastBlock = null;
     private int minutes = 8;
     private ArmorStand hologram = null;
@@ -82,10 +64,6 @@ public class Drop {
         hologram.setGravity(false);
         hologram.setMarker(true);
         setMinutes(8);
-        chest = (Chest) location.getBlock().getState();
-
-        Collections.shuffle(items);
-        addItemsToChest();
         double[] x = {location.getX() - 50, location.getX() + 50, location.getX() + 50, location.getX() - 50};
         double[] z = {location.getZ() - 50, location.getZ() - 50, location.getZ() + 50, location.getZ() + 50};
         Utils.createWebAreaMarker("", "Schmugglerkiste", "world", x, z);
@@ -132,13 +110,31 @@ public class Drop {
         LOGGER.info("drop cleanup complete.");
     }
 
-    private void addItemsToChest() {
-        if (chest != null) {
-            Inventory inventory = chest.getInventory();
-            int numberOfItems = ThreadLocalRandom.current().nextInt(4) + 2;
-            for (int i = 0; i < numberOfItems; i++) {
-                inventory.addItem(items.get(i));
-            }
+    public void open(Player player) {
+        cleanup();
+        player.sendMessage("§7   ===§8[§cDrop§8]§7===");
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        int snuff = Main.random(0, 20);
+        if (snuff > 0) {
+            playerData.getInventory().addItem(RoleplayItem.SNUFF, snuff);
+            player.sendMessage("§8 - " + snuff + "x " + RoleplayItem.SNUFF.getDisplayName());
+        }
+        int pipe = Main.random(0, 20);
+        if (pipe > 0) {
+            playerData.getInventory().addItem(RoleplayItem.PIPE, pipe);
+            player.sendMessage("§8 - " + pipe + "x " + RoleplayItem.PIPE.getDisplayName());
+        }
+
+        boolean kevlar = Main.random(0, 4) == 1;
+        if (kevlar) {
+            ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
+            player.sendMessage("§8 - " + RoleplayItem.BULLETPROOF.getDisplayName());
+        }
+
+        boolean heavy_kevlar = Main.random(0, 8) == 1;
+        if (!kevlar && heavy_kevlar) {
+            ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
+            player.sendMessage("§8 - " + RoleplayItem.HEAVY_BULLETPROOF.getDisplayName());
         }
     }
 }

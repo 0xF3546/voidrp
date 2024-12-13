@@ -43,16 +43,16 @@ public class ServiceCommand implements CommandExecutor {
                         playerData.setVariable("service", "asd");
                         utils.staatUtil.createService(player, Integer.parseInt(args[0]), msg.toString());
                     } else {
-                        player.sendMessage(Main.error + "Syntax-Fehler: /service [§l110/112§7] [Nachricht]");
+                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /service [§l110/112§7] [Nachricht]");
                     }
                 } else {
                     player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
                 }
             } else {
-                player.sendMessage(Main.error + "Du hast bereits einen Service offen.");
+                player.sendMessage(Prefix.ERROR + "Du hast bereits einen Service offen.");
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /service [110/112] [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /service [110/112] [Nachricht]");
         }
         return false;
     }

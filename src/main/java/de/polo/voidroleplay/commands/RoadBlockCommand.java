@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -42,13 +43,13 @@ public class RoadBlockCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
 
         if (!playerData.getFaction().equalsIgnoreCase("FBI") || !playerData.getFaction().equalsIgnoreCase("Polizei") || !playerData.getFaction().equalsIgnoreCase("Medic")) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 
         roadblocks.clear();
 
-        factionManager.sendCustomMessageToFactions(Main.faction_prefix + player.getName() + " hat die Roadblocks zurückgesetzt", "FBI", "Polizei", "Medic");
+        factionManager.sendCustomMessageToFactions(Prefix.FACTION + player.getName() + " hat die Roadblocks zurückgesetzt", "FBI", "Polizei", "Medic");
 
         return false;
     }

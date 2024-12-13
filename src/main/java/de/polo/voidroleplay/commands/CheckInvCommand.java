@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,18 +24,18 @@ public class CheckInvCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
 
         if (playerData.getPermlevel() < 60) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Main.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length >= 1) {
             Player targetplayer = Bukkit.getPlayer(args[0]);
             player.openInventory(targetplayer.getInventory());
         } else {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /checkinv [Spieler]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /checkinv [Spieler]");
         }
         return false;
     }

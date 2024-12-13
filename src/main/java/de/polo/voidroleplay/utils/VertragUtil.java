@@ -68,20 +68,21 @@ public class VertragUtil {
         return agreements.stream().filter(x -> x.getContractor() == player || x.getContracted() == player).findFirst().orElse(null);
     }
 
-    public void setAgreement(Player player, Player target, String type, Object vertrag) {
+    public void setAgreement(Player player, Player target, Agreement agreement) {
         agreements.remove(getActiveAgreement(player));
         agreements.remove(getActiveAgreement(target));
-        Agreement agreement = new Agreement(player, target, type, vertrag);
         agreements.add(agreement);
         Main.getInstance().getMySQL().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
                 player.getUniqueId(),
                 target.getUniqueId(),
-                type,
-                vertrag.toString());
+                agreement.getType(),
+                "");
     }
 
     public void acceptVertrag(Player player) throws SQLException {
         Object curr = current.get(player.getUniqueId().toString());
+        Agreement agreement = getActiveAgreement(player);
+        if (agreement != null) agreement.accept();
         if (curr != null) {
             Player targetplayer = null;
             try {
@@ -91,7 +92,7 @@ public class VertragUtil {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             switch (vertrag_type.get(player.getUniqueId().toString())) {
                 case "faction_invite":
-                    factionManager.setPlayerInFrak(player, curr.toString(), 0);
+                    factionManager.setPlayerInFrak(player, curr.toString(), 0, true);
                     factionManager.sendMessageToFaction(curr.toString(), player.getName() + " ist der Fraktion beigetreten");
                     adminManager.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
                     Main.getInstance().beginnerpass.didQuest(player, 1);
@@ -146,7 +147,7 @@ public class VertragUtil {
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
                         Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "verlobt":
@@ -169,7 +170,7 @@ public class VertragUtil {
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
                         Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "blutgruppe":
@@ -196,7 +197,7 @@ public class VertragUtil {
                             }
                         });
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "streetwar":
@@ -212,12 +213,14 @@ public class VertragUtil {
             }
             deleteVertrag(player);
         } else {
-            player.sendMessage(Main.error + "Dir wird nichts angeboten.");
+            player.sendMessage(Prefix.ERROR + "Dir wird nichts angeboten.");
         }
     }
 
     public void denyVertrag(Player player) {
         String curr = current.get(player.getUniqueId().toString()).toString();
+        Agreement agreement = getActiveAgreement(player);
+        if (agreement != null) agreement.deny();
         if (curr != null) {
             Player targetplayer = null;
             PlayerData playerData = playerManager.getPlayerData(player);
@@ -258,7 +261,7 @@ public class VertragUtil {
                         player.sendMessage("§cDu hast die Anfrage abgelehnt.");
                         targetplayer.sendMessage("§c" + player.getName() + " hat die Anfrage abgelehnt.");
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                     break;
                 case "blutgruppe":
@@ -266,7 +269,7 @@ public class VertragUtil {
                         player.sendMessage("§cDu hast die Anfrage abgelehnt.");
                         targetplayer.sendMessage("§e" + player.getName() + " hat die Anfrage abgelehnt.");
                     } else {
-                        player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                        player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                 case "streetwar":
                     Main.getInstance().streetwar.denyStreetwar(player, curr);
@@ -281,7 +284,7 @@ public class VertragUtil {
             }
             deleteVertrag(player);
         } else {
-            player.sendMessage(Main.error + "Dir wird nichts angeboten.");
+            player.sendMessage(Prefix.ERROR + "Dir wird nichts angeboten.");
         }
     }
 

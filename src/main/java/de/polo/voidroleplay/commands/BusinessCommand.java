@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.BusinessData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.BusinessManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,10 +37,10 @@ public class BusinessCommand implements CommandExecutor {
                 playerData.save();
                 return false;
             } else {
-                player.sendMessage(Main.error + "Für ein Business benötigst du Premium.");
+                player.sendMessage(Prefix.ERROR + "Für ein Business benötigst du Premium.");
             }
         }
-        player.sendMessage(Main.error + "Du bist bereits in einem Business.");
+        player.sendMessage(Prefix.ERROR + "Du bist bereits in einem Business.");
         return false;
     }
 }

@@ -63,7 +63,7 @@ public class ReviveCommand implements CommandExecutor {
                                 nearestSkull = item;
                                 nearestDistance = distance;
                             } else {
-                                player.sendMessage(Main.error + "Du kannst diesen Spieler nicht wiederbeleben.");
+                                player.sendMessage(Prefix.ERROR + "Du kannst diesen Spieler nicht wiederbeleben.");
                             }
                         }
                     }
@@ -74,11 +74,12 @@ public class ReviveCommand implements CommandExecutor {
                 SkullMeta skullMeta = (SkullMeta) nearestSkull.getItemStack().getItemMeta();
                 final Item skull = nearestSkull;
                 if (skull.getOwner() == player.getUniqueId()) {
-                    player.sendMessage(Main.error + "Du kannst dich nicht selbst wiederbeleben.");
+                    player.sendMessage(Prefix.ERROR + "Du kannst dich nicht selbst wiederbeleben.");
                     return false;
                 }
                 if (!playerData.isDuty()) {
                     player.sendMessage(Prefix.ERROR + "Du bist nicht im Dienst.");
+                    return false;
                 }
                 UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
                 Player targetplayer = Bukkit.getPlayer(uuid);
@@ -111,10 +112,10 @@ public class ReviveCommand implements CommandExecutor {
                     }
                 }.runTaskLater(Main.getInstance(), 20 * 6);
             } else {
-                player.sendMessage(Main.error + "Kein Spieler in der nähe gefunden.");
+                player.sendMessage(Prefix.ERROR + "Kein Spieler in der nähe gefunden.");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

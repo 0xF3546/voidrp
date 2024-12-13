@@ -6,6 +6,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.PhoneUtils;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -56,10 +57,10 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Syntax-Error: /fraktionschat [Nachricht]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Error: /fraktionschat [Nachricht]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

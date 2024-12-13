@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,11 +27,11 @@ public class RebstockCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getVariable("job") == null) {
-            player.sendMessage(Main.error + "Du nicht den Winzer Job nicht angenommen.");
+            player.sendMessage(Prefix.ERROR + "Du nicht den Winzer Job nicht angenommen.");
             return false;
         }
         if (!playerData.getVariable("job").toString().equalsIgnoreCase("Winzer")) {
-            player.sendMessage(Main.error + "Du nicht den Winzer Job nicht angenommen.");
+            player.sendMessage(Prefix.ERROR + "Du nicht den Winzer Job nicht angenommen.");
             return false;
         }
         Block block = playerData.getVariable("grapevine");

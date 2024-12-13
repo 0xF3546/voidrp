@@ -289,7 +289,7 @@ public class Vehicles implements Listener, CommandExecutor {
                 playerSpeeds.put(player, 0.0);
             } else {
                 event.setCancelled(true);
-                player.sendMessage(Main.error + "Das Fahrzeug ist zugeschlossen.");
+                player.sendMessage(Prefix.ERROR + "Das Fahrzeug ist zugeschlossen.");
             }
 
         }
@@ -534,7 +534,7 @@ public class Vehicles implements Listener, CommandExecutor {
                 }
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /car [start/stop/lock/find]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /car [start/stop/lock/find]");
         }
         return false;
     }

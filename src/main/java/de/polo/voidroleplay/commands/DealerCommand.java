@@ -58,7 +58,7 @@ public class DealerCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) < 1 && ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_PIPE) < 1) {
-                    player.sendMessage(Main.error + "Du hast davon nicht genug.");
+                    player.sendMessage(Prefix.ERROR + "Du hast davon nicht genug.");
                     player.closeInventory();
                     return;
                 }
@@ -74,7 +74,7 @@ public class DealerCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) < 1 && ItemManager.getCustomItemCount(player, RoleplayItem.FACTION_PIPE) < 1) {
-                    player.sendMessage(Main.error + "Du hast davon nicht genug.");
+                    player.sendMessage(Prefix.ERROR + "Du hast davon nicht genug.");
                     player.closeInventory();
                     return;
                 }
@@ -91,7 +91,7 @@ public class DealerCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (ItemManager.getCustomItemCount(player, RoleplayItem.BOX_WITH_JOINTS) < 1) {
-                    player.sendMessage(Main.error + "Du hast davon nicht genug.");
+                    player.sendMessage(Prefix.ERROR + "Du hast davon nicht genug.");
                     player.closeInventory();
                     return;
                 }
@@ -128,7 +128,7 @@ public class DealerCommand implements CommandExecutor {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (dealer.getOwner().equalsIgnoreCase(playerData.getFaction())) {
-                        player.sendMessage(Main.error + "Du kannst deinen eigenen Dealer nicht einschüchtern.");
+                        player.sendMessage(Prefix.ERROR + "Du kannst deinen eigenen Dealer nicht einschüchtern.");
                         return;
                     }
                     if (gamePlay.rob.containsKey(dealer)) {
@@ -172,7 +172,7 @@ public class DealerCommand implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
                 if (ItemManager.getCustomItemCount(player, RoleplayItem.PEARL) < 1) {
-                    player.sendMessage(Main.error + "Du hast nicht gengu Perlen dabei.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht gengu Perlen dabei.");
                     return;
                 }
                 player.sendMessage("§8[§cDealer§8]§a +" + pearlPrice + "$");
@@ -187,7 +187,7 @@ public class DealerCommand implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
                 player.closeInventory();
                 if (ItemManager.getItem(player, Material.DIAMOND) < 1) {
-                    player.sendMessage(Main.error + "Du hast nicht gengu Diamanten dabei.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht gengu Diamanten dabei.");
                     return;
                 }
                 player.sendMessage("§8[§cDealer§8]§a +" + diamondPrice + "$");

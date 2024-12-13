@@ -5,6 +5,7 @@ import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.SubGroups;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import de.polo.voidroleplay.utils.Utils;
@@ -179,13 +180,20 @@ public class FactionManager {
         return playerData.getFactionGrade();
     }
 
-    public void setPlayerInFrak(Player player, String frak, Integer rang) throws SQLException {
+    public void setPlayerInFrak(Player player, String frak, Integer rang) {
+        setPlayerInFrak(player, frak, rang, false);
+    }
+
+    public void setPlayerInFrak(Player player, String frak, Integer rang, boolean updateFactionJoin) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setFaction(frak);
         playerData.setFactionGrade(rang);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        assert statement != null;
-        statement.executeUpdate("UPDATE `players` SET `faction` = '" + frak + "', `faction_grade` = " + rang + " WHERE `uuid` = '" + player.getUniqueId() + "'");
+        if (updateFactionJoin) {
+            playerData.setFactionJoin(Utils.getTime());
+            Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction = ?, faction_grade = ?, factionJoin = ? WHERE uuid = ?", frak, rang, Utils.getTime().toString(), player.getUniqueId().toString());
+        } else {
+            Main.getInstance().getMySQL().updateAsync("UPDATE players SET faction = ?, faction_grade = ? WHERE uuid = ?", frak, rang, player.getUniqueId().toString());
+        }
         boolean found = false;
         Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
         for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
@@ -488,7 +496,7 @@ public class FactionManager {
             Utils.Tablist.updatePlayer(player);
 
         } catch (SQLException e) {
-            player.sendMessage(Main.error + "Fehler.");
+            player.sendMessage(Prefix.ERROR + "Fehler.");
             throw new RuntimeException(e);
         }
     }
@@ -607,13 +615,14 @@ public class FactionManager {
             return playerData;
         }
         Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT faction, faction_grade FROM players WHERE uuid = ?");
+        PreparedStatement statement = connection.prepareStatement("SELECT faction, faction_grade , factionJoin FROM players WHERE uuid = ?");
         statement.setString(1, uuid.toString());
         ResultSet result = statement.executeQuery();
         if (result.next()) {
             PlayerData pData = new PlayerData();
             pData.setFaction(result.getString("faction"));
             pData.setFactionGrade(result.getInt("faction_grade"));
+            pData.setFactionJoin(Utils.toLocalDateTime(result.getDate("factionJoin")));
             return pData;
         }
         return null;

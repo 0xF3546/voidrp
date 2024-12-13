@@ -56,12 +56,12 @@ public class BombeCommand implements CommandExecutor, Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
 
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 
         if (!playerData.getFaction().equalsIgnoreCase("Terroristen")) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 
@@ -76,12 +76,12 @@ public class BombeCommand implements CommandExecutor, Listener {
         }
 
         if (ItemManager.getCustomItemCount(player, RoleplayItem.SPRENGSTOFF) < 1) {
-            player.sendMessage(Main.faction_prefix + "Du hast keinen Sprengstoff bei dir");
+            player.sendMessage(Prefix.FACTION + "Du hast keinen Sprengstoff bei dir");
             return false;
         }
 
         if (!playerData.isLeader()) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 

@@ -34,11 +34,11 @@ public class RegisterATMCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 90) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /registeratm [BlockId(/registerblock atm)] [ATM-Name]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /registeratm [BlockId(/registerblock atm)] [ATM-Name]");
             return false;
         }
         int blockId = Integer.parseInt(args[0]);
@@ -46,7 +46,7 @@ public class RegisterATMCommand implements CommandExecutor {
         Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO atm (blockId, name) VALUES (?, ?)", blockId, atmName)
                 .thenApply(key -> {
                     if (key.isPresent()) {
-                        player.sendMessage(Prefix.gamedesign_prefix + "Du hast einen ATM registriert #" + key.get());
+                        player.sendMessage(Prefix.GAMEDESIGN + "Du hast einen ATM registriert #" + key.get());
                         adminManager.send_message(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", ChatColor.GOLD);
                     }
                     return null;

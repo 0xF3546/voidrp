@@ -2,6 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -23,12 +25,13 @@ public class UseCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /use [Kokain/Joint/Schmerzmittel/Spritze/Antibiotikum]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /use [Kokain/Joint/Schmerzmittel/Spritze/Antibiotikum]");
             return false;
         }
-        int cocaineCount = ItemManager.getCustomItemCount(player, RoleplayItem.SNUFF);
-        int jointCount = ItemManager.getCustomItemCount(player, RoleplayItem.CIGAR);
-        int crystalCount = ItemManager.getCustomItemCount(player, RoleplayItem.CRYSTAL);
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        int cocaineCount = playerData.getInventory().getByTypeOrEmpty(RoleplayItem.SNUFF).getAmount();
+        int jointCount = playerData.getInventory().getByTypeOrEmpty(RoleplayItem.CIGAR).getAmount();
+        int crystalCount = playerData.getInventory().getByTypeOrEmpty(RoleplayItem.CRYSTAL).getAmount();
         String errorMsg = "§cDu hast nicht genug Drogen.";
         switch (args[0].toLowerCase()) {
             case "schnupftabak":
@@ -77,7 +80,7 @@ public class UseCommand implements CommandExecutor {
                 }
                 break;
             default:
-                player.sendMessage(Main.error + "Syntax-Fehler: /use [Schnupftabak/Zigarre/Kristall/Schmerzmittel/Spritze]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /use [Schnupftabak/Zigarre/Kristall/Schmerzmittel/Spritze]");
                 break;
         }
         return false;

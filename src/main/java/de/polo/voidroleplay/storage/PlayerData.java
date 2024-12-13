@@ -147,7 +147,6 @@ public class PlayerData {
     @Getter
     private Date birthday;
     @Setter
-    @Getter
     private int houseSlot;
     @Setter
     @Getter
@@ -282,6 +281,10 @@ public class PlayerData {
     @Getter
     @Setter
     private int loyaltyBonus;
+
+    @Getter
+    @Setter
+    private LocalDateTime factionJoin;
 
     public PlayerData(Player player) {
         this.player = player;
@@ -706,7 +709,7 @@ public class PlayerData {
                 isBaptized,
                 Timestamp.valueOf(lastContract).toString(),
                 votes,
-                factionCooldown.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                (factionCooldown == null) ? null : factionCooldown.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 (subTeam != null) ? subTeam.getId() : -1,
                 rewardId,
                 rewardTime,
@@ -844,6 +847,12 @@ public class PlayerData {
 
     public void giveWeapon(PlayerWeapon playerWeapon) {
         this.weapons.add(playerWeapon);
+    }
+
+    public int getHouseSlot() {
+        int slots = houseSlot;
+        if (getPermlevel() >= 20) slots++;
+        return slots;
     }
 
     public class AddonXP {

@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,7 +29,7 @@ public class ApothekeCommand implements CommandExecutor {
         Player player = (Player) sender;
         for (Apotheke apotheke : gamePlay.apotheke.getApotheken()) {
             if (locationManager.getLocation("apotheke-" + apotheke.getId()) == null) {
-                player.sendMessage(Main.error + "Du bist nicht in der nähe einer Apotheke!");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Apotheke!");
                 return false;
             }
             if (locationManager.getDistanceBetweenCoords(player, "apotheke-" + apotheke.getId()) < 5) {
@@ -36,7 +37,7 @@ public class ApothekeCommand implements CommandExecutor {
                 return false;
             }
         }
-        player.sendMessage(Main.error + "Du bist nicht in der nähe einer Apotheke!");
+        player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Apotheke!");
         return false;
     }
 }

@@ -41,16 +41,16 @@ public class InviteCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null && playerData.getCompany() == null) {
-            player.sendMessage(Main.error + "Du kannst niemanden einladen.");
+            player.sendMessage(Prefix.ERROR + "Du kannst niemanden einladen.");
             return false;
         }
         if (!(args.length >= 1)) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /invite [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /invite [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 9, "§3" + targetplayer.getName() + " einladen", true, true);
@@ -106,7 +106,7 @@ public class InviteCommand implements CommandExecutor {
         }
         BusinessData businessData = businessManager.getBusinessData(playerData.getBusiness());
         if (BusinessManager.getMemberCount(playerData.getBusiness()) >= businessData.getMaxMember()) {
-            player.sendMessage(Main.error + "Dein Business ist voll!");
+            player.sendMessage(Prefix.ERROR + "Dein Business ist voll!");
             return;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "business_invite", playerData.getBusiness())) {
@@ -140,7 +140,7 @@ public class InviteCommand implements CommandExecutor {
         String playerfac = factionManager.faction(player);
         FactionData factionData = factionManager.getFactionData(playerfac);
         if (player.getLocation().distance(targetplayer.getLocation()) >= 5) {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
             return;
         }
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
@@ -148,12 +148,12 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage("§8[§" + factionManager.getFactionPrimaryColor(playerfac) + playerfac + "§8] §c" + targetplayer.getName() + " ist bereits in einer Fraktion.");
             return;
         }
-        if (Utils.getTime().isBefore(targetplayerData.getFactionCooldown())) {
+        if (targetplayerData.getFactionCooldown() != null && Utils.getTime().isBefore(targetplayerData.getFactionCooldown())) {
             player.sendMessage(Prefix.ERROR + "Der Spieler kann noch nicht invited werden!");
             return;
         }
         if (factionManager.getMemberCount(playerfac) >= factionData.getMaxMember()) {
-            player.sendMessage(Main.error + "Deine Fraktion ist voll!");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion ist voll!");
             return;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "faction_invite", playerfac)) {

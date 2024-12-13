@@ -31,7 +31,7 @@ public class ContractCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!(args.length >= 2)) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /contract [Spieler] [Kopfgeld]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /contract [Spieler] [Kopfgeld]");
             return false;
         }
         if (playerData.getFaction() != null) {
@@ -42,7 +42,7 @@ public class ContractCommand implements CommandExecutor {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer);
@@ -52,11 +52,11 @@ public class ContractCommand implements CommandExecutor {
         }
         int price = Integer.parseInt(args[1]);
         if (price < ServerManager.getPayout("kopfgeld")) {
-            player.sendMessage(Main.error + "Die Mindestsumme beträgt " + ServerManager.getPayout("kopfgeld") + "$.");
+            player.sendMessage(Prefix.ERROR + "Die Mindestsumme beträgt " + ServerManager.getPayout("kopfgeld") + "$.");
             return false;
         }
         if (playerData.getBargeld() < price) {
-            player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+            player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
             return false;
         }
         targetplayerData.setLastContract(Utils.getTime());

@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,16 +30,16 @@ public class KickCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 70) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /kick [Spieler] [Grund]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /kick [Spieler] [Grund]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null && !targetplayer.isOnline()) {
-            player.sendMessage(Main.admin_error + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.ADMIN_ERROR + args[0] + " ist nicht online.");
             return false;
         }
         StringBuilder message = new StringBuilder();

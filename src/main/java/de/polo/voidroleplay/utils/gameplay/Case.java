@@ -113,6 +113,9 @@ public class Case {
                         player.getInventory().addItem(winningItem);
                     }
                     break;
+                case LEATHER_HORSE_ARMOR:
+                    Main.getInstance().weaponManager.giveWeaponToCabinet(player, Weapon.MARKSMAN, 0, 1);
+                    break;
                 default:
                     player.getInventory().addItem(winningItem);
                     break;

@@ -1,17 +1,24 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
@@ -38,7 +45,10 @@ public class CheckoutWebshopCommand implements CommandExecutor {
             return false;
         }
         String uuid = args[0];
-        float amount = Float.parseFloat(args[2]);
+        float amount = 0;
+        if (args.length > 2) {
+            amount = Float.parseFloat(args[2]);
+        }
         uuid = uuid.replace("-", "");
         Player target = null;
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -54,7 +64,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                 }
                 Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
-                        args[1],
+                        args[1].toLowerCase(),
                         amount);
                 break;
             case "premium":
@@ -65,7 +75,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                 }
                 Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
-                        args[1],
+                        args[1].toLowerCase(),
                         amount);
                 break;
             case "spende":
@@ -81,9 +91,61 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                 }
                 Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
-                        args[1],
+                        args[1].toLowerCase(),
                         amount);
                 break;
+            case "pack-starter":
+                if (target != null) {
+                    PlayerData playerData = playerManager.getPlayerData(target);
+                    target.sendMessage("§8[§eShop§8]§a Du hast Pack-Starter erhalten!");
+                    playerData.addMoney(25000, "Starterpack");
+                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.ASSAULT_RIFLE, 0, 250);
+                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 0, 10);
+                    ItemManager.addCustomItem(target, RoleplayItem.DRINK_WATER, 20);
+                    ItemManager.addItem(target, Material.BREAD, "§7Brot", 128);
+                    ItemManager.addItem(target, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
+                    playerManager.addEXPBoost(target, 6);
+                    return false;
+                }
+                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                        uuid,
+                        args[1].toLowerCase(),
+                        amount);
+                break;
+            case "pack-vortex":
+                if (target != null) {
+                    target.sendMessage("§8[§eShop§8]§a Du hast Pack-Vortex erhalten!");
+                    PlayerData playerData = playerManager.getPlayerData(target);
+                    playerData.addMoney(6666, "Vortexpack");
+                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 120, 10);
+                    ItemManager.addItem(target, Material.IRON_HELMET, "§fEisenhelm", 1);
+                    return false;
+                }
+                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                        uuid,
+                        args[1].toLowerCase(),
+                        amount);
+                break;
+            case "pack-christmas":
+                if (target != null) {
+                    PlayerData playerData = playerManager.getPlayerData(target);
+                    target.sendMessage("§8[§eShop§8]§a Du hast Pack-Christmas erhalten!");
+                    playerData.addMoney(14444, "Weihnachtspack");
+                    ItemStack helmet = new ItemStack (Material.LEATHER_HELMET);
+                    LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
+                    meta.setColor(Color.RED);
+                    meta.setDisplayName("§9Blaue Wollmütze");
+                    helmet.setItemMeta(meta);
+                    target.getInventory().addItem(helmet);
+                    ItemManager.addItem(target, Material.SNOWBALL, "§fSchneeball", 64);
+                    playerManager.addCoins(target, 2000);
+                    return false;
+                }
+                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                        uuid,
+                        args[1].toLowerCase(),
+                        amount);
+                    break;
         }
 
         return false;
@@ -121,6 +183,39 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                                         throw new RuntimeException(e);
                                     }
                                     break;
+                                case "pack-starter": {
+                                    playerData.addMoney(25000, "Starterpack");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast Pack-Starter erhalten!");
+                                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 250);
+                                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 0, 10);
+                                    ItemManager.addCustomItem(player, RoleplayItem.DRINK_WATER, 20);
+                                    ItemManager.addItem(player, Material.BREAD, "§7Brot", 128);
+                                    ItemManager.addItem(player, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
+                                    try {
+                                        playerManager.addEXPBoost(player, 6);
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    return false;
+                                }
+                                case "pack-vortex":
+                                    playerData.addMoney(6666, "Vortexpack");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast Pack-Vortex erhalten!");
+                                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 120, 10);
+                                    ItemManager.addItem(player, Material.IRON_HELMET, "§fEisenhelm", 1);
+                                    return false;
+                                case "pack-christmas":
+                                    playerData.addMoney(14444, "Weihnachtspack");
+                                    player.sendMessage("§8[§eShop§8]§a Du hast Pack-Christmas erhalten!");
+                                    ItemStack helmet = new ItemStack (Material.LEATHER_HELMET);
+                                    LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
+                                    meta.setColor(Color.RED);
+                                    meta.setDisplayName("§9Blaue Wollmütze");
+                                    helmet.setItemMeta(meta);
+                                    player.getInventory().addItem(helmet);
+                                    ItemManager.addItem(player, Material.SNOWBALL, "§fSchneeball", 64);
+                                    playerManager.addCoins(player, 2000);
+                                    return false;
                             }
                         }
                         return null;

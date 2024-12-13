@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +32,7 @@ public class RegisterHouseCommand implements CommandExecutor {
                     statement.setInt(1, Integer.parseInt(args[0]));
                     statement.setInt(2, Integer.parseInt(args[1]));
                     statement.execute();
-                    player.sendMessage(Main.gamedesign_prefix + "Haus " + args[0] + " wurde mit Preis " + args[1] + " angelegt.");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Haus " + args[0] + " wurde mit Preis " + args[1] + " angelegt.");
                     ResultSet result = statement.getGeneratedKeys();
                     if (result.next()) {
                         House house = new House(Integer.parseInt(args[0]), 2, 7);
@@ -46,10 +47,10 @@ public class RegisterHouseCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
             } else {
-                player.sendMessage(Main.gamedesign_prefix + "Syntax-Fehler: /registerhouse [Nummer] [Preis]");
+                player.sendMessage(Prefix.GAMEDESIGN + "Syntax-Fehler: /registerhouse [Nummer] [Preis]");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

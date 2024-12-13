@@ -214,7 +214,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                     playerData.setVariable("robCd", null);
                 }
                 if (targetplayerData.getBargeld() < 1) {
-                    player.sendMessage(Main.error + targetplayer.getName() + " hat kein Bargeld dabei.");
+                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat kein Bargeld dabei.");
                     return;
                 }
                 if (targetplayerData.getBargeld() < bargeldAmount) {
@@ -279,7 +279,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                     GangwarUtils gangwarUtils = Main.getInstance().utils.gangwarUtils;
                     FactionManager factionManager = Main.getInstance().factionManager;
                     if (playerData.getFaction() == null || Objects.equals(playerData.getFaction(), "Zivilist")) {
-                        player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
+                        player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
                         return;
                     }
                     if (playerData.getVariable("gangwar") != null) {
@@ -639,7 +639,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         switch (type) {
             case "vip_30":
                 if (playerData.getCoins() < 20000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Coins (20.000).");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Coins (20.000).");
                     player.closeInventory();
                     return;
                 }
@@ -649,7 +649,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 break;
             case "premium_30":
                 if (playerData.getCoins() < 10000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Coins (10.000).");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Coins (10.000).");
                     player.closeInventory();
                     return;
                 }
@@ -659,7 +659,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 break;
             case "gold_30":
                 if (playerData.getCoins() < 5000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Coins (5.000).");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Coins (5.000).");
                     player.closeInventory();
                     return;
                 }
@@ -669,7 +669,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 break;
             case "hausslot":
                 if (playerData.getCoins() < 6000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Coins (6.000).");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Coins (6.000).");
                     player.closeInventory();
                     return;
                 }
@@ -680,7 +680,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 break;
             case "gameboost_3":
                 if (playerData.getCoins() < 2000) {
-                    player.sendMessage(Main.error + "Du hast nicht genug Coins (2.000).");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Coins (2.000).");
                     player.closeInventory();
                     return;
                 }

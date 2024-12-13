@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -26,11 +27,11 @@ public class AssistentchatCommand implements CommandExecutor {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getPermlevel() < 40) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.admin_error + "Syntax-Error: /guidechat [Nachricht]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Error: /guidechat [Nachricht]");
             return false;
         }
 
@@ -38,7 +39,7 @@ public class AssistentchatCommand implements CommandExecutor {
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
             if (playersData.getPermlevel() >= 40) {
-                players.sendMessage(Main.support_prefix + "§b" + playerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);
+                players.sendMessage(Prefix.SUPPORT + "§b" + playerManager.rang(player) + " " + player.getName() + "§8:§7 " + msg);
             }
         }
         return false;

@@ -16,9 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.PreparedStatement;
 import java.util.Arrays;
 import java.util.Collections;
+
+import static de.polo.voidroleplay.Main.utils;
 
 /**
  * @author Mayson1337
@@ -48,18 +49,14 @@ public class JailCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (!playerData.isJailed()) return;
-                if (Main.getInstance().utils.staatUtil.hasParole(player)) {
+                if (utils.staatUtil.hasParole(player)) {
                     player.sendMessage(Prefix.ERROR + "Du bist bereits auf Bewährung.");
                     return;
                 }
-                Main.getInstance().utils.staatUtil.setParole(player, playerData.getHafteinheiten() * 2);
+                utils.staatUtil.setParole(player, playerData.getHafteinheiten() * 2);
                 playerData.setHafteinheiten(playerData.getHafteinheiten() / 2);
                 player.sendMessage("§8[§cGefängnis§8]§7 Du hast nun " + playerData.getHafteinheiten() + " Hafteinheiten und " + playerData.getHafteinheiten() * 2 + " Minuten bewährung.");
-                PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE Jail SET hafteinheiten_verbleibend = ? WHERE uuid = ?");
-                statement.setInt(1, playerData.getHafteinheiten());
-                statement.setString(2, player.getUniqueId().toString());
-                statement.executeUpdate();
-                statement.close();
+                Main.getInstance().getMySQL().updateAsync("UPDATE Jail SET hafteinheiten_verbleibend = ? WHERE uuid = ?", playerData.getHafteinheiten(), player.getUniqueId().toString());
             }
         });
         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.PAPER, 1, 0, "§7Freikaufen", Collections.singletonList("§8 ➥ §7" + playerData.getHafteinheiten() * 500 + "$"))) {
@@ -71,7 +68,7 @@ public class JailCommand implements CommandExecutor {
                     return;
                 }
                 playerData.removeBankMoney(playerData.getHafteinheiten() * 500, "Kaution Gefängnis");
-                Main.getInstance().utils.staatUtil.unarrestPlayer(player);
+                utils.staatUtil.unarrestPlayer(player);
             }
         });
         return false;

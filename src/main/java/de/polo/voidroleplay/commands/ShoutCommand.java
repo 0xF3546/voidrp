@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class ShoutCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /shout [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /shout [Nachricht]");
             return false;
         }
         String playerName = player.getName();

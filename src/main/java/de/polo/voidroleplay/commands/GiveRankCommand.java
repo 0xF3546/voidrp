@@ -31,54 +31,45 @@ public class GiveRankCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.isLeader()) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /giverank [Spieler] [Rang]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /giverank [Spieler] [Rang]");
             return false;
         }
         OfflinePlayer targetplayer = Utils.getOfflinePlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + args[0] + " wurde nicht gefunden.");
             return false;
         }
         int rang;
         try {
             rang = Integer.parseInt(args[1]);
         } catch (IllegalArgumentException e) {
-            player.sendMessage(Main.error + "Der Rang muss eine Zahl sein!");
+            player.sendMessage(Prefix.ERROR + "Der Rang muss eine Zahl sein!");
             return false;
         }
         if (0 > rang || rang > 6) {
-            player.sendMessage(Main.error + "Der Rang muss von 0-6 sein!");
+            player.sendMessage(Prefix.ERROR + "Der Rang muss von 0-6 sein!");
             return false;
         }
         PlayerData targetData = factionManager.getFactionOfPlayer(targetplayer.getUniqueId());
         try {
-            if (!targetData.getFaction().equals(playerData.getFaction()) || targetData.getFaction() == null) {
-                player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner Fraktion.");
+            if (targetData.getFaction() == null || !targetData.getFaction().equals(playerData.getFaction())) {
+                player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner Fraktion.");
                 return false;
             }
             if (targetData.getFactionGrade() >= playerData.getFactionGrade()) {
-                player.sendMessage(Main.error_nopermission);
+                player.sendMessage(Prefix.ERROR_NOPERMISSION);
+                return false;
+            }
+            if (targetData.getFactionJoin().plusWeeks(rang).isAfter(Utils.getTime())) {
+                player.sendMessage(Prefix.ERROR + "Der Spieler ist noch nicht lang genug in der Fraktion.");
                 return false;
             }
         } catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Fehler beim setzen der Ränge, bitte warte bis der Server neugestartet wurde.");
-        }
-        int leaders = 0;
-        if (rang >= 7) {
-            for (FactionPlayerData fpd : factionManager.getFactionMember(playerData.getFaction())) {
-                if (fpd.getFaction_grade() >= 7) leaders++;
-            }
-        }
-        int leaderLimit = 3;
-        if (playerData.getFaction().equalsIgnoreCase("Medic") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-            leaderLimit = 4;
-        }
-        if (leaders >= leaderLimit) {
-            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann nur " + leaderLimit + " Leader haben!");
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());

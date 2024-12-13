@@ -233,9 +233,7 @@ public class PlayerInteractListener implements Listener {
                                 return;
                             } else {
                                 if (event.getClickedBlock().getState() instanceof Chest && drop.isDropOpen) {
-                                    Chest chest = (Chest) event.getClickedBlock().getState();
-                                    Inventory chestInventory = chest.getInventory();
-                                    player.openInventory(chestInventory);
+                                    drop.open(player);
                                 }
                             }
                         }
@@ -296,7 +294,7 @@ public class PlayerInteractListener implements Listener {
                                     return;
                                 }
                             }
-                            player.sendMessage(Main.error + "Dieser Automat wurde noch nicht registriert.");
+                            player.sendMessage(Prefix.ERROR + "Dieser Automat wurde noch nicht registriert.");
                         }
                         RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                         if (block != null && block.getInfo() != null && Objects.equals(block.getInfo(), "house")) {
@@ -545,7 +543,7 @@ public class PlayerInteractListener implements Listener {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (ItemManager.getCustomItemCount(player, RoleplayItem.PIPE) < 3) {
-                            player.sendMessage(Main.error + "Du hast nicht genug Joints.");
+                            player.sendMessage(Prefix.ERROR + "Du hast nicht genug Joints.");
                             return;
                         }
                         ItemManager.removeCustomItem(player, RoleplayItem.PIPE, 3);
@@ -561,7 +559,7 @@ public class PlayerInteractListener implements Listener {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (ItemManager.getItem(player, Material.BIRCH_BUTTON) < 1) {
-                            player.sendMessage(Main.error + "Du hast keine Muschel dabei.");
+                            player.sendMessage(Prefix.ERROR + "Du hast keine Muschel dabei.");
                             return;
                         }
                         double randomNumber = Math.random() * 100;
@@ -585,7 +583,7 @@ public class PlayerInteractListener implements Listener {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         if (ItemManager.getItem(player, Material.BIRCH_BUTTON) < 1) {
-                            player.sendMessage(Main.error + "Du hast keine Muschel dabei.");
+                            player.sendMessage(Prefix.ERROR + "Du hast keine Muschel dabei.");
                             return;
                         }
                         int itemCount = ItemManager.getItem(player, Material.BIRCH_BUTTON);

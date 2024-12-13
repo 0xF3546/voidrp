@@ -109,7 +109,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                             player.getInventory().removeItem(itemStack);
                             if (targetplayer.isOnline()) {
                                 if (targetplayerData.getGender() == playerData.getGender()) {
-                                    player.sendMessage(Main.error + "Personen mit dem gleichen Geschlecht können nicht heiraten.");
+                                    player.sendMessage(Prefix.ERROR + "Personen mit dem gleichen Geschlecht können nicht heiraten.");
                                     return;
                                 }
                                 player.sendMessage("§6Du und " + targetplayer.getName() + " sind jetzt verheiratet.");
@@ -144,13 +144,13 @@ public class PlayerInteractWithPlayerListener implements Listener {
                                     throw new RuntimeException(e);
                                 }
                             } else {
-                                player.sendMessage(Main.error + "Spieler konnte nicht gefunden werden.");
+                                player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                             }
                         } else {
-                            player.sendMessage(Main.error + targetplayer.getName() + " & du seid nicht verlobt.");
+                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " & du seid nicht verlobt.");
                         }
                     } else {
-                        player.sendMessage(Main.error + player.getName() + " & du seid nicht verlobt.");
+                        player.sendMessage(Prefix.ERROR + player.getName() + " & du seid nicht verlobt.");
                     }
                 }
             } else if (item.getType().equals(RoleplayItem.IBOPROFEN.getMaterial()) && item.getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.IBOPROFEN.getDisplayName()) && !Main.getInstance().getCooldownManager().isOnCooldown(player, "ibo")) {
@@ -163,7 +163,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                     ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Iboprofen verabreicht.");
                     ItemManager.removeCustomItem(player, RoleplayItem.IBOPROFEN, 1);
                 } else {
-                    player.sendMessage(Main.error + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
+                    player.sendMessage(Prefix.ERROR + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
                 }
             }
         }
@@ -176,7 +176,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
             if (command == null) return;
             if (playerManager.getPlayerData(event.getPlayer().getUniqueId()).isAduty()) {
                 String id_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING);
-                event.getPlayer().sendMessage(Main.gamedesign_prefix + "Befehl§8:§f " + command + "§8 | §7ID-Name§8:§f " + id_name);
+                event.getPlayer().sendMessage(Prefix.GAMEDESIGN + "Befehl§8:§f " + command + "§8 | §7ID-Name§8:§f " + id_name);
             } else {
                 event.getPlayer().performCommand(command);
             }

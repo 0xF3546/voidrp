@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,11 +24,11 @@ public class GMCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!player.hasPermission("*")) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length == 0) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /gm [0/1/2/3]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /gm [0/1/2/3]");
             return false;
         }
         switch (Integer.parseInt(args[0])) {

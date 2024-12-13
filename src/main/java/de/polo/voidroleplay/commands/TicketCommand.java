@@ -70,12 +70,12 @@ public class TicketCommand implements CommandExecutor {
             public void onClick(InventoryClickEvent event) {
                 if (event.isLeftClick()) {
                     player.teleport(finalTarget.getLocation());
-                    player.sendMessage(Prefix.support_prefix + "Du hast dich zu " + finalTarget.getName() + " teleportiert.");
+                    player.sendMessage(Prefix.SUPPORT + "Du hast dich zu " + finalTarget.getName() + " teleportiert.");
                     Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", ChatColor.AQUA);
                 } else {
                     NaviData nearest = NavigationManager.getNearestNaviPoint(finalTarget.getLocation());
                     finalTarget.teleport(Main.getInstance().locationManager.getLocation(nearest.getLocation()));
-                    player.sendMessage(Prefix.support_prefix + "Du hast " + finalTarget.getName() + " zu " + nearest.getName() + "§7 teleportiert.");
+                    player.sendMessage(Prefix.SUPPORT + "Du hast " + finalTarget.getName() + " zu " + nearest.getName() + "§7 teleportiert.");
                     Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), ChatColor.AQUA);
                 }
             }
@@ -115,7 +115,7 @@ public class TicketCommand implements CommandExecutor {
                 ticket.setEditors(editors);
                 for (Player editor : Bukkit.getOnlinePlayers()) {
                     if (ticket.getEditors().contains(editor.getUniqueId()) || ticket.getCreator().equals(editor.getUniqueId())) {
-                        editor.sendMessage(Main.support_prefix + player.getName() + " hat das Ticket verlassen.");
+                        editor.sendMessage(Prefix.SUPPORT + player.getName() + " hat das Ticket verlassen.");
                     }
                 }
                 Utils.Tablist.updatePlayer(player);

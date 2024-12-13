@@ -416,7 +416,7 @@ public class BankingUtils implements Listener {
                     playerManager.addBankMoney(player, amount, "Bankeinzahlung(" + event.getPlayerData().getVariable("atm_name") + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ eingezahlt.");
                 } else {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                 }
             }
             event.end();
@@ -434,7 +434,7 @@ public class BankingUtils implements Listener {
                     playerManager.addMoney(player, amount, "Bankauszahlung (" + event.getPlayerData().getVariable("atm_name") + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
                 } else {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank.");
                 }
             }
             event.end();
@@ -447,7 +447,7 @@ public class BankingUtils implements Listener {
             }
             Player targetplayer = Bukkit.getPlayer(event.getMessage());
             if (!targetplayer.isOnline()) {
-                player.sendMessage(Main.error + "Der Spieler konnte nicht gefunden werden.");
+                player.sendMessage(Prefix.ERROR + "Der Spieler konnte nicht gefunden werden.");
                 event.end();
             } else {
                 event.end();
@@ -485,7 +485,7 @@ public class BankingUtils implements Listener {
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ eingezahlt.");
                     factionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Fraktionskonto eingezahlt.");
                 } else {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                 }
             }
             event.end();
@@ -504,7 +504,7 @@ public class BankingUtils implements Listener {
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
                     factionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
                 } else {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank.");
                 }
             }
             event.end();
@@ -524,7 +524,7 @@ public class BankingUtils implements Listener {
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ eingezahlt.");
                     Main.getInstance().companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Firmenkonto eingezahlt.");
                 } else {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld dabei.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                 }
             }
             event.end();
@@ -543,7 +543,7 @@ public class BankingUtils implements Listener {
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
                     Main.getInstance().companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Firmenkonto ausgezahlt.");
                 } else {
-                    player.sendMessage(Main.error + "Du hast nicht genug Geld auf der Bank.");
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank.");
                 }
             }
             event.end();

@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.base.shops.ShopData;
+import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -130,19 +131,19 @@ public class LocationManager {
             Statement statement = mySQL.getStatement();
             assert statement != null;
             if (name.contains("isShop")) {
-                p.sendMessage(Main.gamedesign_prefix + " Shop regestriert.");
+                p.sendMessage(Prefix.GAMEDESIGN + " Shop regestriert.");
                 statement.executeUpdate("INSERT INTO shops (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isShop", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else if (name.contains("isGas")) {
-                p.sendMessage(Main.gamedesign_prefix + " Tankstelle regestriert.");
+                p.sendMessage(Prefix.GAMEDESIGN + " Tankstelle regestriert.");
                 statement.executeUpdate("INSERT INTO gasstations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGas", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else if (name.contains("isGarage")) {
-                p.sendMessage(Main.gamedesign_prefix + " Garage regestriert.");
+                p.sendMessage(Prefix.GAMEDESIGN + " Garage regestriert.");
                 statement.executeUpdate("INSERT INTO garage (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isGarage", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else if (name.contains("isFFA")) {
-                p.sendMessage(Main.gamedesign_prefix + " FFA-Spawn regestriert.");
+                p.sendMessage(Prefix.GAMEDESIGN + " FFA-Spawn regestriert.");
                 statement.executeUpdate("INSERT INTO ffa_spawnpoints (lobby_type, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace("isFFA", "").replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else if (name.contains("isDealer")) {
-                p.sendMessage(Main.gamedesign_prefix + " Dealer regestriert.");
+                p.sendMessage(Prefix.GAMEDESIGN + " Dealer regestriert.");
                 statement.executeUpdate("INSERT INTO dealer (x, y, z, yaw, pitch) VALUES (" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", " + loc.getYaw() + ", " + loc.getPitch() + ");");
             } else {
                 statement.executeUpdate("INSERT INTO locations (name, x, y, z, welt, yaw, pitch) VALUES ('" + name.replace(" ", "") + "', " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ", '" + loc.getWorld().getName() + "', " + loc.getYaw() + ", " + loc.getPitch() + ");");

@@ -24,16 +24,16 @@ public class LeadBusinessCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         /*if (playerData.getPermlevel() < 75) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /leadbusiness [Spieler] [Business]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /leadbusiness [Spieler] [Business]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.admin_error + "Spieler nicht gefunden");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Spieler nicht gefunden");
             return false;
         }
         String frak = args[1];

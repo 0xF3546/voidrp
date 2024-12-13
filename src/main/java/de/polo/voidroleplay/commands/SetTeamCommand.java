@@ -52,7 +52,7 @@ public class SetTeamCommand implements CommandExecutor {
                 playerManager.setRang(offlinePlayer.getUniqueId(), rank);
                 adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
             } else {
-                player.sendMessage(Prefix.admin_error + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
+                player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);

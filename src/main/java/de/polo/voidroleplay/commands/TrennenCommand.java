@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -44,7 +45,7 @@ public class TrennenCommand implements CommandExecutor {
 
             }
         } else {
-            player.sendMessage(Main.error + "Du bist in keiner Beziehung.");
+            player.sendMessage(Prefix.ERROR + "Du bist in keiner Beziehung.");
         }
         return false;
     }

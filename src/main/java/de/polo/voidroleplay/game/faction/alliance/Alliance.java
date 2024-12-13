@@ -86,18 +86,18 @@ public class Alliance implements CommandExecutor {
         player.sendMessage(Prefix.ERROR + "Dieses Feature ist deaktiviert!");
         return false;
         /*if (playerData.getFactionGrade() < 7) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.isBadFrak()) {
-            player.sendMessage(Main.error + "Deine Fraktion kann keine Bündnise starten.");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion kann keine Bündnise starten.");
             return false;
         }
         if (args.length < 1) {
             FactionData allianceFaction = getAlliance(playerData.getFaction());
             if (allianceFaction == null) {
-                player.sendMessage(Main.error + "Syntax-Fehler: /alliance [Fraktion/end]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /alliance [Fraktion/end]");
                 return false;
             }
             player.sendMessage("§8[§cBündnis§8]§7 Deine Fraktion ist mit §" + allianceFaction.getPrimaryColor() + allianceFaction.getFullname() + "§7 im Bündnis.");
@@ -116,16 +116,16 @@ public class Alliance implements CommandExecutor {
             }
         }
         if (availablePlayers.size() == 0) {
-            player.sendMessage(Main.error + "Es ist kein Fraktionsleader der anderen Partei online.");
+            player.sendMessage(Prefix.ERROR + "Es ist kein Fraktionsleader der anderen Partei online.");
             return false;
         }
         FactionData defenderData = factionManager.getFactionData(playerManager.getPlayerData(availablePlayers.get(0).getUniqueId()).getFaction());
         if (!defenderData.isBadFrak()) {
-            player.sendMessage(Main.error + "Die Gegner-Partei kann kein Bündnis starten.");
+            player.sendMessage(Prefix.ERROR + "Die Gegner-Partei kann kein Bündnis starten.");
             return false;
         }
         if (playerData.getFaction().equalsIgnoreCase(args[0])) {
-            player.sendMessage(Main.error + "Du kannst dein Bündnis mit deiner eigenen Fraktion starten.");
+            player.sendMessage(Prefix.ERROR + "Du kannst dein Bündnis mit deiner eigenen Fraktion starten.");
             return false;
         }
         if (getAlliance(args[0]) != null) {
@@ -141,7 +141,7 @@ public class Alliance implements CommandExecutor {
             }
         }
         if (!sendMessage) {
-            player.sendMessage(Main.error + "Es befindet sich kein Fraktionsleader in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + "Es befindet sich kein Fraktionsleader in deiner nähe.");
             return false;
         }
         player.sendMessage("§8[§cBündnis§8]§a Du hast die Fraktion zum Bündnis eingeladen.");

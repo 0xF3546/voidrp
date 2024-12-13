@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,7 +41,7 @@ public class DropCommand implements CommandExecutor {
                     break;
             }
         } else {
-            player.sendMessage(Main.error + "Du hast keinen Job angenommen.");
+            player.sendMessage(Prefix.ERROR + "Du hast keinen Job angenommen.");
         }
         return false;
     }

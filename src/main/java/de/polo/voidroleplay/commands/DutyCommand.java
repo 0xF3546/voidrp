@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,16 +30,16 @@ public class DutyCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error + "Du bist in keiner Fraktion");
+            player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion");
             return false;
         }
         Location location = locationManager.getLocation("duty_" + playerData.getFaction());
         if (location == null) {
-            player.sendMessage(Main.error + "Deine Fraktion hat kein Dienst-Punkt.");
+            player.sendMessage(Prefix.ERROR + "Deine Fraktion hat kein Dienst-Punkt.");
             return false;
         }
         if (location.distance(player.getLocation()) > 5) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe deines Dienst-Punktes.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deines Dienst-Punktes.");
             return false;
         }
         if (playerData.isDuty()) {

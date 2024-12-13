@@ -14,12 +14,29 @@ public class Agreement {
     private final String type;
 
     @Getter
-    private final Object agreement;
+    private final AgreementCallback callback;
 
-    public Agreement(Player contractor, Player contracted, String type, Object agreement) {
+    @Getter
+    private final AgreementCallback denyCallback;
+
+    public Agreement(Player contractor, Player contracted, String type, AgreementCallback callback, AgreementCallback denyCallback) {
         this.contractor = contractor;
         this.contracted = contracted;
         this.type = type;
-        this.agreement = agreement;
+        this.callback = callback;
+        this.denyCallback = denyCallback;
+    }
+
+    // Method to accept the agreement and trigger the callback
+    public void accept() {
+        if (callback != null) {
+            callback.execute();
+        }
+    }
+
+    public void deny() {
+        if (denyCallback != null) {
+            denyCallback.execute();
+        }
     }
 }

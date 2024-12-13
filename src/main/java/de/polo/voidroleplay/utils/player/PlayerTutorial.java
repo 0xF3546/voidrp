@@ -41,25 +41,15 @@ public class PlayerTutorial {
     @SneakyThrows
     public void setStage(int stage) {
         this.stage = stage;
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE players SET tutorial = ? WHERE uuid = ?");
-        statement.setInt(1, stage);
-        statement.setString(2, player.getUniqueId().toString());
-        statement.execute();
-
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET tutorial = ? WHERE uuid = ?",
+                stage,
+                player.getUniqueId().toString());
     }
 
     @SneakyThrows
     public void end() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE players SET tutorial = ? WHERE uuid = ?");
-        statement.setInt(1, 0);
-        statement.setString(2, player.getUniqueId().toString());
-        statement.execute();
-
-        statement.close();
-        connection.close();
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET tutorial = ? WHERE uuid = ?",
+                0,
+                player.getUniqueId().toString());
     }
 }

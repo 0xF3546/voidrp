@@ -43,11 +43,11 @@ public class CompanyCommand implements CommandExecutor, Listener {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("manage")) {
                 if (locationManager.getDistanceBetweenCoords(player, "firmenverwaltung") > 5) {
-                    player.sendMessage(Main.error + "Du bist nicht in der nähe der Firmenverwaltung.");
+                    player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Firmenverwaltung.");
                     return false;
                 }
                 if (company != null) {
-                    player.sendMessage(Main.error + "Du hast bereits eine Firma.");
+                    player.sendMessage(Prefix.ERROR + "Du hast bereits eine Firma.");
                     return false;
                 }
                 openManageMenu(player);

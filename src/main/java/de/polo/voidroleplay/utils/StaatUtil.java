@@ -84,21 +84,26 @@ public class StaatUtil {
 
     private String calculateManhuntTime(PlayerWanted wanted) {
         LocalDateTime now = LocalDateTime.now();
-        Duration diff = Duration.between(now, wanted.getIssued());
+        Duration diff = Duration.between(wanted.getIssued(), now);
+
+        if (diff.isNegative()) {
+            diff = diff.abs();
+        }
 
         long minutes = diff.toMinutes();
         if (minutes < 60) {
-            return minutes + " Minute" + (minutes > 1 ? "n" : "");
+            return minutes + " Minute" + (minutes != 1 ? "n" : "");
         }
 
         long hours = diff.toHours();
         if (hours < 24) {
-            return hours + " Stunde" + (hours > 1 ? "n" : "");
+            return hours + " Stunde" + (hours != 1 ? "n" : "");
         }
 
         long days = diff.toDays();
-        return days + " Tag" + (days > 1 ? "e" : "");
+        return days + " Tag" + (days != 1 ? "e" : "");
     }
+
 
     public boolean arrestPlayer(Player player, Player arrester, boolean deathArrest) throws SQLException {
         StringBuilder reason = new StringBuilder();
@@ -109,9 +114,9 @@ public class StaatUtil {
             JailData jailData = new JailData();
             if (!deathArrest) locationManager.useLocation(player, "gefaengnis");
             if (deathArrest) {
-                player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wantedReason.getWanted() + " Minuten inhaftiert.");
+                player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wantedReason.getWanted() / 3 + " Minuten inhaftiert.");
             } else {
-                player.sendMessage("§8[§6Gefängnis§8] §7Du bist nun für " + wantedReason.getWanted() + "  Minuten im Gefängnis..");
+                player.sendMessage("§8[§6Gefängnis§8] §7Du bist nun für " + wantedReason.getWanted() / 3 + "  Minuten im Gefängnis..");
             }
             playerData.setJailed(true);
             factionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
@@ -295,7 +300,7 @@ public class StaatUtil {
             return;
         }
         if (targetPlayerData.getBargeld() < 200) {
-            player.sendMessage(Main.error + targetplayer.getName() + " hat nicht genug Geld dabei! (200$)");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat nicht genug Geld dabei! (200$)");
             return;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "blutgruppe", player.getUniqueId().toString())) {
@@ -303,7 +308,7 @@ public class StaatUtil {
             targetplayer.sendMessage("§eMediziner " + player.getName() + " möchte deine Blutgruppe testen.");
             utils.vertragUtil.sendInfoMessage(targetplayer);
         } else {
-            player.sendMessage(Main.error + targetplayer.getName() + " hat einen Vertrag offen.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " hat einen Vertrag offen.");
         }
     }
 

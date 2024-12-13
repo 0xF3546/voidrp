@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,10 +61,10 @@ public class PlayerInfoCommand implements CommandExecutor {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Spieler nicht gefunden.");
+                player.sendMessage(Prefix.ERROR + "Spieler nicht gefunden.");
             }
         } else {
-            player.sendMessage(Main.admin_error + "Syntax-Fehler: /playerinfo [Spieler]");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /playerinfo [Spieler]");
         }
         return false;
     }

@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.SubGroup;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,11 +28,11 @@ public class SubGroupChatCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getSubGroupId() == 0) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error_nopermission + "Syntax-Fehler: /subgroupchat [Nachricht]");
+            player.sendMessage(Prefix.ERROR_NOPERMISSION + "Syntax-Fehler: /subgroupchat [Nachricht]");
             return false;
         }
         SubGroup subGroup = playerData.getSubGroup();

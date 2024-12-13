@@ -56,7 +56,8 @@ public enum RoleplayItem {
     COCAINE_SEEDS("§fPulver-Samen", Material.PUMPKIN_SEEDS, true),
     WEED_SEEDS("§2Gras-Samen", Material.PUMPKIN_SEEDS, true),
     FERTILIZER("§2Dünger", Material.BONE_MEAL, false),
-    WATER("§bWasser", Material.WATER_BUCKET, false);
+    WATER("§bWasser", Material.WATER_BUCKET, false),
+    DRINK_WATER("§bWasser", Material.POTION, false);
 
     private final String displayName;
     private final Material material;

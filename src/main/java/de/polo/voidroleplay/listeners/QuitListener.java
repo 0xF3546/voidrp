@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.manager.SupportManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
 import de.polo.voidroleplay.utils.player.PlayerQuit;
 import de.polo.voidroleplay.utils.StaatUtil;
@@ -121,7 +122,7 @@ QuitListener implements Listener {
             if (ticket != null) {
                 for (Player p : supportManager.getPlayersInTicket(ticket)) {
                     if (p.isOnline()) {
-                        p.sendMessage(Main.support_prefix + player.getName() + " hat den Server verlassen, das Ticket wurde geschlossen.");
+                        p.sendMessage(Prefix.SUPPORT + player.getName() + " hat den Server verlassen, das Ticket wurde geschlossen.");
                     }
                 }
                 supportManager.removeTicket(ticket);

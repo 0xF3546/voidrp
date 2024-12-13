@@ -109,7 +109,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         player.sendMessage("§8[§cGangwar§8]§c Du bist in keinem Gangwar.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
+                    player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
                 }
             }
             /*if (args[0].equalsIgnoreCase("join")) {
@@ -128,7 +128,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         player.sendMessage("§8[§cGangwar§8]§c Du bist bereits im Gangwar.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
+                    player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
                 }
             }*/
             if (args[0].equalsIgnoreCase("attack")) {
@@ -178,14 +178,14 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                             }
                         }
                     } else {
-                        player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
+                        player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Syntax-Fehler: /gangwar attack [Zone]");
+                    player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /gangwar attack [Zone]");
                 }
             }
         } else {
-            player.sendMessage(Main.error + "Syntax-Fehler: /gangwar [info/leave/join/attack] [(Zone)]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /gangwar [info/leave/join/attack] [(Zone)]");
         }
         return false;
     }
@@ -193,7 +193,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     public void joinGangwar(Player player, String zone) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.isDead()) {
-            player.sendMessage(Main.error + "Du kannst aktuell keinem Gangwar beitreten.");
+            player.sendMessage(Prefix.ERROR + "Du kannst aktuell keinem Gangwar beitreten.");
             return;
         }
         Gangwar gangwarData = getGangwarByZone(zone);
@@ -277,7 +277,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     public void startGangwar(Player player, String zone) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return;
         }
         int i = 0;
@@ -295,7 +295,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             IGangzone gangzone = getGangzoneByName(zone);
             FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.canDoGangwar()) {
-                player.sendMessage(Main.error + "Deine Fraktion kann kein Gangwar-Gebiet angreifen.");
+                player.sendMessage(Prefix.ERROR + "Deine Fraktion kann kein Gangwar-Gebiet angreifen.");
                 return;
             }
             Timestamp timestamp = Timestamp.valueOf(gangzone.getLastAttack().toLocalDateTime());
@@ -303,20 +303,20 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             LocalDateTime twoDaysAfterTimestamp = timestamp.toLocalDateTime().plusHours(40);
             boolean isTwoDaysAfter = currentDateTime.isAfter(twoDaysAfterTimestamp);
             if (!isTwoDaysAfter || (playerData.isAduty() && playerData.getPermlevel() < 80)) {
-                player.sendMessage(Main.error + "Dieses Gebiet kann noch nicht angegriffen werden.");
+                player.sendMessage(Prefix.ERROR + "Dieses Gebiet kann noch nicht angegriffen werden.");
                 return;
             }
             if (factionData.getCurrent_gangwar() != null) {
-                player.sendMessage(Main.error + "Deine Fraktion ist bereits im Gangwar.");
+                player.sendMessage(Prefix.ERROR + "Deine Fraktion ist bereits im Gangwar.");
                 return;
             }
             if (factionData.getName().equals(gangzone.getOwner())) {
-                player.sendMessage(Main.error + "Du kannst dein eigenes Gebiet nicht angreifen.");
+                player.sendMessage(Prefix.ERROR + "Du kannst dein eigenes Gebiet nicht angreifen.");
                 return;
             }
             FactionData defenderData = factionManager.getFactionData(gangzone.getOwner());
             if (defenderData.getCurrent_gangwar() != null) {
-                player.sendMessage(Main.error + "Diese Fraktion ist bereits im Gangwar.");
+                player.sendMessage(Prefix.ERROR + "Diese Fraktion ist bereits im Gangwar.");
                 return;
             }
             player.closeInventory();
@@ -345,7 +345,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             gangWars.add(gangwar);
             joinGangwar(player, gangzone.getName());
         } else {
-            player.sendMessage(Main.error + "Gangwar ist nur Dienstag & Donnerstag von 18-22 Uhr verfügbar.");
+            player.sendMessage(Prefix.ERROR + "Gangwar ist nur Dienstag & Donnerstag von 18-22 Uhr verfügbar.");
         }
     }
 

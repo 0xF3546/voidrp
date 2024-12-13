@@ -28,20 +28,20 @@ public class FlyCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 80) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Main.error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /fly [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /fly [Spieler]");
             return false;
         }
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            player.sendMessage(Main.error + "Der Spieler wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht gefunden.");
             return false;
         }
         PlayerData targetData = playerManager.getPlayerData(target);

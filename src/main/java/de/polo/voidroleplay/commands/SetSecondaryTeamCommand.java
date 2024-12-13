@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -33,14 +34,14 @@ public class SetSecondaryTeamCommand implements CommandExecutor {
                     Main.getInstance().getMySQL().updateAsync("UPDATE players SET secondaryTeam = ? WHERE uuid = ?", args[1], targetplayer.getUniqueId().toString());
                     TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
                 } else {
-                    player.sendMessage(Main.error + args[0] + " ist nicht online.");
+                    player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
                 }
             } else {
-                player.sendMessage(Main.error + "Syntax-Fehler: /setsecondaryteam [Spieler] [Team]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /setsecondaryteam [Spieler] [Team]");
                 player.sendMessage("§8 ➥ §bInfo§8:§f Folgende Teams gibt es: Bau-Team, PR-Team, Event-Team");
             }
         } else {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
         return false;
     }

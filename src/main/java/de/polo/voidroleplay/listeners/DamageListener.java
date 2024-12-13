@@ -40,7 +40,7 @@ public class DamageListener implements Listener {
         Player player = ((Player) event.getEntity()).getPlayer();
         if (player == null) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.getTicket(player) != null) {
+        if (playerData.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.getTicket(player) != null || playerData.isDead()) {
             event.setCancelled(true);
             return;
         }

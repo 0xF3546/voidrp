@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.SoundManager;
 import org.bukkit.Bukkit;
@@ -116,7 +117,7 @@ public class FarmerCommand implements CommandExecutor {
                     }
                 }
             } else {
-                player.sendMessage(Main.error + "Du bist §cnicht§7 in der nähe der Farm§7!");
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Farm§7!");
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);
@@ -225,7 +226,7 @@ public class FarmerCommand implements CommandExecutor {
                 player.closeInventory();
             }
         } else {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe der Mühle.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Mühle.");
         }
     }
 }

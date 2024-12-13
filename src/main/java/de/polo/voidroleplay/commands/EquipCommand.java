@@ -46,11 +46,11 @@ public class EquipCommand implements CommandExecutor, Listener {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
-            player.sendMessage(Main.error + "Du bist in keiner Fraktion.");
+            player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
             return false;
         }
         if (locationManager.getDistanceBetweenCoords(player, "equip_" + playerData.getFaction()) > 5) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe deines Equip-Punktes.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deines Equip-Punktes.");
             return false;
         }
         if (playerData.getFaction().equalsIgnoreCase("Kirche")) {
@@ -124,7 +124,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
                 factionData.setEquipPoints(factionData.getEquipPoints() - 5);
                 factionData.save();
-                logBuy(player, "Schutzweste");
+                logBuy(player, "Schutzweste", 5);
             }
         });
         i++;
@@ -139,7 +139,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 8);
                     factionData.save();
-                    logBuy(player, "Schwere Schutzweste");
+                    logBuy(player, "Schwere Schutzweste", 8);
                 }
             });
             i++;
@@ -155,7 +155,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     weaponManager.giveWeapon(player, Weapon.SNIPER, WeaponType.NORMAL);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 10);
                     factionData.save();
-                    logBuy(player, "Sniper");
+                    logBuy(player, "Sniper", 10);
                 }
             });
             i++;
@@ -169,7 +169,8 @@ public class EquipCommand implements CommandExecutor, Listener {
                     // weaponManager.giveAmmo(player, Weapon.SNIPER, 10);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
-                    logBuy(player, "Sniper Munition");
+                    weaponManager.giveAmmo(player, Weapon.SNIPER, Weapon.SNIPER.getMaxAmmo());
+                    logBuy(player, "Sniper Munition", 10);
                 }
             });
             i++;
@@ -185,7 +186,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 4);
                     factionData.save();
-                    logBuy(player, "SWAT-Schild");
+                    logBuy(player, "SWAT-Schild", 4);
                 }
             });
             i++;
@@ -202,7 +203,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.PFEFFERSPRAY, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
-                    logBuy(player, "Pfefferspray");
+                    logBuy(player, "Pfefferspray", 1);
                 }
             });
             i++;
@@ -218,7 +219,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
-                    logBuy(player, "Handschellen");
+                    logBuy(player, "Handschellen", 1);
                 }
             });
             i++;
@@ -232,7 +233,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     ItemManager.addCustomItem(player, RoleplayItem.TAZER, 1);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
-                    logBuy(player, "Tazer");
+                    logBuy(player, "Tazer", 1);
                 }
             });
             i++;
@@ -247,7 +248,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.WINGSUIT, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 2);
                         factionData.save();
-                        logBuy(player, "Wingsuit");
+                        logBuy(player, "Wingsuit", 2);
                     }
                 });
                 i++;
@@ -266,7 +267,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.FEUERLÖSCHER, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Feuerlöscher");
+                        logBuy(player, "Feuerlöscher", 1);
                     }
                 });
                 i++;
@@ -280,7 +281,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.FEUERWEHR_AXT, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Feuerwehr-Axt");
+                        logBuy(player, "Feuerwehr-Axt", 1);
                     }
                 });
                 i++;
@@ -294,7 +295,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.SPRUNGTUCH, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Sprungtuch");
+                        logBuy(player, "Sprungtuch", 1);
                     }
                 });
                 i++;
@@ -310,7 +311,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         ItemManager.addCustomItem(player, RoleplayItem.SPRUNGTUCH, 1);
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
-                        logBuy(player, "Sprungtuch");
+                        logBuy(player, "Sprungtuch", 1);
                     }
                 });
                 i++;
@@ -318,10 +319,10 @@ public class EquipCommand implements CommandExecutor, Listener {
         }
     }
 
-    private void logBuy(Player player, String item) {
+    private void logBuy(Player player, String item, int equipPoints) {
         PlayerData playerData = playerManager.getPlayerData(player);
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_equip_logs (player, item, factionId) VALUES (?, ?, ?)", player.getUniqueId().toString(), item, factionData.getId());
+        Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_equip_logs (player, item, factionId, itemPoints) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), item, factionData.getId(), equipPoints);
     }
 
     private void openExtraShop(Player player, PlayerData playerData, FactionData factionData) {
@@ -331,15 +332,15 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 4) {
-                        player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprengstoff zu kaufen!");
+                        player.sendMessage(Prefix.ERROR + "Du musst mindestens rang 4 sein um einen Sprengstoff zu kaufen!");
                         return;
                     }
                     if (factionData.getBank() < 2500) {
-                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
+                        player.sendMessage(Prefix.ERROR + "Deine Fraktion hat nicht genug Geld um einen Sprengstoff zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 2500) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
                         return;
                     }
                     playerData.removeBankMoney(2500, "Sprengstoff-Kauf");
@@ -350,15 +351,15 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 3) {
-                        player.sendMessage(Main.error + "Du musst mindestens rang 3 sein um eine Granate zu kaufen!");
+                        player.sendMessage(Prefix.ERROR + "Du musst mindestens rang 3 sein um eine Granate zu kaufen!");
                         return;
                     }
                     if (factionData.getBank() < 1500) {
-                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
+                        player.sendMessage(Prefix.ERROR + "Deine Fraktion hat nicht genug Geld um eine Splittergranate zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 1500) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
                         return;
                     }
                     playerData.removeBankMoney(1500, "Splittergranaten-Kauf");
@@ -369,15 +370,15 @@ public class EquipCommand implements CommandExecutor, Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getFactionGrade() < 4) {
-                        player.sendMessage(Main.error + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
+                        player.sendMessage(Prefix.ERROR + "Du musst mindestens rang 4 sein um einen Sprenggürtel zu kaufen!");
                         return;
                     }
                     if (factionData.getBank() < 5000) {
-                        player.sendMessage(Main.error + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
+                        player.sendMessage(Prefix.ERROR + "Deine Fraktion hat nicht genug Geld um einen Sprenggürtel zu kaufen.");
                         return;
                     }
                     if (playerData.getBank() < 5000) {
-                        player.sendMessage(Main.error + "Du hast nicht genug Geld.");
+                        player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
                         return;
                     }
                     playerData.removeBankMoney(5000, "Sprenggürtel-Kauf");
@@ -418,7 +419,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         statement.executeUpdate();
                         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehren auf " + Utils.toDecimalFormat(id) + "$ gesetzt.");
                     } catch (Exception e) {
-                        event.getPlayer().sendMessage(Main.error + "Dies ist keine Zahl!");
+                        event.getPlayer().sendMessage(Prefix.ERROR + "Dies ist keine Zahl!");
                     }
                     break;
                 case "sturmgewehr_ammo":
@@ -431,7 +432,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         statement.executeUpdate();
                         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Equip§8]§7 " + event.getPlayer().getName() + " hat den Preis von Sturmgewehr-Munition auf " + Utils.toDecimalFormat(id) + "$ gesetzt.");
                     } catch (Exception e) {
-                        event.getPlayer().sendMessage(Main.error + "Dies ist keine Zahl!");
+                        event.getPlayer().sendMessage(Prefix.ERROR + "Dies ist keine Zahl!");
                     }
                     break;
             }

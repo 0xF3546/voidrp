@@ -123,8 +123,7 @@ public class WeaponManager implements Listener {
     public Weapon getWeaponFromItemStack(ItemStack stack) {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
-        Weapon weapon = weaponList.get(id);
-        return weapon;
+        return weaponList.get(id);
     }
 
     public HashMap<Integer, Weapon> getWeapons() {
@@ -391,6 +390,7 @@ public class WeaponManager implements Listener {
         w.setAmmo(ammo);
         w.setCurrentAmmo(0);
         w.setWeaponType(weaponType);
+        w.setType(weapon);
         w.setReloading(false);
 
         if (weaponType == WeaponType.NORMAL) {
@@ -443,6 +443,16 @@ public class WeaponManager implements Listener {
 
         meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + w.getCurrentAmmo() + "§8/§6" + newAmmo));
         item.setItemMeta(meta);
+    }
+
+    public void giveAmmo(Player player, de.polo.voidroleplay.utils.enums.Weapon weapon, int amount) {
+        for (ItemStack stack : player.getInventory().getContents()) {
+            if (stack == null) continue;
+            if (stack.getType() != weapon.getMaterial()) continue;
+            Weapon w = getWeaponFromItemStack(stack);
+            if (w == null) continue;
+            giveAmmo(player, w, amount);
+        }
     }
 
     public void giveAmmoToCabinet(PlayerWeapon playerWeapon, int ammo) {

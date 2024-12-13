@@ -28,18 +28,18 @@ public class RentCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /rent [Spieler] [Preis]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /rent [Spieler] [Preis]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
-        if (!targetplayer.isOnline()) player.sendMessage(Main.error + "Spieler ist nicht online.");
+        if (!targetplayer.isOnline()) player.sendMessage(Prefix.ERROR + "Spieler ist nicht online.");
         Integer haus = locationManager.isPlayerNearOwnHouse(player);
         if (haus == 0) {
-            player.sendMessage(Main.error + "Du bist nicht in der nähe deines Hauses.");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deines Hauses.");
             return false;
         }
         if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
         }
         try {
@@ -57,7 +57,7 @@ public class RentCommand implements CommandExecutor {
             targetplayer.sendMessage("§6" + player.getName() + " hat dir einen Mietvertrag für Haus " + haus + " in höhe von " + args[1] + "$/PayDay angeboten.");
             utils.vertragUtil.sendInfoMessage(targetplayer);
         } else {
-            player.sendMessage(Main.error + "§7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
+            player.sendMessage(Prefix.ERROR + "§7" + targetplayer.getName() + " hat noch einen Vertrag offen.");
         }
         return false;
     }

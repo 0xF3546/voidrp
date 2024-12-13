@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -33,7 +34,7 @@ public class ChangeSpawnCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 20) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bSpawn ändern", true, false);

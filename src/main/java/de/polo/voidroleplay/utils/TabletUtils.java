@@ -1017,7 +1017,7 @@ public class TabletUtils implements Listener {
             try {
                 input = Integer.parseInt(event.getMessage());
             } catch (IllegalArgumentException e) {
-                event.getPlayer().sendMessage(Main.error + "Du hast keine gültige Zahl angegeben");
+                event.getPlayer().sendMessage(Prefix.ERROR + "Du hast keine gültige Zahl angegeben");
                 event.end();
                 return;
             }

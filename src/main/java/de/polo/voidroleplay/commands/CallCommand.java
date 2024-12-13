@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.PhoneUtils;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -40,22 +41,22 @@ public class CallCommand implements CommandExecutor {
                                         try {
                                             utils.phoneUtils.callNumber(player, players);
                                         } catch (SQLException e) {
-                                            player.sendMessage(Main.error + "Ein Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
+                                            player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
                                             throw new RuntimeException(e);
                                         }
                                     } else {
-                                        player.sendMessage(Main.error + players.getName() + " ist nicht erreichbar.");
+                                        player.sendMessage(Prefix.ERROR + players.getName() + " ist nicht erreichbar.");
                                     }
                                 } else {
-                                    player.sendMessage(Main.error + players.getName() + " ist bereits in einem Gespräch.");
+                                    player.sendMessage(Prefix.ERROR + players.getName() + " ist bereits in einem Gespräch.");
                                 }
                             }
                         }
                     } else {
-                        player.sendMessage(Main.error + "Du rufst bereits jemanden an.");
+                        player.sendMessage(Prefix.ERROR + "Du rufst bereits jemanden an.");
                     }
                 } else {
-                    player.sendMessage(Main.error + "Syntax-Fehler: /call [Spieler]");
+                    player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /call [Spieler]");
                 }
             } else {
                 player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);

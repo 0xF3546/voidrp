@@ -50,10 +50,7 @@ public class GeworbenCommand implements CommandExecutor {
                 if (offlinePlayer.getName() == null) continue;
                 if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
                     player.sendMessage(Prefix.MAIN + "Aktion erfolgreich!");
-                    statement = connection.prepareStatement("UPDATE players SET geworben = ? WHERE uuid = ?");
-                    statement.setString(1, offlinePlayer.getUniqueId().toString());
-                    statement.setString(2, player.getUniqueId().toString());
-                    statement.executeUpdate();
+                    Main.getInstance().getMySQL().updateAsync("UPDATE players SET geworben = ? WHERE uuid = ?", offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
                     return false;
                 }
             }

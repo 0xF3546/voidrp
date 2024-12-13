@@ -33,14 +33,14 @@ public class AdminReviveCommand implements CommandExecutor {
                     player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 wiederbelebt.");
                     targetplayer.sendMessage(Prefix.MAIN + "Du wurdest wiederbelebt.");
                 } else {
-                    player.sendMessage(Prefix.admin_error + "§c" + args[0] + "§7 ist nicht online.");
+                    player.sendMessage(Prefix.ADMIN_ERROR + "§c" + args[0] + "§7 ist nicht online.");
                 }
             } else {
                 utils.deathUtil.revivePlayer(player, false);
                 player.sendMessage(Prefix.ADMIN + "Du hast dich wiederbelebt.");
             }
         } else {
-            player.sendMessage(Prefix.admin_error + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
         }
         return false;
     }

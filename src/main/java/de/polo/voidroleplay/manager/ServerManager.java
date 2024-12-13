@@ -6,6 +6,7 @@ import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
 import de.polo.voidroleplay.storage.*;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.FFAStatsType;
 import de.polo.voidroleplay.utils.enums.ShopType;
@@ -35,7 +36,7 @@ import java.util.UUID;
 
 public class ServerManager {
     public static final boolean canDoJobsBoolean = true;
-    public static final String error_cantDoJobs = Main.error + "Der Job ist Serverseitig bis nach Restart gesperrt.";
+    public static final String error_cantDoJobs = Prefix.ERROR + "Der Job ist Serverseitig bis nach Restart gesperrt.";
 
     public static final Map<String, RankData> rankDataMap = new HashMap<>();
     public static final Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
@@ -314,7 +315,7 @@ public class ServerManager {
                     if (playerData == null) continue;
                     if (playerData.isDead()) {
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
-                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " Tot.");
+                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " bewusstlos.");
                         if (playerData.getDeathTime() <= 0) {
                             Main.getInstance().utils.deathUtil.despawnPlayer(players);
                         }
@@ -375,7 +376,7 @@ public class ServerManager {
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             Bukkit.spigot().broadcast(forum);
-                            TextComponent forum2 = new TextComponent("§8[§9Discord§8]§3 Fraktionen");
+                            TextComponent forum2 = new TextComponent("§8[§9Discord§8]§3 Fraktionen, Ankündigungen, Changelogs uvm.!");
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             for (Player player : Bukkit.getOnlinePlayers()) {

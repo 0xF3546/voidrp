@@ -240,6 +240,9 @@ public class PlantFunctions implements Listener {
                 if (plant.getTime() < 1) {
                     if (plant.getTime() < -5) {
                         plant.setYield(plant.getYield() - 20);
+                        if (plant.getYield() > 0) continue;
+                        plant.getBlock().setType(Material.AIR);
+                        plants.remove(plant);
                     }
                     continue;
                 }

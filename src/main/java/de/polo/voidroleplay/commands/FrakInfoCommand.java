@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.FactionPlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -50,7 +51,7 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
                 }
                 player.sendMessage("§8 »§7 Es sind §a" + count + " Fraktionsmitglieder§7 der Fraktion §" + factionData.getPrimaryColor() + factionData.getName() + "§7 online.");
             } else {
-                player.sendMessage(Main.error + "Die Fraktion \"" + args[0] + "\" konnte nicht gefunden werden.");
+                player.sendMessage(Prefix.ERROR + "Die Fraktion \"" + args[0] + "\" konnte nicht gefunden werden.");
             }
         } else {
             player.sendMessage("§7   ===§8[§6Fraktionen§8]§7===");

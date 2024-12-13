@@ -43,11 +43,11 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.isLeader()) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (!(args.length >= 1)) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /uninvite [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /uninvite [Spieler]");
             return false;
         }
         OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
@@ -57,11 +57,11 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
         }
         PlayerData targetData = factionManager.getFactionOfPlayer(offlinePlayer.getUniqueId());
         if (!playerData.getFaction().equalsIgnoreCase(targetData.getFaction())) {
-            player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht in deiner Fraktion.");
+            player.sendMessage(Prefix.ERROR + offlinePlayer.getName() + " ist nicht in deiner Fraktion.");
             return false;
         }
         if (targetData.getFactionGrade() > playerData.getFactionGrade()) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + targetData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);

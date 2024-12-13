@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.VertragUtil;
 import org.bukkit.Bukkit;
@@ -26,26 +27,26 @@ public class BeziehungCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /beziehung [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /beziehung [Spieler]");
             return false;
         } else {
             if (args[0].equalsIgnoreCase(player.getName())) {
-                player.sendMessage(Main.error + "Du kannst mit dir selbst keine Beziehung eingehen.");
+                player.sendMessage(Prefix.ERROR + "Du kannst mit dir selbst keine Beziehung eingehen.");
                 return false;
             }
             OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
             if (offlinePlayer == null) {
-                player.sendMessage(Main.error + args[0] + " wurde nicht gefunden.");
+                player.sendMessage(Prefix.ERROR + args[0] + " wurde nicht gefunden.");
                 return false;
             }
             if (!offlinePlayer.isOnline()) {
-                player.sendMessage(Main.error + offlinePlayer.getName() + " ist nicht online.");
+                player.sendMessage(Prefix.ERROR + offlinePlayer.getName() + " ist nicht online.");
                 return false;
             }
         }
         Player player1 = Bukkit.getPlayer(args[0]);
         if (player.getLocation().distance(player1.getLocation()) > 5) {
-            player.sendMessage(Main.error + player1.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + player1.getName() + " ist nicht in deiner nähe.");
             return false;
         }
         PlayerData targetplayerData = playerManager.getPlayerData(player1.getUniqueId());
@@ -58,13 +59,13 @@ public class BeziehungCommand implements CommandExecutor {
                     player1.sendMessage("§6" + player.getName() + " möchte mit dir zusammen sein.");
                     utils.vertragUtil.sendInfoMessage(player1);
                 } else {
-                    player.sendMessage(Main.error + "Es ist ein Fehler unterlaufen.");
+                    player.sendMessage(Prefix.ERROR + "Es ist ein Fehler unterlaufen.");
                 }
             } else {
-                player.sendMessage(Main.error + player1.getName() + " ist bereits in einer Beziehung.");
+                player.sendMessage(Prefix.ERROR + player1.getName() + " ist bereits in einer Beziehung.");
             }
         } else {
-            player.sendMessage(Main.error + "Du bist bereits in einer Beziehung.");
+            player.sendMessage(Prefix.ERROR + "Du bist bereits in einer Beziehung.");
         }
         return false;
     }

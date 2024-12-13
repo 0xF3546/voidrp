@@ -141,7 +141,7 @@ public class ApothekeFunctions implements Listener {
                         return;
                     }
                     playerData.removeMoney(125, "Kauf Adrenalin Spritze");
-                    ItemManager.addCustomItem(player, RoleplayItem.ADRENALINE_INJECTION, 1);
+                    playerData.getInventory().addItem(RoleplayItem.ADRENALINE_INJECTION, 1);
                 }
             });
             i++;
@@ -153,8 +153,8 @@ public class ApothekeFunctions implements Listener {
                     player.sendMessage(NO_MONEY);
                     return;
                 }
-                playerData.removeMoney(55, "Kauf Adrenalin Spritze");
-                ItemManager.addCustomItem(player, RoleplayItem.SCHMERZMITTEL, 1);
+                playerData.removeMoney(55, "Kauf Schmerzmittel");
+                playerData.getInventory().addItem(RoleplayItem.SCHMERZMITTEL, 1);
             }
         });
         i++;
@@ -166,7 +166,7 @@ public class ApothekeFunctions implements Listener {
             return;
         }
         if (apotheke.getOwner().equalsIgnoreCase(playerData.getFaction())) {
-            player.sendMessage(Main.error + "Du kannst deine eigenen Apotheken nicht einschüchtern.");
+            player.sendMessage(Prefix.ERROR + "Du kannst deine eigenen Apotheken nicht einschüchtern.");
             return;
         }
 

@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Material;
@@ -37,11 +38,11 @@ public class FactionUpgradeGUI {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (!playerData.isLeader()) {
-                    player.sendMessage(Main.error_nopermission);
+                    player.sendMessage(Prefix.ERROR_NOPERMISSION);
                     return;
                 }
                 if (factionData.getBank() < upgradeDrugPrice) {
-                    player.sendMessage(Main.error + "Deine Fraktion hat dafür nicht genug Geld.");
+                    player.sendMessage(Prefix.ERROR + "Deine Fraktion hat dafür nicht genug Geld.");
                     return;
                 }
                 factionData.removeFactionMoney(upgradeDrugPrice, "Upgrade-Kauf");
@@ -56,11 +57,11 @@ public class FactionUpgradeGUI {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (!playerData.isLeader()) {
-                    player.sendMessage(Main.error_nopermission);
+                    player.sendMessage(Prefix.ERROR_NOPERMISSION);
                     return;
                 }
                 if (factionData.getBank() < upgradeTaxPrice) {
-                    player.sendMessage(Main.error + "Deine Fraktion hat dafür nicht genug Geld.");
+                    player.sendMessage(Prefix.ERROR + "Deine Fraktion hat dafür nicht genug Geld.");
                     return;
                 }
                 factionData.removeFactionMoney(upgradeTaxPrice, "Upgrade-Kauf");
@@ -75,11 +76,11 @@ public class FactionUpgradeGUI {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (!playerData.isLeader()) {
-                    player.sendMessage(Main.error_nopermission);
+                    player.sendMessage(Prefix.ERROR_NOPERMISSION);
                     return;
                 }
                 if (factionData.getBank() < upgradeWeaponPrice) {
-                    player.sendMessage(Main.error + "Deine Fraktion hat dafür nicht genug Geld.");
+                    player.sendMessage(Prefix.ERROR + "Deine Fraktion hat dafür nicht genug Geld.");
                     return;
                 }
                 factionData.removeFactionMoney(upgradeWeaponPrice, "Upgrade-Kauf");

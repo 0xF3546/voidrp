@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -24,18 +25,18 @@ public class AusziehenCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /ausziehen [Haus]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /ausziehen [Haus]");
             return false;
         }
         try {
             int houseNumber = Integer.parseInt(args[0]);
             House houseData = HouseManager.houseDataMap.get(houseNumber);
             if (houseData == null) {
-                player.sendMessage(Main.error + "Dieses Haus wurde nicht gefunden.");
+                player.sendMessage(Prefix.ERROR + "Dieses Haus wurde nicht gefunden.");
                 return false;
             }
             if (houseData.getRenter().get(player.getUniqueId().toString()) == null) {
-                player.sendMessage(Main.error + "Du mietest nicht bei Haus " + houseData.getNumber() + ".");
+                player.sendMessage(Prefix.ERROR + "Du mietest nicht bei Haus " + houseData.getNumber() + ".");
                 return false;
             }
             houseData.getRenter().remove(player.getUniqueId().toString());
@@ -52,7 +53,7 @@ public class AusziehenCommand implements CommandExecutor {
                 player1.sendMessage("§8[§6Haus§8]§c " + player.getName() + " hat seinen Mietvertrag für Haus " + houseData.getNumber() + " gekündigt!");
             }
         } catch (Exception e) {
-            player.sendMessage(Main.error + "Dieses Haus gibt es nicht.");
+            player.sendMessage(Prefix.ERROR + "Dieses Haus gibt es nicht.");
             e.printStackTrace();
             return false;
         }

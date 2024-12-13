@@ -6,6 +6,7 @@ import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.manager.BlockManager;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -38,7 +39,7 @@ public class FixBlockCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getPermlevel() < 90) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
 
@@ -53,7 +54,7 @@ public class FixBlockCommand implements CommandExecutor {
                 sign.setLine(1, "");
                 sign.setLine(2, "Bankautomat");
                 sign.update();
-                player.sendMessage(Main.gamedesign_prefix + "Haus gefixt.");
+                player.sendMessage(Prefix.GAMEDESIGN + "Haus gefixt.");
             }
         }
         if (registeredBlock.getInfo().equalsIgnoreCase("house")) {
@@ -66,7 +67,7 @@ public class FixBlockCommand implements CommandExecutor {
                     sign.setLine(1, "== §6Haus " + house.getNumber() + " §0==");
                     sign.setLine(2, "§2Zu Verkaufen");
                     sign.update();
-                    player.sendMessage(Main.gamedesign_prefix + "Haus gefixt.");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Haus gefixt.");
                 }
             } else {
                 TileState state = (TileState) block.getState();
@@ -79,7 +80,7 @@ public class FixBlockCommand implements CommandExecutor {
                     sign.setLine(1, "== §6Haus " + house.getNumber() + " §0==");
                     sign.setLine(2, offlinePlayer.getName());
                     sign.update();
-                    player.sendMessage(Main.gamedesign_prefix + "Haus gefixt.");
+                    player.sendMessage(Prefix.GAMEDESIGN + "Haus gefixt.");
                 }
             }
         }

@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.StaatUtil;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -43,29 +44,29 @@ public class FriskCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (!playerData.getFaction().equalsIgnoreCase("Polizei") && !playerData.getFaction().equalsIgnoreCase("FBI")) {
-            player.sendMessage(Main.error_nopermission);
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Main.error + "Syntax-Fehler: /frisk [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /frisk [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null) {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht online.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht online.");
             return false;
         }
         if (targetplayer.getName().equals(player.getName())) {
-            player.sendMessage(Main.error + "Du kannst dich nicht selbst durchsuchen.");
+            player.sendMessage(Prefix.ERROR + "Du kannst dich nicht selbst durchsuchen.");
             return false;
         }
         if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht in deiner nähe.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
             return false;
         }
         PlayerData targetData = playerManager.getPlayerData(targetplayer);
         if (!targetData.isCuffed()) {
-            player.sendMessage(Main.error + targetplayer.getName() + " ist nicht gefesselt oder in Handschellen.");
+            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht gefesselt oder in Handschellen.");
             return false;
         }
         openFriskInventory(player, targetplayer);
