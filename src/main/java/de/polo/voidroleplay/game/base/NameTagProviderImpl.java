@@ -55,12 +55,22 @@ public class NameTagProviderImpl implements INameTagProvider {
 
             String teamName = "team_" + player.getUniqueId().toString().substring(0, 8);
 
-            packet.getStrings().write(0, teamName);
-            packet.getStrings().write(1, prefix.replace("&", "§"));
-            packet.getStrings().write(2, suffix.replace("&", "§"));
+            if (packet.getStrings().size() > 0) {
+                packet.getStrings().write(0, teamName);
+            }
+            if (packet.getStrings().size() > 1) {
+                packet.getStrings().write(1, prefix.replace("&", "§"));
+            }
+            if (packet.getStrings().size() > 2) {
+                packet.getStrings().write(2, suffix.replace("&", "§"));
+            }
 
-            packet.getSpecificModifier(Collection.class).write(0, List.of(player.getName()));
-            packet.getIntegers().write(1, 0); // Mode: 0 = Create Team
+            if (packet.getSpecificModifier(Collection.class).size() > 0) {
+                packet.getSpecificModifier(Collection.class).write(0, List.of(player.getName()));
+            }
+            if (packet.getIntegers().size() > 1) {
+                packet.getIntegers().write(1, 0); // Mode: 0 = Create Team
+            }
 
             for (Player viewer : viewers) {
                 protocolManager.sendServerPacket(viewer, packet);
@@ -68,6 +78,7 @@ public class NameTagProviderImpl implements INameTagProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
