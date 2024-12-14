@@ -228,6 +228,8 @@ public class FarmerCommand implements CommandExecutor {
             }
             if (playerData.getIntVariable("weizen") <= 0) {
                 player.sendMessage("§8[§eLieferant§8]§7 Du hast alles abgegeben. Danke!");
+                // ISSUE VRP-10003: Added cooldown for the Weizenlieferant job
+                Main.getInstance().getCooldownManager().setCooldown(player, "farmer", 600);
                 playerData.setVariable("job", null);
                 //        playerData.getScoreboard("weizen").killScoreboard();
                 player.closeInventory();
