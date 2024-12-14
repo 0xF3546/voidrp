@@ -66,7 +66,6 @@ public class Drop {
         setMinutes(8);
         double[] x = {location.getX() - 50, location.getX() + 50, location.getX() + 50, location.getX() - 50};
         double[] z = {location.getZ() - 50, location.getZ() - 50, location.getZ() + 50, location.getZ() + 50};
-        Utils.createWebAreaMarker("", "Schmugglerkiste", "world", x, z);
     }
 
     public int getMinutes() {
@@ -96,7 +95,6 @@ public class Drop {
 
     public void cleanup() {
         LOGGER.info("Cleaning up drop.");
-        Utils.removeAreaMarker("Schmugglerkiste");
         if (lastBlock != null) {
             LOGGER.info("Removing block at location: " + lastBlock.getLocation());
             lastBlock.getLocation().getBlock().setType(Material.AIR);

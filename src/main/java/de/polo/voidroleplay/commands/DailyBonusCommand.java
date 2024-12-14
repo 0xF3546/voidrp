@@ -11,6 +11,7 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,6 +49,10 @@ public class DailyBonusCommand implements CommandExecutor {
                 @SneakyThrows
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (playerData.getHours() < 1) {
+                        player.sendMessage(Component.text(Prefix.ERROR + "Du musst mindestens 1 Stunde gespielt haben um den Bonus abzuholen."));
+                        return;
+                    }
                     openSelectDrug(player);
                 }
             });

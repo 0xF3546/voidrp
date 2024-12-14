@@ -95,6 +95,19 @@ public class MySQL implements Database {
         }, BetterExecutor.executor);
     }
 
+    // Easier refactoring.
+    @Override
+    public void executeAsync(String sql) {
+        CompletableFuture.runAsync(() -> {
+            try (Statement statement = getStatement()) {
+                statement.execute(sql);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }, BetterExecutor.executor);
+    }
+
+
     @Override
     public CompletableFuture<Optional<Integer>> queryThreadedWithGeneratedKeys(String query, Object... args) {
         return CompletableFuture.supplyAsync(() -> {

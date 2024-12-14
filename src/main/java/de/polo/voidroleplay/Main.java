@@ -16,26 +16,22 @@ import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.manager.inventory.InventoryApiRegister;
-import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
 import de.polo.voidroleplay.utils.player.ScoreboardManager;
+import dev.vansen.singleline.SingleLineOptions;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.dynmap.DynmapAPI;
-import org.dynmap.markers.MarkerAPI;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -75,12 +71,6 @@ public final class Main extends JavaPlugin {
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
     private NPCManager npc;
-
-    @Getter
-    private DynmapAPI dynmapAPI;
-
-    @Getter
-    private MarkerAPI markerAPI;
 
     @Getter
     private ScoreboardAPI scoreboardAPI;
@@ -175,19 +165,6 @@ public final class Main extends JavaPlugin {
         new InventoryApiRegister(this);
         GlobalStats.load();
 
-        dynmapAPI = (DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin("dynmap");
-        if (dynmapAPI == null) {
-            getLogger().severe("Dynmap plugin not found!");
-            return;
-        }
-        markerAPI = dynmapAPI.getMarkerAPI();
-        if (markerAPI == null) {
-            getLogger().severe("Error loading Dynmap marker API!");
-            return;
-        }
-
-        loadMarker();
-
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
         }
@@ -203,6 +180,8 @@ public final class Main extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        SingleLineOptions.USE_COMPONENT_LOGGER.enabled(true);
+        SingleLineOptions.USE_NORMAL_LOGGER_INSTEAD_OF_PRINT.enabled(false);
     }
 
     private void registerListener(Commands commands) {
@@ -265,14 +244,6 @@ public final class Main extends JavaPlugin {
             throw new RuntimeException(e);
         }
         mySQL.close();
-    }
-
-    private void loadMarker() {
-        for (FactionData factionData : factionManager.getFactions()) {
-            Location location = locationManager.getLocation(factionData.getName());
-            if (location == null) continue;
-            Utils.createMarker("sign", factionData.getFullname(), "world", location.getX(), location.getY(), location.getZ());
-        }
     }
 
     private void registerAnnotatedCommands() {

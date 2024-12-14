@@ -643,15 +643,15 @@ public class PlayerData {
     public void addMoney(int amount, String reason) {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         setBargeld(getBargeld() + amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), uuid.toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", uuid.toString(), amount, reason);
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
     }
 
     @SneakyThrows
     public void removeMoney(int amount, String reason) {
         setBargeld(getBargeld() - amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), uuid.toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", uuid.toString(), amount, reason);
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
 
     }
 
@@ -659,16 +659,16 @@ public class PlayerData {
     public void addBankMoney(int amount, String reason) {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         setBank(getBank() + amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), uuid.toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", uuid.toString(), amount, reason);
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
 
     }
 
     @SneakyThrows
     public void removeBankMoney(int amount, String reason) {
         setBank(getBank() - amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), uuid.toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", uuid.toString(), amount, reason);
+        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
+        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
     }
 
     @SneakyThrows
@@ -679,7 +679,7 @@ public class PlayerData {
         karma += amount;
         Main.getInstance().getMySQL().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
                 karma,
-                uuid);
+                uuid.toString());
     }
 
     @SneakyThrows
@@ -690,7 +690,7 @@ public class PlayerData {
         karma -= amount;
         Main.getInstance().getMySQL().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
                 karma,
-                uuid);
+                uuid.toString());
     }
 
     @SneakyThrows

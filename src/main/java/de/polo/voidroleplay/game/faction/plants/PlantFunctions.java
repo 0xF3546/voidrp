@@ -100,13 +100,20 @@ public class PlantFunctions implements Listener {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(plant.getType().getDrug().getItem().getMaterial(), 1, 0, "§2Ernten", "§8 ➥ §a" + plant.getYield() + "g")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    plant.getBlock().setType(Material.AIR);
-                    ItemManager.addCustomItem(player, plant.getType().getDrug().getItem(), plant.getYield());
-                    factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
-                    plants.remove(plant);
+                    int diff = playerData.getInventory().getDiff();
+                    if (plant.getYield() > diff) {
+                        playerData.getInventory().addItem(plant.getType().getDrug().getItem(), diff);
+                        plant.setYield(diff);
+                        factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + diff + "g§8)", factionData.getName());
+                    } else {
+                        playerData.getInventory().addItem(plant.getType().getDrug().getItem(), plant.getYield());
+                        plant.getBlock().setType(Material.AIR);
+                        plants.remove(plant);
+                        factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
+                    }
                     player.closeInventory();
-                    if (plant.getYield() >= 40) {
-                        playerManager.addExp(player, Main.random(10, 20));
+                    if (plant.getYield() >= 10 || diff >= 10) {
+                        playerManager.addExp(player, Main.random(5, 20));
                     }
                 }
             });
@@ -247,15 +254,15 @@ public class PlantFunctions implements Listener {
                     continue;
                 }
                 if (plant.getWater() >= 1) {
-                    plant.setYield(plant.getYield() + 10);
+                    plant.setYield(plant.getYield() + 2);
                 }
                 if (plant.getFertilizer() >= 1) {
-                    plant.setYield(plant.getYield() + 10);
+                    plant.setYield(plant.getYield() + 2);
                 }
             }
         }
         if (event.getMinute() % 15 == 0) {
-            for (FactionData factionData : factionManager.getFactions().stream().filter(FactionData::isBadFrak).collect(Collectors.toList())) {
+            for (FactionData factionData : factionManager.getFactions().stream().filter(FactionData::isBadFrak).toList()) {
                 int wateredFertilized = (int) plants.stream().filter(x -> (x.getPlanter() == factionData) && x.getWater() < 5 && x.getFertilizer() < 5).count();
                 int inProgress = (int) plants.stream().filter(x -> x.getPlanter() == factionData).count() - wateredFertilized;
                 int degenerate = (int) plants.stream().filter(x -> x.getPlanter() == factionData && x.getTime() < 1).count();

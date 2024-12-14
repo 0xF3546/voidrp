@@ -1,5 +1,6 @@
 package dev.vansen.singleline;
 
+import de.polo.voidroleplay.utils.BetterExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -174,7 +175,7 @@ public class SingleLine<T> {
      */
     public SingleLine<T> async(@NotNull Runnable runnable) {
         debugDefaultIf();
-        CompletableFuture.runAsync(runnable);
+        CompletableFuture.runAsync(runnable, BetterExecutor.executor);
         return this;
     }
 
@@ -183,7 +184,7 @@ public class SingleLine<T> {
      */
     public SingleLine<T> asyncWait(@NotNull Runnable runnable) {
         debugDefaultIf();
-        CompletableFuture.runAsync(runnable).join();
+        CompletableFuture.runAsync(runnable, BetterExecutor.executor).join();
         return this;
     }
 
@@ -210,7 +211,7 @@ public class SingleLine<T> {
      */
     public SingleLine<T> async(@NotNull Consumer<T> consumer) {
         debugDefaultIf();
-        CompletableFuture.runAsync(() -> consumer.accept(value));
+        CompletableFuture.runAsync(() -> consumer.accept(value), BetterExecutor.executor);
         return this;
     }
 
@@ -219,7 +220,7 @@ public class SingleLine<T> {
      */
     public SingleLine<T> asyncWait(@NotNull Consumer<T> consumer) {
         debugDefaultIf();
-        CompletableFuture.runAsync(() -> consumer.accept(value)).join();
+        CompletableFuture.runAsync(() -> consumer.accept(value), BetterExecutor.executor).join();
         return this;
     }
 

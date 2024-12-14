@@ -1,12 +1,12 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.PhoneCall;
-import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.storage.Ticket;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
+import de.polo.voidroleplay.storage.PhoneCall;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.Ticket;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.ChatUtils;
@@ -83,7 +83,7 @@ public class ChatListener implements Listener {
                             players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §8" + playerName + " " + type + "§8:§8 " + msg);
                         }
                     }
-                    ChatUtils.LogMessage(msg, player.getUniqueId());
+                    ChatUtils.logMessage(msg, player.getUniqueId());
                 } else {
                     player.sendMessage("§7Du bist bewusstlos.");
                 }
