@@ -69,11 +69,18 @@ public class FarmerCommand implements CommandExecutor {
 
                             }
                         });
-                        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten")) {
+                        // ISSUE VRP-10002: The player is not able to start the Weizenlieferant job if he is on cooldown
+                        /*inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.WHEAT, 1, 0, "§eWeizenlieferant starten")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
                                 startTransport(player);
                                 player.closeInventory();
+                            }
+                        });*/
+                        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {
+
                             }
                         });
                     } else {

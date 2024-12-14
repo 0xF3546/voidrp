@@ -5,10 +5,21 @@ import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.base.extra.drop.Drop;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
-import de.polo.voidroleplay.manager.*;
+import de.polo.voidroleplay.manager.BlockManager;
+import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
-import de.polo.voidroleplay.storage.*;
+import de.polo.voidroleplay.storage.ATM;
+import de.polo.voidroleplay.storage.ClickedEventBlock;
+import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.storage.Grenade;
+import de.polo.voidroleplay.storage.Molotov;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RegisteredBlock;
+import de.polo.voidroleplay.storage.WeaponData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.CaseType;
@@ -20,8 +31,23 @@ import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import de.polo.voidroleplay.utils.player.Rubbellose;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.bukkit.*;
-import org.bukkit.block.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.block.Banner;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Sign;
+import org.bukkit.block.TileState;
 import org.bukkit.block.data.Openable;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -32,7 +58,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -41,7 +66,13 @@ import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlayerInteractListener implements Listener {
@@ -101,7 +132,8 @@ public class PlayerInteractListener implements Listener {
                 }
                 if (event.getClickedBlock().getType().equals(Material.PLAYER_HEAD)) {
                     RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
-                    if (block.getInfo() == null || block.getInfoValue() == null) return;
+                    // ISSUE VRP-10001: Null check for block
+                    if (block == null || block.getInfo() == null || block.getInfoValue() == null) return;
                     if (!playerData.addClickedBlock(block)) {
                         Main.getInstance().utils.sendActionBar(player, "§cDiesen Kopf hast du bereits gefunden! (" + playerData.getClickedEventBlocks().size() + "/80 gefunden)");
                         return;
@@ -299,93 +331,95 @@ public class PlayerInteractListener implements Listener {
                         RegisteredBlock block = blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
                         if (block != null && block.getInfo() != null && Objects.equals(block.getInfo(), "house")) {
                             House houseData = utils.houseManager.getHouse(Integer.parseInt(block.getInfoValue()));
-                            playerData.setIntVariable("current_house", houseData.getNumber());
-                            InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
-                            if (houseData.getOwner() != null) {
-                                OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
-                                inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName())) {
-                                    @Override
-                                    public void onClick(InventoryClickEvent event) {
-
-                                    }
-                                });
-                                if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
-                                    inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
+                            // ISSUE VRP-10001: Null check for houseData
+                            if (houseData != null) {
+                                playerData.setIntVariable("current_house", houseData.getNumber());
+                                InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
+                                if (houseData.getOwner() != null) {
+                                    OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
+                                    inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName())) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
-                                            Main.getInstance().getHouseManager().openGunCabinet(player, houseData);
+
                                         }
                                     });
-                                }
-                                if (houseData.getOwner().equals(player.getUniqueId().toString())) {
                                     if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
-                                        inventoryManager.setItem(new CustomItem(41, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Hauskasse öffnen", "§8 ➥ §a" + Utils.toDecimalFormat(houseData.getMoney()) + "$")) {
+                                        inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cWaffenschrank öffnen", "§8 ➥ §7" + playerData.getWeapons().size() + " Waffen")) {
                                             @Override
                                             public void onClick(InventoryClickEvent event) {
-                                                Main.getInstance().getHouseManager().openHouseTreasury(player, houseData);
+                                                Main.getInstance().getHouseManager().openGunCabinet(player, houseData);
                                             }
                                         });
                                     }
-                                    inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
-                                            // House houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
-                                            if (utils.houseManager.resetHouse(player, houseData.getNumber())) {
-                                                playerData.addMoney((int) (houseData.getPrice() * 0.8), "Haus-Verkauf (" + houseData.getNumber() + ")");
-                                                player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
-                                                player.closeInventory();
+                                    if (houseData.getOwner().equals(player.getUniqueId().toString())) {
+                                        if (Main.getInstance().getHouseManager().canPlayerInteract(player, houseData.getNumber())) {
+                                            inventoryManager.setItem(new CustomItem(41, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Hauskasse öffnen", "§8 ➥ §a" + Utils.toDecimalFormat(houseData.getMoney()) + "$")) {
+                                                @Override
+                                                public void onClick(InventoryClickEvent event) {
+                                                    Main.getInstance().getHouseManager().openHouseTreasury(player, houseData);
+                                                }
+                                            });
+                                        }
+                                        inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cHaus verkaufen", "§8 ➥§7 Du erhälst: " + new DecimalFormat("#,###").format(houseData.getPrice() * 0.8) + "$")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                // House houseData = Housing.houseDataMap.get(playerData.getIntVariable("current_house"));
+                                                if (utils.houseManager.resetHouse(player, houseData.getNumber())) {
+                                                    playerData.addMoney((int) (houseData.getPrice() * 0.8), "Haus-Verkauf (" + houseData.getNumber() + ")");
+                                                    player.sendMessage("§8[§6Haus§8]§a Du hast Haus " + houseData.getNumber() + " für " + (int) (houseData.getPrice() * 0.8) + "$ verkauft.");
+                                                    player.closeInventory();
+                                                }
                                             }
-                                        }
-                                    });
-                                    inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CHEST, 1, 0, "§7Lager öffnen")) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
-                                            Storage s = Storage.getStorageByTypeAndPlayer(StorageType.HOUSE, player, houseData.getNumber());
-                                            if (s == null) {
-                                                s = new Storage(StorageType.HOUSE);
-                                                s.setPlayer(player.getUniqueId().toString());
-                                                s.setHouseNumber(houseData.getNumber());
-                                                s.create();
+                                        });
+                                        inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CHEST, 1, 0, "§7Lager öffnen")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                Storage s = Storage.getStorageByTypeAndPlayer(StorageType.HOUSE, player, houseData.getNumber());
+                                                if (s == null) {
+                                                    s = new Storage(StorageType.HOUSE);
+                                                    s.setPlayer(player.getUniqueId().toString());
+                                                    s.setHouseNumber(houseData.getNumber());
+                                                    s.create();
+                                                }
+                                                s.open(player);
                                             }
-                                            s.open(player);
-                                        }
-                                    });
-                                    inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§7Server-Raum" + (!houseData.isServerRoom() ? " §8[§cNicht ausgebaut§8]" : ""))) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
-                                            if (!houseData.isServerRoom()) return;
-                                            Main.getInstance().houseManager.openHouseServerRoom(player, houseData);
-                                        }
-                                    });
+                                        });
+                                        inventoryManager.setItem(new CustomItem(21, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§7Server-Raum" + (!houseData.isServerRoom() ? " §8[§cNicht ausgebaut§8]" : ""))) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+                                                if (!houseData.isServerRoom()) return;
+                                                Main.getInstance().houseManager.openHouseServerRoom(player, houseData);
+                                            }
+                                        });
+                                    } else {
+                                        inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht.")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+
+                                            }
+                                        });
+                                    }
                                 } else {
-                                    inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§c§mHaus verkaufen", "§8 ➥§7 Dieses Haus gehört dir nicht.")) {
+                                    inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer")) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
 
                                         }
                                     });
+                                    inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$")) {
+                                        @Override
+                                        public void onClick(InventoryClickEvent event) {
+                                            player.closeInventory();
+                                            player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
+                                        }
+                                    });
                                 }
-                            } else {
-                                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.SKELETON_SKULL, 1, 0, "§7Kein Besitzer")) {
+                                inventoryManager.setItem(new CustomItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()))) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
 
                                     }
                                 });
-                                inventoryManager.setItem(new CustomItem(33, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHaus kaufen", "§8 ➥§e " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$")) {
-                                    @Override
-                                    public void onClick(InventoryClickEvent event) {
-                                        player.closeInventory();
-                                        player.performCommand("buyhouse " + playerData.getIntVariable("current_house"));
-                                    }
-                                });
-                            }
-                            inventoryManager.setItem(new CustomItem(29, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", Arrays.asList("§8 ➥ §ePreis§8:§7 " + new DecimalFormat("#,###").format(houseData.getPrice()) + "$", "§8 ➥ §eUmsatz§8: §7" + new DecimalFormat("#,###").format(houseData.getTotalMoney()) + "$", "§8 ➥ §eMieterslots§8:§7 " + houseData.getTotalSlots()))) {
-                                @Override
-                                public void onClick(InventoryClickEvent event) {
-
-                                }
-                            });
                             /*if (houseData.getHouseType().isCanCook()) {
                                 inventoryManager.setItem(new CustomItem(39, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§bKochen")) {
                                     @Override
@@ -394,122 +428,123 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 });
                             }*/
-                            if (playerData.getVariable("job") == null) {
-                                if (playerData.getFaction() != null && (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) && playerData.isDuty()) {
-                                    if (rammingPlayers.get(player) != null) {
-                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9§mRammen", "§8 ➥§7 Du bist bereits eine Tür am eintreten")) {
-                                            @Override
-                                            public void onClick(InventoryClickEvent event) {
+                                if (playerData.getVariable("job") == null) {
+                                    if (playerData.getFaction() != null && (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) && playerData.isDuty()) {
+                                        if (rammingPlayers.get(player) != null) {
+                                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9§mRammen", "§8 ➥§7 Du bist bereits eine Tür am eintreten")) {
+                                                @Override
+                                                public void onClick(InventoryClickEvent event) {
 
-                                            }
-                                        });
-                                    } else {
-                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9Rammen", "§8 ➥§7 Fang an die Tür aufzutreten (2 Polizisten benötigt)")) {
-                                            @Override
-                                            public void onClick(InventoryClickEvent event) {
-                                                Player player = (Player) event.getWhoClicked(); // Ensure we get the player from the event
-                                                List<Player> nearPlayers = new ObjectArrayList<>();
-                                                for (Player p : Bukkit.getOnlinePlayers()) {
-                                                    if (p.getWorld() != player.getWorld()) continue;
-                                                    PlayerData pData = playerManager.getPlayerData(p);
-                                                    if (pData == null || pData.getFaction() == null) continue;
-                                                    if (!pData.isExecutiveFaction() || pData.isDuty()) continue;
-                                                    if (player.getLocation().distance(p.getLocation()) < 5 && p != player) {
-                                                        nearPlayers.add(p);
-                                                    }
                                                 }
-                                                if (nearPlayers.size() < 1) {
-                                                    player.sendMessage(Prefix.ERROR + "Es sind nicht genug Polizisten in der Nähe.");
-                                                    return;
-                                                }
-
-                                                double radius = 5.0;
-                                                Block nearestDoorBlock = null;
-                                                double nearestDistance = radius;
-                                                Location playerLocation = player.getLocation();
-
-                                                for (Block block : blockManager.getNearbyBlocks(playerLocation, radius)) {
-                                                    Material type = block.getType();
-                                                    if (type == Material.IRON_DOOR || type == Material.OAK_DOOR) {
-                                                        double distance = playerLocation.distance(block.getLocation());
-                                                        if (distance < nearestDistance) {
-                                                            nearestDistance = distance;
-                                                            nearestDoorBlock = block;
+                                            });
+                                        } else {
+                                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9Rammen", "§8 ➥§7 Fang an die Tür aufzutreten (2 Polizisten benötigt)")) {
+                                                @Override
+                                                public void onClick(InventoryClickEvent event) {
+                                                    Player player = (Player) event.getWhoClicked(); // Ensure we get the player from the event
+                                                    List<Player> nearPlayers = new ObjectArrayList<>();
+                                                    for (Player p : Bukkit.getOnlinePlayers()) {
+                                                        if (p.getWorld() != player.getWorld()) continue;
+                                                        PlayerData pData = playerManager.getPlayerData(p);
+                                                        if (pData == null || pData.getFaction() == null) continue;
+                                                        if (!pData.isExecutiveFaction() || pData.isDuty()) continue;
+                                                        if (player.getLocation().distance(p.getLocation()) < 5 && p != player) {
+                                                            nearPlayers.add(p);
                                                         }
                                                     }
-                                                }
-
-                                                if (nearestDoorBlock == null) {
-                                                    player.sendMessage(Prefix.ERROR + "Keine Tür in der Nähe gefunden.");
-                                                    return;
-                                                }
-
-                                                BlockState state = nearestDoorBlock.getState();
-                                                if (state.getBlockData() instanceof Openable) {
-                                                    Openable openable = (Openable) state.getBlockData();
-                                                    if (openable.isOpen()) {
-                                                        player.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
-                                                    } else {
-                                                        openable.setOpen(true);
-                                                        state.setBlockData(openable);
-                                                        state.update();
-                                                        player.sendMessage(Prefix.MAIN + "Die Tür wurde geöffnet.");
+                                                    if (nearPlayers.size() < 1) {
+                                                        player.sendMessage(Prefix.ERROR + "Es sind nicht genug Polizisten in der Nähe.");
+                                                        return;
                                                     }
-                                                } else {
-                                                    player.sendMessage(Prefix.ERROR + "Dies ist keine Tür.");
+
+                                                    double radius = 5.0;
+                                                    Block nearestDoorBlock = null;
+                                                    double nearestDistance = radius;
+                                                    Location playerLocation = player.getLocation();
+
+                                                    for (Block block : blockManager.getNearbyBlocks(playerLocation, radius)) {
+                                                        Material type = block.getType();
+                                                        if (type == Material.IRON_DOOR || type == Material.OAK_DOOR) {
+                                                            double distance = playerLocation.distance(block.getLocation());
+                                                            if (distance < nearestDistance) {
+                                                                nearestDistance = distance;
+                                                                nearestDoorBlock = block;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (nearestDoorBlock == null) {
+                                                        player.sendMessage(Prefix.ERROR + "Keine Tür in der Nähe gefunden.");
+                                                        return;
+                                                    }
+
+                                                    BlockState state = nearestDoorBlock.getState();
+                                                    if (state.getBlockData() instanceof Openable) {
+                                                        Openable openable = (Openable) state.getBlockData();
+                                                        if (openable.isOpen()) {
+                                                            player.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
+                                                        } else {
+                                                            openable.setOpen(true);
+                                                            state.setBlockData(openable);
+                                                            state.update();
+                                                            player.sendMessage(Prefix.MAIN + "Die Tür wurde geöffnet.");
+                                                        }
+                                                    } else {
+                                                        player.sendMessage(Prefix.ERROR + "Dies ist keine Tür.");
+                                                    }
                                                 }
+                                            });
+                                        }
+                                    } else {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
+
                                             }
                                         });
                                     }
                                 } else {
-                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
+                                    if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
+                                            @Override
+                                            public void onClick(InventoryClickEvent event) {
 
+                                            }
+                                        });
+                                    } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
+                                        if (commands.postboteCommand.canGive(houseData.getNumber())) {
+                                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
+                                                @Override
+                                                public void onClick(InventoryClickEvent event) {
+                                                    Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                    player.closeInventory();
+                                                }
+                                            });
+                                        } else {
+                                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert")) {
+                                                @Override
+                                                public void onClick(InventoryClickEvent event) {
+
+                                                }
+                                            });
                                         }
-                                    });
-                                }
-                            } else {
-                                if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                    inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
-                                        @Override
-                                        public void onClick(InventoryClickEvent event) {
+                                    } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                        if (commands.muellmannCommand.canGet(houseData.getNumber())) {
+                                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
+                                                @Override
+                                                public void onClick(InventoryClickEvent event) {
+                                                    Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                    player.closeInventory();
+                                                }
+                                            });
+                                        } else {
+                                            inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert")) {
+                                                @Override
+                                                public void onClick(InventoryClickEvent event) {
 
+                                                }
+                                            });
                                         }
-                                    });
-                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
-                                    if (commands.postboteCommand.canGive(houseData.getNumber())) {
-                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
-                                            @Override
-                                            public void onClick(InventoryClickEvent event) {
-                                                Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
-                                                player.closeInventory();
-                                            }
-                                        });
-                                    } else {
-                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits beliefert")) {
-                                            @Override
-                                            public void onClick(InventoryClickEvent event) {
-
-                                            }
-                                        });
-                                    }
-                                } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                    if (commands.muellmannCommand.canGet(houseData.getNumber())) {
-                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
-                                            @Override
-                                            public void onClick(InventoryClickEvent event) {
-                                                Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
-                                                player.closeInventory();
-                                            }
-                                        });
-                                    } else {
-                                        inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Haus bereits geleert")) {
-                                            @Override
-                                            public void onClick(InventoryClickEvent event) {
-
-                                            }
-                                        });
                                     }
                                 }
                             }

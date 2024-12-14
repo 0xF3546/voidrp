@@ -367,6 +367,26 @@ public class PlayerData {
         }
     }
 
+/*    @SneakyThrows
+    private void loadIllnesses() {
+        illnesses.clear();
+        try (Connection connection = Main.getInstance().mySQL.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_illness WHERE uuid = ?")) {
+            statement.setString(1, player.getUniqueId().toString());
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    String illnessType = result.getString("illness");
+                    int id = result.getInt("id");
+                    PlayerIllness playerIllness = new PlayerIllness(IllnessType.valueOf(illnessType));
+                    playerIllness.setId(id);
+                    illnesses.add(playerIllness);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }*/
+
     @SneakyThrows
     private void loadClickedEventBlocks() {
         clickedEventBlocks.clear();
