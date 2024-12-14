@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
+import java.util.Random;
+
 public class HungerListener implements Listener {
     private final PlayerManager playerManager;
 
@@ -28,14 +30,17 @@ public class HungerListener implements Listener {
             return;
         }
 
+        Random random = new Random();
         int currentFoodLevel = player.getFoodLevel();
-        int newFoodLevel = event.getFoodLevel();
+        int difference = currentFoodLevel - event.getFoodLevel();
 
-        if (newFoodLevel < currentFoodLevel) {
-            // reduce the hunger loss by half
-            // set Math.max(1, ...) to another value to change the hunger loss (e.g., 0.5)
-            int reducedLoss = Math.max(1, (currentFoodLevel - newFoodLevel) / 2);
-            event.setFoodLevel(currentFoodLevel - reducedLoss);
+        if (difference > 0) {
+            // reduction of 50% based on the odds
+            if (random.nextBoolean()) {
+                event.setFoodLevel(currentFoodLevel);
+            } else {
+                event.setFoodLevel(currentFoodLevel - difference);
+            }
         }
     }
 }
