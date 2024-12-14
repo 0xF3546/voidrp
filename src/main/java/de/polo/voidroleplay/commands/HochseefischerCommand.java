@@ -136,6 +136,8 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         if (boat != null) boat.remove();
         spawnedBoats.remove(player);
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        // ISSUE VRP-10000: fixed by adding null check
+        if (playerData == null) return;
         playerData.setVariable("job", null);
         int amount = playerData.getVariable("hochseefischer_kg");
         Main.getInstance().getPlayerManager().addExp(player, amount * 2);

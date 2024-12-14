@@ -217,7 +217,8 @@ public class LumberjackCommand implements CommandExecutor {
         Main.getInstance().getCooldownManager().setCooldown(player, "holzfäller", 600);
         Inventory inv = player.getInventory();
         for (ItemStack item : inv.getContents()) {
-            if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§7Holzfälleraxt")) {
+            // ISSUE VRP-10000: fixed by adding null check for item meta
+            if (item != null && item.hasItemMeta() && item.getItemMeta().getDisplayName().equalsIgnoreCase("§7Holzfälleraxt")) {
                 inv.removeItem(item);
             }
         }

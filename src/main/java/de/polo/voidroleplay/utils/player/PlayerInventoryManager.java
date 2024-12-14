@@ -26,6 +26,8 @@ public class PlayerInventoryManager {
     }
 
     private void load() {
+        // ISSUE VRP-10000: SQL race condition
+        try {
         Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM player_inventory_items WHERE uuid = ?", playerData.getPlayer().getUniqueId().toString())
                 .thenAccept(result -> {
                     if (result != null && !result.isEmpty()) {
@@ -35,6 +37,13 @@ public class PlayerInventoryManager {
                         }
                     }
                 });
+        } catch (Exception e) {
+            // Stacktrace:
+            // [13:26:28] [pool-24-thread-1/INFO]: [VoidRoleplay] [STDOUT] Executing query: SELECT * FROM player_inventory_items WHERE uuid = ? with args: [2aa52162-8631-4d2c-9989-3132c719e5ac]
+            //[13:26:28] [pool-24-thread-1/INFO]: [VoidRoleplay] [STDOUT] Query successful, results: []
+            //[13:26:28] [Server thread/WARN]: java.sql.SQLException: Column Index out of range, 0 < 1.
+            System.out.printf("Error while loading inventory for %s%n", playerData.getPlayer().getName());
+        }
     }
 
     public Collection<PlayerInventoryItem> getItems() {

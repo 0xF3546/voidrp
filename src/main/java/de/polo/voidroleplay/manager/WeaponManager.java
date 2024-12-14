@@ -321,6 +321,9 @@ public class WeaponManager implements Listener {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = weapon.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
         Weapon w = weaponList.get(id);
+        // ISSUE VRP-10000: Fix reload logic
+        // TODO: Fix reload logic
+        if (w == null) return;
         de.polo.voidroleplay.utils.enums.Weapon weaponData = w.getType();
         w.setReloading(true);
         utils.sendActionBar(player, "§7Lade " + weaponData.getName() + "§7 nach!");

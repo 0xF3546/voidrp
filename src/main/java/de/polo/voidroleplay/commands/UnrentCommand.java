@@ -26,7 +26,13 @@ public class UnrentCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 2) {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
+            // ISSUE VRP-10000: fixed by adding try-catch block for uuid and player name
+            OfflinePlayer offlinePlayer;
+            try {
+                offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
+            } catch (IllegalArgumentException e) {
+                offlinePlayer = Bukkit.getOfflinePlayer(args[0]);
+            }
             House houseData = HouseManager.houseDataMap.get(Integer.parseInt(args[1]));
             if (houseData != null) {
                 if (houseData.getOwner().equals(player.getUniqueId().toString())) {

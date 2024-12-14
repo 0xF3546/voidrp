@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -40,9 +40,12 @@ public class DamageListener implements Listener {
         Player player = ((Player) event.getEntity()).getPlayer();
         if (player == null) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.getTicket(player) != null || playerData.isDead()) {
-            event.setCancelled(true);
-            return;
+        // ISSUE VRP-10000: fixed by adding null check
+        if (playerData != null) {
+            if (playerData.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.getTicket(player) != null || playerData.isDead()) {
+                event.setCancelled(true);
+                return;
+            }
         }
         player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
         if (event.getCause() == PROJECTILE) {
