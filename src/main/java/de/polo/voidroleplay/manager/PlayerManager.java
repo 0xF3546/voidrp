@@ -374,9 +374,9 @@ public class PlayerManager implements Listener {
                 }
                 if (playerData.getRankDuration() != null) {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    if (date.isBefore(LocalDateTime.now())) {
+                    if (date.isBefore(Utils.getTime())) {
                         player.sendMessage(Prefix.MAIN + "Dein " + playerData.getRang() + " ist ausgelaufen.");
-                        mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId());
+                        mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId().toString());
                         if (playerData.getBusiness() != null) {
                             BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
                             if (business != null) {

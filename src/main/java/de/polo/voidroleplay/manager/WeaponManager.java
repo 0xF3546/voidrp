@@ -92,26 +92,18 @@ public class WeaponManager implements Listener {
 
     @SneakyThrows
     private void loadPlayerWeapons() {
-        Main.getInstance()
-                .getMySQL()
-                .queryThreaded("SELECT * FROM player_weapons")
-                .thenAcceptAsync(result -> {
-                    while (true) {
-                        try {
-                            if (!result.next()) break;
-                            Weapon weapon = new Weapon();
-                            weapon.setAmmo(result.getInt("ammo"));
-                            weapon.setCurrentAmmo(result.getInt("current_ammo"));
-                            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
-                            weapon.setId(result.getInt("id"));
-                            weapon.setOwner(UUID.fromString(result.getString("uuid")));
-                            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
-                            weaponList.put(weapon.getId(), weapon);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM player_weapons");
+        while (result.next()) {
+            Weapon weapon = new Weapon();
+            weapon.setAmmo(result.getInt("ammo"));
+            weapon.setCurrentAmmo(result.getInt("current_ammo"));
+            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
+            weapon.setId(result.getInt("id"));
+            weapon.setOwner(UUID.fromString(result.getString("uuid")));
+            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
+            weaponList.put(weapon.getId(), weapon);
+        }
     }
 
     @SneakyThrows
