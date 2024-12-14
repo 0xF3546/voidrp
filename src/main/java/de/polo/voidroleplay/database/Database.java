@@ -18,6 +18,8 @@ public interface Database {
 
     CompletableFuture<Integer> queryThreaded(String query, Object... args);
 
+    void executeAsync(String sql);
+
     CompletableFuture<Optional<Integer>> queryThreadedWithGeneratedKeys(String query, Object... args);
 
     CompletableFuture<List<Map<String, Object>>> executeQueryAsync(String query, Object... args);

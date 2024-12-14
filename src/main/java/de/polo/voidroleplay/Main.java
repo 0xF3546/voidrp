@@ -16,14 +16,13 @@ import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.manager.inventory.InventoryApiRegister;
-import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
 import de.polo.voidroleplay.utils.player.ScoreboardManager;
+import dev.vansen.singleline.SingleLineOptions;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
@@ -33,7 +32,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -182,6 +180,8 @@ public final class Main extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        SingleLineOptions.USE_COMPONENT_LOGGER.enabled(true);
+        SingleLineOptions.USE_NORMAL_LOGGER_INSTEAD_OF_PRINT.enabled(false);
     }
 
     private void registerListener(Commands commands) {

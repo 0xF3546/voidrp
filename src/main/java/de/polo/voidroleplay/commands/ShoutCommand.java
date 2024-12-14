@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.ChatUtils;
@@ -42,7 +42,7 @@ public class ShoutCommand implements CommandExecutor {
                 players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + playerName + " schreit: " + Utils.stringArrayToString(args) + "!");
             }
         }
-        ChatUtils.LogMessage(Utils.stringArrayToString(args), player.getUniqueId());
+        ChatUtils.logMessage(Utils.stringArrayToString(args), player.getUniqueId());
         return false;
     }
 }

@@ -1,11 +1,11 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
 import de.polo.voidroleplay.manager.*;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.utils.player.BankingUtils;
 import de.polo.voidroleplay.utils.player.DeathUtils;
 import de.polo.voidroleplay.utils.player.PayDayUtils;
@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
@@ -68,6 +67,7 @@ public class Utils {
     }
 
     public static String stringArrayToString(String[] args) {
+        /*
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < args.length; i++) {
             stringBuilder.append(args[i]);
@@ -76,6 +76,8 @@ public class Utils {
             }
         }
         return stringBuilder.toString();
+        */
+        return String.join(" ", args);
     }
 
     public static void sendPlayerAchievementMessage(Player player, String message) {
@@ -119,11 +121,14 @@ public class Utils {
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
+        /*
         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
             if (player == null) continue;
             if (player.getName() == null) continue;
             if (player.getName().equalsIgnoreCase(name)) return player;
         }
+        */
+        Bukkit.getOfflinePlayer(name);
         return null;
     }
 

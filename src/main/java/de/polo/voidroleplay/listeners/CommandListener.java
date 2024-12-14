@@ -1,8 +1,8 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.ChatUtils;
@@ -110,6 +110,6 @@ public class CommandListener implements Listener {
                 return;
             }
         }
-        ChatUtils.LogCommand(msg, player.getUniqueId());
+        ChatUtils.logCommand(msg, player.getUniqueId());
     }
 }

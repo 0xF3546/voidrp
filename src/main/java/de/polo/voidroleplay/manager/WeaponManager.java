@@ -24,12 +24,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class WeaponManager implements Listener {
     public static final Map<Material, WeaponData> weaponDataMap = new HashMap<>();
@@ -66,49 +67,65 @@ public class WeaponManager implements Listener {
     }
 
     private void loadWeapons() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM weapons");
-        while (result.next()) {
-            WeaponData weaponData = new WeaponData();
-            weaponData.setId(result.getInt("id"));
-            weaponData.setMaterial(Material.valueOf(result.getString("material")));
-            weaponData.setName(result.getString("name").replace("&", "§"));
-            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
-            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
-            weaponData.setDamage(result.getFloat("damage"));
-            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
-            weaponData.setArrowVelocity(result.getFloat("velocity"));
-            weaponData.setShootDuration(result.getFloat("shootDuration"));
-            weaponData.setType(result.getString("type"));
-            weaponData.setSoundPitch(result.getFloat("soundPitch"));
-            weaponData.setKnockback(result.getInt("knockback"));
-            weaponData.setMeele(result.getBoolean("isMelee"));
-            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
-        }
+        Main.getInstance()
+                .getMySQL()
+                .queryThreaded("SELECT * FROM weapons")
+                .thenAcceptAsync(result -> {
+                    while (true) {
+                        try {
+                            if (!result.next()) break;
+                            WeaponData weaponData = new WeaponData();
+                            weaponData.setId(result.getInt("id"));
+                            weaponData.setMaterial(Material.valueOf(result.getString("material")));
+                            weaponData.setName(result.getString("name").replace("&", "§"));
+                            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
+                            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
+                            weaponData.setDamage(result.getFloat("damage"));
+                            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
+                            weaponData.setArrowVelocity(result.getFloat("velocity"));
+                            weaponData.setShootDuration(result.getFloat("shootDuration"));
+                            weaponData.setType(result.getString("type"));
+                            weaponData.setSoundPitch(result.getFloat("soundPitch"));
+                            weaponData.setKnockback(result.getInt("knockback"));
+                            weaponData.setMeele(result.getBoolean("isMelee"));
+                            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
     }
 
     @SneakyThrows
     private void loadPlayerWeapons() {
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM player_weapons");
-        while (result.next()) {
-            Weapon weapon = new Weapon();
-            weapon.setAmmo(result.getInt("ammo"));
-            weapon.setCurrentAmmo(result.getInt("current_ammo"));
-            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
-            weapon.setId(result.getInt("id"));
-            weapon.setOwner(UUID.fromString(result.getString("uuid")));
-            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
-            weaponList.put(weapon.getId(), weapon);
-        }
+        Main.getInstance()
+                .getMySQL()
+                .queryThreaded("SELECT * FROM player_weapons")
+                .thenAcceptAsync(result -> {
+                    while (true) {
+                        try {
+                            if (!result.next()) break;
+                            Weapon weapon = new Weapon();
+                            weapon.setAmmo(result.getInt("ammo"));
+                            weapon.setCurrentAmmo(result.getInt("current_ammo"));
+                            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
+                            weapon.setId(result.getInt("id"));
+                            weapon.setOwner(UUID.fromString(result.getString("uuid")));
+                            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
+                            weaponList.put(weapon.getId(), weapon);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
     }
 
     @SneakyThrows
     private void removeWeapon(Weapon weapon) {
         weaponList.remove(weapon.getId());
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        statement.execute("DELETE FROM player_weapons WHERE id = " + weapon.getId());
-        statement.close();
+        Main.getInstance()
+                .getMySQL()
+                .executeAsync("DELETE FROM weapons WHERE id = " + weapon.getId());
     }
 
     @SneakyThrows
@@ -139,10 +156,7 @@ public class WeaponManager implements Listener {
             return;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (playerData.isCuffed()) return;
-        if (playerData.isDead()) {
-            return;
-        }
+        if (playerData.isCuffed() || playerData.isDead()) return;
         if (weaponUsages.get(player.getUniqueId()) != null) {
             if (Utils.getTime().isAfter(weaponUsages.get(player.getUniqueId()))) {
                 weaponUsages.remove(player.getUniqueId());
@@ -151,8 +165,7 @@ public class WeaponManager implements Listener {
                 return;
             }
         }
-        if (Objects.requireNonNull(player.getEquipment()).getItemInMainHand().equals(new ItemStack(Material.AIR)))
-            return;
+        if (player.getEquipment().getItemInMainHand().isEmpty()) return;
         if (player.getEquipment().getItemInMainHand().getType().equals(RoleplayItem.TAZER.getMaterial()) && player.getEquipment().getItemInMainHand().getItemMeta().getDisplayName().equalsIgnoreCase(RoleplayItem.TAZER.getDisplayName())) {
             if (Main.getInstance().getCooldownManager().isOnCooldown(player, "tazer")) {
                 utils.sendActionBar(player, "§cWarte noch " + Main.getInstance().getCooldownManager().getRemainingTime(player, "tazer") + " Sekunden.");
@@ -172,8 +185,7 @@ public class WeaponManager implements Listener {
                 particleLocation.add(direction.clone().multiply(stepSize));
 
                 RayTraceResult result = player.getWorld().rayTraceEntities(particleLocation, particleLocation.getDirection(), 1);
-                if (result != null && result.getHitEntity() instanceof Player) {
-                    Player hitPlayer = (Player) result.getHitEntity();
+                if (result != null && result.getHitEntity() instanceof Player hitPlayer) {
                     if (target == null || !target.equals(hitPlayer)) {
                         target = hitPlayer;
                     }
@@ -341,7 +353,7 @@ public class WeaponManager implements Listener {
             w.setCurrentAmmo(w.getType().getMaxAmmo());
         } else {
             if (w.getAmmo() >= w.getType().getMaxAmmo()) {
-                int dif = w.getType ().getMaxAmmo() - w.getCurrentAmmo();
+                int dif = w.getType().getMaxAmmo() - w.getCurrentAmmo();
                 w.setCurrentAmmo(w.getType().getMaxAmmo());
                 w.setAmmo(w.getAmmo() - dif);
             } else {
