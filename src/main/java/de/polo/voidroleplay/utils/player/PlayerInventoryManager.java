@@ -58,6 +58,10 @@ public class PlayerInventoryManager {
         return weight;
     }
 
+    public int getDiff() {
+        return getSize() - getWeight();
+    }
+
     public boolean addItem(RoleplayItem item, int amount) {
         PlayerInventoryItem inventoryItem = getByType(item);
         if (inventoryItem == null) {

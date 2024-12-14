@@ -667,7 +667,7 @@ public class FactionManager {
         SprayableBanner banner = getSprayAbleBannerByBlockId(block.getId());
         if (banner == null) {
             SprayableBanner b = new SprayableBanner(block.getId(), faction.getId());
-            Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO faction_banner (registeredBlock, factionId) VALUES (?, ?)")
+            Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO faction_banner (registeredBlock, factionId) VALUES (?, ?)", block.getId(), faction.getId())
                     .thenApply(key -> {
                         if (key.isPresent()) {
                             b.setId(key.get());

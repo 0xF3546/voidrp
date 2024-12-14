@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import static de.polo.voidroleplay.Main.utils;
+
 public class DeathUtils {
     private final HashMap<String, Boolean> deathPlayer = new HashMap<>();
     private final HashMap<String, Item> deathSkulls = new HashMap<>();
@@ -117,9 +119,10 @@ public class DeathUtils {
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         //player.setGameMode(GameMode.SURVIVAL);
-        if (playerData.getDeathLocation() != null) player.teleport(playerData.getDeathLocation());
+        if (playerData.getDeathLocation() != null && !playerData.isJailed()) player.teleport(playerData.getDeathLocation());
         playerData.setHitmanDead(false);
         playerData.setStabilized(false);
+        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
             assert statement != null;
@@ -139,7 +142,7 @@ public class DeathUtils {
         }
         playerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {
-            Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
+            utils.gangwarUtils.respawnPlayer(player);
             return;
         }
         if (effects) {
@@ -148,7 +151,6 @@ public class DeathUtils {
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 6, 0, true, false));
         }
-        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
     }
 
     public void despawnPlayer(Player player) {
