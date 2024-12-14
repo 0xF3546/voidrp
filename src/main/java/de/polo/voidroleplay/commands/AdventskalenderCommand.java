@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
@@ -75,8 +76,7 @@ public class AdventskalenderCommand extends CommandBase {
                     inventoryManager.setItem(new CustomItem(finalI, ItemManager.createItem(material, 1, 0, "§cTag " + day)) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
-                            LocalDate today = LocalDate.now();
-                            int currentDay = today.getDayOfMonth();
+                            int currentDay = Utils.getTime().getDayOfMonth();
 
                             if (day > currentDay) {
                                 player.sendMessage(PREFIX + "§cDu kannst dieses Türchen erst am " + day + ". Dezember öffnen!");

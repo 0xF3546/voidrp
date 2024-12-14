@@ -101,7 +101,7 @@ public class PlantFunctions implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     plant.getBlock().setType(Material.AIR);
-                    ItemManager.addCustomItem(player, plant.getType().getDrug().getItem(), plant.getYield());
+                    playerData.getInventory().addItem(plant.getType().getDrug().getItem(), plant.getYield());
                     factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
                     plants.remove(plant);
                     player.closeInventory();

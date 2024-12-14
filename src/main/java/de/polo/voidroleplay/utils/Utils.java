@@ -14,10 +14,6 @@ import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
-import org.dynmap.markers.AreaMarker;
-import org.dynmap.markers.Marker;
-import org.dynmap.markers.MarkerAPI;
-import org.dynmap.markers.MarkerSet;
 
 import java.sql.Date;
 import java.text.DecimalFormat;
@@ -29,8 +25,6 @@ import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
-    private static final HashMap<String, AreaMarker> areaMarkers = new HashMap<>();
-    private static final HashMap<String, Marker> markers = new HashMap<>();
     static Scoreboard sb;
     @Getter
     public final NavigationManager navigationManager;
@@ -131,65 +125,6 @@ public class Utils {
             if (player.getName().equalsIgnoreCase(name)) return player;
         }
         return null;
-    }
-
-    public static void createMarker(String markerId, String markerLabel, String world, double x, double y, double z) {
-        if (markers.get(markerLabel) != null) {
-            System.out.println("REMOVING MARKER: " + markerLabel);
-            removeMarker(markerLabel);
-        }
-        MarkerAPI markerAPI = Main.getInstance().getMarkerAPI();
-        MarkerSet markerSet = markerAPI.getMarkerSet(markerLabel);
-        if (markerSet == null) {
-            markerSet = markerAPI.createMarkerSet(markerLabel, markerLabel, null, false);
-        }
-
-
-        Marker marker = markerSet.createMarker(markerId, markerLabel, world, x, y, z, markerAPI.getMarkerIcon("sign"), false);
-        if (marker == null) {
-            System.out.println("Error creating marker!");
-            return;
-        }
-
-        // Optional: Weitere Einstellungen vornehmen
-        // marker.setDescription("This is an example marker.");
-
-        markers.put(markerLabel, marker);
-    }
-
-    public static void removeMarker(String markerLabel) {
-        Marker marker = markers.get(markerLabel);
-        if (marker == null) return;
-        marker.deleteMarker();
-        markers.remove(markerLabel);
-    }
-
-    public static void createWebAreaMarker(String markerId, String markerLabel, String world, double[] x, double[] z) {
-        if (areaMarkers.get(markerLabel) != null) removeAreaMarker(markerLabel);
-        MarkerAPI markerAPI = Main.getInstance().getMarkerAPI();
-        MarkerSet markerSet = markerAPI.getMarkerSet("example.markerset");
-        if (markerSet == null) {
-            markerSet = markerAPI.createMarkerSet("example.markerset", "Example Marker Set", null, false);
-        }
-
-        AreaMarker areaMarker = markerSet.createAreaMarker(markerId, markerLabel, false, world, x, z, false);
-        if (areaMarker == null) {
-            System.out.println("Error creating area marker!");
-            return;
-        }
-
-        // areaMarker.setDescription("This is an example area marker.");
-        areaMarker.setLineStyle(3, 0.8, 0xFF0000);
-        // areaMarker.setFillStyle(0.35, 0x00FF00);
-
-        areaMarkers.put(markerLabel, areaMarker);
-    }
-
-    public static void removeAreaMarker(String markerLabel) {
-        AreaMarker marker = areaMarkers.get(markerLabel);
-        if (marker == null) return;
-        marker.deleteMarker();
-        areaMarkers.remove(markerLabel);
     }
 
     public static Location getLocation(int x, int y, int z) {

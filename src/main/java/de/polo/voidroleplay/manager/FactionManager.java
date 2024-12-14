@@ -261,7 +261,7 @@ public class FactionManager {
         LocalDateTime cooldown = Utils.getTime().plusHours(6);
         MySQL mySQL = Main.getInstance().mySQL;
 
-        mySQL.executeQueryAsync("SELECT `faction_grade` FROM `players` WHERE `uuid` = ?", uuid.toString())
+        mySQL.executeQueryAsync("SELECT faction_grade FROM players WHERE `uuid` = ?", uuid.toString())
                 .thenAccept(result -> {
                     if (result != null && !result.isEmpty()) {
                         Map<String, Object> playerData = result.get(0);
@@ -279,7 +279,7 @@ public class FactionManager {
                             });
                         } else {
                             mySQL.updateAsync(
-                                    "UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false, WHERE `uuid` = ?",
+                                    "UPDATE `players` SET `faction` = NULL, `faction_grade` = 0, `isDuty` = false WHERE `uuid` = ?",
                                     uuid.toString()
                             ).thenRun(() -> {
                                 ServerManager.factionPlayerDataMap.remove(uuid.toString());

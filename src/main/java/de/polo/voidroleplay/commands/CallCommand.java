@@ -6,6 +6,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.PhoneUtils;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,6 +30,10 @@ public class CallCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (!PhoneUtils.hasPhone(player)) {
+            player.sendMessage(Component.text(PhoneUtils.ERROR_NO_PHONE));
+            return false;
+        }
         if (!playerData.isDead()) {
             if (!playerData.isFlightmode()) {
                 if (args.length >= 1) {

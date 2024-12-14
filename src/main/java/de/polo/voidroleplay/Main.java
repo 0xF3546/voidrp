@@ -30,8 +30,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.dynmap.DynmapAPI;
-import org.dynmap.markers.MarkerAPI;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -75,12 +73,6 @@ public final class Main extends JavaPlugin {
     public Seasonpass seasonpass;
     public Beginnerpass beginnerpass;
     private NPCManager npc;
-
-    @Getter
-    private DynmapAPI dynmapAPI;
-
-    @Getter
-    private MarkerAPI markerAPI;
 
     @Getter
     private ScoreboardAPI scoreboardAPI;
@@ -175,19 +167,6 @@ public final class Main extends JavaPlugin {
         new InventoryApiRegister(this);
         GlobalStats.load();
 
-        dynmapAPI = (DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin("dynmap");
-        if (dynmapAPI == null) {
-            getLogger().severe("Dynmap plugin not found!");
-            return;
-        }
-        markerAPI = dynmapAPI.getMarkerAPI();
-        if (markerAPI == null) {
-            getLogger().severe("Error loading Dynmap marker API!");
-            return;
-        }
-
-        loadMarker();
-
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
         }
@@ -265,14 +244,6 @@ public final class Main extends JavaPlugin {
             throw new RuntimeException(e);
         }
         mySQL.close();
-    }
-
-    private void loadMarker() {
-        for (FactionData factionData : factionManager.getFactions()) {
-            Location location = locationManager.getLocation(factionData.getName());
-            if (location == null) continue;
-            Utils.createMarker("sign", factionData.getFullname(), "world", location.getX(), location.getY(), location.getZ());
-        }
     }
 
     private void registerAnnotatedCommands() {

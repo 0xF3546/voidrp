@@ -77,7 +77,7 @@ public class UndertakerCommand implements CommandExecutor {
             int i = 0;
             for (Corpse corpse : Main.getInstance().utils.deathUtil.getCorbses()) {
                 if (corpse.isJobActive()) continue;
-                int price = (int) (corpse.getSkull().getLocation().distance(player.getLocation()) * 2);
+                int price = (int) (corpse.getSkull().getLocation().distance(player.getLocation()) / 2);
                 if (corpse.getPrice() == 0) corpse.setPrice(price);
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WITHER_SKELETON_SKULL, 1, 0, "§8Leiche", "§8 ➥ §a" + Utils.toDecimalFormat(price) + "$")) {
                     @Override

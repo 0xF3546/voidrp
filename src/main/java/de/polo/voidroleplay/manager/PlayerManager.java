@@ -37,6 +37,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -173,6 +174,7 @@ public class PlayerManager implements Listener {
                     }
                 }
                 PlayerData playerData = new PlayerData(player);
+                playerData.setUuid(player.getUniqueId());
                 playerData.setFirstname(result.getString("firstname"));
                 playerData.setLastname(result.getString("lastname"));
                 playerData.setBargeld(result.getInt("bargeld"));
@@ -462,10 +464,11 @@ public class PlayerManager implements Listener {
                 mySQL.updateAsync("UPDATE Jail SET wps = ? WHERE uuid = ?", playerData.getHafteinheiten(), uuid);
             }
 
-            for (Weapon weapon : Main.getInstance().weaponManager.getWeapons().values()) {
-                if (weapon.getOwner().equals(player.getUniqueId())) {
-                    mySQL.updateAsync("UPDATE player_weapons SET ammo = ?, current_ammo = ? WHERE id = ?", weapon.getAmmo(), weapon.getCurrentAmmo(), weapon.getId());
-                }
+            for (ItemStack stack : player.getInventory().getContents()) {
+                if (stack == null) continue;
+                Weapon weapon = Main.getInstance().getWeaponManager().getWeaponFromItemStack(stack);
+                if (weapon == null) continue;
+                mySQL.updateAsync("UPDATE player_weapons SET ammo = ?, current_ammo = ? WHERE id = ?", weapon.getAmmo(), weapon.getCurrentAmmo(), weapon.getId());
             }
 
             if (playerData.isDead()) {
@@ -663,9 +666,9 @@ public class PlayerManager implements Listener {
 
     private void giveLoyaltyBonus(Player player) {
         PlayerData playerData = getPlayerData(player);
+        playerData.setLoyaltyBonus(playerData.getLoyaltyBonus() + 1);
         player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du hast, für deine Treue, einen Treuepunkt erhalten!"));
         player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du hast jetzt " + playerData.getLoyaltyBonus() + " Treuepunkte."));
-        playerData.setLoyaltyBonus(playerData.getLoyaltyBonus());
         mySQL.updateAsync("UPDATE players SET loyaltyBonus = ? WHERE uuid = ?", playerData.getLoyaltyBonus(), player.getUniqueId().toString());
     }
 
@@ -886,11 +889,11 @@ public class PlayerManager implements Listener {
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + (playerData.getLevel() + 1));
             utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
-            playerData.setLevel(playerData.getLevel() + 1);
             Main.getInstance().beginnerpass.didQuest(player, 3);
             player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
+            playerData.setLevel(playerData.getLevel() + 1);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
             mySQL.updateAsync("UPDATE players SET level = ?, exp = ? WHERE uuid = ?", playerData.getLevel(), playerData.getExp(), player.getUniqueId().toString());
         } else {

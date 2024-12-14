@@ -49,7 +49,7 @@ public class MySQL implements Database {
                 .execute(config -> config.setJdbcUrl(url))
                 .execute(config -> config.setUsername(yaml.getString("user")))
                 .execute(config -> config.setPassword(yaml.getString("password")))
-                .execute(config -> config.setMaximumPoolSize(10000))
+                .execute(config -> config.setMaximumPoolSize(100000))
                 .execute(config -> config.setIdleTimeout(30000))
                 .execute(config -> dataSource = new HikariDataSource(config));
     }
