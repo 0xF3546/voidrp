@@ -107,7 +107,6 @@ public class MySQL implements Database {
         }, BetterExecutor.executor);
     }
 
-
     @Override
     public CompletableFuture<Optional<Integer>> queryThreadedWithGeneratedKeys(String query, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
