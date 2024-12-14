@@ -74,11 +74,11 @@ public class StaatUtil {
         ResultSet result = statement.executeQuery("SELECT * FROM `Jail`");
         while (result.next()) {
             JailData jailData = new JailData();
-            jailData.setId(result.getInt(1));
-            jailData.setUuid(result.getString(2));
-            jailData.setHafteinheiten(result.getInt(3));
-            jailData.setReason(result.getString(4));
-            jailDataMap.put(result.getString(2), jailData);
+            jailData.setId(result.getInt("id"));
+            jailData.setUuid(result.getString("uuid"));
+            jailData.setHafteinheiten(result.getInt("wps"));
+            jailData.setReason(result.getString("wantedId"));
+            jailDataMap.put(result.getString("uuid"), jailData);
         }
     }
 

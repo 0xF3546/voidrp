@@ -24,7 +24,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -67,33 +69,25 @@ public class WeaponManager implements Listener {
     }
 
     private void loadWeapons() throws SQLException {
-        Main.getInstance()
-                .getMySQL()
-                .queryThreaded("SELECT * FROM weapons")
-                .thenAcceptAsync(result -> {
-                    while (true) {
-                        try {
-                            if (!result.next()) break;
-                            WeaponData weaponData = new WeaponData();
-                            weaponData.setId(result.getInt("id"));
-                            weaponData.setMaterial(Material.valueOf(result.getString("material")));
-                            weaponData.setName(result.getString("name").replace("&", "§"));
-                            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
-                            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
-                            weaponData.setDamage(result.getFloat("damage"));
-                            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
-                            weaponData.setArrowVelocity(result.getFloat("velocity"));
-                            weaponData.setShootDuration(result.getFloat("shootDuration"));
-                            weaponData.setType(result.getString("type"));
-                            weaponData.setSoundPitch(result.getFloat("soundPitch"));
-                            weaponData.setKnockback(result.getInt("knockback"));
-                            weaponData.setMeele(result.getBoolean("isMelee"));
-                            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM weapons");
+        while (result.next()) {
+            WeaponData weaponData = new WeaponData();
+            weaponData.setId(result.getInt("id"));
+            weaponData.setMaterial(Material.valueOf(result.getString("material")));
+            weaponData.setName(result.getString("name").replace("&", "§"));
+            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
+            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
+            weaponData.setDamage(result.getFloat("damage"));
+            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
+            weaponData.setArrowVelocity(result.getFloat("velocity"));
+            weaponData.setShootDuration(result.getFloat("shootDuration"));
+            weaponData.setType(result.getString("type"));
+            weaponData.setSoundPitch(result.getFloat("soundPitch"));
+            weaponData.setKnockback(result.getInt("knockback"));
+            weaponData.setMeele(result.getBoolean("isMelee"));
+            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
+        }
     }
 
     @SneakyThrows

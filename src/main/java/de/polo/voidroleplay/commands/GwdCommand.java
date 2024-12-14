@@ -49,7 +49,7 @@ public class GwdCommand implements CommandExecutor {
             return false;
         }
         try {
-            int grade = Integer.parseInt(args[2]);
+            int grade = Integer.parseInt(args[1]);
             if (!(grade >= 1 && grade <= 15)) {
                 player.sendMessage(Prefix.ERROR + "Die GWD-Note muss zwischen 1-15 sein.");
                 return false;
