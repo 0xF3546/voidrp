@@ -11,6 +11,10 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import java.util.Random;
 
 public class HungerListener implements Listener {
+    /**
+     * The odds of the player's food level being reduced
+     */
+    public static final double ODDS = 0.2;
     private final PlayerManager playerManager;
 
     public HungerListener(PlayerManager playerManager) {
@@ -35,8 +39,8 @@ public class HungerListener implements Listener {
         int difference = currentFoodLevel - event.getFoodLevel();
 
         if (difference > 0) {
-            // reduction of 50% based on the odds
-            if (random.nextBoolean()) {
+            // If the random number is less than the odds, the player's food level will not be reduced
+            if (random.nextDouble() < ODDS) {
                 event.setFoodLevel(currentFoodLevel);
             } else {
                 event.setFoodLevel(currentFoodLevel - difference);
