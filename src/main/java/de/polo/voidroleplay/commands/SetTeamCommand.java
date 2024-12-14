@@ -28,14 +28,14 @@ public class SetTeamCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (player.hasPermission("operator")) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getPermlevel() >= 100) {
             if (args.length == 2) {
                 OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(args[0]);
                 if (offlinePlayer == null) {
                     player.sendMessage(Prefix.ERROR + "Spieler wurde nicht gefunden.");
                     return false;
                 }
-                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 String rank = args[1];
                 if (ServerManager.rankDataMap.get(rank) == null) {
                     player.sendMessage(Prefix.ERROR + "Rang nicht gefunden.");

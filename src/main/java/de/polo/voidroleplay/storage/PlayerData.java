@@ -124,7 +124,6 @@ public class PlayerData {
     @Getter
     private int exp;
     @Setter
-    @Getter
     private int needed_exp;
     private boolean isDead = false;
     private boolean isStabilized = false;
@@ -853,6 +852,10 @@ public class PlayerData {
         int slots = houseSlot;
         if (getPermlevel() >= 20) slots++;
         return slots;
+    }
+
+    public int getNeeded_exp() {
+        return (level + 1) * 1000;
     }
 
     public class AddonXP {

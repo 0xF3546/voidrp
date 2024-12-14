@@ -60,20 +60,15 @@ public abstract class CommandBase implements CommandExecutor {
         if (!Objects.equals(meta.faction(), "")) {
             if (playerData.getFaction() == null || !playerData.getFaction().equalsIgnoreCase(meta.faction())) {
                 player.sendMessage(Prefix.ERROR_NOPERMISSION);
+                return true;
             }
-            return true;
         }
         if (meta.leader() && !playerData.isLeader()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
         }
-
         try {
             execute(player, playerData, args);
-            PluginCommand pluginCommand = Main.getInstance().getCommand(command.getName());
-            if (pluginCommand != null) {
-                pluginCommand.setExecutor(this);
-            }
         } catch (Exception e) {
             player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten: " + e.getMessage());
             e.printStackTrace();

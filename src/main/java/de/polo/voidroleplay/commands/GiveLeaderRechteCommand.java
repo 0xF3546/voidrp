@@ -6,6 +6,7 @@ import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.TeamSpeak;
 import de.polo.voidroleplay.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -60,6 +61,7 @@ public class GiveLeaderRechteCommand implements CommandExecutor {
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
             offlinePlayer.getPlayer().sendMessage(Component.text("§6" + player.getName() + " hat dir Leaderrechte gegeben!"));
         }
+        TeamSpeak.reloadPlayer(offlinePlayer.getUniqueId());
         return false;
     }
 }

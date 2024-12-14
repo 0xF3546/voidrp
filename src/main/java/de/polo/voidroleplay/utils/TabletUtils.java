@@ -184,13 +184,7 @@ public class TabletUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei")) {
             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §1Aktenapp", true, true);
-            inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.DIAMOND, 1, 0, "§9Akten bearbeiten", "§bBearbeite Akten von Spielern")) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    openPlayerAktenList(player, 1);
-                }
-            });
-            inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§9Aktenübersicht")) {
+            inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§9Aktenübersicht")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     openAktenList(player, 1, null);

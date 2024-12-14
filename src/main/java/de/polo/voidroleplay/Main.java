@@ -6,7 +6,6 @@ import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.impl.MySQL;
 import de.polo.voidroleplay.game.base.CustomTabAPI;
-import de.polo.voidroleplay.game.base.NameTagProviderImpl;
 import de.polo.voidroleplay.game.base.extra.beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.seasonpass.Seasonpass;
 import de.polo.voidroleplay.game.base.farming.Farming;
@@ -146,7 +145,6 @@ public final class Main extends JavaPlugin {
 
         mySQL = new MySQL();
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        nameTagProvider = new NameTagProviderImpl(protocolManager);
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
         scoreboardAPI = new ScoreboardAPI(scoreboardManager);
@@ -286,7 +284,9 @@ public final class Main extends JavaPlugin {
                 EquiplogCommand.class,
                 TreuebonusCommand.class,
                 SellDrugCommand.class,
-                GivePrescriptionCommand.class
+                GivePrescriptionCommand.class,
+                UnarrestCommand.class,
+                NeulingschatCommand.class
         );
 
 

@@ -41,7 +41,7 @@ commands:
     aliases: arevive
   registeratm:
   playerinfo:
-    aliases: pi
+    aliases: pi, id
   me:
   announce:
     aliases: ac
@@ -284,3 +284,5 @@ commands:
   selldrug:
   giveprescription:
     aliases: giverezept
+  unarrest:
+  neulingschat:

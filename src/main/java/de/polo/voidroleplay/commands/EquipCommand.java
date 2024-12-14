@@ -175,23 +175,6 @@ public class EquipCommand implements CommandExecutor, Listener {
             });
             i++;
         }
-        if (playerData.getFaction().equalsIgnoreCase("Polizei") && playerData.getFactionGrade() >= 4) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName())) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    if (factionData.getEquipPoints() < 4) {
-                        player.sendMessage(ERROR_NOT_ENOUGH_EQUIP);
-                        return;
-                    }
-                    ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
-                    factionData.setEquipPoints(factionData.getEquipPoints() - 4);
-                    factionData.save();
-                    logBuy(player, "SWAT-Schild", 4);
-                }
-            });
-            i++;
-        }
-
         if (playerManager.isInStaatsFrak(player)) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.PFEFFERSPRAY.getMaterial(), 1, 0, RoleplayItem.PFEFFERSPRAY.getDisplayName())) {
                 @Override
@@ -209,7 +192,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             i++;
         }
         if (playerData.isExecutiveFaction()) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("cuffs") + "$"))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getEquipPoints() < 1) {
@@ -223,7 +206,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
             });
             i++;
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName(), "§8 ➥ §a" + (ServerManager.getPayout("tazer") + "$"))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.TAZER.getMaterial(), 1, 0, RoleplayItem.TAZER.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getEquipPoints() < 1) {
@@ -312,6 +295,23 @@ public class EquipCommand implements CommandExecutor, Listener {
                         factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                         factionData.save();
                         logBuy(player, "Sprungtuch", 1);
+                    }
+                });
+                i++;
+            }
+
+            if (playerData.getFaction().equalsIgnoreCase("Polizei") && playerData.getSubTeam().getName().equalsIgnoreCase("SWAT")) {
+                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.SWAT_SHIELD.getMaterial(), 1, 0, RoleplayItem.SWAT_SHIELD.getDisplayName())) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (factionData.getEquipPoints() < 4) {
+                            player.sendMessage(ERROR_NOT_ENOUGH_EQUIP);
+                            return;
+                        }
+                        ItemManager.addCustomItem(player, RoleplayItem.SWAT_SHIELD, 1);
+                        factionData.setEquipPoints(factionData.getEquipPoints() - 4);
+                        factionData.save();
+                        logBuy(player, "SWAT-Schild", 4);
                     }
                 });
                 i++;

@@ -6,10 +6,13 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import static de.polo.voidroleplay.Main.locationManager;
 
 public class DropCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -48,8 +51,13 @@ public class DropCommand implements CommandExecutor {
 
     private void handleEquipDrop(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) return;
+        if (locationManager.getDistanceBetweenCoords(player, "equip_" + playerData.getFaction()) > 5) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe deiner Fraktion."));
+            return;
+        }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        int amount = Main.random(150, 300);
+        int amount = Main.random(100, 150);
         playerData.setVariable("job", null);
         factionData.setEquipPoints(factionData.getEquipPoints() + amount);
         factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§6Equip§8]§7 " + player.getName() + " hat das Lager aufgefüllt. (§6+" + amount + "§7, L: §6" + factionData.getEquipPoints() + "§7)");

@@ -45,16 +45,19 @@ public class EquiplogCommand extends CommandBase implements TabCompleter {
                     int totalPoints = Integer.parseInt(res.get("totalPoints").toString());
 
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
-                    player.sendMessage("§8 - §7" + offlinePlayer.getName() + " total points: " + totalPoints);
+                    player.sendMessage("§8 - §7" + offlinePlayer.getName() + ": " + totalPoints + " Punkte");
                 }
             });
+        } else if (args[0].equalsIgnoreCase("reset")) {
+            Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§6Equip§8]§c " + player.getName() + " hat den Equiplog geleert.");
+            Main.getInstance().getMySQL().deleteAsync("DELETE FROM faction_equip_logs WHERE factionId = ?", factionData.getId());
         }
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         return TabCompletion.getBuilder(strings)
-                .addAtIndex(1, "calculate")
+                .addAtIndex(1, List.of("calculate", "reset"))
                 .build();
     }
 }

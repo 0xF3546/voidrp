@@ -183,7 +183,6 @@ public class PlayerManager implements Listener {
                 playerData.setAduty(false);
                 playerData.setLevel(result.getInt("level"));
                 playerData.setExp(result.getInt("exp"));
-                playerData.setNeeded_exp(result.getInt("needed_exp"));
                 playerData.setDead(result.getBoolean("isDead"));
                 if (result.getBoolean("isDead")) {
                     playerData.setDeathTime(result.getInt("deathTime"));
@@ -427,6 +426,7 @@ public class PlayerManager implements Listener {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            player.kick();
         }
     }
 
@@ -713,9 +713,9 @@ public class PlayerManager implements Listener {
                         if (playerData.getJailParole() != 0) {
                             mySQL.updateAsync("UPDATE Jail_Parole SET minutes_remaining = ? WHERE uuid = ?",
                                     playerData.getJailParole(),
-                                    player.getUniqueId());
+                                    player.getUniqueId().toString());
                         } else {
-                            mySQL.deleteAsync("DELETE FROM Jail_Parole WHERE uuid = ?", player.getUniqueId());
+                            mySQL.deleteAsync("DELETE FROM Jail_Parole WHERE uuid = ?", player.getUniqueId().toString());
                             player.sendMessage("§8[§cGefängnis§8]§7 Deine Bewährung ist abgelaufen.");
                         }
                     }
@@ -868,7 +868,7 @@ public class PlayerManager implements Listener {
         PlayerData playerData = getPlayerData(player);
         player.sendMessage("§8[§bEXP-Boost§8]§c Dein EXP-Boost ist ausgelaufen!");
         playerData.setBoostDuration(null);
-        mySQL.updateAsync("UPDATE players SET boostDuration = NULL WHERE uuid = ?", player.getUniqueId());
+        mySQL.updateAsync("UPDATE players SET boostDuration = NULL WHERE uuid = ?", player.getUniqueId().toString());
     }
 
     public void addExp(Player player, Integer exp) {

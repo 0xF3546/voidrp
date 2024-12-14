@@ -224,6 +224,8 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         return TabCompletion.getBuilder(args)
                 .addAtIndex(1, List.of("all", "add", "remove", "pay"))
+                .addAtIndex(2, Bukkit.getOnlinePlayers().stream().map(Player::getName)
+                        .toList())
                 .build();
     }
 }

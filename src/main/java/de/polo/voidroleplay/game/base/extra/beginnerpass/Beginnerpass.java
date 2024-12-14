@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
@@ -84,7 +85,7 @@ public class Beginnerpass implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player);
+        /*PlayerData playerData = playerManager.getPlayerData(player);
         while (playerData.getBeginnerQuests().size() < quests.size()) {
             addRemainingQuests(playerData);
         }
@@ -123,7 +124,8 @@ public class Beginnerpass implements CommandExecutor {
                     }
                 });
             }
-        }
+        }*/
+        player.sendMessage(Prefix.ERROR + "Das Feature ist im Umbau.");
         return false;
     }
 
@@ -199,6 +201,7 @@ public class Beginnerpass implements CommandExecutor {
             Main.getInstance().getMySQL().updateAsync("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?",
                     playerQuest.getState(),
                     playerQuest.getId());
+            return;
         }
     }
 }

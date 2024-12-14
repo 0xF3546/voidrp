@@ -411,6 +411,9 @@ public class PlayerInteractListener implements Listener {
                                                 List<Player> nearPlayers = new ObjectArrayList<>();
                                                 for (Player p : Bukkit.getOnlinePlayers()) {
                                                     if (p.getWorld() != player.getWorld()) continue;
+                                                    PlayerData pData = playerManager.getPlayerData(p);
+                                                    if (pData == null || pData.getFaction() == null) continue;
+                                                    if (!pData.isExecutiveFaction() || pData.isDuty()) continue;
                                                     if (player.getLocation().distance(p.getLocation()) < 5 && p != player) {
                                                         nearPlayers.add(p);
                                                     }

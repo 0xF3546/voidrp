@@ -286,7 +286,7 @@ public class WeaponManager implements Listener {
 
         int newAmmo = weapon.getCurrentAmmo() - 1;
         weapon.setCurrentAmmo(newAmmo);
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo()));
+        meta.setLore(Arrays.asList("§8➥ §e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo()));
         String actionBarText = "§e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo();
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
 
@@ -309,7 +309,7 @@ public class WeaponManager implements Listener {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = weapon.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
         Weapon w = weaponList.get(id);
-        WeaponData weaponData = weaponDataMap.get(weapon.getType());
+        de.polo.voidroleplay.utils.enums.Weapon weaponData = w.getType();
         w.setReloading(true);
         utils.sendActionBar(player, "§7Lade " + weaponData.getName() + "§7 nach!");
         if (w.getWeaponType() != WeaponType.NORMAL) {
@@ -356,7 +356,7 @@ public class WeaponManager implements Listener {
 
     private void updateWeaponLore(Weapon weapon, ItemStack stack) {
         ItemMeta meta = stack.getItemMeta();
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getType().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
+        meta.setLore(Arrays.asList("§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getType().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
         stack.setItemMeta(meta);
     }
 
@@ -370,7 +370,7 @@ public class WeaponManager implements Listener {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, weapon.getId());
 
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + playerWeapon.getWeapon().getMaxAmmo()));
+        meta.setLore(Arrays.asList("§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + playerWeapon.getWeapon().getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
         weaponList.put(weapon.getId(), weapon);
@@ -441,7 +441,7 @@ public class WeaponManager implements Listener {
         int newAmmo = weapon.getAmmo() + ammo;
         weapon.setAmmo(newAmmo);
 
-        meta.setLore(Arrays.asList("§eAirsoft-Waffe", "§8➥ §e" + w.getCurrentAmmo() + "§8/§6" + newAmmo));
+        meta.setLore(Arrays.asList("§8➥ §e" + w.getCurrentAmmo() + "§8/§6" + newAmmo));
         item.setItemMeta(meta);
     }
 

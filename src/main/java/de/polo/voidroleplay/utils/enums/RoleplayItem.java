@@ -23,7 +23,7 @@ public enum RoleplayItem {
     PEARL("§bPerle", "Perle", Material.GHAST_TEAR, false),
     SHELL("§eMuschel", "Muschel", Material.BIRCH_BUTTON, false),
     EXPLOSION_DEVICE("§cSprengsatz", "Sprengsatz", Material.TNT, true),
-    TAZER("§bTazer", "Tazer", Material.GOLDEN_HOE, true),
+    TAZER("§bTazer", "Tazer", Material.GOLDEN_SHOVEL, true),
     CROWBAR("§cBrechstange", "Brechstange", Material.BLAZE_ROD, true),
     ADRENALINE_INJECTION("§fAdrenalin Spritze", "Adrenalin Spritze", Material.END_ROD, true),
     BULLETPROOF("§7Schutzweste", "Schutzweste", Material.LEATHER_CHESTPLATE, false),

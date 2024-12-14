@@ -276,7 +276,7 @@ public class ShopCommand implements CommandExecutor {
                     try {
                         Weapon w = Weapon.valueOf(info.toUpperCase());
                         String weapon = displayName.replace("&", "").replace("6", "");
-                        Main.getInstance().weaponManager.giveWeaponToCabinet(player, w, 0, 250);
+                        Main.getInstance().weaponManager.giveWeaponToCabinet(player, w, 0, w.getBaseWear());
                         player.sendMessage("§8[§6" + locationManager.getShopNameById(shopId) + "§8] §7" + "Danke für deinen Einkauf in höhe von §a" + price + "$.");
                         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1, 0);
                         playerManager.removeMoney(player, price, "Kauf der Waffe: " + weapon);
