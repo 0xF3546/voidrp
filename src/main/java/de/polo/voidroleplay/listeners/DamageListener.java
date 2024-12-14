@@ -75,7 +75,7 @@ public class DamageListener implements Listener {
             }
         }
         if (event.getCause() == ENTITY_ATTACK) {
-            event.setCancelled(playerData.getVisum() <= 2 && playerData.getFaction() == null);
+            event.setCancelled(playerData.getVisum() < 2 && playerData.getFaction() == null);
         }
     }
 }
