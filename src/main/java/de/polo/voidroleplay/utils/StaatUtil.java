@@ -55,18 +55,17 @@ public class StaatUtil {
         }
     }
 
+    @SneakyThrows
     private void loadWantedReasons() {
-        Main.getInstance().getMySQL().queryThreaded("SELECT * FROM wantedreasons")
-                .thenAccept(resultSet -> {
-                    try {
-                        while (resultSet.next()) {
-                            WantedReason reason = new WantedReason(resultSet.getInt("id"), resultSet.getString("reason"), resultSet.getInt("wanted"));
-                            wantedReasons.add(reason);
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
+        Connection connection = Main.getInstance().getMySQL().getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM wantedreasons");
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            WantedReason reason = new WantedReason(resultSet.getInt("id"), resultSet.getString("reason"), resultSet.getInt("wanted"));
+            wantedReasons.add(reason);
+        }
+        statement.close();
+        connection.close();
     }
 
     private void loadJail() throws SQLException {
