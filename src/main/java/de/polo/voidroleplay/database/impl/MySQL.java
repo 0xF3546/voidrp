@@ -49,8 +49,8 @@ public class MySQL implements Database {
                 .execute(config -> config.setJdbcUrl(url))
                 .execute(config -> config.setUsername(yaml.getString("user")))
                 .execute(config -> config.setPassword(yaml.getString("password")))
-                .execute(config -> config.setMaximumPoolSize(100000))
-                .execute(config -> config.setIdleTimeout(30000))
+                .execute(config -> config.setMaximumPoolSize(10000))
+                .execute(config -> config.setIdleTimeout(10000))
                 .execute(config -> dataSource = new HikariDataSource(config));
     }
 
@@ -71,8 +71,7 @@ public class MySQL implements Database {
     @Override
     public CompletableFuture<ResultSet> queryThreaded(String query) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                Statement statement = getStatement();
+            try (Statement statement = getStatement()) {
                 return statement.executeQuery(query);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
