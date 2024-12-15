@@ -57,8 +57,27 @@ public class EquipCommand implements CommandExecutor, Listener {
             openChurch(player, playerData);
             return false;
         }
+        if (playerData.getFaction().equalsIgnoreCase("News")) {
+            openNews(player, playerData);
+            return false;
+        }
         openMain(player, playerData);
         return false;
+    }
+
+    private void openNews(Player player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Equip (News)", true, true);
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.WRITABLE_BOOK, 1, 0, "§7Buch")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 15) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 15$!");
+                    return;
+                }
+                playerData.removeMoney(15, "Buch");
+                player.getInventory().addItem(ItemManager.createItem(Material.WRITABLE_BOOK, 1, 0, "§7Buch"));
+            }
+        });
     }
 
     private void openChurch(Player player, PlayerData playerData) {

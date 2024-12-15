@@ -1015,9 +1015,9 @@ public class PlayerManager implements Listener {
 
     public void openInterActionMenu(Player player, Player targetplayer) {
         PlayerData targetData = getPlayerData(targetplayer);
-        if (targetData.isAFK()) return;
         Main.getInstance().beginnerpass.didQuest(player, 12);
         PlayerData playerData = getPlayerData(player);
+        if (targetData.isAFK() || playerData.isCuffed() || playerData.isDead()) return;
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName())) {

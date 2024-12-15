@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class MySQL implements Database {
     static final String url = "jdbc:mysql://185.117.3.65/minecraft?autoReconnect=true&useSSL=false";
@@ -250,6 +251,25 @@ public class MySQL implements Database {
             }
         }, BetterExecutor.executor);
     }
+
+    public <R> CompletableFuture<R> executeQueryAsync(String sql, Function<ResultSet, R> handler, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return handler.apply(resultSet);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Query execution failed", e);
+            }
+        }, BetterExecutor.executor);
+    }
+
 
     public interface forum {
         String url = "jdbc:mysql://185.117.3.65/wcf?autoReconnect=true&useSSL=false";

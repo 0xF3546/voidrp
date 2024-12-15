@@ -287,3 +287,5 @@ commands:
   unarrest:
   neulingschat:
     aliases: nc
+  signbook:
+  premium:

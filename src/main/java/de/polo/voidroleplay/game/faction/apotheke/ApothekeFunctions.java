@@ -157,9 +157,12 @@ public class ApothekeFunctions implements Listener {
                     if (!stack.getType().equals(Material.PAPER)) continue;
                     for (Prescription prescription : Prescription.values()) {
                         if (stack.getItemMeta().getDisplayName().contains(prescription.getName())) {
-                            playerData.getInventory().addItem(prescription.getDrug().getItem(), Main.random(prescription.getMinAmount() * stack.getAmount(), prescription.getMaxAmount() * stack.getAmount()));
-                            player.getInventory().remove(stack);
-                            player.sendMessage(Component.text("§6Du hast ein " + prescription.getName() + " Rezept eingelöst."));
+                            if (playerData.getInventory().addItem(prescription.getDrug().getItem(), Main.random(prescription.getMinAmount() * stack.getAmount(), prescription.getMaxAmount() * stack.getAmount()))) {
+                                player.getInventory().remove(stack);
+                                player.sendMessage(Component.text("§6Du hast ein " + prescription.getName() + " Rezept eingelöst."));
+                            } else {
+                                player.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Inventarplatz."));
+                            }
                         }
                     }
                 }
