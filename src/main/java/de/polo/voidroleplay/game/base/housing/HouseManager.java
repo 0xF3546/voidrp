@@ -459,6 +459,10 @@ public class HouseManager implements CommandExecutor, Listener {
                                 return;
                             }
                         }
+                        if (playerWeapon.getWear() < 1) {
+                            player.sendMessage(Component.text(Prefix.ERROR + "Die Waffe hat nicht genug Verschleiss."));
+                            return;
+                        }
                         Main.getInstance().getWeaponManager().takeOutWeapon(player, playerWeapon);
                         player.sendMessage(Component.text(Prefix.MAIN + "Gib an wie viel Munition du entnehmen willst."));
                     } else {

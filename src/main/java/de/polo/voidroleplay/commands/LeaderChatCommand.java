@@ -34,6 +34,7 @@ public class LeaderChatCommand implements CommandExecutor {
             return false;
         }
         for (PlayerData pData : playerManager.getPlayers()) {
+            if (pData == null) continue;
             if (pData.getPermlevel() >= 70 || pData.isLeader()) {
                 if (pData.getFaction() == null) continue;
                 Player targetplayer = Bukkit.getPlayer(pData.getUuid());

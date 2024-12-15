@@ -231,7 +231,6 @@ public class FactionManager {
             playerData.setFaction(null);
             playerData.setFactionGrade(0);
             playerData.setDuty(false);
-            Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
             if (playerData.getPermlevel() >= 60) {
                 Utils.Tablist.updatePlayer(player);
                 player.setCustomNameVisible(true);
