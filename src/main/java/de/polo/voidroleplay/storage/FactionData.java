@@ -384,7 +384,7 @@ public class FactionData {
 
         @SneakyThrows
         public void save() {
-            Main.getInstance().getMySQL().updateAsync("UPDATE faction_storage SET weed = ?, joint = ?, cocaine = ?, kevlar = ?, noble_joint = ? crystal = ? WHERE factionId = ?",
+            Main.getInstance().getMySQL().updateAsync("UPDATE faction_storage SET weed = ?, joint = ?, cocaine = ?, kevlar = ?, noble_joint = ?, crystal = ? WHERE factionId = ?",
                     getWeed(),
                     getJoint(),
                     getCocaine(),
