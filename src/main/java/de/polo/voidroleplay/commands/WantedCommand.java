@@ -12,11 +12,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class WantedCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -37,25 +34,29 @@ public class WantedCommand implements CommandExecutor {
             return false;
         }
         if (playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Polizei")) {
-            CompletableFuture.runAsync(() -> {
-                try (Statement statement = Main.getInstance().getMySQL().getStatement();
-                     ResultSet result = statement.executeQuery("SELECT * FROM player_wanteds")) {
-                    int i = 0;
-                    while (result.next()) {
-                        System.out.println("Found: " + result);
-                        WantedReason wantedReason = utils.staatUtil.getWantedReason(result.getInt("wantedId"));
-                        Player player1 = Bukkit.getPlayer(UUID.fromString(result.getString("uuid")));
-                        if (player1 == null) continue;
-                        i++;
-                        player.sendMessage("§cGesucht! §8- §9" + player1.getName() + " §8-§9 " + wantedReason.getReason() + " §8-§9 " + wantedReason.getWanted() + " Wanteds");
-                    }
-                    if (i == 0) {
-                        player.sendMessage("§9Es steht niemand auf der Fahndungsliste.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
+            Main.getInstance()
+                    .getMySQL()
+                    .queryThreaded("SELECT * FROM player_wanteds")
+                    .thenAcceptAsync(result -> {
+                        try {
+                            int i = 0;
+                            while (result.next()) {
+                                System.out.println("Found: " + result);
+                                WantedReason wantedReason = utils.staatUtil.getWantedReason(result.resultSet().getInt("wantedId"));
+                                Player player1 = Bukkit.getPlayer(UUID.fromString(result.resultSet().getString("uuid")));
+                                if (player1 == null) continue;
+                                i++;
+                                player.sendMessage("§cGesucht! §8- §9" + player1.getName() + " §8-§9 " + wantedReason.getReason() + " §8-§9 " + wantedReason.getWanted() + " Wanteds");
+                            }
+                            if (i == 0) {
+                                player.sendMessage("§9Es steht niemand auf der Fahndungsliste.");
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        } finally {
+                            result.close();
+                        }
+                    });
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }

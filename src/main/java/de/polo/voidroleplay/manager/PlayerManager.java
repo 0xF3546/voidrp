@@ -1015,8 +1015,12 @@ public class PlayerManager implements Listener {
 
     public void openInterActionMenu(Player player, Player targetplayer) {
         PlayerData targetData = getPlayerData(targetplayer);
+        // ISSUE VRP-10003: Added null check for targetData
+        if (targetData == null) return;
         Main.getInstance().beginnerpass.didQuest(player, 12);
         PlayerData playerData = getPlayerData(player);
+        // ISSUE VRP-10003: Added null check for playerData
+        if (playerData == null) return;
         if (targetData.isAFK() || playerData.isCuffed() || playerData.isDead()) return;
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());

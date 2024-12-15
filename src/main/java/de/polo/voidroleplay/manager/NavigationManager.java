@@ -84,11 +84,11 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                             }
                             try {
                                 if (Integer.parseInt(registeredBlock.getInfoValue()) != number) {
-                                    System.out.println("InfoValue does not equal number");
+                                    // ISSUE VRP-10004: fixed to much log spam
                                     continue;
                                 }
                             } catch (NumberFormatException e) {
-                                System.out.println("InfoValue is not a valid number");
+                                // ISSUE VRP-10004: fixed to much log spam
                                 continue;
                             }
                             createNaviByCord(player, (int) registeredBlock.getLocation().getX(), (int) registeredBlock.getLocation().getY(), (int) registeredBlock.getLocation().getZ());

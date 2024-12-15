@@ -164,6 +164,11 @@ public class LocationManager {
 
     public void useLocation(Player p, String name) {
         LocationData locationData = locationDataMap.get(name.toLowerCase());
+        // ISSUE VRP-10003: Added null check for locationData
+        if (locationData == null) {
+            p.sendMessage(Prefix.ERROR + "Dieser Ort existiert nicht.");
+            return;
+        }
         World welt = Bukkit.getWorld(locationData.getWelt());
         p.teleport(new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch()));
     }

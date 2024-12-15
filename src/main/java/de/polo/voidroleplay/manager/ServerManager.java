@@ -79,7 +79,10 @@ public class ServerManager {
     }
 
     public static int getPayout(String type) {
-        return payoutDataMap.get(type).getPayout();
+        // return payoutDataMap.get(type).getPayout();
+        // ISSUE VPR-10003: Null check for payoutDataMap.get(type)
+        PayoutData payoutData = payoutDataMap.get(type);
+        return payoutData != null ? payoutData.getPayout() : 0;
     }
 
     public static void setVariable(String variable, String value) {

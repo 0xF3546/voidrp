@@ -3,6 +3,7 @@ package de.polo.voidroleplay.database.impl;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.polo.voidroleplay.database.Database;
+import de.polo.voidroleplay.database.utility.Result;
 import de.polo.voidroleplay.utils.BetterExecutor;
 import dev.vansen.singleline.SingleLine;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -70,10 +71,11 @@ public class MySQL implements Database {
     }
 
     @Override
-    public CompletableFuture<ResultSet> queryThreaded(String query) {
+    public CompletableFuture<Result> queryThreaded(String query) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Statement statement = getStatement()) {
-                return statement.executeQuery(query);
+            try {
+                Statement statement = getStatement();
+                return Result.of(statement.executeQuery(query), statement);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

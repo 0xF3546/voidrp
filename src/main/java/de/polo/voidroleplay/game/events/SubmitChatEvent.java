@@ -41,7 +41,10 @@ public class SubmitChatEvent extends Event {
     }
 
     public String getSubmitTo() {
-        return Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).getVariable("chatblock");
+        // return Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).getVariable("chatblock");
+        // ISSUE VPR-10003: If the player has a chatblock, return it, otherwise return an empty string
+        String chatblock = Main.getInstance().playerManager.getPlayerData(player.getUniqueId()).getVariable("chatblock");
+        return chatblock != null ? chatblock : "";
     }
 
     public void end() {
