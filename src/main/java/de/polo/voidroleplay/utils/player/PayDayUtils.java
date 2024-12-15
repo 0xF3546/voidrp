@@ -109,7 +109,7 @@ public class PayDayUtils {
             factionManager.addFactionMoney("Kirche", ServerManager.getPayout("kirchensteuer"), "Kirchensteuer " + player.getName());
         }
         if (playerData.getPermlevel() >= 40) {
-            player.sendMessage("§7 » §9Team-Gehalt§8: §a" + playerData.getPermlevel() * ServerManager.getPayout("teamgehalt") + "$");
+            player.sendMessage("§7 » §9Team-Gehalt§8: §a+" + playerData.getPermlevel() * ServerManager.getPayout("teamgehalt") + "$");
             plus += playerData.getPermlevel() * ServerManager.getPayout("teamgehalt");
         }
         if (playerData.getSecondaryTeam() != null) {
