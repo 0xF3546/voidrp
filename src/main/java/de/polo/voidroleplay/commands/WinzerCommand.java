@@ -227,7 +227,8 @@ public class WinzerCommand implements CommandExecutor {
         Main.getInstance().getCooldownManager().setCooldown(player, "winzer", 600);
         Inventory inv = player.getInventory();
         for (ItemStack item : inv.getContents()) {
-            if (item.getType() == Material.SHEARS) {
+            // ISSUE VPR-10003: Added null check for item
+            if (item != null && item.getType() == Material.SHEARS) {
                 inv.removeItem(item);
             }
         }

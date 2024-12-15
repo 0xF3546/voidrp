@@ -25,7 +25,11 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = "§8[§aLieferant§8] §7";
-        Player player = (Player) sender;
+        // ISSUE VPR-10003: The command should only be executable by players
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Prefix.ERROR + "Du musst ein Spieler sein.");
+            return false;
+        }
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("job") == null) {
             if (locationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {

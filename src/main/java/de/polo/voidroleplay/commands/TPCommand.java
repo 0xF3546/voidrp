@@ -39,7 +39,8 @@ public class TPCommand implements CommandExecutor {
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
-        if (!targetplayer.isOnline()) {
+        // ISSUE VRP-10003: fixed by adding null check for targetplayer
+        if (targetplayer == null || !targetplayer.isOnline()) {
             player.sendMessage(Prefix.ADMIN_ERROR + args[0] + " ist nicht online.");
             return false;
         }

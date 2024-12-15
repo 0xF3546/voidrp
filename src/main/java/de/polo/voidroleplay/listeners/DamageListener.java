@@ -53,8 +53,7 @@ public class DamageListener implements Listener {
                 if (armor == null || armor.getType() == Material.AIR) continue;
                 event.setDamage(0.5);
                 ItemMeta meta = armor.getItemMeta();
-                if (meta instanceof Damageable) {
-                    Damageable damageable = (Damageable) meta;
+                if (meta instanceof Damageable damageable) {
                     if (armor.getType().equals(RoleplayItem.HEAVY_BULLETPROOF.getMaterial())) {
                         damageable.setDamage(damageable.getDamage() + 30);
                     } else {
@@ -67,15 +66,15 @@ public class DamageListener implements Listener {
                 if (!player.isBlocking()) return;
                 ItemStack shield = player.getInventory().getItemInMainHand();
                 ItemMeta meta = shield.getItemMeta();
-                if (meta instanceof Damageable) {
-                    Damageable damageable = (Damageable) meta;
+                if (meta instanceof Damageable damageable) {
                     damageable.setDamage(damageable.getDamage() + 15);
                     shield.setItemMeta(meta);
                 }
             }
         }
         if (event.getCause() == ENTITY_ATTACK) {
-            event.setCancelled(playerData.getVisum() <= 2 && playerData.getFaction() == null);
+            // ISSUE VRP-10003: Added null check for playerData
+            event.setCancelled(playerData != null && playerData.getVisum() <= 2 && playerData.getFaction() == null);
         }
     }
 }
