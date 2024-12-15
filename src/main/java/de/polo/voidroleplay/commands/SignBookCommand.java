@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,8 +37,12 @@ public class SignBookCommand extends CommandBase {
         }
         BookMeta bookMeta = (BookMeta) stack.getItemMeta();
         bookMeta.setAuthor("Void News");
-        bookMeta.setTitle(Utils.stringArrayToString(args).replace("&", "§"));
+        String title = Utils.stringArrayToString(args).replace("&", "§");
+        bookMeta.setTitle(title);
         bookMeta.setUnbreakable(true);
         stack.setItemMeta(bookMeta);
+        ItemMeta meta = stack.getItemMeta();
+        meta.displayName(Component.text(title));
+        stack.setItemMeta(meta);
     }
 }
