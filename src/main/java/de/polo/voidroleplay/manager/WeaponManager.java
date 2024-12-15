@@ -28,19 +28,19 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class WeaponManager implements Listener {
-    public static final Map<Material, WeaponData> weaponDataMap = new HashMap<>();
+    public static final ConcurrentMap<Material, WeaponData> weaponDataMap = new ConcurrentHashMap<>();
 
-    private final HashMap<Integer, Weapon> weaponList = new HashMap<>();
+    private final ConcurrentMap<Integer, Weapon> weaponList = new ConcurrentHashMap<>();
 
     private final Utils utils;
     private final PlayerManager playerManager;
-    public HashMap<UUID, LocalDateTime> weaponUsages = new HashMap<>();
-    HashMap<Arrow, LocalDateTime> arrows = new HashMap<>();
+    public ConcurrentMap<UUID, LocalDateTime> weaponUsages = new ConcurrentHashMap<>();
+    ConcurrentMap<Arrow, LocalDateTime> arrows = new ConcurrentHashMap<>();
 
     public WeaponManager(Utils utils, PlayerManager playerManager) {
         this.utils = utils;
@@ -67,55 +67,92 @@ public class WeaponManager implements Listener {
     }
 
     private void loadWeapons() throws SQLException {
+        /*
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM weapons");
+        while (result.next()) {
+            WeaponData weaponData = new WeaponData();
+            weaponData.setId(result.getInt("id"));
+            weaponData.setMaterial(Material.valueOf(result.getString("material")));
+            weaponData.setName(result.getString("name").replace("&", "§"));
+            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
+            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
+            weaponData.setDamage(result.getFloat("damage"));
+            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
+            weaponData.setArrowVelocity(result.getFloat("velocity"));
+            weaponData.setShootDuration(result.getFloat("shootDuration"));
+            weaponData.setType(result.getString("type"));
+            weaponData.setSoundPitch(result.getFloat("soundPitch"));
+            weaponData.setKnockback(result.getInt("knockback"));
+            weaponData.setMeele(result.getBoolean("isMelee"));
+            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
+        }
+        */
         Main.getInstance()
                 .getMySQL()
                 .queryThreaded("SELECT * FROM weapons")
                 .thenAcceptAsync(result -> {
-                    while (true) {
-                        try {
-                            if (!result.next()) break;
+                    try {
+                        while (result.next()) {
                             WeaponData weaponData = new WeaponData();
-                            weaponData.setId(result.getInt("id"));
-                            weaponData.setMaterial(Material.valueOf(result.getString("material")));
-                            weaponData.setName(result.getString("name").replace("&", "§"));
-                            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
-                            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
-                            weaponData.setDamage(result.getFloat("damage"));
-                            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
-                            weaponData.setArrowVelocity(result.getFloat("velocity"));
-                            weaponData.setShootDuration(result.getFloat("shootDuration"));
-                            weaponData.setType(result.getString("type"));
-                            weaponData.setSoundPitch(result.getFloat("soundPitch"));
-                            weaponData.setKnockback(result.getInt("knockback"));
-                            weaponData.setMeele(result.getBoolean("isMelee"));
-                            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                            weaponData.setId(result.resultSet().getInt("id"));
+                            weaponData.setMaterial(Material.valueOf(result.resultSet().getString("material")));
+                            weaponData.setName(result.resultSet().getString("name").replace("&", "§"));
+                            weaponData.setMaxAmmo(result.resultSet().getInt("maxAmmo"));
+                            weaponData.setReloadDuration(result.resultSet().getFloat("reloadDuration"));
+                            weaponData.setDamage(result.resultSet().getFloat("damage"));
+                            weaponData.setWeaponSound(Sound.valueOf(result.resultSet().getString("weaponSound")));
+                            weaponData.setArrowVelocity(result.resultSet().getFloat("velocity"));
+                            weaponData.setShootDuration(result.resultSet().getFloat("shootDuration"));
+                            weaponData.setType(result.resultSet().getString("type"));
+                            weaponData.setSoundPitch(result.resultSet().getFloat("soundPitch"));
+                            weaponData.setKnockback(result.resultSet().getInt("knockback"));
+                            weaponData.setMeele(result.resultSet().getBoolean("isMelee"));
+                            weaponDataMap.put(Material.valueOf(result.resultSet().getString("material")), weaponData);
                         }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    } finally {
+                        result.close();
                     }
                 });
     }
 
     @SneakyThrows
     private void loadPlayerWeapons() {
+        /*
+        Statement statement = Main.getInstance().mySQL.getStatement();
+        ResultSet result = statement.executeQuery("SELECT * FROM player_weapons");
+        while (result.next()) {
+            Weapon weapon = new Weapon();
+            weapon.setAmmo(result.getInt("ammo"));
+            weapon.setCurrentAmmo(result.getInt("current_ammo"));
+            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
+            weapon.setId(result.getInt("id"));
+            weapon.setOwner(UUID.fromString(result.getString("uuid")));
+            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
+            weaponList.put(weapon.getId(), weapon);
+        }
+        */
         Main.getInstance()
                 .getMySQL()
                 .queryThreaded("SELECT * FROM player_weapons")
                 .thenAcceptAsync(result -> {
-                    while (true) {
-                        try {
-                            if (!result.next()) break;
+                    try {
+                        while (result.next()) {
                             Weapon weapon = new Weapon();
-                            weapon.setAmmo(result.getInt("ammo"));
-                            weapon.setCurrentAmmo(result.getInt("current_ammo"));
-                            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
-                            weapon.setId(result.getInt("id"));
-                            weapon.setOwner(UUID.fromString(result.getString("uuid")));
-                            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
+                            weapon.setAmmo(result.resultSet().getInt("ammo"));
+                            weapon.setCurrentAmmo(result.resultSet().getInt("current_ammo"));
+                            weapon.setWeaponType(WeaponType.valueOf(result.resultSet().getString("weaponType")));
+                            weapon.setId(result.resultSet().getInt("id"));
+                            weapon.setOwner(UUID.fromString(result.resultSet().getString("uuid")));
+                            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.resultSet().getString("weapon")));
                             weaponList.put(weapon.getId(), weapon);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
                         }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    } finally {
+                        result.close();
                     }
                 });
     }
@@ -141,10 +178,6 @@ public class WeaponManager implements Listener {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
         return weaponList.get(id);
-    }
-
-    public HashMap<Integer, Weapon> getWeapons() {
-        return weaponList;
     }
 
     @EventHandler

@@ -14,7 +14,7 @@ public class HungerListener implements Listener {
     /**
      * The odds of the player's food level being reduced
      */
-    public static final double ODDS = 0.2;
+    public static final double ODDS = 0.4;
     private final PlayerManager playerManager;
 
     public HungerListener(PlayerManager playerManager) {
@@ -29,7 +29,7 @@ public class HungerListener implements Listener {
             return;
         }
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.isAduty()) {
+        if (playerData.isAduty() || playerData.isDead()) {
             event.setCancelled(true);
             return;
         }

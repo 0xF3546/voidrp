@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.database;
 
-import java.sql.ResultSet;
+import de.polo.voidroleplay.database.utility.Result;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface Database {
 
     void setup();
 
-    CompletableFuture<ResultSet> queryThreaded(String query);
+    CompletableFuture<Result> queryThreaded(String query);
 
     CompletableFuture<Integer> queryThreaded(String query, Object... args);
 

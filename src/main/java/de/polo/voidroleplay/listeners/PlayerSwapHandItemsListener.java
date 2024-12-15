@@ -34,6 +34,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.BlockIterator;
 
@@ -87,6 +90,23 @@ public class PlayerSwapHandItemsListener implements Listener {
             return;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
+        ItemStack stack = player.getInventory().getItemInMainHand();
+        if (stack.getType().equals(Material.WRITTEN_BOOK)) {
+            BookMeta meta = (BookMeta) stack.getItemMeta();
+            if (meta.getAuthor() != null && meta.getAuthor().equalsIgnoreCase("Void News")) {
+                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eZeitung / Buch");
+                inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§eBearbeiten")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        ItemStack book = new ItemStack(Material.WRITABLE_BOOK, 1);
+                        book.setItemMeta(meta);
+                        player.getInventory().addItem(book);
+                        player.getInventory().remove(stack);
+                        player.closeInventory();
+                    }
+                });
+            }
+        }
         if (playerData.getVariable("job") != null) {
             if (playerData.getVariable("job").toString().equalsIgnoreCase("corpse")) {
                 Corpse corpse = Main.getInstance().utils.deathUtil.getNearbyCorpse(player.getLocation(), 3);

@@ -1,12 +1,12 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.storage.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -55,31 +55,66 @@ public class StaatUtil {
         }
     }
 
+    @SneakyThrows
     private void loadWantedReasons() {
+        /*
+        Connection connection = Main.getInstance().getMySQL().getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM wantedreasons");
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            WantedReason reason = new WantedReason(resultSet.getInt("id"), resultSet.getString("reason"), resultSet.getInt("wanted"));
+            wantedReasons.add(reason);
+        }
+        statement.close();
+        connection.close();
+        */
         Main.getInstance().getMySQL().queryThreaded("SELECT * FROM wantedreasons")
-                .thenAccept(resultSet -> {
+                .thenAccept(result -> {
                     try {
-                        while (resultSet.next()) {
-                            WantedReason reason = new WantedReason(resultSet.getInt("id"), resultSet.getString("reason"), resultSet.getInt("wanted"));
+                        while (result.next()) {
+                            WantedReason reason = new WantedReason(result.resultSet().getInt("id"), result.resultSet().getString("reason"), result.resultSet().getInt("wanted"));
                             wantedReasons.add(reason);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
+                    } finally {
+                        result.close();
                     }
                 });
     }
 
     private void loadJail() throws SQLException {
+        /*
         Statement statement = Main.getInstance().mySQL.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `Jail`");
         while (result.next()) {
             JailData jailData = new JailData();
-            jailData.setId(result.getInt(1));
-            jailData.setUuid(result.getString(2));
-            jailData.setHafteinheiten(result.getInt(3));
-            jailData.setReason(result.getString(4));
-            jailDataMap.put(result.getString(2), jailData);
+            jailData.setId(result.getInt("id"));
+            jailData.setUuid(result.getString("uuid"));
+            jailData.setHafteinheiten(result.getInt("wps"));
+            jailData.setReason(result.getString("wantedId"));
+            jailDataMap.put(result.getString("uuid"), jailData);
         }
+        */
+        Main.getInstance()
+                .getMySQL()
+                .queryThreaded("SELECT * FROM `Jail`")
+                .thenAcceptAsync(result -> {
+                    try {
+                        while (result.next()) {
+                            JailData jailData = new JailData();
+                            jailData.setId(result.resultSet().getInt("id"));
+                            jailData.setUuid(result.resultSet().getString("uuid"));
+                            jailData.setHafteinheiten(result.resultSet().getInt("wps"));
+                            jailData.setReason(result.resultSet().getString("wantedId"));
+                            jailDataMap.put(result.resultSet().getString("uuid"), jailData);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } finally {
+                        result.close();
+                    }
+                });
     }
 
     private String calculateManhuntTime(PlayerWanted wanted) {
@@ -126,7 +161,7 @@ public class StaatUtil {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                 if (playerData1.isExecutiveFaction()) {
                     if (deathArrest) {
-                        players.sendMessage("§9HQ: " + player.getName() +" wurde von " + arrester.getName() + " getötet.");
+                        players.sendMessage("§9HQ: " + player.getName() + " wurde von " + arrester.getName() + " getötet.");
                     } else {
                         players.sendMessage("§9HQ: " + factionManager.getTitle(arrester) + " " + arrester.getName() + " hat " + player.getName() + " in das Gefängnis inhaftiert.");
                     }

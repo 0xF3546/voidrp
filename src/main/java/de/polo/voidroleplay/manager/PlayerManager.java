@@ -374,9 +374,9 @@ public class PlayerManager implements Listener {
                 }
                 if (playerData.getRankDuration() != null) {
                     LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    if (date.isBefore(LocalDateTime.now())) {
+                    if (date.isBefore(Utils.getTime())) {
                         player.sendMessage(Prefix.MAIN + "Dein " + playerData.getRang() + " ist ausgelaufen.");
-                        mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId());
+                        mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId().toString());
                         if (playerData.getBusiness() != null) {
                             BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
                             if (business != null) {
@@ -1017,11 +1017,11 @@ public class PlayerManager implements Listener {
         PlayerData targetData = getPlayerData(targetplayer);
         // ISSUE VRP-10003: Added null check for targetData
         if (targetData == null) return;
-        if (targetData.isAFK()) return;
         Main.getInstance().beginnerpass.didQuest(player, 12);
         PlayerData playerData = getPlayerData(player);
         // ISSUE VRP-10003: Added null check for playerData
         if (playerData == null) return;
+        if (targetData.isAFK() || playerData.isCuffed() || playerData.isDead()) return;
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName())) {

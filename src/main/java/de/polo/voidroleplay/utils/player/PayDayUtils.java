@@ -64,7 +64,7 @@ public class PayDayUtils {
         if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
             frakpayday = factionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());
             if (factionManager.removeFactionMoney(playerData.getFaction(), frakpayday, "Gehalt " + player.getName())) {
-                player.sendMessage("§§7 » §9Fraktionsgehalt§8: §a+" + frakpayday + "$");
+                player.sendMessage("§7 » §9Fraktionsgehalt§8: §a+" + frakpayday + "$");
                 plus += frakpayday;
             }
         }

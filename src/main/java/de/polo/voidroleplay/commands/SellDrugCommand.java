@@ -80,11 +80,15 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
                     target.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Geld dabei."));
                     return;
                 }
-                playerData.addMoney(price, "Verkauf drogen");
-                targetData.removeMoney(price, "Ankauf drogen");
-                playerData.getInventory().removeItem(finalDrug.getItem(), amount);
-                targetData.getInventory().addItem(finalDrug.getItem(), amount);
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " handelt mit " + target.getName());
+                if (targetData.getInventory().addItem(finalDrug.getItem(), amount)) {
+                    playerData.addMoney(price, "Verkauf drogen");
+                    targetData.removeMoney(price, "Ankauf drogen");
+                    playerData.getInventory().removeItem(finalDrug.getItem(), amount);
+                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " handelt mit " + target.getName());
+                } else {
+                    player.sendMessage(Prefix.ERROR + target.getName() + " hat nicht genug Inventarplatz.");
+                    target.sendMessage(Prefix.ERROR +"Du hast nicht genug Inventarplatz.");
+                }
             }, () -> {
                 player.sendMessage(Prefix.MAIN + target.getName() + " hat das Angebot abgelehnt.");
                 player.sendMessage(Prefix.MAIN + "Du hast das Angebot abgelehnt.");

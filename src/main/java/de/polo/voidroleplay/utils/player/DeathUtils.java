@@ -120,6 +120,7 @@ public class DeathUtils {
         player.setFoodLevel(20);
         //player.setGameMode(GameMode.SURVIVAL);
         if (playerData.getDeathLocation() != null && !playerData.isJailed()) player.teleport(playerData.getDeathLocation());
+        playerData.setDeathLocation(null);
         playerData.setHitmanDead(false);
         playerData.setStabilized(false);
         if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
@@ -133,7 +134,6 @@ public class DeathUtils {
         }
         if (deathSkulls.get(player.getUniqueId().toString()) != null) {
             Item skull = deathSkulls.get(player.getUniqueId().toString());
-            player.teleport(skull.getLocation());
             skull.remove();
             deathSkulls.remove(player.getUniqueId().toString());
         }

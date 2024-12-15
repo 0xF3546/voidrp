@@ -59,7 +59,7 @@ public class PlayerInventoryManager {
         Main.getInstance().getMySQL().updateAsync("UPDATE players SET inventorySize = ? WHERE uuid = ?", size, playerData.getUuid().toString());
     }
 
-    private int getWeight() {
+    public int getWeight() {
         int weight = 0;
         for (PlayerInventoryItem item : items) {
             weight += item.getAmount();

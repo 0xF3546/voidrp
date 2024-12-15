@@ -3,6 +3,7 @@ package de.polo.voidroleplay.database.impl;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.polo.voidroleplay.database.Database;
+import de.polo.voidroleplay.database.utility.Result;
 import de.polo.voidroleplay.utils.BetterExecutor;
 import dev.vansen.singleline.SingleLine;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class MySQL implements Database {
     static final String url = "jdbc:mysql://185.117.3.65/minecraft?autoReconnect=true&useSSL=false";
@@ -69,10 +71,11 @@ public class MySQL implements Database {
     }
 
     @Override
-    public CompletableFuture<ResultSet> queryThreaded(String query) {
+    public CompletableFuture<Result> queryThreaded(String query) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Statement statement = getStatement()) {
-                return statement.executeQuery(query);
+            try {
+                Statement statement = getStatement();
+                return Result.of(statement.executeQuery(query), statement);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -106,7 +109,6 @@ public class MySQL implements Database {
             }
         }, BetterExecutor.executor);
     }
-
 
     @Override
     public CompletableFuture<Optional<Integer>> queryThreadedWithGeneratedKeys(String query, Object... args) {
@@ -251,6 +253,25 @@ public class MySQL implements Database {
             }
         }, BetterExecutor.executor);
     }
+
+    public <R> CompletableFuture<R> executeQueryAsync(String sql, Function<ResultSet, R> handler, Object... args) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (Connection connection = getConnection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return handler.apply(resultSet);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Query execution failed", e);
+            }
+        }, BetterExecutor.executor);
+    }
+
 
     public interface forum {
         String url = "jdbc:mysql://185.117.3.65/wcf?autoReconnect=true&useSSL=false";

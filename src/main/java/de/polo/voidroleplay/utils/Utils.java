@@ -121,14 +121,10 @@ public class Utils {
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
-        /*
         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            if (player == null) continue;
             if (player.getName() == null) continue;
             if (player.getName().equalsIgnoreCase(name)) return player;
         }
-        */
-        Bukkit.getOfflinePlayer(name);
         return null;
     }
 

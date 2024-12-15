@@ -257,7 +257,9 @@ public final class Main extends JavaPlugin {
                 SellDrugCommand.class,
                 GivePrescriptionCommand.class,
                 UnarrestCommand.class,
-                NeulingschatCommand.class
+                NeulingschatCommand.class,
+                SignBookCommand.class,
+                PremiumCommand.class
         );
 
 
