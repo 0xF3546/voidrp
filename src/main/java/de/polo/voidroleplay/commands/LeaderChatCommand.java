@@ -39,6 +39,7 @@ public class LeaderChatCommand implements CommandExecutor {
                 if (pData.getFaction() == null) continue;
                 Player targetplayer = Bukkit.getPlayer(pData.getUuid());
                 String msg = Utils.stringArrayToString(args);
+                if (targetplayer == null) continue;
                 targetplayer.sendMessage("§8[§6Leader§8]§e " + playerData.getFaction() + " " + player.getName() + ": " + msg);
             }
         }
