@@ -715,17 +715,6 @@ public class PlayerSwapHandItemsListener implements Listener {
     private void openPowerUpMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bPowerups");
-        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.PIPE.getMaterial(), 1, 0, "§cLabor", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.LABORATORY).getAmount() + " §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.LABORATORY).getAmount() + Powerup.LABORATORY.getUpgradeAmount()), "", "§b » §7Erhöht den umgewandelten Pfeifentabak (zu Pfeifen)", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.LABORATORY)) + "$"))) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.LABORATORY)) {
-                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei!");
-                    return;
-                }
-                player.closeInventory();
-                player.sendMessage(Prefix.MAIN + "Du hast ein Labor-Upgrade gekauft.");
-            }
-        });
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.EXPERIENCE_BOTTLE, 1, 0, "§bEXP", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() + "% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() + Powerup.EXP.getUpgradeAmount()) + "%", "", "§b » §7Erhöht den EXP-Output", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.EXP)) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -757,17 +746,6 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
                 player.closeInventory();
                 player.sendMessage(Prefix.MAIN + "Du hast ein Lager-Upgrade gekauft.");
-            }
-        });
-        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.FISHING_ROD, 1, 0, "§3Fishing", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.FISHING).getAmount() + "% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.FISHING).getAmount() + Powerup.FISHING.getUpgradeAmount()) + "%", "", "§b » §7Erhöht die Chance auf Legendäre Drops", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.FISHING)) + "$"))) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (!playerData.getPlayerPowerUpManager().upgrade(Powerup.FISHING)) {
-                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei!");
-                    return;
-                }
-                player.closeInventory();
-                player.sendMessage(Prefix.MAIN + "Du hast ein EXP-Upgrade gekauft.");
             }
         });
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
