@@ -128,10 +128,11 @@ public class TeamSpeak {
     public static void verifyUser(Player player, String uid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            String token = String.valueOf(Main.random(43258, 213478234));
             try {
                 Connection connection = Main.getInstance().getMySQL().getConnection();
                 PreparedStatement statement = connection.prepareStatement("UPDATE players SET tsToken = ?");
-                statement.setString(1, String.valueOf(Main.random(43258, 213478234)));
+                statement.setString(1, token);
                 statement.executeQuery();
                 statement.close();
                 connection.close();
@@ -140,7 +141,7 @@ public class TeamSpeak {
             }
 
             try {
-                String jsonInputString = "{\"uid\": \"" + uid + "\"}";
+                String jsonInputString = "{\"uid\": \"" + uid + "\", \"token\": \"" + token + "\"}";
                 byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
