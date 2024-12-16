@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.NaviData;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -10,6 +11,7 @@ import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
@@ -136,11 +138,8 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                 if (args.length >= 3) {
                     createNaviByCord(player, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
                 } else {
-                    StringBuilder nav = new StringBuilder(args[0]);
-                    for (int i = 1; i < args.length; i++) {
-                        nav.append(" ").append(args[i]);
-                    }
-                    createNavi(player, nav.toString(), false);
+                    String nav = Utils.stringArrayToString(args);
+                    createNavi(player, nav, false);
                 }
             } else {
                 openNavi(player, null);
@@ -368,7 +367,10 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
 
             return suggestions;
         }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, LocationManager.naviDataMap.values().stream().filter(x -> !x.isGroup())
+                        .map(NaviData::getName).toList())
+                .build();
     }
 
     @EventHandler
