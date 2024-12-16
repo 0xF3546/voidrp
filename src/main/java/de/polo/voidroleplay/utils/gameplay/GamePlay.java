@@ -154,7 +154,7 @@ public class GamePlay implements Listener {
                     long remainingSeconds = Duration.between(now, existingUsage.getUsage().plusSeconds(drug.getTime())).getSeconds();
 
                     if (remainingSeconds > 0) {
-                        Main.getInstance().utils.sendActionBar(player, "§cWarte noch " + remainingSeconds + " Sekunden");
+                        Main.utils.sendActionBar(player, "§cWarte noch " + remainingSeconds + " Sekunden");
                         continue;
                     }
                 }

@@ -48,7 +48,7 @@ public class UseCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         int count = playerData.getInventory().getByTypeOrEmpty(drug.getItem()).getAmount();
-        if (count < 1) {
+        if (count < 1 && playerData.getVariable("gangwar") == null) {
             player.sendMessage(Prefix.ERROR + "Du hast nicht genug dabei.");
             return false;
         }

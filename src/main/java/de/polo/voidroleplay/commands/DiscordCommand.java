@@ -17,7 +17,7 @@ public class DiscordCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         TextComponent c = new TextComponent("§9Discord öffnen");
-        c.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/XzqgeZ4TAU"));
+        c.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
         player.spigot().sendMessage(c);
         return false;
     }

@@ -50,6 +50,9 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
             player.sendMessage(Component.text(Prefix.ERROR + "Der Spieler ist nicht in der nähe."));
             return;
         }
+        if (target == player) {
+            return;
+        }
         Drug drug = null;
         for (Drug d : Drug.values()) {
             if (d.name().equalsIgnoreCase(args[1]) || d.getItem().getClearName().equalsIgnoreCase(args[1]) || d.getItem().name().equalsIgnoreCase(args[1])) {

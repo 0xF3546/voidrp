@@ -159,6 +159,8 @@ public class StaatUtil {
             Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
+                if (playerData1 == null) continue;
+                if (playerData.getFaction() == null) continue;
                 if (playerData1.isExecutiveFaction()) {
                     if (deathArrest) {
                         players.sendMessage("§9HQ: " + player.getName() + " wurde von " + arrester.getName() + " getötet.");

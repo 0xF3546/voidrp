@@ -1,10 +1,12 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import lombok.SneakyThrows;
@@ -18,6 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -105,6 +108,8 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                     ItemManager.addItem(target, Material.BREAD, "§7Brot", 128);
                     ItemManager.addItem(target, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
                     playerManager.addEXPBoost(target, 6);
+                    target.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.CHRISTMAS.getDisplayName()));
+                    Main.getInstance().vehicles.giveVehicle(target, "Algerari");
                     return false;
                 }
                 Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
@@ -191,7 +196,9 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                                     ItemManager.addCustomItem(player, RoleplayItem.DRINK_WATER, 20);
                                     ItemManager.addItem(player, Material.BREAD, "§7Brot", 128);
                                     ItemManager.addItem(player, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
+                                    player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.CHRISTMAS.getDisplayName()));
                                     try {
+                                        Main.getInstance().vehicles.giveVehicle(player, "Algerari");
                                         playerManager.addEXPBoost(player, 6);
                                     } catch (SQLException e) {
                                         throw new RuntimeException(e);

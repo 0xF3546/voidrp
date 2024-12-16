@@ -45,7 +45,7 @@ public class EntityDamageByEntityListener implements Listener {
             if (event.getEntity() instanceof Player) {
                 PlayerData ownPlayerData = playerManager.getPlayerData((Player) event.getEntity());
                 if (ownPlayerData != null) {
-                    if (ownPlayerData.getVisum() <= 2 && playerData.getFaction() == null) {
+                    if (ownPlayerData.getVisum() < 2 && playerData.getFaction() == null) {
                         event.setCancelled(true);
                     }
                 }
