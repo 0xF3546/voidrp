@@ -131,9 +131,10 @@ public class TeamSpeak {
             String token = String.valueOf(Main.random(43258, 213478234));
             try {
                 Connection connection = Main.getInstance().getMySQL().getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE players SET tsToken = ?");
+                PreparedStatement statement = connection.prepareStatement("UPDATE players SET tsToken = ? WHERE uuid = ?");
                 statement.setString(1, token);
-                statement.executeQuery();
+                statement.setString(2, player.getUniqueId().toString());
+                statement.executeUpdate();
                 statement.close();
                 connection.close();
             } catch (SQLException e) {
