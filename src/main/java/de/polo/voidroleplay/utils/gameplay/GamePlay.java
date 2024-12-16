@@ -28,6 +28,7 @@ import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -616,6 +617,12 @@ public class GamePlay implements Listener {
                     }
                 }
                 if (nearestDoorBlock == null) {
+                    PlayerData playerData = playerManager.getPlayerData(attacker);
+                    if (playerData == null) return;
+                    if (playerData.getFactionGrade() < 3) {
+                        attacker.sendMessage(Component.text(Prefix.ERROR + "Du musst mindestens Rang 3 sein."));
+                        return;
+                    }
                     if (locationManager.getDistanceBetweenCoords(attacker, "fdoor_" + factionData.getName()) > 5) {
                         attacker.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Fraktionstür.");
                         return;
@@ -642,6 +649,12 @@ public class GamePlay implements Listener {
 
                 BlockState state = nearestDoorBlock.getState();
                 if (state.getBlockData() instanceof Openable) {
+                    PlayerData playerData = playerManager.getPlayerData(attacker);
+                    if (playerData == null) return;
+                    if (playerData.getFactionGrade() < 3) {
+                        attacker.sendMessage(Component.text(Prefix.ERROR + "Du musst mindestens Rang 3 sein."));
+                        return;
+                    }
                     Openable openable = (Openable) state.getBlockData();
                     if (openable.isOpen()) {
                         attacker.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
