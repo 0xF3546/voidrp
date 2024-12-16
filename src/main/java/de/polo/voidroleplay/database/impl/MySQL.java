@@ -1,5 +1,7 @@
 package de.polo.voidroleplay.database.impl;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import de.polo.voidroleplay.database.Database;
 import de.polo.voidroleplay.database.utility.Result;
 import de.polo.voidroleplay.utils.BetterExecutor;
@@ -20,6 +22,7 @@ public class MySQL implements Database {
     static final String url = "jdbc:mysql://185.117.3.65/minecraft?autoReconnect=true&useSSL=false";
     static String user = null;
     static String password = null;
+    private HikariDataSource dataSource;
 
     public MySQL() {
         init();
@@ -44,14 +47,22 @@ public class MySQL implements Database {
             return;
         }
         FileConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        SingleLine.from(new HikariConfig())
+                .execute(config -> config.setJdbcUrl(url))
+                .execute(config -> config.setUsername(yaml.getString("user")))
+                .execute(config -> config.setPassword(yaml.getString("password")))
+                .execute(config -> config.setMaximumPoolSize(100000))
+                .execute(config -> config.setIdleTimeout(10000))
+                .execute(config -> dataSource = new HikariDataSource(config));
     }
 
     @Override
     public void close() {
+        dataSource.close();
     }
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+        return dataSource.getConnection();
     }
 
     public Statement getStatement() throws SQLException {
