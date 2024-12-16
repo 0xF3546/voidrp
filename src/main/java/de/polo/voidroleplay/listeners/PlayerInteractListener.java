@@ -564,7 +564,7 @@ public class PlayerInteractListener implements Listener {
                     return;
                 }
             }
-            if (event.getItem().getItemMeta().getDisplayName().equals("§2§lRubbellos") && event.getItem().getType().equals(Material.PAPER)) {
+            if (event.getItem().getItemMeta().getDisplayName().equals("§6§lRubbellos") && event.getItem().getType().equals(Material.PAPER)) {
                 Rubbellose rubbellose = new Rubbellose(Main.getInstance().playerManager);
                 rubbellose.startGame(player);
                 ItemStack itemStack = event.getItem();
