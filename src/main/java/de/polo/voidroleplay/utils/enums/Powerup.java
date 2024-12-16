@@ -13,7 +13,6 @@ import lombok.Getter;
 @Getter
 public enum Powerup {
 
-    LABORATORY(2, 1, 25000, 66000, -1),
     EXP(0, 3, 25000, 50000, -1),
     TAX(0, 3, 25000, 25000, -1),
     STORAGE(27, 9, 75000, 200000, 54),
