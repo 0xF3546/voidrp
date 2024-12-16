@@ -134,7 +134,7 @@ public class FFA implements CommandExecutor {
     public void openLeaderboard(Player player, FFAStatsType type) {
         List<PlayerFFAStats> sortedStats = playerFFAStats.stream()
                 .sorted(Comparator.comparing(PlayerFFAStats::getKD).reversed())
-                .collect(Collectors.toList());
+                .toList();
 
         String playerUUID = player.getUniqueId().toString();
         int playerRank = -1;
@@ -276,8 +276,6 @@ public class FFA implements CommandExecutor {
         Main.getInstance().weaponManager.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.FFA, 300);
         // Main.getInstance().weapons.giveWeapon(player, Weapon.HUNTING_RIFLE.getMaterial(), WeaponType.FFA);
         Main.getInstance().weaponManager.giveWeapon(player, Weapon.PISTOL, WeaponType.FFA, 300);
-        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 5, 0, RoleplayItem.SNUFF.getDisplayName()));
-        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CIGAR.getMaterial(), 5, 0, RoleplayItem.CIGAR.getDisplayName()));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
     }
 
