@@ -14,6 +14,7 @@ import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -645,6 +646,12 @@ public class PlayerSwapHandItemsListener implements Listener {
                 buy(player, "gameboost_3");
             }
         });
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkyNzRhMmFjNTQxZTQwNGMwYWE4ODg3OWIwYzhiMTBmNTAyYmMyZDdlOWE2MWIzYjRiZjMzNjBiYzE1OTdhMiJ9fX0=", 1, 0, "§Vortex Munition", Arrays.asList("§8 » §e20 Schuss", "§8 » §e600 Coins"))) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                buy(player, "vortex-mag");
+            }
+        });
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -706,6 +713,17 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
                 playerManager.removeCoins(player, 2000);
                 playerManager.addEXPBoost(player, 3);
+                player.closeInventory();
+                player.sendMessage("§8[§eCoin-Shop§8]§a Du hast einen EXP-Boost eingelöst!");
+                break;
+            case "vortex-mag":
+                if (playerData.getCoins() < 600) {
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Coins (600).");
+                    player.closeInventory();
+                    return;
+                }
+                playerManager.removeCoins(player, 600);
+                Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 20, 0);
                 player.closeInventory();
                 player.sendMessage("§8[§eCoin-Shop§8]§a Du hast einen EXP-Boost eingelöst!");
                 break;
