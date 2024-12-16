@@ -42,6 +42,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.sql.Date;
@@ -1290,10 +1291,12 @@ public class PlayerManager implements Listener {
         player.setFlying(false);
     }
 
+    @Nullable
     public PlayerData getPlayerData(UUID uuid) {
         return playerDataMap.get(uuid);
     }
 
+    @Nullable
     public PlayerData getPlayerData(Player player) {
         return playerDataMap.get(player.getUniqueId());
     }
