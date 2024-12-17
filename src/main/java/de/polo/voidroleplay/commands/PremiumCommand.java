@@ -24,7 +24,7 @@ public class PremiumCommand extends CommandBase {
 
     @Override
     public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        if (playerData.getLastPremiumBonus() != null && playerData.getLastPremiumBonus().plusWeeks(1).isAfter(Utils.getTime())) {
+        if (playerData.getLastPremiumBonus() != null && playerData.getLastPremiumBonus().plusWeeks(1).isBefore(Utils.getTime())) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du kannst aktuell deine Belohnung nicht abholen."));
             return;
         }
