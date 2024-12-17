@@ -66,9 +66,9 @@ public class PlayerFFAStatsManager {
                     try (PreparedStatement statement = connection.prepareStatement(
                             "INSERT INTO player_ffa_stats (uuid, statsType, kills, deaths) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                         statement.setString(1, stat.getUuid());
-                        statement.setInt(2, stat.getKills());
-                        statement.setInt(3, stat.getDeaths());
-                        statement.setString(4, stat.getFfaStatsType().name());
+                        statement.setString(2, stat.getFfaStatsType().name());
+                        statement.setInt(3, stat.getKills());
+                        statement.setInt(4, stat.getDeaths());
                         statement.executeUpdate();
                         try (ResultSet result = statement.getGeneratedKeys()) {
                             if (result.next()) {
