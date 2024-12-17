@@ -459,6 +459,10 @@ public class HouseManager implements CommandExecutor, Listener {
                                 return;
                             }
                         }
+                        if (playerWeapon.getWeapon() == de.polo.voidroleplay.utils.enums.Weapon.SHOTGUN && playerData.getPermlevel() < 20) {
+                            player.sendMessage(Component.text(Prefix.ERROR + "Für diese Waffe benötigst du Premium!"));
+                            return;
+                        }
                         if (playerWeapon.getWear() < 1) {
                             player.sendMessage(Component.text(Prefix.ERROR + "Die Waffe hat nicht genug Verschleiss."));
                             return;
