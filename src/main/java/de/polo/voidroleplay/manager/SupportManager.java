@@ -128,4 +128,10 @@ public class SupportManager {
     public boolean isInConnection(Player player) {
         return getTicket(player) != null;
     }
+
+    public boolean isInAcceptedTicket(Player player) {
+        Ticket ticket = getTicket(player);
+        if (ticket == null) return false;
+        return !ticket.getEditors().isEmpty();
+    }
 }

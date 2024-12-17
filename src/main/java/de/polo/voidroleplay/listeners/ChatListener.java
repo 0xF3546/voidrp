@@ -39,7 +39,7 @@ public class ChatListener implements Listener {
         }
         event.setCancelled(true);
         if (playerData.getVariable("chatblock") == null) {
-            if (supportManager.isInConnection(player)) {
+            if (supportManager.isInAcceptedTicket(player)) {
                 Ticket ticket = supportManager.getTicket(player);
                 for (Player p : supportManager.getPlayersInTicket(ticket)) {
                     if (p == null) continue;
