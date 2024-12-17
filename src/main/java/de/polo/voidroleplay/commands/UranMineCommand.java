@@ -1,13 +1,29 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import static de.polo.voidroleplay.Main.locationManager;
+import static de.polo.voidroleplay.Main.utils;
 
 /**
  * @author Mayson1337
@@ -16,9 +32,16 @@ import static de.polo.voidroleplay.Main.locationManager;
  */
 
 @CommandBase.CommandMeta(name = "uranmine")
-public class UranMineCommand extends CommandBase {
+public class UranMineCommand extends CommandBase implements Listener {
+    private final List<Location> rollOutLocations = new ObjectArrayList<>();
     public UranMineCommand(@NotNull CommandMeta meta) {
         super(meta);
+        for (LocationData locationData : locationManager.getLocations()
+                .stream()
+                .filter(x -> x.getType() != null && x.getType().equalsIgnoreCase("mine"))
+                .toList()) {
+            rollOutLocations.add(locationData.getLocation());
+        }
     }
 
     @Override
@@ -27,5 +50,70 @@ public class UranMineCommand extends CommandBase {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe der Uranmine."));
             return;
         }
+        if (playerData.getVariable("job") != null) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits einen Job angenommen."));
+            return;
+        }
+        if (args.length >= 1 && args[0].equalsIgnoreCase("drop")) {
+            drop(player);
+            return;
+        }
+        playerData.setVariable("job", "Urantransport");
+        player.sendMessage(Component.text(Prefix.MAIN + "Finde die Uranquelle (Smaragderz) und baue Sie ab. Bringe diese anschließend zum Atomkraftwerk"));
+        equip(player);
+    }
+
+    private void rollOutMine() {
+        Location randomLocation = rollOutLocations.get(Main.random(0, rollOutLocations.size()));
+        randomLocation.getBlock().setType(Material.EMERALD_ORE);
+    }
+
+    private void equip(Player player) {
+        ItemStack item = new ItemStack(Material.IRON_PICKAXE);
+        player.getInventory().addItem(item);
+    }
+
+    private void removeEquip(Player player) {
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) continue;
+            if (item.getType() != Material.IRON_PICKAXE) continue;
+            player.getInventory().removeItem(item);
+        }
+    }
+
+    private void drop(Player player) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        if (playerData == null) return;
+        if (ItemManager.getCustomItemCount(player, RoleplayItem.URAN) < 1) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Du hast kein Uran dabei."));
+            return;
+        }
+        ItemManager.removeCustomItem(player, RoleplayItem.URAN, 1);
+        playerData.setVariable("job", null);
+        playerData.addMoney(ServerManager.getPayout("uran"), "Urantransport");
+        Main.getInstance().playerManager.addExp(player, Main.random(12, 20));
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        if (playerData == null) return;
+        if (ItemManager.getCustomItemCount(player, RoleplayItem.URAN) >= 1) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits ein Uran dabei."));
+            return;
+        }
+        ItemManager.addCustomItem(player, RoleplayItem.URAN, 1);
+        player.sendMessage(Component.text(Prefix.MAIN + "Du hast ein Uran abgebaut. Bringe es nun zum Atomkraftwerk"));
+        utils.navigationManager.createNavi(player, "Atomkraftwerk", true);
+        removeEquip(player);
+        rollOutMine();
+    }
+
+    @EventHandler
+    public void onNaviReach(NaviReachEvent event) {
+        Player player = event.getPlayer();
+        if (!event.getNavi().equalsIgnoreCase("Atomkraftwerk")) return;
+
     }
 }
