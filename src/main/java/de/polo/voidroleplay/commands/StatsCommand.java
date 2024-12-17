@@ -4,12 +4,15 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.storage.WantedReason;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+
+import static de.polo.voidroleplay.Main.utils;
 
 public class StatsCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -26,6 +29,12 @@ public class StatsCommand implements CommandExecutor {
         player.sendMessage("§7    ===§8[§6Statistiken§8]§7===");
         player.sendMessage(" §8- §6Level§8:§c " + playerData.getLevel() + " (" + playerData.getExp() + "/" + playerData.getNeeded_exp() + ")");
         player.sendMessage(" §8- §6Visum§8:§c " + playerData.getVisum());
+        if (playerData.getWanted() == null) {
+            player.sendMessage(" §8- §6Fahndung§8:§c Keine Fahndung");
+        } else {
+            WantedReason wantedReason = utils.staatUtil.getWantedReason(playerData.getWanted().getWantedId());
+            player.sendMessage(" §8- §6Fahndung§8:§c " + wantedReason.getWanted() + " WPS");
+        }
         player.sendMessage(" §8- §6Bargeld§8:§c " + playerData.getBargeld() + "$");
         player.sendMessage(" §8- §6PayDay§8:§c " + playerManager.paydayDuration(player) + "/60");
         player.sendMessage(" §8- §6Spielzeit§8:§c " + playerData.getHours() + " Stunden & " + playerData.getMinutes() + " Minuten");
