@@ -23,9 +23,10 @@ public class RespawnListener implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData == null) return;
         float flySpeed = 0;
         if (event.isBedSpawn()) {
-            event.setRespawnLocation(null);
+            event.setRespawnLocation(playerData.getDeathLocation());
         }
         if (!playerData.isDead()) {
             if (MilitaryDrop.ACTIVE) {

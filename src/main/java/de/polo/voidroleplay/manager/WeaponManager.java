@@ -232,7 +232,9 @@ public class WeaponManager implements Listener {
             target.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 9, -10, true, false)); // Jump für 6 Sekunden, -10 für eine geringere Sprunghöhe
             target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 9, 0, true, false)); // Blindness für 6 Sekunden
             target.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 20, 1, true, false));
-
+            PlayerData targetData = playerManager.getPlayerData(target);
+            if (targetData == null) return;
+            if (targetData.isCuffed()) targetData.setCuffed(true);
         }
 
         Weapon gun = getWeaponFromItemStack(player.getEquipment().getItemInMainHand());

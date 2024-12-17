@@ -117,10 +117,10 @@ public class Drop {
             playerData.getInventory().addItem(RoleplayItem.SNUFF, snuff);
             player.sendMessage("§8 - " + snuff + "x " + RoleplayItem.SNUFF.getDisplayName());
         }
-        int pipe = Main.random(0, 20);
-        if (pipe > 0) {
-            playerData.getInventory().addItem(RoleplayItem.PIPE, pipe);
-            player.sendMessage("§8 - " + pipe + "x " + RoleplayItem.PIPE.getDisplayName());
+        int cigar = Main.random(0, 20);
+        if (cigar > 0) {
+            playerData.getInventory().addItem(RoleplayItem.CIGAR, cigar);
+            player.sendMessage("§8 - " + cigar + "x " + RoleplayItem.CIGAR.getDisplayName());
         }
 
         boolean kevlar = Main.random(0, 4) == 1;

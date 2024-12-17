@@ -28,6 +28,7 @@ import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -42,6 +43,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GamePlay implements Listener {
     public final ApothekeFunctions apotheke;
@@ -149,7 +151,13 @@ public class GamePlay implements Listener {
 
         for (PotionEffect effect : drug.getEffects()) {
             if (effect.getType().equals(PotionEffectType.ABSORPTION)) {
-                if (existingUsage != null) {
+                boolean isAbsorptionActive = Main.getInstance().gamePlay.getActiveDrugUsages(player.getUniqueId())
+                        .stream()
+                        .anyMatch(activeUsage -> activeUsage.getDrug().getEffects()
+                                .stream()
+                                .anyMatch(activeEffect -> activeEffect.getType().equals(PotionEffectType.ABSORPTION)));
+
+                if (isAbsorptionActive) {
                     LocalDateTime now = Utils.getTime();
                     long remainingSeconds = Duration.between(now, existingUsage.getUsage().plusSeconds(drug.getTime())).getSeconds();
 
@@ -159,7 +167,6 @@ public class GamePlay implements Listener {
                     }
                 }
             }
-
             player.addPotionEffect(effect);
         }
 
@@ -191,24 +198,44 @@ public class GamePlay implements Listener {
     }
 
     private PlayerDrugUsage getDrugUsage(UUID uuid, Drug drug) {
-        // Suche nach dem entsprechenden PlayerDrugUsage
         PlayerDrugUsage usage = drugUsages.stream()
-                .filter(x -> x.getUuid().equals(uuid) && x.getDrug().equals(drug)) // Spieler und Droge müssen übereinstimmen
+                .filter(x -> x.getUuid().equals(uuid) && x.getDrug().equals(drug))
                 .findFirst()
                 .orElse(null);
 
         if (usage != null) {
-            // Überprüfen, ob der Drogengebrauch abgelaufen ist
             if (Utils.getTime().isAfter(usage.getUsage().plusSeconds(drug.getTime()))) {
-                drugUsages.remove(usage); // Entferne den abgelaufenen Drogengebrauch
-                usage = null; // Setze usage auf null, da es abgelaufen ist
+                drugUsages.remove(usage);
+                usage = null;
             }
         }
-        return usage; // Gibt null zurück, wenn kein gültiger Eintrag existiert
+        return usage;
     }
 
+    private Collection<PlayerDrugUsage> getActiveDrugUsages(UUID uuid) {
+        return drugUsages.stream().filter(x -> x.getUuid().equals(uuid)).collect(Collectors.toList());
+    }
+
+    private boolean isOnAbsorption(UUID uuid) {
+        PlayerDrugUsage usage = drugUsages.stream()
+                .filter(x -> x.getUuid().equals(uuid))
+                .filter(x -> x.getDrug().getEffects().stream()
+                        .anyMatch(effect -> effect.getType() == PotionEffectType.ABSORPTION))
+                .findFirst()
+                .orElse(null);
+
+        if (usage != null) {
+            if (Utils.getTime().isAfter(usage.getUsage().plusSeconds(usage.getDrug().getTime()))) {
+                drugUsages.remove(usage);
+                usage = null;
+            }
+        }
+
+        return usage != null;
+    }
+
+
     public void clearDrugUsages(Player player) {
-        // Entfernt alle Drogenverwendungen eines bestimmten Spielers
         drugUsages.removeIf(drugUsage -> drugUsage.getUuid().equals(player.getUniqueId()));
     }
 
@@ -616,6 +643,12 @@ public class GamePlay implements Listener {
                     }
                 }
                 if (nearestDoorBlock == null) {
+                    PlayerData playerData = playerManager.getPlayerData(attacker);
+                    if (playerData == null) return;
+                    if (playerData.getFactionGrade() < 3) {
+                        attacker.sendMessage(Component.text(Prefix.ERROR + "Du musst mindestens Rang 3 sein."));
+                        return;
+                    }
                     if (locationManager.getDistanceBetweenCoords(attacker, "fdoor_" + factionData.getName()) > 5) {
                         attacker.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Fraktionstür.");
                         return;
@@ -642,6 +675,12 @@ public class GamePlay implements Listener {
 
                 BlockState state = nearestDoorBlock.getState();
                 if (state.getBlockData() instanceof Openable) {
+                    PlayerData playerData = playerManager.getPlayerData(attacker);
+                    if (playerData == null) return;
+                    if (playerData.getFactionGrade() < 3) {
+                        attacker.sendMessage(Component.text(Prefix.ERROR + "Du musst mindestens Rang 3 sein."));
+                        return;
+                    }
                     Openable openable = (Openable) state.getBlockData();
                     if (openable.isOpen()) {
                         attacker.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");

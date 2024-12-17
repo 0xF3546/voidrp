@@ -426,7 +426,7 @@ public class FactionManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction() == null) continue;
-            if (faction.equalsIgnoreCase("Staat")) {
+            if (faction.equalsIgnoreCase("Staat") || faction.equalsIgnoreCase("FBI") || faction.equalsIgnoreCase("Polizei")) {
                 if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
                     player.sendMessage(message);
                 }

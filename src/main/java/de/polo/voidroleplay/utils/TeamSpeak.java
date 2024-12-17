@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class TeamSpeak {
@@ -127,9 +128,21 @@ public class TeamSpeak {
     public static void verifyUser(Player player, String uid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            String token = String.valueOf(Main.random(43258, 213478234));
+            try {
+                Connection connection = Main.getInstance().getMySQL().getConnection();
+                PreparedStatement statement = connection.prepareStatement("UPDATE players SET tsToken = ? WHERE uuid = ?");
+                statement.setString(1, token);
+                statement.setString(2, player.getUniqueId().toString());
+                statement.executeUpdate();
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
             try {
-                String jsonInputString = "{\"uid\": \"" + uid + "\", \"name\": \"" + player.getName() + "\", \"uuid\": \"" + player.getUniqueId() + "\"}";
+                String jsonInputString = "{\"uid\": \"" + uid + "\", \"token\": \"" + token + "\"}";
                 byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
