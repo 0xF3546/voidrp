@@ -646,7 +646,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 buy(player, "gameboost_3");
             }
         });
-        inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkyNzRhMmFjNTQxZTQwNGMwYWE4ODg3OWIwYzhiMTBmNTAyYmMyZDdlOWE2MWIzYjRiZjMzNjBiYzE1OTdhMiJ9fX0=", 1, 0, "§Vortex Munition", Arrays.asList("§8 » §e20 Schuss", "§8 » §e600 Coins"))) {
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzkyNzRhMmFjNTQxZTQwNGMwYWE4ODg3OWIwYzhiMTBmNTAyYmMyZDdlOWE2MWIzYjRiZjMzNjBiYzE1OTdhMiJ9fX0=", 1, 0, "§6Vortex Munition", Arrays.asList("§8 » §e20 Schuss", "§8 » §e600 Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 buy(player, "vortex-mag");
