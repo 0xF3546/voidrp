@@ -156,6 +156,10 @@ public class PlayerData {
     @Getter
     @Setter
     private LocalDateTime lastContract;
+    @Getter
+    @Setter
+    private LocalDateTime lastPremiumBonus;
+
     @Setter
     @Getter
     private Location deathLocation;

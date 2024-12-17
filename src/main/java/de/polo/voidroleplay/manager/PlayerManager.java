@@ -206,6 +206,11 @@ public class PlayerManager implements Listener {
                     Instant instant = Instant.ofEpochMilli(utilDate.getTime());
                     playerData.setRankDuration(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
                 }
+                if (result.getDate("lastPremiumBonus") != null) {
+                    java.sql.Date utilDate = new Date(result.getDate("lastPremiumBonus").getTime());
+                    Instant instant = Instant.ofEpochMilli(utilDate.getTime());
+                    playerData.setLastPremiumBonus(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
+                }
                 System.out.println(result.getDate("dailyBonusRedeemed"));
                 if (result.getDate("dailyBonusRedeemed") != null) {
                     java.sql.Date sqlDate = result.getDate("dailyBonusRedeemed");
