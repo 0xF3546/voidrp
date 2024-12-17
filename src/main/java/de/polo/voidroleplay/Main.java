@@ -216,6 +216,7 @@ public final class Main extends JavaPlugin {
         new AntiCheat();
         new PlayerSwapHandItemsListener(playerManager, utils);
         new ArmorStandExitListener();
+        new PlayerSpawnpointListener();
         new GameModeChangeEvent();
         new EntitySpawnListener();
         new EntityDamageByEntityListener(playerManager);
