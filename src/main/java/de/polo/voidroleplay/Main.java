@@ -259,7 +259,8 @@ public final class Main extends JavaPlugin {
                 UnarrestCommand.class,
                 NeulingschatCommand.class,
                 SignBookCommand.class,
-                PremiumCommand.class
+                PremiumCommand.class,
+                UranMineCommand.class
         );
 
 
