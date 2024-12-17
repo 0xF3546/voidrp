@@ -161,6 +161,7 @@ public class DeathUtils {
         playerData.setDeathTime(300);
         playerData.setDead(false);
         playerData.setFFADead(playerData.getVariable("ffa") != null);
+        playerData.removeMoney(playerData.getBargeld(), "Despawn");
         if (playerData.isFFADead()) {
             Main.getInstance().gamePlay.getFfa().respawnPlayer(player);
         }
