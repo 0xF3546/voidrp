@@ -42,6 +42,7 @@ public class ChatListener implements Listener {
             if (supportManager.isInConnection(player)) {
                 Ticket ticket = supportManager.getTicket(player);
                 for (Player p : supportManager.getPlayersInTicket(ticket)) {
+                    if (p == null) continue;
                     p.sendMessage(Prefix.SUPPORT + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                 }
 
@@ -50,6 +51,7 @@ public class ChatListener implements Listener {
                     if (utils.phoneUtils.isInCall(player)) {
                         PhoneCall call = utils.phoneUtils.getCall(player);
                         for (Player p : utils.phoneUtils.getPlayersInCall(call)) {
+                            if (p == null) continue;
                             if (p != player)
                                 p.sendMessage("§8[§6Handy§8] " + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
                         }
@@ -74,6 +76,7 @@ public class ChatListener implements Listener {
                         playerName = "Maskierter";
                     }
                     for (Player players : Bukkit.getOnlinePlayers()) {
+                        if (players == null) continue;
                         if (players.getLocation().getWorld() != player.getLocation().getWorld()) continue;
                         if (player.getLocation().distance(players.getLocation()) <= 8) {
                             players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + playerName + " " + type + ":§f " + msg);

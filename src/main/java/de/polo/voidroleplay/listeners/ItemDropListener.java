@@ -37,6 +37,7 @@ public class ItemDropListener implements Listener {
         blockedItems.add(RoleplayItem.CUFF.getMaterial());
         blockedItems.add(RoleplayItem.SWAT_SHIELD.getMaterial());
         blockedItems.add(RoleplayItem.TAZER.getMaterial());
+        blockedItems.add(RoleplayItem.URAN.getMaterial());
         if (event.getPlayer().getEquipment().getItem(EquipmentSlot.OFF_HAND).equals(droppedItem)) {
             event.setCancelled(true);
             return;
