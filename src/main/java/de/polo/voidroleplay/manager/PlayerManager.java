@@ -409,8 +409,15 @@ public class PlayerManager implements Listener {
                 Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
                 utils.staatUtil.loadParole(player);
-                Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
+                if (getLoyaltyTimer(player.getUniqueId()) != null) {
+                    player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Da du dich innerhalb von 3 Minuten eingeloggt hast, läuft dein Treuebonus weiter."));
+                } else {
+                    LoyaltyBonusTimer loyaltyBonusTimer = new LoyaltyBonusTimer(player.getUniqueId());
+                    loyaltyBonusTimer.setStarted(Utils.getTime());
+                    loyaltyBonusCache.add(loyaltyBonusTimer);
+                }
 
+                Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
                 if (playerData.getFaction() != null) {
                     for (PlayerData pData : getPlayers()) {
                         if (pData.getFaction() == null) continue;
@@ -418,12 +425,6 @@ public class PlayerManager implements Listener {
                             Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(pData.getPlayer());
                         }
                     }
-                }
-                if (getLoyaltyTimer(player.getUniqueId()) != null) {
-                    player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Da du dich innerhalb von 3 Minuten eingeloggt hast, läuft dein Treuebonus weiter."));
-                } else {
-                    LoyaltyBonusTimer loyaltyBonusTimer = new LoyaltyBonusTimer(player.getUniqueId());
-                    loyaltyBonusCache.add(loyaltyBonusTimer);
                 }
                 Main.getInstance().commands.checkoutWebshopCommand.loadShopBuys(player);
             }
