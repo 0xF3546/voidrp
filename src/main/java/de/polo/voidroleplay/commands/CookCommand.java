@@ -94,8 +94,8 @@ public class CookCommand implements CommandExecutor, Listener {
                 timer.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Schmerzmittel.");
                 continue;
             }
-            playerData.getInventory().addItem(RoleplayItem.CRYSTAL, Main.random(8, 13));
             playerData.getInventory().removeItem(RoleplayItem.SCHMERZMITTEL, 10);
+            playerData.getInventory().addItem(RoleplayItem.CRYSTAL, Main.random(8, 13));
             timer.getPlayer().sendMessage(Prefix.MAIN + "Das kochen wurde beendet.");
             playerManager.addExp(timer.getPlayer(), Main.random(80, 130));
             iterator.remove();
