@@ -146,7 +146,7 @@ public class BankingUtils implements Listener {
                             atm.setLastTimeBlown(LocalDateTime.now());
                             playerData.setAtmBlown(playerData.getAtmBlown() + 1);
                             playerData.save();
-                            boolean isRandom = Utils.isRandom(2);
+                            boolean isRandom = Utils.isRandom(5);
                             if (isRandom) {
                                 factionManager.sendCustomMessageToFaction("Polizei", "§8[§cATM-Sicherheitssystem§8]§c Der Bankautomat " + atm.getName() + " meldet Alarm aufgrund einer Sprengung. Die Kameras zeigen " + player.getName() + " als Täter.");
                             } else {
