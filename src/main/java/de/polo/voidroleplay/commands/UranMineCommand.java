@@ -54,6 +54,7 @@ public class UranMineCommand extends CommandBase implements Listener {
         if (playerData.getVariable("job") != null) {
             if (playerData.getVariable("job").equals("Urantransport")) {
                 removeEquip(player);
+                playerData.setVariable("job", null);
                 player.sendMessage(Component.text(Prefix.MAIN + "Du hast den Job beendet."));
                 return;
             }
