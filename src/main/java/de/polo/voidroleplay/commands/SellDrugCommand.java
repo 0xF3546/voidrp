@@ -81,6 +81,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
             Agreement agreement = new Agreement(player, target, "selldrug", () -> {
                 if (targetData.getBargeld() < price) {
                     target.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Geld dabei."));
+                    player.sendMessage(Prefix.MAIN + target.getName() + " hat das Angebot abgelehnt.");
                     return;
                 }
                 if (targetData.getInventory().addItem(finalDrug.getItem(), amount)) {
@@ -94,7 +95,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
                 }
             }, () -> {
                 player.sendMessage(Prefix.MAIN + target.getName() + " hat das Angebot abgelehnt.");
-                player.sendMessage(Prefix.MAIN + "Du hast das Angebot abgelehnt.");
+                target.sendMessage(Prefix.MAIN + "Du hast das Angebot abgelehnt.");
             });
             utils.vertragUtil.setAgreement(player, target, agreement);
         } catch (Exception ex) {
