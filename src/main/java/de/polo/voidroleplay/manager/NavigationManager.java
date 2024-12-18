@@ -14,6 +14,7 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -139,7 +140,15 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                     createNaviByCord(player, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
                 } else {
                     String nav = Utils.stringArrayToString(args);
-                    createNavi(player, nav, false);
+                    NaviData data = LocationManager.naviDataMap.values().stream()
+                            .filter(x -> !x.isGroup() && x.getClearName().equalsIgnoreCase(nav))
+                            .findFirst()
+                            .orElse(null);
+                    if (data == null) {
+                        player.sendMessage(Component.text(Prefix.ERROR + "Der Punkte wurde nicht gefunden."));
+                        return false;
+                    }
+                    createNavi(player, data.getLocation(), false);
                 }
             } else {
                 openNavi(player, null);
@@ -357,19 +366,9 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> suggestions = new ObjectArrayList<>();
-            for (NaviData naviData : LocationManager.naviDataMap.values()) {
-                if (!naviData.isGroup()) {
-                    suggestions.add(naviData.getName().substring(2));
-                }
-            }
-
-            return suggestions;
-        }
         return TabCompletion.getBuilder(args)
                 .addAtIndex(1, LocationManager.naviDataMap.values().stream().filter(x -> !x.isGroup())
-                        .map(NaviData::getName).toList())
+                        .map(NaviData::getClearName).toList())
                 .build();
     }
 
