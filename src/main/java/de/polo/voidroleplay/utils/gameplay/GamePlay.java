@@ -159,7 +159,14 @@ public class GamePlay implements Listener {
 
                 if (isAbsorptionActive) {
                     LocalDateTime now = Utils.getTime();
-                    long remainingSeconds = Duration.between(now, existingUsage.getUsage().plusSeconds(drug.getTime())).getSeconds();
+                    // long remainingSeconds = Duration.between(now, existingUsage.getUsage().plusSeconds(drug.getTime())).getSeconds();
+                    long remainingSeconds = -1;
+                    if (existingUsage != null && existingUsage.getUsage() != null) {
+                        remainingSeconds = Duration.between(
+                                now,
+                                existingUsage.getUsage().plusSeconds(drug.getTime())
+                        ).getSeconds();
+                    }
 
                     if (remainingSeconds > 0) {
                         Main.utils.sendActionBar(player, "§cWarte noch " + remainingSeconds + " Sekunden");
