@@ -117,6 +117,7 @@ public class DeathListener implements Listener {
                 PlayerData killerData = playerManager.getPlayerData(killer);
                 if (killerData.isExecutiveFaction() && wantedReason.getWanted() >= 50) {
                     utils.staatUtil.arrestPlayer(player, killer, true);
+                    playerManager.addExp(killer, Main.random(12, 20));
                 }
             }
             if ((ServerManager.contractDataMap.get(playerUUID.toString()) != null
