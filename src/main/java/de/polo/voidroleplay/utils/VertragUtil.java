@@ -84,6 +84,7 @@ public class VertragUtil {
         Agreement agreement = getActiveAgreement(player);
         if (agreement != null) {
             agreement.accept();
+            agreements.remove(agreement);
             return;
         }
         if (curr != null) {
@@ -225,6 +226,7 @@ public class VertragUtil {
         Agreement agreement = getActiveAgreement(player);
         if (agreement != null) {
             agreement.deny();
+            agreements.remove(agreement);
             return;
         }
         if (curr != null) {
