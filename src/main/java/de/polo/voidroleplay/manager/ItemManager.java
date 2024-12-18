@@ -272,4 +272,8 @@ public class ItemManager {
     private String getURLFromBase64(String base64) {
         return new String(Base64.getDecoder().decode(base64.getBytes())).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "").replace("\"}}}", "");
     }
+
+    public static boolean hasPlayerBulletproof(Player player) {
+        return getCustomItemCount(player, RoleplayItem.BULLETPROOF) >= 1 || getCustomItemCount(player, RoleplayItem.HEAVY_BULLETPROOF) >= 1;
+    }
 }

@@ -14,6 +14,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -140,6 +141,10 @@ public class EquipCommand implements CommandExecutor, Listener {
                     player.sendMessage(ERROR_NOT_ENOUGH_EQUIP);
                     return;
                 }
+                if (ItemManager.hasPlayerBulletproof(player)) {
+                    player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits eine Schutzweste dabei."));
+                    return;
+                }
                 ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
                 factionData.setEquipPoints(factionData.getEquipPoints() - 5);
                 factionData.save();
@@ -153,6 +158,10 @@ public class EquipCommand implements CommandExecutor, Listener {
                 public void onClick(InventoryClickEvent event) {
                     if (factionData.getEquipPoints() < 8) {
                         player.sendMessage(ERROR_NOT_ENOUGH_EQUIP);
+                        return;
+                    }
+                    if (ItemManager.hasPlayerBulletproof(player)) {
+                        player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits eine Schutzweste dabei."));
                         return;
                     }
                     ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
