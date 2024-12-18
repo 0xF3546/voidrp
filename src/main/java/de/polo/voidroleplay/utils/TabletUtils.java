@@ -12,6 +12,7 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -479,22 +480,25 @@ public class TabletUtils implements Listener {
                         slotIndex += 9;
                     }
 
-                    if (playerVehicleData.isParked()) {
-                        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §aEingeparkt", "§8 ➥ §8[§6Rechtsklick§8]§7 Verkaufen"))) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                if (event.isLeftClick()) {
-                                    return;
-                                }
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §cAusgeparkt", "", "§8 » §aOrten", "§8[§6Rechtsklick§8]§7 Verkaufen"))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            if (event.isRightClick()) {
                                 int price = (int) (vehicleData.getPrice() * 0.75);
                                 InventoryManager sellInventory = new InventoryManager(player, 27, "§8 » §e" + vehicleData.getName() + " verkaufen");
                                 sellInventory.setItem(new CustomItem(12, ItemManager.createItem(Material.GREEN_WOOL, 1, 0, "§aVerkaufen", "§8 ➥ §7" + Utils.toDecimalFormat(price) + "$")) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
                                         player.closeInventory();
-                                        player.sendMessage(Prefix.MAIN + "Du hast dein " + vehicleData.getName() + " verkauft.");
-                                        playerData.addMoney(price, "Verkauf " + vehicleData.getName());
-                                        Main.getInstance().vehicles.removeVehicleFromDatabase(playerVehicleData.getId());
+                                        try {
+                                            player.sendMessage(Prefix.MAIN + "Du hast dein " + vehicleData.getName() + " verkauft.");
+                                            playerData.addMoney(price, "Verkauf " + vehicleData.getName());
+                                            Vehicles.deleteVehicleById(vehicleData.getId());
+                                            Main.getInstance().vehicles.removeVehicleFromDatabase(playerVehicleData.getId());
+                                            player.sendMessage(Component.text(Prefix.MAIN + "Du hast dein Fahrzeug verkauft."));
+                                        } catch (SQLException e) {
+                                            throw new RuntimeException(e);
+                                        }
                                     }
                                 });
                                 sellInventory.setItem(new CustomItem(14, ItemManager.createItem(Material.RED_WOOL, 1, 0, "§cAbbrechen")) {
@@ -503,18 +507,13 @@ public class TabletUtils implements Listener {
                                         openVehiclesApp(player, page);
                                     }
                                 });
-                            }
-                        });
-                    } else {
-                        inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §cAusgeparkt", "", "§8 » §aOrten"))) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
+                            } else {
                                 player.closeInventory();
-                                Main.getInstance().utils.navigationManager.createNaviByCord(player, playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ());
+                                utils.navigationManager.createNaviByCord(player, playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ());
                                 player.sendMessage("§8[§3Tablet§8]§7 Der Standort deines Fahrzeuges wurde dir markiert.");
                             }
-                        });
-                    }
+                        }
+                    });
                 }
                 i++;
             }
