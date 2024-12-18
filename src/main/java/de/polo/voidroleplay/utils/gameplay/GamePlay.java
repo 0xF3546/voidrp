@@ -149,12 +149,6 @@ public class GamePlay implements Listener {
 
         PlayerDrugUsage existingUsage = Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug);
 
-        // ISSUE VRP-10005: fixed by adding null check
-        if (existingUsage == null) {
-            Main.utils.sendActionBar(player, "§cDu hast keine " + drug.name() + " mehr");
-            return;
-        }
-
         for (PotionEffect effect : drug.getEffects()) {
             if (effect.getType().equals(PotionEffectType.ABSORPTION)) {
                 boolean isAbsorptionActive = Main.getInstance().gamePlay.getActiveDrugUsages(player.getUniqueId())
