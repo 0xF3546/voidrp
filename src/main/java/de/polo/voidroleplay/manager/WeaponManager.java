@@ -184,7 +184,7 @@ public class WeaponManager implements Listener {
     public void onWeaponUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
-        if (player.getGameMode().equals(GameMode.SPECTATOR)) return;
+        if (player.getGameMode().equals(GameMode.SPECTATOR) || player.isInsideVehicle()) return;
         if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
