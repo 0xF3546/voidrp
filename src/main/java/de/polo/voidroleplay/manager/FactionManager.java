@@ -231,14 +231,16 @@ public class FactionManager {
             playerData.setFaction(null);
             playerData.setFactionGrade(0);
             playerData.setDuty(false);
-            if (playerData.getPermlevel() >= 60) {
-                Utils.Tablist.updatePlayer(player);
-                player.setCustomNameVisible(true);
-            } else {
-                player.setDisplayName("§7" + player.getName());
-                player.setPlayerListName("§7" + player.getName());
-                player.setCustomName("§7" + player.getName());
-                player.setCustomNameVisible(true);
+            if (player != null) {
+                if (playerData.getPermlevel() >= 60) {
+                    Utils.Tablist.updatePlayer(player);
+                    player.setCustomNameVisible(true);
+                } else {
+                    player.setDisplayName("§7" + player.getName());
+                    player.setPlayerListName("§7" + player.getName());
+                    player.setCustomName("§7" + player.getName());
+                    player.setCustomNameVisible(true);
+                }
             }
             for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
