@@ -915,6 +915,7 @@ public class PlayerManager implements Listener {
             mySQL.updateAsync("UPDATE players SET exp = ? WHERE uuid = ?", playerData.getExp(), player.getUniqueId().toString());
         }
         player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
+        player.setLevel(playerData.getLevel());
     }
 
     public void addExp(Player player, EXPType expType, Integer amount) {
