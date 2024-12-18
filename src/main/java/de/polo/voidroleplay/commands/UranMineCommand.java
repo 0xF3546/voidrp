@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
@@ -112,6 +113,9 @@ public class UranMineCommand extends CommandBase implements Listener {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits ein Uran dabei."));
             return;
         }
+        if (!rollOutLocations.contains(event.getBlock().getLocation())) {
+            return;
+        }
         ItemManager.addCustomItem(player, RoleplayItem.URAN, 1);
         player.sendMessage(Component.text(Prefix.MAIN + "Du hast ein Uran abgebaut. Bringe es nun zum Atomkraftwerk"));
         utils.navigationManager.createNavi(player, "Atomkraftwerk", true);
@@ -124,6 +128,6 @@ public class UranMineCommand extends CommandBase implements Listener {
     public void onNaviReach(NaviReachEvent event) {
         Player player = event.getPlayer();
         if (!event.getNavi().equalsIgnoreCase("Atomkraftwerk")) return;
-
+        drop(player);
     }
 }
