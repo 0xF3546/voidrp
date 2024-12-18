@@ -480,7 +480,7 @@ public class TabletUtils implements Listener {
                         slotIndex += 9;
                     }
 
-                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 ➥ §eGarage§8:§7 " + LocationManager.garageDataMap.get(playerVehicleData.getGarage()).getName(), "§8 ➥ §cAusgeparkt", "", "§8 » §aOrten", "§8[§6Rechtsklick§8]§7 Verkaufen"))) {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "§8 » §aOrten", "§8[§6Rechtsklick§8]§7 Verkaufen"))) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             if (event.isRightClick()) {

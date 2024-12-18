@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static de.polo.voidroleplay.Main.utils;
+
 public class Vehicles implements Listener, CommandExecutor {
     public static final Map<String, VehicleData> vehicleDataMap = new HashMap<>();
     public static final Map<Integer, PlayerVehicleData> playerVehicleDataMap = new HashMap<>();
@@ -60,7 +62,7 @@ public class Vehicles implements Listener, CommandExecutor {
     public static void spawnPlayerVehicles(Player player) {
         for (PlayerVehicleData playerVehicleData : playerVehicleDataMap.values()) {
             if (playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
-                if (!playerVehicleData.isParked()) spawnVehicle(player, playerVehicleData);
+                spawnVehicle(player, playerVehicleData);
             }
         }
     }
@@ -209,7 +211,6 @@ public class Vehicles implements Listener, CommandExecutor {
             playerVehicleData.setType(result.getString("type"));
             playerVehicleData.setKm(result.getInt("km"));
             playerVehicleData.setFuel(result.getFloat("fuel"));
-            playerVehicleData.setParked(result.getBoolean("parked"));
             playerVehicleData.setX(result.getInt("x"));
             playerVehicleData.setY(result.getInt("y"));
             playerVehicleData.setZ(result.getInt("z"));
@@ -237,7 +238,6 @@ public class Vehicles implements Listener, CommandExecutor {
             playerVehicleData.setType(vehicle);
             playerVehicleData.setKm(0);
             playerVehicleData.setFuel(vehicleData.getMaxFuel());
-            playerVehicleData.setParked(false);
             playerVehicleData.setX((int) player.getLocation().getX());
             playerVehicleData.setY((int) player.getLocation().getY());
             playerVehicleData.setZ((int) player.getLocation().getZ());
@@ -521,11 +521,11 @@ public class Vehicles implements Listener, CommandExecutor {
                 InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §cFahrzeug suchen", true, false);
                 int i = 0;
                 for (PlayerVehicleData data : playerVehicleDataMap.values()) {
-                    if (data.getUuid().equalsIgnoreCase(player.getUniqueId().toString()) && !data.isParked()) {
+                    if (data.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
                         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§c" + data.getType())) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
-                                Main.getInstance().utils.navigationManager.createNaviByCord(player, data.getX(), data.getY(), data.getZ());
+                                utils.navigationManager.createNaviByCord(player, data.getX(), data.getY(), data.getZ());
                                 player.sendMessage("§aDein Fahrzeug wurde markiert.");
                             }
                         });
@@ -537,100 +537,5 @@ public class Vehicles implements Listener, CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /car [start/stop/lock/find]");
         }
         return false;
-    }
-
-    public void openGarage(Player player, int station, boolean isParkin) {
-        GasStationData gasStationData = LocationManager.gasStationDataMap.get(station);
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        GarageData garageData = LocationManager.garageDataMap.get(station);
-        if (garageData.getFactionId() != 0) {
-            if (playerData.getFaction() == null) return;
-            FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
-            if (garageData.getFactionId() != factionData.getId()) return;
-        }
-        InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6" + garageData.getName(), true, false);
-        inventoryManager.setItem(new CustomItem(48, ItemManager.createItem(Material.EMERALD, 1, 0, "§aEinparken")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                openGarage(player, garageData.getId(), true);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(50, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAusparken")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                openGarage(player, garageData.getId(), false);
-            }
-        });
-        int i = 0;
-        if (isParkin) {
-            for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
-                if (entity.getType() == EntityType.MINECART) {
-                    if (entity.getLocation().distance(player.getLocation()) < 15) {
-                        int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                        PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
-                        if (playerVehicleData == null) continue;
-                        boolean isPlayerVehicle = false;
-                        if (garageData.getFactionId() != 0) {
-                            if (playerVehicleData.getFactionId() != garageData.getFactionId()) continue;
-                            isPlayerVehicle = true;
-                        } else if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "uuid"), PersistentDataType.STRING).equals(player.getUniqueId().toString())) {
-                            isPlayerVehicle = true;
-                        }
-                        if (isPlayerVehicle) {
-                            VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §aEinparken"))) {
-                                @SneakyThrows
-                                @Override
-                                public void onClick(InventoryClickEvent event) {
-                                    player.closeInventory();
-                                    playerVehicleData.setParked(true);
-                                    Vehicles.deleteVehicleById(id);
-                                    Main.getInstance().utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a eingeparkt!");
-                                    SoundManager.successSound(player);
-                                    Statement statement = Main.getInstance().mySQL.getStatement();
-                                    statement.executeUpdate("UPDATE player_vehicles SET parked = true, garage = " + garageData.getId() + " WHERE id = " + id);
-                                    playerVehicleData.setGarage(garageData.getId());
-                                    player.closeInventory();
-                                }
-                            });
-                            i++;
-                        }
-                    }
-                }
-            }
-        } else {
-            for (PlayerVehicleData playerVehicleData : playerVehicleDataMap.values()) {
-                if (playerVehicleData.getGarage() == station && playerVehicleData.isParked()) {
-                    boolean canAccess = false;
-                    if (garageData.getFactionId() != 0) {
-                        if (playerData.getFaction() == null) continue;
-                        FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
-                        if (factionData.getId() != garageData.getFactionId()) continue;
-                        canAccess = true;
-                    } else if (playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
-                        canAccess = true;
-                    }
-                    if (!canAccess) continue;
-                    VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
-                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§e" + vehicleData.getName(), Arrays.asList("§8 ➥ §eID§8:§7 " + playerVehicleData.getId(), "", "§8 » §cAusparken"))) {
-                        @SneakyThrows
-                        @Override
-                        public void onClick(InventoryClickEvent event) {
-                            playerVehicleData.setParked(false);
-                            Main.getInstance().utils.sendActionBar(player, "§2" + vehicleData.getName() + "§a ausgeparkt!");
-                            SoundManager.successSound(player);
-                            Statement statement = Main.getInstance().mySQL.getStatement();
-                            statement.executeUpdate("UPDATE player_vehicles SET parked = false WHERE id = " + vehicleData.getId());
-                            Minecart vehicle = spawnVehicle(player, playerVehicleData);
-                            player.closeInventory();
-                            if (vehicle.getLocation().distance(player.getLocation()) >= 50) {
-                                vehicle.teleport(player.getLocation());
-                            }
-                        }
-                    });
-                    i++;
-                }
-            }
-        }
     }
 }

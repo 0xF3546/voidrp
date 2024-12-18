@@ -16,7 +16,6 @@ public class PlayerVehicleData {
     private String type;
     private int km;
     private float fuel;
-    private boolean isParked;
     private int x;
     private int y;
     private int z;
@@ -68,14 +67,6 @@ public class PlayerVehicleData {
 
     public void setFuel(float fuel) {
         this.fuel = fuel;
-    }
-
-    public boolean isParked() {
-        return isParked;
-    }
-
-    public void setParked(boolean parked) {
-        isParked = parked;
     }
 
     public int getX() {
