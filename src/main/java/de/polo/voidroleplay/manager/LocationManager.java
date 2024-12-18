@@ -25,7 +25,6 @@ import java.util.Map;
 public class LocationManager {
     public static final Map<String, LocationData> locationDataMap = new HashMap<>();
     public static final Map<Integer, GasStationData> gasStationDataMap = new HashMap<>();
-    public static final Map<Integer, GarageData> garageDataMap = new HashMap<>();
     public static final Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
 
@@ -94,21 +93,6 @@ public class LocationManager {
             gasStationData.setCompany(gas.getInt("company"));
             gasStationData.setBank(gas.getInt("bank"));
             gasStationDataMap.put(gas.getInt(1), gasStationData);
-        }
-
-        ResultSet garage = statement.executeQuery("SELECT * FROM garage");
-        while (garage.next()) {
-            GarageData garageData = new GarageData();
-            garageData.setId(garage.getInt("id"));
-            garageData.setName(garage.getString("name"));
-            garageData.setFactionId(garage.getInt("factionId"));
-            garageData.setX(garage.getInt("x"));
-            garageData.setY(garage.getInt("y"));
-            garageData.setZ(garage.getInt("z"));
-            garageData.setWelt(Bukkit.getWorld(garage.getString("welt")));
-            garageData.setYaw(garage.getFloat("yaw"));
-            garageData.setPitch(garage.getFloat("pitch"));
-            garageDataMap.put(garage.getInt(1), garageData);
         }
 
         ResultSet navi = statement.executeQuery("SELECT * FROM navi");
@@ -243,15 +227,6 @@ public class LocationManager {
             }
         }
         return null;
-    }
-
-    public Integer isPlayerNearGarage(Player player) {
-        for (GarageData garageData : garageDataMap.values()) {
-            if (player.getLocation().distance(new Location(garageData.getWelt(), garageData.getX(), garageData.getY(), garageData.getZ(), garageData.getYaw(), garageData.getPitch())) < 8) {
-                return garageData.getId();
-            }
-        }
-        return 0;
     }
 
     public String getNearestLocation(Player player) {

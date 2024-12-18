@@ -146,7 +146,6 @@ commands:
   trennen:
   antrag:
   self:
-  garage:
   wanteds:
     aliases: akten
   spec:

@@ -387,7 +387,6 @@ public final class Main extends JavaPlugin {
         public BeziehungCommand beziehungCommand;
         public TrennenCommand trennenCommand;
         public AntragCommand antragCommand;
-        public GarageCommand garageCommand;
         public WantedCommand aktenCommand;
         public SpecCommand specCommand;
         public MsgCommand msgCommand;
@@ -614,7 +613,6 @@ public final class Main extends JavaPlugin {
             beziehungCommand = new BeziehungCommand(playerManager, utils);
             trennenCommand = new TrennenCommand(playerManager);
             antragCommand = new AntragCommand(playerManager, utils);
-            garageCommand = new GarageCommand(locationManager, vehicles);
             aktenCommand = new WantedCommand(playerManager, utils);
             specCommand = new SpecCommand(playerManager, adminManager);
             msgCommand = new MsgCommand(playerManager);

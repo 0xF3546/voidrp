@@ -217,7 +217,6 @@ public class Vehicles implements Listener, CommandExecutor {
             playerVehicleData.setWelt(Bukkit.getWorld(result.getString(10)));
             playerVehicleData.setYaw(result.getFloat("yaw"));
             playerVehicleData.setPitch(result.getFloat("pitch"));
-            playerVehicleData.setGarage(result.getInt("garage"));
             playerVehicleData.setFactionId(result.getInt("factionId"));
             playerVehicleDataMap.put(result.getInt(1), playerVehicleData);
             vehicleIDByUUid.put(result.getString(2), result.getInt(1));
