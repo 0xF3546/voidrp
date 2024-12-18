@@ -46,11 +46,16 @@ public class UranMineCommand extends CommandBase implements Listener {
 
     @Override
     public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        if (locationManager.getDistanceBetweenCoords(player, "uranmine") > 5) {
+        if (locationManager.getDistanceBetweenCoords(player, "uranmine") > 5 && locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") > 5) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe der Uranmine."));
             return;
         }
         if (playerData.getVariable("job") != null) {
+            if (playerData.getVariable("job").equals("Urantransport")) {
+                removeEquip(player);
+                player.sendMessage(Component.text(Prefix.MAIN + "Du hast den Job beendet."));
+                return;
+            }
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits einen Job angenommen."));
             return;
         }
@@ -84,6 +89,10 @@ public class UranMineCommand extends CommandBase implements Listener {
     private void drop(Player player) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         if (playerData == null) return;
+        if (locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") > 10) {
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Atomkraftwerks.");
+            return;
+        }
         if (ItemManager.getCustomItemCount(player, RoleplayItem.URAN) < 1) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast kein Uran dabei."));
             return;
@@ -106,6 +115,7 @@ public class UranMineCommand extends CommandBase implements Listener {
         ItemManager.addCustomItem(player, RoleplayItem.URAN, 1);
         player.sendMessage(Component.text(Prefix.MAIN + "Du hast ein Uran abgebaut. Bringe es nun zum Atomkraftwerk"));
         utils.navigationManager.createNavi(player, "Atomkraftwerk", true);
+        event.getBlock().setType(Material.STONE);
         removeEquip(player);
         rollOutMine();
     }

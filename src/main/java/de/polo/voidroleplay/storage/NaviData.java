@@ -39,7 +39,7 @@ public class NaviData {
     }
 
     public String getClearName() {
-        return name.substring(0, 2);
+        return name.substring(2);
     }
 
     public void setName(String name) {
