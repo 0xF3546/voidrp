@@ -786,7 +786,7 @@ public class GamePlay implements Listener {
                             return;
                         }
                         player.closeInventory();
-                        int amount = Main.random(finalI * 175, finalI * 225);
+                        int amount = Main.random(finalI * 95, finalI * 125);
                         factionData.addBankMoney(amount, "Schließfach " + finalI + " (Staatsbankraub)");
                         staatsbankRob.sendMessage("Ihr habt " + amount + "$ aus Schließfach " + finalI + " erhalten!", ChatColor.GREEN, factionData.getName());
                         if (staatsbankRob.getVaultsOpen() >= staatsbankRob.getVaults()) {
