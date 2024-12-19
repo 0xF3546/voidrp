@@ -106,6 +106,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                         player.closeInventory();
                     }
                 });
+                return;
             }
         }
         if (playerData.getVariable("job") != null) {
