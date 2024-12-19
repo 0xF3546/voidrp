@@ -349,7 +349,7 @@ public class FFA implements CommandExecutor {
 
     private FFASpawn getRandomSpawn(FFALobby lobby) {
         List<FFASpawn> spawns = lobby.getSpawns();
-        int randomIndex = ThreadLocalRandom.current().nextInt(spawns.size() + 1);
+        int randomIndex = ThreadLocalRandom.current().nextInt(spawns.size());
         return spawns.get(randomIndex);
     }
 
