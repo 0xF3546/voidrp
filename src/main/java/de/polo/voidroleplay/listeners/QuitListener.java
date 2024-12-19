@@ -67,6 +67,9 @@ QuitListener implements Listener {
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             playerData.setVariable("inventory::build", player.getInventory().getContents());
         }
+        if (playerData.isDead()) {
+            if (playerData.getVariable("inventory::base") != null) player.getInventory().setContents(playerData.getVariable("inventory::base"));
+        }
         if (playerData.getVariable("ffa") != null) {
             Main.getInstance().gamePlay.getFfa().leaveFFA(player);
         }
