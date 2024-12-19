@@ -379,10 +379,6 @@ public class GamePlay implements Listener {
                     return;
                 }
                 RoleplayItem item = event.getPlayerData().getVariable("evidence::roleplayitem");
-                if (ItemManager.getCustomItemCount(event.getPlayer(), item) < amount) {
-                    event.getPlayer().sendMessage(Prefix.ERROR + "So viel hast du nicht dabei.");
-                    return;
-                }
                 if (!event.getPlayerData().getInventory().removeItem(item, amount)) {
                     event.getPlayer().sendMessage(Prefix.ERROR + "So viel hast du nicht dabei.");
                     return;
