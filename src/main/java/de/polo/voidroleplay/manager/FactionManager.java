@@ -244,7 +244,7 @@ public class FactionManager {
             }
             for (DBPlayerData dbPlayerData : ServerManager.dbPlayerDataMap.values()) {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(dbPlayerData.getUuid()));
-                if (offlinePlayer.getName() != null) {
+                if (offlinePlayer.getName() != null && player != null) {
                     if (offlinePlayer.getName().equalsIgnoreCase(player.getName())) {
                         dbPlayerData.setFaction_grade(0);
                         dbPlayerData.setFaction(null);
