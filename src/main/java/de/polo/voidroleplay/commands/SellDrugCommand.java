@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static de.polo.voidroleplay.Main.utils;
@@ -112,7 +113,9 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
                         .filter(x -> x.getLocation().distance(player.getLocation()) < 10)
                         .map(Player::getName)
                         .toList())
-                .addAtIndex(2, "[Droge]")
+                .addAtIndex(2, Arrays.stream(Drug.values())
+                        .map(drug -> drug.getItem().getClearName())
+                        .toList())
                 .addAtIndex(3, "[Anzahl]")
                 .addAtIndex(4, "[Preis]")
                 .build();
