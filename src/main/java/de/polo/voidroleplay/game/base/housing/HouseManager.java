@@ -74,6 +74,7 @@ public class HouseManager implements CommandExecutor, Listener {
             houseData.setServer(locs.getInt("server"));
             houseData.setServerRoom(locs.getBoolean("hasServerRoom"));
             houseData.setHouseType(HouseType.valueOf(locs.getString("type")));
+            houseData.setMieterSlots(locs.getInt("mieterSlot"));
 
             JSONObject object = new JSONObject(locs.getString(5));
             HashMap<String, Integer> map = new HashMap<>();

@@ -1,11 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.VertragUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -50,6 +52,11 @@ public class RentCommand implements CommandExecutor {
             }
         } catch (Exception ex) {
             player.sendMessage(Prefix.ERROR + "Der Betrag muss numerisch sein.");
+            return false;
+        }
+        House house = Main.getInstance().getHouseManager().getHouse(haus);
+        if (house.getRenter().size() >= house.getMieterSlots()) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Dein Haus hat nicht genug Mieterslots."));
             return false;
         }
         if (VertragUtil.setVertrag(player, targetplayer, "rental", haus + "_" + args[1])) {

@@ -147,7 +147,7 @@ public class House {
     }
 
     public int getMieterSlots() {
-        return mieterSlots;
+        return mieterSlots + houseType.getBaseSlots();
     }
 
     public void addMoney(int amount, String reason, boolean silent) {
