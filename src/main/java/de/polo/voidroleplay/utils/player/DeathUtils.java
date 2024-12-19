@@ -11,6 +11,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -119,7 +120,8 @@ public class DeathUtils {
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         //player.setGameMode(GameMode.SURVIVAL);
-        if (playerData.getDeathLocation() != null && !playerData.isJailed()) player.teleport(playerData.getDeathLocation());
+        if (playerData.getDeathLocation() != null && !playerData.isJailed())
+            player.teleport(playerData.getDeathLocation());
         playerData.setDeathLocation(null);
         playerData.setHitmanDead(false);
         playerData.setStabilized(false);
@@ -150,6 +152,19 @@ public class DeathUtils {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 6, 0, true, false));
+        }
+        if (playerData.isJailed()) removeWeapons(player);
+    }
+
+    private void removeWeapons(Player player) {
+        for (ItemStack stack : player.getInventory().getContents()) {
+            if (stack == null) continue;
+            for (Weapon weaponData : Weapon.values()) {
+                if (weaponData.getMaterial() == null) continue;
+                if (weaponData.getMaterial().equals(stack.getType())) {
+                    player.getInventory().removeItem(stack);
+                }
+            }
         }
     }
 
@@ -208,6 +223,7 @@ public class DeathUtils {
         playerData.save();
         ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
         if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
+        if (playerData.isJailed()) removeWeapons(player);
     }
 
     private void spawnCorpse(Player player) {

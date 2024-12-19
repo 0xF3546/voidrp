@@ -13,6 +13,7 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.StaatUtil;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import de.polo.voidroleplay.utils.player.PlayerInventoryItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -80,7 +81,7 @@ public class FriskCommand implements CommandExecutor {
         List<PlayerInventoryItem> playerInventoryItems = new ObjectArrayList<>();
         for (ItemStack stack : targetplayer.getInventory().getContents()) {
             if (stack == null) continue;
-            for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
+            for (Weapon weaponData : Weapon.values()) {
                 if (weaponData.getMaterial() == null) continue;
                 if (weaponData.getMaterial().equals(stack.getType())) {
                     items.add(stack);
