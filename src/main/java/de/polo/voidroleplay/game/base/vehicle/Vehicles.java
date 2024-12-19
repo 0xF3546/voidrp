@@ -97,6 +97,7 @@ public class Vehicles implements Listener, CommandExecutor {
                     int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
                     PlayerVehicleData playerVehicleData = playerVehicleDataMap.get(id);
+                    if (playerVehicleData == null) continue;
                     playerVehicleData.setKm(km);
                     playerVehicleData.setFuel(fuel);
                     playerVehicleData.setX((int) entity.getLocation().getX());
@@ -120,6 +121,7 @@ public class Vehicles implements Listener, CommandExecutor {
                     int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
                     float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
                     PlayerVehicleData playerVehicleData = playerVehicleDataMap.get(id);
+                    if (playerVehicleData == null) continue;
                     playerVehicleData.setKm(km);
                     playerVehicleData.setFuel(fuel);
                     playerVehicleData.setX((int) entity.getLocation().getX());
