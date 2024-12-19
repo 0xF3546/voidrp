@@ -42,6 +42,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+import static de.polo.voidroleplay.Main.houseManager;
+
 public class HouseManager implements CommandExecutor, Listener {
     public static final Map<Integer, House> houseDataMap = new HashMap<>();
     private final PlayerManager playerManager;
@@ -309,7 +311,7 @@ public class HouseManager implements CommandExecutor, Listener {
                     return;
                 }
                 player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Crypto-Miner\" gekauft.");
-                playerData.removeMoney(serverRoomPrice, "Kauf Miner (" + house.getNumber() + ")");
+                playerData.removeMoney(minerPrice, "Kauf Miner (" + house.getNumber() + ")");
                 house.setMiner(house.getMiner() + 1);
                 house.addMiner(new Miner());
                 house.save();
@@ -333,6 +335,19 @@ public class HouseManager implements CommandExecutor, Listener {
                 playerData.removeMoney(serverRoomPrice, "Kauf Server (" + house.getNumber() + ")");
                 house.setServer(house.getServer() + 1);
                 house.save();*/
+            }
+        });
+        int mieterslot = ServerManager.getPayout("mieterslot");
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Mieterslot", "§8 ➥ §a" + Utils.toDecimalFormat(mieterslot) + "$")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < mieterslot) {
+                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
+                    return;
+                }
+                player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Mieterslot\" gekauft.");
+                playerData.removeMoney(mieterslot, "Kauf Mieterslot (" + house.getNumber() + ")");
+                houseManager.setMieterSlot(house.getNumber(), house.getMieterSlots() + 1);
             }
         });
     }
@@ -588,6 +603,13 @@ public class HouseManager implements CommandExecutor, Listener {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setMieterSlot(int houseNumber, int mieter) {
+        House house = getHouse(houseNumber);
+        if (house == null) return;
+        house.setMieterSlots(mieter);
+        Main.getInstance().getMySQL().updateAsync("UPDATE housing SET mieterSlot = ? WHERE number = ?", house.getMieterSlots(), house.getNumber());
     }
 
     @EventHandler

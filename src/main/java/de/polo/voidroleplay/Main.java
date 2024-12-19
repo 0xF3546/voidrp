@@ -59,7 +59,7 @@ public final class Main extends JavaPlugin {
     public SupportManager supportManager;
     public ComputerUtils computerUtils;
     @Getter
-    public HouseManager houseManager;
+    public static HouseManager houseManager;
     public BusinessManager businessManager;
     public Vehicles vehicles;
     public Streetwar streetwar;
