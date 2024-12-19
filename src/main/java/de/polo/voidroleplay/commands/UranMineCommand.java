@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -37,11 +38,11 @@ public class UranMineCommand extends CommandBase implements Listener {
     private final List<Location> rollOutLocations = new ObjectArrayList<>();
     public UranMineCommand(@NotNull CommandMeta meta) {
         super(meta);
-        for (LocationData locationData : locationManager.getLocations()
+        for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()
                 .stream()
-                .filter(x -> x.getType() != null && x.getType().equalsIgnoreCase("mine"))
+                .filter(x -> x.getInfo() != null && x.getInfo().equalsIgnoreCase("mine"))
                 .toList()) {
-            rollOutLocations.add(locationData.getLocation());
+            rollOutLocations.add(block.getLocation());
         }
     }
 
