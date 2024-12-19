@@ -117,11 +117,12 @@ public class HochseefischerCommand extends CommandBase implements Listener {
     }
 
     private void startJob(Player player) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        if (playerData == null) return;
         Boat boat = (Boat) player.getWorld().spawnEntity(locationManager.getLocation("hochseefischer_boat_out"), EntityType.BOAT);
         boat.addPassenger(player);
         spawnedBoats.put(player, boat);
         player.sendMessage(Component.text());
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         List<Location> playerLocations = new ObjectArrayList<>();
         playerData.setVariable("job::hochseefischer::locations", playerLocations);
         playerData.setVariable("job", "hochseefischer");
@@ -139,7 +140,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         // ISSUE VRP-10000: fixed by adding null check
         if (playerData == null) return;
         playerData.setVariable("job", null);
-        int amount = playerData.getVariable("hochseefischer_kg");
+        int amount = playerData.getVariable("hochseefischer_kg") == null ? 0 : playerData.getVariable("hochseefischer_kg");
         Main.getInstance().getPlayerManager().addExp(player, amount * 2);
         playerData.addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
     }
