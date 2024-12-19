@@ -128,7 +128,7 @@ public class PlayerVehicleData {
                 x,
                 y,
                 z,
-                welt,
+                welt.getName(),
                 yaw,
                 pitch,
                 id);
