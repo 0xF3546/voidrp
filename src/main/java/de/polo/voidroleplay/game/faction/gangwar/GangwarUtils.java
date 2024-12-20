@@ -292,10 +292,10 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             LocalDateTime currentDateTime = LocalDateTime.now();
             LocalDateTime twoDaysAfterTimestamp = timestamp.toLocalDateTime().plusHours(40);
             boolean isTwoDaysAfter = currentDateTime.isAfter(twoDaysAfterTimestamp);
-            if (!isTwoDaysAfter || (playerData.isAduty() && playerData.getPermlevel() < 80)) {
+            /*if (!isTwoDaysAfter || (playerData.isAduty() && playerData.getPermlevel() < 80)) {
                 player.sendMessage(Prefix.ERROR + "Dieses Gebiet kann noch nicht angegriffen werden.");
                 return;
-            }
+            }*/
             if (factionData.getCurrent_gangwar() != null) {
                 player.sendMessage(Prefix.ERROR + "Deine Fraktion ist bereits im Gangwar.");
                 return;
