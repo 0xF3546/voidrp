@@ -266,7 +266,8 @@ public final class Main extends JavaPlugin {
                 PremiumCommand.class,
                 UranMineCommand.class,
                 SellBookCommand.class,
-                BibliothekCommand.class
+                BibliothekCommand.class,
+                MegaphoneCommand.class
         );
 
 
