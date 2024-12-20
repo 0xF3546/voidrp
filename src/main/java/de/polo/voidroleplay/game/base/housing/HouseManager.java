@@ -347,7 +347,7 @@ public class HouseManager implements CommandExecutor, Listener {
                 }
                 player.sendMessage("§8[§6Hausaddon§8]§a Du hast das Addon \"Mieterslot\" gekauft.");
                 playerData.removeMoney(mieterslot, "Kauf Mieterslot (" + house.getNumber() + ")");
-                houseManager.setMieterSlot(house.getNumber(), house.getMieterSlots() + 1);
+                setMieterSlot(house.getNumber(), house.getMieterSlots() + 1);
             }
         });
     }
