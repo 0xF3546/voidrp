@@ -64,11 +64,11 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
         Agreement agreement = new Agreement(player, target, "rezept",
                 () -> {
                     PlayerData targetData = Main.getInstance().playerManager.getPlayerData(target);
-                    if (targetData.getBargeld() < 300) {
+                    if (targetData.getBargeld() < 200) {
                         player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                         return;
                     }
-                    targetData.removeMoney(300, "Rezept - " + finalPrescription.getName());
+                    targetData.removeMoney(200, "Rezept - " + finalPrescription.getName());
                     ItemStack stack = ItemManager.createItem(Material.PAPER, 1, 0, "§c" + finalPrescription.getName());
                     target.getInventory().addItem(stack);
                     target.sendMessage(Component.text("§eDu hast ein " + finalPrescription.getName() + " Rezept gekauft."));
