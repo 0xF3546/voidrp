@@ -27,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,6 +67,7 @@ public class PlantFunctions implements Listener {
     public void cleanup() {
         for (Plant plant : plants) {
             plant.getBlock().setType(Material.AIR);
+            plant.getBlock().getLocation().subtract(0, 1, 0).getBlock().setType(Material.GRASS_BLOCK);
         }
     }
 
@@ -84,6 +86,7 @@ public class PlantFunctions implements Listener {
         }
         Plant plant = new Plant(factionData, Utils.getTime(), aboveBlock, plantType);
         aboveBlock.setType(Material.FERN);
+        block.setType(Material.PODZOL);
         plants.add(plant);
         factionManager.sendCustomMessageToFaction("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plantType.getName() + "§2 Plantage gelegt.", factionData.getName());
         ItemManager.removeCustomItem(player, plantType.getPlantItem(), 1);
