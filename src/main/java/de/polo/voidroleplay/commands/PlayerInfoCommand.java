@@ -49,6 +49,14 @@ public class PlayerInfoCommand implements CommandExecutor {
                     }
                     player.sendMessage("§8 ➥ §6Hausslots§8: §7" + targetplayerdata.getHouseSlot());
                 } else {
+                    if (targetplayerdata.isDead()) {
+                        player.sendMessage("§8 » §7" + targetplayer.getName() + " | Bewusstlos");
+                        return false;
+                    }
+                    if (targetplayerdata.isJailed()) {
+                        player.sendMessage("§8 » §7" + targetplayer.getName() + " | Im Gefängnis");
+                        return false;
+                    }
                     String faction = "Zivilist";
                     if (targetplayerdata.getFaction() != null) {
                         FactionData factionData = factionManager.getFactionData(targetplayerdata.getFaction());
