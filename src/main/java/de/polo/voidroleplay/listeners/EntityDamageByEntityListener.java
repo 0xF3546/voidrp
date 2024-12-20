@@ -39,7 +39,7 @@ public class EntityDamageByEntityListener implements Listener {
             }
             if (currentWeapon != null) event.setDamage(currentWeapon.getDamage());
             PlayerData playerData = playerManager.getPlayerData(event.getDamager().getUniqueId());
-            if ((playerData.getVisum() <= 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
+            if ((playerData.getVisum() < 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
                 event.setCancelled(true);
             }
             if (event.getEntity() instanceof Player) {

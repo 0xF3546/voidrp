@@ -74,7 +74,7 @@ public class DamageListener implements Listener {
         }
         if (event.getCause() == ENTITY_ATTACK) {
             // ISSUE VRP-10003: Added null check for playerData
-            event.setCancelled(playerData != null && playerData.getVisum() <= 2 && playerData.getFaction() == null);
+            event.setCancelled(playerData != null && playerData.getVisum() < 2 && playerData.getFaction() == null);
         }
     }
 }
