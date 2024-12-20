@@ -73,32 +73,52 @@ public class PlayerInventoryManager {
 
     public boolean addItem(RoleplayItem item, int amount) {
         PlayerInventoryItem inventoryItem = getByType(item);
+
         if (inventoryItem == null) {
             inventoryItem = new PlayerInventoryItem(item, amount);
+            if (!canAddItem(inventoryItem)) return false;
+            return addItem(inventoryItem);
         } else {
-            inventoryItem.setAmount(inventoryItem.getAmount() + amount);
+            int newAmount = inventoryItem.getAmount() + amount;
+            if (!canAddWeight(amount)) return false;
+            inventoryItem.setAmount(newAmount);
+            updateItem(inventoryItem);
+            return true;
         }
-        return addItem(inventoryItem);
     }
 
     public boolean addItem(PlayerInventoryItem item) {
-        if (getWeight() + item.getAmount() > getSize()) return false;
+        if (!canAddItem(item)) return false;
+
         PlayerInventoryItem cachedItem = getByType(item.getItem());
         if (cachedItem != null) {
-            cachedItem.setAmount(cachedItem.getAmount() + 1);
+            cachedItem.setAmount(cachedItem.getAmount() + item.getAmount());
             updateItem(cachedItem);
-            return true;
+        } else {
+            Main.getInstance().getMySQL().insertAndGetKeyAsync(
+                    "INSERT INTO player_inventory_items (uuid, item, amount) VALUES (?, ?, ?)",
+                    playerData.getUuid().toString(),
+                    item.getItem().name(),
+                    item.getAmount()
+            ).thenApply(key -> {
+                if (key.isPresent()) {
+                    item.setId(key.get());
+                    items.add(item);
+                }
+                return null;
+            });
         }
-        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO player_inventory_items (uuid, item, amount) VALUES (?, ?, ?)", playerData.getUuid().toString(), item.getItem().name(), item.getAmount())
-                .thenApply(key -> {
-                    if (key.isPresent()) {
-                        item.setId(key.get());
-                        items.add(item);
-                    }
-                    return null;
-                });
         return true;
     }
+
+    private boolean canAddItem(PlayerInventoryItem item) {
+        return getWeight() + item.getAmount() <= getSize();
+    }
+
+    private boolean canAddWeight(int amount) {
+        return getWeight() + amount <= getSize();
+    }
+
 
     public boolean removeItem(RoleplayItem item, int amount) {
         PlayerInventoryItem inventoryItem = getByType(item);
