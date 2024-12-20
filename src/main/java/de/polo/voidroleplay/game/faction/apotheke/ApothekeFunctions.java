@@ -149,6 +149,20 @@ public class ApothekeFunctions implements Listener {
             });
             i++;
         }
+        if (playerData.isExecutiveFaction()) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.SCHMERZMITTEL.getMaterial(), 1, 0, RoleplayItem.SCHMERZMITTEL.getDisplayName(), "§8 ➥ §a50$")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (playerData.getBargeld() < 50) {
+                        player.sendMessage(NO_MONEY);
+                        return;
+                    }
+                    playerData.removeMoney(50, "Kauf Schmerzmittel");
+                    playerData.getInventory().addItem(RoleplayItem.SCHMERZMITTEL, 1);
+                }
+            });
+            i++;
+        }
         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§cRezept einlösen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
