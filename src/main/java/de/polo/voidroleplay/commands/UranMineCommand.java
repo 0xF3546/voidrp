@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -15,6 +16,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,11 +71,19 @@ public class UranMineCommand extends CommandBase implements Listener {
         playerData.setVariable("job", "Urantransport");
         player.sendMessage(Component.text(Prefix.MAIN + "Finde die Uranquelle (Smaragderz) und baue Sie ab. Bringe diese anschließend zum Atomkraftwerk"));
         equip(player);
+        checkForRollout();
     }
 
     private void rollOutMine() {
         Location randomLocation = rollOutLocations.get(Main.random(0, rollOutLocations.size()));
         randomLocation.getBlock().setType(Material.EMERALD_ORE);
+    }
+
+    private void checkForRollout() {
+        for (Location location : rollOutLocations) {
+            if (location.getBlock().getType().equals(Material.EMERALD_ORE)) return;
+        }
+        rollOutMine();
     }
 
     private void equip(Player player) {
@@ -106,16 +116,24 @@ public class UranMineCommand extends CommandBase implements Listener {
         Main.getInstance().playerManager.addExp(player, Main.random(12, 20));
     }
 
+    private boolean isBlock(Block block) {
+        for (Location location : rollOutLocations) {
+            if (LocationManager.isLocationEqual(block.getLocation(), location)) return true;
+        }
+        return false;
+    }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         if (playerData == null) return;
+        if (playerData.getVariable("job") == null || playerData.getVariable("job") != "Urantransport") return;
         if (ItemManager.getCustomItemCount(player, RoleplayItem.URAN) >= 1) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits ein Uran dabei."));
             return;
         }
-        if (!rollOutLocations.contains(event.getBlock().getLocation())) {
+        if (!isBlock(event.getBlock())) {
             return;
         }
         ItemManager.addCustomItem(player, RoleplayItem.URAN, 1);
