@@ -47,29 +47,29 @@ public final class Main extends JavaPlugin {
     public CooldownManager cooldownManager;
     public TeamSpeak teamSpeak;
     @Getter
-    public PlayerManager playerManager;
+    public static PlayerManager playerManager;
     @Getter
     public static Utils utils;
-    public AdminManager adminManager;
+    public static AdminManager adminManager;
     public Commands commands;
-    public FactionManager factionManager;
-    public ServerManager serverManager;
+    public static FactionManager factionManager;
+    public static ServerManager serverManager;
     public static LocationManager locationManager;
-    public VertragUtil vertragUtil;
-    public SupportManager supportManager;
-    public ComputerUtils computerUtils;
+    public static VertragUtil vertragUtil;
+    public static SupportManager supportManager;
+    public static ComputerUtils computerUtils;
     @Getter
     public static HouseManager houseManager;
-    public BusinessManager businessManager;
-    public Vehicles vehicles;
+    public static BusinessManager businessManager;
+    public static Vehicles vehicles;
     public Streetwar streetwar;
     @Getter
-    public WeaponManager weaponManager;
-    public BlockManager blockManager;
-    public GamePlay gamePlay;
-    public CompanyManager companyManager;
-    public Seasonpass seasonpass;
-    public Beginnerpass beginnerpass;
+    public static WeaponManager weaponManager;
+    public static BlockManager blockManager;
+    public static GamePlay gamePlay;
+    public static CompanyManager companyManager;
+    public static Seasonpass seasonpass;
+    public static Beginnerpass beginnerpass;
     private NPCManager npc;
 
     @Getter
