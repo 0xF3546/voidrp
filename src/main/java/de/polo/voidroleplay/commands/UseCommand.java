@@ -53,7 +53,7 @@ public class UseCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         GamePlay.useDrug(player, drug);
-        playerData.getInventory().removeItem(drug.getItem(), 1);
+        if (playerData.getVariable("gangwar") == null && playerData.getVariable("ffa") == null) playerData.getInventory().removeItem(drug.getItem(), 1);
         return false;
     }
 
