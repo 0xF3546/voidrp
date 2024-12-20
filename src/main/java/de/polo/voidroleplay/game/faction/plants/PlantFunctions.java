@@ -103,7 +103,7 @@ public class PlantFunctions implements Listener {
                     int diff = playerData.getInventory().getDiff();
                     if (plant.getYield() > diff) {
                         playerData.getInventory().addItem(plant.getType().getDrug().getItem(), diff);
-                        plant.setYield(diff);
+                        plant.setYield(plant.getYield() - diff);
                         factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + diff + "g§8)", factionData.getName());
                     } else {
                         playerData.getInventory().addItem(plant.getType().getDrug().getItem(), plant.getYield());
