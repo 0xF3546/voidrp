@@ -11,6 +11,8 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static de.polo.voidroleplay.Main.*;
+
 public class Gangwar extends GangwarData {
 
     @Getter
@@ -25,26 +27,30 @@ public class Gangwar extends GangwarData {
     @Setter
     private IGangzone gangZone;
 
+    private int getDiff() {
+        return getAttackerPoints() - getDefenderPoints();
+    }
+
 
     public void start() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (getMinutes() <= 0 && getSeconds() <= 1) {
+                if ((getMinutes() <= 0 && getSeconds() <= 1 ) || Math.abs(getDiff()) >= 200) {
                     Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
-                        Main.getInstance().utils.gangwarUtils.endGangwar(gangZone.getName());
+                        utils.gangwarUtils.endGangwar(gangZone.getName());
                     });
                     cancel();
                 }
                 captured.clear();
                 for (int i = 1; i <= 3; i++) {
-                    Location location = Main.getInstance().locationManager.getLocation("gangwar_capture_" + gangZone.getName().toLowerCase().replace(" ", "") + "-" + i);
+                    Location location = locationManager.getLocation("gangwar_capture_" + gangZone.getName().toLowerCase().replace(" ", "") + "-" + i);
                     if (location != null) {
-                        Main.getInstance().utils.summonCircle(location, 2, Particle.REDSTONE);
+                        utils.summonCircle(location, 2, Particle.REDSTONE);
 
                         boolean locationCaptured = false;
 
-                        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+                        for (PlayerData playerData : playerManager.getPlayers()) {
                             if (playerData.getVariable("gangwar") == null) continue;
                             if (playerData.getFaction() == null) continue;
                             Player player = Bukkit.getPlayer(playerData.getUuid());
