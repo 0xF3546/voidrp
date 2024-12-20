@@ -79,6 +79,8 @@ public final class Main extends JavaPlugin {
     public static INameTagProvider nameTagProvider;
     public static CustomTabAPI customTabAPI;
 
+    public static NewsManager newsManager;
+
     public static void registerCommand(String command, CommandExecutor c) {
         org.bukkit.command.PluginCommand cmd = instance.getCommand(command);
         if (cmd != null) {
@@ -155,6 +157,7 @@ public final class Main extends JavaPlugin {
         businessManager = new BusinessManager(playerManager);
         streetwar = new Streetwar(playerManager, factionManager, utils);
         weaponManager = new WeaponManager(utils, playerManager);
+        newsManager = new NewsManager();
         isOnline = true;
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
         npc = new NPCManager(playerManager);
@@ -261,7 +264,9 @@ public final class Main extends JavaPlugin {
                 NeulingschatCommand.class,
                 SignBookCommand.class,
                 PremiumCommand.class,
-                UranMineCommand.class
+                UranMineCommand.class,
+                SellBookCommand.class,
+                BibliothekCommand.class
         );
 
 
