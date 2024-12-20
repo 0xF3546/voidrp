@@ -118,7 +118,7 @@ public class StaatUtil {
     }
 
     private String calculateManhuntTime(PlayerWanted wanted) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = Utils.getTime();
         Duration diff = Duration.between(wanted.getIssued(), now);
 
         if (diff.isNegative()) {
