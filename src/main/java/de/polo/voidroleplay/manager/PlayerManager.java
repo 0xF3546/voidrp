@@ -786,7 +786,7 @@ public class PlayerManager implements Listener {
                         int auction = 0;
                         try {
                             if (Integer.parseInt(GlobalStats.getValue("auction")) == factionData.getId()) {
-                                auction = Main.random(500, 1000);
+                                auction = Main.random(250, 500);
                                 plus = plus + auction;
                             }
                         } catch (Exception ignored) {
