@@ -40,7 +40,7 @@ public class BibliothekCommand extends CommandBase {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Bibliothek");
         int i = 0;
         for (ShopBook book : newsManager.getBooks()) {
-            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, book.getTitle(), Arrays.asList("§8 ➥ §e" + book.getType(), "§8 ➥ §a" + book.getPrice() + "$"))) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, book.getTitle().toString(), Arrays.asList("§8 ➥ §e" + book.getType(), "§8 ➥ §a" + book.getPrice() + "$"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.getBargeld() < book.getPrice()) {

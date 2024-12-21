@@ -19,7 +19,7 @@ public class ShopBook {
     private final int id;
 
     @Getter
-    private final String title;
+    private final Component title;
 
     @Getter
     private final String author;
@@ -34,7 +34,7 @@ public class ShopBook {
     @Setter
     private int price;
 
-    public ShopBook(int id, String title, String author, String type, @Unmodifiable @NotNull List<Component> content) {
+    public ShopBook(int id, Component title, String author, String type, @Unmodifiable @NotNull List<Component> content) {
         this.id = id;
         this.title = title;
         this.author = author;

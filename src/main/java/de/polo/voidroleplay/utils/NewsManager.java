@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.ShopBook;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +38,7 @@ public class NewsManager {
         }
 
         Component titleComponent = meta.displayName();
-        String title = serializeComponent(titleComponent);
+        String title = LegacyComponentSerializer.legacyAmpersand().serialize(titleComponent);
         String author = meta.getAuthor();
         List<Component> pages = meta.pages();
 
@@ -54,7 +55,14 @@ public class NewsManager {
             return;
         }
 
-        String content = serializePages(pages);
+        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacyAmpersand();
+
+        StringBuilder contentBuilder = new StringBuilder();
+        for (Component page : pages) {
+            contentBuilder.append(serializer.serialize(page));
+            contentBuilder.append("\n---PAGE_BREAK---\n");
+        }
+        String content = contentBuilder.toString();
         if (content == null) {
             LOGGER.log(Level.SEVERE, "Failed to serialize book pages.");
             return;
@@ -69,7 +77,7 @@ public class NewsManager {
                         content)
                 .thenApply(key -> {
                     key.ifPresentOrElse(k -> {
-                        ShopBook shopBook = new ShopBook(k, title, author, type, pages);
+                        ShopBook shopBook = new ShopBook(k, titleComponent, author, type, pages);
                         shopBook.setPrice(price);
                         synchronized (books) {
                             books.add(shopBook);
@@ -86,13 +94,14 @@ public class NewsManager {
                     try {
                         while (result.next()) {
                             int id = result.resultSet().getInt("id");
-                            String title = result.resultSet().getString("title");
+                            Component title = LegacyComponentSerializer.legacySection().deserialize(result.resultSet().getString("title"));
                             String author = result.resultSet().getString("author");
                             String type = result.resultSet().getString("type");
                             String content = result.resultSet().getString("content");
                             int price = result.resultSet().getInt("price");
 
                             List<Component> pages = deserializePages(content);
+
                             ShopBook shopBook = new ShopBook(id, title, author, type, pages);
                             shopBook.setPrice(price);
 
@@ -117,34 +126,9 @@ public class NewsManager {
         return str == null || str.isBlank();
     }
 
-    private String serializeComponent(Component component) {
-        if (component == null) {
-            return null;
-        }
-        try {
-            return GsonComponentSerializer.gson().serialize(component);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Failed to serialize component", e);
-            return null;
-        }
-    }
-
-    private String serializePages(List<Component> pages) {
-        try {
-            JSONArray contentArray = new JSONArray();
-            GsonComponentSerializer serializer = GsonComponentSerializer.gson();
-            for (Component page : pages) {
-                contentArray.put(serializer.serialize(page));
-            }
-            return contentArray.toString();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error serializing pages", e);
-            return null;
-        }
-    }
-
     private List<Component> deserializePages(String content) {
         try {
+            // Umwandeln des gespeicherten JSON-Inhalts zurück in Seiten
             GsonComponentSerializer serializer = GsonComponentSerializer.gson();
             JSONArray contentArray = new JSONArray(content);
             ObjectArrayList<Component> pages = new ObjectArrayList<>();
@@ -152,22 +136,23 @@ public class NewsManager {
             for (int i = 0; i < contentArray.length(); i++) {
                 pages.add(serializer.deserialize(contentArray.getString(i)));
             }
+
             return pages;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error deserializing pages", e);
-            return List.of();
+            return List.of();  // Falls ein Fehler auftritt, gebe eine leere Liste zurück
         }
     }
 
     public void giveBookToPlayer(Player player, ShopBook book) {
         ItemStack stack = new ItemStack(Material.WRITTEN_BOOK, 1);
         ItemMeta meta = stack.getItemMeta();
-        meta.displayName(Component.text(book.getTitle()));
+        meta.displayName(book.getTitle());
         stack.setItemMeta(meta);
         BookMeta bookMeta = (BookMeta) meta;
         bookMeta.setAuthor(bookMeta.getAuthor());
         bookMeta.pages(book.getContent());
-        bookMeta.setTitle(book.getTitle());
+        bookMeta.setTitle(book.getTitle().toString());
         stack.setItemMeta(bookMeta);
         player.getInventory().addItem(stack);
     }
