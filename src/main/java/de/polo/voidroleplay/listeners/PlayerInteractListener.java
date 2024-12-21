@@ -65,6 +65,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -135,7 +136,7 @@ public class PlayerInteractListener implements Listener {
                     // ISSUE VRP-10001: Null check for block
                     if (block == null || block.getInfo() == null || block.getInfoValue() == null) return;
                     if (!playerData.addClickedBlock(block)) {
-                        Main.getInstance().utils.sendActionBar(player, "§cDiesen Kopf hast du bereits gefunden! (" + playerData.getClickedEventBlocks().size() + "/80 gefunden)");
+                        utils.sendActionBar(player, "§cDieses Geschenk hast du bereits gefunden! (" + playerData.getClickedEventBlocks().size() + "/25)");
                         return;
                     }
                     int found = 0;
@@ -143,10 +144,12 @@ public class PlayerInteractListener implements Listener {
                         RegisteredBlock b = blockManager.getBlockById(eventBlock.getBlockId());
                         if (b.getInfoValue().equalsIgnoreCase(block.getInfoValue())) found++;
                     }
-                    int total = blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase(block.getInfo()) && x.getInfoValue().equalsIgnoreCase(block.getInfoValue())).collect(Collectors.toList()).size();
-                    Main.getInstance().utils.sendActionBar(player, "§aDu hast ein Cookie gefunden! (" + found + "/" + total + " in " + block.getInfoValue() + ")");
+                    int total = (int) blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase(block.getInfo()) && x.getInfoValue().equalsIgnoreCase(block.getInfoValue())).count();
+                    utils.sendActionBar(player, "§aDu hast ein Geschenk gefunden! (" + found + "/" + total + ")");
                     if (found >= total) {
-                        player.sendMessage("§8[§6Cookies§8]§a Du hast alle Cookies in " + block.getInfoValue() + " gefunden!");
+                        playerData.setVariable("event::endTime", Utils.getTime());
+                        long diff = Duration.between(playerData.getVariable("event::startTime"), playerData.getVariable("event::endTime")).toSeconds();
+                        player.sendMessage("§8[§cWeihnachten§8]§a Du hast alle Cookies in " + Main.getTime((int) diff) + " gefunden!");
                         playerManager.addExp(player, Main.random(100, 200));
                     }
                 }
