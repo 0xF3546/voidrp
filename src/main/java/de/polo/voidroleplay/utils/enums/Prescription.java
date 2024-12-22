@@ -6,7 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Prescription {
-    SCHMERZMITTEL("Schmerzmittel", Drug.SCHMERZMITTEL, 8, 12);
+    SCHMERZMITTEL("Schmerzmittel", Drug.SCHMERZMITTEL, 8, 12),
+    ADRENALINE_INEJCTION("Adrenalin-Spritze", Drug.ADRENALINE_INJECTION, 5, 8);
     private final String name;
     private final Drug drug;
     private final int minAmount;
