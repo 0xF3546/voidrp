@@ -33,7 +33,8 @@ public class CheckResultCommand extends CommandBase {
             if (playerData1.getClickedEventBlocks().isEmpty()) continue;
             if (playerData1.getVariable("event::startTime") == null) continue;
             if (playerData1.getVariable("event::endTime") == null) {
-                player.sendMessage(Component.text("§8 ➥ §7" + playerData1.getPlayer().getName() + " | " + playerData1.getClickedEventBlocks().size() + " Blöcke"));
+                long diff = Duration.between(playerData1.getVariable("event::startTime"), Utils.getTime()).toSeconds();
+                player.sendMessage(Component.text("§8 ➥ §7" + playerData1.getPlayer().getName() + " | " + playerData1.getClickedEventBlocks().size() + " Blöcke | " + Main.getTime((int) diff)));
             } else {
                 long diff = Duration.between(playerData1.getVariable("event::startTime"), playerData1.getVariable("event::endTime")).toSeconds();
                 player.sendMessage(Component.text("§8 ➥ §7" + playerData1.getPlayer().getName() + " | " + Main.getTime((int) diff)));
