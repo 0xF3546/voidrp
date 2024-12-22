@@ -325,11 +325,8 @@ public class BankingUtils implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.isLeader()) {
-                        player.sendMessage("§8[§aATM§8]§a Du hast " + factionData.getBank() + "$ ausgezahlt.");
-                        factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + factionData.getBank() + "$ vom Fraktionskonto ausgezahlt.");
-                        playerData.addMoney(factionData.getBank(), "Fraktionsbank-Auszahlung - " + factionData.getName());
-                        factionData.removeFactionMoney(factionData.getBank(), "Bankauszahlung " + player.getName());
                         player.closeInventory();
+                        takeOut(player, factionData, factionData.getBank());
                     }
                 }
             });
@@ -499,10 +496,8 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (factionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
-                    factionManager.removeFactionMoney(event.getPlayerData().getFaction(), amount, "Bankauszahlung " + player.getName());
-                    playerManager.addMoney(player, amount, "Bankauszahlung " + event.getPlayerData().getFaction());
-                    player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
-                    factionManager.sendMessageToFaction(event.getPlayerData().getFaction(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
+                    FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+                    takeOut(player, factionData, amount);
                 } else {
                     player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank.");
                 }
@@ -548,5 +543,20 @@ public class BankingUtils implements Listener {
             }
             event.end();
         }
+    }
+
+    private void takeOut(Player player, FactionData factionData, int amount) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        factionData.setTookOut(factionData.getTookOut() + amount);
+        player.sendMessage("§8[§aATM§8]§a Du hast " + factionData.getBank() + "$ ausgezahlt.");
+        if (factionData.getTookOut() >= 50000) {
+            factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
+        } else {
+            int tax = amount / 3;
+            factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt. (" + Utils.toDecimalFormat(tax) + "$ Steuern)");
+            amount -= tax;
+        }
+        playerData.addMoney(amount, "Fraktionsbank-Auszahlung - " + factionData.getName());
+        factionData.removeFactionMoney(amount, "Bankauszahlung " + player.getName());
     }
 }

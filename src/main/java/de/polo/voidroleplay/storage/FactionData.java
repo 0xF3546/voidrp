@@ -44,6 +44,10 @@ public class FactionData {
     private boolean isBadFrak;
     private int subGroupId;
     private int cooperationPartner;
+
+    @Getter
+    @Setter
+    private int tookOut;
     @Getter
     @Setter
     private ChatColor chatColor = ChatColor.GRAY;
