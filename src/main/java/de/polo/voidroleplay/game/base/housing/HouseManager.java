@@ -540,6 +540,9 @@ public class HouseManager implements CommandExecutor, Listener {
                     event.getPlayer().sendMessage(Prefix.ERROR + "Du hast nicht genug Bargeld.");
                     return;
                 }
+                if (amount < 1) {
+                    return;
+                }
                 if (house.getMoney() + amount > 15000) {
                     event.getPlayer().sendMessage(Prefix.ERROR + "Du kannst nicht mehr als 15.000$ in der Hauskasse haben.");
                     return;
@@ -560,6 +563,9 @@ public class HouseManager implements CommandExecutor, Listener {
             House house = event.getPlayerData().getVariable("house");
             try {
                 int amount = Integer.parseInt(event.getMessage());
+                if (amount < 1) {
+                    return;
+                }
                 if (house.getMoney() < amount) {
                     event.getPlayer().sendMessage(Prefix.ERROR + "In der Hauskasse liegt nicht genug Geld.");
                     return;
