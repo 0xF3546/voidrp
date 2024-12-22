@@ -144,12 +144,13 @@ public class PlayerInteractListener implements Listener {
                         RegisteredBlock b = blockManager.getBlockById(eventBlock.getBlockId());
                         if (b.getInfoValue().equalsIgnoreCase(block.getInfoValue())) found++;
                     }
-                    int total = (int) blockManager.getBlocks().stream().filter(x -> x.getInfo().equalsIgnoreCase(block.getInfo()) && x.getInfoValue().equalsIgnoreCase(block.getInfoValue())).count();
+                    int total = 25;
+                    playerData.addMoney(150, "Geschenk");
                     utils.sendActionBar(player, "§aDu hast ein Geschenk gefunden! (" + found + "/" + total + ")");
                     if (found >= total) {
                         playerData.setVariable("event::endTime", Utils.getTime());
                         long diff = Duration.between(playerData.getVariable("event::startTime"), playerData.getVariable("event::endTime")).toSeconds();
-                        player.sendMessage("§8[§cWeihnachten§8]§a Du hast alle Cookies in " + Main.getTime((int) diff) + " gefunden!");
+                        player.sendMessage("§8[§cWeihnachten§8]§a Du hast alle Geschenke in " + Main.getTime((int) diff) + " gefunden!");
                         playerManager.addExp(player, Main.random(100, 200));
                     }
                 }
