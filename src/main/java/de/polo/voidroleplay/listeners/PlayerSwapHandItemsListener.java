@@ -295,7 +295,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 gangwar = gw;
         }
         if (gangwar != null) {
-            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6Gangwar betreten", Arrays.asList("§8 ➥ §eGebiet§8:§7 " + gangwar.getGangZone().getName(), "§8 ➥ §eZeit§8:§7 " + gangwar.getMinutes() + "m & " + gangwar.getSeconds() + "s verbleibend", "§8 ➥ §eAngreifer§8:§7 " + gangwar.getAttacker() + " (" + gangwar.getAttackerPoints() + ")", "§8 ➥ §eVerteitiger§8:§7 " + gangwar.getDefender() + " (" + gangwar.getDefenderPoints() + ")"))) {
+            inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6Gangwar betreten", Arrays.asList("§8 ➥ §eGebiet§8:§7 " + gangwar.getGangZone().getName(), "§8 ➥ §eZeit§8:§7 " + gangwar.getMinutes() + "m & " + gangwar.getSeconds() + "s verbleibend", "§8 ➥ §eAngreifer§8:§7 " + gangwar.getAttacker() + " (" + gangwar.getAttackerPoints() + ")", "§8 ➥ §eVerteidiger§8:§7 " + gangwar.getDefender() + " (" + gangwar.getDefenderPoints() + ")"))) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     GangwarUtils gangwarUtils = Main.getInstance().utils.gangwarUtils;
