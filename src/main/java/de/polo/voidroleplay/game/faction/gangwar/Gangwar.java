@@ -39,8 +39,9 @@ public class Gangwar extends GangwarData {
                 if ((getMinutes() <= 0 && getSeconds() <= 1 ) || Math.abs(getDiff()) >= 200) {
                     Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                         utils.gangwarUtils.endGangwar(gangZone.getName());
+                        cancel();
                     });
-                    cancel();
+                    return;
                 }
                 captured.clear();
                 for (int i = 1; i <= 3; i++) {
