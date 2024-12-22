@@ -1,5 +1,7 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
@@ -8,6 +10,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.ShopBook;
 import de.polo.voidroleplay.utils.BookSerializer;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import dev.vansen.singleline.SingleLine;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
@@ -21,6 +24,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -50,6 +54,10 @@ public class BibliothekCommand extends CommandBase {
                 @SneakyThrows
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (event.isLeftClick() && playerData.getFaction().equalsIgnoreCase("News") && playerData.getFactionGrade() >= 4) {
+                        openDeleteInv(player, book);
+                        return;
+                    }
                     if (playerData.getBargeld() < book.getPrice()) {
                         player.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Geld dabei."));
                         return;
@@ -61,5 +69,23 @@ public class BibliothekCommand extends CommandBase {
             });
             i++;
         }
+    }
+
+    private void openDeleteInv(Player player, ShopBook shopBook) {
+        InventoryManager sellInventory = new InventoryManager(player, 27, "§8 » §e" + shopBook.getTitle() + " löschen");
+        sellInventory.setItem(new CustomItem(12, ItemManager.createItem(Material.RED_WOOL, 1, 0, "§cLöschen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+                player.sendMessage(Component.text(Prefix.MAIN + "Du hast das Buch " + shopBook.getTitle() + " gelöscht."));
+                newsManager.removeBook(shopBook);
+            }
+        });
+        sellInventory.setItem(new CustomItem(14, ItemManager.createItem(Material.GREEN_WOOL, 1, 0, "§aAbbrechen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+            }
+        });
     }
 }

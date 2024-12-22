@@ -131,4 +131,9 @@ public class NewsManager {
     public List<ShopBook> getBooks() {
         return books;
     }
+
+    public void removeBook(ShopBook shopBook) {
+        books.remove(shopBook);
+        Main.getInstance().getMySQL().deleteAsync("DELETE FROM news_store WHERE id = ?", shopBook.getId());
+    }
 }
