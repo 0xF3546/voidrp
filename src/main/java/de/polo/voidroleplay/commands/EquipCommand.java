@@ -137,7 +137,7 @@ public class EquipCommand implements CommandExecutor, Listener {
         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.BULLETPROOF.getMaterial(), 1, 0, RoleplayItem.BULLETPROOF.getDisplayName())) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                if (factionData.getEquipPoints() < 5) {
+                if (factionData.getEquipPoints() < 8) {
                     player.sendMessage(ERROR_NOT_ENOUGH_EQUIP);
                     return;
                 }
@@ -146,9 +146,9 @@ public class EquipCommand implements CommandExecutor, Listener {
                     return;
                 }
                 ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
-                factionData.setEquipPoints(factionData.getEquipPoints() - 5);
+                factionData.setEquipPoints(factionData.getEquipPoints() - 8);
                 factionData.save();
-                logBuy(player, "Schutzweste", 5);
+                logBuy(player, "Schutzweste", 8);
             }
         });
         i++;
@@ -156,7 +156,7 @@ public class EquipCommand implements CommandExecutor, Listener {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.HEAVY_BULLETPROOF.getMaterial(), 1, 0, RoleplayItem.HEAVY_BULLETPROOF.getDisplayName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    if (factionData.getEquipPoints() < 8) {
+                    if (factionData.getEquipPoints() < 12) {
                         player.sendMessage(ERROR_NOT_ENOUGH_EQUIP);
                         return;
                     }
@@ -165,9 +165,9 @@ public class EquipCommand implements CommandExecutor, Listener {
                         return;
                     }
                     ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
-                    factionData.setEquipPoints(factionData.getEquipPoints() - 8);
+                    factionData.setEquipPoints(factionData.getEquipPoints() - 12);
                     factionData.save();
-                    logBuy(player, "Schwere Schutzweste", 8);
+                    logBuy(player, "Schwere Schutzweste", 12);
                 }
             });
             i++;
