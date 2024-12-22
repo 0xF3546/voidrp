@@ -3,6 +3,7 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.ShopBook;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -55,18 +56,7 @@ public class NewsManager {
             return;
         }
 
-        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacyAmpersand();
-
-        StringBuilder contentBuilder = new StringBuilder();
-        for (Component page : pages) {
-            contentBuilder.append(serializer.serialize(page));
-            contentBuilder.append("\n---PAGE_BREAK---\n");
-        }
-        String content = contentBuilder.toString();
-        if (content == null) {
-            LOGGER.log(Level.SEVERE, "Failed to serialize book pages.");
-            return;
-        }
+        BookSerializer bookSerializer = new BookSerializer(meta);
 
         Main.getInstance().getMySQL().insertAndGetKeyAsync(
                         "INSERT INTO news_store (price, title, type, author, content) VALUES (?, ?, ?, ?, ?)",
@@ -74,10 +64,10 @@ public class NewsManager {
                         title,
                         type,
                         author,
-                        content)
+                bookSerializer.serializeAll())
                 .thenApply(key -> {
                     key.ifPresentOrElse(k -> {
-                        ShopBook shopBook = new ShopBook(k, titleComponent, author, type, pages);
+                        ShopBook shopBook = new ShopBook(k, book.displayName(), author, type, pages);
                         shopBook.setPrice(price);
                         synchronized (books) {
                             books.add(shopBook);
@@ -94,15 +84,14 @@ public class NewsManager {
                     try {
                         while (result.next()) {
                             int id = result.resultSet().getInt("id");
-                            Component title = LegacyComponentSerializer.legacySection().deserialize(result.resultSet().getString("title"));
                             String author = result.resultSet().getString("author");
                             String type = result.resultSet().getString("type");
                             String content = result.resultSet().getString("content");
                             int price = result.resultSet().getInt("price");
+                            BookSerializer bookSerializer = new BookSerializer(null);
+                            Book book = new BookSerializer(null).deserializeAll(result.resultSet().getString("content"));
 
-                            List<Component> pages = deserializePages(content);
-
-                            ShopBook shopBook = new ShopBook(id, title, author, type, pages);
+                            ShopBook shopBook = new ShopBook(id, book.title(), author, type, book.pages());
                             shopBook.setPrice(price);
 
                             synchronized (books) {
@@ -124,24 +113,6 @@ public class NewsManager {
 
     private boolean isNullOrBlank(String str) {
         return str == null || str.isBlank();
-    }
-
-    private List<Component> deserializePages(String content) {
-        try {
-            // Umwandeln des gespeicherten JSON-Inhalts zurück in Seiten
-            GsonComponentSerializer serializer = GsonComponentSerializer.gson();
-            JSONArray contentArray = new JSONArray(content);
-            ObjectArrayList<Component> pages = new ObjectArrayList<>();
-
-            for (int i = 0; i < contentArray.length(); i++) {
-                pages.add(serializer.deserialize(contentArray.getString(i)));
-            }
-
-            return pages;
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error deserializing pages", e);
-            return List.of();  // Falls ein Fehler auftritt, gebe eine leere Liste zurück
-        }
     }
 
     public void giveBookToPlayer(Player player, ShopBook book) {
