@@ -548,8 +548,8 @@ public class BankingUtils implements Listener {
     private void takeOut(Player player, FactionData factionData, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
         factionData.setTookOut(factionData.getTookOut() + amount);
-        player.sendMessage("§8[§aATM§8]§a Du hast " + factionData.getBank() + "$ ausgezahlt.");
-        if (factionData.getTookOut() >= 50000) {
+        player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
+        if (factionData.getTookOut() < 50000) {
             factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Fraktionskonto ausgezahlt.");
         } else {
             int tax = amount / 3;
