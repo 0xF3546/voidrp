@@ -32,7 +32,8 @@ import java.util.concurrent.CompletableFuture;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class CheckoutWebshopCommand implements CommandExecutor {
+public class
+CheckoutWebshopCommand implements CommandExecutor {
     private final PlayerManager playerManager;
 
     public CheckoutWebshopCommand(PlayerManager playerManager) {
@@ -110,6 +111,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                     playerManager.addEXPBoost(target, 6);
                     target.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.CHRISTMAS.getDisplayName()));
                     Main.getInstance().vehicles.giveVehicle(target, "Algerari");
+                    playerManager.redeemRank(target, "Premium", 7, "d");
                     return false;
                 }
                 Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
@@ -197,6 +199,7 @@ public class CheckoutWebshopCommand implements CommandExecutor {
                                     ItemManager.addItem(player, Material.BREAD, "§7Brot", 128);
                                     ItemManager.addItem(player, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
                                     player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.CHRISTMAS.getDisplayName()));
+                                    playerManager.redeemRank(player, "Premium", 7, "d");
                                     try {
                                         Main.getInstance().vehicles.giveVehicle(player, "Algerari");
                                         playerManager.addEXPBoost(player, 6);
