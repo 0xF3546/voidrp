@@ -56,6 +56,10 @@ public class ItemDropListener implements Listener {
             return;
         }
         PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
+        if (playerData.isCuffed()) {
+            event.setCancelled(true);
+            return;
+        }
         if (playerData.getVariable("gangwar") != null) event.setCancelled(true);
         for (Weapon weapon : Weapon.values()) {
             if (weapon.getMaterial() == event.getItemDrop().getItemStack().getType()) {
