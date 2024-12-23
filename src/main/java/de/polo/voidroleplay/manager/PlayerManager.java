@@ -23,6 +23,7 @@ import de.polo.voidroleplay.utils.TeamSpeak;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.player.ChatUtils;
+import de.polo.voidroleplay.utils.player.PayDayUtils;
 import de.polo.voidroleplay.utils.player.PlayerTutorial;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -813,13 +814,19 @@ public class PlayerManager implements Listener {
                         }
                         plus += (banner * 30);
 
+                        int govTaxes = PayDayUtils.PAYED_TAXES / 10;
+                        PayDayUtils.PAYED_TAXES = 0;
+                        if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei") || factionData.getName().equalsIgnoreCase("Medic")) {
+                            plus += govTaxes;
+                        }
+
                         // Batch-Operation für Fraktionsmitglieder
                         for (PlayerData playerData : playerDataMap.values()) {
                             if (playerData.getFaction() != null) {
                                 if (playerData.isLeader() && playerData.getFaction().equals(factionData.getName())) {
                                     Player player = Bukkit.getPlayer(playerData.getUuid());
                                     if (player == null) continue;
-                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction, (banner * 30));
+                                    sendFactionPaydayMessage(player, factionData, zinsen, steuern, plus, auction, (banner * 30), govTaxes);
                                     player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                                 }
                             }
@@ -839,7 +846,7 @@ public class PlayerManager implements Listener {
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
 
-    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction, int banner) {
+    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction, int banner, int govTaxes) {
         player.sendMessage(" ");
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
         player.sendMessage("§8 ➥ §9Zinsen§8:§a +" + (int) zinsen + "$");
@@ -860,6 +867,10 @@ public class PlayerManager implements Listener {
             player.sendMessage("§8 ➥ §9Bank§8:§a +" + auction + "$");
         }
         player.sendMessage("§8 ➥ §9Banner§8:§a +" + banner + "$");
+        if (govTaxes >= 1) {
+            plus += govTaxes;
+            player.sendMessage("§8 ➥ §9Staatsbezuschussung§8:§a +" + govTaxes + "$");
+        }
         if (plus >= 0) {
             player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
         } else {
