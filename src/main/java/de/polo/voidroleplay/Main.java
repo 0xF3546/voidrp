@@ -226,6 +226,7 @@ public final class Main extends JavaPlugin {
         new ExplosionListener();
         new ConsumeListener(playerManager);
         new EntityToggleGlideListener();
+        new JumpListener(playerManager);
 
     }
 
