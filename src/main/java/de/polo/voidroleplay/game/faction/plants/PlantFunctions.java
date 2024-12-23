@@ -115,7 +115,8 @@ public class PlantFunctions implements Listener {
                         factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
                     }
                     player.closeInventory();
-                    if (plant.getYield() >= 10 || diff >= 10) {
+                    if ((plant.getYield() >= 10 || diff >= 10 )&& !plant.isReceivedXP()) {
+                        plant.setReceivedXP(true);
                         playerManager.addExp(player, Main.random(5, 20));
                     }
                 }

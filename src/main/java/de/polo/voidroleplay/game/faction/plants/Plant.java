@@ -37,6 +37,10 @@ public class Plant {
     @Setter
     private int time;
 
+    @Getter
+    @Setter
+    private boolean receivedXP = false;
+
     public Plant(FactionData planter, LocalDateTime planted, Block block, PlantType plantType) {
         this.planter = planter;
         this.planted = planted;
