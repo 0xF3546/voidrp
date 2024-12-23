@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponData;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -8,10 +9,12 @@ import de.polo.voidroleplay.manager.WeaponManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
+import static de.polo.voidroleplay.Main.supportManager;
 
 public class EntityDamageByEntityListener implements Listener {
     private final PlayerManager playerManager;
@@ -71,6 +74,34 @@ public class EntityDamageByEntityListener implements Listener {
             String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
             if (command == null) return;
             event.setCancelled(true);
+        }
+
+    }
+
+    public void Jail_Support_Fix(EntityDamageByEntityEvent event){
+        /*
+        Bug beheben:
+            Spieler im Support können andere Boxen und anschießen
+            Spieler können sich im Jail Boxen
+         */
+        if(event.getDamager() instanceof Player && event.getEntity() instanceof Player){
+            if(playerManager.getPlayerData((Player)event.getEntity()).isJailed() || supportManager.getTicket(((Player) event.getEntity())) != null){
+                event.setCancelled(true);
+            }
+        }
+        if(event.getEntity() instanceof Player){
+            if(event.getDamager() instanceof Player){
+                if(playerManager.getPlayerData((Player)event.getEntity()).isJailed() || supportManager.getTicket(((Player) event.getEntity())) != null){
+                    event.setCancelled(true);
+                }
+            }
+            if(event.getDamager() instanceof Projectile){
+                Projectile projectile = (Projectile) event.getDamager();
+
+                if(projectile.getShooter() instanceof Player && supportManager.getTicket((Player) projectile.getShooter()) != null){
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 }
