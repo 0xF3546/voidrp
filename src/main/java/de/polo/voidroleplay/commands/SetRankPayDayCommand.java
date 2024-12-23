@@ -42,8 +42,8 @@ public class SetRankPayDayCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der PayDay muss größer gleich 0 sein!");
             return false;
         }
-        if (Integer.parseInt(args[1]) > 20000) {
-            player.sendMessage(Prefix.ERROR + "Der PayDay darf nicht größer als 20.000$ sein!");
+        if (Integer.parseInt(args[1]) > 2000) {
+            player.sendMessage(Prefix.ERROR + "Der PayDay darf nicht größer als 2.000$ sein!");
             return false;
         }
         try {
