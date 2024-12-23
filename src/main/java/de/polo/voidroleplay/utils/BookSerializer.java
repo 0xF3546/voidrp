@@ -46,7 +46,7 @@ public class BookSerializer {
     /**
      * The {@link JSONComponentSerializer} used for serializing and deserializing {@link Component} instances.
      */
-    private final JSONComponentSerializer serializer = JSONComponentSerializer.json();
+    private static final JSONComponentSerializer serializer = JSONComponentSerializer.json();
 
     /**
      * Constructs a new {@code BookSerializer} with the specified {@link BookMeta}.
@@ -131,7 +131,7 @@ public class BookSerializer {
      * @throws com.google.gson.JsonSyntaxException If the JSON is malformed or does not match the expected structure.
      */
     @NotNull
-    public Book deserializeAll(String json) {
+    public static Book deserializeAll(String json) {
         Gson gson = new Gson();
         BookData data = gson.fromJson(json, BookData.class);
 
@@ -154,7 +154,7 @@ public class BookSerializer {
      * @throws com.google.gson.JsonSyntaxException If the JSON is malformed or does not match the expected structure.
      */
     @NotNull
-    public ItemStack deserializeItemStack(String json) {
+    public static ItemStack deserializeItemStack(String json) {
         Gson gson = new Gson();
         BookData data = gson.fromJson(json, BookData.class);
 

@@ -88,8 +88,8 @@ public class NewsManager {
                             String type = result.resultSet().getString("type");
                             String content = result.resultSet().getString("content");
                             int price = result.resultSet().getInt("price");
-                            BookSerializer bookSerializer = new BookSerializer(null);
-                            Book book = new BookSerializer(null).deserializeAll(result.resultSet().getString("content"));
+                            LOGGER.log(Level.INFO, "The serialized content is: {0}", content);
+                            Book book = BookSerializer.deserializeAll(content);
 
                             ShopBook shopBook = new ShopBook(id, book.title(), author, type, book.pages());
                             shopBook.setPrice(price);
