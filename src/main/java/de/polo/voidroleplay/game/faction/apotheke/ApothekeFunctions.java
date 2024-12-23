@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.game.faction.apotheke;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.storage.ApothekeTakeOut;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.database.impl.MySQL;
@@ -10,6 +11,7 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.Prescription;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -129,6 +131,38 @@ public class ApothekeFunctions implements Listener {
                 }
             }
         };
+
+        if (playerData.getFaction() != null) {
+            if (playerData.isExecutiveFaction() || playerFactionData.isBadFrak()) {
+                inventoryManager.setItem(new CustomItem(25, ItemManager.createItem(Drug.SCHMERZMITTEL.getItem().getMaterial(), 1, 0, "§7Beute entnehmen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (!ApothekeTakeOut.tookOut(apotheke, player.getUniqueId())) {
+                            player.sendMessage(Component.text(Prefix.ERROR + "Du kannst noch keine Beute abholen."));
+                            return;
+                        }
+                        ApothekeTakeOut.add(apotheke, player.getUniqueId());
+                        player.closeInventory();
+                        if (playerData.isExecutiveFaction()) {
+                            int schmerzmittelAmount = Main.random(2, 6);
+                            playerData.getInventory().addItem(Drug.SCHMERZMITTEL.getItem(), schmerzmittelAmount);
+                            player.sendMessage(Component.text("§8[§cApotheke§8]§7 Du hast " + schmerzmittelAmount + " " + Drug.SCHMERZMITTEL.getItem().getClearName() + "."));
+                            if (playerData.getFaction().equalsIgnoreCase("FBI")) {
+                                int adrenalineAmount = Main.random(1, 3);
+                                playerData.getInventory().addItem(Drug.ADRENALINE_INJECTION.getItem(), adrenalineAmount);
+                                player.sendMessage(Component.text("§8[§cApotheke§8]§7 Zusätzlich erhälst du " + adrenalineAmount + " " + Drug.ADRENALINE_INJECTION.getItem().getClearName() + "."));
+                            }
+                        } else {
+                            int snuffAmount = Main.random(1, 3);
+                            int cigarAmount = Main.random(1, 3);
+                            playerData.getInventory().addItem(Drug.COCAINE.getItem(), snuffAmount);
+                            playerData.getInventory().addItem(Drug.JOINT.getItem(), cigarAmount);
+                            player.sendMessage(Component.text("§8[§cApotheke§8]§7 Du hast " + snuffAmount + " " + Drug.COCAINE.getItem().getClearName() + " & " + cigarAmount + " " + Drug.JOINT.getItem().getClearName() + " erhalten."));
+                        }
+                    }
+                });
+            }
+        }
 
         inventoryManager.setItem(infoItem);
 
@@ -267,6 +301,7 @@ public class ApothekeFunctions implements Listener {
                                 if (apotheke.getLastAttack().getMinute() == event.getMinute()) {
                                     if (apotheke.isStaat()) plus += ServerManager.getPayout("apotheke_besetzt_staat");
                                     else plus += ServerManager.getPayout("apotheke_besetzt_normal");
+                                    ApothekeTakeOut.clear(apotheke);
                                 }
                             }
                         }
