@@ -484,10 +484,10 @@ public class HouseManager implements CommandExecutor, Listener {
                             return;
                         }
                         Main.getInstance().getWeaponManager().takeOutWeapon(player, playerWeapon);
-                        player.sendMessage(Component.text(Prefix.MAIN + "Gib an wie viel Munition du entnehmen willst."));
                     } else {
                         playerData.setVariable("chatblock", "weaponammo");
                         playerData.setVariable("playerWeapon", playerWeapon);
+                        player.sendMessage(Component.text(Prefix.MAIN + "Gib an wie viel Munition du entnehmen willst."));
                     }
                 }
             });
