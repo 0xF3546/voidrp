@@ -779,8 +779,8 @@ public class PlayerData {
         System.out.println("MOIN");
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("www");
-            if (playerWanted != null) {
-                WantedReason reason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
+            if (getWanted() != null) {
+                WantedReason reason = Main.getInstance().utils.getStaatUtil().getWantedReason(getWanted().getWantedId());
                 WantedReason newReason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
                 return reason.getWanted() <= newReason.getWanted();
             }
