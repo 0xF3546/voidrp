@@ -55,8 +55,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.polo.voidroleplay.Main.locationManager;
-import static de.polo.voidroleplay.Main.utils;
+import static de.polo.voidroleplay.Main.*;
 
 public class PlayerManager implements Listener {
 
@@ -327,7 +326,7 @@ public class PlayerManager implements Listener {
                 playerData.setCoins(result.getInt("coins"));
                 playerData.setCompany(null);
                 if (result.getInt("company") != 0) {
-                    Company company = Main.getInstance().companyManager.getCompanyById(result.getInt("company"));
+                    Company company = companyManager.getCompanyById(result.getInt("company"));
                     if (company != null) {
                         playerData.setCompany(company);
                         if (company.getRoles() != null) {
@@ -382,7 +381,7 @@ public class PlayerManager implements Listener {
                         player.sendMessage(Prefix.MAIN + "Dein " + playerData.getRang() + " ist ausgelaufen.");
                         mySQL.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId().toString());
                         if (playerData.getBusiness() != null) {
-                            BusinessData business = Main.getInstance().businessManager.getBusinessData(playerData.getBusiness());
+                            BusinessData business = businessManager.getBusinessData(playerData.getBusiness());
                             if (business != null) {
                                 if (business.getOwner().equals(player.getUniqueId())) {
                                     business.setActive(false);
@@ -394,7 +393,7 @@ public class PlayerManager implements Listener {
                     }
                 }
                 if (playerData.isDuty()) {
-                    Main.getInstance().factionManager.setDuty(player, true);
+                    factionManager.setDuty(player, true);
                 }
                 updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
                 if (playerData.isDead()) utils.deathUtil.killPlayer(player);
@@ -409,8 +408,8 @@ public class PlayerManager implements Listener {
                     laboratory.start();
                 }*/
 
-                Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
-                Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
+                seasonpass.loadPlayerQuests(player.getUniqueId());
+                beginnerpass.loadPlayerQuests(player.getUniqueId());
                 utils.staatUtil.loadParole(player);
                 LoyaltyBonusTimer timer = getLoyaltyTimer(player.getUniqueId());
                 if (timer != null) {
@@ -429,7 +428,7 @@ public class PlayerManager implements Listener {
                     for (PlayerData pData : getPlayers()) {
                         if (pData.getFaction() == null) continue;
                         if (pData.getFaction().equalsIgnoreCase(playerData.getFaction())) {
-                            Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(pData.getPlayer());
+                            gamePlay.displayNameManager.reloadDisplayNames(pData.getPlayer());
                         }
                     }
                 }
@@ -475,7 +474,7 @@ public class PlayerManager implements Listener {
 
             for (ItemStack stack : player.getInventory().getContents()) {
                 if (stack == null) continue;
-                Weapon weapon = Main.getInstance().getWeaponManager().getWeaponFromItemStack(stack);
+                Weapon weapon = weaponManager.getWeaponFromItemStack(stack);
                 if (weapon == null) continue;
                 mySQL.updateAsync("UPDATE player_weapons SET ammo = ?, current_ammo = ? WHERE id = ?", weapon.getAmmo(), weapon.getCurrentAmmo(), weapon.getId());
             }
@@ -524,8 +523,8 @@ public class PlayerManager implements Listener {
         float value = (float) (needed_hours / player.getExpToLevel());
         player.setTotalExperience((int) (value * current_hours));
         if (minutes >= 60) {
-            Main.getInstance().beginnerpass.didQuest(player, 7);
-            Main.getInstance().seasonpass.didQuest(player, 7);
+            beginnerpass.didQuest(player, 7);
+            seasonpass.didQuest(player, 7);
             playerData.setHours(playerData.getHours() + 1);
             playerData.setMinutes(0);
             playerData.setRewardTime(playerData.getRewardTime() - 1);
@@ -743,22 +742,22 @@ public class PlayerManager implements Listener {
 
                 if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
                     if (Utils.getTime().getMinute() == 30 && Utils.getTime().getHour() == 17) {
-                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
-                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 90 Minuten ist die Auktion beendet!", factions);
+                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 90 Minuten ist die Auktion beendet!", factions);
                     }
                     if (Utils.getTime().getMinute() == 30 && Utils.getTime().getHour() == 18) {
-                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
-                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 30 Minuten ist die Auktion beendet!", factions);
+                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 30 Minuten ist die Auktion beendet!", factions);
                     }
 
                     if (Utils.getTime().getMinute() == 45 && Utils.getTime().getHour() == 18) {
-                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
-                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 15 Minuten ist die Auktion beendet!", factions);
+                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 15 Minuten ist die Auktion beendet!", factions);
                     }
 
                     if (Utils.getTime().getMinute() == 55 && Utils.getTime().getHour() == 18) {
-                        String[] factions = Main.getInstance().factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
-                        Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 5 Minuten ist die Auktion beendet!", factions);
+                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 5 Minuten ist die Auktion beendet!", factions);
                     }
 
                     if (Utils.getTime().getMinute() == 0 && Utils.getTime().getHour() == 19 && Utils.getTime().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
@@ -808,7 +807,7 @@ public class PlayerManager implements Listener {
                         }
 
                         int banner = 0;
-                        for (SprayableBanner sprayableBanner : Main.getInstance().factionManager.getBanner()) {
+                        for (SprayableBanner sprayableBanner : factionManager.getBanner()) {
                             if (sprayableBanner.getFaction() == factionData.getId()) {
                                 banner++;
                             }
@@ -873,9 +872,9 @@ public class PlayerManager implements Listener {
             player.sendMessage("§8 ➥ §9Staatsbezuschussung§8:§a +" + govTaxes + "$");
         }
         if (plus >= 0) {
-            player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(factionManager.factionBank(factionData.getName())) + "$ §8(§a+" + (int) plus + "$§8)");
         } else {
-            player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(Main.getInstance().factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
+            player.sendMessage("§8 ➥ §9Kontostand§8:§6 " + new DecimalFormat("#,###").format(factionManager.factionBank(factionData.getName())) + "$ §8(§c" + (int) plus + "$§8)");
         }
         player.sendMessage(" ");
     }
@@ -908,7 +907,7 @@ public class PlayerManager implements Listener {
         if (playerData.getExp() >= playerData.getNeeded_exp()) {
             player.sendMessage("§8[§6Level§8] §7Du bist im Level aufgestiegen! §a" + playerData.getLevel() + " §8➡ §2" + (playerData.getLevel() + 1));
             utils.sendActionBar(player, "§6Du bist ein Level aufgestiegen!");
-            Main.getInstance().beginnerpass.didQuest(player, 3);
+            beginnerpass.didQuest(player, 3);
             player.setMaxHealth(32 + (((double) playerData.getLevel() / 5) * 2));
             playerData.setExp(playerData.getExp() - playerData.getNeeded_exp());
             playerData.setNeeded_exp(playerData.getNeeded_exp() + 1000);
@@ -1037,7 +1036,7 @@ public class PlayerManager implements Listener {
         PlayerData targetData = getPlayerData(targetplayer);
         // ISSUE VRP-10003: Added null check for targetData
         if (targetData == null) return;
-        Main.getInstance().beginnerpass.didQuest(player, 12);
+        beginnerpass.didQuest(player, 12);
         PlayerData playerData = getPlayerData(player);
         // ISSUE VRP-10003: Added null check for playerData
         if (playerData == null) return;
@@ -1115,7 +1114,7 @@ public class PlayerManager implements Listener {
             }
         });
         if (playerData.getFaction() != null) {
-            FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
             inventoryManager.setItem(new CustomItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -1245,8 +1244,9 @@ public class PlayerManager implements Listener {
                             return;
                         }
                         targetplayer.sendMessage("§7   ===§8[§3Dienstmarke§8]§7===");
-                        targetplayer.sendMessage("§8 ➥ §bRang§8: §7" + Main.getInstance().factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()));
+                        targetplayer.sendMessage("§8 ➥ §bRang§8: §7" + factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()));
                         player.sendMessage(Prefix.MAIN + "Du hast " + targetplayer.getName() + " deinen Dienstausweis gezeigt.");
+                        player.closeInventory();
                     }
                 });
                 break;
@@ -1282,7 +1282,7 @@ public class PlayerManager implements Listener {
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
-                            Main.getInstance().adminManager.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
+                            adminManager.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -1432,6 +1432,4 @@ public class PlayerManager implements Listener {
             player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
         }
     }
-
-
 }
