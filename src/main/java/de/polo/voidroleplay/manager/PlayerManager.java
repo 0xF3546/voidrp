@@ -50,10 +50,7 @@ import java.sql.Date;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -415,8 +412,12 @@ public class PlayerManager implements Listener {
                 Main.getInstance().seasonpass.loadPlayerQuests(player.getUniqueId());
                 Main.getInstance().beginnerpass.loadPlayerQuests(player.getUniqueId());
                 utils.staatUtil.loadParole(player);
-                if (getLoyaltyTimer(player.getUniqueId()) != null) {
+                LoyaltyBonusTimer timer = getLoyaltyTimer(player.getUniqueId());
+                if (timer != null) {
                     player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Da du dich innerhalb von 3 Minuten eingeloggt hast, läuft dein Treuebonus weiter."));
+                    long offlineMinutes = Duration.between(timer.getStopped(), Utils.getTime()).toMinutes();
+                    timer.setStarted(timer.getStarted().plusMinutes(offlineMinutes));
+                    timer.setStopped(null);
                 } else {
                     LoyaltyBonusTimer loyaltyBonusTimer = new LoyaltyBonusTimer(player.getUniqueId());
                     loyaltyBonusTimer.setStarted(Utils.getTime());
@@ -441,7 +442,7 @@ public class PlayerManager implements Listener {
     }
 
     public LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {
-        return loyaltyBonusCache.stream().filter(x -> x.getUuid() == uuid).findFirst().orElse(null);
+        return loyaltyBonusCache.stream().filter(x -> x.getUuid().equals(uuid)).findFirst().orElse(null);
     }
 
     public void savePlayer(Player player) throws SQLException {
