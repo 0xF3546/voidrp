@@ -1,20 +1,16 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
-import static de.polo.voidroleplay.Main.supportManager;
 
 public class EntityDamageByEntityListener implements Listener {
     private final PlayerManager playerManager;
@@ -26,82 +22,77 @@ public class EntityDamageByEntityListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
-            Player damager = (Player) event.getDamager();
-            WeaponData currentWeapon = null;
-            for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
-                if (!damager.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
-                    continue;
-                }
-                if (weaponData.isMeele()) {
-                    currentWeapon = weaponData;
-                    continue;
-                }
-                event.setCancelled(true);
-                return;
-            }
-            if (currentWeapon != null) event.setDamage(currentWeapon.getDamage());
-            PlayerData playerData = playerManager.getPlayerData(event.getDamager().getUniqueId());
-            if ((playerData.getVisum() < 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
-                event.setCancelled(true);
-            }
-            if (event.getEntity() instanceof Player) {
-                PlayerData ownPlayerData = playerManager.getPlayerData((Player) event.getEntity());
-                if (ownPlayerData != null) {
-                    if (ownPlayerData.getVisum() < 2 && playerData.getFaction() == null) {
-                        event.setCancelled(true);
-                    }
+        if (event.getDamager() instanceof Player || event.getDamager() instanceof Projectile) {
+            Player damager = null;
+
+            if (event.getDamager() instanceof Player) {
+                damager = (Player) event.getDamager();
+            } else if (event.getDamager() instanceof Projectile) {
+                Projectile projectile = (Projectile) event.getDamager();
+                if (projectile.getShooter() instanceof Player) {
+                    damager = (Player) projectile.getShooter();
                 }
             }
-            if ((event.getEntity().getType() == EntityType.ARMOR_STAND
-                    || event.getEntity().getType() == EntityType.ITEM_FRAME
-                    || event.getEntity().getType() == EntityType.PAINTING
-                    || event.getEntity().getType() == EntityType.MINECART
-                    || event.getEntity().getType() == EntityType.BOAT)
-                    && !playerManager.getPlayerData(event.getDamager().getUniqueId()).isAduty()) {
-                event.setCancelled(true);
+
+            if (damager != null) {
+                PlayerData damagerData = playerManager.getPlayerData(damager.getUniqueId());
+
+                if (isInSupportOrJail(damager)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                handleWeaponDamage(event, damager);
+
+                if (isProtectedEntity(event.getEntity(), damagerData)) {
+                    event.setCancelled(true);
+                }
             }
         }
-        if ((event.getEntity().getType() == EntityType.ARMOR_STAND
-                || event.getEntity().getType() == EntityType.ITEM_FRAME
-                || event.getEntity().getType() == EntityType.PAINTING
-                || event.getEntity().getType() == EntityType.MINECART
-                || event.getEntity().getType() == EntityType.BOAT)
-                && !playerManager.getPlayerData(event.getDamager().getUniqueId()).isAduty()) {
-            event.setCancelled(true);
-        }
+
         if (event.getEntity().getType() == EntityType.VILLAGER) {
             String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
-            if (command == null) return;
-            event.setCancelled(true);
-        }
-
-    }
-
-    public void Jail_Support_Fix(EntityDamageByEntityEvent event){
-        /*
-        Bug beheben:
-            Spieler im Support können andere Boxen und anschießen
-            Spieler können sich im Jail Boxen
-         */
-        if(event.getDamager() instanceof Player && event.getEntity() instanceof Player){
-            if(playerManager.getPlayerData((Player)event.getEntity()).isJailed() || supportManager.getTicket(((Player) event.getEntity())) != null){
+            if (command != null) {
                 event.setCancelled(true);
             }
         }
-        if(event.getEntity() instanceof Player){
-            if(event.getDamager() instanceof Player){
-                if(playerManager.getPlayerData((Player)event.getEntity()).isJailed() || supportManager.getTicket(((Player) event.getEntity())) != null){
-                    event.setCancelled(true);
-                }
-            }
-            if(event.getDamager() instanceof Projectile){
-                Projectile projectile = (Projectile) event.getDamager();
+    }
 
-                if(projectile.getShooter() instanceof Player && supportManager.getTicket((Player) projectile.getShooter()) != null){
+    private boolean isInSupportOrJail(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        return playerData.isJailed() || Main.supportManager.getTicket(player) != null;
+    }
+
+    private void handleWeaponDamage(EntityDamageByEntityEvent event, Player damager) {
+        WeaponData currentWeapon = null;
+
+        for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
+            if (damager.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
+                if (weaponData.isMeele()) {
+                    currentWeapon = weaponData;
+                } else {
                     event.setCancelled(true);
+                    return;
                 }
             }
         }
+
+        if (currentWeapon != null) {
+            event.setDamage(currentWeapon.getDamage());
+        }
+
+        PlayerData playerData = playerManager.getPlayerData(damager.getUniqueId());
+        if ((playerData.getVisum() < 2 && playerData.getFaction() == null) || playerData.isCuffed()) {
+            event.setCancelled(true);
+        }
+    }
+
+    private boolean isProtectedEntity(Entity entity, PlayerData playerData) {
+        return (entity.getType() == EntityType.ARMOR_STAND
+                || entity.getType() == EntityType.ITEM_FRAME
+                || entity.getType() == EntityType.PAINTING
+                || entity.getType() == EntityType.MINECART
+                || entity.getType() == EntityType.BOAT)
+                && !playerData.isAduty();
     }
 }
