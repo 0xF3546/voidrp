@@ -5,12 +5,15 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
+
+import static de.polo.voidroleplay.Main.supportManager;
 
 public class EntityDamageByEntityListener implements Listener {
     private final PlayerManager playerManager;
@@ -60,19 +63,16 @@ public class EntityDamageByEntityListener implements Listener {
 
     private boolean isInSupportOrJail(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        return playerData.isJailed() || Main.supportManager.getTicket(player) != null;
+        return playerData.isJailed() || supportManager.isInAcceptedTicket(player);
     }
 
     private void handleWeaponDamage(EntityDamageByEntityEvent event, Player damager) {
-        WeaponData currentWeapon = null;
+        Weapon currentWeapon = null;
 
-        for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
-            if (damager.getInventory().getItemInMainHand().getType().equals(weaponData.getMaterial())) {
-                if (weaponData.isMeele()) {
-                    currentWeapon = weaponData;
-                } else {
-                    event.setCancelled(true);
-                    return;
+        for (Weapon weapon : Weapon.values()) {
+            if (damager.getInventory().getItemInMainHand().getType().equals(weapon.getMaterial())) {
+                if (weapon.isMeele()) {
+                    currentWeapon = weapon;
                 }
             }
         }
