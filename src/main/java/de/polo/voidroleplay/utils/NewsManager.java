@@ -57,6 +57,7 @@ public class NewsManager {
         }
 
         BookSerializer bookSerializer = new BookSerializer(meta);
+        String jsonContent = bookSerializer.serializeAll();
 
         Main.getInstance().getMySQL().insertAndGetKeyAsync(
                         "INSERT INTO news_store (price, title, type, author, content) VALUES (?, ?, ?, ?, ?)",
@@ -64,10 +65,10 @@ public class NewsManager {
                         title,
                         type,
                         author,
-                bookSerializer.serializeAll())
+                jsonContent)
                 .thenApply(key -> {
                     key.ifPresentOrElse(k -> {
-                        ShopBook shopBook = new ShopBook(k, book.displayName(), author, type, pages);
+                        ShopBook shopBook = new ShopBook(k, book.displayName(), author, type, pages, jsonContent);
                         shopBook.setPrice(price);
                         synchronized (books) {
                             books.add(shopBook);
@@ -91,7 +92,7 @@ public class NewsManager {
                             LOGGER.log(Level.INFO, "The serialized content is: {0}", content);
                             Book book = BookSerializer.deserializeAll(content);
 
-                            ShopBook shopBook = new ShopBook(id, book.title(), author, type, book.pages());
+                            ShopBook shopBook = new ShopBook(id, book.title(), author, type, book.pages(), content);
                             shopBook.setPrice(price);
 
                             synchronized (books) {
@@ -116,16 +117,21 @@ public class NewsManager {
     }
 
     public void giveBookToPlayer(Player player, ShopBook book) {
-        ItemStack stack = new ItemStack(Material.WRITTEN_BOOK, 1);
-        ItemMeta meta = stack.getItemMeta();
-        meta.displayName(book.getTitle());
-        stack.setItemMeta(meta);
-        BookMeta bookMeta = (BookMeta) meta;
-        bookMeta.setAuthor(bookMeta.getAuthor());
-        bookMeta.pages(book.getContent());
-        bookMeta.setTitle(book.getTitle().toString());
-        stack.setItemMeta(bookMeta);
-        player.getInventory().addItem(stack);
+        if (book.getJsonContent() == null) {
+            ItemStack stack = new ItemStack(Material.WRITTEN_BOOK, 1);
+            ItemMeta meta = stack.getItemMeta();
+            meta.displayName(book.getTitle());
+            stack.setItemMeta(meta);
+            BookMeta bookMeta = (BookMeta) meta;
+            bookMeta.setAuthor(bookMeta.getAuthor());
+            bookMeta.pages(book.getContent());
+            bookMeta.setTitle(book.getTitle().toString());
+            stack.setItemMeta(bookMeta);
+            player.getInventory().addItem(stack);
+        } else {
+            ItemStack bookItemStack = BookSerializer.deserializeItemStack(book.getJsonContent());
+            player.getInventory().addItem(bookItemStack);
+        }
     }
 
     public List<ShopBook> getBooks() {
