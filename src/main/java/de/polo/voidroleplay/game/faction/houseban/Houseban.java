@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.game.faction.houseban;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
@@ -175,6 +176,14 @@ public class Houseban implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, List.of("add", "remove"))
+                .addAtIndex(2, Bukkit.getOnlinePlayers()
+                        .stream()
+                        .map(Player::getName)
+                        .toList())
+                .addAtIndex(3, "[Zeit]")
+                .addAtIndex(4, "[Grund]")
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.FactionPlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
@@ -67,15 +68,12 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> suggestions = new ObjectArrayList<>();
-            for (FactionData factionData : factionManager.getFactions()) {
-                if (!factionData.isActive()) continue;
-                suggestions.add(factionData.getName());
-            }
-
-            return suggestions;
-        }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, factionManager.getFactions()
+                        .stream()
+                        .filter(x -> !x.isActive())
+                        .map(FactionData::getName)
+                        .toList())
+                .build();
     }
 }

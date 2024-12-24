@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.FactionManager;
@@ -63,20 +64,16 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if (args.length == 2) {
-            List<String> factions = new ObjectArrayList<>();
-            for (FactionData factionData : factionManager.getFactions()) {
-                factions.add(factionData.getName());
-            }
-            return factions;
-        }
-        if (args.length == 3) {
-            List<String> grades = new ObjectArrayList<>();
-            for (int i = 0; i <= 8; i++) {
-                grades.add(Integer.toString(i));
-            }
-            return grades;
-        }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, Bukkit.getOnlinePlayers()
+                        .stream()
+                        .map(Player::getName)
+                        .toList())
+                .addAtIndex(2, factionManager.getFactions()
+                        .stream()
+                        .map(FactionData::getName)
+                        .toList())
+                .addAtIndex(3, List.of("0", "1", "2", "3", "4", "5", "6"))
+                .build();
     }
 }

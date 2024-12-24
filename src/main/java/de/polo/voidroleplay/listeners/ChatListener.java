@@ -17,6 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.List;
+
 public class ChatListener implements Listener {
     private final PlayerManager playerManager;
     private final SupportManager supportManager;
@@ -33,99 +35,135 @@ public class ChatListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+
+        resetAFKStatus(player, playerData);
+        event.setCancelled(true);
+
+        if (playerData.getVariable("chatblock") == null) {
+            handleRegularChat(event, player, playerData);
+        } else {
+            handleChatBlock(event, player, playerData);
+        }
+    }
+
+    private void resetAFKStatus(Player player, PlayerData playerData) {
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
             utils.setAFK(player, false);
         }
-        event.setCancelled(true);
-        if (playerData.getVariable("chatblock") == null) {
-            if (supportManager.isInAcceptedTicket(player)) {
-                Ticket ticket = supportManager.getTicket(player);
-                for (Player p : supportManager.getPlayersInTicket(ticket)) {
-                    if (p == null) continue;
-                    p.sendMessage(Prefix.SUPPORT + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
-                }
+    }
 
-            } else {
-                if (!playerData.isDead()) {
-                    if (utils.phoneUtils.isInCall(player)) {
-                        PhoneCall call = utils.phoneUtils.getCall(player);
-                        for (Player p : utils.phoneUtils.getPlayersInCall(call)) {
-                            if (p == null) continue;
-                            if (p != player)
-                                p.sendMessage("§8[§6Handy§8] " + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
-                        }
-                    }
-                    String msg = event.getMessage();
-                    String type = "sagt";
-
-                    if (checkUppercasePercentage(msg)) {
-                        msg = msg.toLowerCase();
-                    }
-
-                    if (msg.charAt(msg.length() - 1) == '?') {
-                        type = "fragt";
-                    }
-                    /*if (msg.length() >= 4) {
-                        String firstChar = String.valueOf(msg.charAt(0)).toUpperCase();
-                        String restOfString = msg.substring(1).toLowerCase();
-                        msg = firstChar + restOfString;
-                    }*/
-                    String playerName = player.getName();
-                    if (Main.getInstance().gamePlay.getMaskState(player) != null) {
-                        playerName = "Maskierter";
-                    }
-                    for (Player players : Bukkit.getOnlinePlayers()) {
-                        if (players == null) continue;
-                        if (players.getLocation().getWorld() != player.getLocation().getWorld()) continue;
-                        if (player.getLocation().distance(players.getLocation()) <= 8) {
-                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §f" + playerName + " " + type + ":§f " + msg);
-                        } else if (player.getLocation().distance(players.getLocation()) <= 15) {
-                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §7" + playerName + " " + type + "§7:§7 " + msg);
-                        } else if (player.getLocation().distance(players.getLocation()) <= 28) {
-                            players.sendMessage("§8[§c" + playerData.getLevel() + "§8] §8" + playerName + " " + type + "§8:§8 " + msg);
-                        }
-                    }
-                    ChatUtils.logMessage(msg, player.getUniqueId());
-                } else {
-                    player.sendMessage("§7Du bist bewusstlos.");
-                }
-            }
+    private void handleRegularChat(AsyncPlayerChatEvent event, Player player, PlayerData playerData) {
+        if (supportManager.isInAcceptedTicket(player)) {
+            handleSupportChat(event, player);
+        } else if (!playerData.isDead()) {
+            handleGameplayChat(event, player, playerData);
         } else {
-            Bukkit.getScheduler().runTask(Main.plugin, () -> {
-                Bukkit.getPluginManager().callEvent(new SubmitChatEvent(player, event.getMessage()));
-                if (playerData.getVariable("chatblock") == null) return;
-                switch (playerData.getVariable("chatblock").toString()) {
-                    case "firstname":
-                        playerData.setVariable("einreise_firstname", event.getMessage());
-                        player.sendMessage(Prefix.MAIN + "Dein Vorname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
-                        playerData.setVariable("chatblock", null);
-                        break;
-                    case "lastname":
-                        playerData.setVariable("einreise_lastname", event.getMessage());
-                        player.sendMessage(Prefix.MAIN + "Dein Nachname lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
-                        playerData.setVariable("chatblock", null);
-                        break;
-                    case "dob":
-                        playerData.setVariable("einreise_dob", event.getMessage());
-                        player.sendMessage(Prefix.MAIN + "Dein Geburtstag lautet nun: " + event.getMessage() + " §8-§7 Klicke den NPC wieder an!");
-                        playerData.setVariable("chatblock", null);
-                        break;
-                    default:
-                        playerData.setVariable("chatblock", null);
-                        break;
-                }
-            });
+            player.sendMessage("§7Du bist bewusstlos.");
         }
     }
 
-    private boolean checkUppercasePercentage(String msg) {
-        int uppercaseCount = 0;
-        for (char c : msg.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                uppercaseCount++;
+    private void handleSupportChat(AsyncPlayerChatEvent event, Player player) {
+        Ticket ticket = supportManager.getTicket(player);
+        List<Player> participants = supportManager.getPlayersInTicket(ticket);
+
+        participants.forEach(p -> {
+            if (p != null) {
+                p.sendMessage(Prefix.SUPPORT + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
             }
+        });
+    }
+
+    private void handleGameplayChat(AsyncPlayerChatEvent event, Player player, PlayerData playerData) {
+        if (utils.phoneUtils.isInCall(player)) {
+            handlePhoneChat(event, player);
+        } else {
+            handleLocalChat(event, player, playerData);
         }
+    }
+
+    private void handlePhoneChat(AsyncPlayerChatEvent event, Player player) {
+        PhoneCall call = utils.phoneUtils.getCall(player);
+        List<Player> participants = utils.phoneUtils.getPlayersInCall(call);
+
+        participants.forEach(p -> {
+            if (p != null && p != player) {
+                p.sendMessage("§8[§6Handy§8] " + ChatColor.GOLD + player.getName() + "§8:§7 " + event.getMessage());
+            }
+        });
+    }
+
+    private void handleLocalChat(AsyncPlayerChatEvent event, Player player, PlayerData playerData) {
+        String message = formatMessage(event.getMessage());
+        String type = determineMessageType(message);
+        String playerName = getPlayerName(player);
+
+        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
+            if (isNearby(player, onlinePlayer)) {
+                sendLocalizedMessage(player, playerData, onlinePlayer, playerName, type, message);
+            }
+        });
+
+        ChatUtils.logMessage(message, player.getUniqueId());
+    }
+
+    private String formatMessage(String message) {
+        if (checkUppercasePercentage(message)) {
+            message = message.toLowerCase();
+        }
+        return message;
+    }
+
+    private String determineMessageType(String message) {
+        return message.endsWith("?") ? "fragt" : "sagt";
+    }
+
+    private String getPlayerName(Player player) {
+        return Main.getInstance().gamePlay.getMaskState(player) != null ? "Maskierter" : player.getName();
+    }
+
+    private boolean isNearby(Player source, Player target) {
+        return target.getWorld().equals(source.getWorld()) && source.getLocation().distance(target.getLocation()) <= 28;
+    }
+
+    private void sendLocalizedMessage(Player source, PlayerData playerData, Player target, String name, String type, String message) {
+        double distance = source.getLocation().distance(target.getLocation());
+        ChatColor color = distance <= 8 ? ChatColor.WHITE : distance <= 15 ? ChatColor.GRAY : ChatColor.DARK_GRAY;
+        target.sendMessage("§8[§c" + playerData.getLevel() + "§8] " + color + name + " " + type + ": " + color + message);
+    }
+
+    private void handleChatBlock(AsyncPlayerChatEvent event, Player player, PlayerData playerData) {
+        Bukkit.getScheduler().runTask(Main.plugin, () -> {
+            Bukkit.getPluginManager().callEvent(new SubmitChatEvent(player, event.getMessage()));
+            String chatBlock = (String) playerData.getVariable("chatblock");
+            if (chatBlock != null) {
+                handleChatBlockInput(player, playerData, chatBlock, event.getMessage());
+            }
+        });
+    }
+
+    private void handleChatBlockInput(Player player, PlayerData playerData, String chatBlock, String message) {
+        String field;
+        switch (chatBlock) {
+            case "firstname":
+                field = "einreise_firstname";
+                break;
+            case "lastname":
+                field = "einreise_lastname";
+                break;
+            case "dob":
+                field = "einreise_dob";
+                break;
+            default:
+                return;
+        }
+        playerData.setVariable(field, message);
+        player.sendMessage(Prefix.MAIN + "Dein " + field.split("_")[1] + " lautet nun: " + message + " §8-§7 Klicke den NPC wieder an!");
+        playerData.setVariable("chatblock", null);
+    }
+
+    private boolean checkUppercasePercentage(String msg) {
+        long uppercaseCount = msg.chars().filter(Character::isUpperCase).count();
         return ((double) uppercaseCount / msg.length()) >= 0.75;
     }
 }

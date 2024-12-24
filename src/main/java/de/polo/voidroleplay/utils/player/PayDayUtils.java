@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 public class PayDayUtils {
+    public static int PAYED_TAXES = 0;
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
 
@@ -44,6 +45,7 @@ public class PayDayUtils {
         } else {
             steuern = Math.round(playerManager.bank(player) * 0.008);
         }
+        PAYED_TAXES += steuern;
         int visumbonus = playerManager.visum(player) * 10;
         if (playerData.getPermlevel() >= 20) {
             visumbonus = visumbonus * 2;
@@ -60,6 +62,7 @@ public class PayDayUtils {
             double reichensteuer = Math.round(playerManager.bank(player) * 0.015);
             player.sendMessage("§7 » §9Reichensteuer§8:§c -" + (int) reichensteuer + "$");
             plus -= reichensteuer;
+            PAYED_TAXES += reichensteuer;
         }
         if (playerData.getFaction() != "Zivilist" && playerData.getFaction() != null) {
             frakpayday = factionManager.getPaydayFromFaction(playerData.getFaction(), playerData.getFactionGrade());

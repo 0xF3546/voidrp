@@ -17,6 +17,7 @@ import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import de.polo.voidroleplay.utils.player.PlayerInventoryItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -76,6 +77,11 @@ public class FriskCommand implements CommandExecutor {
     }
 
     private void openFriskInventory(Player player, Player targetplayer) {
+        if (player.getLocation().distance(targetplayer.getLocation()) >= 5) {
+            player.closeInventory();
+            player.sendMessage(Component.text(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe."));
+            return;
+        }
         PlayerData playerData = playerManager.getPlayerData(targetplayer);
         List<ItemStack> items = new ObjectArrayList<>();
         List<PlayerInventoryItem> playerInventoryItems = new ObjectArrayList<>();
