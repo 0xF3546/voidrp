@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
@@ -31,6 +32,10 @@ public class ShopBook {
     private final List<Component> content;
 
     @Getter
+    @Nullable
+    private final String jsonContent;
+
+    @Getter
     @Setter
     private int price;
 
@@ -40,5 +45,15 @@ public class ShopBook {
         this.author = author;
         this.type = type;
         this.content = content;
+        this.jsonContent = null;
+    }
+
+    public ShopBook(int id, Component title, String author, String type, @Unmodifiable @NotNull List<Component> content, @NotNull String jsonContent) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.type = type;
+        this.content = content;
+        this.jsonContent = jsonContent;
     }
 }
