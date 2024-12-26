@@ -167,6 +167,7 @@ public class House {
     }
 
     public void sendMessage(String message) {
+        if (owner == null || message == null) return;
         Player player = Bukkit.getPlayer(UUID.fromString(owner));
         if (player == null) return;
         player.sendMessage("§8[§6Haus " + number + "§8]§7 " + message);
