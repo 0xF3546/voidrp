@@ -280,6 +280,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         }
         if (!Utils.getTime().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
             player.sendMessage(Prefix.ERROR + "Gangwar kann an Sonntagen bespielt werden!");
+            return;
         }
         if ((Utils.getTime().getHour() >= 19 && Utils.getTime().getHour() < 21 || (playerData.isAduty() && playerData.getPermlevel() >= 80))) {
             IGangzone gangzone = getGangzoneByName(zone);
