@@ -572,6 +572,7 @@ public class BankingUtils implements Listener {
     }
 
     private void finallyTakeout(Player player, FactionData factionData, int amount) {
+        PlayerData playerData = playerManager.getPlayerData(player);
         factionData.setTookOut(factionData.getTookOut() + amount);
         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
         if (factionData.getTookOut() < 50000) {
