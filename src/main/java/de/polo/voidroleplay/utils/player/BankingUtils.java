@@ -547,6 +547,31 @@ public class BankingUtils implements Listener {
 
     private void takeOut(Player player, FactionData factionData, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
+        if (factionData.getTookOut() + amount >= 50000) {
+            checkTakeOut(player, factionData, amount);
+        } else {
+            finallyTakeout(player, factionData, amount);
+        }
+    }
+
+    private void checkTakeOut(Player player, FactionData factionData, int amount) {
+        int tax = amount / 3;
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWillst du " + amount + " auszahlen?");
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aJa", "§8 ➥ §c" + Utils.toDecimalFormat(tax) + "$ Steuern")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                finallyTakeout(player, factionData, amount);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cNein")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                player.closeInventory();
+            }
+        });
+    }
+
+    private void finallyTakeout(Player player, FactionData factionData, int amount) {
         factionData.setTookOut(factionData.getTookOut() + amount);
         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
         if (factionData.getTookOut() < 50000) {
