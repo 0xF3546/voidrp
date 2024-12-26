@@ -815,7 +815,6 @@ public class PlayerManager implements Listener {
                         plus += (banner * 30);
 
                         int govTaxes = PayDayUtils.PAYED_TAXES / 10;
-                        PayDayUtils.PAYED_TAXES = 0;
                         if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei") || factionData.getName().equalsIgnoreCase("Medic")) {
                             plus += govTaxes;
                         }
@@ -842,6 +841,7 @@ public class PlayerManager implements Listener {
                         }
                     }
                 }
+                PayDayUtils.PAYED_TAXES = 0;
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
