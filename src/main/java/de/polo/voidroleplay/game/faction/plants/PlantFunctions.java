@@ -111,6 +111,7 @@ public class PlantFunctions implements Listener {
                     } else {
                         playerData.getInventory().addItem(plant.getType().getDrug().getItem(), plant.getYield());
                         plant.getBlock().setType(Material.AIR);
+                        plant.getBlock().getLocation().subtract(0, 1, 0).getBlock().setType(Material.GRASS_BLOCK);
                         plants.remove(plant);
                         factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
                     }
