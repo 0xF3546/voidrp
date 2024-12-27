@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.Progress;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,6 +41,12 @@ public class ShopRobCommand implements CommandExecutor {
         }
         if (shopId == 0) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe eines Shops.");
+            return false;
+        }
+        int count = factionManager.getOnlineMemberCount("Polizei");
+        count += factionManager.getOnlineMemberCount("FBI");
+        if (count < 2) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Es sind nicht genug Beamte online."));
             return false;
         }
         if (ServerManager.serverVariables.get("shoprob") != null) {
