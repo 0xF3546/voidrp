@@ -71,7 +71,7 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
         return TabCompletion.getBuilder(args)
                 .addAtIndex(1, factionManager.getFactions()
                         .stream()
-                        .filter(x -> !x.isActive())
+                        .filter(FactionData::isActive)
                         .map(FactionData::getName)
                         .toList())
                 .build();
