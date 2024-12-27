@@ -75,10 +75,9 @@ public class ChatListener implements Listener {
     }
 
     private void handleGameplayChat(AsyncPlayerChatEvent event, Player player, PlayerData playerData) {
+        handleLocalChat(event, player, playerData);
         if (utils.phoneUtils.isInCall(player)) {
             handlePhoneChat(event, player);
-        } else {
-            handleLocalChat(event, player, playerData);
         }
     }
 
