@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.utils.Prefix;
@@ -156,11 +157,8 @@ public class AdminManager implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if (args.length == 1) {
-            List<String> suggestions = new ObjectArrayList<>();
-            suggestions.add("-v");
-            return suggestions;
-        }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, "-v")
+                .build();
     }
 }

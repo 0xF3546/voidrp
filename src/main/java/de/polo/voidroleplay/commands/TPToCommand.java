@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.LocationManager;
@@ -54,14 +55,11 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> suggestions = new ObjectArrayList<>();
-            for (LocationData locationData : LocationManager.locationDataMap.values()) {
-                suggestions.add(locationData.getName());
-            }
-
-            return suggestions;
-        }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, LocationManager.locationDataMap.values()
+                        .stream()
+                        .map(LocationData::getName)
+                        .toList())
+                .build();
     }
 }

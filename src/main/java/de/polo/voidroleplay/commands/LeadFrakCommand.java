@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
@@ -66,6 +67,15 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
             }
             return factions;
         }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, Bukkit.getOnlinePlayers()
+                        .stream()
+                        .map(Player::getName)
+                        .toList())
+                .addAtIndex(2, factionManager.getFactions()
+                        .stream()
+                        .map(FactionData::getName)
+                        .toList())
+                .build();
     }
 }

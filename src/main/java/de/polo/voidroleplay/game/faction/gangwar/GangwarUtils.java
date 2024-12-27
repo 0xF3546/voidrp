@@ -2,6 +2,7 @@ package de.polo.voidroleplay.game.faction.gangwar;
 
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponType;
@@ -403,24 +404,12 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> suggestions = new ObjectArrayList<>();
-            suggestions.add("info");
-            suggestions.add("attack");
-            //suggestions.add("join");
-            suggestions.add("leave");
-
-            return suggestions;
-        }
-        if (args.length == 2) {
-            List<String> suggestions = new ObjectArrayList<>();
-            for (IGangzone gangZone : gangZones) {
-                suggestions.add(gangZone.getName());
-            }
-
-            return suggestions;
-        }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, List.of("info", "attack", "leave"))
+                .addAtIndex(2, gangZones.stream()
+                        .map(IGangzone::getName)
+                        .toList())
+                .build();
     }
 
 }

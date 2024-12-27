@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
@@ -173,18 +174,8 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> suggestions = new ObjectArrayList<>();
-            suggestions.add("-d");
-            suggestions.add("-p");
-            suggestions.add("-e");
-            suggestions.add("-ep");
-            suggestions.add("-ed");
-            suggestions.add("-m");
-            suggestions.add("-lb");
-
-            return suggestions;
-        }
-        return null;
+        return TabCompletion.getBuilder(args)
+                .addAtIndex(1, List.of("-d", "-p", "-e", "-ep", "-ed", "-m", "-lb"))
+                .build();
     }
 }
