@@ -550,6 +550,7 @@ public class HouseManager implements CommandExecutor, Listener {
                 event.getPlayer().sendMessage(Prefix.MAIN + "Du hast " + Utils.toDecimalFormat(amount) + "$ in die Hauskasse eingezahlt.");
                 house.addMoney(amount, "Einzahlung " + event.getPlayer().getName(), true);
                 event.getPlayerData().removeMoney(amount, "Hauskasse" + house.getNumber());
+                event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
             }
@@ -573,6 +574,7 @@ public class HouseManager implements CommandExecutor, Listener {
                 event.getPlayer().sendMessage(Prefix.MAIN + "Du hast " + Utils.toDecimalFormat(amount) + "$ aus der Hauskasse ausgezahlt.");
                 house.removeMoney(amount, "Auszahlung " + event.getPlayer().getName(), true);
                 event.getPlayerData().addMoney(amount, "Hauskasse" + house.getNumber());
+                event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Anzahl muss numerisch sein.");
             }

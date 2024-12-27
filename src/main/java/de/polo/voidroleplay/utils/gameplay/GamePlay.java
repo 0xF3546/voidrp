@@ -277,6 +277,7 @@ public class GamePlay implements Listener {
                 factionData.storage.removeItem(item, amount);
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 ausgelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
+                event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
@@ -306,6 +307,8 @@ public class GamePlay implements Listener {
                 factionData.storage.addItem(item, amount);
                 factionManager.sendCustomMessageToFaction(event.getPlayerData().getFaction(), "§8[§2Lager§8]§7 " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§7 eingelagert. (" + factionData.storage.getAmount(item) + "g/Stück)");
                 factionData.storage.save();
+                event.end();
+                event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
@@ -334,6 +337,7 @@ public class GamePlay implements Listener {
                 factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 aus der Asservatenkammer genommen.", "FBI", "Polizei");
                 StaatUtil.Asservatemkammer.removeItem(item, amount);
                 StaatUtil.Asservatemkammer.save();
+                event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
@@ -361,6 +365,7 @@ public class GamePlay implements Listener {
                 StaatUtil.Asservatemkammer.save();
                 factionManager.addFactionMoney("FBI", amount * 3, "Verbrennung von Drogen durch " + event.getPlayer().getName());
                 playerManager.addExp(event.getPlayer(), amount);
+                event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
@@ -386,6 +391,7 @@ public class GamePlay implements Listener {
                 factionManager.sendCustomMessageToFactions("§8[§3Asservatenkammer§8]§3 " + factionManager.getTitle(event.getPlayer()) + " " + event.getPlayer().getName() + " hat " + amount + "(g/Stück) " + item.getDisplayName() + "§3 in die Asservatenkammer eingelagert.", "FBI", "Polizei");
                 StaatUtil.Asservatemkammer.addItem(item, amount);
                 StaatUtil.Asservatemkammer.save();
+                event.end();
             } catch (Exception e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl muss numerisch sein.");
             }
@@ -411,6 +417,7 @@ public class GamePlay implements Listener {
                 }
                 factionData.storage.proceedWeed(amount);
                 factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§" + factionData.getPrimaryColor() + "Labor§8]§7 " + factionManager.getRankName(factionData.getName(), playerData.getFactionGrade()) + " " + event.getPlayer().getName() + " hat die Verarbeitung von " + amount + " Pfeifentabak im Labor gestartet.");
+                event.end();
             } catch (IllegalArgumentException e) {
                 event.getPlayer().sendMessage(Prefix.ERROR + "Die Zahl ist nicht numerisch");
                 return;
