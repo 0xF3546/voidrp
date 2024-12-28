@@ -1338,7 +1338,7 @@ public class PlayerManager implements Listener {
         playerData.setCoins(playerData.getCoins() - amount);
         mySQL.updateAsync("UPDATE players SET coins = coins - ? WHERE uuid = ?",
                 amount,
-                player.getUniqueId());
+                player.getUniqueId().toString());
     }
 
     @SneakyThrows
