@@ -859,7 +859,6 @@ public class PlayerManager implements Listener {
         }
         for (IGangzone gangzone : gangZones) {
             if (gangzone.getOwner().equals(factionData.getName())) {
-                plus += 150;
                 player.sendMessage("§8 ➥ §9Gebietseinnahmen (" + gangzone.getName() + ")§8:§a +" + 150 + "$");
             }
         }
@@ -868,7 +867,6 @@ public class PlayerManager implements Listener {
         }
         player.sendMessage("§8 ➥ §9Banner§8:§a +" + banner + "$");
         if (govTaxes >= 1) {
-            plus += govTaxes;
             player.sendMessage("§8 ➥ §9Staatsbezuschussung§8:§a +" + govTaxes + "$");
         }
         if (plus >= 0) {
