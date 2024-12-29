@@ -191,17 +191,17 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public void joinGangwar(Player player, String zone) {
+    public boolean joinGangwar(Player player, String zone) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.isDead()) {
             player.sendMessage(Prefix.ERROR + "Du kannst aktuell keinem Gangwar beitreten.");
-            return;
+            return false;
         }
         Gangwar gangwarData = getGangwarByZone(zone);
-        int count = getPlayerInGangwar(zone);
+        int count = getPlayerInGangwar(zone, playerData.getFaction());
         if (count >= gangwarData.getMaxMember()) {
             player.sendMessage(Prefix.ERROR + "Es sind zu viele Spieler im Gangwar.");
-            return;
+            return false;
         }
         playerData.setVariable("inventory::gangwar", player.getInventory().getContents());
         // playerData.setVariable("inventory::gangwar", InventoryUtils.serializeInventory(player.getInventory()));
@@ -216,6 +216,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             locationManager.useLocation(player, "defender_spawn_" + zone.replace(" ", ""));
         }
         equipPlayer(player);
+        return true;
     }
 
     public void equipPlayer(Player player) {
@@ -351,13 +352,14 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         }
     }
 
-    private int getPlayerInGangwar(String gangzone) {
+    private int getPlayerInGangwar(String gangzone, String faction) {
         Gangwar gw = getGangwarByZone(gangzone);
         int count = 0;
         for (PlayerData playerData : playerManager.getPlayers()) {
             if (playerData.getFaction() == null) continue;
             if (playerData.getVariable("gangwar") == null) continue;
             if (playerData.getVariable("gangwar") != gw.getGangZone().getName()) continue;
+            if (!playerData.getFaction().equalsIgnoreCase(faction)) continue;
             count++;
         }
         return count;

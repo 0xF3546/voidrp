@@ -311,7 +311,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                     }
                     FactionData factionData = factionManager.getFactionData(playerData.getFaction());
                     if (factionData.getCurrent_gangwar() != null) {
-                        gangwarUtils.joinGangwar(player, factionData.getCurrent_gangwar());
+                        if (!gangwarUtils.joinGangwar(player, factionData.getCurrent_gangwar())) return;
                         Gangwar gangwarData = gangwarUtils.getGangwarByZone(factionData.getCurrent_gangwar());
                         player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar §c" + gangwarData.getGangZone().getName() + "§7 betreten.");
                         factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " ist dem Gangwar beigetreten.");
