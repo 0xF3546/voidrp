@@ -83,9 +83,9 @@ public class PayDayUtils {
                 if (houseData.getMoney() >= 15000) {
                     continue;
                 }
+                houseData.setTotalMoney(houseData.getTotalMoney() + rent);
                 houseData.addMoney(rent, player.getName() + " hat §6" + rent + "$§7 Miete gezahlt! §8(§6" + Utils.toDecimalFormat(houseData.getMoney()) + "§7/§615.000$§8)", false);
                 player.sendMessage("§7 » §9Miete (Haus " + houseData.getNumber() + ")§8:§c -" + houseData.getRenter().get(player.getUniqueId().toString()) + "$");
-                houseData.setTotalMoney(houseData.getTotalMoney() + rent);
                 plus -= rent;
                 rent = 0;
             }
