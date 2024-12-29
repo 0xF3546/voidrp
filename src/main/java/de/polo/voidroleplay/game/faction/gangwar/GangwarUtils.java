@@ -198,11 +198,6 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             return false;
         }
         Gangwar gangwarData = getGangwarByZone(zone);
-        int count = getPlayerInGangwar(zone, playerData.getFaction());
-        if (count >= gangwarData.getMaxMember()) {
-            player.sendMessage(Prefix.ERROR + "Es sind zu viele Spieler im Gangwar.");
-            return false;
-        }
         playerData.setVariable("inventory::gangwar", player.getInventory().getContents());
         // playerData.setVariable("inventory::gangwar", InventoryUtils.serializeInventory(player.getInventory()));
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
