@@ -840,8 +840,8 @@ public class PlayerManager implements Listener {
                             throw new RuntimeException(e);
                         }
                     }
+                    PayDayUtils.PAYED_TAXES = 0;
                 }
-                PayDayUtils.PAYED_TAXES = 0;
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
