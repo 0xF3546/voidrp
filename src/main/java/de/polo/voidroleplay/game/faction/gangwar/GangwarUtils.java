@@ -198,6 +198,11 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             return;
         }
         Gangwar gangwarData = getGangwarByZone(zone);
+        int count = getPlayerInGangwar(zone);
+        if (count >= gangwarData.getMaxMember()) {
+            player.sendMessage(Prefix.ERROR + "Es sind zu viele Spieler im Gangwar.");
+            return;
+        }
         playerData.setVariable("inventory::gangwar", player.getInventory().getContents());
         // playerData.setVariable("inventory::gangwar", InventoryUtils.serializeInventory(player.getInventory()));
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
@@ -325,7 +330,12 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             }
             defenderData.setCurrent_gangwar(gangzone.getName());
             factionData.setCurrent_gangwar(gangzone.getName());
-            Gangwar gangwar = new Gangwar();
+            int count = factionManager.getOnlineMemberCount(factionData.getName());
+            int defender = factionManager.getOnlineMemberCount(gangzone.getOwner());
+            if (defender < count) {
+                count = defender;
+            }
+            Gangwar gangwar = new Gangwar(count);
             gangwar.setGangZone(gangzone);
             gangwar.setDefender(defenderData.getName());
             gangwar.setAttacker(factionData.getName());
@@ -339,6 +349,18 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         } else {
             player.sendMessage(Prefix.ERROR + "Gangwar ist nur Dienstag & Donnerstag von 18-22 Uhr verfügbar.");
         }
+    }
+
+    private int getPlayerInGangwar(String gangzone) {
+        Gangwar gw = getGangwarByZone(gangzone);
+        int count = 0;
+        for (PlayerData playerData : playerManager.getPlayers()) {
+            if (playerData.getFaction() == null) continue;
+            if (playerData.getVariable("gangwar") == null) continue;
+            if (playerData.getVariable("gangwar") != gw.getGangZone().getName()) continue;
+            count++;
+        }
+        return count;
     }
 
     public Gangwar getGangwarByZone(String zone) {

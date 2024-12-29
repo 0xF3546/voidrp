@@ -27,6 +27,13 @@ public class Gangwar extends GangwarData {
     @Setter
     private IGangzone gangZone;
 
+    @Getter
+    private final int maxMember;
+
+    public Gangwar(int maxMember) {
+        this.maxMember = maxMember;
+    }
+
     private int getDiff() {
         return getAttackerPoints() - getDefenderPoints();
     }
