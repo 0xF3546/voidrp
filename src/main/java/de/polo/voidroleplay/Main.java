@@ -2,6 +2,8 @@ package de.polo.voidroleplay;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.impl.MySQL;
@@ -21,6 +23,7 @@ import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
 import de.polo.voidroleplay.utils.player.ScoreboardManager;
 import dev.vansen.singleline.SingleLineOptions;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -123,6 +126,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().load();
     }
 
     @Override
@@ -134,6 +139,9 @@ public final class Main extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        PacketEvents.getAPI().getEventManager().registerListener(new PacketSendListener(playerManager, factionManager), PacketListenerPriority.NORMAL);
+        PacketEvents.getAPI().init();
 
         mySQL = new MySQL();
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
@@ -249,6 +257,7 @@ public final class Main extends JavaPlugin {
             throw new RuntimeException(e);
         }
         mySQL.close();
+        PacketEvents.getAPI().terminate();
     }
 
     private void registerAnnotatedCommands() {
