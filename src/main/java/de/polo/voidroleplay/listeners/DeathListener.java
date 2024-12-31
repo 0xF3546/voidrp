@@ -86,6 +86,7 @@ public class DeathListener implements Listener {
         if (playerData.getVariable("ffa") != null) {
             playerData.setDead(true);
             playerData.setDeathTime(5);
+            playerData.setFFADead(true); //Hinzugefügt weil Undertaker tote FFA Leute anzeigt
             Main.getInstance().gamePlay.getFfa().handleDeath(player);
             return;
         } else {

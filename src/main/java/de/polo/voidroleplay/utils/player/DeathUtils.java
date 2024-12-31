@@ -179,6 +179,8 @@ public class DeathUtils {
         playerData.removeMoney(playerData.getBargeld(), "Despawn");
         if (playerData.isFFADead()) {
             Main.getInstance().gamePlay.getFfa().respawnPlayer(player);
+            playerData.setFFADead(false);
+            return;
         }
         try {
             Statement statement = Main.getInstance().mySQL.getStatement();
@@ -188,7 +190,6 @@ public class DeathUtils {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if (playerData.isFFADead()) return;
         if (playerData.getVariable("gangwar") != null) {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
         } else {
