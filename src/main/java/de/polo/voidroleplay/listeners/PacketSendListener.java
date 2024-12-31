@@ -37,6 +37,7 @@ public class PacketSendListener implements PacketListener {
         }
 
         Player target = event.getPlayer();
+        if (target == null) return;
         WrapperPlayServerPlayerInfoUpdate playerInfoUpdate = new WrapperPlayServerPlayerInfoUpdate(event);
 
         for (var entry : playerInfoUpdate.getEntries()) {
@@ -45,7 +46,6 @@ public class PacketSendListener implements PacketListener {
 
             PlayerData targetData = playerManager.getPlayerData(target.getUniqueId());
             PlayerData senderData = playerManager.getPlayerData(sender.getUniqueId());
-            senderData.getSubTeam().getName();
             if (targetData == null || senderData == null) continue;
             processRelationship(entry, sender, targetData, senderData);
 

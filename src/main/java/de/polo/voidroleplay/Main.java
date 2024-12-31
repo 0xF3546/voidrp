@@ -140,9 +140,6 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketSendListener(playerManager, factionManager), PacketListenerPriority.NORMAL);
-        PacketEvents.getAPI().init();
-
         mySQL = new MySQL();
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         customTabAPI = new CustomTabAPI();
@@ -175,6 +172,9 @@ public final class Main extends JavaPlugin {
         beginnerpass = new Beginnerpass(playerManager, factionManager);
         new InventoryApiRegister(this);
         GlobalStats.load();
+
+        PacketEvents.getAPI().getEventManager().registerListener(new PacketSendListener(playerManager, factionManager), PacketListenerPriority.NORMAL);
+        PacketEvents.getAPI().init();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("§cDer Server wurde reloaded.");
