@@ -214,7 +214,6 @@ public class LumberjackCommand implements CommandExecutor {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        Main.getInstance().getCooldownManager().setCooldown(player, "holzfäller", 600);
         Inventory inv = player.getInventory();
         for (ItemStack item : inv.getContents()) {
             // ISSUE VRP-10000: fixed by adding null check for item meta
@@ -226,6 +225,7 @@ public class LumberjackCommand implements CommandExecutor {
 
     public void startJob(Player player) {
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller")) {
+            Main.getInstance().getCooldownManager().setCooldown(player, "holzfäller", 600);
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             playerData.setVariable("lumberjack::stripping", false);
             playerData.setVariable("lumberjack::hasStripped", false);
