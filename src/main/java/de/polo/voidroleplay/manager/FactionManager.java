@@ -370,6 +370,7 @@ public class FactionManager {
 
     public boolean isPlayerInGoodFaction(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
+        if (playerData.getFaction() == null) return false;
         return playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Medic") || playerData.getFaction().equalsIgnoreCase("Polizei");
     }
 
