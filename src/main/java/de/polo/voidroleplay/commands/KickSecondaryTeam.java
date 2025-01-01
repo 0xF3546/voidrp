@@ -19,7 +19,8 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class KickSecondaryTeam implements CommandExecutor {
+public class
+KickSecondaryTeam implements CommandExecutor {
     private final PlayerManager playerManager;
 
     public KickSecondaryTeam(PlayerManager playerManager) {
@@ -51,7 +52,7 @@ public class KickSecondaryTeam implements CommandExecutor {
             target.setSecondaryTeam(null);
         }
         player.sendMessage(Prefix.MAIN + "Du hast " + offlinePlayer.getName() + " aus seinem Sub-Team gekickt.");
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET secondaryTeam = NULL WHERE uuid = ?", player.getUniqueId().toString());
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET secondaryTeam = NULL WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
         TeamSpeak.reloadPlayer(offlinePlayer.getUniqueId());
         return false;
     }
