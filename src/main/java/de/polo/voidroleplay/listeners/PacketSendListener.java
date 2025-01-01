@@ -49,7 +49,7 @@ public class PacketSendListener implements PacketListener {
             if (targetData == null || senderData == null) continue;
             processRelationship(entry, sender, targetData, senderData);
 
-            FactionData factionData = factionManager.getFactionData(targetData.getFaction());
+            FactionData factionData = factionManager.getFactionData(senderData.getFaction());
             if (factionData == null) continue;
 
             processGoodFaction(target, sender, entry, targetData, senderData);
