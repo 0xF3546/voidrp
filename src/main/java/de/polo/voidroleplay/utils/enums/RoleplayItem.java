@@ -60,6 +60,7 @@ public enum RoleplayItem {
     DRINK_WATER("§bWasser", "Wasser", Material.POTION, false),
     URAN("§aUran", "Uran", Material.EMERALD, false);
 
+
     private final String displayName;
     private final String clearName;
     private final Material material;
