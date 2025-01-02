@@ -814,8 +814,9 @@ public class PlayerManager implements Listener {
                         }
                         plus += (banner * 30);
 
-                        int govTaxes = PayDayUtils.PAYED_TAXES / 10;
+                        int govTaxes = 0;
                         if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei") || factionData.getName().equalsIgnoreCase("Medic")) {
+                            govTaxes = PayDayUtils.PAYED_TAXES / 10;
                             plus += govTaxes;
                         }
 
