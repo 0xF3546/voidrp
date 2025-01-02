@@ -13,6 +13,8 @@ import de.polo.voidroleplay.storage.WantedReason;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
@@ -55,6 +57,8 @@ public class PacketSendListener implements PacketListener {
             processGoodFaction(target, sender, entry, targetData, senderData);
             processBadFaction(entry, senderData, targetData, sender);
             processSameFaction(entry, sender, targetData, factionData);
+
+            processGameMode(entry, senderData, sender);
         }
     }
 
@@ -89,5 +93,16 @@ public class PacketSendListener implements PacketListener {
         if (targetData.getRelationShip().isEmpty() || senderData.getRelationShip().isEmpty()) return;
         if (!targetData.getRelationShip().containsKey(sender.getUniqueId().toString())) return;
         entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.LIGHT_PURPLE));
+    }
+
+    private void processGameMode(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, PlayerData senderData, Player sender){
+        if (sender.getGameMode() == GameMode.CREATIVE) {
+            if (entry.getDisplayName() != null) {
+                entry.setDisplayName(Component.text(MessageFormat.format("[{0}GM{1}]", ChatColor.DARK_GREEN, ChatColor.RESET)).append(entry.getDisplayName()));
+            }
+            else{
+                entry.setDisplayName(Component.text(MessageFormat.format("[{0}GM{1}] {2}", ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName())));
+            }
+        }
     }
 }

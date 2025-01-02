@@ -61,6 +61,7 @@ public enum RoleplayItem {
     URAN("§aUran", "Uran", Material.EMERALD, false),
     BANDAGE("§cBandage", "Bandage", Material.PAPER, false);
 
+
     private final String displayName;
     private final String clearName;
     private final Material material;
