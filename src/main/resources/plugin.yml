@@ -282,7 +282,7 @@ commands:
   treuebonus:
   selldrug:
   giveprescription:
-    aliases: giverezept
+    aliases: [giverezept, rezept]
   unarrest:
   neulingschat:
     aliases: nc
