@@ -8,6 +8,7 @@ import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Prescription;
+import de.polo.voidroleplay.utils.player.PayDayUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -69,6 +70,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
                         return;
                     }
                     targetData.removeMoney(200, "Rezept - " + finalPrescription.getName());
+                    PayDayUtils.PAYED_TAXES += 100;
                     ItemStack stack = ItemManager.createItem(Material.PAPER, 1, 0, "§c" + finalPrescription.getName());
                     target.getInventory().addItem(stack);
                     target.sendMessage(Component.text("§eDu hast ein " + finalPrescription.getName() + " Rezept gekauft."));
