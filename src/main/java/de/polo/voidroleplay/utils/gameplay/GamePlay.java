@@ -45,6 +45,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.polo.voidroleplay.Main.gamePlay;
+
 public class GamePlay implements Listener {
     public final ApothekeFunctions apotheke;
     public final Drugstorage drugstorage;
@@ -140,18 +142,18 @@ public class GamePlay implements Listener {
     }
 
     public static void useDrug(Player player, Drug drug) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = Main.playerManager.getPlayerData(player);
 
         if (playerData.isCuffed()) {
             player.sendMessage(Prefix.ERROR + "Du bist in Handschellen.");
             return;
         }
 
-        PlayerDrugUsage existingUsage = Main.getInstance().gamePlay.getDrugUsage(player.getUniqueId(), drug);
+        PlayerDrugUsage existingUsage = gamePlay.getDrugUsage(player.getUniqueId(), drug);
 
         for (PotionEffect effect : drug.getEffects()) {
             if (effect.getType().equals(PotionEffectType.ABSORPTION)) {
-                boolean isAbsorptionActive = Main.getInstance().gamePlay.getActiveDrugUsages(player.getUniqueId())
+                boolean isAbsorptionActive = gamePlay.getActiveDrugUsages(player.getUniqueId())
                         .stream()
                         .anyMatch(activeUsage -> activeUsage.getDrug().getEffects()
                                 .stream()
@@ -159,13 +161,17 @@ public class GamePlay implements Listener {
 
                 if (isAbsorptionActive) {
                     LocalDateTime now = Utils.getTime();
-                    // long remainingSeconds = Duration.between(now, existingUsage.getUsage().plusSeconds(drug.getTime())).getSeconds();
                     long remainingSeconds = -1;
-                    if (existingUsage != null && existingUsage.getUsage() != null) {
-                        remainingSeconds = Duration.between(
-                                now,
-                                existingUsage.getUsage().plusSeconds(drug.getTime())
-                        ).getSeconds();
+
+                    for (PlayerDrugUsage activeUsage : gamePlay.getActiveDrugUsages(player.getUniqueId())) {
+                        if (activeUsage.getDrug().getEffects().stream()
+                                .anyMatch(activeEffect -> activeEffect.getType().equals(PotionEffectType.ABSORPTION))) {
+                            remainingSeconds = Duration.between(
+                                    now,
+                                    activeUsage.getUsage().plusSeconds(activeUsage.getDrug().getTime())
+                            ).getSeconds();
+                            break;
+                        }
                     }
 
                     if (remainingSeconds > 0) {
@@ -177,26 +183,17 @@ public class GamePlay implements Listener {
             player.addPotionEffect(effect);
         }
 
+
         PlayerDrugUsage usage = new PlayerDrugUsage(player.getUniqueId(), drug, Utils.getTime());
-        Main.getInstance().gamePlay.drugUsages.add(usage);
+        gamePlay.drugUsages.add(usage);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1, 1);
-        ItemManager.removeCustomItem(player, drug.getItem(), 1);
         switch (drug) {
-            case JOINT:
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " raucht eine Zigarre");
-                break;
-            case COCAINE:
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " konsumiert Schnupftabak");
-                break;
-            case ANTIBIOTIKUM:
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Antibiotikum");
-                break;
-            case SCHMERZMITTEL:
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Schmerzmittel");
-                break;
-            case ADRENALINE_INJECTION:
-                ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " spritzt sich Adrenalin");
-                break;
+            case JOINT -> ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " raucht eine Zigarre");
+            case COCAINE -> ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " konsumiert Schnupftabak");
+            case ANTIBIOTIKUM -> ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Antibiotikum");
+            case SCHMERZMITTEL -> ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " nimmt Schmerzmittel");
+            case ADRENALINE_INJECTION ->
+                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " spritzt sich Adrenalin");
         }
     }
 
