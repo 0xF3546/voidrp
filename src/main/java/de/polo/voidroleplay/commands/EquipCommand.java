@@ -58,6 +58,10 @@ public class EquipCommand implements CommandExecutor, Listener {
             openChurch(player, playerData);
             return false;
         }
+        if (playerData.getFaction().equalsIgnoreCase("Medic")) {
+            openMedic(player, playerData);
+            return false;
+        }
         if (playerData.getFaction().equalsIgnoreCase("News")) {
             openNews(player, playerData);
             return false;
@@ -77,6 +81,32 @@ public class EquipCommand implements CommandExecutor, Listener {
                 }
                 playerData.removeMoney(15, "Buch");
                 player.getInventory().addItem(ItemManager.createItem(Material.WRITABLE_BOOK, 1, 0, "§7Buch"));
+            }
+        });
+    }
+
+    private void openMedic(Player player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Equip (Medic)", true, true);
+        inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(RoleplayItem.BANDAGE.getMaterial(), 1, 0, RoleplayItem.BANDAGE.getDisplayName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 20) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 20$!");
+                    return;
+                }
+                playerData.removeMoney(20, "Kauf BANDAGE");
+                ItemManager.addCustomItem(player, RoleplayItem.BANDAGE, 1);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(RoleplayItem.IBOPROFEN.getMaterial(), 1, 0, RoleplayItem.IBOPROFEN.getDisplayName())) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (playerData.getBargeld() < 20) {
+                    player.sendMessage(Prefix.ERROR + "Du benötigst 20$!");
+                    return;
+                }
+                playerData.removeMoney(20, "Kauf Iboprofen");
+                ItemManager.addCustomItem(player, RoleplayItem.IBOPROFEN, 1);
             }
         });
     }
@@ -227,7 +257,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                         player.sendMessage(ERROR_NOT_ENOUGH_EQUIP);
                         return;
                     }
-                    ItemManager.addCustomItem(player, RoleplayItem.CUFF, 1);
+                    ItemManager.addCustomItem(player, RoleplayItem.CUFF, 2);
                     factionData.setEquipPoints(factionData.getEquipPoints() - 1);
                     factionData.save();
                     logBuy(player, "Handschellen", 1);
