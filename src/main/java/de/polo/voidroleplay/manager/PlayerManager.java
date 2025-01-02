@@ -590,7 +590,9 @@ public class PlayerManager implements Listener {
                         rankData.getRang(),
                         rankData.getPermlevel(),
                         uuid.toString());
-                PlayerData playerData = playerDataMap.get(uuid);
+                TeamSpeak.reloadPlayer(uuid);
+                PlayerData playerData = getPlayerData(uuid);
+                if (playerData == null) return;
                 playerData.setRang(rankData.getRang());
                 playerData.setPermlevel(rankData.getPermlevel());
                 Player player = Bukkit.getPlayer(uuid);
@@ -599,7 +601,6 @@ public class PlayerManager implements Listener {
                 }
                 Utils.Tablist.setTablist(player, null);
                 playerData.setAduty(false);
-                TeamSpeak.reloadPlayer(player.getUniqueId());
             }
         }
     }
