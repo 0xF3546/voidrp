@@ -10,6 +10,7 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Gender;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -157,11 +158,28 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 if (playerData.getFaction().equals("Medic")) {
                     Main.getInstance().getCooldownManager().setCooldown(player, "ibo", 1);
                     targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12000, 1));
-                    targetplayer.addPotionEffect(PotionEffectType.HEAL.createEffect(12000, 1));
+                    targetplayer.addPotionEffect(PotionEffectType.HEALTH_BOOST.createEffect(12000, 1));
                     targetplayer.sendMessage("§dMediziner " + player.getName() + " hat dir Iboprofen verabreicht.");
                     player.sendMessage("§dDu hast " + targetplayer.getName() + " Iboprofen verabreicht.");
                     ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Iboprofen verabreicht.");
                     ItemManager.removeCustomItem(player, RoleplayItem.IBOPROFEN, 1);
+                } else {
+                    player.sendMessage(Prefix.ERROR + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
+                }
+            } else if (ItemManager.equals(item, RoleplayItem.BANDAGE) && !Main.getInstance().getCooldownManager().isOnCooldown(player, "band")) {
+                if (Main.getInstance().getCooldownManager().isOnCooldown(targetplayer, "bandage")) {
+                    player.sendMessage(Component.text("§5Warte noch " + Main.getInstance().getCooldownManager().getRemainingTime(targetplayer, "bandage") + " Sekunden"));
+                    return;
+                }
+                if (playerData.getFaction().equals("Medic")) {
+                    Main.getInstance().getCooldownManager().setCooldown(player, "band", 1);
+                    Main.getInstance().getCooldownManager().setCooldown(targetplayer, "bandage", 120);
+                    targetplayer.addPotionEffect(PotionEffectType.ABSORPTION.createEffect(12000, 1));
+                    targetplayer.addPotionEffect(PotionEffectType.REGENERATION.createEffect(15 * 20, 1));
+                    targetplayer.sendMessage("§dMediziner " + player.getName() + " hat dir Bandage verabreicht.");
+                    player.sendMessage("§dDu hast " + targetplayer.getName() + " Bandage verabreicht.");
+                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " hat " + targetplayer.getName() + " Bandage verabreicht.");
+                    ItemManager.removeCustomItem(player, RoleplayItem.BANDAGE, 1);
                 } else {
                     player.sendMessage(Prefix.ERROR + "Dieses Feature steht nur der Fraktion \"Medic\" zu Verfügung.");
                 }

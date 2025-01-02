@@ -58,7 +58,8 @@ public enum RoleplayItem {
     FERTILIZER("§2Dünger", "Dünger", Material.BONE_MEAL, false),
     WATER("§bWasser", "Wasser", Material.WATER_BUCKET, false),
     DRINK_WATER("§bWasser", "Wasser", Material.POTION, false),
-    URAN("§aUran", "Uran", Material.EMERALD, false);
+    URAN("§aUran", "Uran", Material.EMERALD, false),
+    BANDAGE("§cBandage", "Bandage", Material.PAPER, false);
 
     private final String displayName;
     private final String clearName;
