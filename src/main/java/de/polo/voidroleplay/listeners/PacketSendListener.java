@@ -101,7 +101,8 @@ public class PacketSendListener implements PacketListener {
                 entry.setDisplayName(Component.text(MessageFormat.format("[{0}GM{1}]", ChatColor.DARK_GREEN, ChatColor.RESET)).append(entry.getDisplayName()));
             }
             else{
-                entry.setDisplayName(Component.text(MessageFormat.format("[{0}GM{1}] {2}", ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName())));
+
+                //entry.setDisplayName(Component.text(MessageFormat.format("[{0}GM{1}] {2}", ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName())));
             }
         }
     }
