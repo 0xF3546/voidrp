@@ -214,7 +214,7 @@ public class BankingUtils implements Listener {
                 player.closeInventory();
             }
         });
-        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank")) {
+        if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank"))) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

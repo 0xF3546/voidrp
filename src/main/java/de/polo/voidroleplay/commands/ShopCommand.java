@@ -61,7 +61,7 @@ public class ShopCommand implements CommandExecutor {
                 });
                 if (shopData.getType() == null) continue;
                 if (i == 45 && playerData.getCompany() != null && shopData.getType() != ShopType.BLACKMARKET) {
-                    if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId())) {
+                    if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId()))) {
                         inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eBusiness-Übersicht")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
@@ -125,7 +125,7 @@ public class ShopCommand implements CommandExecutor {
 
             }
         });
-        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId())) {
+        if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId()))) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.CHEST, 1, 0, "§6Produkte")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -133,7 +133,7 @@ public class ShopCommand implements CommandExecutor {
                 }
             });
         }
-        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank")) {
+        if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank"))) {
             inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§3Kasse leeren")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -160,7 +160,7 @@ public class ShopCommand implements CommandExecutor {
 
             }
         });
-        if (playerData.getCompanyRole().hasPermission("*")) {
+        if (playerData.getCompanyRole() != null && playerData.getCompanyRole().hasPermission("*")) {
             inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aKaufen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
