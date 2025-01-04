@@ -6,6 +6,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.ChatUtils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -83,6 +84,8 @@ public class CommandListener implements Listener {
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
             utils.setAFK(player, false);
+            PlayerPacket packet = new PlayerPacket(player);
+            packet.renewPacket();
         }
 
         for (PlayerData playerData2 : playerManager.getPlayers()) {

@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +27,8 @@ public class PlayerMoveListener implements Listener {
         playerData.setIntVariable("afk", 0);
         if (playerData.isAFK()) {
             utils.setAFK(player, false);
+            PlayerPacket packet = new PlayerPacket(player);
+            packet.renewPacket();
         }
     }
 }

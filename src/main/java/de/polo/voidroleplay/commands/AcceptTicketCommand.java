@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,6 +69,10 @@ public class AcceptTicketCommand implements CommandExecutor {
         utils.sendActionBar(targetplayer, "§a§lDein Ticket wurde angenommen!");
         Utils.Tablist.setTablist(player, "§8[§6R§8]");
         Utils.Tablist.setTablist(targetplayer, "§8[§6R§8]");
+        PlayerPacket playerPacket = new PlayerPacket(player);
+        playerPacket.renewPacket();
+        PlayerPacket targetPacket = new PlayerPacket(targetplayer);
+        targetPacket.renewPacket();
         Ticket ticket = supportManager.getTicket(player);
         Main.getInstance().getMySQL().updateAsync("UPDATE tickets SET editor = ?. editedAt = NOW() WHERE id = ?", player.getUniqueId().toString(), ticket.getId());
         return false;

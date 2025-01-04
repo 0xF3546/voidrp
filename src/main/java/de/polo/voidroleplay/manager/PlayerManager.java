@@ -24,6 +24,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.*;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import de.polo.voidroleplay.utils.player.PayDayUtils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import de.polo.voidroleplay.utils.player.PlayerTutorial;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -718,6 +719,8 @@ public class PlayerManager implements Listener {
                         playerData.setIntVariable("afk", afkCounter);
                         if (afkCounter >= 2) {
                             utils.setAFK(player, true);
+                            PlayerPacket packet = new PlayerPacket(player);
+                            packet.renewPacket();
                         }
                     }
                     if (playerData.getJailParole() > 0) {

@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,6 +26,8 @@ public class AFKCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         utils.setAFK(player, true);
+        PlayerPacket packet = new PlayerPacket(player);
+        packet.renewPacket();
         return false;
     }
 }

@@ -29,6 +29,7 @@ import de.polo.voidroleplay.utils.enums.StorageType;
 import de.polo.voidroleplay.utils.gameplay.Case;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import de.polo.voidroleplay.utils.player.ChatUtils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import de.polo.voidroleplay.utils.player.Rubbellose;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
@@ -110,6 +111,8 @@ public class PlayerInteractListener implements Listener {
         }
         if (playerData.isAFK()) {
             utils.setAFK(player, false);
+            PlayerPacket packet = new PlayerPacket(player);
+            packet.renewPacket();
         }
         if (playerData.isDead()) {
             event.setCancelled(true);

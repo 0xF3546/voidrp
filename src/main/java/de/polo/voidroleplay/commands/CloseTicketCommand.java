@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -52,6 +53,10 @@ public class CloseTicketCommand implements CommandExecutor {
             targetplayer.sendMessage(Prefix.SUPPORT + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
             utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
             player.sendMessage(Prefix.SUPPORT + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
+            PlayerPacket playerPacket = new PlayerPacket(player);
+            playerPacket.renewPacket();
+            PlayerPacket targetPacket = new PlayerPacket(targetplayer);
+            targetPacket.renewPacket();
             adminManager.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", ChatColor.YELLOW);
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);

@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -45,6 +46,8 @@ public class GMCommand implements CommandExecutor {
                 player.setGameMode(GameMode.SPECTATOR);
                 break;
         }
+        PlayerPacket packet = new PlayerPacket(player);
+        packet.renewPacket();
         return false;
     }
 }

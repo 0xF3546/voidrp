@@ -4,6 +4,7 @@ import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate;
+import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.storage.BlacklistData;
@@ -59,6 +60,7 @@ public class PacketSendListener implements PacketListener {
             processSameFaction(entry, sender, targetData, factionData);
 
             processGameMode(entry, senderData, sender);
+            processReport(entry, sender);
             processAFK(entry, sender, senderData);
         }
     }
@@ -71,7 +73,7 @@ public class PacketSendListener implements PacketListener {
                     int wantedLevel = wantedReason.getWanted();
                     NamedTextColor color = wantedLevel >= 50 ? NamedTextColor.DARK_RED : NamedTextColor.RED;
                     entry.setDisplayName(Component.text(MessageFormat.format("{0}", sender.getName())).color(color));
-                    entry.getGameProfile().setName(MessageFormat.format(net.md_5.bungee.api.ChatColor.of(color.asHexString()) + "{0}", sender.getName()));
+                    //entry.getGameProfile().setName(MessageFormat.format(net.md_5.bungee.api.ChatColor.of(color.asHexString()) + "{0} {1}", sender.getName(), wantedLevel));
                 }
             }
         }
@@ -83,32 +85,32 @@ public class PacketSendListener implements PacketListener {
             if (UUID.fromString(blacklistData.getUuid()) != senderData.getUuid()
                     || !blacklistData.getFaction().equalsIgnoreCase(targetData.getFaction())) continue;
             entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.DARK_RED));
-            entry.getGameProfile().setName(ChatColor.DARK_RED + sender.getName());
+            //entry.getGameProfile().setName(ChatColor.DARK_RED + sender.getName());
         }
     }
 
     private void processSameFaction(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData targetData, FactionData factionData) {
         if (!targetData.getFaction().equalsIgnoreCase(factionData.getName())) return;
         entry.setDisplayName(Component.text("§" + factionData.getPrimaryColor() + sender.getName()));
-        entry.getGameProfile().setName("§" + factionData.getPrimaryColor() + sender.getName());
+        //entry.getGameProfile().setName("§" + factionData.getPrimaryColor() + sender.getName());
     }
 
     private void processRelationship(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData targetData, PlayerData senderData) {
         if (targetData.getRelationShip().isEmpty() || senderData.getRelationShip().isEmpty()) return;
         if (!targetData.getRelationShip().containsKey(sender.getUniqueId().toString())) return;
         entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.LIGHT_PURPLE));
-        entry.getGameProfile().setName(ChatColor.LIGHT_PURPLE + sender.getName());
+        //entry.getGameProfile().setName(ChatColor.LIGHT_PURPLE + sender.getName());
     }
 
     private void processGameMode(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, PlayerData senderData, Player sender){
         if (sender.getGameMode() == GameMode.CREATIVE) {
             if (entry.getDisplayName() != null) {
                 entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}GM{0}] {2}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET )).append(entry.getDisplayName()));
-                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, entry.getDisplayName().toString()));
+                //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, entry.getDisplayName().toString()));
             }
             else{
                 entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName())));
-                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName()));
+                //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName()));
             }
         }
     }
@@ -117,11 +119,24 @@ public class PacketSendListener implements PacketListener {
         if(senderData.isAFK()){
             if (entry.getDisplayName() != null) {
                 entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}AFK{0}] {2}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET)).append(entry.getDisplayName()));
-                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, entry.getDisplayName().toString()));
+                //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, entry.getDisplayName().toString()));
             }
             else{
                 entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName())));
-                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName()));
+                //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName()));
+            }
+        }
+    }
+
+    private void processReport(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender){
+        if(Main.supportManager.isInAcceptedTicket(sender)){
+            if (entry.getDisplayName() != null) {
+                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}R{0}] {2}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.RESET)).append(entry.getDisplayName()));
+                //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}R{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.RESET, entry.getDisplayName().toString()));
+            }
+            else{
+                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}R{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.RESET, sender.getName())));
+                //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}R{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.RESET, sender.getName()));
             }
         }
     }
