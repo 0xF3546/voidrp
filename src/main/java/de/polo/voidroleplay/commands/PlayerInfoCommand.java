@@ -6,6 +6,8 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.player.PlayerInventoryItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,6 +50,10 @@ public class PlayerInfoCommand implements CommandExecutor {
                         player.sendMessage("§8 ➥ §6Gefängnis§8: §7Ja");
                     }
                     player.sendMessage("§8 ➥ §6Hausslots§8: §7" + targetplayerdata.getHouseSlot());
+                    player.sendMessage(Component.text("§8 ➥ §6Inventar§8:§7 " + targetplayerdata.getInventory().getWeight() + "/" + targetplayerdata.getInventory().getSize()) + ":");
+                    for (PlayerInventoryItem item : targetplayerdata.getInventory().getItems()) {
+                        player.sendMessage(Component.text("§8  » §e" + item.getItem().getClearName() + "§8:§7 " + item.getAmount()));
+                    }
                 } else {
                     if (targetplayerdata.isDead()) {
                         player.sendMessage("§8 » §7" + targetplayer.getName() + " | Bewusstlos");
