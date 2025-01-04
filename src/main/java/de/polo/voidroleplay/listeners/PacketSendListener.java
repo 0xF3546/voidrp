@@ -117,11 +117,11 @@ public class PacketSendListener implements PacketListener {
         if(senderData.isAFK()){
             if (entry.getDisplayName() != null) {
                 entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}AFK{0}] {2}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET)).append(entry.getDisplayName()));
-                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, entry.getDisplayName().toString()));
+                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, entry.getDisplayName().toString()));
             }
             else{
                 entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName())));
-                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName()));
+                entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName()));
             }
         }
     }
