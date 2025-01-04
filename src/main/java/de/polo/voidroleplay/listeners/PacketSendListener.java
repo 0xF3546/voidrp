@@ -50,15 +50,16 @@ public class PacketSendListener implements PacketListener {
             PlayerData targetData = playerManager.getPlayerData(target.getUniqueId());
             PlayerData senderData = playerManager.getPlayerData(sender.getUniqueId());
             if (targetData == null || senderData == null) continue;
-            processRelationship(entry, sender, targetData, senderData);
 
             FactionData factionData = factionManager.getFactionData(senderData.getFaction());
-            if (factionData == null) continue;
 
-            processGoodFaction(target, sender, entry, targetData, senderData);
-            processBadFaction(entry, senderData, targetData, sender);
-            processSameFaction(entry, sender, targetData, factionData);
+            if(factionData != null) {
+                processGoodFaction(target, sender, entry, targetData, senderData);
+                processBadFaction(entry, senderData, targetData, sender);
+                processSameFaction(entry, sender, targetData, factionData);
+            }
 
+            processRelationship(entry, sender, targetData, senderData);
             processGameMode(entry, senderData, sender);
             processReport(entry, sender);
             processAFK(entry, sender, senderData);
