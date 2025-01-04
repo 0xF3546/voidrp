@@ -60,7 +60,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR + offlinePlayer.getName() + " ist nicht in deiner Fraktion.");
             return false;
         }
-        if (targetData.getFactionGrade() > playerData.getFactionGrade()) {
+        if (targetData.getFactionGrade() >= playerData.getFactionGrade()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
