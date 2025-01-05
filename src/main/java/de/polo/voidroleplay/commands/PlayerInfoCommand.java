@@ -50,7 +50,7 @@ public class PlayerInfoCommand implements CommandExecutor {
                         player.sendMessage("§8 ➥ §6Gefängnis§8: §7Ja");
                     }
                     player.sendMessage("§8 ➥ §6Hausslots§8: §7" + targetplayerdata.getHouseSlot());
-                    player.sendMessage(Component.text("§8 ➥ §6Inventar§8:§7 " + targetplayerdata.getInventory().getWeight() + "/" + targetplayerdata.getInventory().getSize()) + ":");
+                    player.sendMessage(Component.text("§8 ➥ §6Inventar§8:§7 " + targetplayerdata.getInventory().getWeight() + "/" + targetplayerdata.getInventory().getSize() + ":"));
                     for (PlayerInventoryItem item : targetplayerdata.getInventory().getItems()) {
                         player.sendMessage(Component.text("§8  » §e" + item.getItem().getClearName() + "§8:§7 " + item.getAmount()));
                     }
