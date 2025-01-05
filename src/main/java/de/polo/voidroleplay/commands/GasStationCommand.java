@@ -83,7 +83,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
 
             }
         });
-        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_gas_" + gasStationData.getId())) {
+        if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_gas_" + gasStationData.getId()))) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.CHEST, 1, 0, "§6Liter-Preis anpassen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -94,7 +94,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
                 }
             });
         }
-        if (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank")) {
+        if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompany().getOwner().equals(player.getUniqueId()) || playerData.getCompanyRole().hasPermission("manage_bank"))) {
             inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§3Kasse leeren")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -117,7 +117,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
 
             }
         });
-        if (playerData.getCompanyRole().hasPermission("*")) {
+        if (playerData.getCompanyRole() != null && playerData.getCompanyRole().hasPermission("*")) {
             inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aKaufen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
