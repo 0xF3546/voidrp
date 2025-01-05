@@ -19,6 +19,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 import java.util.UUID;
 
 import static de.polo.voidroleplay.Main.utils;
@@ -53,6 +54,8 @@ public class PacketSendListener implements PacketListener {
 
             FactionData factionData = factionManager.getFactionData(senderData.getFaction());
 
+            entry.setDisplayName(null);
+
             if(factionData != null) {
                 processGoodFaction(target, sender, entry, targetData, senderData);
                 processBadFaction(entry, senderData, targetData, sender);
@@ -63,6 +66,7 @@ public class PacketSendListener implements PacketListener {
             processGameMode(entry, senderData, sender);
             processReport(entry, sender);
             processAFK(entry, sender, senderData);
+            processNoneNameTag(entry, sender, senderData);
         }
     }
 
@@ -110,7 +114,7 @@ public class PacketSendListener implements PacketListener {
                 //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, entry.getDisplayName().toString()));
             }
             else{
-                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName())));
+                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.GRAY, sender.getName())));
                 //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}GM{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.RESET, sender.getName()));
             }
         }
@@ -123,7 +127,7 @@ public class PacketSendListener implements PacketListener {
                 //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, entry.getDisplayName().toString()));
             }
             else{
-                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName())));
+                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.GRAY, sender.getName())));
                 //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}AFK{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.DARK_PURPLE, ChatColor.RESET, sender.getName()));
             }
         }
@@ -136,9 +140,29 @@ public class PacketSendListener implements PacketListener {
                 //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}R{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.RESET, entry.getDisplayName().toString()));
             }
             else{
-                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}R{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.RESET, sender.getName())));
+                entry.setDisplayName(Component.text(MessageFormat.format("{0}[{1}R{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.GRAY, sender.getName())));
                 //entry.getGameProfile().setName(MessageFormat.format("{0}[{1}R{0}]{2} {3}",ChatColor.DARK_GRAY, ChatColor.GOLD, ChatColor.RESET, sender.getName()));
             }
         }
     }
+
+    public void processNoneNameTag(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData senderData){
+        if(entry.getDisplayName() == null){
+            if(Objects.requireNonNull(senderData).isDuty()){
+                if (senderData.getFaction().equalsIgnoreCase("Polizei")){
+                    entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.BLUE));
+                }
+                else if(senderData.getFaction().equalsIgnoreCase("FBI")){
+                    entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.DARK_BLUE));
+                }
+                else if(senderData.getFaction().equalsIgnoreCase("Medic")){
+                    entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.DARK_RED));
+                }
+            }
+            else{
+                entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.GRAY));
+            }
+        }
+    }
+
 }
