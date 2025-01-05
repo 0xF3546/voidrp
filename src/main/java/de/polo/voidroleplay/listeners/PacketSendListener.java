@@ -63,10 +63,10 @@ public class PacketSendListener implements PacketListener {
             }
 
             processRelationship(entry, sender, targetData, senderData);
+            processNoneNameTag(entry, sender, senderData);
             processGameMode(entry, senderData, sender);
             processReport(entry, sender);
             processAFK(entry, sender, senderData);
-            processNoneNameTag(entry, sender, senderData);
         }
     }
 
