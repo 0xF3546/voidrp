@@ -166,15 +166,14 @@ public class PlantFunctions implements Listener {
     }
 
     private Collection<Plant> getNearbyPlants(Location location) {
-        List<Plant> plants = new ObjectArrayList<>();
-        for (Plant plant : plants) {
-            if (plant.getBlock().getLocation().distance(location) < 10) plants.add(plant);
-        }
-        return plants;
+        return plants.stream()
+                .filter(x -> x.getBlock().getLocation().distance(location) < 10)
+                .toList();
     }
 
     private void openBurnPlant(Player player, Plant plant) {
         Collection<Plant> nearbyPlants = getNearbyPlants(player.getLocation());
+        if (nearbyPlants.size() == 0) return;
         InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §c" + nearbyPlants.size() + " Plantagen");
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§cVerbrennen")) {
             @Override
@@ -197,6 +196,7 @@ public class PlantFunctions implements Listener {
                 Main.waitSeconds(10, () -> {
                     for (Plant p : nearbyPlants) {
                         p.getBlock().setType(Material.AIR);
+                        p.getBlock().getLocation().subtract(0, 1, 0).getBlock().setType(Material.GRASS_BLOCK);
                         plants.remove(p);
                     }
                 });
