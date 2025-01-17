@@ -46,7 +46,7 @@ public class PacketSendListener implements PacketListener {
 
         for (var entry : playerInfoUpdate.getEntries()) {
             Player sender = Bukkit.getPlayer(entry.getProfileId());
-            if (sender == null || target.equals(sender)) continue;
+            if (sender == null) continue;
 
             PlayerData targetData = playerManager.getPlayerData(target.getUniqueId());
             PlayerData senderData = playerManager.getPlayerData(sender.getUniqueId());
