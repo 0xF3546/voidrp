@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -68,5 +69,13 @@ public class PlayerWanted {
 
         Main.getInstance().getMySQL()
                 .queryThreaded(updateQuery, getVariationsAsJson(), this.id);
+    }
+
+    public boolean hasVariation(WantedVariation wantedVariation) {
+        return variations.contains(wantedVariation);
+    }
+
+    public Collection<WantedVariation> getVariations() {
+        return variations;
     }
 }

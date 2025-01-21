@@ -296,3 +296,5 @@ commands:
   warpevent:
   bottletransport:
     aliases: flaschenlieferant
+  modifywanteds:
+    aliases: mw

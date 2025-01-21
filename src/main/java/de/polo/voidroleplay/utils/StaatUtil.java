@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.*;
+import de.polo.voidroleplay.utils.enums.WantedVariation;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -147,15 +148,19 @@ public class StaatUtil {
         WantedReason wantedReason = getWantedReason(playerData.getWanted().getWantedId());
         if (playerData.getWanted() != null) {
             JailData jailData = new JailData();
+            int wanteds = wantedReason.getWanted();
+            for (WantedVariation variation : playerData.getWanted().getVariations()) {
+                wanteds += variation.getWantedAmount();
+            }
             if (!deathArrest) locationManager.useLocation(player, "gefaengnis");
             if (deathArrest) {
-                player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wantedReason.getWanted() / 3 + " Minuten inhaftiert.");
+                player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wanteds / 3 + " Minuten inhaftiert.");
             } else {
-                player.sendMessage("§8[§6Gefängnis§8] §7Du bist nun für " + wantedReason.getWanted() / 3 + "  Minuten im Gefängnis..");
+                player.sendMessage("§8[§6Gefängnis§8] §7Du bist nun für " + wanteds / 3 + "  Minuten im Gefängnis..");
             }
             playerData.setJailed(true);
             factionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
-            playerData.setHafteinheiten(wantedReason.getWanted() / 3);
+            playerData.setHafteinheiten(wanteds / 3);
             Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());

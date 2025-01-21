@@ -6,6 +6,7 @@ import de.polo.voidroleplay.storage.WantedReason;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.WantedVariation;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -48,8 +49,14 @@ public class WantedInfoCommand implements CommandExecutor {
             return false;
         }
         WantedReason wantedReason = utils.getStaatUtil().getWantedReason(targetData.getWanted().getWantedId());
+        int wanteds = wantedReason.getWanted();
+        StringBuilder reason = new StringBuilder(wantedReason.getReason());
+        for (WantedVariation variation : targetData.getWanted().getVariations()) {
+            wanteds += variation.getWantedAmount();
+            reason.append(", ").append(variation.getName());
+        }
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(targetData.getWanted().getIssuer());
-        player.sendMessage("§9HQ: Fahndung " + target.getName() + ": " + wantedReason.getReason() + " (" + wantedReason.getWanted() + " WPS)");
+        player.sendMessage("§9HQ: Fahndung " + target.getName() + ": " + reason + " (" + wanteds + " WPS)");
         player.sendMessage("§9HQ: Beamter: " + offlinePlayer.getName() + ", " + Utils.localDateTimeToReadableString(targetData.getWanted().getIssued()));
         return false;
     }

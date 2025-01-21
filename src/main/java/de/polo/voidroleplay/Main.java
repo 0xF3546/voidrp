@@ -280,7 +280,8 @@ public final class Main extends JavaPlugin {
                 MegaphoneCommand.class,
                 CheckResultCommand.class,
                 WarpEventCommand.class,
-                BottletransportCommand.class
+                BottletransportCommand.class,
+                ModifyWantedsCommand.class
         );
 
 
