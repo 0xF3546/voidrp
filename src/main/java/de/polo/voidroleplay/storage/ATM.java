@@ -19,4 +19,8 @@ public class ATM {
     @Getter
     @Setter
     private LocalDateTime lastTimeBlown;
+
+    @Getter
+    @Setter
+    private int moneyAmount = 100000;
 }

@@ -16,6 +16,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -409,6 +410,11 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (playerManager.money(player) >= amount) {
+                    ATM atm  = event.getPlayerData().getVariable("atm");
+                    atm.setMoneyAmount(atm.getMoneyAmount() + amount);
+                    if (atm.getMoneyAmount() > 100000) {
+                        atm.setMoneyAmount(100000);
+                    }
                     playerManager.removeMoney(player, amount, "Bankeinzahlung(" + event.getPlayerData().getVariable("atm_name") + ")");
                     playerManager.addBankMoney(player, amount, "Bankeinzahlung(" + event.getPlayerData().getVariable("atm_name") + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ eingezahlt.");
@@ -425,8 +431,14 @@ public class BankingUtils implements Listener {
                 return;
             }
             int amount = Integer.parseInt(event.getMessage());
+            ATM atm = event.getPlayerData().getVariable("atm");
+            if (atm.getMoneyAmount() < amount) {
+                player.sendMessage(Component.text(Prefix.ERROR + "Der ATM hat nicht genug Geld."));
+                return;
+            }
             if (amount >= 1) {
                 if (playerManager.bank(player) >= amount) {
+                    atm.setMoneyAmount(atm.getMoneyAmount() - amount);
                     playerManager.removeBankMoney(player, amount, "Bankauszahlung (" + event.getPlayerData().getVariable("atm_name") + ")");
                     playerManager.addMoney(player, amount, "Bankauszahlung (" + event.getPlayerData().getVariable("atm_name") + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");
