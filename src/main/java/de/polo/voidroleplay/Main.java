@@ -187,6 +187,7 @@ public final class Main extends JavaPlugin {
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM money_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM phone_messages WHERE datum < DATE_SUB(NOW(), INTERVAL 14 DAY)");
+            statement.execute("DELETE FROM housebans WHERE until > NOW()");
             //teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
         } catch (SQLException e) {
             throw new RuntimeException(e);
