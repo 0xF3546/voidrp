@@ -198,6 +198,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                                         }
                                     });
                                     j++;
+                                    if (j % 9 == 8) j += 2;
                                 }
                             }
                         }
