@@ -8,6 +8,7 @@ import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.Prescription;
+import de.polo.voidroleplay.utils.player.ChatUtils;
 import de.polo.voidroleplay.utils.player.PayDayUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -62,6 +63,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
         target.sendMessage("§6" + player.getName() + " ht dir ein Rezept ausgestellt (" + prescription.getName() + ").");
         utils.vertragUtil.sendInfoMessage(target);
         Prescription finalPrescription = prescription;
+        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " stellt ein Rezept aus");
         Agreement agreement = new Agreement(player, target, "rezept",
                 () -> {
                     PlayerData targetData = Main.getInstance().playerManager.getPlayerData(target);
