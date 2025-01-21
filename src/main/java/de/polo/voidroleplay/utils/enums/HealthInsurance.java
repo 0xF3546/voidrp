@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum HealthInsurance {
-    BASIC("Standart", 0, 0),
+    BASIC("Standard", 0, 0),
     PLUS("Plus", 50, 50),
     FULL("Komplett", 100, 125);
     private final String name;

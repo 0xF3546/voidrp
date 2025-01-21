@@ -285,7 +285,8 @@ public final class Main extends JavaPlugin {
                 GeldlieferantCommand.class,
                 HealthInsuranceCommand.class,
                 LicensesCommand.class,
-                GiveLicenseCommand.class
+                GiveLicenseCommand.class,
+                FahrschuleCommand.class
         );
 
 
