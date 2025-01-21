@@ -85,15 +85,23 @@ public class Seasonpass implements CommandExecutor {
         }
     }
 
-    @SneakyThrows
     @Override
+    @SneakyThrows
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Prefix.ERROR + "Dieser Befehl kann nur von Spielern ausgeführt werden.");
+            return false;
+        }
         Player player = (Player) sender;
-        /*PlayerData playerData = playerManager.getPlayerData(player);
-        while (playerData.getQuests().size() < 14) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+
+        final int maxQuests = 14;
+
+        while (playerData.getQuests().size() < maxQuests) {
             Quest newQuest = getRandomQuest(playerData);
+
             if (newQuest == null) {
-                player.sendMessage(Prefix.ERROR + "Fehler beim erstellen von neuen Quests.");
+                player.sendMessage(Prefix.ERROR + "Es stehen keine neuen Quests zur Verfügung.");
                 break;
             }
 
@@ -106,15 +114,16 @@ public class Seasonpass implements CommandExecutor {
 
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
-                throw new SQLException("Creating quest failed, no rows affected.");
+                player.sendMessage(Prefix.ERROR + "Fehler beim Erstellen einer neuen Quest.");
+                break;
             }
 
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     playerQuest.setId(generatedKeys.getInt(1));
-                    playerData.addQuest(playerQuest); // Ensure this updates the quest list
+                    playerData.addQuest(playerQuest);
                 } else {
-                    throw new SQLException("Creating PlayerQuest failed, no ID obtained.");
+                    throw new SQLException("Fehler beim Erstellen der PlayerQuest: Keine ID erhalten.");
                 }
             } finally {
                 preparedStatement.close();
@@ -122,45 +131,45 @@ public class Seasonpass implements CommandExecutor {
             }
         }
 
+        showSeasonPassInventory(player, playerData);
+        return true;
+    }
+
+    private void showSeasonPassInventory(Player player, PlayerData playerData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Seasonpass");
-        int i = -1;
+        int slot = 0;
+
         for (PlayerQuest playerQuest : playerData.getQuests()) {
-            i++;
+            if (slot >= 27) break;
+
             Quest quest = getQuestById(playerQuest.getQuestId());
+            if (quest == null) continue;
+
             String state = "§7" + playerQuest.getState() + "§8/§7" + quest.getReachedAt();
             if (playerQuest.getState() >= quest.getReachedAt()) {
                 state = "§2Abgeschlossen!";
             }
+
             Reward reward = getRewardById(quest.getRewardId());
-            if (playerQuest.getState() >= quest.getReachedAt()) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BARRIER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
+            Material iconMaterial = (quest.getItem() != null) ? quest.getItem() : Material.PAPER;
+            String itemName = quest.getName().replace("&", "§");
+            List<String> lore = Arrays.asList(
+                    "§7" + quest.getDescription(),
+                    "§8 » " + state,
+                    "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")
+            );
 
-                    }
-                });
-                continue;
-            }
-            if (quest.getItem() == null) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
+            CustomItem questItem = new CustomItem(slot, ItemManager.createItem(iconMaterial, 1, 0, itemName, lore)) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    // Aktionen bei Klick auf das Item
+                }
+            };
 
-                    }
-                });
-            } else {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(quest.getItem(), 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-
-                    }
-                });
-            }
-        }*/
-        player.sendMessage(Prefix.ERROR + "Das Feature ist im Umbau.");
-        return false;
+            inventoryManager.setItem(questItem);
+            slot++;
+        }
     }
-
     public Quest getQuestById(int id) {
         for (Quest quest : quests) {
             if (quest.getId() == id) return quest;
