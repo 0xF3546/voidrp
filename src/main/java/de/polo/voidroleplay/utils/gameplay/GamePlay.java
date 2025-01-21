@@ -24,6 +24,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
+import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -46,6 +47,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.polo.voidroleplay.Main.gamePlay;
+import static de.polo.voidroleplay.Main.weaponManager;
 
 public class GamePlay implements Listener {
     public final ApothekeFunctions apotheke;
@@ -589,9 +591,9 @@ public class GamePlay implements Listener {
                 }
                 break;
             case "ammo":
-                for (WeaponData weapon : WeaponManager.weaponDataMap.values()) {
+                for (Weapon weapon : Weapon.values()) {
                     if (weapon.getName().equalsIgnoreCase(info)) {
-                        player.getInventory().addItem(ItemManager.createItem(RoleplayItem.MAGAZIN.getMaterial(), amount, 0, "§7Magazin", "§8 ➥ " + weapon.getName()));
+                        weaponManager.giveWeaponToCabinet(player, weapon, amount, 0);
                     }
                 }
                 break;

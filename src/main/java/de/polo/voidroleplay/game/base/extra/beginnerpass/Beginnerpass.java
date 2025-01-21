@@ -26,7 +26,7 @@ import java.util.UUID;
 
 /**
  * @author Mayson1337
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 public class Beginnerpass implements CommandExecutor {
@@ -46,116 +46,99 @@ public class Beginnerpass implements CommandExecutor {
     public void loadAll() {
         quests.clear();
         rewards.clear();
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM beginnerpass_quests");
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            Quest quest = new Quest(result.getInt("id"), result.getString("name"), result.getString("description"), result.getInt("reachedAt"));
-            quest.setRewardId(result.getInt("rewardId"));
-            if (result.getString("item") != null) quest.setItem(Material.valueOf(result.getString("item")));
-            quests.add(quest);
-        }
+        try (Connection connection = Main.getInstance().mySQL.getConnection()) {
+            // Laden der Quests
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM beginnerpass_quests")) {
+                ResultSet result = statement.executeQuery();
+                while (result.next()) {
+                    Quest quest = new Quest(result.getInt("id"), result.getString("name"), result.getString("description"), result.getInt("reachedAt"));
+                    quest.setRewardId(result.getInt("rewardId"));
+                    if (result.getString("item") != null) quest.setItem(Material.valueOf(result.getString("item")));
+                    quests.add(quest);
+                }
+            }
 
-        statement = connection.prepareStatement("SELECT * FROM beginnerpass_rewards");
-        result = statement.executeQuery();
-        while (result.next()) {
-            Reward reward = new Reward(result.getInt("id"), result.getString("type"), result.getInt("amount"));
-            reward.setInfo(result.getString("info"));
-            reward.setName(result.getString("name"));
-            rewards.add(reward);
+            // Laden der Belohnungen
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM beginnerpass_rewards")) {
+                ResultSet result = statement.executeQuery();
+                while (result.next()) {
+                    Reward reward = new Reward(result.getInt("id"), result.getString("type"), result.getInt("amount"));
+                    reward.setInfo(result.getString("info"));
+                    reward.setName(result.getString("name"));
+                    rewards.add(reward);
+                }
+            }
         }
-        statement.close();
-        connection.close();
     }
 
     @SneakyThrows
     public void loadPlayerQuests(UUID uuid) {
         PlayerData playerData = playerManager.getPlayerData(uuid);
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM beginnerpass_player_quests WHERE uuid = ?");
-        statement.setString(1, uuid.toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            PlayerQuest playerQuest = new PlayerQuest(result.getInt("id"), result.getInt("questId"), result.getInt("state"));
-            playerData.addBeginnerQuest(playerQuest);
+        try (Connection connection = Main.getInstance().mySQL.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM beginnerpass_player_quests WHERE uuid = ?")) {
+            statement.setString(1, uuid.toString());
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                PlayerQuest playerQuest = new PlayerQuest(result.getInt("id"), result.getInt("questId"), result.getInt("state"));
+                playerData.addBeginnerQuest(playerQuest);
+            }
         }
     }
 
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player player = (Player) sender;
-        /*PlayerData playerData = playerManager.getPlayerData(player);
-        while (playerData.getBeginnerQuests().size() < quests.size()) {
-            addRemainingQuests(playerData);
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Prefix.ERROR + "Dieser Befehl kann nur von Spielern ausgeführt werden.");
+            return false;
         }
 
+        Player player = (Player) sender;
+        PlayerData playerData = playerManager.getPlayerData(player);
+
+        // Sicherstellen, dass der Spieler alle Quests hat
+        addRemainingQuests(playerData);
+
+        // Inventar erstellen und anzeigen
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Beginnerpass");
-        int i = -1;
+        int slot = 0;
         for (PlayerQuest playerQuest : playerData.getBeginnerQuests()) {
-            i++;
+            if (slot >= 27) break; // Sicherheitsmaßnahme
+
             Quest quest = getQuestById(playerQuest.getQuestId());
             String state = "§7" + playerQuest.getState() + "§8/§7" + quest.getReachedAt();
             if (playerQuest.getState() >= quest.getReachedAt()) {
                 state = "§2Abgeschlossen!";
             }
             Reward reward = getRewardById(quest.getRewardId());
-            if (playerQuest.getState() >= quest.getReachedAt()) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BARRIER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
+            Material icon = quest.getItem() != null ? quest.getItem() : Material.PAPER;
 
-                    }
-                });
-                continue;
-            }
-            if (quest.getItem() == null) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-
-                    }
-                });
-            } else {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(quest.getItem(), 1, 0, quest.getName().replace("&", "§"), Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
-
-                    }
-                });
-            }
-        }*/
-        player.sendMessage(Prefix.ERROR + "Das Feature ist im Umbau.");
-        return false;
+            inventoryManager.setItem(new CustomItem(slot, ItemManager.createItem(icon, 1, 0, quest.getName().replace("&", "§"),
+                    Arrays.asList("§7" + quest.getDescription(), "§8 » " + state, "§8 » §6Belohnung§8: " + reward.getName().replace("&", "§")))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    // Aktionen bei Klick auf das Item
+                }
+            });
+            slot++;
+        }
+        return true;
     }
 
     public Quest getQuestById(int id) {
-        for (Quest quest : quests) {
-            if (quest.getId() == id) return quest;
-        }
-        return null;
+        return quests.stream().filter(quest -> quest.getId() == id).findFirst().orElse(null);
     }
 
     public Reward getRewardById(int id) {
-        for (Reward reward : rewards) {
-            if (reward.getId() == id) return reward;
-        }
-        return null;
+        return rewards.stream().filter(reward -> reward.getId() == id).findFirst().orElse(null);
     }
 
     public void addRemainingQuests(PlayerData playerData) {
-        for (Quest quest : quests) {
-            if (!hasPlayerQuest(playerData, quest)) {
-                addQuest(playerData, quest);
-            }
-        }
+        quests.stream().filter(quest -> !hasPlayerQuest(playerData, quest)).forEach(quest -> addQuest(playerData, quest));
     }
 
     private boolean hasPlayerQuest(PlayerData playerData, Quest quest) {
-        for (PlayerQuest playerQuest : playerData.getBeginnerQuests()) {
-            if (playerQuest.getId() == quest.getId()) return true;
-        }
-        return false;
+        return playerData.getBeginnerQuests().stream().anyMatch(playerQuest -> playerQuest.getQuestId() == quest.getId());
     }
 
     @SneakyThrows
@@ -163,19 +146,16 @@ public class Beginnerpass implements CommandExecutor {
         Player player = playerData.getPlayer();
         String insertQuery = "INSERT INTO beginnerpass_player_quests (uuid, questId) VALUES (?, ?)";
 
-        Main.getInstance().getMySQL().insertAndGetKeyAsync(insertQuery,
-                player.getUniqueId().toString(),
-                quest.getId()
-        ).thenAccept(optionalKey -> {
+        Main.getInstance().getMySQL().insertAndGetKeyAsync(insertQuery, player.getUniqueId().toString(), quest.getId()).thenAccept(optionalKey -> {
             if (optionalKey.isPresent()) {
                 int questId = optionalKey.get();
-                PlayerQuest playerQuest = new PlayerQuest(questId, 0);
-                playerData.addBeginnerQuest(playerQuest); // Updates the quest list
+                PlayerQuest playerQuest = new PlayerQuest(questId, quest.getId(), 0);
+                playerData.addBeginnerQuest(playerQuest);
             } else {
                 throw new RuntimeException("Creating PlayerQuest failed, no ID obtained.");
             }
         }).exceptionally(ex -> {
-            ex.printStackTrace(); // Log the error for debugging
+            ex.printStackTrace();
             return null;
         });
     }
@@ -188,9 +168,11 @@ public class Beginnerpass implements CommandExecutor {
     public void didQuest(Player player, int questId, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
         for (PlayerQuest playerQuest : playerData.getBeginnerQuests()) {
-            if (!(playerQuest.getQuestId() == questId)) continue;
+            if (playerQuest.getQuestId() != questId) continue;
+
             Quest quest = getQuestById(questId);
-            if (playerQuest.getState() >= quest.getReachedAt()) continue;
+            if (playerQuest.getState() >= quest.getReachedAt()) return;
+
             playerQuest.setState(playerQuest.getState() + amount);
             if (playerQuest.getState() >= quest.getReachedAt()) {
                 Reward reward = getRewardById(quest.getRewardId());
@@ -198,6 +180,7 @@ public class Beginnerpass implements CommandExecutor {
                 Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
                 SoundManager.successSound(player);
             }
+
             Main.getInstance().getMySQL().updateAsync("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?",
                     playerQuest.getState(),
                     playerQuest.getId());
