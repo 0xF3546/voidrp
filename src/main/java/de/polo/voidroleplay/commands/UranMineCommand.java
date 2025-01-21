@@ -10,7 +10,6 @@ import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
@@ -26,8 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static de.polo.voidroleplay.Main.locationManager;
-import static de.polo.voidroleplay.Main.utils;
+import static de.polo.voidroleplay.Main.*;
 
 /**
  * @author Mayson1337
@@ -37,15 +35,17 @@ import static de.polo.voidroleplay.Main.utils;
 
 @CommandBase.CommandMeta(name = "uranmine")
 public class UranMineCommand extends CommandBase implements Listener {
-    private final List<Location> rollOutLocations = new ObjectArrayList<>();
+    private List<Location> rollOutLocations = new ObjectArrayList<>();
+
     public UranMineCommand(@NotNull CommandMeta meta) {
         super(meta);
-        for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()
+        rollOutLocations = blockManager.getBlocks()
                 .stream()
-                .filter(x -> x.getInfo() != null && x.getInfo().equalsIgnoreCase("mine"))
-                .toList()) {
-            rollOutLocations.add(block.getLocation());
-        }
+                .filter(x -> x.getInfoValue() != null && x.getInfoValue().equalsIgnoreCase("mine"))
+                .map(RegisteredBlock::getLocation)
+                .toList();
+
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     @Override
@@ -126,16 +126,16 @@ public class UranMineCommand extends CommandBase implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData == null) return;
-        if (playerData.getVariable("job") == null || playerData.getVariable("job") != "Urantransport") return;
+        if (playerData.getVariable("job") == null || playerData.getVariable("job") != "Urantransport")return;
+
         if (ItemManager.getCustomItemCount(player, RoleplayItem.URAN) >= 1) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits ein Uran dabei."));
             return;
         }
-        if (!isBlock(event.getBlock())) {
-            return;
-        }
+        if (!isBlock(event.getBlock())) return;
+
         ItemManager.addCustomItem(player, RoleplayItem.URAN, 1);
         player.sendMessage(Component.text(Prefix.MAIN + "Du hast ein Uran abgebaut. Bringe es nun zum Atomkraftwerk"));
         utils.navigationManager.createNavi(player, "Atomkraftwerk", true);
