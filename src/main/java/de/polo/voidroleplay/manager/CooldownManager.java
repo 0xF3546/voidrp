@@ -58,4 +58,11 @@ public class CooldownManager {
     private String getStringCooldownKey(String player, Object key) {
         return player + ":" + key;
     }
+
+    public void setJobCooldown(Player player, String job, int cooldown) {
+        setCooldown(player, "job_" + job, cooldown);
+    }
+    public int getJobCooldownTime(Player player, String job) {
+        return getRemainingTime(player, "job_" + job);
+    }
 }

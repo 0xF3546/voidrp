@@ -294,3 +294,5 @@ commands:
   megaphone:
   checkresult:
   warpevent:
+  bottletransport:
+    aliases: flaschenlieferant
