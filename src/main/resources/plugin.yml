@@ -300,3 +300,5 @@ commands:
     aliases: mw
   moneytransport:
     aliases: geldlieferant
+  healthinsurance:
+    aliases: krankenkasse

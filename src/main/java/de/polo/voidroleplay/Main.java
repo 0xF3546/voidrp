@@ -282,7 +282,8 @@ public final class Main extends JavaPlugin {
                 WarpEventCommand.class,
                 BottletransportCommand.class,
                 ModifyWantedsCommand.class,
-                GeldlieferantCommand.class
+                GeldlieferantCommand.class,
+                HealthInsuranceCommand.class
         );
 
 
