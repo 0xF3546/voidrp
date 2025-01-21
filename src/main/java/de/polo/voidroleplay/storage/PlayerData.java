@@ -432,7 +432,8 @@ public class PlayerData {
                     result.getInt("id"),
                     result.getInt("wantedId"),
                     UUID.fromString(result.getString("issuer")),
-                    result.getTimestamp("issued").toLocalDateTime()
+                    result.getTimestamp("issued").toLocalDateTime(),
+                    result.getString("variations")
             );
         }
     }

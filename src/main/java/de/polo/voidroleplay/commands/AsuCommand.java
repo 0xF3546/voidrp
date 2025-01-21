@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.polo.voidroleplay.Main.factionManager;
+
 public class AsuCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final Utils utils;
@@ -64,14 +66,14 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        PlayerWanted playerWanted = new PlayerWanted(reason.getId(), player.getUniqueId(), Utils.getTime());
+        PlayerWanted playerWanted = new PlayerWanted(reason.getId(), player.getUniqueId(), Utils.getTime(), new ObjectArrayList<>());
         targetData.setWanted(playerWanted, false).thenAccept(success -> {
             System.out.println("END");
             if (!success) {
                 player.sendMessage(Prefix.ERROR + "Der Spieler hat bereits eine höhere Fahndung.");
             } else {
-                Main.getInstance().factionManager.sendCustomMessageToFactions("§9HQ: Gesuchter: " + target.getName() + ". Grund: " + reason.getReason(), "Polizei", "FBI");
-                Main.getInstance().factionManager.sendCustomMessageToFactions("§9HQ: " + target.getName() + "'s momentanes WantedLevel: " + reason.getWanted(), "Polizei", "FBI");
+                factionManager.sendCustomMessageToFactions("§9HQ: Gesuchter: " + target.getName() + ". Grund: " + reason.getReason(), "Polizei", "FBI");
+                factionManager.sendCustomMessageToFactions("§9HQ: " + target.getName() + "'s momentanes WantedLevel: " + reason.getWanted(), "Polizei", "FBI");
             }
         });
         return false;
