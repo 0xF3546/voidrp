@@ -303,6 +303,7 @@ public class PlayerManager implements Listener {
                 playerData.setHours(result.getInt("playtime_hours"));
                 playerData.setMinutes(result.getInt("playtime_minutes"));
                 playerData.setAFK(false);
+                playerData.setHealthInsurance(HealthInsurance.valueOf(result.getString("healthInsurance")));
 
                 JSONObject object = new JSONObject(result.getString("relationShip"));
                 HashMap<String, String> map = new HashMap<>();

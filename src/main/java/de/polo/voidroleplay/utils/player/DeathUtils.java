@@ -13,6 +13,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -194,6 +195,20 @@ public class DeathUtils {
             Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
         } else {
             spawnCorpse(player);
+            int despawnPrice = (int) (playerData.getBank() * 0.01);
+            switch (playerData.getHealthInsurance()) {
+                case BASIC ->
+                        player.sendMessage(Component.text("§8[§cKrankenhaus§8]§7 Dir wurden " + Utils.toDecimalFormat(despawnPrice) + "$ Krankenhauskosten angerechnet."));
+                case PLUS -> {
+                    player.sendMessage(Component.text("§8[§cKrankenhaus§8]§7 Dir wurden " + Utils.toDecimalFormat(despawnPrice) + "$ Krankenhauskosten angerechnet, 50% davon übernimmt deine Krankenkasse."));
+                    despawnPrice = despawnPrice / 2;
+                }
+                case FULL -> {
+                    player.sendMessage(Component.text("§8[§cKrankenhaus§8]§7 Dir wurden " + Utils.toDecimalFormat(despawnPrice) + "$ Krankenhauskosten angerechnet, deine Krankenkasse kommt jedoch dafür auf."));
+                    despawnPrice = 0;
+                }
+            }
+            playerData.removeBankMoney(despawnPrice, "Krankenhauskosten");
             if (playerData.getSpawn() == null) {
                 locationManager.useLocation(player, "Krankenhaus");
             } else {

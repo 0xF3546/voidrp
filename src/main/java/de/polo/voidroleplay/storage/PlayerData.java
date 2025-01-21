@@ -63,6 +63,9 @@ public class PlayerData {
     private PlayerPowerUpManager playerPowerUpManager;
     @Getter
     private Player player;
+    @Getter
+    @Setter
+    private HealthInsurance healthInsurance;
     @Setter
     @Getter
     private String spawn;

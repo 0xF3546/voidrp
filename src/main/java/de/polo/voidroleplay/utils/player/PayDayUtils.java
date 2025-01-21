@@ -12,6 +12,7 @@ import de.polo.voidroleplay.manager.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.HealthInsurance;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -130,6 +131,11 @@ public class PayDayUtils {
             int anwalt = Main.random(15, 55);
             player.sendMessage("§7 » §9Anwaltskosten§8: §c-" + anwalt + "$");
             anwalt -= plus;
+        }
+        HealthInsurance healthInsurance = playerData.getHealthInsurance();
+        if (!healthInsurance.equals(HealthInsurance.BASIC)) {
+            player.sendMessage("§7 » §9Krankenkasse§8: §c-" + healthInsurance.getPrice() + "$");
+            plus -= healthInsurance.getPrice();
         }
         plus -= rent;
         plus = Math.round(plus);
