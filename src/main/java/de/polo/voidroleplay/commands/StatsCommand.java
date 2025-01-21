@@ -44,7 +44,7 @@ public class StatsCommand implements CommandExecutor {
             player.sendMessage(" §8- §6Fraktion§8:§c Zivilist");
         }
         player.sendMessage(" §8- §6Rang§8:§c " + playerData.getRang());
-        player.sendMessage(" §8- §6Nummer§8:§c " + playerData.getNumber());
+        player.sendMessage(" §8- §6Krankenkasse§8:§c " + playerData.getHealthInsurance().getName());
         player.sendMessage(" §8- §6Votes§8:§c " + playerData.getVotes());
         if (playerData.getSubGroupId() != 0) {
             player.sendMessage(" §8- §6Gruppierung§8:§c " + playerData.getSubGroup().getName());
