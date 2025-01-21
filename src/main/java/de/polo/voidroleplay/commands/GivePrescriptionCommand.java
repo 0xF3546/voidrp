@@ -36,6 +36,10 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
 
     @Override
     public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        if (playerData.getFactionGrade() < 3) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Dieser Befehl geht erst ab Rang 3!"));
+            return;
+        }
         if (args.length < 2) {
             showSyntax(player);
             return;

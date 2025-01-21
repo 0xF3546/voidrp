@@ -1191,6 +1191,10 @@ public class PlayerManager implements Listener {
                             player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
                             return;
                         }
+                        if (playerData.getFactionGrade() < 2) {
+                            player.sendMessage(Component.text(Prefix.ERROR + "Das geht erst ab Rang 2!"));
+                            return;
+                        }
                         utils.staatUtil.checkBloodGroup(player, targetplayer);
                         player.closeInventory();
                     }
