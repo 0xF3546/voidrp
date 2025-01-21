@@ -298,3 +298,5 @@ commands:
     aliases: flaschenlieferant
   modifywanteds:
     aliases: mw
+  moneytransport:
+    aliases: geldlieferant

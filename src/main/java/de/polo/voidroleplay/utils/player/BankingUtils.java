@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.utils.player;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.commands.GeldlieferantCommand;
 import de.polo.voidroleplay.storage.ATM;
 import de.polo.voidroleplay.storage.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -31,6 +32,7 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -91,7 +93,7 @@ public class BankingUtils implements Listener {
                 player.closeInventory();
             }
         });
-        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getBank()) + "$"))) {
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bInformation", Arrays.asList("§8 ➥ §3Kontostand§8: §a" + new DecimalFormat("#,###").format(playerData.getBank()) + "$", "§8 ➥ §3Inhalt§8: §a" + new DecimalFormat("#,###").format(atm.getMoneyAmount()) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -133,7 +135,15 @@ public class BankingUtils implements Listener {
         });
         if (atm.getLastTimeBlown() == null || Duration.between(atm.getLastTimeBlown(), LocalDateTime.now()).toHours() >= 1) {
             if (playerData.getAtmBlown() < 3) {
-                if (ItemManager.getCustomItemCount(player, RoleplayItem.EXPLOSION_DEVICE) >= 1) {
+                if (playerData.getVariable("job") != null && playerData.getVariable("job").equals("geldlieferant")) {
+                    inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Geld abgeben")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            player.closeInventory();
+                            GeldlieferantCommand.drop(player, atm);
+                        }
+                    });
+                } else if (ItemManager.getCustomItemCount(player, RoleplayItem.EXPLOSION_DEVICE) >= 1) {
                     inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.TNT, 1, 0, "§cAutomat sprengen")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
