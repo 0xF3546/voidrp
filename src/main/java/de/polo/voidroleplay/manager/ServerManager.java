@@ -347,10 +347,83 @@ public class ServerManager {
 
     private void setTablist(Player player) {
         LocalDateTime time = Utils.getTime();
-        player.setPlayerListHeader("\n§8▍ §6§lVoidRoleplay V2 §8× §eReallife & Roleplay §8▍\n\n§7" + (time.getHour() < 10 ? "0" + time.getHour() : time.getHour()) + ":" + (time.getMinute() < 10 ? "0" + time.getMinute() : time.getMinute()) + " Uhr\n§6Ping§8:§7 " + player.getPing() + "ms\n§8__________________\n");
-        player.setPlayerListFooter("§8__________________\n\n§8» §e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "§8 «\n§8» §9discord.gg/void-roleplay §8«");
 
+        // Farbverlauf-Header (VoidRoleplay in einem Gradient-Stil)
+        String header = "\n" +
+                "§7»" + gradient(" VoidRoleplay V2 × Reallife & Roleplay ", new String[]{"#FF4500", "#FF8C00", "#FFD700"}) + "§7«" +
+                "\n\n§6Uhrzeit§8: §7" +
+                (time.getHour() < 10 ? "0" + time.getHour() : time.getHour()) + ":" +
+                (time.getMinute() < 10 ? "0" + time.getMinute() : time.getMinute()) + " Uhr\n" +
+                "§6Ping§8: §7" + player.getPing() + "ms\n" +
+                "§8__________________\n";
+
+        // Footer mit Farbverlauf und klaren Informationen
+        String footer = "§8__________________\n" +
+                "\n§e" + Bukkit.getOnlinePlayers().size() + "§8/§6" + Bukkit.getMaxPlayers() + "\n" +
+                "§9discord.gg/void-roleplay";
+
+        player.setPlayerListHeader(header);
+        player.setPlayerListFooter(footer);
     }
+
+    /**
+     * Erstellt einen Farbverlauf über einen Text hinweg.
+     *
+     * @param text Der Text, auf den der Verlauf angewendet werden soll.
+     * @param colors Array der Hex-Farben als Strings (z.B. {"#FF4500", "#FFD700"}).
+     * @return Der Text mit angewendetem Farbverlauf in Minecraft-Format.
+     */
+    private String gradient(String text, String[] colors) {
+        StringBuilder gradientText = new StringBuilder();
+        int length = text.length();
+        for (int i = 0; i < length; i++) {
+            // Berechne die Position im Farbverlauf
+            float ratio = (float) i / (length - 1);
+            String color = interpolateColor(colors, ratio);
+            gradientText.append(color).append(text.charAt(i));
+        }
+        return gradientText.toString();
+    }
+
+    /**
+     * Interpoliert eine Farbe basierend auf einem Verhältnis zwischen mehreren Farben.
+     *
+     * @param colors Array der Hex-Farben als Strings (z.B. {"#FF4500", "#FFD700"}).
+     * @param ratio Verhältnis zwischen 0.0 (Anfang) und 1.0 (Ende).
+     * @return Die interpolierte Minecraft-Farbsequenz (z.B. §x§R§R§G§G§B§B).
+     */
+    private String interpolateColor(String[] colors, float ratio) {
+        int startIndex = (int) Math.floor(ratio * (colors.length - 1));
+        int endIndex = Math.min(startIndex + 1, colors.length - 1);
+        float localRatio = (ratio * (colors.length - 1)) - startIndex;
+
+        // Hex-Farben zu RGB konvertieren
+        int[] startColor = hexToRgb(colors[startIndex]);
+        int[] endColor = hexToRgb(colors[endIndex]);
+
+        int r = (int) (startColor[0] + localRatio * (endColor[0] - startColor[0]));
+        int g = (int) (startColor[1] + localRatio * (endColor[1] - startColor[1]));
+        int b = (int) (startColor[2] + localRatio * (endColor[2] - startColor[2]));
+
+        // RGB zurück zu Hex und Minecraft-Farbsystem
+        return String.format("§x§%1$X§%2$X§%3$X§%4$X§%5$X§%6$X", (r >> 4), (r & 0xF), (g >> 4), (g & 0xF), (b >> 4), (b & 0xF));
+    }
+
+    /**
+     * Konvertiert eine Hex-Farbe (#RRGGBB) in ein RGB-Array.
+     *
+     * @param hex Hexadezimale Farbangabe (z.B. "#FF4500").
+     * @return Ein Array mit den RGB-Werten {R, G, B}.
+     */
+    private int[] hexToRgb(String hex) {
+        hex = hex.replace("#", "");
+        int r = Integer.parseInt(hex.substring(0, 2), 16);
+        int g = Integer.parseInt(hex.substring(2, 4), 16);
+        int b = Integer.parseInt(hex.substring(4, 6), 16);
+        return new int[]{r, g, b};
+    }
+
+
 
     private void startTabUpdateInterval() {
         new BukkitRunnable() {
