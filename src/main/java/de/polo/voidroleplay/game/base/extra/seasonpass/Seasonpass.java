@@ -48,40 +48,77 @@ public class Seasonpass implements CommandExecutor {
     public void loadAll() {
         quests.clear();
         rewards.clear();
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM seasonpass_quests");
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            Quest quest = new Quest(result.getInt("id"), result.getInt("points"), result.getString("name"), result.getString("description"), result.getInt("reachedAt"));
-            quest.setRewardId(result.getInt("rewardId"));
-            quest.setBadFaction(result.getBoolean("isBadFaction"));
-            quest.setStaatFaction(result.getBoolean("isStaatFaction"));
-            if (result.getString("item") != null) quest.setItem(Material.valueOf(result.getString("item")));
-            quests.add(quest);
-        }
 
-        statement = connection.prepareStatement("SELECT * FROM seasonpass_rewards");
-        result = statement.executeQuery();
-        while (result.next()) {
-            Reward reward = new Reward(result.getInt("id"), result.getString("type"), result.getInt("amount"));
-            reward.setInfo(result.getString("info"));
-            reward.setName(result.getString("name"));
-            rewards.add(reward);
+        try (Connection connection = Main.getInstance().mySQL.getConnection();
+             PreparedStatement questStatement = connection.prepareStatement("SELECT * FROM seasonpass_quests");
+             ResultSet questResult = questStatement.executeQuery();
+             PreparedStatement rewardStatement = connection.prepareStatement("SELECT * FROM seasonpass_rewards");
+             ResultSet rewardResult = rewardStatement.executeQuery()) {
+
+            while (questResult.next()) {
+                Quest quest = new Quest(
+                        questResult.getInt("id"),
+                        questResult.getInt("points"),
+                        questResult.getString("name"),
+                        questResult.getString("description"),
+                        questResult.getInt("reachedAt")
+                );
+                quest.setRewardId(questResult.getInt("rewardId"));
+                quest.setBadFaction(questResult.getBoolean("isBadFaction"));
+                quest.setStaatFaction(questResult.getBoolean("isStaatFaction"));
+                if (questResult.getString("item") != null) {
+                    try {
+                        quest.setItem(Material.valueOf(questResult.getString("item")));
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Ungültiges Material: " + questResult.getString("item"));
+                    }
+                }
+                quests.add(quest);
+            }
+
+            while (rewardResult.next()) {
+                Reward reward = new Reward(
+                        rewardResult.getInt("id"),
+                        rewardResult.getString("type"),
+                        rewardResult.getInt("amount")
+                );
+                reward.setInfo(rewardResult.getString("info"));
+                reward.setName(rewardResult.getString("name"));
+                rewards.add(reward);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Fehler beim Laden der Seasonpass-Daten: " + e.getMessage());
+            e.printStackTrace();
         }
-        statement.close();
-        connection.close();
     }
 
     @SneakyThrows
     public void loadPlayerQuests(UUID uuid) {
         PlayerData playerData = playerManager.getPlayerData(uuid);
-        Connection connection = Main.getInstance().mySQL.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM seasonpass_player_quests WHERE uuid = ?");
-        statement.setString(1, uuid.toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            PlayerQuest playerQuest = new PlayerQuest(result.getInt("id"), result.getInt("questId"), result.getInt("state"));
-            playerData.addQuest(playerQuest);
+
+        if (playerData == null) {
+            System.err.println("PlayerData für UUID " + uuid + " konnte nicht gefunden werden.");
+            return;
+        }
+
+        try (Connection connection = Main.getInstance().mySQL.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM seasonpass_player_quests WHERE uuid = ?")) {
+            statement.setString(1, uuid.toString());
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    PlayerQuest playerQuest = new PlayerQuest(
+                            result.getInt("id"),
+                            result.getInt("questId"),
+                            result.getInt("state")
+                    );
+                    playerData.addQuest(playerQuest);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Fehler beim Laden der Spielerquests für UUID " + uuid + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -92,8 +129,14 @@ public class Seasonpass implements CommandExecutor {
             sender.sendMessage(Prefix.ERROR + "Dieser Befehl kann nur von Spielern ausgeführt werden.");
             return false;
         }
+
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+
+        if (playerData == null) {
+            player.sendMessage(Prefix.ERROR + "Spielerdaten konnten nicht geladen werden.");
+            return false;
+        }
 
         final int maxQuests = 14;
 
@@ -105,35 +148,35 @@ public class Seasonpass implements CommandExecutor {
                 break;
             }
 
-            PlayerQuest playerQuest = new PlayerQuest(newQuest.getId(), 0);
-            Connection connection = Main.getInstance().mySQL.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                    "INSERT INTO seasonpass_player_quests (uuid, questId) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.setInt(2, newQuest.getId());
+            try (Connection connection = Main.getInstance().mySQL.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(
+                         "INSERT INTO seasonpass_player_quests (uuid, questId) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
 
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 0) {
-                player.sendMessage(Prefix.ERROR + "Fehler beim Erstellen einer neuen Quest.");
-                break;
-            }
+                preparedStatement.setString(1, player.getUniqueId().toString());
+                preparedStatement.setInt(2, newQuest.getId());
 
-            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    playerQuest.setId(generatedKeys.getInt(1));
-                    playerData.addQuest(playerQuest);
-                } else {
-                    throw new SQLException("Fehler beim Erstellen der PlayerQuest: Keine ID erhalten.");
+                int affectedRows = preparedStatement.executeUpdate();
+                if (affectedRows == 0) {
+                    player.sendMessage(Prefix.ERROR + "Fehler beim Erstellen einer neuen Quest.");
+                    break;
                 }
-            } finally {
-                preparedStatement.close();
-                connection.close();
+
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        PlayerQuest playerQuest = new PlayerQuest(generatedKeys.getInt(1), newQuest.getId(), 0);
+                        playerData.addQuest(playerQuest);
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Fehler beim Hinzufügen einer neuen Quest: " + e.getMessage());
+                e.printStackTrace();
             }
         }
 
         showSeasonPassInventory(player, playerData);
         return true;
     }
+
 
     private void showSeasonPassInventory(Player player, PlayerData playerData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Seasonpass");
