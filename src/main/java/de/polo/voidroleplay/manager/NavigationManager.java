@@ -191,7 +191,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                                     naviInventory.setItem(new CustomItem(j, item) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
-                                            player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + newNavi.getName().replace("&", "§") + " gesetzt.");
+                                            player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + newNavi.getName().replace("&", "§") + "§7 gesetzt.");
                                             LocationData locationData = LocationManager.locationDataMap.get(newNavi.getLocation());
                                             Main.getInstance().utils.navigationManager.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                                             player.closeInventory();
@@ -212,7 +212,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                     inventory.setItem(new CustomItem(i, stack) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
-                            player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + naviData.getName().replace("&", "§") + " gesetzt.");
+                            player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
                             LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
                             Main.getInstance().utils.navigationManager.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                             player.closeInventory();
@@ -229,7 +229,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     playerData.setVariable("chatblock", "gpssearch");
-                    player.sendMessage("\u00a78[\u00a6GPS\u00a78]\u00a77 Gib nun den gesuchten GPS Punkt ein.");
+                    player.sendMessage("§8[§6GPS§8]§7 Gib nun den gesuchten GPS Punkt ein.");
                     player.closeInventory();
                 }
             });
