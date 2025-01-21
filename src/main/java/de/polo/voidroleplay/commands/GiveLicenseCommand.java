@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.voidroleplay.Main.playerManager;
-import static de.polo.voidroleplay.Main.utils;
+import static de.polo.voidroleplay.Main.*;
+import static de.polo.voidroleplay.Main.factionManager;
 
 /**
  * @author Mayson1337
@@ -46,6 +46,10 @@ public class GiveLicenseCommand extends CommandBase {
             player.sendMessage(Component.text(Prefix.ERROR + "Der Spieler wurde nicht gefunden."));
             return;
         }
+        if (target.getLocation().distance(player.getLocation()) > 5) {
+            player.sendMessage(Component.text(Prefix.ERROR + target.getName() + " ist nicht in deiner nähe."));
+            return;
+        }
         PlayerData targetData = playerManager.getPlayerData(target);
         InventoryManager inventoryManager = new InventoryManager(player, 27,"§8 » §6Lizenzvergabe");
         int i = 0;
@@ -70,6 +74,7 @@ public class GiveLicenseCommand extends CommandBase {
                                 target.sendMessage(Component.text("§8[§cWaffenschein§8]§a Dir wurde ein Waffenschein ausgestellt."));
                                 targetData.removeMoney(finalPrice, "Waffenschein");
                                 targetData.addLicenseToDatabase(License.WEAPON);
+                                factionManager.sendCustomMessageToFactions("§9HQ: " + factionManager.getTitle(player) + " " + player.getName() + " hat " + target.getName() + " einen Waffenschein ausgestellt.", "Polizei", "FBI");
                             },
                             () -> {
                                 player.sendMessage(Component.text("§8[§cWaffenschein§8]§c " + target.getName() + " hat den Antrag abgelehnt."));

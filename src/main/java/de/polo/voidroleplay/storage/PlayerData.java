@@ -784,6 +784,11 @@ public class PlayerData {
         Main.getInstance().getMySQL().insertAsync("INSERT INTO player_licenses (uuid, license) VALUES (?, ?)", player.getUniqueId().toString(), license.name());
     }
 
+    public void removeLicenseFromDatabase(License license) {
+        addLicense(license);
+        Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_licenses WHERE uuid ? AND license = ?", player.getUniqueId().toString(), license.name());
+    }
+
     public void removeLicense(License license) {
         licenses.remove(license);
     }
