@@ -304,3 +304,4 @@ commands:
     aliases: krankenkasse
   licenses:
     aliases: lizenzen
+  givelicense:
