@@ -302,3 +302,5 @@ commands:
     aliases: geldlieferant
   healthinsurance:
     aliases: krankenkasse
+  licenses:
+    aliases: lizenzen

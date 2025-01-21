@@ -261,6 +261,9 @@ public class PlayerData {
     private List<PlayerWorkstation> workstations = new ObjectArrayList<>();
 
     @Getter
+    private List<License> licenses = new ObjectArrayList<>();
+
+    @Getter
     @Setter
     private LocalDateTime factionCooldown;
 
@@ -305,6 +308,7 @@ public class PlayerData {
         loadClickedEventBlocks();
         loadWeapons();
         loadWanteds();
+        loadLicenses();
     }
 
     public PlayerData() {
@@ -438,6 +442,18 @@ public class PlayerData {
                     result.getTimestamp("issued").toLocalDateTime(),
                     result.getString("variations")
             );
+        }
+    }
+
+    @SneakyThrows
+    private void loadLicenses() {
+        Connection connection = Main.getInstance().mySQL.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_licenses WHERE uuid = ?");
+        statement.setString(1, player.getUniqueId().toString());
+        ResultSet result = statement.executeQuery();
+        if (result.next()) {
+            License license = License.valueOf(result.getString("license"));
+            licenses.add(license);
         }
     }
 
@@ -757,6 +773,18 @@ public class PlayerData {
 
     public void removeWorkstation(PlayerWorkstation playerWorkstation) {
         workstations.remove(playerWorkstation);
+    }
+
+    public void addLicense(License license) {
+        licenses.add(license);
+    }
+
+    public void removeLicense(License license) {
+        licenses.remove(license);
+    }
+
+    public boolean hasLicense(License license) {
+        return licenses.contains(license);
     }
 
     public void addQuest(PlayerQuest playerQuest) {

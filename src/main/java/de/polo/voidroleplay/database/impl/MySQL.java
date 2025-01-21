@@ -82,6 +82,7 @@ public class MySQL implements Database {
         });
     }
 
+
     @Override
     public CompletableFuture<Integer> queryThreaded(String query, Object... args) {
         return CompletableFuture.supplyAsync(() -> {
