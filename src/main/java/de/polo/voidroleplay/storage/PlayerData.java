@@ -66,6 +66,9 @@ public class PlayerData {
     @Getter
     @Setter
     private HealthInsurance healthInsurance;
+    @Getter
+    @Setter
+    private LongTermJob longTermJob;
     @Setter
     @Getter
     private String spawn;

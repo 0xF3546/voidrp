@@ -320,6 +320,7 @@ public class PlayerManager implements Listener {
                 playerData.setForumID(result.getInt("forumID"));
                 playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
                 playerData.setLoyaltyBonus(result.getInt("loyaltyBonus"));
+                if (result.getString("longTermJob") != null) playerData.setLongTermJob(LongTermJob.valueOf(result.getString("longTermJob")));
 
                 playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
 
@@ -1439,5 +1440,11 @@ public class PlayerManager implements Listener {
         } else {
             player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
         }
+    }
+
+    public void setLongTermJob(Player player, LongTermJob longTermJob) {
+        PlayerData playerData = getPlayerData(player);
+        playerData.setLongTermJob(longTermJob);
+        Main.getInstance().getMySQL().updateAsync("UPDATE players SET longTermJob = ? WHERE uuid = ?", longTermJob.name(), player.getUniqueId().toString());
     }
 }

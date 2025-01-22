@@ -288,7 +288,9 @@ public final class Main extends JavaPlugin {
                 LicensesCommand.class,
                 GiveLicenseCommand.class,
                 FahrschuleCommand.class,
-                TakeLicenseCommand.class
+                TakeLicenseCommand.class,
+                AnwaltCommand.class,
+                MaklerCommand.class
         );
 
 
@@ -502,7 +504,6 @@ public final class Main extends JavaPlugin {
         public SubTeamChat subTeamChat;
         public SetMOTDCommand setMOTDCommand;
         public VoteShopCommand voteShopCommand;
-        public AnwaltCommand anwaltCommand;
         public SprengguertelCommand sprengguertelCommand;
         public BombeCommand bombeCommand;
         public CookCommand cookCommand;
@@ -726,7 +727,6 @@ public final class Main extends JavaPlugin {
             subTeamChat = new SubTeamChat(playerManager);
             setMOTDCommand = new SetMOTDCommand(playerManager, factionManager);
             voteShopCommand = new VoteShopCommand(playerManager);
-            anwaltCommand = new AnwaltCommand(playerManager, locationManager);
             clearCommand = new ClearCommand(playerManager, factionManager, utils);
             asuCommand = new AsuCommand(playerManager, utils);
             weaponInfoCommand = new WeaponInfoCommand(playerManager);

@@ -8,12 +8,11 @@ import lombok.Getter;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Getter
 @AllArgsConstructor
-public enum License {
-    WEAPON("Waffenschein"),
-    DRIVER("Führerschein"),
-    LAWYER("Anwaltszulassung"),
-    REAL_ESTATE_BROKER("Maklerzulassung");
+public enum LongTermJob {
+    LAWYER("Anwalt"),
+    REAL_ESTATE_BROKER("Makler");
     private final String name;
 }
