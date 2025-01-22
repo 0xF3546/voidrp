@@ -10,6 +10,7 @@ import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.enums.Paymethod;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import lombok.SneakyThrows;
@@ -24,6 +25,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.*;
+
+import static de.polo.voidroleplay.Main.vehicles;
+import static de.polo.voidroleplay.Main.weaponManager;
 
 public class ShopCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -127,7 +131,7 @@ public class ShopCommand implements CommandExecutor {
         inventory.setItem(new CustomItem(53, ItemManager.createItem(Material.EMERALD, 1, 0, "§aKauf abschließen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                finalizePurchase(player, shopData);
+                askForPaymethod(player, shopData);
             }
         });
 
@@ -135,6 +139,22 @@ public class ShopCommand implements CommandExecutor {
             @Override
             public void onClick(InventoryClickEvent event) {
                 openShop(player, shopData);
+            }
+        });
+    }
+
+    private void askForPaymethod(Player player, ShopData shopData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aZahlungsmethode");
+        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§aBar")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                finalizePurchase(player, shopData, Paymethod.CASH);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§aKarte")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                finalizePurchase(player, shopData, Paymethod.CARD);
             }
         });
     }
@@ -151,7 +171,7 @@ public class ShopCommand implements CommandExecutor {
         }
     }
 
-    private void finalizePurchase(Player player, ShopData shopData) {
+    private void finalizePurchase(Player player, ShopData shopData, Paymethod paymethod) {
         List<ShopItem> cart = shoppingCarts.getOrDefault(player.getUniqueId(), new ArrayList<>());
         PlayerData playerData = playerManager.getPlayerData(player);
         int totalCost = 0;
@@ -159,17 +179,25 @@ public class ShopCommand implements CommandExecutor {
         for (ShopItem item : cart) {
             totalCost += item.getPrice();
         }
-
-        if (playerManager.money(player) < totalCost) {
-            player.sendMessage(Prefix.ERROR + "§7Du hast nicht genügend Bargeld für den Kauf. Benötigt: §a" + totalCost + "$.");
-            return;
+        if (paymethod == Paymethod.CARD) {
+            if (playerManager.bank(player) < totalCost) {
+                player.sendMessage(Prefix.ERROR + "§7Du hast nicht genügend Bankguthaben für den Kauf. Benötigt: §a" + totalCost + "$.");
+                return;
+            }
+        } else {
+            if (playerManager.money(player) < totalCost) {
+                player.sendMessage(Prefix.ERROR + "§7Du hast nicht genügend Bargeld für den Kauf. Benötigt: §a" + totalCost + "$.");
+                return;
+            }
         }
+
+        player.closeInventory();
 
         for (ShopItem item : cart) {
             try {
                 if (Objects.equals(item.getType(), "weapon")) {
                     Weapon weapon = Weapon.valueOf(item.getSecondType().toUpperCase());
-                    Main.getInstance().weaponManager.giveWeaponToCabinet(player, weapon, 0, weapon.getBaseWear());
+                    weaponManager.giveWeaponToCabinet(player, weapon, 0, weapon.getBaseWear());
                 } else if (Objects.equals(item.getType(), "ammo")) {
                     Weapon weapon = Weapon.valueOf(item.getSecondType().toUpperCase());
                     PlayerWeapon playerWeapon = playerData.getWeapon(weapon);
@@ -177,15 +205,19 @@ public class ShopCommand implements CommandExecutor {
                         player.sendMessage(Prefix.ERROR + "§7Du besitzt diese Waffe nicht.");
                         continue;
                     }
-                    Main.getInstance().weaponManager.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
+                    weaponManager.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
                 } else if (Objects.equals(item.getType(), "car")) {
-                    Main.getInstance().vehicles.giveVehicle(player, item.getSecondType());
+                    vehicles.giveVehicle(player, item.getSecondType());
                 } else if (Objects.equals(item.getType(), "inventory")) {
                     playerData.getInventory().setSizeToDatabase(playerData.getInventory().getSize() + 25);
                 } else {
                     player.getInventory().addItem(ItemManager.createItem(item.getMaterial(), 1, 0, item.getDisplayName().replace("&", "§")));
                 }
-                playerManager.removeMoney(player, item.getPrice(), "Kauf von: " + item.getDisplayName());
+                if (paymethod == Paymethod.CASH) {
+                    playerManager.removeMoney(player, item.getPrice(), "Kauf von: " + item.getDisplayName());
+                } else {
+                    playerManager.removeBankMoney(player, item.getPrice(), "Kauf von: " + item.getDisplayName());
+                }
             } catch (Exception e) {
                 player.sendMessage(Prefix.ERROR + "§7Fehler beim Kauf von: §c" + item.getDisplayName().replace("&", "§") + ".");
                 e.printStackTrace();
