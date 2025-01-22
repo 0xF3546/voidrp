@@ -112,7 +112,8 @@ public class UranMineCommand extends CommandBase implements Listener {
         ItemManager.removeCustomItem(player, RoleplayItem.URAN, 1);
         playerData.setVariable("job", null);
         playerData.addMoney(ServerManager.getPayout("uran"), "Urantransport");
-        Main.getInstance().playerManager.addExp(player, Main.random(12, 20));
+        playerManager.addExp(player, Main.random(12, 20));
+        player.sendMessage(Component.text("§8[§cAKW§8]§7 Danke für das Uran! §a+" + ServerManager.getPayout("uran")  + "$"));
     }
 
     private boolean isBlock(Block block) {
