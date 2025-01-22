@@ -53,7 +53,7 @@ public class TakeLicenseCommand extends CommandBase {
             return;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Lizenzvergabe");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Lizenzentnahme");
         int i = 0;
         for (License license : targetData.getLicenses()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§cWaffenschein")) {
