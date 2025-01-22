@@ -13,6 +13,7 @@ import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.Paymethod;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.enums.Weapon;
+import de.polo.voidroleplay.utils.player.SoundManager;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -192,6 +193,7 @@ public class ShopCommand implements CommandExecutor {
         }
 
         player.closeInventory();
+        player.playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0, 1);
 
         for (ShopItem item : cart) {
             try {
