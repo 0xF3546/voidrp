@@ -1,113 +1,86 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.inventory.CustomItem;
 import de.polo.voidroleplay.manager.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
-import lombok.SneakyThrows;
+import de.polo.voidroleplay.utils.enums.License;
+import de.polo.voidroleplay.utils.enums.LongTermJob;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Arrays;
+import static de.polo.voidroleplay.Main.locationManager;
+import static de.polo.voidroleplay.Main.playerManager;
 
 /**
  * @author Mayson1337
  * @version 1.0.0
  * @since 1.0.0
  */
-public class AnwaltCommand implements CommandExecutor {
-    private final PlayerManager playerManager;
-    private final LocationManager locationManager;
+@CommandBase.CommandMeta(name = "anwalt")
+public class AnwaltCommand extends CommandBase {
+    public static String PREFIX = "§8[§6Anwalt§8]§7 ";
 
-    public AnwaltCommand(PlayerManager playerManager, LocationManager locationManager) {
-        this.playerManager = playerManager;
-        this.locationManager = locationManager;
-
-        Main.registerCommand("anwalt", this);
+    public AnwaltCommand(@NotNull CommandMeta meta) {
+        super(meta);
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player);
+    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (locationManager.getDistanceBetweenCoords(player, "anwalt") > 5) {
-            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Anwalts.");
-            return false;
-        }
-        if (!playerData.hasAnwalt()) {
-            player.sendMessage(Prefix.ERROR + "Du hast keinen Anwalt.");
-            return false;
-        }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Anwalt");
-        inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§9Aktenübersicht")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                openPlayerAkte(player, 1);
-            }
-        });
-        inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.BLUE_DYE, 1, 0, "§9Akten entfernen", Arrays.asList("§8 ➥ §e50% Chance alle Akten entfernt zu bekommen", "§8 ➥ §a20.000$"))) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (playerData.getBargeld() < 20000) {
-                    player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld.");
-                    return;
+            player.sendMessage(Component.text("§7   ===§8[§6Anwälte§8]§7==="));
+            for (PlayerData targetData : playerManager.getPlayers()) {
+                if (targetData.getLongTermJob() == LongTermJob.LAWYER) {
+                    player.sendMessage(Component.text("§8 ➥ §e" + targetData.getPlayer().getName()));
                 }
-                if (Main.random(1, 2) == 2) {
-                    player.sendMessage("§8[§7Anwalt§8]§7 Ich habe es nicht geschafft...");
-                    return;
-                }
-                player.sendMessage("§8[§7Anwalt§8]§7 Ich habe es geschafft, alle Akten sind entfernt.");
-                Main.getInstance().utils.staatUtil.clearPlayerAkte(player);
             }
-        });
-        return false;
+            return;
+        }
+        if (playerData.hasLicense(License.LAWYER)) {
+            open(player, playerData);
+        } else {
+            openBuyMenu(player, playerData);
+        }
     }
 
-    @SneakyThrows
-    public void openPlayerAkte(Player player, int page) {
-        if (page <= 0) return;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch`, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `player_akten` WHERE `uuid` = '" + player.getUniqueId() + "'");
-        int i = 0;
-        while (result.next()) {
-            if (i == 26 && i == 18 && i == 22) {
-                i++;
-            } else if (result.getRow() >= (25 * (page - 1)) && result.getRow() <= (25 * page)) {
-                inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.WRITTEN_BOOK, 1, 0, "§8» §3" + result.getString(2), Arrays.asList("§8 ➥ §bHafteinheiten§8:§7 " + result.getInt(3), "§8 ➥ §bGeldstrafe§8:§7 " + result.getInt(4) + "$", "§8 ➥ §bDurch§8:§7 " + result.getString(5), "§8 ➥ §bDatum§8:§7 " + result.getString("formatted_timestamp")))) {
-                    @SneakyThrows
-                    @Override
-                    public void onClick(InventoryClickEvent event) {
+    private void openJobEntryMenu(Player player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Anwalt");
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§aJob annehmen", "§8 ➥ §7Du musst diesen Job noch annehmen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                playerManager.setLongTermJob(player, LongTermJob.LAWYER);
+                open(player, playerData);
+            }
+        });
+    }
 
-                    }
-                });
-                i++;
-            }
+    private void open(Player player, PlayerData playerData) {
+        if (playerData.getLongTermJob() != LongTermJob.LAWYER) {
+            openJobEntryMenu(player, playerData);
+            return;
         }
-        inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Anwalt");
+    }
+
+    private void openBuyMenu(Player player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Anwalt");
+        inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§6Lizenz kaufen", "§8 ➥ §a25.000$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                openPlayerAkte(player, page + 1);
+                if (playerData.getBargeld() < 25000) {
+                    player.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Geld dabei."));
+                    return;
+                }
+                playerData.addLicenseToDatabase(License.LAWYER);
+                player.sendMessage(Component.text(PREFIX + "§aDu hast die Anwaltslizenz erworben."));
+                playerData.removeMoney(25000, "Anwaltslizenz");
+                open(player, playerData);
             }
         });
-        inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                openPlayerAkte(player, page + 1);
-            }
-        });
-        result.close();
     }
 }
