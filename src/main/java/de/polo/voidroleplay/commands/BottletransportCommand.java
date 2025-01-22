@@ -53,7 +53,7 @@ public class BottletransportCommand extends CommandBase {
         playerData.setVariable("job", "flaschentransport");
         int amount = Main.random(2, 4);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + " erhalten, bringe diese in das Lager der Bar."));
-        utils.navigationManager.createNavi(player, "bar_storage", true);
+        utils.navigationManager.createNaviByLocation(player, "bar_storage");
         playerData.setVariable("job::flaschentransport::amount", amount);
     }
 
@@ -61,7 +61,7 @@ public class BottletransportCommand extends CommandBase {
         int boxPrice = Main.random(ServerManager.getPayout("flaschenlieferant_kiste_from"), ServerManager.getPayout("flaschenlieferant_kiste_to"));
         int amount = playerData.getVariable("job::flaschentransport::amount");
         if (amount <= 0) return;
-        player.sendMessage(Component.text(PREFIX + "§aDu hast eine Kiste abgegeben."));
+        player.sendMessage(Component.text(PREFIX + "§aDu hast eine Kiste abgegeben. §a+" + boxPrice + "$"));
         playerData.setVariable("job::flaschentransport::amount", amount - 1);
         playerData.addMoney(boxPrice, "Kiste Flaschenlieferant");
         playerManager.addExp(player, Main.random(6, 10));
