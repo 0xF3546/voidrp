@@ -193,7 +193,7 @@ public class ShopCommand implements CommandExecutor {
         }
 
         player.closeInventory();
-        player.playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1, 0);
 
         for (ShopItem item : cart) {
             try {

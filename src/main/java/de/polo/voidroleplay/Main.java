@@ -290,7 +290,8 @@ public final class Main extends JavaPlugin {
                 FahrschuleCommand.class,
                 TakeLicenseCommand.class,
                 AnwaltCommand.class,
-                MaklerCommand.class
+                MaklerCommand.class,
+                SellHouseCommand.class
         );
 
 

@@ -80,13 +80,13 @@ public class VertragUtil {
     }
 
     public void acceptVertrag(Player player) throws SQLException {
-        Object curr = current.get(player.getUniqueId().toString());
         Agreement agreement = getActiveAgreement(player);
         if (agreement != null) {
             agreement.accept();
             agreements.remove(agreement);
             return;
         }
+        Object curr = current.get(player.getUniqueId().toString());
         if (curr != null) {
             Player targetplayer = null;
             try {
@@ -222,13 +222,13 @@ public class VertragUtil {
     }
 
     public void denyVertrag(Player player) {
-        String curr = current.get(player.getUniqueId().toString()).toString();
         Agreement agreement = getActiveAgreement(player);
         if (agreement != null) {
             agreement.deny();
             agreements.remove(agreement);
             return;
         }
+        String curr = current.get(player.getUniqueId().toString()).toString();
         if (curr != null) {
             Player targetplayer = null;
             PlayerData playerData = playerManager.getPlayerData(player);

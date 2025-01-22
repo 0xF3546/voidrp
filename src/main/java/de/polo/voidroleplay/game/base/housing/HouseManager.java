@@ -625,5 +625,7 @@ public class HouseManager implements CommandExecutor, Listener {
         if (event.getMinute() % 90 != 0) return;
         doCryptoTick();
     }
+
+
 }
 
