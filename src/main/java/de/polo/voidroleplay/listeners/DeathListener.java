@@ -2,7 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
-import de.polo.voidroleplay.commands.BombeCommand;
+import de.polo.voidroleplay.faction.commands.BombeCommand;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
