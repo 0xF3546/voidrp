@@ -41,8 +41,8 @@ public class GoToVehCommand implements CommandExecutor {
         for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
                 try {
-                    if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER) != null) {
-                        int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                    if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER) != null) {
+                        int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
                         if (Integer.parseInt(args[0]) == id) {
                             player.teleport(entity.getLocation());
                             player.sendMessage(Prefix.ADMIN + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");

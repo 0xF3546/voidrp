@@ -69,7 +69,7 @@ public class Scoreboard {
     }
 
     public void createCarScoreboard(Vehicle minecart) {
-        scoreboardAPI.createScoreboard(player, "vehicle", "§6" + minecart.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING));
+        scoreboardAPI.createScoreboard(player, "vehicle", "§6" + minecart.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING));
         updateCarScoreboard(minecart);
     }
 
@@ -144,6 +144,6 @@ public class Scoreboard {
                 // Beispiel, alle 60 Sekunden aktualisieren
                 updateAdminScoreboard();
             }
-        }.runTaskTimer(Main.plugin, 0, 1200); // Alle 60 Sekunden aktualisieren
+        }.runTaskTimer(Main.getInstance(), 0, 1200); // Alle 60 Sekunden aktualisieren
     }
 }

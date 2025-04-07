@@ -258,7 +258,7 @@ public class WeaponManager implements Listener {
             }
             return;
         }*/
-        NamespacedKey id = new NamespacedKey(Main.plugin, "id");
+        NamespacedKey id = new NamespacedKey(Main.getInstance(), "id");
         Integer weaponId = event.getItem().getItemMeta().getPersistentDataContainer().get(id, PersistentDataType.INTEGER);
         Weapon weapon = weaponList.get(weaponId);
         if (weapon == null) return;
@@ -484,7 +484,7 @@ public class WeaponManager implements Listener {
         }
         if (item == null) return;
         ItemMeta meta = item.getItemMeta();
-        NamespacedKey ammoKey = new NamespacedKey(Main.plugin, "id");
+        NamespacedKey ammoKey = new NamespacedKey(Main.getInstance(), "id");
         Integer id = meta.getPersistentDataContainer().get(ammoKey, PersistentDataType.INTEGER);
         Weapon w = weaponList.get(id);
 

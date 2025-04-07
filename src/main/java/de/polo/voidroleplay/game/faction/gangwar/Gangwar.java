@@ -94,6 +94,6 @@ public class Gangwar extends GangwarData {
                     setSeconds(getSeconds() - 1);
                 }
             }
-        }.runTaskTimerAsynchronously(Main.plugin, 0, 20);
+        }.runTaskTimerAsynchronously(Main.getInstance(), 0, 20);
     }
 }

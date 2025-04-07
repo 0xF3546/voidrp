@@ -1379,7 +1379,7 @@ public class PlayerManager implements Listener {
         armorStand.setBasePlate(false);
         armorStand.setArms(false);
         armorStand.setSmall(true);
-        armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, 0);
+        armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER, 0);
         armorStand.setCustomName("CarryStand_" + player.getUniqueId()); // Füge einen benutzerdefinierten Namen hinzu
 
         Location playerLocation = player.getLocation();
@@ -1437,7 +1437,7 @@ public class PlayerManager implements Listener {
         return count;
     }
 
-    private void kissPlayer(Player player, Player targetplayer) {
+    public void kissPlayer(Player player, Player targetplayer) {
         if (player.getLocation().distance(targetplayer.getLocation()) < 5) {
             ChatUtils.sendMeMessageAtPlayer(player, "§o" + player.getName() + " gibt " + targetplayer.getName() + " einen Kuss.");
             player.spawnParticle(Particle.HEART, player.getLocation().add(0, 2, 0), 1);

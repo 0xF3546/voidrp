@@ -141,7 +141,7 @@ public class DeathUtils {
             deathSkulls.remove(player.getUniqueId().toString());
         }
         for (Player players : Bukkit.getOnlinePlayers()) {
-            players.showPlayer(Main.plugin, player);
+            players.showPlayer(Main.getInstance(), player);
         }
         playerManager.setPlayerMove(player, true);
         if (playerData.getVariable("gangwar") != null) {

@@ -70,18 +70,18 @@ public class Vehicles implements Listener, CommandExecutor {
     public static Minecart spawnVehicle(Player player, PlayerVehicleData playerVehicleData) {
         Location location = new Location(Bukkit.getWorld("world"), playerVehicleData.getX(), playerVehicleData.getY() + 1, playerVehicleData.getZ(), playerVehicleData.getYaw(), playerVehicleData.getPitch());
         Minecart minecart = (Minecart) Bukkit.getWorld("world").spawnEntity(location, EntityType.MINECART);
-        NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
+        NamespacedKey key_id = new NamespacedKey(Main.getInstance(), "id");
         minecart.getPersistentDataContainer().set(key_id, PersistentDataType.INTEGER, playerVehicleData.getId());
-        NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
+        NamespacedKey key_uuid = new NamespacedKey(Main.getInstance(), "uuid");
         minecart.getPersistentDataContainer().set(key_uuid, PersistentDataType.STRING, playerVehicleData.getUuid());
-        NamespacedKey key_km = new NamespacedKey(Main.plugin, "km");
+        NamespacedKey key_km = new NamespacedKey(Main.getInstance(), "km");
         minecart.getPersistentDataContainer().set(key_km, PersistentDataType.INTEGER, playerVehicleData.getKm());
-        NamespacedKey key_fuel = new NamespacedKey(Main.plugin, "fuel");
+        NamespacedKey key_fuel = new NamespacedKey(Main.getInstance(), "fuel");
         minecart.getPersistentDataContainer().set(key_fuel, PersistentDataType.FLOAT, playerVehicleData.getFuel());
-        NamespacedKey key_lock = new NamespacedKey(Main.plugin, "lock");
+        NamespacedKey key_lock = new NamespacedKey(Main.getInstance(), "lock");
         minecart.getPersistentDataContainer().set(key_lock, PersistentDataType.INTEGER, 1);
         playerVehicleData.setLocked(true);
-        NamespacedKey key_type = new NamespacedKey(Main.plugin, "type");
+        NamespacedKey key_type = new NamespacedKey(Main.getInstance(), "type");
         minecart.getPersistentDataContainer().set(key_type, PersistentDataType.STRING, playerVehicleData.getType());
 
         VehicleData vehicleData = vehicleDataMap.get(playerVehicleData.getType());
@@ -92,10 +92,10 @@ public class Vehicles implements Listener, CommandExecutor {
     public static void deleteVehicleById(Integer id) throws SQLException {
         for (Entity entity : Bukkit.getWorld("world").getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
-                NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
+                NamespacedKey key_id = new NamespacedKey(Main.getInstance(), "id");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
-                    int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
-                    float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                    int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "km"), PersistentDataType.INTEGER);
+                    float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "fuel"), PersistentDataType.FLOAT);
                     PlayerVehicleData playerVehicleData = playerVehicleDataMap.get(id);
                     if (playerVehicleData == null) continue;
                     playerVehicleData.setKm(km);
@@ -115,11 +115,11 @@ public class Vehicles implements Listener, CommandExecutor {
     public static void deleteVehicleByUUID(String uuid) throws SQLException {
         for (Entity entity : Bukkit.getWorld("world").getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
-                NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
+                NamespacedKey key_uuid = new NamespacedKey(Main.getInstance(), "uuid");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), uuid)) {
-                    int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                    int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
-                    float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                    int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
+                    int km = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "km"), PersistentDataType.INTEGER);
+                    float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "fuel"), PersistentDataType.FLOAT);
                     PlayerVehicleData playerVehicleData = playerVehicleDataMap.get(id);
                     if (playerVehicleData == null) continue;
                     playerVehicleData.setKm(km);
@@ -139,19 +139,19 @@ public class Vehicles implements Listener, CommandExecutor {
     public static void toggleVehicleState(Integer id, Player player) {
         for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
             if (entity.getType() == EntityType.MINECART) {
-                NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
+                NamespacedKey key_id = new NamespacedKey(Main.getInstance(), "id");
                 if (Objects.equals(entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER), id)) {
                     player.playSound(entity.getLocation(), Sound.UI_BUTTON_CLICK, 1, 0);
-                    int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
+                    int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "lock"), PersistentDataType.INTEGER);
                     PlayerVehicleData vehicle = playerVehicleDataMap.get(id);
                     if (lock == 1) {
                         vehicle.setLocked(false);
-                        entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 0);
-                        player.sendMessage(Prefix.MAIN + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §aaufgeschlossen§7!");
+                        entity.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "lock"), PersistentDataType.INTEGER, 0);
+                        player.sendMessage(Prefix.MAIN + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING) + " wurde §aaufgeschlossen§7!");
                     } else {
                         vehicle.setLocked(true);
-                        entity.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER, 1);
-                        player.sendMessage(Prefix.MAIN + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING) + " wurde §czugeschlossen§7!");
+                        entity.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "lock"), PersistentDataType.INTEGER, 1);
+                        player.sendMessage(Prefix.MAIN + "Dein " + entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING) + " wurde §czugeschlossen§7!");
                     }
                 }
             }
@@ -159,14 +159,14 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     public static void fillVehicle(Vehicle vehicle, Integer newFuel) {
-        String type = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-        int id = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-        float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+        String type = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING);
+        int id = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
+        float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "fuel"), PersistentDataType.FLOAT);
         VehicleData vehicleData = vehicleDataMap.get(type);
         if (newFuel != null) {
-            vehicle.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT, fuel + newFuel);
+            vehicle.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "fuel"), PersistentDataType.FLOAT, fuel + newFuel);
         } else {
-            vehicle.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT, (float) vehicleData.getMaxFuel());
+            vehicle.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "fuel"), PersistentDataType.FLOAT, (float) vehicleData.getMaxFuel());
         }
     }
 
@@ -259,13 +259,13 @@ public class Vehicles implements Listener, CommandExecutor {
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event) {
         if (event.getVehicle().getType().equals(EntityType.MINECART)) {
-            NamespacedKey key_lock = new NamespacedKey(Main.plugin, "lock");
+            NamespacedKey key_lock = new NamespacedKey(Main.getInstance(), "lock");
             Vehicle vehicle = event.getVehicle();
             Player player = (Player) event.getEntered();
             if (vehicle.getPersistentDataContainer().get(key_lock, PersistentDataType.INTEGER) == 0) {
                 PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
                 ScoreboardAPI scoreboardAPI = Main.getInstance().getScoreboardAPI();
-                String type = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
+                String type = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING);
                 if (playerData.getVariable("job") != null) {
                     if (playerData.getVariable("job").equals("pfeifentransport")) {
                         event.setCancelled(true);
@@ -277,8 +277,8 @@ public class Vehicles implements Listener, CommandExecutor {
                     if (!player.isInsideVehicle()) {
                         return;
                     }
-                    int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "km"), PersistentDataType.INTEGER);
-                    float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                    int km = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "km"), PersistentDataType.INTEGER);
+                    float fuel = vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "fuel"), PersistentDataType.FLOAT);
                     double speedMetersPerSecond = player.getVehicle().getVelocity().length();
                     double kmh = speedMetersPerSecond * 36;
                     scoreboardAPI.setScore(player, "vehicle", "§eKMH§8:", (int) kmh);
@@ -304,7 +304,7 @@ public class Vehicles implements Listener, CommandExecutor {
             Player player = (Player) event.getExited();
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             //playerData.getScoreboard("vehicle").killScoreboard();
-            int id = event.getVehicle().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+            int id = event.getVehicle().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
             PlayerVehicleData playerVehicleData = Vehicles.playerVehicleDataMap.get(id);
             playerVehicleData.setX((int) event.getVehicle().getLocation().getX());
             playerVehicleData.setY((int) event.getVehicle().getLocation().getY());
@@ -321,7 +321,7 @@ public class Vehicles implements Listener, CommandExecutor {
             if (vehicle.getPassengers().size() == 0) return;
             if (event.getVehicle().getPassengers().get(0) != null) {
                 Player player = (Player) event.getVehicle().getPassengers().get(0);
-                VehicleData vehicleData = vehicleDataMap.get(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING));
+                VehicleData vehicleData = vehicleDataMap.get(vehicle.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING));
                 double maxSpeed = vehicleData.getMaxspeed();
                 double acceleration = vehicleData.getAcceleration();
 
@@ -361,10 +361,10 @@ public class Vehicles implements Listener, CommandExecutor {
                     int i = 0;
                     for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
                         if (entity.getType() == EntityType.MINECART) {
-                            NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
+                            NamespacedKey key_uuid = new NamespacedKey(Main.getInstance(), "uuid");
                             if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
-                                String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-                                float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "fuel"), PersistentDataType.FLOAT);
+                                String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING);
+                                float fuel = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "fuel"), PersistentDataType.FLOAT);
                                 VehicleData vehicleData = vehicleDataMap.get(type);
                                 int dif = vehicleData.getMaxFuel() - (int) fuel;
                                 playerData.setIntVariable("current_fuel", (int) fuel);
@@ -498,18 +498,18 @@ public class Vehicles implements Listener, CommandExecutor {
                 int i = 0;
                 for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
                     if (entity.getType() == EntityType.MINECART) {
-                        NamespacedKey key_uuid = new NamespacedKey(Main.plugin, "uuid");
+                        NamespacedKey key_uuid = new NamespacedKey(Main.getInstance(), "uuid");
                         if (Objects.equals(entity.getPersistentDataContainer().get(key_uuid, PersistentDataType.STRING), player.getUniqueId().toString()) && player.getLocation().distance(entity.getLocation()) <= 8) {
-                            String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "type"), PersistentDataType.STRING);
-                            int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
-                            int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "lock"), PersistentDataType.INTEGER);
+                            String type = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "type"), PersistentDataType.STRING);
+                            int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
+                            int lock = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "lock"), PersistentDataType.INTEGER);
                             if (lock == 0) {
                                 inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "§7 ➥ §cZuschließen"));
                             } else {
                                 inv.setItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, "§7 ➥ §aAufschließen"));
                             }
                             ItemMeta meta = inv.getItem(i).getItemMeta();
-                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, id);
+                            meta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER, id);
                             inv.getItem(i).setItemMeta(meta);
                             i++;
                         }

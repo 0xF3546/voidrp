@@ -124,9 +124,9 @@ public class InventoryClickListener implements Listener {
                     case PAPER:
                         if (playerData.getVariable("current_akte") != null) {
                             ItemMeta meta = event.getCurrentItem().getItemMeta();
-                            NamespacedKey akte = new NamespacedKey(Main.plugin, "akte");
-                            NamespacedKey hafteinheiten = new NamespacedKey(Main.plugin, "hafteinheiten");
-                            NamespacedKey geldstrafe = new NamespacedKey(Main.plugin, "geldstrafe");
+                            NamespacedKey akte = new NamespacedKey(Main.getInstance(), "akte");
+                            NamespacedKey hafteinheiten = new NamespacedKey(Main.getInstance(), "hafteinheiten");
+                            NamespacedKey geldstrafe = new NamespacedKey(Main.getInstance(), "geldstrafe");
                             Player targetplayer = Bukkit.getPlayer(UUID.fromString(playerData.getVariable("current_akte")));
                             String newAkte = meta.getPersistentDataContainer().get(akte, PersistentDataType.STRING);
                             int newHafteinheiten = meta.getPersistentDataContainer().get(hafteinheiten, PersistentDataType.INTEGER);
@@ -358,7 +358,7 @@ public class InventoryClickListener implements Listener {
         if (Objects.equals(playerData.getVariable("current_inventory"), "carlock")) {
             event.setCancelled(true);
             if (event.getCurrentItem().getType() == Material.MINECART) {
-                int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER);
+                int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
                 Vehicles.toggleVehicleState(id, player);
                 player.closeInventory();
                 playerData.setVariable("current_inventory", null);

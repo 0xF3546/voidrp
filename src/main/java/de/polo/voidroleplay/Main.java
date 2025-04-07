@@ -24,6 +24,8 @@ import de.polo.voidroleplay.housing.services.HouseService;
 import de.polo.voidroleplay.housing.services.impl.CoreHouseService;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
+import de.polo.voidroleplay.player.services.PlayerService;
+import de.polo.voidroleplay.player.services.impl.CorePlayerService;
 import de.polo.voidroleplay.utils.inventory.InventoryApiRegister;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
@@ -53,6 +55,7 @@ public final class Main extends JavaPlugin {
     public MySQL mySQL;
 
     public static Database database;
+    public static PlayerService playerService;
     public static FactionService factionService;
     public static HouseService houseService;
 
@@ -153,6 +156,7 @@ public final class Main extends JavaPlugin {
         mySQL = new MySQL();
         database = mySQL;
         factionService = new CoreFactionService();
+        playerService = new CorePlayerService();
         houseService = new CoreHouseService();
 
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();

@@ -58,7 +58,7 @@ public class Drop {
         location.getBlock().setType(Material.CHEST);
         Location hologramLocation = location.clone().add(0.5, 2.5, 0.5);
         hologram = (ArmorStand) location.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
-        hologram.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, 0);
+        hologram.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER, 0);
         hologram.setVisible(false);
         hologram.setCustomNameVisible(true);
         hologram.setGravity(false);

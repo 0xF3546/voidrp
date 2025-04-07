@@ -54,7 +54,7 @@ public class EntityDamageByEntityListener implements Listener {
         }
 
         if (event.getEntity().getType() == EntityType.VILLAGER) {
-            String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "command"), PersistentDataType.STRING);
+            String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "command"), PersistentDataType.STRING);
             if (command != null) {
                 event.setCancelled(true);
             }

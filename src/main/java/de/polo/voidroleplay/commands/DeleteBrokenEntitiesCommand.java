@@ -29,19 +29,19 @@ public class DeleteBrokenEntitiesCommand implements CommandExecutor {
             }
 
             if (entity instanceof Villager) {
-                String villager_name = entity.getPersistentDataContainer().get(new NamespacedKey(Main.plugin, "name"), PersistentDataType.STRING);
+                String villager_name = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING);
                 if (villager_name == null) {
                     entity.remove();
                     player.sendMessage(Prefix.GAMEDESIGN + "Ein NPC wurde gelöscht.");
                 }
             } else if (entity instanceof Vehicle) {
-                NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
+                NamespacedKey key_id = new NamespacedKey(Main.getInstance(), "id");
                 if (entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER) == null) {
                     entity.remove();
                     player.sendMessage(Prefix.GAMEDESIGN + "Fahrzeug wurde gelöscht.");
                 }
             } else if (entity instanceof ArmorStand) {
-                NamespacedKey key_id = new NamespacedKey(Main.plugin, "id");
+                NamespacedKey key_id = new NamespacedKey(Main.getInstance(), "id");
                 if (entity.getPersistentDataContainer().get(key_id, PersistentDataType.INTEGER) == null) {
                     entity.remove();
                     player.sendMessage(Prefix.GAMEDESIGN + "Rüstungsständer wurde gelöscht.");

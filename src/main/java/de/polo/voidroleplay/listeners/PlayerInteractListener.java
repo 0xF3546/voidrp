@@ -129,7 +129,7 @@ public class PlayerInteractListener implements Listener {
                     Location l = event.getClickedBlock().getLocation();
                     World w = player.getWorld();
                     ArmorStand armorStand = w.spawn(l.add(0.5D, -1, 0.5D), ArmorStand.class);
-                    armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, 0);
+                    armorStand.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER, 0);
                     armorStand.setVisible(false);
                     armorStand.addPassenger(player);
                 }

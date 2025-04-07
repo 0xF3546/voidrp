@@ -135,7 +135,7 @@ public class ChatListener implements Listener {
     }
 
     private void handleChatBlock(AsyncPlayerChatEvent event, Player player, PlayerData playerData) {
-        Bukkit.getScheduler().runTask(Main.plugin, () -> {
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SubmitChatEvent(player, event.getMessage()));
             String chatBlock = (String) playerData.getVariable("chatblock");
             if (chatBlock != null) {

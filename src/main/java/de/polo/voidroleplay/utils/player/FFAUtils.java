@@ -117,7 +117,7 @@ public class FFAUtils implements CommandExecutor, Listener {
                 if (lobbyData.getPlayers() < lobbyData.getMaxPlayer()) {
                     inv.setItem(slotIndex, ItemManager.createItem(Material.LIME_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
                     ItemMeta meta = inv.getItem(slotIndex).getItemMeta();
-                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.plugin, "id"), PersistentDataType.INTEGER, lobbyData.getId());
+                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER, lobbyData.getId());
                     inv.getItem(slotIndex).setItemMeta(meta);
                 } else {
                     inv.setItem(slotIndex, ItemManager.createItem(Material.GRAY_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
