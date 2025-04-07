@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 
+import static de.polo.voidroleplay.Main.agreementService;
+
 public class AnnehmenCommand implements CommandExecutor {
     private final Utils utils;
 
@@ -20,11 +22,7 @@ public class AnnehmenCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        try {
-            utils.vertragUtil.acceptVertrag(player);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        agreementService.acceptVertrag(player);
         return false;
     }
 }

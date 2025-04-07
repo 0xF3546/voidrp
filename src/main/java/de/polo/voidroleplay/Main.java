@@ -75,7 +75,7 @@ public final class Main extends JavaPlugin {
     public static FactionService factionService;
     public static HouseService houseService;
     public static NewsService newsService;
-    public AgreementService agreementService;
+    public static AgreementService agreementService;
 
     @Getter
     public CooldownManager cooldownManager;
@@ -301,7 +301,8 @@ public final class Main extends JavaPlugin {
                 TakeLicenseCommand.class,
                 AnwaltCommand.class,
                 MaklerCommand.class,
-                SellHouseCommand.class
+                SellHouseCommand.class,
+                VertragCommand.class
         );
 
 
@@ -509,7 +510,6 @@ public final class Main extends JavaPlugin {
         public AutoBlacklistCommand autoBlacklistCommand;
         public AFKCommand afkCommand;
         public SettingsCommand settingsCommand;
-        public VertragCommand vertragCommand;
         public SecondaryTeamInfoCommand secondaryTeamInfoCommand;
         public SubTeamCommand subTeamCommand;
         public SubTeamChat subTeamChat;
@@ -733,7 +733,6 @@ public final class Main extends JavaPlugin {
             afkCommand = new AFKCommand(utils);
             settingsCommand = new SettingsCommand(playerManager);
             secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
-            vertragCommand = new VertragCommand();
             subTeamCommand = new SubTeamCommand(playerManager, factionManager);
             subTeamChat = new SubTeamChat(playerManager);
             setMOTDCommand = new SetMOTDCommand(playerManager, factionManager);
