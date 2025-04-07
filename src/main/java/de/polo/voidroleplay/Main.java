@@ -5,6 +5,7 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.admin.commands.*;
 import de.polo.voidroleplay.admin.services.AdminService;
+import de.polo.voidroleplay.admin.services.InvSeeCommand;
 import de.polo.voidroleplay.admin.services.SupportService;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.admin.services.impl.CoreAdminService;
@@ -15,6 +16,10 @@ import de.polo.voidroleplay.agreement.commands.VertragCommand;
 import de.polo.voidroleplay.agreement.services.AgreementService;
 import de.polo.voidroleplay.agreement.services.VertragUtil;
 import de.polo.voidroleplay.agreement.services.impl.CoreAgreementService;
+import de.polo.voidroleplay.base.commands.*;
+import de.polo.voidroleplay.business.commands.BizInviteCommand;
+import de.polo.voidroleplay.business.commands.BusinessChatCommand;
+import de.polo.voidroleplay.business.commands.BusinessCommand;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.Database;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
@@ -33,6 +38,8 @@ import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.housing.commands.AusziehenCommand;
+import de.polo.voidroleplay.housing.commands.RentCommand;
+import de.polo.voidroleplay.housing.commands.SellHouseCommand;
 import de.polo.voidroleplay.housing.services.HouseService;
 import de.polo.voidroleplay.housing.services.impl.CoreHouseService;
 import de.polo.voidroleplay.jobs.commands.*;
@@ -46,6 +53,12 @@ import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.news.services.NewsService;
 import de.polo.voidroleplay.news.services.impl.CoreNewsService;
 import de.polo.voidroleplay.news.services.impl.NewsManager;
+import de.polo.voidroleplay.phone.commands.AuflegenCommand;
+import de.polo.voidroleplay.phone.commands.CallCommand;
+import de.polo.voidroleplay.player.commands.NeulingschatCommand;
+import de.polo.voidroleplay.player.commands.OOCCommand;
+import de.polo.voidroleplay.player.commands.SellBookCommand;
+import de.polo.voidroleplay.player.commands.SellDrugCommand;
 import de.polo.voidroleplay.player.services.PlayerService;
 import de.polo.voidroleplay.player.services.impl.CorePlayerService;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -289,7 +302,7 @@ public final class Main extends JavaPlugin {
 
     private void registerAnnotatedCommands() {
         Set<Class<? extends CommandBase>> commands = Set.of(
-                de.polo.voidroleplay.commands.InvCommand.class,
+                InvCommand.class,
                 HochseefischerCommand.class,
                 CatchFishCommand.class,
                 AdventskalenderCommand.class,

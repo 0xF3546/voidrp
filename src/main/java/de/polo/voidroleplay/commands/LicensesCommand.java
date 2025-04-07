@@ -5,7 +5,6 @@ import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.player.enums.License;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -7,7 +7,6 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**

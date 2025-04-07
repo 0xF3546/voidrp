@@ -7,7 +7,6 @@ import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.player.entities.VoidPlayer;
-import de.polo.voidroleplay.storage.ATM;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.Prefix;
@@ -15,9 +14,9 @@ import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -77,14 +76,13 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
     private void openCleaningInventory(VoidPlayer player, Block block) {
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, "§7Reinigung ", true, true);
         for (int i = 0; i < Utils.random(12, 20); i++) {
-            int cash = Utils.random(25, 50);
             inventoryManager.setItem(new CustomItem(Utils.random(0, 53), ItemManager.createItem(Material.DIRT, 1, 0, "§7Dreck")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     ItemStack item = event.getCurrentItem();
                     item.setType(Material.BLACK_STAINED_GLASS_PANE);
                     ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName("§2");
+                    meta.displayName(Component.text("§2"));
                     item.setItemMeta(meta);
                     event.setCurrentItem(item);
                     int amount = 0;

@@ -1,48 +1,48 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.player.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+
+import static de.polo.voidroleplay.Main.newsManager;
 
 /**
  * @author Mayson1337
  * @version 1.0.0
  * @since 1.0.0
  */
-
-@CommandBase.CommandMeta(name = "signbook", faction = "News", usage = "/signbook [Titel]")
-public class SignBookCommand extends CommandBase {
-    public SignBookCommand(@NotNull CommandMeta meta) {
+@CommandBase.CommandMeta(name = "sellbook", faction = "News", usage = "/sellbook [Textart] [Preis]")
+public class SellBookCommand extends CommandBase {
+    public SellBookCommand(@NotNull CommandMeta meta) {
         super(meta);
     }
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        if (playerData.getFactionGrade() < 4) {
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
+            return;
+        }
         ItemStack stack = player.getPlayer().getInventory().getItemInMainHand();
         if (stack.getType() != Material.WRITTEN_BOOK) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du musst ein Buch in der Hand halten."));
             return;
         }
-        if (args.length < 1) {
+        if (args.length < 2) {
             showSyntax(player);
             return;
         }
-        BookMeta bookMeta = (BookMeta) stack.getItemMeta();
-        bookMeta.setAuthor("Void News");
-        String title = Utils.stringArrayToString(args).replace("&", "§");
-        bookMeta.setTitle(title);
-        bookMeta.setUnbreakable(true);
-        stack.setItemMeta(bookMeta);
-        ItemMeta meta = stack.getItemMeta();
-        meta.displayName(Component.text(title));
-        stack.setItemMeta(meta);
+        try {
+            int price = Integer.parseInt(args[1]);
+            newsManager.addBookToStore(stack, args[0], price);
+            player.sendMessage(Component.text(Prefix.MAIN + "Du hast ein Buch zum verkauf gestellt."));
+        } catch (Exception ex) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Die Zahl muss numerisch sein."));
+        }
     }
 }

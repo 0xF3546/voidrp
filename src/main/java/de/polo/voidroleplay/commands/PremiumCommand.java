@@ -8,7 +8,6 @@ import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
