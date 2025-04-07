@@ -2,8 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -39,7 +39,7 @@ public class UnbanCommand implements CommandExecutor {
             return false;
         }
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = Main.getInstance().coreDatabase.getStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM player_bans WHERE LOWER(name) = '" + args[0].toLowerCase() + "'");
             if (!res.next()) {
                 player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht in der Banlist gefudnen.");
@@ -47,7 +47,7 @@ public class UnbanCommand implements CommandExecutor {
             }
             adminManager.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", ChatColor.RED);
             player.sendMessage(Prefix.ADMIN + "Du hast " + res.getString(3) + " entbannt.");
-            Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_bans WHERE LOWER(name) = ?", args[0].toLowerCase());
+            Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_bans WHERE LOWER(name) = ?", args[0].toLowerCase());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

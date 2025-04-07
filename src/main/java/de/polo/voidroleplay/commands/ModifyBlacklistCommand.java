@@ -6,7 +6,7 @@ import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

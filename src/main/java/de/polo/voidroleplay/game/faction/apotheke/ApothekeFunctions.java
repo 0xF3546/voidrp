@@ -2,10 +2,11 @@ package de.polo.voidroleplay.game.faction.apotheke;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.ApothekeTakeOut;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -38,7 +39,7 @@ import java.util.List;
 
 public class ApothekeFunctions implements Listener {
     private final List<Apotheke> apotheken = new ObjectArrayList<>();
-    private final MySQL mySQL;
+    private final CoreDatabase coreDatabase;
     private final Utils utils;
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
@@ -46,14 +47,14 @@ public class ApothekeFunctions implements Listener {
     private final LocationManager locationManager;
 
     @SneakyThrows
-    public ApothekeFunctions(MySQL mySQL, Utils utils, FactionManager factionManager, PlayerManager playerManager, LocationManager locationManager) {
-        this.mySQL = mySQL;
+    public ApothekeFunctions(CoreDatabase coreDatabase, Utils utils, FactionManager factionManager, PlayerManager playerManager, LocationManager locationManager) {
+        this.coreDatabase = coreDatabase;
         this.utils = utils;
         this.factionManager = factionManager;
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-        Statement statement = mySQL.getStatement();
+        Statement statement = coreDatabase.getStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM apotheken");
         while (resultSet.next()) {
             Apotheke apotheke = new Apotheke();

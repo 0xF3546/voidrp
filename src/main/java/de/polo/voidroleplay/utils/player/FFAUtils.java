@@ -5,7 +5,7 @@ import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -64,7 +64,7 @@ public class FFAUtils implements CommandExecutor, Listener {
     }
 
     private void loadFFALobbys() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet lobby = statement.executeQuery("SELECT * FROM `ffa_lobbys`");
         while (lobby.next()) {
             FFALobbyData ffaLobbyData = new FFALobbyData();

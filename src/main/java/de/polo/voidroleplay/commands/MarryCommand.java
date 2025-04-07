@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.player.enums.Gender;
 import org.bukkit.Bukkit;
@@ -112,10 +112,10 @@ public class MarryCommand implements CommandExecutor {
                     firstplayer.sendMessage("§8 » §7Dein Nachname lautet nun \"" + firstplayerData.getLastname() + "\".");
                 }
                 JSONObject object = new JSONObject(firstplayerData.getRelationShip());
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ?, lastname = ? WHERE uuid = ?", object.toString(), firstplayerData.getLastname(), firstplayer.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = ?, lastname = ? WHERE uuid = ?", object.toString(), firstplayerData.getLastname(), firstplayer.getUniqueId().toString());
 
                 JSONObject object2 = new JSONObject(secondplayerData.getRelationShip());
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ?, lastname = ? WHERE uuid = ?", object2.toString(), secondplayerData.getLastname(), secondplayer.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = ?, lastname = ? WHERE uuid = ?", object2.toString(), secondplayerData.getLastname(), secondplayer.getUniqueId().toString());
             } else {
                 player.sendMessage(Prefix.ERROR + secondplayer.getName() + " & " + firstplayer.getName() + " sind nicht verlobt.");
             }

@@ -10,7 +10,7 @@ import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -47,7 +47,7 @@ public class BankingUtils implements Listener {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM atm LEFT JOIN blocks ON atm.blockId = blocks.id");
         while (result.next()) {
             ATM atm = new ATM();

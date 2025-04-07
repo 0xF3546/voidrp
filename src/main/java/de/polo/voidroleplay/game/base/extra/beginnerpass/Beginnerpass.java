@@ -3,7 +3,7 @@ package de.polo.voidroleplay.game.base.extra.beginnerpass;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -46,7 +46,7 @@ public class Beginnerpass implements CommandExecutor {
     public void loadAll() {
         quests.clear();
         rewards.clear();
-        try (Connection connection = Main.getInstance().mySQL.getConnection()) {
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection()) {
             // Laden der Quests
             try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM beginnerpass_quests")) {
                 ResultSet result = statement.executeQuery();
@@ -74,7 +74,7 @@ public class Beginnerpass implements CommandExecutor {
     @SneakyThrows
     public void loadPlayerQuests(UUID uuid) {
         PlayerData playerData = playerManager.getPlayerData(uuid);
-        try (Connection connection = Main.getInstance().mySQL.getConnection();
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM beginnerpass_player_quests WHERE uuid = ?")) {
             statement.setString(1, uuid.toString());
             ResultSet result = statement.executeQuery();
@@ -146,7 +146,7 @@ public class Beginnerpass implements CommandExecutor {
         Player player = playerData.getPlayer();
         String insertQuery = "INSERT INTO beginnerpass_player_quests (uuid, questId) VALUES (?, ?)";
 
-        Main.getInstance().getMySQL().insertAndGetKeyAsync(insertQuery, player.getUniqueId().toString(), quest.getId()).thenAccept(optionalKey -> {
+        Main.getInstance().getCoreDatabase().insertAndGetKeyAsync(insertQuery, player.getUniqueId().toString(), quest.getId()).thenAccept(optionalKey -> {
             if (optionalKey.isPresent()) {
                 int questId = optionalKey.get();
                 PlayerQuest playerQuest = new PlayerQuest(questId, quest.getId(), 0);
@@ -181,7 +181,7 @@ public class Beginnerpass implements CommandExecutor {
                 SoundManager.successSound(player);
             }
 
-            Main.getInstance().getMySQL().updateAsync("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?",
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE beginnerpass_player_quests SET state = ? WHERE id = ?",
                     playerQuest.getState(),
                     playerQuest.getId());
             return;

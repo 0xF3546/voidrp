@@ -28,7 +28,7 @@ public class PlayerInventoryManager {
     private void load() {
         // ISSUE VRP-10000: SQL race condition
         try {
-        Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM player_inventory_items WHERE uuid = ?", playerData.getPlayer().getUniqueId().toString())
+        Main.getInstance().getCoreDatabase().executeQueryAsync("SELECT * FROM player_inventory_items WHERE uuid = ?", playerData.getPlayer().getUniqueId().toString())
                 .thenAccept(result -> {
                     if (result != null && !result.isEmpty()) {
                         for (Map<String, Object> itemValue : result) {
@@ -51,12 +51,12 @@ public class PlayerInventoryManager {
     }
 
     private void updateItem(PlayerInventoryItem item) {
-        Main.getInstance().getMySQL().updateAsync("UPDATE player_inventory_items SET amount = ? WHERE id = ?", item.getAmount(), item.getId());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE player_inventory_items SET amount = ? WHERE id = ?", item.getAmount(), item.getId());
     }
 
     public void setSizeToDatabase(int size) {
         setSize(size);
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET inventorySize = ? WHERE uuid = ?", size, playerData.getUuid().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET inventorySize = ? WHERE uuid = ?", size, playerData.getUuid().toString());
     }
 
     public int getWeight() {
@@ -95,7 +95,7 @@ public class PlayerInventoryManager {
             cachedItem.setAmount(cachedItem.getAmount() + item.getAmount());
             updateItem(cachedItem);
         } else {
-            Main.getInstance().getMySQL().insertAndGetKeyAsync(
+            Main.getInstance().getCoreDatabase().insertAndGetKeyAsync(
                     "INSERT INTO player_inventory_items (uuid, item, amount) VALUES (?, ?, ?)",
                     playerData.getUuid().toString(),
                     item.getItem().name(),
@@ -135,7 +135,7 @@ public class PlayerInventoryManager {
 
     public void removeItem(PlayerInventoryItem item) {
         PlayerInventoryItem cachedItem = getByType(item.getItem());
-        Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_inventory_items WHERE id = ?", item.getId());
+        Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_inventory_items WHERE id = ?", item.getId());
         items.remove(item);
     }
 

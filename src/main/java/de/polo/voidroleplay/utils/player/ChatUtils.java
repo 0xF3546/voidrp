@@ -23,13 +23,13 @@ public class ChatUtils {
 
     public static void logMessage(String message, UUID uuid) {
         Main.getInstance()
-                .getMySQL()
+                .getCoreDatabase()
                 .insertAsync("INSERT INTO chat_logs (uuid, message) VALUES (?, ?)", uuid.toString(), message);
     }
 
     public static void logCommand(String command, UUID uuid) {
         Main.getInstance()
-                .getMySQL()
+                .getCoreDatabase()
                 .insertAsync("INSERT INTO command_logs (uuid, command) VALUES (?, ?)", uuid.toString(), command);
     }
 }

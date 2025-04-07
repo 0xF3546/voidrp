@@ -7,9 +7,9 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.SubGroup;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
-import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -53,7 +53,7 @@ public class VertragUtil {
         vertrag_type.put(target.getUniqueId().toString(), type);
         current.put(target.getUniqueId().toString(), vertrag);
         Statement statement = null;
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VAUES (?, ?, ?, ?, ?)", player.getUniqueId().toString(), target.getUniqueId().toString(), type, vertrag, new Date().toString());
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO verträge (first_person, second_person, type, vertrag, date) VAUES (?, ?, ?, ?, ?)", player.getUniqueId().toString(), target.getUniqueId().toString(), type, vertrag, new Date().toString());
         return true;
     }
 
@@ -72,7 +72,7 @@ public class VertragUtil {
         agreements.remove(getActiveAgreement(player));
         agreements.remove(getActiveAgreement(target));
         agreements.add(agreement);
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
                 player.getUniqueId(),
                 target.getUniqueId(),
                 agreement.getType(),
@@ -146,10 +146,10 @@ public class VertragUtil {
                         hmap2.put(targetplayer.getUniqueId().toString(), "beziehung");
                         playerData.setRelationShip(hmap2);
                         JSONObject object = new JSONObject(playerData.getRelationShip());
-                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object.toString(), player.getUniqueId().toString());
+                        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object.toString(), player.getUniqueId().toString());
 
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
-                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
+                        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
                         player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
@@ -169,10 +169,10 @@ public class VertragUtil {
                         playerData.getRelationShip().clear();
                         playerData.setRelationShip(hmap2);
                         JSONObject object = new JSONObject(playerData.getRelationShip());
-                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object.toString(), player.getUniqueId().toString());
+                        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object.toString(), player.getUniqueId().toString());
 
                         JSONObject object2 = new JSONObject(targetplayerData.getRelationShip());
-                        Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
+                        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = ? WHERE uuid = ?", object2.toString(), targetplayer.getUniqueId().toString());
                     } else {
                         player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
@@ -192,7 +192,7 @@ public class VertragUtil {
                             player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
                             playerData.setBloodType(random);
                             Main.getInstance().beginnerpass.didQuest(player, 21);
-                            Main.getInstance().getMySQL().updateAsync("UPDATE players SET bloodtype = ? WHERE uuid = ?", random, player.getUniqueId().toString());
+                            Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET bloodtype = ? WHERE uuid = ?", random, player.getUniqueId().toString());
                             try {
                                 playerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
                                 factionManager.addFactionMoney("Medic", 200, "Untersuchung durch " + finalTargetplayer.getName() + " (Blutgruppe)");

@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.block.Banner;
@@ -74,7 +74,7 @@ public class RegisterFactionBanner implements CommandExecutor {
         }
         factionData.setBannerPattern(banner.getPatterns());
         factionData.setBannerColor(banner.getType());
-        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET banner = ? WHERE id = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET banner = ? WHERE id = ?",
                 bannerObject.toString(),
                 factionData.getId());
         return false;

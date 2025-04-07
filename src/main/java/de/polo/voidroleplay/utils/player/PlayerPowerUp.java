@@ -35,7 +35,7 @@ public class PlayerPowerUp {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE player_powerups SET amount = ?, upgrades = ? WHERE id = ?");
         statement.setInt(1, amount);
         statement.setInt(2, upgrades);

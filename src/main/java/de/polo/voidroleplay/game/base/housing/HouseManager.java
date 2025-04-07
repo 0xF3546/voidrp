@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.game.base.housing;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.PlayerWeapon;
 import de.polo.voidroleplay.storage.RegisteredBlock;
@@ -62,7 +63,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     private void loadHousing() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM housing");
         while (locs.next()) {
             House houseData = new House(locs.getInt("number"), locs.getInt("maxServer"), locs.getInt("maxMiner"));
@@ -139,7 +140,7 @@ public class HouseManager implements CommandExecutor, Listener {
     public void updateRenter(int number) {
         House houseData = houseDataMap.get(number);
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = Main.getInstance().coreDatabase.getStatement();
             JSONObject object = new JSONObject(houseData.getRenter());
             statement.executeUpdate("UPDATE `housing` SET `renter` = '" + object + "' WHERE `number` = " + number);
         } catch (SQLException e) {
@@ -218,7 +219,7 @@ public class HouseManager implements CommandExecutor, Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         System.out.println("hausslot hinzugefügt");
         playerData.setHouseSlot(playerData.getHouseSlot() + 1);
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
@@ -243,7 +244,7 @@ public class HouseManager implements CommandExecutor, Listener {
                     houseData.setOwner(null);
                     sign.setLine(2, "§aZu Verkaufen");
                     sign.update();
-                    Statement statement = Main.getInstance().mySQL.getStatement();
+                    Statement statement = Main.getInstance().coreDatabase.getStatement();
                     statement.executeUpdate("UPDATE `housing` SET `owner` = null WHERE `number` = " + house);
                     return true;
                 } catch (SQLException e) {
@@ -615,7 +616,7 @@ public class HouseManager implements CommandExecutor, Listener {
         House house = getHouse(houseNumber);
         if (house == null) return;
         house.setMieterSlots(mieter);
-        Main.getInstance().getMySQL().updateAsync("UPDATE housing SET mieterSlot = ? WHERE number = ?", house.getMieterSlots(), house.getNumber());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE housing SET mieterSlot = ? WHERE number = ?", house.getMieterSlots(), house.getNumber());
     }
 
     @EventHandler

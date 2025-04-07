@@ -5,7 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
@@ -56,7 +56,7 @@ public class JailCommand implements CommandExecutor {
                 utils.staatUtil.setParole(player, playerData.getHafteinheiten() * 2);
                 playerData.setHafteinheiten(playerData.getHafteinheiten() / 2);
                 player.sendMessage("§8[§cGefängnis§8]§7 Du hast nun " + playerData.getHafteinheiten() + " Hafteinheiten und " + playerData.getHafteinheiten() * 2 + " Minuten bewährung.");
-                Main.getInstance().getMySQL().updateAsync("UPDATE Jail SET wps = ? WHERE uuid = ?", playerData.getHafteinheiten(), player.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE Jail SET wps = ? WHERE uuid = ?", playerData.getHafteinheiten(), player.getUniqueId().toString());
             }
         });
         inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.PAPER, 1, 0, "§7Freikaufen", Collections.singletonList("§8 ➥ §7" + playerData.getHafteinheiten() * 500 + "$"))) {

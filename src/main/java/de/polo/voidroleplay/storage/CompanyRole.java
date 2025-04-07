@@ -66,7 +66,7 @@ public class CompanyRole {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE company_roles SET name = ?, permissions = ? WHERE id = ?");
         statement.setString(1, getName());
         ObjectMapper mapper = new ObjectMapper();

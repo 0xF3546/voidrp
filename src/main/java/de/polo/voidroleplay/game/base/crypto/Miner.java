@@ -28,7 +28,7 @@ public class Miner {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE crypto_miner SET kWh = ?, coins = ?, active = ? WHERE id = ?");
         statement.setFloat(1, kWh);
         statement.setFloat(2, coins);

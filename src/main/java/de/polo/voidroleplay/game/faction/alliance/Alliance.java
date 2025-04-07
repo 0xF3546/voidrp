@@ -3,9 +3,9 @@ package de.polo.voidroleplay.game.faction.alliance;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
@@ -46,7 +46,7 @@ public class Alliance implements CommandExecutor {
     }
 
     public void accept(Player player, String attackerFaction) {
-        MySQL mySQL = Main.getInstance().mySQL;
+        CoreDatabase coreDatabase = Main.getInstance().coreDatabase;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         FactionData attackerData = factionManager.getFactionData(attackerFaction);

@@ -18,7 +18,7 @@ public class GlobalStats {
 
     @SneakyThrows
     public static void load() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM globalvariables");
         ResultSet result = statement.executeQuery();
         while (result.next()) {
@@ -34,7 +34,7 @@ public class GlobalStats {
     public static void setValue(String key, String value, boolean save) {
         values.replace(key, value);
         if (!save) return;
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE globalvariables SET value = ? WHERE type = ?");
         statement.setString(1, value);
         statement.setString(2, key);

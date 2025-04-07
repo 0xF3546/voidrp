@@ -2,9 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.database.impl.MySQL;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.ChatColor;
@@ -16,15 +15,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+import static de.polo.voidroleplay.Main.database;
+
 public class RegisterATMCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
-    private final MySQL mySQL;
 
-    public RegisterATMCommand(PlayerManager playerManager, AdminManager adminManager, MySQL mySQL) {
+    public RegisterATMCommand(PlayerManager playerManager, AdminManager adminManager) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
-        this.mySQL = mySQL;
         Main.registerCommand("registeratm", this);
     }
 
@@ -43,7 +42,7 @@ public class RegisterATMCommand implements CommandExecutor {
         }
         int blockId = Integer.parseInt(args[0]);
         String atmName = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO atm (blockId, name) VALUES (?, ?)", blockId, atmName)
+        database.insertAndGetKeyAsync("INSERT INTO atm (blockId, name) VALUES (?, ?)", blockId, atmName)
                 .thenApply(key -> {
                     if (key.isPresent()) {
                         player.sendMessage(Prefix.GAMEDESIGN + "Du hast einen ATM registriert #" + key.get());

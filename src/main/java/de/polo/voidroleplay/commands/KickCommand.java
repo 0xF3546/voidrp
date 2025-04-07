@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -22,7 +22,7 @@ public class KickCommand implements CommandExecutor, TabCompleter {
     public KickCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("kick", this);
-        Main.addTabCompeter("kick", this);
+        Main.addTabCompleter("kick", this);
     }
 
     @Override

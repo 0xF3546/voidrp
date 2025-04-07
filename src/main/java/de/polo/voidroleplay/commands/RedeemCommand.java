@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.command.Command;
@@ -31,7 +31,7 @@ public class RedeemCommand implements CommandExecutor {
             if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "redeem")) {
                 try {
                     PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                    Statement statement = Main.getInstance().mySQL.getStatement();
+                    Statement statement = Main.getInstance().coreDatabase.getStatement();
                     ResultSet result = statement.executeQuery("SELECT * FROM `payments` WHERE `user` = '" + player.getUniqueId().toString().replace("-", "") + "' AND type = '" + args[0].toLowerCase() + "'");
                     System.out.println(args[0]);
                     int id;

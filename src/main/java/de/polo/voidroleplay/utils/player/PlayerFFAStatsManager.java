@@ -36,7 +36,7 @@ public class PlayerFFAStatsManager {
         this.stats.add(stats);
         Main.getInstance().gamePlay.getFfa().addPlayerStats(stats);
         if (save) {
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("INSERT INTO player_ffa_stats (uuid, statsType) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, stats.getUuid());
             statement.setString(2, stats.getFfaStatsType().name());
@@ -51,7 +51,7 @@ public class PlayerFFAStatsManager {
     }
 
     public void save() {
-        try (Connection connection = Main.getInstance().mySQL.getConnection()) {
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection()) {
             for (PlayerFFAStats stat : stats) {
                 if (stat.getId() > 0) {
                     try (PreparedStatement statement = connection.prepareStatement(

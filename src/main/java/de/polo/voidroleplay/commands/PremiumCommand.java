@@ -35,7 +35,7 @@ public class PremiumCommand extends CommandBase {
         Main.getInstance().playerManager.addEXPBoost(player, 1);
 
         playerData.setLastPremiumBonus(Utils.getTime());
-        Main.getInstance().getMySQL().updateAsync(
+        Main.getInstance().getCoreDatabase().updateAsync(
                 "UPDATE players SET lastPremiumBonus = ? WHERE uuid = ?",
                 Utils.getTime().toString(),
                 player.getUniqueId().toString()

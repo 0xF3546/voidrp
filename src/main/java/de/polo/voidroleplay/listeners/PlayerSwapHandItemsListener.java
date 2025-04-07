@@ -13,7 +13,7 @@ import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.enums.Weapon;
 import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
@@ -264,7 +264,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                     targetplayerData.setStabilized(true);
                     targetplayerData.setDeathTime(targetplayerData.getDeathTime() + 120);
                     ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " stabilisiert " + targetplayer.getName());
-                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    Connection connection = Main.getInstance().coreDatabase.getConnection();
                     PreparedStatement statement = connection.prepareStatement("UPDATE players SET isStabilized = true WHERE uuid = ?");
                     statement.setString(1, targetplayer.getUniqueId().toString());
                     statement.execute();

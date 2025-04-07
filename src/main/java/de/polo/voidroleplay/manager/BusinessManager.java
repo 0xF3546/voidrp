@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.BusinessData;
 import de.polo.voidroleplay.storage.DBPlayerData;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -28,7 +29,7 @@ public class BusinessManager {
     }
 
     public static void removeOfflinePlayerFromBusiness(String playername) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         assert statement != null;
         ResultSet result = statement.executeQuery(("SELECT * FROM `players` WHERE `player_name` = '" + playername + "'"));
         if (result != null) {
@@ -58,7 +59,7 @@ public class BusinessManager {
     }
 
     private void loadBusinesses() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM business");
         while (locs.next()) {
             BusinessData businessData = new BusinessData();
@@ -77,7 +78,7 @@ public class BusinessManager {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setBusiness(null);
         playerData.setBusiness_grade(0);
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET business = NULL, business_grade = ? WHERE uuid = ?", player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET business = NULL, business_grade = ? WHERE uuid = ?", player.getUniqueId().toString());
     }
 
     public BusinessData getBusinessData(int id) {
@@ -89,7 +90,7 @@ public class BusinessManager {
 
     @SneakyThrows
     public synchronized int createBusiness(BusinessData businessData) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO business (owner, activated) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, businessData.getOwner().toString());
         statement.setBoolean(2, businessData.isActive());

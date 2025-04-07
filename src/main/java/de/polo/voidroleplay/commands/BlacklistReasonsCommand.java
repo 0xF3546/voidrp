@@ -5,7 +5,7 @@ import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
@@ -32,7 +32,7 @@ public class BlacklistReasonsCommand implements CommandExecutor, TabCompleter {
         this.factionManager = factionManager;
 
         Main.registerCommand("blacklistreasons", this);
-        Main.addTabCompeter("blacklistreasons", this);
+        Main.addTabCompleter("blacklistreasons", this);
     }
 
     @Override

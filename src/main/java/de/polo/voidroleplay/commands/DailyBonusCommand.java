@@ -6,7 +6,7 @@ import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -97,7 +97,7 @@ public class DailyBonusCommand implements CommandExecutor {
                 playerData.getInventory().addItem(RoleplayItem.SCHMERZMITTEL, 40);
                 playerManager.addCoins(player, 200);
                 playerManager.addExp(player, 1000);
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
             }
         });
         inventoryManager.setItem(new CustomItem(14, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§7+20 Schnupftabak§7 & §2 +20 Zigarren")) {
@@ -113,7 +113,7 @@ public class DailyBonusCommand implements CommandExecutor {
                 playerData.getInventory().addItem(RoleplayItem.CIGAR, 20);
                 playerManager.addCoins(player, 200);
                 playerManager.addExp(player, 1000);
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET bonusReceived = true WHERE uuid = ?", player.getUniqueId().toString());
             }
         });
     }
@@ -124,6 +124,6 @@ public class DailyBonusCommand implements CommandExecutor {
         playerData.setDailyBonusRedeemed(LocalDateTime.now());
         player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 1, 0, CaseType.DAILY.getDisplayName()));
         player.sendMessage(Prefix.MAIN + "Du hast deine Tägliche Case erhalten.");
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET dailyBonusRedeemed = NOW() WHERE uuid = ?", player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET dailyBonusRedeemed = NOW() WHERE uuid = ?", player.getUniqueId().toString());
     }
 }

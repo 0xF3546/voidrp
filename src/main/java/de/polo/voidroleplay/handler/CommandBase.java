@@ -6,7 +6,6 @@ import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +23,7 @@ public abstract class CommandBase implements CommandExecutor {
         this.meta = meta;
 
         Main.getInstance().getCommand(meta.name()).setExecutor(this);
-        
+
     }
 
     /**

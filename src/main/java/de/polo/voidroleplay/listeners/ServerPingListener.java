@@ -27,7 +27,7 @@ public class ServerPingListener implements Listener {
         String motd = null;
 
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = Main.getInstance().coreDatabase.getStatement();
             ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'");
             if (res.next()) {
                 if (res.getString(3) != null) {

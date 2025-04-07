@@ -120,7 +120,7 @@ public class GasStationData {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE gasstations SET price = ?, literprice = ?, liter = ?, company = ? WHERE id = ?");
         statement.setInt(1, getPrice());
         statement.setInt(2, getLiterprice());

@@ -2,8 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -60,7 +60,7 @@ public class PermbanCommand implements CommandExecutor {
             Player targetOnPlayer = Bukkit.getPlayer(target.getUniqueId());
             targetOnPlayer.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest Permanent vom Server gebannt.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoidRoleplay §8•");
         }
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO player_bans (uuid, name, reason, punisher, isPermanent) VALUES (?, ?, ?, ?, ?)",
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_bans (uuid, name, reason, punisher, isPermanent) VALUES (?, ?, ?, ?, ?)",
                 target.getUniqueId().toString(),
                 target.getName(),
                 reason.toString(),

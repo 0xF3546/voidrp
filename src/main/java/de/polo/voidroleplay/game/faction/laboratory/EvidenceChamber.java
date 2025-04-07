@@ -131,7 +131,7 @@ public class EvidenceChamber {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE evidenceChamber SET weed = ?, joints = ?, cocaine = ?, noble_joints = ?, crystal = ? WHERE id = ?");
         preparedStatement.setInt(1, weed);
         preparedStatement.setInt(2, joints);

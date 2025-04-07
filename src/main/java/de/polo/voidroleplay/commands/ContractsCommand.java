@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.ContractData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -62,7 +62,7 @@ public class ContractsCommand implements CommandExecutor, TabCompleter {
                                             }
                                             ServerManager.contractDataMap.remove(targetplayer.getUniqueId().toString());
                                             try {
-                                                Statement statement = Main.getInstance().mySQL.getStatement();
+                                                Statement statement = Main.getInstance().coreDatabase.getStatement();
                                                 statement.execute("DELETE FROM `contract` WHERE `uuid` = '" + targetplayer.getUniqueId() + "'");
                                             } catch (SQLException e) {
                                                 throw new RuntimeException(e);

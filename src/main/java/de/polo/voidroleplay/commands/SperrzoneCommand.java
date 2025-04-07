@@ -5,7 +5,7 @@ import de.polo.voidroleplay.storage.NaviData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.NavigationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

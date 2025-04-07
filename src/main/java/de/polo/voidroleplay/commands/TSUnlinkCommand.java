@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.command.Command;
@@ -28,7 +28,7 @@ public class TSUnlinkCommand implements CommandExecutor {
         if (playerData.getTeamSpeakUID() != null) {
             playerData.setTeamSpeakUID(null);
             try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
+                Statement statement = Main.getInstance().coreDatabase.getStatement();
                 statement.executeUpdate("UPDATE `players` SET `teamSpeakUID` = " + playerData.getTeamSpeakUID() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);

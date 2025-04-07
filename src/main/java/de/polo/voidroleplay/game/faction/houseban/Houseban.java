@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -48,7 +48,7 @@ public class Houseban implements CommandExecutor, TabCompleter {
     @SneakyThrows
     private void loadAll() {
         housebans.clear();
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM housebans");
+        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("SELECT * FROM housebans");
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             PlayerHouseban playerHouseban = new PlayerHouseban(UUID.fromString(result.getString("uuid")), result.getString("reason"), Utils.toLocalDateTime(result.getDate("until")));
@@ -107,7 +107,7 @@ public class Houseban implements CommandExecutor, TabCompleter {
                         }
                         factionManager.sendCustomMessageToFactions("§8[§cHausverbot§8]§7 " + player.getName() + " das Hausverbot von " + offlinePlayer.getName() + " aufgehoben.", "Medic", "FBI", "Polizei");
                         housebans.remove(houseban);
-                        Connection connection = Main.getInstance().mySQL.getConnection();
+                        Connection connection = Main.getInstance().coreDatabase.getConnection();
                         PreparedStatement statement = connection.prepareStatement("DELETE FROM housebans WHERE id = ?");
                         statement.setInt(1, houseban.getId());
                         statement.execute();
@@ -146,7 +146,7 @@ public class Houseban implements CommandExecutor, TabCompleter {
                         LocalDateTime t = Utils.getTime();
                         t = t.plusDays(time);
                         PlayerHouseban playerHouseban = new PlayerHouseban(offlinePlayer.getUniqueId(), reason.toString(), t);
-                        Connection connection = Main.getInstance().mySQL.getConnection();
+                        Connection connection = Main.getInstance().coreDatabase.getConnection();
                         PreparedStatement statement = connection.prepareStatement("INSERT INTO housebans (uuid, punisher, reason, until) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
                         statement.setString(1, offlinePlayer.getUniqueId().toString());
                         statement.setString(2, player.getUniqueId().toString());

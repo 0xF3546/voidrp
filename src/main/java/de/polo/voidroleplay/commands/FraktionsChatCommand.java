@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.PhoneUtils;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -30,7 +30,7 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
         this.factionManager = factionManager;
         this.utils = utils;
         Main.registerCommand("fraktionschat", this);
-        Main.addTabCompeter("fraktionschat", this);
+        Main.addTabCompleter("fraktionschat", this);
     }
 
     @Override

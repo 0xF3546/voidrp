@@ -4,10 +4,10 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.Corpse;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
-import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -51,7 +51,7 @@ public class DeathUtils {
     }
 
     public static boolean isDead(Player player) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         assert statement != null;
         String uuid = player.getUniqueId().toString();
         ResultSet result = statement.executeQuery("SELECT `isDead` FROM `players` WHERE `uuid` = '" + uuid + "'");
@@ -79,7 +79,7 @@ public class DeathUtils {
         if (!playerData.isDead()) {
             deathPlayer.put(player.getUniqueId().toString(), true);
             try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
+                Statement statement = Main.getInstance().coreDatabase.getStatement();
                 statement.executeUpdate("UPDATE `players` SET `isDead` = true WHERE `uuid` = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -128,7 +128,7 @@ public class DeathUtils {
         playerData.setStabilized(false);
         if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = Main.getInstance().coreDatabase.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
             statement.executeUpdate("UPDATE `players` SET `isDead` = false, isStabilized = false, isHitmanDead = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");
@@ -184,7 +184,7 @@ public class DeathUtils {
             return;
         }
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = Main.getInstance().coreDatabase.getStatement();
             assert statement != null;
             String uuid = player.getUniqueId().toString();
             statement.executeUpdate("UPDATE `players` SET `isDead` = false, `deathTime` = 300 WHERE `uuid` = '" + uuid + "'");

@@ -5,9 +5,10 @@ import com.comphenix.protocol.ProtocolManager;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import de.polo.api.nametags.INameTagProvider;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.Database;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.faction.commands.*;
 import de.polo.voidroleplay.faction.service.FactionService;
@@ -24,8 +25,12 @@ import de.polo.voidroleplay.housing.services.HouseService;
 import de.polo.voidroleplay.housing.services.impl.CoreHouseService;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
+import de.polo.voidroleplay.news.services.NewsService;
+import de.polo.voidroleplay.news.services.impl.CoreNewsService;
+import de.polo.voidroleplay.news.services.impl.NewsManager;
 import de.polo.voidroleplay.player.services.PlayerService;
 import de.polo.voidroleplay.player.services.impl.CorePlayerService;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.inventory.InventoryApiRegister;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
@@ -48,13 +53,15 @@ public final class Main extends JavaPlugin {
 
     @Getter
     private static Main instance;
+
     @Getter
-    public MySQL mySQL;
+    public CoreDatabase coreDatabase;
 
     public static Database database;
     public static PlayerService playerService;
     public static FactionService factionService;
     public static HouseService houseService;
+    public static NewsService newsService;
 
     @Getter
     public CooldownManager cooldownManager;
@@ -101,7 +108,7 @@ public final class Main extends JavaPlugin {
         }
     }
 
-    public static void addTabCompeter(String command, TabCompleter c) {
+    public static void addTabCompleter(String command, TabCompleter c) {
         org.bukkit.command.PluginCommand cmd = instance.getCommand(command);
         if (cmd != null) {
             cmd.setTabCompleter(c);
@@ -111,6 +118,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
+        VoidAPI.setPlugin(this);
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         PacketEvents.getAPI().load();
     }
@@ -125,24 +133,25 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        mySQL = new MySQL();
-        database = mySQL;
+        coreDatabase = new CoreDatabase();
+        database = coreDatabase;
         factionService = new CoreFactionService();
         playerService = new CorePlayerService();
         houseService = new CoreHouseService();
+        newsService = new CoreNewsService();
 
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
         scoreboardAPI = new ScoreboardAPI(scoreboardManager);
-        companyManager = new CompanyManager(mySQL);
-        supportManager = new SupportManager(mySQL);
-        playerManager = new PlayerManager(mySQL);
+        companyManager = new CompanyManager(coreDatabase);
+        supportManager = new SupportManager(coreDatabase);
+        playerManager = new PlayerManager(coreDatabase);
         cooldownManager = new CooldownManager();
-        locationManager = new LocationManager(mySQL);
+        locationManager = new LocationManager(coreDatabase);
         adminManager = new AdminManager(playerManager, scoreboardAPI);
         factionManager = new FactionManager(playerManager);
-        blockManager = new BlockManager(mySQL);
+        blockManager = new BlockManager(coreDatabase);
         houseManager = new HouseManager(playerManager, blockManager, locationManager);
         utils = new Utils(playerManager, adminManager, factionManager, locationManager, houseManager, new NavigationManager(playerManager), companyManager);
         vehicles = new Vehicles(playerManager, locationManager);
@@ -155,7 +164,7 @@ public final class Main extends JavaPlugin {
         newsManager = new NewsManager();
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
         npc = new NPCManager(playerManager);
-        gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager, npc);
+        gamePlay = new GamePlay(playerManager, utils, coreDatabase, factionManager, locationManager, npc);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
@@ -171,7 +180,7 @@ public final class Main extends JavaPlugin {
         registerAnnotatedCommands();
         getLogger().info("§VOIDROLEPLAY ROLEPLAY STARTED.");
         try {
-            Statement statement = mySQL.getStatement();
+            Statement statement = coreDatabase.getStatement();
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM money_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM phone_messages WHERE datum < DATE_SUB(NOW(), INTERVAL 14 DAY)");
@@ -244,7 +253,7 @@ public final class Main extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        mySQL.close();
+        coreDatabase.close();
         PacketEvents.getAPI().terminate();
     }
 
@@ -302,7 +311,7 @@ public final class Main extends JavaPlugin {
     }
 
     public class Commands {
-        private final Main main;
+        private final Main voidAPI;
         private final PlayerManager playerManager;
         private final AdminManager adminManager;
         private final LocationManager locationManager;
@@ -512,8 +521,8 @@ public final class Main extends JavaPlugin {
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
 
-        public Commands(Main main, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
-            this.main = main;
+        public Commands(Main voidAPI, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
+            this.voidAPI = voidAPI;
             this.playerManager = playerManager;
             this.adminManager = adminManager;
             this.locationManager = locationManager;
@@ -550,7 +559,7 @@ public final class Main extends JavaPlugin {
             assistentchatCommand = new AssistentchatCommand(playerManager, utils);
             supportCommand = new SupportCommand(playerManager, supportManager);
             cancelSupportCommand = new CancelSupportCommand(supportManager);
-            acceptTicketCommand = new AcceptTicketCommand(playerManager, adminManager, supportManager, utils, mySQL);
+            acceptTicketCommand = new AcceptTicketCommand(playerManager, adminManager, supportManager, utils);
             closeTicketCommand = new CloseTicketCommand(playerManager, supportManager, adminManager, utils);
             tpToCommand = new TPToCommand(playerManager, locationManager);
             adminReviveCommand = new AdminReviveCommand(playerManager, utils);
@@ -650,8 +659,8 @@ public final class Main extends JavaPlugin {
             banListCommand = new BanListCommand(playerManager);
             gmCommand = new GMCommand(playerManager);
             noteCommand = new NoteCommand(playerManager, utils);
-            registerblockCommand = new RegisterblockCommand(playerManager, mySQL, blockManager);
-            registerATMCommand = new RegisterATMCommand(playerManager, adminManager, mySQL);
+            registerblockCommand = new RegisterblockCommand(playerManager, coreDatabase, blockManager);
+            registerATMCommand = new RegisterATMCommand(playerManager, adminManager);
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
             businessCommand = new BusinessCommand(playerManager, businessManager);
@@ -725,8 +734,8 @@ public final class Main extends JavaPlugin {
             gwdCommand = new GwdCommand(playerManager, adminManager, factionManager);
             zdCommand = new ZDCommand(playerManager, adminManager, factionManager);
 
-            main.registerCommands();
-            main.registerListener(this);
+            voidAPI.registerCommands();
+            voidAPI.registerListener(this);
         }
     }
 }

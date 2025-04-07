@@ -24,7 +24,7 @@ public class Crypto implements Listener {
 
     @SneakyThrows
     private void updatePrice() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
 
         PreparedStatement marketStmt = connection.prepareStatement("SELECT SUM(amount) FROM crypto_market");
         ResultSet marketRs = marketStmt.executeQuery();

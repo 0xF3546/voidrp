@@ -2,12 +2,11 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,7 +34,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         Main.registerCommand("ban", this);
-        Main.addTabCompeter("ban", this);
+        Main.addTabCompleter("ban", this);
     }
 
     @Override
@@ -94,7 +93,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         }
 
         if (targetUUID == null) {
-            try (Connection connection = Main.getInstance().mySQL.getConnection();
+            try (Connection connection = Main.getInstance().coreDatabase.getConnection();
                  PreparedStatement stmt = connection.prepareStatement("SELECT uuid FROM players WHERE player_name = ?")) {
                 stmt.setString(1, playerName);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -127,7 +126,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         }
 
         String targetName = null;
-        try (Connection connection = Main.getInstance().mySQL.getConnection();
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
              PreparedStatement stmt = connection.prepareStatement("SELECT player_name FROM players WHERE uuid = ?")) {
             stmt.setString(1, uuidString);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -160,7 +159,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
     }
 
     private void applyBan(UUID uuid, String name, String punisher, String reason, LocalDateTime endDate) {
-        try (Connection connection = Main.getInstance().mySQL.getConnection();
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
              PreparedStatement deleteStmt = connection.prepareStatement("DELETE FROM player_bans WHERE uuid = ?");
              PreparedStatement insertStmt = connection.prepareStatement("INSERT INTO player_bans (uuid, name, reason, punisher, date) VALUES (?, ?, ?, ?, ?)")) {
 

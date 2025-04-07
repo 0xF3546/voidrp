@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils.gameplay;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.game.base.crypto.Crypto;
@@ -16,6 +16,7 @@ import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
 import de.polo.voidroleplay.game.faction.staat.GOVRaid;
 import de.polo.voidroleplay.game.faction.staat.StaatsbankRob;
 import de.polo.voidroleplay.manager.*;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.*;
@@ -62,7 +63,7 @@ public class GamePlay implements Listener {
     public final List<Block> roadblocks = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final Utils utils;
-    private final MySQL mySQL;
+    private final CoreDatabase coreDatabase;
     private final FactionManager factionManager;
     private final LocationManager locationManager;
     private final List<Dealer> dealers = new ObjectArrayList<>();
@@ -83,15 +84,15 @@ public class GamePlay implements Listener {
     private boolean isStaatsbankRobBlocked = false;
 
     @SneakyThrows
-    public GamePlay(PlayerManager playerManager, Utils utils, MySQL mySQL, FactionManager factionManager, LocationManager locationManager, NPCManager npc) {
+    public GamePlay(PlayerManager playerManager, Utils utils, CoreDatabase coreDatabase, FactionManager factionManager, LocationManager locationManager, NPCManager npc) {
         this.playerManager = playerManager;
         this.utils = utils;
-        this.mySQL = mySQL;
+        this.coreDatabase = coreDatabase;
         this.factionManager = factionManager;
         this.locationManager = locationManager;
         drugstorage = new Drugstorage(playerManager, factionManager);
-        apotheke = new ApothekeFunctions(mySQL, utils, factionManager, playerManager, locationManager);
-        plant = new PlantFunctions(mySQL, utils, factionManager, playerManager, locationManager);
+        apotheke = new ApothekeFunctions(coreDatabase, utils, factionManager, playerManager, locationManager);
+        plant = new PlantFunctions(coreDatabase, utils, factionManager, playerManager, locationManager);
         factionUpgradeGUI = new FactionUpgradeGUI(factionManager, playerManager, utils);
         houseban = new Houseban(playerManager, factionManager);
         displayNameManager = new DisplayNameManager(playerManager, factionManager, Main.getInstance().getScoreboardAPI());
@@ -544,7 +545,7 @@ public class GamePlay implements Listener {
                 if (playerData == null) continue;
                 playerData.setAtmBlown(0);
             }
-            Main.getInstance().getMySQL().updateAsync("UPDATE players SET atmBlown = ?");
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET atmBlown = ?");
         }
 
         for (Dealer dealer : rob.keySet()) {

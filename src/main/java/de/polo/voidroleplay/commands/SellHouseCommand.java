@@ -132,7 +132,7 @@ public class SellHouseCommand extends CommandBase {
                                             target.sendMessage(Component.text("§8[§6Haus " + houseNumber + "§8]§7 Du hast das Haus für " + Utils.toDecimalFormat(price) + "$ erworben."));
                                             owner.sendMessage(Component.text("§8[§6Haus " + houseNumber + "§8]§7 Du hast das Haus für " + Utils.toDecimalFormat(sellPrice) + "$ (" + Utils.toDecimalFormat(maklerPrice) + "$ Makler-Provision) verkauft."));
 
-                                            Main.getInstance().getMySQL().updateAsync("UPDATE housing SET owner = ? WHERE number = ?", target.getUniqueId().toString(), houseNumber);
+                                            Main.getInstance().getCoreDatabase().updateAsync("UPDATE housing SET owner = ? WHERE number = ?", target.getUniqueId().toString(), houseNumber);
                                             house.setOwner(target.getUniqueId().toString());
                                             sign.setLine(2, "§0" + target.getName());
                                             sign.update();

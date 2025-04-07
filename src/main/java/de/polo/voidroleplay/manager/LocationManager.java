@@ -2,7 +2,7 @@ package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.*;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -28,10 +28,10 @@ public class LocationManager {
     public static final Map<Integer, NaviData> naviDataMap = new HashMap<>();
     public static Object[][] shops;
 
-    private final MySQL mySQL;
+    private final CoreDatabase coreDatabase;
 
-    public LocationManager(MySQL mySQL) {
-        this.mySQL = mySQL;
+    public LocationManager(CoreDatabase coreDatabase) {
+        this.coreDatabase = coreDatabase;
         try {
             loadLocations();
         } catch (SQLException e) {
@@ -40,7 +40,7 @@ public class LocationManager {
     }
 
     private void loadLocations() throws SQLException {
-        Statement statement = mySQL.getStatement();
+        Statement statement = coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM locations");
         while (locs.next()) {
             LocationData locationData = new LocationData();
@@ -112,7 +112,7 @@ public class LocationManager {
     public void setLocation(String name, Player p) {
         Location loc = p.getLocation();
         try {
-            Statement statement = mySQL.getStatement();
+            Statement statement = coreDatabase.getStatement();
             assert statement != null;
             if (name.contains("isShop")) {
                 p.sendMessage(Prefix.GAMEDESIGN + " Shop regestriert.");

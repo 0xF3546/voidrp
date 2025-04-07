@@ -5,7 +5,7 @@ import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.GlobalStats;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -103,7 +103,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
     @SneakyThrows
     private Map<String, Integer> getFactionBets() {
         Map<String, Integer> factionBets = new HashMap<>();
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT faction, SUM(amount) AS total_amount FROM auction_bets GROUP BY faction");
 
@@ -118,7 +118,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
 
     @SneakyThrows
     private void payIn(FactionData factionData, int amount) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO auction_bets (faction, amount) VALUES (?, ?)");
         statement.setString(1, factionData.getName());
         statement.setInt(2, amount);
@@ -171,7 +171,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
 
     @SneakyThrows
     private void clearList() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("DELETE FROM auction_bets");
         statement.execute();
         statement.close();

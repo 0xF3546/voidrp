@@ -31,7 +31,7 @@ import static de.polo.voidroleplay.Main.utils;
 public class GivePrescriptionCommand extends CommandBase implements TabCompleter {
     public GivePrescriptionCommand(@NotNull CommandMeta meta) {
         super(meta);
-        Main.addTabCompeter(meta.name(), this);
+        Main.addTabCompleter(meta.name(), this);
     }
 
     @Override

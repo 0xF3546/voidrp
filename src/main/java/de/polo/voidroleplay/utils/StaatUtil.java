@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.enums.WantedVariation;
@@ -39,7 +39,7 @@ public class StaatUtil {
         this.locationManager = locationManager;
         this.utils = utils;
         try {
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM evidenceChamber");
             ResultSet result = statement.executeQuery();
             if (result.next()) {
@@ -69,7 +69,7 @@ public class StaatUtil {
         statement.close();
         connection.close();
         */
-        Main.getInstance().getMySQL().queryThreaded("SELECT * FROM wantedreasons")
+        Main.getInstance().getCoreDatabase().queryThreaded("SELECT * FROM wantedreasons")
                 .thenAccept(result -> {
                     try {
                         while (result.next()) {
@@ -98,7 +98,7 @@ public class StaatUtil {
         }
         */
         Main.getInstance()
-                .getMySQL()
+                .getCoreDatabase()
                 .queryThreaded("SELECT * FROM `Jail`")
                 .thenAcceptAsync(result -> {
                     try {
@@ -161,7 +161,7 @@ public class StaatUtil {
             playerData.setJailed(true);
             factionManager.addFactionMoney(arresterData.getFaction(), ServerManager.getPayout("arrest"), "Inhaftierung von " + player.getName() + ", durch " + arrester.getName());
             playerData.setHafteinheiten(wanteds / 3);
-            Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
+            Main.getInstance().getCoreDatabase().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", player.getUniqueId().toString());
             for (Player players : Bukkit.getOnlinePlayers()) {
                 PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                 if (playerData1 == null) continue;
@@ -176,7 +176,7 @@ public class StaatUtil {
                 }
             }
             jailData.setHafteinheiten(playerData.getHafteinheiten());
-            Main.getInstance().getMySQL().insertAsync("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailData.getHafteinheiten(), arrester.getUniqueId().toString());
+            Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailData.getHafteinheiten(), arrester.getUniqueId().toString());
             jailData.setUuid(player.getUniqueId().toString());
             jailData.setReason(String.valueOf(reason));
             jailDataMap.put(player.getUniqueId().toString(), jailData);
@@ -189,7 +189,7 @@ public class StaatUtil {
 
     @SneakyThrows
     public void clearPlayerAkte(Player pLayer) {
-        Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_akten WHERE uuid = ?", pLayer.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_akten WHERE uuid = ?", pLayer.getUniqueId().toString());
     }
 
     @SneakyThrows
@@ -201,15 +201,15 @@ public class StaatUtil {
         playerData.setJailed(false);
         playerData.setHafteinheiten(0);
         jailDataMap.remove(player.getUniqueId().toString());
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         player.sendMessage("§8[§cGefängnis§8] §7Du wurdest entlassen.");
-        Main.getInstance().getMySQL().deleteAsync("DELETE FROM Jail WHERE uuid = ?", player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM Jail WHERE uuid = ?", player.getUniqueId().toString());
         loadParole(player);
     }
 
     @SneakyThrows
     public void loadParole(Player player) {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
+        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
         if (result.next()) {
@@ -221,7 +221,7 @@ public class StaatUtil {
 
     @SneakyThrows
     public void setParole(Player player, int hafteinheiten) {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO Jail_Parole (uuid, hafteinheiten, minutes_remaining) VALUES (?, ?, ?)");
+        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("INSERT INTO Jail_Parole (uuid, hafteinheiten, minutes_remaining) VALUES (?, ?, ?)");
         statement.setString(1, player.getUniqueId().toString());
         statement.setInt(2, hafteinheiten);
         statement.setInt(3, hafteinheiten);
@@ -231,7 +231,7 @@ public class StaatUtil {
 
     @SneakyThrows
     public boolean hasParole(Player player) {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
+        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
         boolean hasParole = result.next();
@@ -241,7 +241,7 @@ public class StaatUtil {
 
     @SneakyThrows
     public void addAkteToPlayer(Player vergeber, Player player, int hafteinheiten, String akte, int geldstrafe) {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         statement.execute("INSERT INTO `player_akten` (`uuid`, `hafteinheiten`, `akte`, `geldstrafe`, `vergebendurch`) VALUES ('" + player.getUniqueId() + "', " + hafteinheiten + ", '" + akte + "', " + geldstrafe + ", '" + vergeber.getName() + "')");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.hasAnwalt()) {
@@ -257,7 +257,7 @@ public class StaatUtil {
     }
 
     public void removeAkteFromPlayer(Player player, int id) throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet akte = statement.executeQuery("SELECT * FROM player_akten WHERE id = " + id);
         OfflinePlayer target = null;
         if (akte.next()) {

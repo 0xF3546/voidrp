@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponType;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
@@ -380,7 +381,7 @@ public class EquipCommand implements CommandExecutor, Listener {
     private void logBuy(Player player, String item, int equipPoints) {
         PlayerData playerData = playerManager.getPlayerData(player);
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_equip_logs (player, item, factionId, itemPoints) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), item, factionData.getId(), equipPoints);
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO faction_equip_logs (player, item, factionId, itemPoints) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), item, factionData.getId(), equipPoints);
     }
 
     private void openExtraShop(Player player, PlayerData playerData, FactionData factionData) {
@@ -471,7 +472,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     try {
                         int id = Integer.parseInt(event.getMessage());
                         factionData.equip.setSturmgewehr(id);
-                        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE faction_equip SET sturmgewehr = ? WHERE factionId = ?");
+                        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("UPDATE faction_equip SET sturmgewehr = ? WHERE factionId = ?");
                         statement.setInt(1, id);
                         statement.setInt(2, factionData.getId());
                         statement.executeUpdate();
@@ -484,7 +485,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                     try {
                         int id = Integer.parseInt(event.getMessage());
                         factionData.equip.setSturmgewehr_ammo(id);
-                        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE faction_equip SET sturmgewehr_ammo = ? WHERE factionId = ?");
+                        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("UPDATE faction_equip SET sturmgewehr_ammo = ? WHERE factionId = ?");
                         statement.setInt(1, id);
                         statement.setInt(2, factionData.getId());
                         statement.executeUpdate();

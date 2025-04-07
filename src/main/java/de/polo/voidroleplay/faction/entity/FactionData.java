@@ -77,7 +77,7 @@ public class FactionData {
 
     @SneakyThrows
     public void loadReasons() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM blacklistreasons WHERE faction = ?");
         statement.setInt(1, id);
         ResultSet result = statement.executeQuery();
@@ -227,8 +227,8 @@ public class FactionData {
     @SneakyThrows
     public void addBankMoney(Integer amount, String reason) {
         setBank(getBank() + amount);
-        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('einzahlung', ?, ?, ?, true)",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('einzahlung', ?, ?, ?, true)",
                 getName(),
                 amount,
                 reason);
@@ -238,8 +238,8 @@ public class FactionData {
     public boolean removeFactionMoney(Integer amount, String reason) {
         if (getBank() >= amount) {
             setBank(getBank() - amount);
-            Main.getInstance().getMySQL().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
-            Main.getInstance().getMySQL().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('auszahlung', ?, ?, ?, false)",
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
+            Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('auszahlung', ?, ?, ?, false)",
                     getName(),
                     amount,
                     reason);
@@ -278,7 +278,7 @@ public class FactionData {
 
     @SneakyThrows
     public void save() {
-        Main.getInstance().getMySQL().updateAsync("UPDATE factions SET subGroup = ?, alliance = ?, equipPoints = ? WHERE id = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET subGroup = ?, alliance = ?, equipPoints = ? WHERE id = ?",
                 subGroupId,
                 allianceFaction,
                 equipPoints,
@@ -289,7 +289,7 @@ public class FactionData {
     public void addBlacklistReason(BlacklistReason blacklistReason, boolean save) {
         blacklistReasons.add(blacklistReason);
         if (save) {
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO blacklistreasons (kills, price, reason, faction) VALUES (?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
@@ -317,7 +317,7 @@ public class FactionData {
     public void removeBlacklistReason(BlacklistReason blacklistReason, boolean save) {
         blacklistReasons.remove(blacklistReason);
         if (save) {
-            Main.getInstance().getMySQL().deleteAsync("DELETE FROM blacklistreasons WHERE id = ?",
+            Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM blacklistreasons WHERE id = ?",
                     blacklistReason.getId());
         }
     }
@@ -389,7 +389,7 @@ public class FactionData {
 
         @SneakyThrows
         public void save() {
-            Main.getInstance().getMySQL().updateAsync("UPDATE faction_storage SET weed = ?, joint = ?, cocaine = ?, kevlar = ?, noble_joint = ?, crystal = ? WHERE factionId = ?",
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE faction_storage SET weed = ?, joint = ?, cocaine = ?, kevlar = ?, noble_joint = ?, crystal = ? WHERE factionId = ?",
                     getWeed(),
                     getJoint(),
                     getCocaine(),
@@ -543,7 +543,7 @@ public class FactionData {
 
         @SneakyThrows
         public void save() {
-            Main.getInstance().getMySQL().updateAsync("UPDATE faction_upgrades SET drug_earning = ?, tax = ?, weapon = ? WHERE factionId = ?", getDrugEarningLevel(), getTaxLevel(), getWeaponLevel(), factionData.getId());
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE faction_upgrades SET drug_earning = ?, tax = ?, weapon = ? WHERE factionId = ?", getDrugEarningLevel(), getTaxLevel(), getWeaponLevel(), factionData.getId());
             calculate();
         }
 

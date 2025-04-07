@@ -68,7 +68,7 @@ public class House {
 
     @SneakyThrows
     private void loadMiner() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM crypto_miner WHERE houseNumber = ?");
         statement.setInt(1, number);
         ResultSet res = statement.executeQuery();
@@ -85,7 +85,7 @@ public class House {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE housing SET miner = ?, server = ?, hasServerRoom = ? WHERE id = ?");
         statement.setInt(1, miner);
         statement.setInt(2, server);
@@ -98,7 +98,7 @@ public class House {
 
     @SneakyThrows
     public void addMiner(Miner miner) {
-        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO crypto_miner (houseNumber) VALUE (?)",
+        Main.getInstance().getCoreDatabase().insertAndGetKeyAsync("INSERT INTO crypto_miner (houseNumber) VALUE (?)",
                 number)
                 .thenApply(key -> {
                     key.ifPresent(miner::setId);
@@ -162,7 +162,7 @@ public class House {
     }
 
     private void updateMoney() {
-        Main.getInstance().getMySQL().updateAsync("UPDATE housing SET money = ?, totalmoney = ? WHERE number = ?", money, totalMoney, number);
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE housing SET money = ?, totalmoney = ? WHERE number = ?", money, totalMoney, number);
     }
 
     public void sendMessage(String message) {

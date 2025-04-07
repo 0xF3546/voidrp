@@ -4,7 +4,7 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,7 +38,7 @@ public class TeamSpeak {
     public static void reloadPlayer(UUID uuid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(uuid);
         System.out.println("RELOADING " + uuid);
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT teamSpeakUID FROM players WHERE uuid = ?");
         statement.setString(1, uuid.toString());
         ResultSet result = statement.executeQuery();
@@ -81,7 +81,7 @@ public class TeamSpeak {
     public static void unlinkPlayer(UUID uuid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(uuid);
         System.out.println("RELOADING " + uuid);
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT teamSpeakUID FROM players WHERE uuid = ?");
         statement.setString(1, uuid.toString());
         ResultSet result = statement.executeQuery();
@@ -130,7 +130,7 @@ public class TeamSpeak {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             String token = String.valueOf(Utils.random(43258, 213478234));
             try {
-                Connection connection = Main.getInstance().getMySQL().getConnection();
+                Connection connection = Main.getInstance().getCoreDatabase().getConnection();
                 PreparedStatement statement = connection.prepareStatement("UPDATE players SET tsToken = ? WHERE uuid = ?");
                 statement.setString(1, token);
                 statement.setString(2, player.getUniqueId().toString());

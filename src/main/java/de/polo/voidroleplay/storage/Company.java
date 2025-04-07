@@ -50,7 +50,7 @@ public class Company {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE companies SET bank = ?, name = ?, owner = ? WHERE id = ?");
         statement.setInt(1, getBank());
         statement.setString(2, getName());
@@ -63,7 +63,7 @@ public class Company {
 
     @SneakyThrows
     public void createRole(CompanyRole role) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO company_roles (companyId, name, permissions) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setInt(1, getId());
         statement.setString(2, role.getName());
@@ -83,7 +83,7 @@ public class Company {
 
     @SneakyThrows
     public void deleteRole(CompanyRole role) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("DELETE FROM company_roles WHERE id = ?");
         statement.setInt(1, role.getId());
         statement.execute();

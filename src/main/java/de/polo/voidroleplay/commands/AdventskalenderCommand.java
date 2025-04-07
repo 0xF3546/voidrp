@@ -172,7 +172,7 @@ public class AdventskalenderCommand extends CommandBase {
             case 23 -> {
                 player.sendMessage(PREFIX + "Du hast das §6" + day + " Türchen§7 geöffnet und §610 Votepunkte§7 erhalten!");
                 playerData.setVotes(playerData.getVotes() + 10);
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET votes = ? WHERE uuid = ?", playerData.getVotes(), player.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET votes = ? WHERE uuid = ?", playerData.getVotes(), player.getUniqueId().toString());
             }
             case 24 -> {
                 player.sendMessage(PREFIX + "Du hast das §c§l" + day + " Türchen§7 geöffnet und §61 Levelup, Schwere Schutzweste, " + Weapon.MARKSMAN.getClearName() + " (A: 30, V: 3), 5000$ & 3 Tage Premium§7 erhalten! Frohe Weihnachten!");

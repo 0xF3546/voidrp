@@ -2,7 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.storage.PhoneCall;
 import de.polo.voidroleplay.storage.PlayerData;

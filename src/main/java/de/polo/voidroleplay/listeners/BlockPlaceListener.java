@@ -30,7 +30,7 @@ public class BlockPlaceListener implements Listener {
 
     @SneakyThrows
     public void logBlock(Player player, Block block) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO block_logs (uuid, block, x, y, z, type) VALUES (?, ?, ?, ?, ?, ?)");
         statement.setString(1, player.getUniqueId().toString());
         statement.setString(2, block.getType().name());

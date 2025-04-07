@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponData;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.player.enums.Gender;
@@ -135,7 +135,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
                                     player.sendMessage("§8 » §7Dein Nachname lautet nun \"" + playerData.getLastname() + "\".");
                                 }
                                 try {
-                                    Statement statement = Main.getInstance().mySQL.getStatement();
+                                    Statement statement = Main.getInstance().coreDatabase.getStatement();
                                     JSONObject object = new JSONObject(playerData.getRelationShip());
                                     statement.executeUpdate("UPDATE `players` SET `relationShip` = '" + object + "', `lastname` = '" + playerData.getLastname() + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
 

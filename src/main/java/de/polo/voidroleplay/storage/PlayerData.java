@@ -327,8 +327,8 @@ public class PlayerData {
     @SneakyThrows
     public void addCrypto(float amount, String reason, boolean silent) {
         setCrypto(crypto + amount);
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET crypto = ? WHERE uuid = ?", crypto, player.getUniqueId().toString());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO crypto_transactions (uuid, amount, reason) VALUES (?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET crypto = ? WHERE uuid = ?", crypto, player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO crypto_transactions (uuid, amount, reason) VALUES (?, ?, ?)", player.getUniqueId().toString(), amount, reason);
 
         if (!silent)
             player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: +" + amount + " Coins (" + reason + ")");
@@ -338,11 +338,11 @@ public class PlayerData {
     public void removeCrypto(float amount, String reason, boolean silent) {
         setCrypto(crypto - amount);
 
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET crypto = ? WHERE uuid = ?", crypto, player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET crypto = ? WHERE uuid = ?", crypto, player.getUniqueId().toString());
 
         /*float reversedAmount = 0;
         reversedAmount *= amount;*/
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO crypto_transactions (uuid, amount, reason) VALUES (?, ?, ?)", player.getUniqueId().toString(), -amount, reason);
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO crypto_transactions (uuid, amount, reason) VALUES (?, ?, ?)", player.getUniqueId().toString(), -amount, reason);
 
         if (!silent)
             player.sendMessage("§8[§eWallet§8]§7§l Neue Transaktion§7: -" + amount + " Coins (" + reason + ")");
@@ -353,7 +353,7 @@ public class PlayerData {
         if (illnesses.stream().anyMatch(pi -> pi.getIllnessType().equals(playerIllness.getIllnessType()))) return;
         illnesses.add(playerIllness);
         if (save) {
-            Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO player_illness (uuid, illness) VALUES (?, ?)", player.getUniqueId().toString(), playerIllness.getIllnessType().name())
+            Main.getInstance().getCoreDatabase().insertAndGetKeyAsync("INSERT INTO player_illness (uuid, illness) VALUES (?, ?)", player.getUniqueId().toString(), playerIllness.getIllnessType().name())
                     .thenApply(key -> {
                         key.ifPresent(playerIllness::setId);
                         return null;
@@ -365,14 +365,14 @@ public class PlayerData {
     public void removeIllness(PlayerIllness playerIllness, boolean save) {
         illnesses.remove(playerIllness);
         if (save) {
-            Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_illness WHERE id = ?", playerIllness.getId());
+            Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_illness WHERE id = ?", playerIllness.getId());
         }
     }
 
     @SneakyThrows
     private void loadIllnesses() {
         illnesses.clear();
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_illness WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -406,7 +406,7 @@ public class PlayerData {
     @SneakyThrows
     private void loadClickedEventBlocks() {
         clickedEventBlocks.clear();
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_eventblocks_clicked WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -418,7 +418,7 @@ public class PlayerData {
 
     @SneakyThrows
     private void loadWeapons() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_gun_cabinet WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -432,7 +432,7 @@ public class PlayerData {
 
     @SneakyThrows
     private void loadWanteds() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_wanteds WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -449,7 +449,7 @@ public class PlayerData {
 
     @SneakyThrows
     private void loadLicenses() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_licenses WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -466,7 +466,7 @@ public class PlayerData {
         playerManager.addExp(player, Utils.random(10, 20));
         ClickedEventBlock clickedEventBlock = new ClickedEventBlock(block.getId());
         clickedEventBlocks.add(clickedEventBlock);
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO player_eventblocks_clicked (uuid, blockId) VALUES (?, ?)");
         statement.setString(1, player.getUniqueId().toString());
         statement.setInt(2, block.getId());
@@ -655,15 +655,15 @@ public class PlayerData {
     public void addMoney(int amount, String reason) {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         setBargeld(getBargeld() + amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
+        Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
     }
 
     @SneakyThrows
     public void removeMoney(int amount, String reason) {
         setBargeld(getBargeld() - amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
+        Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
 
     }
 
@@ -671,16 +671,16 @@ public class PlayerData {
     public void addBankMoney(int amount, String reason) {
         Main.getInstance().beginnerpass.didQuest(player, 2, amount);
         setBank(getBank() + amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
+        Main.getInstance().coreDatabase.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
 
     }
 
     @SneakyThrows
     public void removeBankMoney(int amount, String reason) {
         setBank(getBank() - amount);
-        Main.getInstance().mySQL.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
-        Main.getInstance().mySQL.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
+        Main.getInstance().coreDatabase.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
     }
 
     @SneakyThrows
@@ -689,7 +689,7 @@ public class PlayerData {
             player.sendMessage("§8[§3Karma§8]§b +" + amount + " Karma.");
         }
         karma += amount;
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
                 karma,
                 uuid.toString());
     }
@@ -700,14 +700,14 @@ public class PlayerData {
             player.sendMessage("§8[§3Karma§8]§b -" + amount + " Karma.");
         }
         karma -= amount;
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET karma = ? WHERE uuid = ?",
                 karma,
                 uuid.toString());
     }
 
     @SneakyThrows
     public void save() {
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ?, subTeam = ?, rewardId = ?, rewardTime = ? WHERE id = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET business = ?, deathTime = ?, isDead = ?, company = ?, atmBlown = ?, subGroup = ?, subGroup_grade = ?, karma = ?, isChurch = ?, isBaptized = ?, lastContract = ?, votes = ?, factionCooldown = ?, subTeam = ?, rewardId = ?, rewardTime = ? WHERE id = ?",
                 getBusiness(),
                 getDeathTime(),
                 isDead(),
@@ -783,12 +783,12 @@ public class PlayerData {
 
     public void addLicenseToDatabase(License license) {
         addLicense(license);
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO player_licenses (uuid, license) VALUES (?, ?)", player.getUniqueId().toString(), license.name());
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_licenses (uuid, license) VALUES (?, ?)", player.getUniqueId().toString(), license.name());
     }
 
     public void removeLicenseFromDatabase(License license) {
         addLicense(license);
-        Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_licenses WHERE uuid ? AND license = ?", player.getUniqueId().toString(), license.name());
+        Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_licenses WHERE uuid ? AND license = ?", player.getUniqueId().toString(), license.name());
     }
 
     public void removeLicense(License license) {
@@ -838,13 +838,13 @@ public class PlayerData {
 
             System.out.println("Executing DELETE query...");
             String deleteQuery = "DELETE FROM player_wanteds WHERE uuid = ?";
-            return Main.getInstance().getMySQL()
+            return Main.getInstance().getCoreDatabase()
                     .queryThreaded(deleteQuery, player.getUniqueId().toString())
                     .thenCompose(deleteResult -> {
                         System.out.println("DELETE query completed.");
                         String insertQuery = "INSERT INTO player_wanteds (uuid, issuer, wantedId) VALUES (?, ?, ?)";
                         System.out.println("Preparing to execute INSERT query...");
-                        return Main.getInstance().getMySQL().insertAndGetKeyAsync(insertQuery,
+                        return Main.getInstance().getCoreDatabase().insertAndGetKeyAsync(insertQuery,
                                 player.getUniqueId().toString(),
                                 playerWanted.getIssuer().toString(),
                                 playerWanted.getWantedId());
@@ -867,7 +867,7 @@ public class PlayerData {
 
     public void clearWanted() {
         wanted = null;
-        Main.getInstance().getMySQL().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", uuid.toString());
+        Main.getInstance().getCoreDatabase().queryThreaded("DELETE FROM player_wanteds WHERE uuid = ?", uuid.toString());
     }
 
     public Collection<PlayerWeapon> getWeapons() {
@@ -922,7 +922,7 @@ public class PlayerData {
                 setFishingLevel(getFishingLevel() + 1);
                 setFishingLevel(getFishingLevel() - EXPType.SKILL_FISHING.getLevelUpXp());
             }
-            Main.getInstance().getMySQL().updateAsync("UPDATE player_addonxp SET fishingXP = ?, fishingLevel = ? WHERE uuid = ?", fishingXP, fishingLevel, player.getUniqueId().toString());
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE player_addonxp SET fishingXP = ?, fishingLevel = ? WHERE uuid = ?", fishingXP, fishingLevel, player.getUniqueId().toString());
         }
 
         public int getFishingLevel() {
@@ -947,7 +947,7 @@ public class PlayerData {
                 setMinerLevel(getMinerLevel() + 1);
                 setMinerXP(0);
             }
-            Main.getInstance().getMySQL().updateAsync("UPDATE player_addonxp SET minerXP = ?, miningLevel = ? WHERE uuid = ?", minerXP, minerLevel, player.getUniqueId().toString());
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE player_addonxp SET minerXP = ?, miningLevel = ? WHERE uuid = ?", minerXP, minerLevel, player.getUniqueId().toString());
         }
 
         public int getMinerLevel() {
@@ -977,7 +977,7 @@ public class PlayerData {
         public void addLumberjackXP(int amount) {
             lumberjackXP += amount;
             try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
+                Statement statement = Main.getInstance().coreDatabase.getStatement();
                 statement.executeUpdate("UPDATE player_addonxp SET lumberjackXP = " + lumberjackXP + " WHERE uuid = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -991,7 +991,7 @@ public class PlayerData {
                 setPopularityXP(getPopularityXP() - EXPType.POPULARITY.getLevelUpXp());
             }
             try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
+                Statement statement = Main.getInstance().coreDatabase.getStatement();
                 statement.executeUpdate("UPDATE player_addonxp SET popularityXP = " + popularityXP + ", popularityXP = " + popularityLevel + " WHERE uuid = '" + player.getUniqueId() + "'");
             } catch (SQLException e) {
                 throw new RuntimeException(e);

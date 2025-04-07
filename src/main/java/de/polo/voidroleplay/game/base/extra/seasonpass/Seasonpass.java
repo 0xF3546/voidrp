@@ -3,7 +3,7 @@ package de.polo.voidroleplay.game.base.extra.seasonpass;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.faction.entity.FactionData;
@@ -49,7 +49,7 @@ public class Seasonpass implements CommandExecutor {
         quests.clear();
         rewards.clear();
 
-        try (Connection connection = Main.getInstance().mySQL.getConnection();
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
              PreparedStatement questStatement = connection.prepareStatement("SELECT * FROM seasonpass_quests");
              ResultSet questResult = questStatement.executeQuery();
              PreparedStatement rewardStatement = connection.prepareStatement("SELECT * FROM seasonpass_rewards");
@@ -102,7 +102,7 @@ public class Seasonpass implements CommandExecutor {
             return;
         }
 
-        try (Connection connection = Main.getInstance().mySQL.getConnection();
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM seasonpass_player_quests WHERE uuid = ?")) {
             statement.setString(1, uuid.toString());
 
@@ -148,7 +148,7 @@ public class Seasonpass implements CommandExecutor {
                 break;
             }
 
-            try (Connection connection = Main.getInstance().mySQL.getConnection();
+            try (Connection connection = Main.getInstance().coreDatabase.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(
                          "INSERT INTO seasonpass_player_quests (uuid, questId) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
 
@@ -282,7 +282,7 @@ public class Seasonpass implements CommandExecutor {
                 Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
                 SoundManager.successSound(player);
             }
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("UPDATE seasonpass_player_quests SET state = ? WHERE id = ?");
             statement.setInt(1, playerQuest.getState());
             statement.setInt(2, playerQuest.getId());

@@ -2,6 +2,7 @@ package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.NaviData;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -38,7 +39,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         Main.registerCommand("navi", this);
-        Main.addTabCompeter("navi", this);
+        Main.addTabCompleter("navi", this);
     }
 
     public static NaviData getNearestNaviPoint(Location location) {

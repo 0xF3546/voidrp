@@ -18,13 +18,13 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public class MySQL implements Database {
+public class CoreDatabase implements Database {
     static final String url = "jdbc:mysql://185.117.3.65/minecraft?autoReconnect=true&useSSL=false";
     static String user = null;
     static String password = null;
     private HikariDataSource dataSource;
 
-    public MySQL() {
+    public CoreDatabase() {
         init();
     }
 

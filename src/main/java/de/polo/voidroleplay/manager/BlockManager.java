@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -21,17 +21,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BlockManager {
-    private final MySQL mySQL;
+    private final CoreDatabase coreDatabase;
     private final List<RegisteredBlock> registeredBlocks = new ObjectArrayList<>();
 
-    public BlockManager(MySQL mySQL) {
-        this.mySQL = mySQL;
+    public BlockManager(CoreDatabase coreDatabase) {
+        this.coreDatabase = coreDatabase;
         init();
     }
 
     @SneakyThrows
     private void init() {
-        Statement statement = mySQL.getStatement();
+        Statement statement = coreDatabase.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM blocks");
         ObjectMapper mapper = new ObjectMapper();
         while (result.next()) {
@@ -65,7 +65,7 @@ public class BlockManager {
     @SneakyThrows
     public int addBlock(RegisteredBlock block) {
         registeredBlocks.add(block);
-        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO blocks (info, infoValue, x, y, z, world) VALUES (?, ?, ?, ?, ?, ?)",
+        Main.getInstance().getCoreDatabase().insertAndGetKeyAsync("INSERT INTO blocks (info, infoValue, x, y, z, world) VALUES (?, ?, ?, ?, ?, ?)",
                         block.getInfo(),
                         block.getInfoValue(),
                         block.getLocation().getX(),
@@ -100,7 +100,7 @@ public class BlockManager {
     public void removeBlock(RegisteredBlock block) {
         registeredBlocks.remove(block);
 
-        Statement statement = mySQL.getStatement();
+        Statement statement = coreDatabase.getStatement();
         statement.execute("DELETE FROM blocks WHERE id = " + block.getId());
     }
 

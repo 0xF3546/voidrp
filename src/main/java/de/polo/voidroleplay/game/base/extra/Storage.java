@@ -52,7 +52,7 @@ public class Storage implements Listener {
 
     @SneakyThrows
     public static Storage load(int storageId) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
         statement.setInt(1, storageId);
         ResultSet resultSet = statement.executeQuery();
@@ -74,7 +74,7 @@ public class Storage implements Listener {
 
     @SneakyThrows
     public static Storage getStorageByTypeAndPlayer(StorageType storageType, Player player, Object value) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE player = ?");
         statement.setString(1, player.getUniqueId().toString());
         switch (storageType) {
@@ -119,7 +119,7 @@ public class Storage implements Listener {
 
     @SneakyThrows
     public static Storage getStorageById(int id) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
         statement.setInt(1, id);
         ResultSet resultSet = statement.executeQuery();
@@ -214,7 +214,7 @@ public class Storage implements Listener {
 
     @SneakyThrows
     public void create() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO storages (storageType, factionId, vehicleId, player, extra, inventory, houseNumber) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, storageType.name());
         statement.setInt(2, factionId);
@@ -255,7 +255,7 @@ public class Storage implements Listener {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE storages SET storageType = ?, factionId = ?, vehicleId = ?, player = ?, inventory = ?, extra = ?, size = ?, houseNumber = ? WHERE id = ?");
             statement.setString(1, storageType.name());

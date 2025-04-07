@@ -3,6 +3,7 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
@@ -297,7 +298,7 @@ public class TabletUtils implements Listener {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe` FROM `akten`");
@@ -377,7 +378,7 @@ public class TabletUtils implements Listener {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch`, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `player_akten` WHERE `uuid` = '" + target + "'");
         Player targetplayer = Bukkit.getPlayer(target);
         int i = 0;
@@ -570,7 +571,7 @@ public class TabletUtils implements Listener {
 
     public void createNewAkte(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO wantedreasons (reason, wanted) VALUES (?, ?)", playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"))
+        Main.getInstance().getCoreDatabase().insertAndGetKeyAsync("INSERT INTO wantedreasons (reason, wanted) VALUES (?, ?)", playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"))
                 .thenApply(key -> {
                     if (key.isPresent()) {
                         WantedReason wantedReason = new WantedReason(key.get(), playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"));
@@ -681,7 +682,7 @@ public class TabletUtils implements Listener {
                 openCompanyApp(player);
             }
         });
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT player_name, companyRole, uuid FROM players WHERE company = ?");
         statement.setInt(1, playerData.getCompany().getId());
         ResultSet resultSet = statement.executeQuery();
@@ -740,7 +741,7 @@ public class TabletUtils implements Listener {
                             playerData.setCompanyRole(null);
                         }
                     }
-                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    Connection connection = Main.getInstance().coreDatabase.getConnection();
                     PreparedStatement statement = connection.prepareStatement("UPDATE players SET company = 0, companyRole = 0 WHERE uuid = ?");
                     statement.setString(1, uuid);
                     statement.execute();
@@ -766,7 +767,7 @@ public class TabletUtils implements Listener {
                 @SneakyThrows
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    Connection connection = Main.getInstance().coreDatabase.getConnection();
                     PreparedStatement statement = connection.prepareStatement("UPDATE players SET companyRole = ? WHERE uuid = ?");
                     statement.setInt(1, role.getId());
                     statement.setString(2, uuid);

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class PlayerWanted {
     private static final Gson GSON = new Gson();
@@ -67,7 +66,7 @@ public class PlayerWanted {
         this.variations.add(wantedVariation);
         String updateQuery = "UPDATE player_wanteds SET variations = ? WHERE id = ?";
 
-        Main.getInstance().getMySQL()
+        Main.getInstance().getCoreDatabase()
                 .queryThreaded(updateQuery, getVariationsAsJson(), this.id);
     }
 

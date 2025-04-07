@@ -9,7 +9,7 @@ import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.VehicleData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.player.enums.HealthInsurance;
@@ -152,7 +152,7 @@ public class PayDayUtils {
             Main.getInstance().seasonpass.didQuest(player, 6);
         }
         playerData.setLastPayDay(LocalDateTime.now());
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE players SET lastPayDay = NOW() WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         statement.execute();

@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WantedReason;
 import de.polo.voidroleplay.utils.Prefix;
@@ -35,7 +35,7 @@ public class WantedCommand implements CommandExecutor {
         }
         if (playerData.getFaction().equals("FBI") || playerData.getFaction().equals("Polizei")) {
             Main.getInstance()
-                    .getMySQL()
+                    .getCoreDatabase()
                     .queryThreaded("SELECT * FROM player_wanteds")
                     .thenAcceptAsync(result -> {
                         try {

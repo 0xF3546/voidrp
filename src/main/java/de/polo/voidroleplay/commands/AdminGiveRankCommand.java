@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.DBPlayerData;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.TeamSpeak;
@@ -65,7 +65,7 @@ public class AdminGiveRankCommand implements CommandExecutor {
             dbPlayerData.setFaction_grade(rang);
         }
         try {
-            Statement statement = Main.getInstance().getMySQL().getStatement();
+            Statement statement = Main.getInstance().getCoreDatabase().getStatement();
             statement.executeUpdate("UPDATE players SET faction_grade = " + rang + " WHERE uuid = '" + targetplayer.getUniqueId() + "'");
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -3,9 +3,8 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.Ticket;
-import de.polo.voidroleplay.database.impl.MySQL;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -18,21 +17,19 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.Statement;
+import static de.polo.voidroleplay.Main.database;
 
 public class AcceptTicketCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
     private final SupportManager supportManager;
     private final Utils utils;
-    private final MySQL mySQL;
 
-    public AcceptTicketCommand(PlayerManager playerManager, AdminManager adminManager, SupportManager supportManager, Utils utils, MySQL mySQL) {
+    public AcceptTicketCommand(PlayerManager playerManager, AdminManager adminManager, SupportManager supportManager, Utils utils) {
         this.playerManager = playerManager;
         this.adminManager = adminManager;
         this.supportManager = supportManager;
         this.utils = utils;
-        this.mySQL = mySQL;
         Main.registerCommand("acceptsupport", this);
     }
 
@@ -74,7 +71,8 @@ public class AcceptTicketCommand implements CommandExecutor {
         PlayerPacket targetPacket = new PlayerPacket(targetplayer);
         targetPacket.renewPacket();
         Ticket ticket = supportManager.getTicket(player);
-        Main.getInstance().getMySQL().updateAsync("UPDATE tickets SET editor = ?. editedAt = NOW() WHERE id = ?", player.getUniqueId().toString(), ticket.getId());
+
+        database.updateAsync("UPDATE tickets SET editor = ?. editedAt = NOW() WHERE id = ?", player.getUniqueId().toString(), ticket.getId());
         return false;
     }
 }

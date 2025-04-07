@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import org.bukkit.Bukkit;
@@ -31,7 +31,7 @@ public class SetSecondaryTeamCommand implements CommandExecutor {
                     targetplayerData.setSecondaryTeam(args[1]);
                     targetplayer.sendMessage("§8[§6" + args[1] + "§8]§e " + player.getName() + " hat dich in das Team hinzugefügt.");
                     player.sendMessage("§8[§6" + args[1] + "§8]§e Du hast " + targetplayer.getName() + " in das Team hinzugefügt.");
-                    Main.getInstance().getMySQL().updateAsync("UPDATE players SET secondaryTeam = ? WHERE uuid = ?", args[1], targetplayer.getUniqueId().toString());
+                    Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET secondaryTeam = ? WHERE uuid = ?", args[1], targetplayer.getUniqueId().toString());
                     TeamSpeak.reloadPlayer(targetplayer.getUniqueId());
                 } else {
                     player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");

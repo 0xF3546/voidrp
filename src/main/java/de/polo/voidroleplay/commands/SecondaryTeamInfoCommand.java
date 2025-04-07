@@ -37,7 +37,7 @@ public class SecondaryTeamInfoCommand implements CommandExecutor {
         String[] teams = {"Bau-Team", "Event-Team", "PR-Team"};
         for (String team : teams) {
             if (!args[0].equalsIgnoreCase(team)) continue;
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM players WHERE secondaryTeam = ?");
             statement.setString(1, team);
             ResultSet result = statement.executeQuery();

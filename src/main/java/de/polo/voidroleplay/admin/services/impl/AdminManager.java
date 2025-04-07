@@ -1,12 +1,13 @@
-package de.polo.voidroleplay.manager;
+package de.polo.voidroleplay.admin.services.impl;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
+import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RankData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -144,7 +145,7 @@ public class AdminManager implements CommandExecutor, TabCompleter {
 
     @SneakyThrows
     public void insertNote(String punisher, String target, String note) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO notes (uuid, target, note) VALUES (?, ?, ?)");
         statement.setString(1, punisher);
         statement.setString(2, target);

@@ -8,6 +8,7 @@ import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -101,7 +102,7 @@ public class ServerManager {
     }
 
     private void loadRanks() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM ranks");
         while (locs.next()) {
             RankData rankData = new RankData();
@@ -129,7 +130,7 @@ public class ServerManager {
     }
 
     private void loadDBPlayer() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM players");
         while (locs.next()) {
             DBPlayerData dbPlayerData = new DBPlayerData();
@@ -154,7 +155,7 @@ public class ServerManager {
     }
 
     private void loadContracts() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM contract");
         while (locs.next()) {
             ContractData contractData = new ContractData();
@@ -168,7 +169,7 @@ public class ServerManager {
     }
 
     private void loadShops() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM shops");
         while (locs.next()) {
             ShopData shopData = new ShopData();
@@ -200,7 +201,7 @@ public class ServerManager {
             }
             shopDataMap.put(locs.getInt(1), shopData);
             try {
-                Statement nStatement = Main.getInstance().mySQL.getStatement();
+                Statement nStatement = Main.getInstance().coreDatabase.getStatement();
                 ResultSet i = nStatement.executeQuery("SELECT * FROM shop_items WHERE shop = " + shopData.getId());
                 while (i.next()) {
                     ShopItem item = new ShopItem();
@@ -231,7 +232,7 @@ public class ServerManager {
                 if (scoreboardAPI != null) scoreboardAPI.everySecond();
                 if (now.getHour() == 0 && now.getMinute() == 1 && now.getSecond() == 0 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
                     // clear everything
-                    PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM seasonpass_player_quests");
+                    PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("DELETE FROM seasonpass_player_quests");
                     statement.execute();
                     for (PlayerData playerData : playerManager.getPlayers()) {
                         playerData.clearQuests();
@@ -241,7 +242,7 @@ public class ServerManager {
                     }
                     Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der seasonpass wurde zurückgesetzt!");
 
-                    PreparedStatement ffaStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
+                    PreparedStatement ffaStatement = Main.getInstance().coreDatabase.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
                     ffaStatement.setString(1, FFAStatsType.WEEKLY.name());
                     ffaStatement.execute();
                     ffaStatement.close();
@@ -252,7 +253,7 @@ public class ServerManager {
                             playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.MONTHLY);
                             Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.MONTHLY);
                         }
-                        PreparedStatement ffaMonStatement = Main.getInstance().mySQL.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
+                        PreparedStatement ffaMonStatement = Main.getInstance().coreDatabase.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
                         ffaMonStatement.setString(1, FFAStatsType.MONTHLY.name());
                         ffaMonStatement.execute();
                         ffaMonStatement.close();

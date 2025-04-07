@@ -63,6 +63,6 @@ public class HealthInsuranceCommand extends CommandBase {
 
     private void setHealthInsurance(Player player, PlayerData playerData, HealthInsurance insurance) {
         player.sendMessage(Component.text("§8[§cKrankenkasse§8]§a Du hast nun mit \"" + insurance.getName() + "\" versichert."));
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET healthInsurance = ? WHERE uuid = ?", insurance.name(), player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET healthInsurance = ? WHERE uuid = ?", insurance.name(), player.getUniqueId().toString());
     }
 }

@@ -2,9 +2,9 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,7 +59,7 @@ public class GwdCommand implements CommandExecutor {
             factionManager.sendCustomLeaderMessageToFactions("§3HQ: " + player.getName() + " hat " + target.getName() + " GWD-Note " + grade + " gegeben.", "Polizei");
             target.sendMessage("§6Dir wurde GWD-Note " + grade + " gegeben.");
             targetData.setGwd(grade);
-            Main.getInstance().getMySQL().updateAsync("UPDATE players SET gwd = ? WHERE uuid = ?", grade, target.getUniqueId().toString());
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET gwd = ? WHERE uuid = ?", grade, target.getUniqueId().toString());
         } catch (Exception e) {
             player.sendMessage(Prefix.ERROR + "Die GWD-Note muss numerisch sein.");
         }

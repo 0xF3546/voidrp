@@ -25,7 +25,7 @@ public class SubGroups {
 
     @SneakyThrows
     private void load() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM subgroups");
         ResultSet result = statement.executeQuery();
         while (result.next()) {
@@ -63,7 +63,7 @@ public class SubGroups {
 
     @SneakyThrows
     public void create(SubGroup subGroup) {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO subgroups (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, subGroup.getName());
         statement.execute();

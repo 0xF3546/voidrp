@@ -2,9 +2,9 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,7 +59,7 @@ public class ZDCommand implements CommandExecutor {
             factionManager.sendCustomLeaderMessageToFactions("§cHQ: " + player.getName() + " hat " + target.getName() + " ZD-Note " + grade + " gegeben.", "Medic");
             target.sendMessage("§6Dir wurde ZD-Note " + grade + " gegeben.");
             targetData.setZd(grade);
-            Main.getInstance().getMySQL().updateAsync("UPDATE players SET zd = ? WHERE uuid = ?", grade, target.getUniqueId().toString());
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET zd = ? WHERE uuid = ?", grade, target.getUniqueId().toString());
         } catch (Exception e) {
             player.sendMessage(Prefix.ERROR + "Die ZD-Note muss numerisch sein.");
         }

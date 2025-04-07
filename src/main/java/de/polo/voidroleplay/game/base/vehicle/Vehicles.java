@@ -6,7 +6,7 @@ import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
 import de.polo.voidroleplay.utils.player.SoundManager;
@@ -188,7 +188,7 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     private void loadVehicles() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `vehicles`");
         while (result.next()) {
             VehicleData vehicleData = new VehicleData();
@@ -204,7 +204,7 @@ public class Vehicles implements Listener, CommandExecutor {
     }
 
     private void loadPlayerVehicles() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `player_vehicles`");
         while (result.next()) {
             PlayerVehicleData playerVehicleData = new PlayerVehicleData();
@@ -228,7 +228,7 @@ public class Vehicles implements Listener, CommandExecutor {
     public void giveVehicle(Player player, String vehicle) throws SQLException {
         VehicleData vehicleData = vehicleDataMap.get(vehicle);
         assert vehicleData != null;
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         statement.execute("INSERT INTO `player_vehicles` (`uuid`, `type`) VALUES ('" + player.getUniqueId() + "', '" + vehicleData.getName() + "')");
         ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID()");
         locationManager.useLocation(player, "vehicleshop_out");
@@ -253,7 +253,7 @@ public class Vehicles implements Listener, CommandExecutor {
     @SneakyThrows
     public void removeVehicleFromDatabase(int vehicleId) {
         playerVehicleDataMap.remove(vehicleId);
-        Main.getInstance().getMySQL().deleteAsync("DELETE FROM player_vehicles WHERE id = ?", vehicleId);
+        Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_vehicles WHERE id = ?", vehicleId);
     }
 
     @EventHandler

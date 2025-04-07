@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.ContractData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -85,7 +85,7 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             try {
                 playerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
-                Main.getInstance().getMySQL().updateAsync("UPDATE contract SET amount = ? WHERE uuid = ?", contractData.getAmount(), targetplayer.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE contract SET amount = ? WHERE uuid = ?", contractData.getAmount(), targetplayer.getUniqueId().toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -99,7 +99,7 @@ public class ContractCommand implements CommandExecutor {
             player.sendMessage("§8[§cKopfgeld§8]§7 Du hast ein §cKopfgeld§7 auf §c" + targetplayer.getName() + "§7 gesetzt.");
             try {
                 playerManager.removeMoney(player, price, "Kopfgeld auf " + targetplayer.getName() + " gesetzt.");
-                Main.getInstance().getMySQL().insertAsync("INSERT INTO contract (uuid, amount, setter) VALUES (?, ?, ?)", targetplayer.getUniqueId().toString(), price, player.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO contract (uuid, amount, setter) VALUES (?, ?, ?)", targetplayer.getUniqueId().toString(), price, player.getUniqueId().toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

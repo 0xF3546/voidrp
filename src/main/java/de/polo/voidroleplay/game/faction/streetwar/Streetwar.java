@@ -3,9 +3,9 @@ package de.polo.voidroleplay.game.faction.streetwar;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.VertragUtil;
@@ -43,8 +43,8 @@ public class Streetwar implements CommandExecutor {
 
     @SneakyThrows
     public static void load() {
-        MySQL mySQL = Main.getInstance().mySQL;
-        Statement statement = mySQL.getStatement();
+        CoreDatabase coreDatabase = Main.getInstance().coreDatabase;
+        Statement statement = coreDatabase.getStatement();
         ResultSet res = statement.executeQuery("SELECT * FROM streetwar");
         while (res.next()) {
             StreetwarData streetwarData = new StreetwarData();
@@ -114,20 +114,20 @@ public class Streetwar implements CommandExecutor {
             Bukkit.broadcastMessage("§8[§6§lSTREETWAR§8]§e Die Fraktion §6" + loserFaction.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + factionData.getFullname() + "§e mit §6" + streetwarData.getAttacker_points() + " zu " + streetwarData.getDefender_points() + "§e gewonnen!");
         }
         Bukkit.broadcastMessage("");
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         statement.execute("DELETE FROM streetwar WHERE id = " + id);
         streetwarDataMap.remove(id);
     }
 
     public void acceptStreetwar(Player player, String attackerFaction) {
-        MySQL mySQL = Main.getInstance().mySQL;
+        CoreDatabase coreDatabase = Main.getInstance().coreDatabase;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
         FactionData attackerData = factionManager.getFactionData(attackerFaction);
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§a Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag angenommen.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§a " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " angenommen.");
         String query = "INSERT INTO streetwar (attacker, defender) VALUES (?, ?)";
-        try (PreparedStatement statement = mySQL.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = coreDatabase.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, attackerData.getName());
             statement.setString(2, factionData.getName());
             statement.execute();

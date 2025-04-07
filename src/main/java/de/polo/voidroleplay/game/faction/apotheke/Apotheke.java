@@ -50,7 +50,7 @@ public class Apotheke {
 
     @SneakyThrows
     public void save() {
-        try (PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection()
+        try (PreparedStatement preparedStatement = Main.getInstance().coreDatabase.getConnection()
                 .prepareStatement("UPDATE apotheken SET owner = ?, lastAttack = ? WHERE id = ?")) {
 
             preparedStatement.setString(1, getOwner());

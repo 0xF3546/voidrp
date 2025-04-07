@@ -3,7 +3,7 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.PlayerIllness;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.player.enums.IllnessType;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Material;

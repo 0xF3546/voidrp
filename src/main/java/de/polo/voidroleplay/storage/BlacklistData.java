@@ -33,7 +33,7 @@ public class BlacklistData {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE blacklist SET reason = ?, kills = ?, price = ? WHERE id = ?");
         statement.setString(1, reason);
         statement.setInt(2, kills);

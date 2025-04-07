@@ -84,7 +84,7 @@ public class TreuebonusCommand extends CommandBase implements TabCompleter {
     private boolean removeLoyaltyBonus(Player player, PlayerData playerData, int amount) {
         if (playerData.getLoyaltyBonus() < amount) return false;
         playerData.setLoyaltyBonus(playerData.getLoyaltyBonus() - amount);
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET loyaltyBonus = ? WHERE uuid = ?", playerData.getLoyaltyBonus(), player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET loyaltyBonus = ? WHERE uuid = ?", playerData.getLoyaltyBonus(), player.getUniqueId().toString());
         return true;
     }
 

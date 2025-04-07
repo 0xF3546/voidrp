@@ -6,7 +6,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.Company;
 import de.polo.voidroleplay.storage.CompanyRole;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 
@@ -20,16 +20,16 @@ import java.util.UUID;
 
 public class CompanyManager {
     private final List<Company> companies = new ObjectArrayList<>();
-    private final MySQL mySQL;
+    private final CoreDatabase coreDatabase;
 
-    public CompanyManager(MySQL mySQL) {
-        this.mySQL = mySQL;
+    public CompanyManager(CoreDatabase coreDatabase) {
+        this.coreDatabase = coreDatabase;
         init();
     }
 
     @SneakyThrows
     private void init() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM companies");
         ResultSet result = statement.executeQuery();
         while (result.next()) {
@@ -69,7 +69,7 @@ public class CompanyManager {
                 return false;
             }
         }
-        Connection connection = mySQL.getConnection();
+        Connection connection = coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO companies (name, owner) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, company.getName());
         statement.setString(2, company.getOwner().toString());
@@ -92,7 +92,7 @@ public class CompanyManager {
                 return false;
             }
         }
-        Connection connection = mySQL.getConnection();
+        Connection connection = coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("DELETE FROM companies WHERE id = ?");
         statement.setInt(1, company.getId());
         statement.execute();
@@ -133,7 +133,7 @@ public class CompanyManager {
     @SneakyThrows
     public void setPlayerRole(PlayerData playerData, CompanyRole role) {
         playerData.setCompanyRole(role);
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE players SET companyRole = ? WHERE uuid = ?");
         statement.setInt(1, role.getId());
         statement.setString(2, playerData.getUuid().toString());

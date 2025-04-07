@@ -1,10 +1,9 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.CaseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -20,7 +19,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,7 +64,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     playerManager.addCoins(target, (int) amount);
                     return false;
                 }
-                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
                         args[1].toLowerCase(),
                         amount);
@@ -77,7 +75,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     playerManager.redeemRank(target, "premium", (int) amount, "d");
                     return false;
                 }
-                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
                         args[1].toLowerCase(),
                         amount);
@@ -93,7 +91,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     playerManager.addEXPBoost(target, (int) amount);
                     return false;
                 }
-                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
                         args[1].toLowerCase(),
                         amount);
@@ -114,7 +112,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     playerManager.redeemRank(target, "Premium", 7, "d");
                     return false;
                 }
-                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
                         args[1].toLowerCase(),
                         amount);
@@ -128,7 +126,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     ItemManager.addItem(target, Material.IRON_HELMET, "§fEisenhelm", 1);
                     return false;
                 }
-                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
                         args[1].toLowerCase(),
                         amount);
@@ -148,7 +146,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     playerManager.addCoins(target, 2000);
                     return false;
                 }
-                Main.getInstance().getMySQL().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
+                Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_shop_claims (uuid, type, amount) VALUES (?, ?, ?)",
                         uuid,
                         args[1].toLowerCase(),
                         amount);
@@ -160,7 +158,7 @@ CheckoutWebshopCommand implements CommandExecutor {
 
     @SneakyThrows
     private void logBuy(String uuid, String product, float amount) {
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO webshop_logs (uuid, product, amount) VALUES (?, ?, ?)",
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO webshop_logs (uuid, product, amount) VALUES (?, ?, ?)",
                 uuid,
                 product,
                 amount);
@@ -170,7 +168,7 @@ CheckoutWebshopCommand implements CommandExecutor {
         CompletableFuture.supplyAsync(() -> {
             PlayerData playerData = playerManager.getPlayerData(player);
             String uuid = player.getUniqueId().toString().replace("-", "").toLowerCase();
-            Main.getInstance().getMySQL().executeQueryAsync("SELECT * FROM player_shop_claims WHERE LOWER(uuid) = ?", uuid)
+            Main.getInstance().getCoreDatabase().executeQueryAsync("SELECT * FROM player_shop_claims WHERE LOWER(uuid) = ?", uuid)
                     .thenApply(result -> {
                         for (java.util.Map<String, Object> stringObjectMap : result) {
                             switch (stringObjectMap.get("type").toString().toLowerCase()) {

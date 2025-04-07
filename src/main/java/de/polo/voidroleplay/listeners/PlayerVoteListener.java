@@ -4,8 +4,8 @@ import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
@@ -48,7 +48,7 @@ public class PlayerVoteListener implements Listener {
             votes.replace(player.getUniqueId(), votes.get(player.getUniqueId()) + 1);
             playerManager.addCoins(player, Utils.random(10, 13));
             playerData.setVotes(playerData.getVotes() + 1);
-            PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET votes = ? WHERE uuid = ?");
+            PreparedStatement preparedStatement = Main.getInstance().coreDatabase.getConnection().prepareStatement("UPDATE players SET votes = ? WHERE uuid = ?");
             preparedStatement.setInt(1, playerData.getVotes());
             preparedStatement.setString(2, player.getUniqueId().toString());
             preparedStatement.executeUpdate();
@@ -60,7 +60,7 @@ public class PlayerVoteListener implements Listener {
 
     @SneakyThrows
     private void LogVote(String uuid, String page) {
-        PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO vote_log (uuid, page) VALUES (?, ?)");
+        PreparedStatement preparedStatement = Main.getInstance().coreDatabase.getConnection().prepareStatement("INSERT INTO vote_log (uuid, page) VALUES (?, ?)");
         preparedStatement.setString(1, uuid);
         preparedStatement.setString(2, page);
         preparedStatement.execute();

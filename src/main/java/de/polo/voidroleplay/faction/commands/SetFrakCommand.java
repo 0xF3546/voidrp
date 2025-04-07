@@ -3,9 +3,9 @@ package de.polo.voidroleplay.faction.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.faction.entity.FactionData;
-import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,7 +29,7 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
         this.adminManager = adminManager;
         this.factionManager = factionManager;
         Main.registerCommand("setfrak", this);
-        Main.addTabCompeter("setfrak", this);
+        Main.addTabCompleter("setfrak", this);
     }
 
     @Override

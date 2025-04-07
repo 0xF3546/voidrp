@@ -6,7 +6,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -64,7 +64,7 @@ public class InventoryClickListener implements Listener {
                     UUID uuid1 = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer1 = Bukkit.getOfflinePlayer(uuid1);
                     factionManager.sendMessageToFaction(playerData.getFaction(), "§c" + offlinePlayer1.getName() + "§7 wurde von §c" + player.getName() + " befördert.");
-                    Statement statement = Main.getInstance().mySQL.getStatement();
+                    Statement statement = Main.getInstance().coreDatabase.getStatement();
                     ResultSet res = statement.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer1.getUniqueId() + "'");
                     if (res.next()) {
                         if (res.getInt(1) < 8 && res.getInt(1) > 0) {
@@ -81,7 +81,7 @@ public class InventoryClickListener implements Listener {
                 case GLOWSTONE_DUST:
                     UUID uuid2 = UUID.fromString(playerData.getVariable("current_inventory").toString().replace("edit_factionplayer_", ""));
                     OfflinePlayer offlinePlayer2 = Bukkit.getOfflinePlayer(uuid2);
-                    Statement statement1 = Main.getInstance().mySQL.getStatement();
+                    Statement statement1 = Main.getInstance().coreDatabase.getStatement();
                     ResultSet res1 = statement1.executeQuery("SELECT `faction_grade` FROM `players` WHERE `uuid` = '" + offlinePlayer2.getUniqueId() + "'");
                     if (res1.next()) {
                         if (res1.getInt(1) < 8 && res1.getInt(1) > 0) {
@@ -247,7 +247,7 @@ public class InventoryClickListener implements Listener {
                     case EMERALD:
                         if (!playerData.getVariable("current_contact_name").equals("&6Name") && playerData.getIntVariable("current_contact_number") != 0) {
                             if (playerData.getIntVariable("current_contact_id") == 0) {
-                                Statement statement = Main.getInstance().mySQL.getStatement();
+                                Statement statement = Main.getInstance().coreDatabase.getStatement();
                                 String uuid = null;
                                 ResultSet res = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `id` = " + playerData.getIntVariable("current_contact_number"));
                                 if (res.next()) {
@@ -259,7 +259,7 @@ public class InventoryClickListener implements Listener {
                                     player.sendMessage("§8[§6Kontakte§8]§c Nummer konnte nicht gefunden werden.");
                                 }
                             } else {
-                                Statement statement = Main.getInstance().mySQL.getStatement();
+                                Statement statement = Main.getInstance().coreDatabase.getStatement();
                                 statement.executeUpdate("UPDATE `phone_contacts` SET `contact_name` = '" + playerData.getVariable("current_contact_name") + "', `contact_number` = " + playerData.getIntVariable("current_contact_number") + " WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
                                 player.sendMessage("§8[§6Kontakte§8]§7 Kontakt " + playerData.getVariable("current_contact_name").toString().replace("&", "§") + "§7 angepasst.");
                                 utils.phoneUtils.openContacts(player, 1, null);
@@ -269,7 +269,7 @@ public class InventoryClickListener implements Listener {
                         }
                         break;
                     case RED_DYE:
-                        Statement statement = Main.getInstance().mySQL.getStatement();
+                        Statement statement = Main.getInstance().coreDatabase.getStatement();
                         statement.execute("DELETE FROM `phone_contacts` WHERE `id` = " + playerData.getIntVariable("current_contact_id"));
                         player.sendMessage("§8[§6Kontakte§8]§c Kontakt gelöscht.");
                         utils.phoneUtils.openContacts(player, 1, null);
@@ -337,7 +337,7 @@ public class InventoryClickListener implements Listener {
                         break;
                 }
             } else if (playerData.getVariable("current_app").equals("internet")) {
-                Statement statement = Main.getInstance().mySQL.getStatement();
+                Statement statement = Main.getInstance().coreDatabase.getStatement();
                 switch (event.getSlot()) {
                     case 11:
                         if (playerData.hasAnwalt()) {

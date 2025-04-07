@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -89,7 +90,7 @@ public class WeaponManager implements Listener {
         }
         */
         Main.getInstance()
-                .getMySQL()
+                .getCoreDatabase()
                 .queryThreaded("SELECT * FROM weapons")
                 .thenAcceptAsync(result -> {
                     try {
@@ -135,7 +136,7 @@ public class WeaponManager implements Listener {
         }
         */
         Main.getInstance()
-                .getMySQL()
+                .getCoreDatabase()
                 .queryThreaded("SELECT * FROM player_weapons")
                 .thenAcceptAsync(result -> {
                     try {
@@ -161,7 +162,7 @@ public class WeaponManager implements Listener {
     private void removeWeapon(Weapon weapon) {
         weaponList.remove(weapon.getId());
         Main.getInstance()
-                .getMySQL()
+                .getCoreDatabase()
                 .executeAsync("DELETE FROM weapons WHERE id = " + weapon.getId());
     }
 
@@ -452,7 +453,7 @@ public class WeaponManager implements Listener {
             );
             w.setPlayerWeapon(playerWeapon);
         }
-        Main.getInstance().getMySQL()
+        Main.getInstance().getCoreDatabase()
                 .insertAndGetKeyAsync("INSERT INTO player_weapons (uuid, weapon, weaponType) VALUES (?, ?, ?)",
                         w.getOwner().toString(), weapon.name(), weaponType.name())
                 .thenApply(key -> {
@@ -543,7 +544,7 @@ public class WeaponManager implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         playerData.giveWeapon(playerWeapon);
         Main.getInstance()
-                .getMySQL()
+                .getCoreDatabase()
                 .insertAndGetKeyAsync(
                         "INSERT INTO player_gun_cabinet (uuid, weapon, wear, ammo) VALUES (?, ?, ?, ?)",
                         player.getUniqueId().toString(),

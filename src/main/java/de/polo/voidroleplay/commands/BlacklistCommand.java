@@ -6,7 +6,7 @@ import de.polo.voidroleplay.storage.BlacklistData;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -120,7 +120,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                 SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyy '|' HH:mm:ss ");
                 String newDate = formatter.format(new Date());
                 String finalReason = reason;
-                Main.getInstance().getMySQL().insertAndGetKeyAsync("INSERT INTO blacklist (uuid, faction, kills, price, date, reason) VALUES (?, ?, ?, ?, ?, ?)",
+                Main.getInstance().getCoreDatabase().insertAndGetKeyAsync("INSERT INTO blacklist (uuid, faction, kills, price, date, reason) VALUES (?, ?, ?, ?, ?, ?)",
                         player1.getUniqueId().toString(),
                         factionData.getName(),
                         kills,
@@ -162,7 +162,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                 if (blacklistData.getUuid().equals(player1.getUniqueId().toString()) && blacklistData.getFaction().equals(factionData.getName())) {
                     canDo = true;
-                    Main.getInstance().getMySQL().deleteAsync("DELETE FROM blacklist WHERE id = ?", blacklistData.getId());
+                    Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM blacklist WHERE id = ?", blacklistData.getId());
                     factionManager.sendMessageToFaction(factionData.getName(), "§c" + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat " + player1.getName() + " von der Blacklist gelöscht.");
                     factionManager.removeBlacklist(blacklistData.getId());
                     player1.sendMessage("§8[§cBlacklist§8]§7 " + player.getName() + " hat dich von der Blacklist der " + factionData.getFullname() + " gelöscht");
@@ -191,7 +191,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
                                             }
                                         }
                                         factionManager.addFactionMoney(factionData1.getName(), blacklistData.getPrice(), "Blacklist-Zahlung " + player.getName());
-                                        Statement statement = Main.getInstance().mySQL.getStatement();
+                                        Statement statement = Main.getInstance().coreDatabase.getStatement();
                                         statement.execute("DELETE FROM blacklist WHERE id = " + blacklistData.getId());
                                         factionManager.removeBlacklist(blacklistData.getId());
                                         return false;

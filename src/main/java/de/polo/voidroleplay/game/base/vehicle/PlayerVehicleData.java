@@ -8,8 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import java.sql.Statement;
-
 public class PlayerVehicleData {
     private int id;
     private String uuid;
@@ -122,7 +120,7 @@ public class PlayerVehicleData {
 
     @SneakyThrows
     public void save() {
-        Main.getInstance().getMySQL().updateAsync("UPDATE player_vehicles SET km = ?, fuel = ?, x = ?, y = ?, z = ?, welt = ?, yaw = ?, pitch = ? WHERE id = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE player_vehicles SET km = ?, fuel = ?, x = ?, y = ?, z = ?, welt = ?, yaw = ?, pitch = ? WHERE id = ?",
                 km,
                 fuel,
                 x,

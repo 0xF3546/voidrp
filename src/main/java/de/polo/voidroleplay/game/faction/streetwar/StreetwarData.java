@@ -65,7 +65,7 @@ public class StreetwarData {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE streetwar SET attacker = ?, defender = ?, attacker_points = ?, defender_points = ? WHERE id = ?");
         statement.setString(1, attacker);
         statement.setString(2, defender);

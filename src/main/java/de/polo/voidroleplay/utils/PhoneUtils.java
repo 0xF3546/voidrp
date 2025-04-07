@@ -9,7 +9,7 @@ import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.player.enums.Gender;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
@@ -101,7 +101,7 @@ public class PhoneUtils implements Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eHandy", true, true);
         int unreadMessages = 0;
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = Main.getInstance().coreDatabase.getStatement();
             ResultSet result = statement.executeQuery("SELECT COUNT(*) AS unreadCount FROM phone_messages WHERE isRead = false AND uuid = '" + player.getUniqueId() + "'");
             if (result.next()) unreadMessages = result.getInt("unreadCount");
         } catch (SQLException e) {
@@ -217,7 +217,7 @@ public class PhoneUtils implements Listener {
     public void openTransactions(Player player, int page, String search) throws SQLException {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
@@ -318,7 +318,7 @@ public class PhoneUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", "messages");
         playerData.setIntVariable("current_page", page);
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `phone_messages` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
@@ -344,7 +344,7 @@ public class PhoneUtils implements Listener {
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             try {
-                                Connection connection = Main.getInstance().mySQL.getConnection();
+                                Connection connection = Main.getInstance().coreDatabase.getConnection();
                                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE phone_messages SET isRead = true WHERE id = ?");
                                 preparedStatement.setInt(1, id);
                                 preparedStatement.executeUpdate();
@@ -427,7 +427,7 @@ public class PhoneUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("current_app", "contacts");
         playerData.setIntVariable("current_page", page);
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT * FROM `phone_contacts`");
@@ -531,7 +531,7 @@ public class PhoneUtils implements Listener {
                 OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
                 playerData.setVariable("current_contact", targetplayer.getUniqueId().toString());
                 try {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
+                    Statement statement = Main.getInstance().coreDatabase.getStatement();
                     ResultSet result = statement.executeQuery("SELECT * FROM `phone_contacts` WHERE `contact_uuid` = '" + uuid + "' AND `uuid` = '" + player.getUniqueId() + "'");
                     if (result.next()) {
                         Inventory inv = Bukkit.createInventory(player, 27, "§8» §6Kontakt§8:§e " + result.getString(3).replace("&", "§"));
@@ -696,7 +696,7 @@ public class PhoneUtils implements Listener {
     public void addNumberToContacts(Player player, Player targetplayer) throws SQLException {
         String uuid = player.getUniqueId().toString();
         PlayerData playerData = playerManager.getPlayerData(targetplayer.getUniqueId());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO phone_contacts (uuid, contact_name, contact_number, contact_uuid) VALUES (?, ?, ?, ?)",
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO phone_contacts (uuid, contact_name, contact_number, contact_uuid) VALUES (?, ?, ?, ?)",
                 player.getUniqueId().toString(),
                 targetplayer.getName(),
                 playerData.getNumber(),
@@ -732,7 +732,7 @@ public class PhoneUtils implements Listener {
             player.sendMessage(Prefix.ERROR + "§8[§6Handy§8] §cAuto-Response§8:§7 Die SMS konnte zugestellt werden, jedoch nicht gelesen werden.");
         }
         PlayerData targetplayerData = playerManager.getPlayerData(players.getUniqueId());
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO phone_messages (uuid, contact_uuid, message, number) VALUES (?, ?, ?, ?)",
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO phone_messages (uuid, contact_uuid, message, number) VALUES (?, ?, ?, ?)",
                 players.getUniqueId().toString(),
                 player.getUniqueId().toString(),
                 message,
@@ -809,7 +809,7 @@ public class PhoneUtils implements Listener {
                 event.sendCancelMessage();
                 return;
             }
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("UPDATE app_dating_profiles SET description = ? WHERE uuid = ?");
             statement.setString(1, event.getMessage());
             statement.setString(2, event.getPlayer().getUniqueId().toString());
@@ -864,7 +864,7 @@ public class PhoneUtils implements Listener {
             @SneakyThrows
             @Override
             public void onClick(InventoryClickEvent event) {
-                Statement statement = Main.getInstance().mySQL.getStatement();
+                Statement statement = Main.getInstance().coreDatabase.getStatement();
                 if (playerData.hasAnwalt()) {
                     playerData.setHasAnwalt(false);
                     player.closeInventory();
@@ -1036,7 +1036,7 @@ public class PhoneUtils implements Listener {
     public void openCryptoTransactions(Player player, int page, String search) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = null;
         if (search == null) {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `crypto_transactions` WHERE `uuid` = '" + player.getUniqueId() + "' ORDER BY created DESC");
@@ -1124,7 +1124,7 @@ public class PhoneUtils implements Listener {
     private void openDatingApp(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM app_dating_profiles WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -1212,7 +1212,7 @@ public class PhoneUtils implements Listener {
         try {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
 
             PreparedStatement statement = connection.prepareStatement(
                     "SELECT adp.uuid, adp.description, p.firstname, p.lastname " +
@@ -1279,7 +1279,7 @@ public class PhoneUtils implements Listener {
     @SneakyThrows
     private void recordSwipe(String swiperUuid, String targetUuid, boolean swipeRight) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-            Main.getInstance().getMySQL().insertAsync("INSERT INTO app_dating_swipes (swiper_uuid, target_uuid, swipe_right) VALUES (?, ?, ?)",
+            Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO app_dating_swipes (swiper_uuid, target_uuid, swipe_right) VALUES (?, ?, ?)",
                     swiperUuid,
                     targetUuid,
                     swipeRight);
@@ -1291,7 +1291,7 @@ public class PhoneUtils implements Listener {
     private void checkForMatch(String swiperUuid, String targetUuid) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             try {
-                Connection connection = Main.getInstance().mySQL.getConnection();
+                Connection connection = Main.getInstance().coreDatabase.getConnection();
                 PreparedStatement statement = connection.prepareStatement(
                         "SELECT * FROM app_dating_swipes WHERE swiper_uuid = ? AND target_uuid = ? AND swipe_right = ?"
                 );

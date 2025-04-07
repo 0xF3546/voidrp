@@ -47,7 +47,7 @@ public class SubGroup {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE subgroups SET faction = ?, name = ?, bank = ? WHERE id = ?");
         statement.setInt(1, factionId);
         statement.setString(2, name);

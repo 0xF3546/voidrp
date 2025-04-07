@@ -11,7 +11,7 @@ import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
@@ -54,7 +54,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         this.factionManager = factionManager;
         this.locationManager = locationManager;
         Main.registerCommand("gangwar", this);
-        Main.addTabCompeter("gangwar", this);
+        Main.addTabCompleter("gangwar", this);
         try {
             loadGangwar();
         } catch (SQLException e) {
@@ -63,7 +63,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     }
 
     private void loadGangwar() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = statement.executeQuery("SELECT * FROM `gangwar`");
         while (result.next()) {
             IGangzone gangZone = new Gangzone();
@@ -393,7 +393,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     }
                 }
             }
-            Main.getInstance().getMySQL().updateAsync("UPDATE gangwar SET lastAttack = NOW() WHERE zone = ?", gangwarData.getGangZone().getName());
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE gangwar SET lastAttack = NOW() WHERE zone = ?", gangwarData.getGangZone().getName());
         } else {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 String playersFaction = playerManager.getPlayerData(players.getUniqueId()).getFaction();
@@ -411,7 +411,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             }
             gangwarData.getGangZone().setOwner(attackerData.getName());
             Main.getInstance().blockManager.updateBlocksAtScenario("gangwar-" + gangwarData.getGangZone().getName(), attackerData);
-            Main.getInstance().getMySQL().updateAsync("UPDATE gangwar SET lastAttack = NOW(), owner = ? WHERE zone = ?", attackerData.getName(), gangwarData.getGangZone().getName());
+            Main.getInstance().getCoreDatabase().updateAsync("UPDATE gangwar SET lastAttack = NOW(), owner = ? WHERE zone = ?", attackerData.getName(), gangwarData.getGangZone().getName());
         }
         gangwarData.setAttacker(null);
         attackerData.setCurrent_gangwar(null);

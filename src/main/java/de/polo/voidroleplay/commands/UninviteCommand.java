@@ -2,9 +2,9 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -35,7 +35,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
         this.adminManager = adminManager;
         this.factionManager = factionManager;
         Main.registerCommand("uninvite", this);
-        Main.addTabCompeter("uninvite", this);
+        Main.addTabCompleter("uninvite", this);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             PlayerData playerData = playerManager.getPlayerData((Player) sender);
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("SELECT player_name FROM players WHERE faction = ?");
             statement.setString(1, playerData.getFaction());
             ResultSet result = statement.executeQuery();

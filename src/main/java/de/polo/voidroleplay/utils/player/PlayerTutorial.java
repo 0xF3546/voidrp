@@ -5,9 +5,6 @@ import de.polo.voidroleplay.storage.PlayerData;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -41,14 +38,14 @@ public class PlayerTutorial {
     @SneakyThrows
     public void setStage(int stage) {
         this.stage = stage;
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET tutorial = ? WHERE uuid = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET tutorial = ? WHERE uuid = ?",
                 stage,
                 player.getUniqueId().toString());
     }
 
     @SneakyThrows
     public void end() {
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET tutorial = ? WHERE uuid = ?",
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET tutorial = ? WHERE uuid = ?",
                 0,
                 player.getUniqueId().toString());
     }

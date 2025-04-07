@@ -2,15 +2,12 @@ package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.Ticket;
-import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.database.impl.CoreDatabase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
@@ -20,11 +17,11 @@ import java.util.concurrent.CompletableFuture;
 public class SupportManager {
     public static final List<String> playerTickets = new ObjectArrayList<>();
     public static int TicketCount = 0;
-    private final MySQL mySQL;
+    private final CoreDatabase coreDatabase;
     private final List<Ticket> Tickets = new ObjectArrayList<>();
 
-    public SupportManager(MySQL mySQL) {
-        this.mySQL = mySQL;
+    public SupportManager(CoreDatabase coreDatabase) {
+        this.coreDatabase = coreDatabase;
     }
 
     public boolean ticketCreated(Player player) {
@@ -41,7 +38,7 @@ public class SupportManager {
         ticket.setCreator(player.getUniqueId());
         ticket.setReason(reason);
 
-        return Main.getInstance().getMySQL().insertAndGetKeyAsync(
+        return Main.getInstance().getCoreDatabase().insertAndGetKeyAsync(
                 "INSERT INTO tickets (creator, reason) VALUES (?, ?)",
                 player.getUniqueId().toString(),
                 reason
@@ -67,7 +64,7 @@ public class SupportManager {
     public void deleteTicket(Player player) {
         for (Ticket ticket : Tickets) {
             if (ticket.getCreator() == player.getUniqueId()) {
-                Statement statement = mySQL.getStatement();
+                Statement statement = coreDatabase.getStatement();
                 statement.executeUpdate("DELETE FROM tickets WHERE id = " + ticket.getId());
                 Tickets.remove(ticket);
                 return;

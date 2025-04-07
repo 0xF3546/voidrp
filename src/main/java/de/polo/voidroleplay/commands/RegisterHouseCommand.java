@@ -3,7 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.housing.House;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +27,7 @@ public class RegisterHouseCommand implements CommandExecutor {
         if (playerData.getPermlevel() >= 90) {
             if (args.length >= 1) {
                 try {
-                    Connection connection = Main.getInstance().mySQL.getConnection();
+                    Connection connection = Main.getInstance().coreDatabase.getConnection();
                     PreparedStatement statement = connection.prepareStatement("INSERT INTO housing (number, price) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
                     statement.setInt(1, Integer.parseInt(args[0]));
                     statement.setInt(2, Integer.parseInt(args[1]));

@@ -35,7 +35,7 @@ public class PlayerPetManager {
     @SneakyThrows
     private void load() {
         pets.clear();
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_pets WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -49,7 +49,7 @@ public class PlayerPetManager {
     public void addPet(PlayerPed pet, boolean save) {
         pets.add(pet);
         if (save) {
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("INSERT INTO player_pets (uuid, pet) VALUES (?, ?)");
             statement.setString(1, player.getUniqueId().toString());
             statement.setString(2, pet.getPet().name());
@@ -63,7 +63,7 @@ public class PlayerPetManager {
     public void removePet(PlayerPed pet, boolean save) {
         pets.remove(pet);
         if (save) {
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("DELETE FROM player_pets WHERE uuid = ? AND pet = ?");
             statement.setString(1, player.getUniqueId().toString());
             statement.setString(2, pet.getPet().name());
@@ -77,7 +77,7 @@ public class PlayerPetManager {
     public void changeState(PlayerPed pet, boolean state) {
         pet.setActive(state);
 
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE player_pets SET active = ? WHERE pet = ? AND uuid = ?");
         statement.setBoolean(1, state);
         statement.setString(3, player.getUniqueId().toString());

@@ -5,7 +5,7 @@ import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -51,7 +51,7 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
     }
 
     private void loadData() throws SQLException {
-        Statement statement = Main.getInstance().mySQL.getStatement();
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet res = statement.executeQuery("SELECT * FROM farming");
         while (res.next()) {
             FarmingData farmingData = new FarmingData();

@@ -2,8 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
@@ -30,7 +30,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
         this.adminManager = adminManager;
 
         Main.registerCommand("resetbonusentry", this);
-        Main.addTabCompeter("resetbonusentry", this);
+        Main.addTabCompleter("resetbonusentry", this);
     }
 
     @SneakyThrows
@@ -46,7 +46,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
             for (PlayerData p : playerManager.getPlayers()) {
                 p.setReceivedBonus(false);
             }
-            Connection connection = Main.getInstance().mySQL.getConnection();
+            Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = false");
             statement.execute();
             statement.close();
@@ -61,7 +61,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
         }
         PlayerData targetData = playerManager.getPlayerData(targetplayer);
         targetData.setReceivedBonus(false);
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE players SET bonusReceived = false WHERE uuid = ?");
         statement.setString(1, targetplayer.getUniqueId().toString());
         statement.execute();

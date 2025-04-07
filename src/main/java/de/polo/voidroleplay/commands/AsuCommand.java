@@ -5,7 +5,7 @@ import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.PlayerWanted;
 import de.polo.voidroleplay.storage.WantedReason;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -33,7 +33,7 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
         this.utils = utils;
 
         Main.registerCommand("asu", this);
-        Main.addTabCompeter("asu", this);
+        Main.addTabCompleter("asu", this);
     }
 
     @Override

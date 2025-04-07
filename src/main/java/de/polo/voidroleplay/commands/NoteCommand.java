@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -50,7 +50,7 @@ public class NoteCommand implements CommandExecutor {
                 return false;
             }
             try {
-                Statement statement = Main.getInstance().mySQL.getStatement();
+                Statement statement = Main.getInstance().coreDatabase.getStatement();
                 ResultSet res = statement.executeQuery("SELECT *, DATE_FORMAT(entryAdded, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM notes WHERE target = '" + offlinePlayer.getUniqueId() + "'");
                 if (!res.next()) {
                     player.sendMessage("§8 » §eKeine Einträge vorhanden.");
@@ -86,7 +86,7 @@ public class NoteCommand implements CommandExecutor {
         for (int i = 2; i < args.length; i++) {
             msg.append(" ").append(args[i]);
         }
-        Main.getInstance().getMySQL().insertAsync("INSERT INTO notes (uuid, target, note) VALUES (?, ?, ?)", player.getUniqueId().toString(), offlinePlayer.getUniqueId().toString(), msg.toString());
+        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO notes (uuid, target, note) VALUES (?, ?, ?)", player.getUniqueId().toString(), offlinePlayer.getUniqueId().toString(), msg.toString());
         player.sendMessage("§8[§eNote§8]§a Eintrag für Spieler \"" + offlinePlayer.getName() + "\" hinzugefügt.");
         return false;
     }

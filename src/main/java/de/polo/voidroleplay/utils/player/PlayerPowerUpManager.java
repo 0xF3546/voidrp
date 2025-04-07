@@ -34,7 +34,7 @@ public class PlayerPowerUpManager {
     @SneakyThrows
     private void load() {
         powerUps.clear();
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_powerups WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -90,7 +90,7 @@ public class PlayerPowerUpManager {
     private void createPowerUp(PlayerPowerUp playerPowerUp) {
         powerUps.add(playerPowerUp);
         playerPowerUp.setAmount(playerPowerUp.getPowerup().getBaseAmount());
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO player_powerups (uuid, powerup, amount) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, player.getUniqueId().toString());
         statement.setString(2, playerPowerUp.getPowerup().name());

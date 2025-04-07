@@ -7,7 +7,7 @@ import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.player.enums.Gender;
 import lombok.SneakyThrows;
@@ -119,7 +119,7 @@ public class EinreiseCommand implements CommandExecutor {
                 playerData.setBirthday(Date.from(instant));
                 java.util.Date utilDate = playerData.getBirthday();
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-                Main.getInstance().getMySQL().updateAsync("UPDATE `players` SET `firstname` = ?, `lastname` = ?, `birthday` = ?, `gender` = ? WHERE `uuid` = ?",
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE `players` SET `firstname` = ?, `lastname` = ?, `birthday` = ?, `gender` = ? WHERE `uuid` = ?",
                         playerData.getFirstname(),
                         playerData.getLastname(),
                         sqlDate,

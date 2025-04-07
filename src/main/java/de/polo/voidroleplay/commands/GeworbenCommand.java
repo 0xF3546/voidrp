@@ -37,7 +37,7 @@ public class GeworbenCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du kannst dich nicht selbst werben.");
             return false;
         }
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT geworben FROM players WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
         ResultSet result = statement.executeQuery();
@@ -50,7 +50,7 @@ public class GeworbenCommand implements CommandExecutor {
                 if (offlinePlayer.getName() == null) continue;
                 if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
                     player.sendMessage(Prefix.MAIN + "Aktion erfolgreich!");
-                    Main.getInstance().getMySQL().updateAsync("UPDATE players SET geworben = ? WHERE uuid = ?", offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
+                    Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET geworben = ? WHERE uuid = ?", offlinePlayer.getUniqueId().toString(), player.getUniqueId().toString());
                     return false;
                 }
             }

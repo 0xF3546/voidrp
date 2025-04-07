@@ -2,8 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.AdminManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -47,7 +47,7 @@ public class SetTeamCommand implements CommandExecutor {
                     targetplayer.sendMessage("§b   Info§8:§f Da du nun Teammitglied bist, hast du deine Spielerränge verloren.");
                 }
                 player.sendMessage(Prefix.ADMIN + offlinePlayer.getName() + " ist nun §c" + rank + "§7.");
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
                 playerData.setRankDuration(null);
                 playerManager.setRang(offlinePlayer.getUniqueId(), rank);
                 adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);

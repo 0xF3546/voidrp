@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.TeamSpeak;
 import de.polo.voidroleplay.utils.Utils;
@@ -52,7 +52,7 @@ KickSecondaryTeam implements CommandExecutor {
             target.setSecondaryTeam(null);
         }
         player.sendMessage(Prefix.MAIN + "Du hast " + offlinePlayer.getName() + " aus seinem Sub-Team gekickt.");
-        Main.getInstance().getMySQL().updateAsync("UPDATE players SET secondaryTeam = NULL WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET secondaryTeam = NULL WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
         TeamSpeak.reloadPlayer(offlinePlayer.getUniqueId());
         return false;
     }

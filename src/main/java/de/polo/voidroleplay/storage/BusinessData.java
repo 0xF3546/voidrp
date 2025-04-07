@@ -73,7 +73,7 @@ public class BusinessData {
 
     @SneakyThrows
     public void save() {
-        PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE business SET owner = ?, activated = ? WHERE id = ?");
+        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("UPDATE business SET owner = ?, activated = ? WHERE id = ?");
         statement.setString(1, getOwner().toString());
         statement.setBoolean(2, isActive());
         statement.setInt(3, getId());

@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
@@ -24,7 +24,7 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
     public AutoBanCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         try {
-            Statement statement = Main.getInstance().mySQL.getStatement();
+            Statement statement = Main.getInstance().coreDatabase.getStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM banreasons");
             while (res.next()) {
                 banReasons.add(res.getString(2));
@@ -50,7 +50,7 @@ public class AutoBanCommand implements CommandExecutor, TabCompleter {
         for (int i = 0; i < banReasons.size(); i++) {
             if (banReasons.get(i).equalsIgnoreCase(args[1])) {
                 try {
-                    Statement statement = Main.getInstance().mySQL.getStatement();
+                    Statement statement = Main.getInstance().coreDatabase.getStatement();
                     ResultSet res = statement.executeQuery("SELECT * FROM banreasons WHERE LOWER(reason) = '" + args[1].toLowerCase() + "'");
                     if (res.next()) {
                         if (res.getInt("amount") == -1) {

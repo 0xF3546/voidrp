@@ -105,7 +105,7 @@ public class ShopData {
 
     @SneakyThrows
     public void save() {
-        Main.getInstance().getMySQL().updateAsync("UPDATE shops SET company = ? WHERE id = ?", getCompany().getId(), getId());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE shops SET company = ? WHERE id = ?", getCompany().getId(), getId());
     }
 
     public int getBank() {

@@ -42,7 +42,7 @@ public class PlayerWorkstation {
     @SneakyThrows
     public static Collection<PlayerWorkstation> getPlayerWorkstationsFromDatabase(UUID uuid) {
         List<PlayerWorkstation> workstations = new ObjectArrayList<>();
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM workstations WHERE uuid = ?");
         statement.setString(1, uuid.toString());
         ResultSet result = statement.executeQuery();
@@ -95,7 +95,7 @@ public class PlayerWorkstation {
 
     @SneakyThrows
     public void create() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO workstations (uuid, workstation) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, uuid.toString());
         statement.setString(2, Workstation.name());
@@ -109,7 +109,7 @@ public class PlayerWorkstation {
 
     @SneakyThrows
     public void save() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE workstations SET input = ?, output = ? WHERE id = ?");
         statement.setInt(1, input);
         statement.setInt(2, output);
@@ -203,7 +203,7 @@ public class PlayerWorkstation {
 
     @SneakyThrows
     public void deleteWorkstation() {
-        Connection connection = Main.getInstance().mySQL.getConnection();
+        Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("DELETE FROM workstations WHERE id = ?");
         statement.setInt(1, id);
         statement.execute();

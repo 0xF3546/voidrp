@@ -2,7 +2,7 @@ package de.polo.voidroleplay.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

@@ -6,7 +6,6 @@ import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.VertragUtil;
 import de.polo.voidroleplay.utils.enums.Drug;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import net.kyori.adventure.text.Component;
@@ -33,7 +32,7 @@ import static de.polo.voidroleplay.Main.utils;
 public class SellDrugCommand extends CommandBase implements TabCompleter {
     public SellDrugCommand(@NotNull CommandMeta meta) {
         super(meta);
-        Main.addTabCompeter(meta.name(), this);
+        Main.addTabCompleter(meta.name(), this);
     }
 
     @Override

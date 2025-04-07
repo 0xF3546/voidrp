@@ -6,7 +6,7 @@ import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.manager.BlockManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -65,7 +65,7 @@ public class BuyHouseCommand implements CommandExecutor {
                                         try {
                                             if (playerData.getHouseSlot() > houes) {
                                                 playerManager.removeMoney(player, houseData.getPrice(), "Hauskauf " + houseData.getNumber());
-                                                Main.getInstance().getMySQL().updateAsync("UPDATE housing SET owner = ? WHERE number = ?", player.getUniqueId().toString(), houseData.getNumber());
+                                                Main.getInstance().getCoreDatabase().updateAsync("UPDATE housing SET owner = ? WHERE number = ?", player.getUniqueId().toString(), houseData.getNumber());
                                                 houseData.setOwner(player.getUniqueId().toString());
                                                 sign.setLine(2, "§0" + player.getName());
                                                 sign.update();

@@ -3,7 +3,7 @@ package de.polo.voidroleplay.utils.gameplay;
 import de.polo.voidroleplay.storage.BlacklistData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
 import org.bukkit.entity.Player;
 

@@ -38,7 +38,7 @@ public class WorldListener implements Listener {
         if (block == null) return;
 
         if (block.getType().name().contains("SHULKER")) {
-            try (Connection connection = Main.getInstance().mySQL.getConnection();
+            try (Connection connection = Main.getInstance().coreDatabase.getConnection();
                  PreparedStatement statement = connection.prepareStatement(
                          "INSERT INTO block_logs (uuid, block, x, y, z, type) VALUES (?, ?, ?, ?, ?, ?)")) {
 

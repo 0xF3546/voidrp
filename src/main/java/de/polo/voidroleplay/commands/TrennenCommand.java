@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.PlayerManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -11,8 +11,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -40,8 +38,8 @@ public class TrennenCommand implements CommandExecutor {
                 }
                 playerData.setRelationShip(new HashMap<>());
                 player.sendMessage("§cDu hast dich von " + offlinePlayer.getName() + " getrennt...");
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = '{}' WHERE uuid = ?", player.getUniqueId().toString());
-                Main.getInstance().getMySQL().updateAsync("UPDATE players SET relationShip = '{}' WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = '{}' WHERE uuid = ?", player.getUniqueId().toString());
+                Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET relationShip = '{}' WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
 
             }
         } else {
