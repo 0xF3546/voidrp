@@ -7,7 +7,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.enums.Gender;
+import de.polo.voidroleplay.player.enums.Gender;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import net.kyori.adventure.text.Component;

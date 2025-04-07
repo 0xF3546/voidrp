@@ -1,6 +1,9 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.FactionPlayerData;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.SecondTickEvent;

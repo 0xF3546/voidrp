@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.game.faction.plants;
 
-import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.utils.enums.PlantType;
 import lombok.Getter;
 import lombok.Setter;

@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.DBPlayerData;
-import de.polo.voidroleplay.storage.FactionPlayerData;
+import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;

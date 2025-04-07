@@ -3,7 +3,7 @@ package de.polo.voidroleplay.utils;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.SubGroup;
-import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 

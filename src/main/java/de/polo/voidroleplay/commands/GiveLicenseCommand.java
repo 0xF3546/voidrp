@@ -2,14 +2,13 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.VertragUtil;
-import de.polo.voidroleplay.utils.enums.License;
+import de.polo.voidroleplay.player.enums.License;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

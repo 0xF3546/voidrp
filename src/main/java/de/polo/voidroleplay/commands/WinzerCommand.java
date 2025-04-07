@@ -2,8 +2,8 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.SoundManager;

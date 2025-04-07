@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.utils.enums.License;
+import de.polo.voidroleplay.player.enums.License;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

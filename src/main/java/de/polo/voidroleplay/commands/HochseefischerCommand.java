@@ -4,10 +4,9 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
@@ -30,7 +29,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static de.polo.voidroleplay.Main.*;
 

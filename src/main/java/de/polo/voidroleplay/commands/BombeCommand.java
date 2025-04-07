@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.Bomb;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
-import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.manager.PlayerManager;

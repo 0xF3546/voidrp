@@ -10,11 +10,11 @@ import de.polo.voidroleplay.game.base.extra.Storage;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.enums.HouseType;
+import de.polo.voidroleplay.housing.enums.HouseType;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import de.polo.voidroleplay.utils.enums.StorageType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -41,8 +41,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-
-import static de.polo.voidroleplay.Main.houseManager;
 
 public class HouseManager implements CommandExecutor, Listener {
     public static final Map<Integer, House> houseDataMap = new HashMap<>();

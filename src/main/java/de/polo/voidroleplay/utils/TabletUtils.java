@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
@@ -8,8 +10,8 @@ import de.polo.voidroleplay.game.base.vehicle.VehicleData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
@@ -22,7 +24,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;

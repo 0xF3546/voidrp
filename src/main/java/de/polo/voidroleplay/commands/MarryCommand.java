@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.enums.Gender;
+import de.polo.voidroleplay.player.enums.Gender;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

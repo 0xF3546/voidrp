@@ -1,12 +1,12 @@
 package de.polo.voidroleplay.game.base.extra.seasonpass;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
-import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.SoundManager;

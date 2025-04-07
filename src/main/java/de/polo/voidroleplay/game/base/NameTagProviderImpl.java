@@ -5,7 +5,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;

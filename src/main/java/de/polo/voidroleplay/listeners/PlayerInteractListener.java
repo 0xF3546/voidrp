@@ -6,15 +6,15 @@ import de.polo.voidroleplay.game.base.extra.drop.Drop;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.manager.BlockManager;
-import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.WeaponManager;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.ATM;
 import de.polo.voidroleplay.storage.ClickedEventBlock;
-import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.Grenade;
 import de.polo.voidroleplay.storage.Molotov;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -75,7 +75,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class PlayerInteractListener implements Listener {
     private static final Random RANDOM = new Random();

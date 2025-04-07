@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.PlayerIllness;
 import de.polo.voidroleplay.manager.PlayerManager;
-import de.polo.voidroleplay.utils.enums.IllnessType;
+import de.polo.voidroleplay.player.enums.IllnessType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

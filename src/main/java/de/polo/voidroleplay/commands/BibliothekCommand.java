@@ -1,31 +1,20 @@
 package de.polo.voidroleplay.commands;
 
-import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.ShopBook;
-import de.polo.voidroleplay.utils.BookSerializer;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.Utils;
-import dev.vansen.singleline.SingleLine;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static de.polo.voidroleplay.Main.factionManager;

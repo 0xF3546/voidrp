@@ -24,6 +24,7 @@ public abstract class CommandBase implements CommandExecutor {
         this.meta = meta;
 
         Main.getInstance().getCommand(meta.name()).setExecutor(this);
+        
     }
 
     /**

@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.faction.staat;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;

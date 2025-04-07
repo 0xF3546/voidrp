@@ -2,7 +2,7 @@ package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.faction.laboratory.EvidenceChamber;
-import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;

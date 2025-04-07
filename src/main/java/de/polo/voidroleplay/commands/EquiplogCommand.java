@@ -3,7 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.handler.TabCompletion;
-import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

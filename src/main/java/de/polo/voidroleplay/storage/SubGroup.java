@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.storage;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;

@@ -6,7 +6,12 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.voidroleplay.commands.*;
+import de.polo.voidroleplay.database.Database;
 import de.polo.voidroleplay.database.impl.MySQL;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
+import de.polo.voidroleplay.faction.commands.*;
+import de.polo.voidroleplay.faction.service.FactionService;
+import de.polo.voidroleplay.faction.service.impl.CoreFactionService;
 import de.polo.voidroleplay.game.base.CustomTabAPI;
 import de.polo.voidroleplay.game.base.extra.beginnerpass.Beginnerpass;
 import de.polo.voidroleplay.game.base.extra.seasonpass.Seasonpass;
@@ -15,9 +20,11 @@ import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.game.faction.streetwar.Streetwar;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.housing.services.HouseService;
+import de.polo.voidroleplay.housing.services.impl.CoreHouseService;
 import de.polo.voidroleplay.listeners.*;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.inventory.InventoryApiRegister;
+import de.polo.voidroleplay.utils.inventory.InventoryApiRegister;
 import de.polo.voidroleplay.utils.*;
 import de.polo.voidroleplay.utils.gameplay.GamePlay;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
@@ -29,7 +36,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -40,12 +46,16 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Main extends JavaPlugin {
-    public static Plugin plugin = null;
+
     @Getter
     private static Main instance;
-    public boolean isOnline = false;
     @Getter
     public MySQL mySQL;
+
+    public static Database database;
+    public static FactionService factionService;
+    public static HouseService houseService;
+
     @Getter
     public CooldownManager cooldownManager;
     public TeamSpeak teamSpeak;
@@ -141,6 +151,10 @@ public final class Main extends JavaPlugin {
         }
 
         mySQL = new MySQL();
+        database = mySQL;
+        factionService = new CoreFactionService();
+        houseService = new CoreHouseService();
+
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
@@ -163,7 +177,6 @@ public final class Main extends JavaPlugin {
         streetwar = new Streetwar(playerManager, factionManager, utils);
         weaponManager = new WeaponManager(utils, playerManager);
         newsManager = new NewsManager();
-        isOnline = true;
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
         npc = new NPCManager(playerManager);
         gamePlay = new GamePlay(playerManager, utils, mySQL, factionManager, locationManager, npc);
@@ -181,7 +194,6 @@ public final class Main extends JavaPlugin {
         }
         registerAnnotatedCommands();
         getLogger().info("§VOIDROLEPLAY ROLEPLAY STARTED.");
-        plugin = Bukkit.getPluginManager().getPlugin("VoidRoleplay");
         try {
             Statement statement = mySQL.getStatement();
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
@@ -251,7 +263,6 @@ public final class Main extends JavaPlugin {
         gamePlay.plant.cleanup();
         Main.getInstance().utils.deathUtil.cleanUpCorpses();
         System.out.println("Disabling VoidRoleplay");
-        isOnline = false;
         try {
             serverManager.savePlayers();
         } catch (SQLException e) {

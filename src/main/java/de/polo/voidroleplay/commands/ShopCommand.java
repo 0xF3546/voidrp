@@ -6,14 +6,12 @@ import de.polo.voidroleplay.storage.PlayerWeapon;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.manager.*;
-import de.polo.voidroleplay.manager.inventory.CustomItem;
-import de.polo.voidroleplay.manager.inventory.InventoryManager;
+import de.polo.voidroleplay.utils.inventory.CustomItem;
+import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.Paymethod;
 import de.polo.voidroleplay.utils.enums.ShopType;
 import de.polo.voidroleplay.utils.enums.Weapon;
-import de.polo.voidroleplay.utils.player.SoundManager;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -22,9 +20,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
-import java.sql.SQLException;
 import java.util.*;
 
 import static de.polo.voidroleplay.Main.vehicles;

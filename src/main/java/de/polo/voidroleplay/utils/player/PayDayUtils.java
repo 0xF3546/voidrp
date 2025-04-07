@@ -8,11 +8,11 @@ import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.base.vehicle.PlayerVehicleData;
 import de.polo.voidroleplay.game.base.vehicle.VehicleData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
-import de.polo.voidroleplay.manager.FactionManager;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.enums.HealthInsurance;
+import de.polo.voidroleplay.player.enums.HealthInsurance;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 

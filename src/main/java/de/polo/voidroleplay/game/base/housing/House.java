@@ -2,7 +2,7 @@ package de.polo.voidroleplay.game.base.housing;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.crypto.Miner;
-import de.polo.voidroleplay.utils.enums.HouseType;
+import de.polo.voidroleplay.housing.enums.HouseType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;

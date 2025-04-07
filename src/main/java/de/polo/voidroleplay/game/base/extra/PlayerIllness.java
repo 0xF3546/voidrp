@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.base.extra;
 
 
-import de.polo.voidroleplay.utils.enums.IllnessType;
+import de.polo.voidroleplay.player.enums.IllnessType;
 import lombok.Getter;
 import lombok.Setter;
 

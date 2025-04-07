@@ -2,7 +2,7 @@ package de.polo.voidroleplay.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.FactionData;
+import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.database.impl.MySQL;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,8 +14,6 @@ import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collection;

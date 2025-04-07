@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.utils.gameplay;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.GlobalStats;
