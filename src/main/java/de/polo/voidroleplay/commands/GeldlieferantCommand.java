@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.ATM;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
@@ -27,27 +28,27 @@ public class GeldlieferantCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (locationManager.getDistanceBetweenCoords(player, "geldlieferant") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Geldlieferants.");
             return;
         }
-        if (Main.getInstance().getCooldownManager().isOnCooldown(player, "job_geldlieferant")) {
-            player.sendMessage(Component.text(PREFIX + "Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "job_geldlieferant"))));
+        if (Main.getInstance().getCooldownManager().isOnCooldown(player.getPlayer(), "job_geldlieferant")) {
+            player.sendMessage(Component.text(PREFIX + "Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player.getPlayer(), "job_geldlieferant"))));
             return;
         }
         if (playerData.getVariable("job") != null) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits einen Job angenommen."));
             return;
         }
-        startJob(player, playerData);
+        startJob(player);
     }
 
-    private void startJob(Player player, PlayerData playerData) {
-        playerData.setVariable("job", "geldlieferant");
+    private void startJob(VoidPlayer player) {
+        player.getData().setVariable("job", "geldlieferant");
         int amount = Utils.random(6000, 8000);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + "$ erhalten, fülle damit Geldautomaten auf."));
-        playerData.setVariable("job::geldlieferant::amount", amount);
+        player.getData().setVariable("job::geldlieferant::amount", amount);
     }
 
     public static void drop(Player player, ATM atm) {

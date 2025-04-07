@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.player.services;
 
 import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.player.enums.LongTermJob;
 import de.polo.voidroleplay.storage.LoyaltyBonusTimer;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -60,5 +61,5 @@ public interface PlayerService {
     boolean isCarrying(org.bukkit.entity.Entity entity);
     int getGeworbenCount(Player player) throws Exception;
     void kissPlayer(Player player, Player targetplayer);
-    void setLongTermJob(Player player, LongTermJob longTermJob);
+    void setLongTermJob(VoidPlayer player, LongTermJob longTermJob);
 }

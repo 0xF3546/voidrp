@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -25,7 +26,7 @@ public class EquiplogCommand extends CommandBase implements TabCompleter {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
         if (args.length < 1) {
             Main.getInstance().getCoreDatabase().executeQueryAsync("SELECT * FROM faction_equip_logs WHERE factionId = ?", factionData.getId())

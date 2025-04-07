@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.handler;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.command.Command;
@@ -29,7 +31,7 @@ public abstract class CommandBase implements CommandExecutor {
     /**
      * Diese Methode wird von spezifischen Befehlen überschrieben, um ihre Logik zu implementieren.
      */
-    public abstract void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception;
+    public abstract void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception;
 
     /**
      * Bukkit-Methode zur Befehlsausführung.
@@ -68,7 +70,8 @@ public abstract class CommandBase implements CommandExecutor {
             return true;
         }
         try {
-            execute(player, playerData, args);
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+            execute(voidPlayer, playerData, args);
         } catch (Exception e) {
             player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten: " + e.getMessage());
             e.printStackTrace();
@@ -79,7 +82,7 @@ public abstract class CommandBase implements CommandExecutor {
     /**
      * Zeigt die Syntax des Befehls an.
      */
-    protected void showSyntax(@NotNull CommandSender sender) {
+    protected void showSyntax(@NotNull VoidPlayer sender) {
         sender.sendMessage(Prefix.ERROR + "Syntax: " + meta.usage());
     }
 

@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.Objects;
 
+import static de.polo.voidroleplay.Main.seasonpass;
+
 public class ArrestCommand implements CommandExecutor {
     private final FactionManager factionManager;
     private final Utils utils;
@@ -56,7 +58,7 @@ public class ArrestCommand implements CommandExecutor {
                                     playerManager.setPlayerMove(targetplayer, true);
                                     targetPlayerData.setCuffed(false);
                                     player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
-                                    Main.getInstance().seasonpass.didQuest(targetplayer, 8);
+                                    seasonpass.didQuest(targetplayer, 8);
                                 } else {
                                     player.sendMessage(Prefix.ERROR + targetplayer.getName() + " wird nicht gesucht.");
                                 }

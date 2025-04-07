@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -27,7 +28,7 @@ public class FahrschuleCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (locationManager.getDistanceBetweenCoords(player, "fahrschule_access") > 5) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe der Fahrschule."));
             return;
@@ -36,7 +37,7 @@ public class FahrschuleCommand extends CommandBase {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits einen Führerschein."));
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Fahrschule");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §3Fahrschule");
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§6Führerschein kaufen", "§8 ➥ §c2.500$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -44,7 +45,7 @@ public class FahrschuleCommand extends CommandBase {
                     player.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Geld bei dir."));
                     return;
                 }
-                player.closeInventory();
+                player.getPlayer().closeInventory();
                 playerData.removeMoney(2500, "Führerschein");
                 playerData.addLicenseToDatabase(License.DRIVER);
                 player.sendMessage(Component.text("§8[§6Führerschein§8]§a Du hast einen Führerschein erworben."));

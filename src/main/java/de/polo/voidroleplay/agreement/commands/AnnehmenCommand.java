@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.agreement.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,7 +23,7 @@ public class AnnehmenCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        agreementService.acceptVertrag(player);
+        agreementService.acceptVertrag(VoidAPI.getPlayer(player));
         return false;
     }
 }

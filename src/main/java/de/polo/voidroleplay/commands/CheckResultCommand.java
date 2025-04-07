@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -24,7 +25,7 @@ public class CheckResultCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (playerData.getSecondaryTeam() == null || !playerData.getSecondaryTeam().equalsIgnoreCase("Event-Team")) {
             return;
         }

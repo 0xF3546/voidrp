@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.utils.inventory;
 
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

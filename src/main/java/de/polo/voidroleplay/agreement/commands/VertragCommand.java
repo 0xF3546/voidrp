@@ -1,16 +1,13 @@
 package de.polo.voidroleplay.agreement.commands;
 
-import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.agreement.services.VertragUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +29,7 @@ public class VertragCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (args.length < 2) {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /vertrag [Spieler] [Bedingung]");
             return;
@@ -53,14 +50,15 @@ public class VertragCommand extends CommandBase {
         target.sendMessage("§6" + player.getName() + " hat dir einen Vertrag angeboten§8:§7 " + reason);
         player.sendMessage("§6Du hast " + target.getName() + " einen Vertrag angeboten§8:§7 " + reason);
 
-        Agreement agreement = new Agreement(player, target, "vertrag", () -> {
+        VoidPlayer targetVoidPlayer = VoidAPI.getPlayer(target);
+        Agreement agreement = new Agreement(player, targetVoidPlayer, "vertrag", () -> {
             player.sendMessage(Component.text("§6" + target.getName() + " hat den Vertrag angenommen."));
             target.sendMessage(Component.text("§aDu hast den Vertrag angenommen."));
         }, () -> {
             player.sendMessage(Component.text("§6" + target.getName() + " hat den Vertrag abgelehnt."));
             target.sendMessage(Component.text("§cDu hast den Vertrag abgelehnt."));
         });
-        agreementService.setAgreement(player, target, agreement);
-        agreementService.sendInfoMessage(target);
+        agreementService.setAgreement(player, targetVoidPlayer, agreement);
+        agreementService.sendInfoMessage(targetVoidPlayer);
     }
 }

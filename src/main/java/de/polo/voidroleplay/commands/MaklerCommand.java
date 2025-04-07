@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -31,7 +32,7 @@ public class MaklerCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (locationManager.getDistanceBetweenCoords(player, "makler_access") > 5) {
             player.sendMessage(Component.text("§7   ===§8[§6Makler§8]§7==="));
             for (PlayerData targetData : playerManager.getPlayers()) {
@@ -48,8 +49,8 @@ public class MaklerCommand extends CommandBase {
         }
     }
 
-    private void openJobEntryMenu(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Makler");
+    private void openJobEntryMenu(VoidPlayer player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §7Makler");
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§aJob annehmen", "§8 ➥ §7Du musst diesen Job noch annehmen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -59,16 +60,16 @@ public class MaklerCommand extends CommandBase {
         });
     }
 
-    private void open(Player player, PlayerData playerData) {
+    private void open(VoidPlayer player, PlayerData playerData) {
         if (playerData.getLongTermJob() != LongTermJob.REAL_ESTATE_BROKER) {
             openJobEntryMenu(player, playerData);
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Makler");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §7Makler");
     }
 
-    private void openBuyMenu(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Makler");
+    private void openBuyMenu(VoidPlayer player, PlayerData playerData) {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §7Makler");
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§6Lizenz kaufen", "§8 ➥ §a10.000$")) {
             @Override
             public void onClick(InventoryClickEvent event) {

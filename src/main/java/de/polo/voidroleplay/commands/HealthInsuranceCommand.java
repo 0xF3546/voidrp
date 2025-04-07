@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -28,12 +29,12 @@ public class HealthInsuranceCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (locationManager.getDistanceBetweenCoords(player, "healthinsurance") > 5) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe der Versicherung."));
             return;
         }
-        openHealthInsurance(player, playerData);
+        openHealthInsurance(player.getPlayer(), playerData);
     }
 
     private void openHealthInsurance(Player player, PlayerData playerData) {

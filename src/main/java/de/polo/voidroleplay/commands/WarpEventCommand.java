@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +21,11 @@ public class WarpEventCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (locationManager.getDistanceBetweenCoords(player, "event") < 5) {
-            locationManager.useLocation(player, "toevent");
+            locationManager.useLocation(player.getPlayer(), "toevent");
         } else if (locationManager.getDistanceBetweenCoords(player, "toevent") < 5) {
-            locationManager.useLocation(player, "event");
+            locationManager.useLocation(player.getPlayer(), "event");
         }
     }
 }

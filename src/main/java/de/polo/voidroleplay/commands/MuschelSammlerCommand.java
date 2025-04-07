@@ -9,7 +9,6 @@ import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.player.PlayerQuit;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import org.bukkit.Material;
@@ -27,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
+public class MuschelSammlerCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final LocationManager locationManager;
     private final HashMap<Block, LocalDateTime> blocksBroken = new HashMap<>();
@@ -143,10 +142,5 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
         playerData.setVariable("job", null);
         player.sendMessage("§8[§eMuschelsammler§8]§7 Du hast den Job beendet.");
         player.closeInventory();
-    }
-
-    @Override
-    public void playerQuit(Player player) {
-        quitJob(player, true);
     }
 }

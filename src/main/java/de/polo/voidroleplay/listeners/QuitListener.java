@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.commands.ApfelplantageCommand;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.ServiceData;
@@ -12,7 +13,6 @@ import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.gameplay.MilitaryDrop;
-import de.polo.voidroleplay.utils.player.PlayerQuit;
 import de.polo.voidroleplay.utils.StaatUtil;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.PlayerPed;
@@ -38,7 +38,6 @@ QuitListener implements Listener {
     private final ServerManager serverManager;
     private final SupportManager supportManager;
     private final ScoreboardAPI scoreboardAPI;
-    private PlayerQuit playerQuit;
 
     public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager, ScoreboardAPI scoreboardAPI) {
         this.playerManager = playerManager;
@@ -142,5 +141,7 @@ QuitListener implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        VoidAPI.removePlayer(player);
     }
 }

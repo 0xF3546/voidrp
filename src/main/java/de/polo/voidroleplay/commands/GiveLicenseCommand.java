@@ -1,7 +1,9 @@
 package de.polo.voidroleplay.commands;
 
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.Agreement;
@@ -31,7 +33,7 @@ public class GiveLicenseCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (!playerData.isExecutiveFaction()) {
             player.sendMessage(Component.text(Prefix.ERROR_NOPERMISSION));
             return;
@@ -50,7 +52,7 @@ public class GiveLicenseCommand extends CommandBase {
             return;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        InventoryManager inventoryManager = new InventoryManager(player, 27,"§8 » §6Lizenzvergabe");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27,"§8 » §6Lizenzvergabe");
         int i = 0;
         if (playerData.getFactionGrade() >= 4 && !targetData.hasLicense(License.WEAPON)) {
             int price = 12500;
@@ -67,19 +69,19 @@ public class GiveLicenseCommand extends CommandBase {
                     player.sendMessage(Component.text("§8[§cWaffenschein§8]§a Du hast " + target.getName() + " einen Waffenschein-Antrag ausgestellt."));
                     target.sendMessage(Component.text("§8[§cWaffenschein§8]§a " + player.getName() + " hat dir einen Waffenschein-Antrag in höhe von " + Utils.toDecimalFormat(finalPrice) + "$ ausgestellt."));
                     utils.vertragUtil.sendInfoMessage(target);
-                    Agreement agreement = new Agreement(player, target, "waffenschein",
+                    Agreement agreement = new Agreement(player, VoidAPI.getPlayer(target), "waffenschein",
                             () -> {
                                 player.sendMessage(Component.text("§8[§cWaffenschein§8]§a " + target.getName() + " hat den Antrag angenommen."));
                                 target.sendMessage(Component.text("§8[§cWaffenschein§8]§a Dir wurde ein Waffenschein ausgestellt."));
                                 targetData.removeMoney(finalPrice, "Waffenschein");
                                 targetData.addLicenseToDatabase(License.WEAPON);
-                                factionManager.sendCustomMessageToFactions("§9HQ: " + factionManager.getTitle(player) + " " + player.getName() + " hat " + target.getName() + " einen Waffenschein ausgestellt.", "Polizei", "FBI");
+                                factionManager.sendCustomMessageToFactions("§9HQ: " + factionManager.getTitle(player.getPlayer()) + " " + player.getName() + " hat " + target.getName() + " einen Waffenschein ausgestellt.", "Polizei", "FBI");
                             },
                             () -> {
                                 player.sendMessage(Component.text("§8[§cWaffenschein§8]§c " + target.getName() + " hat den Antrag abgelehnt."));
                                 target.sendMessage(Component.text("§8[§cWaffenschein§8]§c Du hast den Antrag abgelehnt."));
                             });
-                    utils.vertragUtil.setAgreement(player, target, agreement);
+                    utils.vertragUtil.setAgreement(player.getPlayer(), target, agreement);
                 }
             });
             i++;

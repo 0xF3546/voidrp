@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.player.services.impl;
 
 import de.polo.voidroleplay.game.base.extra.PlaytimeReward;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.player.enums.LongTermJob;
 import de.polo.voidroleplay.player.services.PlayerService;
 import de.polo.voidroleplay.storage.LoyaltyBonusTimer;
@@ -241,7 +242,7 @@ public class CorePlayerService implements PlayerService {
     }
 
     @Override
-    public void setLongTermJob(Player player, LongTermJob longTermJob) {
+    public void setLongTermJob(VoidPlayer player, LongTermJob longTermJob) {
         playerManager.setLongTermJob(player, longTermJob);
     }
 }

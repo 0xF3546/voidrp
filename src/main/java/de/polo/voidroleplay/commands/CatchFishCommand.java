@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -20,7 +21,7 @@ import static de.polo.voidroleplay.Main.utils;
 
 @CommandBase.CommandMeta(name = "catchfish")
 public class CatchFishCommand extends CommandBase implements Listener {
-    private final HashMap<Player, LocalDateTime> caughts = new HashMap<>();
+    private final HashMap<VoidPlayer, LocalDateTime> caughts = new HashMap<>();
     private final String PREFIX = "§8[§bHochseefischer§8]§7 ";
     public CatchFishCommand(@NotNull CommandMeta meta) {
         super(meta);
@@ -29,7 +30,7 @@ public class CatchFishCommand extends CommandBase implements Listener {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (caughts.get(player) != null) {
             player.sendMessage(PREFIX + "Warte noch einen Moment.");
             return;
@@ -60,7 +61,7 @@ public class CatchFishCommand extends CommandBase implements Listener {
         updateLocations(playerData, playerLocations);
     }
 
-    private void catchFish(Player player) {
+    private void catchFish(VoidPlayer player) {
         caughts.put(player, Utils.getTime());
         player.sendMessage(Component.text(PREFIX + "Du hast dein Fangnetz ausgeworfen."));
 

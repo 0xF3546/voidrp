@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.game.base.shops.ShopData;
@@ -164,6 +165,10 @@ public class LocationManager {
         }
         World welt = Bukkit.getWorld(locationData.getWelt());
         return new Location(welt, locationData.getX(), locationData.getY(), locationData.getZ(), (float) locationData.getYaw(), (float) locationData.getPitch());
+    }
+
+    public double getDistanceBetweenCoords(VoidPlayer player, String name) {
+        return getDistanceBetweenCoords(player.getPlayer(), name);
     }
 
     public double getDistanceBetweenCoords(Player player, String name) {

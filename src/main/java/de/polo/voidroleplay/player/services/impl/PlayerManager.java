@@ -2,9 +2,11 @@ package de.polo.voidroleplay.player.services.impl;
 
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.player.enums.Gender;
 import de.polo.voidroleplay.player.enums.HealthInsurance;
 import de.polo.voidroleplay.player.enums.IllnessType;
@@ -1449,9 +1451,9 @@ public class PlayerManager implements Listener {
         }
     }
 
-    public void setLongTermJob(Player player, LongTermJob longTermJob) {
-        PlayerData playerData = getPlayerData(player);
+    public void setLongTermJob(VoidPlayer player, LongTermJob longTermJob) {
+        PlayerData playerData = getPlayerData(player.getPlayer());
         playerData.setLongTermJob(longTermJob);
-        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET longTermJob = ? WHERE uuid = ?", longTermJob.name(), player.getUniqueId().toString());
+        Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET longTermJob = ? WHERE uuid = ?", longTermJob.name(), player.getUuid().toString());
     }
 }

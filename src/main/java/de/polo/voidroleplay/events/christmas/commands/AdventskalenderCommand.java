@@ -3,6 +3,7 @@ package de.polo.voidroleplay.events.christmas.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -52,22 +53,22 @@ public class AdventskalenderCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§cAdventskalender", true, false);
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§cAdventskalender", true, false);
         if (locationManager.getDistanceBetweenCoords(player, "adventskalender") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe vom Weihnachtsmann.");
             return;
         }
         if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
             player.sendMessage(Prefix.ERROR + "Du musst mindestens einen PayDay pro Tag erhalten haben um den Adventskalender öffnen zu können.");
-            player.closeInventory();
+            player.getPlayer().closeInventory();
             return;
         }
         for (int i = 0; i < 24; i++) {
             int day = i + 1;
             int finalI = i;
             CompletableFuture.runAsync(() -> {
-                boolean alreadyOpened = configuration.getBoolean(player.getUniqueId() + ".day" + day, false);
+                boolean alreadyOpened = configuration.getBoolean(player.getUuid() + ".day" + day, false);
                 Material material = alreadyOpened ? Material.ENDER_CHEST : Material.CHEST;
 
                 Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
@@ -85,11 +86,11 @@ public class AdventskalenderCommand extends CommandBase {
                                 return;
                             }
 
-                            configuration.set(player.getUniqueId() + ".day" + day, true);
+                            configuration.set(player.getPlayer() + ".day" + day, true);
                             saveConfigAsync();
 
                             event.getWhoClicked().closeInventory();
-                            checkedDate(player, day);
+                            checkedDate(player.getPlayer(), day);
                         }
                     });
                 });

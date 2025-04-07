@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -33,8 +34,8 @@ public class BibliothekCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Bibliothek");
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§7Bibliothek");
         int i = 0;
         for (ShopBook book : newsManager.getBooks()) {
             Component titleComponent = book.getTitle();
@@ -53,19 +54,19 @@ public class BibliothekCommand extends CommandBase {
                     }
                     playerData.removeMoney(book.getPrice(), "Buchkauf");
                     factionManager.addFactionMoney("News", book.getPrice(), "Buchkauf");
-                    newsManager.giveBookToPlayer(player, book);
+                    newsManager.giveBookToPlayer(player.getPlayer(), book);
                 }
             });
             i++;
         }
     }
 
-    private void openDeleteInv(Player player, ShopBook shopBook) {
-        InventoryManager sellInventory = new InventoryManager(player, 27, "§8 » §e" + shopBook.getTitle() + " löschen");
+    private void openDeleteInv(VoidPlayer player, ShopBook shopBook) {
+        InventoryManager sellInventory = new InventoryManager(player.getPlayer(), 27, "§8 » §e" + shopBook.getTitle() + " löschen");
         sellInventory.setItem(new CustomItem(12, ItemManager.createItem(Material.RED_WOOL, 1, 0, "§cLöschen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                player.closeInventory();
+                player.getPlayer().closeInventory();
                 player.sendMessage(Component.text(Prefix.MAIN + "Du hast das Buch " + shopBook.getTitle() + " gelöscht."));
                 newsManager.removeBook(shopBook);
             }
@@ -73,7 +74,7 @@ public class BibliothekCommand extends CommandBase {
         sellInventory.setItem(new CustomItem(14, ItemManager.createItem(Material.GREEN_WOOL, 1, 0, "§aAbbrechen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                player.closeInventory();
+                player.getPlayer().closeInventory();
             }
         });
     }

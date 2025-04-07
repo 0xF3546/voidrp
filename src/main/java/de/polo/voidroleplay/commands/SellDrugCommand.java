@@ -1,8 +1,10 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.handler.TabCompletion;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
@@ -36,7 +38,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (args.length < 4) {
             showSyntax(player);
             return;
@@ -78,7 +80,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
             target.sendMessage(Prefix.MAIN + player.getName() + " biete dir " + finalDrug.getItem().getClearName() + " für " + price + "$ an.");
             utils.vertragUtil.sendInfoMessage(target);
             player.sendMessage(Prefix.MAIN + "Du hast " + target.getName() + " " + finalDrug.getItem().getClearName() + " für " + price + "$ angeboten.");
-            Agreement agreement = new Agreement(player, target, "selldrug", () -> {
+            Agreement agreement = new Agreement(player, VoidAPI.getPlayer(target), "selldrug", () -> {
                 if (targetData.getBargeld() < price) {
                     target.sendMessage(Component.text(Prefix.ERROR + "Du hast nicht genug Geld dabei."));
                     player.sendMessage(Prefix.MAIN + target.getName() + " hat das Angebot abgelehnt.");
@@ -88,7 +90,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
                     playerData.addMoney(price, "Verkauf drogen");
                     targetData.removeMoney(price, "Ankauf drogen");
                     playerData.getInventory().removeItem(finalDrug.getItem(), amount);
-                    ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " handelt mit " + target.getName());
+                    ChatUtils.sendGrayMessageAtPlayer(player.getPlayer(), player.getName() + " handelt mit " + target.getName());
                 } else {
                     player.sendMessage(Prefix.ERROR + target.getName() + " hat nicht genug Inventarplatz.");
                     target.sendMessage(Prefix.ERROR +"Du hast nicht genug Inventarplatz.");
@@ -97,7 +99,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
                 player.sendMessage(Prefix.MAIN + target.getName() + " hat das Angebot abgelehnt.");
                 target.sendMessage(Prefix.MAIN + "Du hast das Angebot abgelehnt.");
             });
-            utils.vertragUtil.setAgreement(player, target, agreement);
+            utils.vertragUtil.setAgreement(player.getPlayer(), target, agreement);
         } catch (Exception ex) {
             player.sendMessage(Component.text(Prefix.ERROR + "Die Anzahl & der Preis müssen numerisch sein."));
             return;

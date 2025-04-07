@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.LoyaltyBonusTimer;
@@ -32,12 +33,12 @@ public class TreuebonusCommand extends CommandBase implements TabCompleter {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (args.length < 1) {
-            openShop(player, playerData);
+            openShop(player.getPlayer(), playerData);
             return;
         }
-        LoyaltyBonusTimer timer = Main.getInstance().getPlayerManager().getLoyaltyTimer(player.getUniqueId());
+        LoyaltyBonusTimer timer = Main.getInstance().getPlayerManager().getLoyaltyTimer(player.getUuid());
         long diff = Duration.between(timer.getStarted(), Utils.getTime()).toMinutes();
         diff = 120 - diff;
         player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Du erhälst in " + diff + " Minuten deinen Treuebonus."));

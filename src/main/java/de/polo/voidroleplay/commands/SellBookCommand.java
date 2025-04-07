@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import net.kyori.adventure.text.Component;
@@ -23,12 +24,12 @@ public class SellBookCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (playerData.getFactionGrade() < 4) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return;
         }
-        ItemStack stack = player.getInventory().getItemInMainHand();
+        ItemStack stack = player.getPlayer().getInventory().getItemInMainHand();
         if (stack.getType() != Material.WRITTEN_BOOK) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du musst ein Buch in der Hand halten."));
             return;

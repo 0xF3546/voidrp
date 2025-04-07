@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
@@ -8,7 +9,6 @@ import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
-import de.polo.voidroleplay.utils.player.PlayerJoin;
 import de.polo.voidroleplay.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -27,7 +27,6 @@ public class JoinListener implements Listener {
     private final Utils utils;
     private final LocationManager locationManager;
     private final ServerManager serverManager;
-    private PlayerJoin playerJoin;
 
     public JoinListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, LocationManager locationManager, ServerManager serverManager) {
         this.playerManager = playerManager;
@@ -87,5 +86,7 @@ public class JoinListener implements Listener {
         } else {
             Utils.Tablist.setTablist(player, null);
         }
+
+        VoidAPI.addPlayer(player);
     }
 }

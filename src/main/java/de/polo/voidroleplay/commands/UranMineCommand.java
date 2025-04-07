@@ -1,11 +1,13 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.utils.Prefix;
@@ -49,7 +51,7 @@ public class UranMineCommand extends CommandBase implements Listener {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (locationManager.getDistanceBetweenCoords(player, "uranmine") > 5 && locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") > 5) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe der Uranmine."));
             return;
@@ -86,34 +88,34 @@ public class UranMineCommand extends CommandBase implements Listener {
         rollOutMine();
     }
 
-    private void equip(Player player) {
+    private void equip(VoidPlayer player) {
         ItemStack item = new ItemStack(Material.IRON_PICKAXE);
-        player.getInventory().addItem(item);
+        player.getPlayer().getInventory().addItem(item);
     }
 
-    private void removeEquip(Player player) {
-        for (ItemStack item : player.getInventory().getContents()) {
+    private void removeEquip(VoidPlayer player) {
+        for (ItemStack item : player.getPlayer().getInventory().getContents()) {
             if (item == null) continue;
             if (item.getType() != Material.IRON_PICKAXE) continue;
-            player.getInventory().removeItem(item);
+            player.getPlayer().getInventory().removeItem(item);
         }
     }
 
-    private void drop(Player player) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+    private void drop(VoidPlayer player) {
+        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getPlayer());
         if (playerData == null) return;
         if (locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") > 10) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Atomkraftwerks.");
             return;
         }
-        if (ItemManager.getCustomItemCount(player, RoleplayItem.URAN) < 1) {
+        if (ItemManager.getCustomItemCount(player.getPlayer(), RoleplayItem.URAN) < 1) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast kein Uran dabei."));
             return;
         }
-        ItemManager.removeCustomItem(player, RoleplayItem.URAN, 1);
+        ItemManager.removeCustomItem(player.getPlayer(), RoleplayItem.URAN, 1);
         playerData.setVariable("job", null);
         playerData.addMoney(ServerManager.getPayout("uran"), "Urantransport");
-        playerManager.addExp(player, Utils.random(12, 20));
+        playerManager.addExp(player.getPlayer(), Utils.random(12, 20));
         player.sendMessage(Component.text("§8[§cAKW§8]§7 Danke für das Uran! §a+" + ServerManager.getPayout("uran")  + "$"));
     }
 
@@ -141,7 +143,7 @@ public class UranMineCommand extends CommandBase implements Listener {
         player.sendMessage(Component.text(Prefix.MAIN + "Du hast ein Uran abgebaut. Bringe es nun zum Atomkraftwerk"));
         utils.navigationManager.createNavi(player, "Atomkraftwerk", true);
         event.getBlock().setType(Material.STONE);
-        removeEquip(player);
+        removeEquip(VoidAPI.getPlayer(player));
         rollOutMine();
     }
 
@@ -149,6 +151,6 @@ public class UranMineCommand extends CommandBase implements Listener {
     public void onNaviReach(NaviReachEvent event) {
         Player player = event.getPlayer();
         if (!event.getNavi().equalsIgnoreCase("Atomkraftwerk")) return;
-        drop(player);
+        drop(VoidAPI.getPlayer(player));
     }
 }

@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -22,10 +23,10 @@ public class InvCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bInventar");
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §bInventar");
         int i = 0;
-        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() +  " öffnet sein Inventar.");
+        ChatUtils.sendGrayMessageAtPlayer(player.getPlayer(), player.getName() +  " öffnet sein Inventar.");
         for (Drug drug : Drug.values()) {
             PlayerInventoryItem item = playerData.getInventory().getByTypeOrEmpty(drug.getItem());
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(item.getItem().getMaterial(), 1, 0, item.getItem().getDisplayName(), "§8 ➥ §7" + item.getAmount() + " Stück")) {
@@ -36,8 +37,8 @@ public class InvCommand extends CommandBase {
                         return;
                     }
                     playerData.getInventory().removeItem(drug.getItem(), 1);
-                    GamePlay.useDrug(player, drug);
-                    player.closeInventory();
+                    GamePlay.useDrug(player.getPlayer(), drug);
+                    player.getPlayer().closeInventory();
                 }
             });
             i++;

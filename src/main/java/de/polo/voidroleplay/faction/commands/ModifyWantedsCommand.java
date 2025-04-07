@@ -2,6 +2,7 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.handler.TabCompletion;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.enums.WantedVariation;
@@ -32,7 +33,7 @@ public class ModifyWantedsCommand extends CommandBase implements TabCompleter {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (!playerData.isExecutiveFaction()) {
             player.sendMessage(Component.text(Prefix.ERROR_NOPERMISSION));
             return;
@@ -67,7 +68,7 @@ public class ModifyWantedsCommand extends CommandBase implements TabCompleter {
             player.sendMessage(Component.text(Prefix.ERROR + "Der Spieler hat diese Variation bereits."));
             return;
         }
-        factionManager.sendCustomMessageToFactions("§9HQ: " + factionManager.getTitle(player) + " " + player.getName() + " hat " + target.getName() + "'s Wanteds angepasst. Variation: " + variation.getName(), "Polizei", "FBI");
+        factionManager.sendCustomMessageToFactions("§9HQ: " + factionManager.getTitle(player.getPlayer()) + " " + player.getName() + " hat " + target.getName() + "'s Wanteds angepasst. Variation: " + variation.getName(), "Polizei", "FBI");
         targetData.getWanted().addVariationAsync(variation);
     }
 

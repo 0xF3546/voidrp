@@ -5,6 +5,7 @@ import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
@@ -54,7 +55,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (!ServerManager.canDoJobs()) {
             player.sendMessage(Component.text(ServerManager.error_cantDoJobs));
             return;
@@ -63,18 +64,18 @@ public class HochseefischerCommand extends CommandBase implements Listener {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe des Hochseefischers."));
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bHochseefischer", true, true);
-        if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "hochseefischer") && playerData.getVariable("job") == null) {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §bHochseefischer", true, true);
+        if (!Main.getInstance().getCooldownManager().isOnCooldown(player.getPlayer(), "hochseefischer") && playerData.getVariable("job") == null) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHochseefischer starten")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     startJob(player);
-                    player.closeInventory();
+                    player.getPlayer().closeInventory();
                 }
             });
         } else {
             if (playerData.getVariable("job") == null) {
-                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHochseefischer starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "hochseefischer")) + "§7.")) {
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHochseefischer starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player.getPlayer(), "hochseefischer")) + "§7.")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 
@@ -107,27 +108,27 @@ public class HochseefischerCommand extends CommandBase implements Listener {
                 inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + (int) playerData.getVariable("hochseefischer_kg") * ServerManager.getPayout("hochseefischer") + "$")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
-                        player.closeInventory();
-                        quitJob(player, false);
+                        player.getPlayer().closeInventory();
+                        quitJob(player.getPlayer(), false);
                     }
                 });
             }
         }
     }
 
-    private void startJob(Player player) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+    private void startJob(VoidPlayer player) {
+        PlayerData playerData = player.getData();
         if (playerData == null) return;
-        Boat boat = (Boat) player.getWorld().spawnEntity(locationManager.getLocation("hochseefischer_boat_out"), EntityType.BOAT);
-        boat.addPassenger(player);
-        spawnedBoats.put(player, boat);
-        player.sendMessage(Component.text());
+        Boat boat = (Boat) player.getPlayer().getWorld().spawnEntity(locationManager.getLocation("hochseefischer_boat_out"), EntityType.BOAT);
+        boat.addPassenger(player.getPlayer());
+        spawnedBoats.put(player.getPlayer(), boat);
+        player.sendMessage(Component.text("§8[§bHochseefischer§8] §7Du bist nun Hochseefischer!"));
         List<Location> playerLocations = new ObjectArrayList<>();
         playerData.setVariable("job::hochseefischer::locations", playerLocations);
         playerData.setVariable("job", "hochseefischer");
         playerData.setVariable("hochseefischer_kg", 0);
-        Location location = getNearstLocation(player);
-        utils.getNavigationManager().createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
+        Location location = getNearstLocation(player.getPlayer());
+        utils.getNavigationManager().createNaviByCord(player.getPlayer(), (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
     private void quitJob(Player player, boolean silent) {

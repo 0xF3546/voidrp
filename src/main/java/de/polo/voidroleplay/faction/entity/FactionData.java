@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.faction.entity;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.faction.enums.FactionType;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.storage.SubGroup;
 import de.polo.voidroleplay.utils.Utils;
@@ -47,6 +48,9 @@ public class FactionData {
     private int cooperationPartner;
 
     @Getter
+    private final FactionType factionType;
+
+    @Getter
     @Setter
     private int tookOut;
     @Getter
@@ -74,6 +78,10 @@ public class FactionData {
     @Getter
     @Setter
     private int equipPoints;
+
+    public FactionData(FactionType factionType) {
+        this.factionType = factionType;
+    }
 
     @SneakyThrows
     public void loadReasons() {

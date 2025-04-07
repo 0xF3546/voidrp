@@ -1,9 +1,11 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.manager.ItemManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
@@ -25,6 +27,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.polo.voidroleplay.Main.agreementService;
 import static de.polo.voidroleplay.Main.utils;
 
 @CommandBase.CommandMeta(name = "giveprescription", faction = "Medic", usage = "/giverezept [Spieler] [Rezept]")
@@ -35,7 +38,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (playerData.getFactionGrade() < 3) {
             player.sendMessage(Component.text(Prefix.ERROR + "Dieser Befehl geht erst ab Rang 3!"));
             return;
@@ -67,8 +70,9 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
         target.sendMessage("§6" + player.getName() + " ht dir ein Rezept ausgestellt (" + prescription.getName() + ").");
         utils.vertragUtil.sendInfoMessage(target);
         Prescription finalPrescription = prescription;
-        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " stellt ein Rezept aus");
-        Agreement agreement = new Agreement(player, target, "rezept",
+        ChatUtils.sendGrayMessageAtPlayer(player.getPlayer(), player.getName() + " stellt ein Rezept aus");
+        VoidPlayer targetVoidPlayer = VoidAPI.getPlayer(target);
+        Agreement agreement = new Agreement(player, targetVoidPlayer, "rezept",
                 () -> {
                     PlayerData targetData = Main.getInstance().playerManager.getPlayerData(target);
                     if (targetData.getBargeld() < 200) {
@@ -91,7 +95,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
                     target.sendMessage(Component.text("§cDu hast das Angebot abgelehnt."));
                     player.sendMessage(Component.text("§c" + target.getName() + " hat das Angebot abgelehnt."));
                 });
-        utils.vertragUtil.setAgreement(player, target, agreement);
+        agreementService.setAgreement(player, targetVoidPlayer, agreement);
     }
 
 

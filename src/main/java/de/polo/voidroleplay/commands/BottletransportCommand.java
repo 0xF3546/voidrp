@@ -3,6 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -25,7 +26,7 @@ public class BottletransportCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (args.length > 0) {
             if (locationManager.getDistanceBetweenCoords(player, "bar_storage") < 5
                     && playerData.getVariable("job") != null
@@ -39,8 +40,8 @@ public class BottletransportCommand extends CommandBase {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Flaschenlieferants.");
             return;
         }
-        if (Main.getInstance().getCooldownManager().isOnCooldown(player, "job_flaschentransport")) {
-            player.sendMessage(Component.text(PREFIX + "Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "job_flaschentransport"))));
+        if (Main.getInstance().getCooldownManager().isOnCooldown(player.getPlayer(), "job_flaschentransport")) {
+            player.sendMessage(Component.text(PREFIX + "Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player.getPlayer(), "job_flaschentransport"))));
             return;
         }
         if (playerData.getVariable("job") != null) {
@@ -50,26 +51,26 @@ public class BottletransportCommand extends CommandBase {
         startJob(player, playerData);
     }
 
-    private void startJob(Player player, PlayerData playerData) {
+    private void startJob(VoidPlayer player, PlayerData playerData) {
         playerData.setVariable("job", "flaschentransport");
         int amount = Utils.random(2, 4);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + " erhalten, bringe diese in das Lager der Bar."));
-        utils.navigationManager.createNaviByLocation(player, "bar_storage");
+        utils.navigationManager.createNaviByLocation(player.getPlayer(), "bar_storage");
         playerData.setVariable("job::flaschentransport::amount", amount);
     }
 
-    private void drop(Player player, PlayerData playerData) {
+    private void drop(VoidPlayer player, PlayerData playerData) {
         int boxPrice = Utils.random(ServerManager.getPayout("flaschenlieferant_kiste_from"), ServerManager.getPayout("flaschenlieferant_kiste_to"));
         int amount = playerData.getVariable("job::flaschentransport::amount");
         if (amount <= 0) return;
         player.sendMessage(Component.text(PREFIX + "§aDu hast eine Kiste abgegeben. §a+" + boxPrice + "$"));
         playerData.setVariable("job::flaschentransport::amount", amount - 1);
         playerData.addMoney(boxPrice, "Kiste Flaschenlieferant");
-        playerManager.addExp(player, Utils.random(6, 10));
+        playerManager.addExp(player.getPlayer(), Utils.random(6, 10));
         if (amount == 1) {
             playerData.setVariable("job", null);
             playerData.setVariable("job::flaschentransport::amount", 0);
-            Main.getInstance().getCooldownManager().setJobCooldown(player, "flaschentransport", 360);
+            Main.getInstance().getCooldownManager().setJobCooldown(player.getPlayer(), "flaschentransport", 360);
             player.sendMessage(PREFIX + "Du hast den Job beendet.");
         }
     }

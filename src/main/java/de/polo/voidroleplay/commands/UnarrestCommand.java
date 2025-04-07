@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import net.kyori.adventure.text.Component;
@@ -26,7 +27,7 @@ public class UnarrestCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (args.length < 1) {
             showSyntax(player);
             return;
@@ -45,9 +46,9 @@ public class UnarrestCommand extends CommandBase {
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = Main.getInstance().getPlayerManager().getPlayerData(players.getUniqueId());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                players.sendMessage("§8[§cGefängnis§8] §6" + Main.getInstance().factionManager.getTitle(player) + " " + player.getName() + " hat " + target.getName() + " entlassen.");
+                players.sendMessage("§8[§cGefängnis§8] §6" + Main.getInstance().factionManager.getTitle(player.getPlayer()) + " " + player.getName() + " hat " + target.getName() + " entlassen.");
             }
         }
-        player.closeInventory();
+        player.getPlayer().closeInventory();
     }
 }

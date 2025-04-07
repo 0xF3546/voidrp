@@ -1,14 +1,15 @@
 package de.polo.voidroleplay.storage;
 
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
 public class Agreement {
     @Getter
-    private final Player contractor;
+    private final VoidPlayer contractor;
 
     @Getter
-    private final Player contracted;
+    private final VoidPlayer contracted;
 
     @Getter
     private final String type;
@@ -19,7 +20,7 @@ public class Agreement {
     @Getter
     private final AgreementCallback denyCallback;
 
-    public Agreement(Player contractor, Player contracted, String type, AgreementCallback callback, AgreementCallback denyCallback) {
+    public Agreement(VoidPlayer contractor, VoidPlayer contracted, String type, AgreementCallback callback, AgreementCallback denyCallback) {
         this.contractor = contractor;
         this.contracted = contracted;
         this.type = type;

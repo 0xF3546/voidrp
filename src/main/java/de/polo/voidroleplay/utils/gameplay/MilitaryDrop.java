@@ -2,6 +2,7 @@ package de.polo.voidroleplay.utils.gameplay;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.enums.FactionType;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
@@ -59,7 +60,7 @@ public class MilitaryDrop implements Listener {
 
     public void start() {
         ACTIVE = true;
-        staat = new FactionData();
+        staat = new FactionData(FactionType.GOVERNMENT);
         staat.setFullname("Staat");
         staat.setName("Staat");
         staat.setPrimaryColor("9");

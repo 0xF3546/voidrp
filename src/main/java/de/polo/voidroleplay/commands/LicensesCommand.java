@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.player.enums.License;
 import net.kyori.adventure.text.Component;
@@ -19,7 +20,7 @@ public class LicensesCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         player.sendMessage(Component.text("§7   ===§8[§6Lizenzen§8]§7==="));
         for (License license : License.values()) {
             player.sendMessage(Component.text("§8 ➥ §e" + license.getName() + "§8: " + (playerData.hasLicense(license) ? "§aVorhanden" : "§cNicht Vorhanden")));

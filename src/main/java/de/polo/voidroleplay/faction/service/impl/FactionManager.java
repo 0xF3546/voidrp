@@ -5,6 +5,7 @@ import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.faction.entity.FactionData;
 import de.polo.voidroleplay.faction.entity.FactionGradeData;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
+import de.polo.voidroleplay.faction.enums.FactionType;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.*;
@@ -83,7 +84,7 @@ public class FactionManager {
                 "LEFT JOIN faction_upgrades AS fu ON f.id  = fu.factionId " +
                 "LEFT JOIN faction_equip AS fe ON f.id = fe.factionId");
         while (locs.next()) {
-            FactionData factionData = new FactionData();
+            FactionData factionData = new FactionData(FactionType.valueOf(locs.getString("type")));
             factionData.setId(locs.getInt("id"));
             factionData.setName(locs.getString("name"));
             factionData.setChatColor(ChatColor.valueOf(locs.getString("chatColor")));

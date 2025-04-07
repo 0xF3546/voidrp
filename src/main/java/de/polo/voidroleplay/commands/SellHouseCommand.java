@@ -1,9 +1,11 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.Agreement;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
@@ -35,7 +37,7 @@ public class SellHouseCommand extends CommandBase {
     }
 
     @Override
-    public void execute(@NotNull Player player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (playerData.getLongTermJob() != LongTermJob.REAL_ESTATE_BROKER) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist kein Makler."));
             return;
@@ -90,7 +92,7 @@ public class SellHouseCommand extends CommandBase {
         int centerX = player.getLocation().getBlockX();
         int centerY = player.getLocation().getBlockY();
         int centerZ = player.getLocation().getBlockZ();
-        World world = player.getWorld();
+        World world = player.getLocation().getWorld();
         for (int x = centerX - 6; x <= centerX + 6; x++) {
             for (int y = centerY - 6; y <= centerY + 6; y++) {
                 for (int z = centerZ - 6; z <= centerZ + 6; z++) {
@@ -120,7 +122,7 @@ public class SellHouseCommand extends CommandBase {
                                 owner.sendMessage(Component.text("§8[§6Haus " + houseNumber + "§8]§7 Makler " + player.getName() + " möchte dein Haus für " + Utils.toDecimalFormat(price) + "$ an " + target.getName() + " verkaufen."));
                                 utils.vertragUtil.sendInfoMessage(owner);
                                 target.sendMessage(Component.text("§8[§6Haus " + houseNumber + "§8]§7 Makler " + player.getName() + " ein Haus von " + target.getName() + " für " + Utils.toDecimalFormat(price) + "$ an dich verkaufen."));
-                                Agreement agreement = new Agreement(target, owner, "housebuy",
+                                Agreement agreement = new Agreement(VoidAPI.getPlayer(target), VoidAPI.getPlayer(owner), "housebuy",
                                         () -> {
                                             PlayerData ownerData = playerManager.getPlayerData(owner);
                                             int maklerPrice = (int) (price * 0.005);
