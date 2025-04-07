@@ -321,7 +321,7 @@ public class ServerManager {
                     if (playerData == null) continue;
                     if (playerData.isDead()) {
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
-                        utils.sendActionBar(players, "§cDu bist noch " + Main.getTime(playerData.getDeathTime()) + " bewusstlos.");
+                        utils.sendActionBar(players, "§cDu bist noch " + Utils.getTime(playerData.getDeathTime()) + " bewusstlos.");
                         if (playerData.getDeathTime() <= 0) {
                             Main.getInstance().utils.deathUtil.despawnPlayer(players);
                         }

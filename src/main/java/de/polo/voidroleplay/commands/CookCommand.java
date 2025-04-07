@@ -4,10 +4,10 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.CookTimer;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
-import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.command.Command;
@@ -95,9 +95,9 @@ public class CookCommand implements CommandExecutor, Listener {
                 continue;
             }
             playerData.getInventory().removeItem(RoleplayItem.SCHMERZMITTEL, 10);
-            playerData.getInventory().addItem(RoleplayItem.CRYSTAL, Main.random(8, 13));
+            playerData.getInventory().addItem(RoleplayItem.CRYSTAL, Utils.random(8, 13));
             timer.getPlayer().sendMessage(Prefix.MAIN + "Das kochen wurde beendet.");
-            playerManager.addExp(timer.getPlayer(), Main.random(80, 130));
+            playerManager.addExp(timer.getPlayer(), Utils.random(80, 130));
             iterator.remove();
         }
     }

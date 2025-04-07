@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,8 +37,8 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
                 playerData.setVariable("job", "lieferant");
                 player.sendMessage(prefix + "Du bist nun §aLebensmittel-Lieferant§7.");
                 player.sendMessage(prefix + "Bringe die Lebensmittel zu einem Shop deiner Wahl!");
-                playerData.setIntVariable("snacks", Main.random(3, 7));
-                playerData.setIntVariable("drinks", Main.random(3, 7));
+                playerData.setIntVariable("snacks", Utils.random(3, 7));
+                playerData.setIntVariable("drinks", Utils.random(3, 7));
                     /*Scoreboard scoreboard = new Scoreboard(player);
                     scoreboard.createLebensmittelLieferantenScoreboard();
                     playerData.setScoreboard("lebensmittellieferant", scoreboard);*/

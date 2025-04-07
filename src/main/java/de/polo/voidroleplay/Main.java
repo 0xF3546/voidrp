@@ -39,13 +39,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 public final class Main extends JavaPlugin {
 
@@ -109,31 +106,6 @@ public final class Main extends JavaPlugin {
         if (cmd != null) {
             cmd.setTabCompleter(c);
         }
-    }
-
-    public static int random(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max + 1);
-    }
-
-    public static char getRandomChar(String characters) {
-        Random random = new Random();
-        int index = random.nextInt(characters.length());
-        return characters.charAt(index);
-    }
-
-    public static void waitSeconds(int seconds, Runnable runnable) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                runnable.run();
-            }
-        }.runTaskLater(getInstance(), seconds * 20L);
-    }
-
-    public static String getTime(int seconds) {
-        int minutes = seconds / 60;
-        int sec = seconds % 60;
-        return minutes + " Minuten & " + sec + " Sekunden";
     }
 
     @Override

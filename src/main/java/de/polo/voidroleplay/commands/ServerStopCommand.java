@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,17 +22,17 @@ public class ServerStopCommand implements CommandExecutor {
             return false;
         }
         Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 15 Sekunden neu!");
-        Main.waitSeconds(5, () -> {
+        Utils.waitSeconds(5, () -> {
             Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 10 Sekunden neu!");
-            Main.waitSeconds(5, () -> {
+            Utils.waitSeconds(5, () -> {
                 Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 5 Sekunden neu!");
-                Main.waitSeconds(2, () -> {
+                Utils.waitSeconds(2, () -> {
                     Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 3 Sekunden neu!");
-                    Main.waitSeconds(1, () -> {
+                    Utils.waitSeconds(1, () -> {
                         Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 2 Sekunden neu!");
-                        Main.waitSeconds(1, () -> {
+                        Utils.waitSeconds(1, () -> {
                             Bukkit.broadcastMessage("§8[§cRestart§8]§c Der Server startet in 1 Sekunden neu!");
-                            Main.waitSeconds(1, () -> {
+                            Utils.waitSeconds(1, () -> {
                                 Bukkit.broadcastMessage("§8[§cReload§8]§c Der Server stoppt jetzt!");
                                 Bukkit.shutdown();
                             });

@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -49,7 +50,7 @@ public class PostboteCommand implements CommandExecutor {
                     });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "postbote")) + "§7.")) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "postbote")) + "§7.")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
 
@@ -115,7 +116,7 @@ public class PostboteCommand implements CommandExecutor {
 
     public void startTransport(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setIntVariable("post", Main.random(2, 5));
+        playerData.setIntVariable("post", Utils.random(2, 5));
         playerData.setVariable("job", "Postbote");
         /*Scoreboard scoreboard = new Scoreboard(player);
         scoreboard.createPostboteScoreboard();*/
@@ -126,10 +127,10 @@ public class PostboteCommand implements CommandExecutor {
 
     public void dropTransport(Player player, int house) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        int payout = Main.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
+        int payout = Utils.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
         player.sendMessage("§8[§ePostbote§8]§7 Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");
         SoundManager.successSound(player);
-        playerManager.addExp(player, Main.random(1, 3));
+        playerManager.addExp(player, Utils.random(1, 3));
         playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
         Main.getInstance().seasonpass.didQuest(player, 3);
         //playerData.getScoreboard("postbote").updatePostboteScoreboard();
@@ -146,6 +147,6 @@ public class PostboteCommand implements CommandExecutor {
         }
         array.add(house);
         player.closeInventory();
-        Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
+        Utils.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,8 +61,8 @@ public class TaufeCommand implements CommandExecutor {
         }
         targetData.setBaptized(true);
         targetData.save();
-        playerManager.addExp(target, Main.random(100, 200));
-        playerManager.addExp(player, Main.random(10, 30));
+        playerManager.addExp(target, Utils.random(100, 200));
+        playerManager.addExp(player, Utils.random(10, 30));
         player.sendMessage(Prefix.MAIN + "Du hast " + targetData.getFirstname() + " " + targetData.getLastname() + " getauft.");
         target.sendMessage(Prefix.MAIN + factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()) + " " + playerData.getFirstname() + " " + playerData.getLastname() + " hat dich getauft.");
         return false;

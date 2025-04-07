@@ -6,6 +6,7 @@ import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.GlobalStats;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
@@ -197,7 +198,7 @@ public class MilitaryDrop implements Listener {
             sendRankingListToPlayers();
             sendMessage("§8[§cMilitärabsturz§8]§f Die Fraktion " + winner.getFullname() + " haben die Runde gewonnen!");
             isRoundActive = false;
-            Main.waitSeconds(5, this::startRound);
+            Utils.waitSeconds(5, this::startRound);
         }
     }
 

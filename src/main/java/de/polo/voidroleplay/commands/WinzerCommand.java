@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.*;
@@ -51,7 +52,7 @@ public class WinzerCommand implements CommandExecutor {
                     });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mWinzer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "winzer")) + "§7.")) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mWinzer starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "winzer")) + "§7.")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
 
@@ -114,8 +115,8 @@ public class WinzerCommand implements CommandExecutor {
             return;
         }
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§5Rebstock", true, true);
-        for (int i = 0; i < Main.random(10, 15); i++) {
-            inventoryManager.setItem(new CustomItem(Main.random(0, 53), ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5Weintraube")) {
+        for (int i = 0; i < Utils.random(10, 15); i++) {
+            inventoryManager.setItem(new CustomItem(Utils.random(0, 53), ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5Weintraube")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     ItemStack item = event.getCurrentItem();
@@ -144,7 +145,7 @@ public class WinzerCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
         Main.getInstance().seasonpass.didQuest(player, 9);
         playerData.setIntVariable("winzer", playerData.getIntVariable("winzer") - 1);
-        playerData.setIntVariable("winzer_harvested", playerData.getIntVariable("winzer_harvested") + Main.random(1, 3));
+        playerData.setIntVariable("winzer_harvested", playerData.getIntVariable("winzer_harvested") + Utils.random(1, 3));
         if (playerData.getIntVariable("winzer") == 0) {
             player.sendMessage("§8[§5Winzer§8]§7 Du hast alle Weinreben abgeerntet, kehre nun zum Winzer zurück.");
             return;
@@ -205,7 +206,7 @@ public class WinzerCommand implements CommandExecutor {
             player.getInventory().addItem(ItemManager.createItem(Material.SHEARS, 1, 0, "§5Werkzeug"));
             findGrapevine(player);
         } else {
-            player.sendMessage("§8[§5Winzer§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "winzer")) + "§7 beginnen.");
+            player.sendMessage("§8[§5Winzer§8]§7 Du kannst den Job erst in §f" + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "winzer")) + "§7 beginnen.");
         }
     }
 
@@ -216,7 +217,7 @@ public class WinzerCommand implements CommandExecutor {
         int payout = ServerManager.getPayout("winzer") * playerData.getIntVariable("winzer_harvested");
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
-        if (playerData.getIntVariable("winzer") <= 0) playerManager.addExp(player, Main.random(12, 20));
+        if (playerData.getIntVariable("winzer") <= 0) playerManager.addExp(player, Utils.random(12, 20));
         //playerData.getScoreboard("winzer").killScoreboard();
         player.closeInventory();
         try {

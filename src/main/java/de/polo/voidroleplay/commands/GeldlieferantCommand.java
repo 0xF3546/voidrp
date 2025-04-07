@@ -33,7 +33,7 @@ public class GeldlieferantCommand extends CommandBase {
             return;
         }
         if (Main.getInstance().getCooldownManager().isOnCooldown(player, "job_geldlieferant")) {
-            player.sendMessage(Component.text(PREFIX + "Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "job_geldlieferant"))));
+            player.sendMessage(Component.text(PREFIX + "Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "job_geldlieferant"))));
             return;
         }
         if (playerData.getVariable("job") != null) {
@@ -45,7 +45,7 @@ public class GeldlieferantCommand extends CommandBase {
 
     private void startJob(Player player, PlayerData playerData) {
         playerData.setVariable("job", "geldlieferant");
-        int amount = Main.random(6000, 8000);
+        int amount = Utils.random(6000, 8000);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + "$ erhalten, fülle damit Geldautomaten auf."));
         playerData.setVariable("job::geldlieferant::amount", amount);
     }
@@ -66,7 +66,7 @@ public class GeldlieferantCommand extends CommandBase {
             int depositAmount = Math.min(amount, diff);
 
             int payoutMultiplier = depositAmount / 1000;
-            int payout = Main.random(ServerManager.getPayout("geldlieferant_1000_from"), ServerManager.getPayout("geldlieferant_1000_to"));
+            int payout = Utils.random(ServerManager.getPayout("geldlieferant_1000_from"), ServerManager.getPayout("geldlieferant_1000_to"));
             payout = payout * payoutMultiplier;
 
             playerData.addMoney(payout, "Geldlieferant");
@@ -89,7 +89,7 @@ public class GeldlieferantCommand extends CommandBase {
     private static void finishJob(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         playerData.setVariable("job", null);
-        playerManager.addExp(player, Main.random(12, 24));
+        playerManager.addExp(player, Utils.random(12, 24));
         Main.getInstance().getCooldownManager().setJobCooldown(player, "geldlieferant", 360);
     }
 }

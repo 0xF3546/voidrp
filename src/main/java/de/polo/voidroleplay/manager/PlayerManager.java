@@ -89,10 +89,10 @@ public class PlayerManager implements Listener {
 
     private PlaytimeReward getRandomPlaytimeReward(PlayerData playerData) {
         List<PlaytimeReward> randomRewards = playtimeRewards;
-        if (Main.random(1, 3) == 3 && playerData.getPermlevel() >= 20) {
+        if (Utils.random(1, 3) == 3 && playerData.getPermlevel() >= 20) {
             randomRewards = randomRewards.stream().filter(PlaytimeReward::isPremiumOnly).collect(Collectors.toList());
         }
-        return randomRewards.get(Main.random(0, randomRewards.size() - 1));
+        return randomRewards.get(Utils.random(0, randomRewards.size() - 1));
     }
 
     public PlaytimeReward getPlaytimeReward(int id) {
@@ -271,7 +271,7 @@ public class PlayerManager implements Listener {
 
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");
-                    Main.waitSeconds(1, () -> {
+                    Utils.waitSeconds(1, () -> {
                         InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
                         playerData.setVariable("originClass", this);
                         inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
@@ -649,7 +649,7 @@ public class PlayerManager implements Listener {
                 player.setWalkSpeed(0);
                 player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
                 player.setFlying(false);
-                Main.waitSeconds(2, () -> {
+                Utils.waitSeconds(2, () -> {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0, true, false));
                     player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -12, true, false));
                 });
@@ -798,7 +798,7 @@ public class PlayerManager implements Listener {
                         int auction = 0;
                         try {
                             if (Integer.parseInt(GlobalStats.getValue("auction")) == factionData.getId()) {
-                                auction = Main.random(250, 500);
+                                auction = Utils.random(250, 500);
                                 plus = plus + auction;
                             }
                         } catch (Exception ignored) {
@@ -926,10 +926,10 @@ public class PlayerManager implements Listener {
             mySQL.updateAsync("UPDATE players SET level = ?, exp = ? WHERE uuid = ?", playerData.getLevel(), playerData.getExp(), player.getUniqueId().toString());
         } else {
             if (playerData.getBoostDuration() == null) {
-                player.sendMessage("§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
-                utils.sendActionBar(player, "§" + Main.getRandomChar(characters) + "+" + exp + " EXP");
+                player.sendMessage("§" + Utils.getRandomChar(characters) + "+" + exp + " EXP");
+                utils.sendActionBar(player, "§" + Utils.getRandomChar(characters) + "+" + exp + " EXP");
             } else {
-                player.sendMessage("§" + Main.getRandomChar(characters) + "§l+" + exp + " EXP (2x)");
+                player.sendMessage("§" + Utils.getRandomChar(characters) + "§l+" + exp + " EXP (2x)");
                 utils.sendActionBar(player, "§l+" + exp + " EXP (2x)");
             }
             player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);

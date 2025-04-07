@@ -3,22 +3,13 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
-import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -92,7 +83,7 @@ public class CatchFishCommand extends CommandBase implements Listener {
 
     private void caughtFish(Player player) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
-        int random = Main.random(10, 20);
+        int random = Utils.random(10, 20);
         playerData.setVariable("hochseefischer_kg", (int) playerData.getVariable("hochseefischer_kg") + random);
         player.sendMessage(PREFIX + "Du hast §6" + random + "kg§7 Fisch gefangen.");
         Location location = HochseefischerCommand.getNearstLocation(player);

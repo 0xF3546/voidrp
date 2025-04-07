@@ -5,6 +5,7 @@ import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.ServerManager;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.LocationData;
@@ -73,7 +74,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
             });
         } else {
             if (playerData.getVariable("job") == null) {
-                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHochseefischer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "hochseefischer")) + "§7.")) {
+                inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHochseefischer starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "hochseefischer")) + "§7.")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
 

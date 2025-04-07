@@ -7,6 +7,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.AdminManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,13 +40,13 @@ public class PlayerVoteListener implements Listener {
         if (player.isOnline()) {
             PlayerData playerData = playerManager.getPlayerData(player);
             player.sendMessage(Prefix.MAIN + "§6§lDanke§7 für deinen Vote!");
-            playerManager.addExp(player, Main.random(30, 50));
+            playerManager.addExp(player, Utils.random(30, 50));
             votes.putIfAbsent(player.getUniqueId(), 1);
             if (votes.get(player.getUniqueId()) > 2) {
                 return;
             }
             votes.replace(player.getUniqueId(), votes.get(player.getUniqueId()) + 1);
-            playerManager.addCoins(player, Main.random(10, 13));
+            playerManager.addCoins(player, Utils.random(10, 13));
             playerData.setVotes(playerData.getVotes() + 1);
             PreparedStatement preparedStatement = Main.getInstance().mySQL.getConnection().prepareStatement("UPDATE players SET votes = ? WHERE uuid = ?");
             preparedStatement.setInt(1, playerData.getVotes());

@@ -52,7 +52,7 @@ public class ArrestCommand implements CommandExecutor {
                                         return false;
                                     }
                                     player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
-                                    playerManager.addExp(player, Main.random(15, 44));
+                                    playerManager.addExp(player, Utils.random(15, 44));
                                     playerManager.setPlayerMove(targetplayer, true);
                                     targetPlayerData.setCuffed(false);
                                     player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));

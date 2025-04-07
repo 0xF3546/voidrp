@@ -15,14 +15,8 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 /**
@@ -112,24 +106,24 @@ public class Drop {
         cleanup();
         player.sendMessage("§7   ===§8[§cDrop§8]§7===");
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
-        int snuff = Main.random(0, 20);
+        int snuff = Utils.random(0, 20);
         if (snuff > 0) {
             playerData.getInventory().addItem(RoleplayItem.SNUFF, snuff);
             player.sendMessage("§8 - " + snuff + "x " + RoleplayItem.SNUFF.getDisplayName());
         }
-        int cigar = Main.random(0, 20);
+        int cigar = Utils.random(0, 20);
         if (cigar > 0) {
             playerData.getInventory().addItem(RoleplayItem.CIGAR, cigar);
             player.sendMessage("§8 - " + cigar + "x " + RoleplayItem.CIGAR.getDisplayName());
         }
 
-        boolean kevlar = Main.random(0, 4) == 1;
+        boolean kevlar = Utils.random(0, 4) == 1;
         if (kevlar) {
             ItemManager.addCustomItem(player, RoleplayItem.BULLETPROOF, 1);
             player.sendMessage("§8 - " + RoleplayItem.BULLETPROOF.getDisplayName());
         }
 
-        boolean heavy_kevlar = Main.random(0, 8) == 1;
+        boolean heavy_kevlar = Utils.random(0, 8) == 1;
         if (!kevlar && heavy_kevlar) {
             ItemManager.addCustomItem(player, RoleplayItem.HEAVY_BULLETPROOF, 1);
             player.sendMessage("§8 - " + RoleplayItem.HEAVY_BULLETPROOF.getDisplayName());

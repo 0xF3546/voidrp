@@ -152,8 +152,8 @@ public class PlayerInteractListener implements Listener {
                     if (found >= total) {
                         playerData.setVariable("event::endTime", Utils.getTime());
                         long diff = Duration.between(playerData.getVariable("event::startTime"), playerData.getVariable("event::endTime")).toSeconds();
-                        player.sendMessage("§8[§cWeihnachten§8]§a Du hast alle Geschenke in " + Main.getTime((int) diff) + " gefunden!");
-                        playerManager.addExp(player, Main.random(100, 200));
+                        player.sendMessage("§8[§cWeihnachten§8]§a Du hast alle Geschenke in " + Utils.getTime((int) diff) + " gefunden!");
+                        playerManager.addExp(player, Utils.random(100, 200));
                     }
                 }
                 if (event.getClickedBlock().getType().toString().contains("BANNER")) {
@@ -202,7 +202,7 @@ public class PlayerInteractListener implements Listener {
 
                                     player.sendMessage("§8[§bBanner§8]§7 Du hast den Banner §3" + block.getInfoValue() + "§7 übersprüht!");
                                     factionManager.updateBanner(block, factionData);
-                                    playerManager.addExp(player, Main.random(5, 10));
+                                    playerManager.addExp(player, Utils.random(5, 10));
                                 }
                             });
                         }
@@ -302,8 +302,8 @@ public class PlayerInteractListener implements Listener {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mülleimer")) {
                         Main.getInstance().getCooldownManager().setCooldown(player, "mülleimer", 30);
                         InventoryManager inventoryManager = new InventoryManager(player, 9, "§7Mülleimer", false, false);
-                        for (int i = 0; i < Main.random(3, 4); i++) {
-                            inventoryManager.setItem(new CustomItem(Main.random(0, 8), ItemManager.createItem(items[new Random().nextInt(items.length)], 1, 0, new ItemStack(items[new Random().nextInt(items.length)]).getItemMeta().getDisplayName())) {
+                        for (int i = 0; i < Utils.random(3, 4); i++) {
+                            inventoryManager.setItem(new CustomItem(Utils.random(0, 8), ItemManager.createItem(items[new Random().nextInt(items.length)], 1, 0, new ItemStack(items[new Random().nextInt(items.length)]).getItemMeta().getDisplayName())) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
 
@@ -580,7 +580,7 @@ public class PlayerInteractListener implements Listener {
                 ItemStack itemStack = event.getItem();
                 itemStack.setAmount(itemStack.getAmount() - 1);
                 if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
-                playerManager.addExp(player, Main.random(50, 100));
+                playerManager.addExp(player, Utils.random(50, 100));
             } else if (event.getItem().getItemMeta().getDisplayName().equals(RoleplayItem.PIPE.getDisplayName())) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
                 inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, RoleplayItem.BOX_WITH_JOINTS.getDisplayName(), "§8 ➥ §aVerpacke 3 Joints in einer Kiste.")) {

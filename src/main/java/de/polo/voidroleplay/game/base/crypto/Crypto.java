@@ -2,6 +2,7 @@ package de.polo.voidroleplay.game.base.crypto;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
+import de.polo.voidroleplay.utils.Utils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ import java.sql.ResultSet;
 public class Crypto implements Listener {
 
     @Getter
-    private float price = Main.random(1, 200);
+    private float price = Utils.random(1, 200);
 
     public Crypto() {
         updatePrice();
@@ -64,6 +65,6 @@ public class Crypto implements Listener {
 
     @EventHandler
     public void onMinute(MinuteTickEvent event) {
-        if (Main.random(0, 60) == event.getMinute()) updatePrice();
+        if (Utils.random(0, 60) == event.getMinute()) updatePrice();
     }
 }

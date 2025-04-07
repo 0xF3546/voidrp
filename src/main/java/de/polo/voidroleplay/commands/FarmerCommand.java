@@ -63,7 +63,7 @@ public class FarmerCommand implements CommandExecutor {
                     });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7.")) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7.")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
 
@@ -77,7 +77,7 @@ public class FarmerCommand implements CommandExecutor {
                                 player.closeInventory();
                             }
                         });*/
-                        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7.")) {
+                        inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7.")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
 
@@ -145,7 +145,7 @@ public class FarmerCommand implements CommandExecutor {
         int payout = ServerManager.getPayout("heuballen") * playerData.getIntVariable("heuballen");
         player.sendMessage("§8[§eFarmer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
-        if (playerData.getIntVariable("heuballen_remaining") <= 0) playerManager.addExp(player, Main.random(12, 20));
+        if (playerData.getIntVariable("heuballen_remaining") <= 0) playerManager.addExp(player, Utils.random(12, 20));
         //playerData.getScoreboard("farmer").killScoreboard();
         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
         try {
@@ -168,7 +168,7 @@ public class FarmerCommand implements CommandExecutor {
             }
             block.setType(Material.AIR);
             playerData.setIntVariable("heuballen_remaining", playerData.getIntVariable("heuballen_remaining") - 1);
-            int amount = Main.random(2, 4);
+            int amount = Utils.random(2, 4);
             playerData.setIntVariable("heuballen", playerData.getIntVariable("heuballen") + amount);
             player.sendMessage("§8[§eFarmer§8]§7 +" + amount + " Heuballen");
             // playerData.getScoreboard("farmer").updateFarmerScoreboard();
@@ -196,13 +196,13 @@ public class FarmerCommand implements CommandExecutor {
             //     playerData.setScoreboard("farmer", scoreboard);
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 0, true, false));
         } else {
-            player.sendMessage("§8[§eFarmer§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
+            player.sendMessage("§8[§eFarmer§8]§7 Du kannst den Job erst in §f" + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
         }
     }
 
     public void startTransport(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setIntVariable("weizen", Main.random(2, 5));
+        playerData.setIntVariable("weizen", Utils.random(2, 5));
         playerData.setVariable("job", "weizenlieferant");
         //    Scoreboard scoreboard = new Scoreboard(player);
         //    scoreboard.createWeizentransportScoreboard();
@@ -215,10 +215,10 @@ public class FarmerCommand implements CommandExecutor {
     public void dropTransport(Player player) {
         if (locationManager.getDistanceBetweenCoords(player, "Mühle") < 5) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            int payout = Main.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));
+            int payout = Utils.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));
             player.sendMessage("§8[§eLieferant§8]§7 Danke für's abliefern. §a+" + payout + "$");
             SoundManager.successSound(player);
-            playerManager.addExp(player, Main.random(1, 3));
+            playerManager.addExp(player, Utils.random(1, 3));
             playerData.setIntVariable("weizen", playerData.getIntVariable("weizen") - 1);
             //     playerData.getScoreboard("weizen").updateWeizentransportScoreboard();
             try {

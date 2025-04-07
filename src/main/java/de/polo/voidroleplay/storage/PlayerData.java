@@ -463,7 +463,7 @@ public class PlayerData {
     public boolean addClickedBlock(RegisteredBlock block) {
         if (clickedEventBlocks.stream().anyMatch(b -> b.getBlockId() == block.getId())) return false;
         if (clickedEventBlocks.size() == 0) setVariable("event::startTime", Utils.getTime());
-        playerManager.addExp(player, Main.random(10, 20));
+        playerManager.addExp(player, Utils.random(10, 20));
         ClickedEventBlock clickedEventBlock = new ClickedEventBlock(block.getId());
         clickedEventBlocks.add(clickedEventBlock);
         Connection connection = Main.getInstance().mySQL.getConnection();

@@ -39,7 +39,7 @@ public class Dealer implements IDealer {
     private LocalDateTime lastAttack = Utils.getTime();
 
     public Dealer() {
-        this.price = Main.random(1300, 1600);
+        this.price = Utils.random(1300, 1600);
     }
 
     public String getOwner() {

@@ -6,6 +6,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -57,7 +58,7 @@ public class DropCommand implements CommandExecutor {
             return;
         }
         FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        int amount = Main.random(100, 150);
+        int amount = Utils.random(100, 150);
         playerData.setVariable("job", null);
         factionData.setEquipPoints(factionData.getEquipPoints() + amount);
         factionManager.sendCustomMessageToFaction(playerData.getFaction(), "§8[§6Equip§8]§7 " + player.getName() + " hat das Lager aufgefüllt. (§6+" + amount + "§7, L: §6" + factionData.getEquipPoints() + "§7)");

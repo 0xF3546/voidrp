@@ -9,6 +9,7 @@ import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
@@ -74,7 +75,7 @@ public class UranMineCommand extends CommandBase implements Listener {
     }
 
     private void rollOutMine() {
-        Location randomLocation = rollOutLocations.get(Main.random(0, rollOutLocations.size()));
+        Location randomLocation = rollOutLocations.get(Utils.random(0, rollOutLocations.size()));
         randomLocation.getBlock().setType(Material.EMERALD_ORE);
     }
 
@@ -112,7 +113,7 @@ public class UranMineCommand extends CommandBase implements Listener {
         ItemManager.removeCustomItem(player, RoleplayItem.URAN, 1);
         playerData.setVariable("job", null);
         playerData.addMoney(ServerManager.getPayout("uran"), "Urantransport");
-        playerManager.addExp(player, Main.random(12, 20));
+        playerManager.addExp(player, Utils.random(12, 20));
         player.sendMessage(Component.text("§8[§cAKW§8]§7 Danke für das Uran! §a+" + ServerManager.getPayout("uran")  + "$"));
     }
 

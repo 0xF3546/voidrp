@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -49,7 +50,7 @@ public class MuellmannCommand implements CommandExecutor {
                     });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "müllmann")) + "§7.")) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "müllmann")) + "§7.")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
 
@@ -116,7 +117,7 @@ public class MuellmannCommand implements CommandExecutor {
 
     public void startTransport(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setIntVariable("muell", Main.random(2, 5));
+        playerData.setIntVariable("muell", Utils.random(2, 5));
         playerData.setIntVariable("muellkg", 0);
         playerData.setVariable("job", "Müllmann");
         /*Scoreboard scoreboard = new Scoreboard(player);
@@ -130,12 +131,12 @@ public class MuellmannCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.sendMessage("§8[§9Müllmann§8]§7 Du den Müll von §6Haus " + house + "§7 entleert.");
         SoundManager.successSound(player);
-        playerManager.addExp(player, Main.random(1, 3));
+        playerManager.addExp(player, Utils.random(1, 3));
         playerData.setIntVariable("muell", playerData.getIntVariable("muell") - 1);
-        playerData.setIntVariable("muellkg", playerData.getIntVariable("muellkg") + Main.random(1, 4));
+        playerData.setIntVariable("muellkg", playerData.getIntVariable("muellkg") + Utils.random(1, 4));
         //playerData.getScoreboard("müllmann").updateMuellmannScoreboard();
         if (playerData.getIntVariable("muell") <= 0) {
-            int payout = Main.random(ServerManager.getPayout("muellmann"), ServerManager.getPayout("muellmann2")) * playerData.getIntVariable("muellkg");
+            int payout = Utils.random(ServerManager.getPayout("muellmann"), ServerManager.getPayout("muellmann2")) * playerData.getIntVariable("muellkg");
             player.sendMessage("§8[§9Müllmann§8]§7 Du hast alles eingesammelt. Danke! §a+" + payout + "$");
             playerData.setVariable("job", null);
             quitJob(player, true);
@@ -148,6 +149,6 @@ public class MuellmannCommand implements CommandExecutor {
         }
         array.add(house);
         player.closeInventory();
-        Main.waitSeconds(1800, () -> array.removeIf(number -> number == house));
+        Utils.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

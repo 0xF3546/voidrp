@@ -117,7 +117,7 @@ public class PlantFunctions implements Listener {
                     player.closeInventory();
                     if ((plant.getYield() >= 10 || diff >= 10 )&& !plant.isReceivedXP()) {
                         plant.setReceivedXP(true);
-                        playerManager.addExp(player, Main.random(5, 20));
+                        playerManager.addExp(player, Utils.random(5, 20));
                     }
                 }
             });
@@ -131,7 +131,7 @@ public class PlantFunctions implements Listener {
                 }
                 ItemManager.removeCustomItem(player, RoleplayItem.FERTILIZER, 1);
                 factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage gedüngt.", factionData.getName());
-                playerManager.addExp(player, Main.random(8, 10));
+                playerManager.addExp(player, Utils.random(8, 10));
                 plant.setFertilizer(60);
                 player.closeInventory();
             }
@@ -145,7 +145,7 @@ public class PlantFunctions implements Listener {
                 }
                 ItemManager.removeCustomItem(player, RoleplayItem.WATER, 1);
                 factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage gewässert.", factionData.getName());
-                playerManager.addExp(player, Main.random(8, 10));
+                playerManager.addExp(player, Utils.random(8, 10));
                 plant.setWater(60);
                 player.closeInventory();
             }
@@ -192,7 +192,7 @@ public class PlantFunctions implements Listener {
                 for (Plant p : nearbyPlants) {
                     p.getBlock().setType(Material.FIRE);
                 }
-                Main.waitSeconds(10, () -> {
+                Utils.waitSeconds(10, () -> {
                     for (Plant p : nearbyPlants) {
                         p.getBlock().setType(Material.AIR);
                         p.getBlock().getLocation().subtract(0, 1, 0).getBlock().setType(Material.GRASS_BLOCK);

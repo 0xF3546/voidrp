@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,7 +22,7 @@ public class WüfelnCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " würfelt " + Main.random(0, 300));
+        ChatUtils.sendGrayMessageAtPlayer(player, player.getName() + " würfelt " + Utils.random(0, 300));
         return false;
     }
 }

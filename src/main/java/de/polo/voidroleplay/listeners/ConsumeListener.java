@@ -5,6 +5,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.extra.PlayerIllness;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.player.enums.IllnessType;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +25,7 @@ public class ConsumeListener implements Listener {
     @EventHandler
     public void onConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-        int random = Main.random(1, 100);
+        int random = Utils.random(1, 100);
         Player player = event.getPlayer();
 
         if (item.getType() == Material.POTION) {

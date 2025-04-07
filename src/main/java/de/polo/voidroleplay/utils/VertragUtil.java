@@ -182,7 +182,7 @@ public class VertragUtil {
                         ChatUtils.sendGrayMessageAtPlayer(targetplayer, targetplayer.getName() + " testet eine Blutgruppe im Labor.");
                         targetplayer.sendMessage("§8[§cLabor§8]§e Prüfe Ergebnisse...");
                         Player finalTargetplayer = targetplayer;
-                        Main.waitSeconds(7, () -> {
+                        Utils.waitSeconds(7, () -> {
                             if (!finalTargetplayer.isOnline() || !player.isOnline()) {
                                 return;
                             }

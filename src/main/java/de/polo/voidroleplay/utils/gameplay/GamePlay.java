@@ -559,7 +559,7 @@ public class GamePlay implements Listener {
                 factionManager.sendCustomMessageToFaction(dealer.getOwner(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§c Die Angreifer haben es geschafft euren Dealer einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(dealer.getAttacker(), "§8[§cDealer-" + dealer.getGangzone() + "§8]§a Ihr habt es geschafft den Dealer einzuschüchtern.");
                 for (PlayerData playerData1 : factionManager.getFactionMemberInRange(dealer.getAttacker(), dealer.getLocation(), 30, true)) {
-                    playerManager.addExp(playerData1.getPlayer(), Main.random(5, 10));
+                    playerManager.addExp(playerData1.getPlayer(), Utils.random(5, 10));
                 }
                 dealer.setOwner(dealer.getAttacker());
                 rob.remove(dealer);
@@ -790,7 +790,7 @@ public class GamePlay implements Listener {
                             return;
                         }
                         player.closeInventory();
-                        int amount = Main.random(finalI * 95, finalI * 125);
+                        int amount = Utils.random(finalI * 95, finalI * 125);
                         factionData.addBankMoney(amount, "Schließfach " + finalI + " (Staatsbankraub)");
                         staatsbankRob.sendMessage("Ihr habt " + amount + "$ aus Schließfach " + finalI + " erhalten!", ChatColor.GREEN, factionData.getName());
                         if (staatsbankRob.getVaultsOpen() >= staatsbankRob.getVaults()) {

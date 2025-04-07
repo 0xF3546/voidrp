@@ -155,16 +155,16 @@ public class MinerJobCommand implements CommandExecutor {
         player.getInventory().addItem(ItemManager.createItem(minerBlockType.getOutputItem().getMaterial(), 1, 0, minerBlockType.getOutputItem().getDisplayName()));
         Material blockType = brokenBlock.getType();
         brokenBlock.setType(Material.STONE);
-        int amount = Main.random(1, 10);
-        int rand = Main.random(1, 100);
-        if (Main.random(1, 100) == 1) {
+        int amount = Utils.random(1, 10);
+        int rand = Utils.random(1, 100);
+        if (Utils.random(1, 100) == 1) {
             amount = amount * 4;
             player.sendMessage("§8[§eMiner-drop§8]§a Du hast 4x XP bekommen!");
         } else if (rand >= 5 && rand <= 10) {
             player.sendMessage("§8[§eMiner-drop§8]§a Du kannst 30 Sekunden schneller abbauen!");
             player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 30 * 20, 1));
         } else if (rand < 4) {
-            int am = Main.random(2, 4);
+            int am = Utils.random(2, 4);
             player.sendMessage("§8[§eMiner-drop§8]§a Du hast " + am + " mehr " + minerBlockType.getDisplayName() + " §a erhalten.");
             player.getInventory().addItem(ItemManager.createItem(minerBlockType.getOutputItem().getMaterial(), am, 0, minerBlockType.getOutputItem().getDisplayName()));
         }
@@ -227,7 +227,7 @@ public class MinerJobCommand implements CommandExecutor {
             return;
         }
 
-        Block block = newBlocks.get(Main.random(0, newBlocks.size() - 1));
+        Block block = newBlocks.get(Utils.random(0, newBlocks.size() - 1));
         block.setType(blockType);
     }
 

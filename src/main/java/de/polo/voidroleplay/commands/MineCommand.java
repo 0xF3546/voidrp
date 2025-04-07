@@ -7,6 +7,7 @@ import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,7 +53,7 @@ public class MineCommand implements CommandExecutor {
                             player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Mine§7!");
                         }
                     } else {
-                        player.sendMessage("§8[§7Mine§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
+                        player.sendMessage("§8[§7Mine§8]§7 Du kannst den Job erst in §f" + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
                     }
                 } else {
                     if (playerData.getVariable("job").equals("mine")) {

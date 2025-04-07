@@ -128,7 +128,7 @@ public class TeamSpeak {
     public static void verifyUser(Player player, String uid) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-            String token = String.valueOf(Main.random(43258, 213478234));
+            String token = String.valueOf(Utils.random(43258, 213478234));
             try {
                 Connection connection = Main.getInstance().getMySQL().getConnection();
                 PreparedStatement statement = connection.prepareStatement("UPDATE players SET tsToken = ? WHERE uuid = ?");

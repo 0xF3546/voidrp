@@ -120,7 +120,7 @@ public class DeathListener implements Listener {
                 PlayerData killerData = playerManager.getPlayerData(killer);
                 if (killerData.isExecutiveFaction() && wantedReason.getWanted() >= 50) {
                     utils.staatUtil.arrestPlayer(player, killer, true);
-                    playerManager.addExp(killer, Main.random(12, 20));
+                    playerManager.addExp(killer, Utils.random(12, 20));
                 }
             }
             if ((ServerManager.contractDataMap.get(playerUUID.toString()) != null
@@ -145,9 +145,9 @@ public class DeathListener implements Listener {
                 }
 
                 PlayerData killerData = playerManager.getPlayerData(killer);
-                killerData.addKarma(Main.random(1, 3), false);
+                killerData.addKarma(Utils.random(1, 3), false);
                 removeKarma = false;
-                playerManager.addExp(killer, Main.random(30, 90));
+                playerManager.addExp(killer, Utils.random(30, 90));
                 ServerManager.contractDataMap.remove(playerUUID.toString());
 
                 try {
@@ -198,9 +198,9 @@ public class DeathListener implements Listener {
                             if (killerData.getFaction().equals(blacklistData.getFaction())) {
                                 FactionData factionData = factionManager.getFactionData(blacklistData.getFaction());
                                 player.sendMessage("§8[§cBlacklist§8]§7 Du wurdest getötet, weil du auf der Blacklist der " + factionData.getFullname() + " bist.");
-                                killerData.addKarma(Main.random(1, 3), false);
+                                killerData.addKarma(Utils.random(1, 3), false);
                                 removeKarma = false;
-                                playerManager.addExp(player.getKiller(), Main.random(3, 9));
+                                playerManager.addExp(player.getKiller(), Utils.random(3, 9));
                                 Main.getInstance().seasonpass.didQuest(player.getKiller(), 17);
                                 if (blacklistData.getKills() > 1) {
                                     blacklistData.setKills(blacklistData.getKills() - 1);
@@ -227,7 +227,7 @@ public class DeathListener implements Listener {
                 }
             }
             PlayerData killerData = playerManager.getPlayerData(player.getKiller());
-            if (killerData != null) killerData.removeKarma(Main.random(1, 3), false);
+            if (killerData != null) killerData.removeKarma(Utils.random(1, 3), false);
             Main.getInstance().seasonpass.didQuest(player.getKiller(), 5);
             PreparedStatement statement = Main.getInstance().mySQL.getConnection().prepareStatement("INSERT INTO death_logs (uuid, killer) VALUES (?, ?)");
             statement.setString(1, player.getUniqueId().toString());

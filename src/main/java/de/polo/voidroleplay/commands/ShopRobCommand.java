@@ -8,6 +8,7 @@ import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.manager.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.Progress;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -54,11 +55,11 @@ public class ShopRobCommand implements CommandExecutor {
             return false;
         }
         if (Main.getInstance().getCooldownManager().isOnCooldown(player, "shoprob")) {
-            player.sendMessage(Prefix.ERROR + "Du kannst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "shoprob")) + " wieder einen Shop ausrauben.");
+            player.sendMessage(Prefix.ERROR + "Du kannst in " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "shoprob")) + " wieder einen Shop ausrauben.");
             return false;
         }
         if (Main.getInstance().getCooldownManager().isOnStringCooldown("shop_" + shopId, "shoprob")) {
-            player.sendMessage(Prefix.ERROR + "Dieser Shop kann erst in " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingStringTime("shop_" + shopId, "shoprob")) + " wieder ausgeraubt werden.");
+            player.sendMessage(Prefix.ERROR + "Dieser Shop kann erst in " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingStringTime("shop_" + shopId, "shoprob")) + " wieder ausgeraubt werden.");
             return false;
         }
         player.sendMessage("§8[§cShoprob§8]§7 Du fängst an den Shop auszurauben, warte 60 Sekunden!");
@@ -70,7 +71,7 @@ public class ShopRobCommand implements CommandExecutor {
                 factionManager.sendMessageToFaction("Polizei", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
                 factionManager.sendMessageToFaction("FBI", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
                 ServerManager.setVariable("shoprob_payout", "0");
-                Main.waitSeconds(60, () -> {
+                Utils.waitSeconds(60, () -> {
                     if (player.isOnline()) {
                         if (locationManager.isNearShop(player) == 0) {
                             player.sendMessage("§8[§cShoprob§8]§c Der Shoprob ist fehlgeschlagen!");
@@ -93,7 +94,7 @@ public class ShopRobCommand implements CommandExecutor {
                                     if (Integer.parseInt(ServerManager.getVariable("shoprob_payout")) < ServerManager.getPayout("maxShopRobPayout")) {
                                         try {
                                             Progress.start(player, 60);
-                                            int payout = Main.random(80, 120);
+                                            int payout = Utils.random(80, 120);
                                             playerManager.addMoney(player, payout, "Shoprob");
                                             player.sendMessage("§8[§cShoprob§8]§a +" + payout + "$");
                                             ServerManager.setVariable("shoprob_payout", String.valueOf(Integer.parseInt(ServerManager.getVariable("shoprob_payout")) + payout));

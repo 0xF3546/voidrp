@@ -2,6 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -89,7 +90,7 @@ public class LumberjackCommand implements CommandExecutor {
                     });
                 } else {
                     if (playerData.getVariable("job") == null) {
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Warte noch " + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7.")) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mHolzfäller starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7.")) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
 
@@ -151,7 +152,7 @@ public class LumberjackCommand implements CommandExecutor {
                             player.closeInventory();
                             Progress.startWithTitle(player, 12);
                             playerData.setVariable("lumberjack::stripping", true);
-                            Main.waitSeconds(12, () -> {
+                            Utils.waitSeconds(12, () -> {
                                 playerData.setVariable("lumberjack::hasStripped", true);
                                 player.sendMessage("§8[§7Holzfäller§8]§7 Du hast den Baum entrindet und kannst diesen nun Verkaufen.");
                             });
@@ -177,7 +178,7 @@ public class LumberjackCommand implements CommandExecutor {
             }
             playerData.setIntVariable("holz", playerData.getIntVariable("holz") - 1);
             block.setType(Material.AIR);
-            int amount = Main.random(2, 4);
+            int amount = Utils.random(2, 4);
             playerData.setIntVariable("holzkg", playerData.getIntVariable("holzkg") + amount);
             player.sendMessage("§8[§7Holzfäller§8]§7 +" + amount + " KG Holz");
             //playerData.getScoreboard("lumberjack").updateLumberjackScoreboard();
@@ -186,7 +187,7 @@ public class LumberjackCommand implements CommandExecutor {
             }
             removeTree(block.getLocation());
             scheduleTreeRespawn(block.getLocation());
-            playerManager.addExp(player, EXPType.SKILL_LUMBERJACK, Main.random(12, 20));
+            playerManager.addExp(player, EXPType.SKILL_LUMBERJACK, Utils.random(12, 20));
             /*Main.waitSeconds(120, () -> {
                 block.setType(Material.OAK_LOG);
             });*/
@@ -206,7 +207,7 @@ public class LumberjackCommand implements CommandExecutor {
         int payout = ServerManager.getPayout("holz") * playerData.getIntVariable("holzkg");
         player.sendMessage("§8[§7Holzfäller§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
-        if (playerData.getIntVariable("holz") <= 0) playerManager.addExp(player, Main.random(12, 20));
+        if (playerData.getIntVariable("holz") <= 0) playerManager.addExp(player, Utils.random(12, 20));
         //  playerData.getScoreboard("lumberjack").killScoreboard();
         player.closeInventory();
         try {
@@ -245,7 +246,7 @@ public class LumberjackCommand implements CommandExecutor {
                 player.getInventory().addItem(ItemManager.createItem(Material.STONE_AXE, 1, 0, "§7Holzfälleraxt"));
             }
         } else {
-            player.sendMessage("§8[§7Holzfäller§8]§7 Du kannst den Job erst in §f" + Main.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7 beginnen.");
+            player.sendMessage("§8[§7Holzfäller§8]§7 Du kannst den Job erst in §f" + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "holzfäller")) + "§7 beginnen.");
         }
     }
 }

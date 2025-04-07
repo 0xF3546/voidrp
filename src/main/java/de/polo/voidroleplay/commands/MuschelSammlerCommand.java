@@ -125,7 +125,7 @@ public class MuschelSammlerCommand implements CommandExecutor, PlayerQuit {
         ItemStack item = ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel", Collections.singletonList("§8 ➥ §8[§6Rechtsklick§8]§7 Muschel öffnen"));
         player.getInventory().addItem(item);
         event.getBlock().setType(Material.AIR);
-        Main.waitSeconds(120, () -> {
+        Utils.waitSeconds(120, () -> {
             event.getBlock().setType(Material.BIRCH_BUTTON);
         });
     }

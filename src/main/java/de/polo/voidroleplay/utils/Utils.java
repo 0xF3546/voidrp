@@ -14,6 +14,7 @@ import de.polo.voidroleplay.utils.player.Tutorial;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.sql.Date;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utils {
@@ -139,6 +141,31 @@ public class Utils {
 
     public static Location getLocation(int x, int y, int z, World world, float yaw, float pitch) {
         return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    public static String getTime(int seconds) {
+        int minutes = seconds / 60;
+        int sec = seconds % 60;
+        return minutes + " Minuten & " + sec + " Sekunden";
+    }
+
+    public static int random(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
+
+    public static char getRandomChar(String characters) {
+        Random random = new Random();
+        int index = random.nextInt(characters.length());
+        return characters.charAt(index);
+    }
+
+    public static void waitSeconds(int seconds, Runnable runnable) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        }.runTaskLater(Main.getInstance(), seconds * 20L);
     }
 
     public void sendActionBar(Player player, String message) {

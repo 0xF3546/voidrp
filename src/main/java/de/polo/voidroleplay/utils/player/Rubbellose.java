@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils.player;
 
-import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
@@ -97,7 +97,7 @@ public class Rubbellose {
             player.sendMessage("§8[§6Rubbellos§8]§c Leider verloren!");
         }
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0);
-        playerManager.addExp(player, Main.random(1, 3));
+        playerManager.addExp(player, Utils.random(1, 3));
         try {
             playerManager.addMoney(player, payout, "Rubellos");
         } catch (SQLException e) {

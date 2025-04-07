@@ -261,9 +261,9 @@ public class BankingUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 54, "§cATM-Raub " + atm.getName(), true, true);
         playerData.setVariable("atm::rob::collected", 0);
-        for (int i = 0; i < Main.random(12, 20); i++) {
-            int cash = Main.random(25, 50);
-            inventoryManager.setItem(new CustomItem(Main.random(0, 53), ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+" + cash + "$")) {
+        for (int i = 0; i < Utils.random(12, 20); i++) {
+            int cash = Utils.random(25, 50);
+            inventoryManager.setItem(new CustomItem(Utils.random(0, 53), ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2+" + cash + "$")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     ItemStack item = event.getCurrentItem();

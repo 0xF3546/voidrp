@@ -145,17 +145,17 @@ public class ApothekeFunctions implements Listener {
                         ApothekeTakeOut.add(apotheke, player.getUniqueId());
                         player.closeInventory();
                         if (playerData.isExecutiveFaction()) {
-                            int schmerzmittelAmount = Main.random(2, 6);
+                            int schmerzmittelAmount = Utils.random(2, 6);
                             playerData.getInventory().addItem(Drug.SCHMERZMITTEL.getItem(), schmerzmittelAmount);
                             player.sendMessage(Component.text("§8[§cApotheke§8]§7 Du hast " + schmerzmittelAmount + " " + Drug.SCHMERZMITTEL.getItem().getClearName() + "."));
                             if (playerData.getFaction().equalsIgnoreCase("FBI")) {
-                                int adrenalineAmount = Main.random(1, 3);
+                                int adrenalineAmount = Utils.random(1, 3);
                                 playerData.getInventory().addItem(Drug.ADRENALINE_INJECTION.getItem(), adrenalineAmount);
                                 player.sendMessage(Component.text("§8[§cApotheke§8]§7 Zusätzlich erhälst du " + adrenalineAmount + " " + Drug.ADRENALINE_INJECTION.getItem().getClearName() + "."));
                             }
                         } else {
-                            int snuffAmount = Main.random(1, 3);
-                            int cigarAmount = Main.random(1, 3);
+                            int snuffAmount = Utils.random(1, 3);
+                            int cigarAmount = Utils.random(1, 3);
                             playerData.getInventory().addItem(Drug.COCAINE.getItem(), snuffAmount);
                             playerData.getInventory().addItem(Drug.JOINT.getItem(), cigarAmount);
                             player.sendMessage(Component.text("§8[§cApotheke§8]§7 Du hast " + snuffAmount + " " + Drug.COCAINE.getItem().getClearName() + " & " + cigarAmount + " " + Drug.JOINT.getItem().getClearName() + " erhalten."));
@@ -206,7 +206,7 @@ public class ApothekeFunctions implements Listener {
                     if (!stack.getType().equals(Material.PAPER)) continue;
                     for (Prescription prescription : Prescription.values()) {
                         if (stack.getItemMeta().getDisplayName().contains(prescription.getName())) {
-                            if (playerData.getInventory().addItem(prescription.getDrug().getItem(), Main.random(prescription.getMinAmount() * stack.getAmount(), prescription.getMaxAmount() * stack.getAmount()))) {
+                            if (playerData.getInventory().addItem(prescription.getDrug().getItem(), Utils.random(prescription.getMinAmount() * stack.getAmount(), prescription.getMaxAmount() * stack.getAmount()))) {
                                 player.getInventory().remove(stack);
                                 player.sendMessage(Component.text("§6Du hast ein " + prescription.getName() + " Rezept eingelöst."));
                             } else {
@@ -275,7 +275,7 @@ public class ApothekeFunctions implements Listener {
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§c Die Angreifer haben es geschafft eure Apotheke einzuschüchtern.");
                 factionManager.sendCustomMessageToFaction(apotheke.getAttackerFaction(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Ihr habt es geschafft die Apotheke einzuschüchtern.");
                 for (PlayerData playerData1 : factionManager.getFactionMemberInRange(apotheke.getAttackerFaction(), location, 30, true)) {
-                    playerManager.addExp(playerData1.getPlayer(), Main.random(5, 10));
+                    playerManager.addExp(playerData1.getPlayer(), Utils.random(5, 10));
                 }
                 if (apotheke.getAttacker().getName().equalsIgnoreCase("Polizei") || apotheke.getAttacker().getName().equalsIgnoreCase("FBI")) {
                     apotheke.setOwner("staat");

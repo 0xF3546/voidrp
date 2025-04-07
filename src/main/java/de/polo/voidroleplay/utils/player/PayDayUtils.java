@@ -128,7 +128,7 @@ public class PayDayUtils {
             }
         }
         if (playerData.hasAnwalt()) {
-            int anwalt = Main.random(15, 55);
+            int anwalt = Utils.random(15, 55);
             player.sendMessage("§7 » §9Anwaltskosten§8: §c-" + anwalt + "$");
             anwalt -= plus;
         }
@@ -145,7 +145,7 @@ public class PayDayUtils {
         } else {
             player.sendMessage("§9Neuer Betrag§8:§6 " + playerData.getBank() + "$§8(§c" + (int) plus + "$§8)");
         }
-        playerManager.addExp(player, Main.random(12, 20));
+        playerManager.addExp(player, Utils.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
             player.sendMessage("§8[§6Bonus§8]§7 Du kannst nun deine Daily-Case beim Bonushändler abholen.");

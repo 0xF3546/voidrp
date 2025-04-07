@@ -62,7 +62,7 @@ public class RedeemCommand implements CommandExecutor {
                                 playerManager.addEXPBoost(player, result.getInt(4));
                                 break;
                         }
-                        playerManager.addExp(player, Main.random(20, 50));
+                        playerManager.addExp(player, Utils.random(20, 50));
                         statement.execute("DELETE FROM `payments` WHERE `id` = " + id);
                         statement.execute("INSERT INTO `payments_claimed` (`user`, `type`, `duration`, `duration_type`) VALUES ('" + player.getUniqueId() + "', '" + type + "', " + duration + ", '" + duration_type + "')");
                     } else {

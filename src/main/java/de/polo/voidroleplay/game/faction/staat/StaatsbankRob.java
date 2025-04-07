@@ -2,6 +2,7 @@ package de.polo.voidroleplay.game.faction.staat;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class StaatsbankRob {
     private int vaultsOpen;
 
     public StaatsbankRob() {
-        vaults = Main.random(12, 20);
+        vaults = Utils.random(12, 20);
     }
 
     public void sendMessage(String message, ChatColor color, String... factions) {

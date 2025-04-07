@@ -155,7 +155,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         player.sendMessage("§a+" + amount * 100 + "$");
         transports.put(factionData.getName(), amount);
         cooldownUser.add(player.getUniqueId());
-        int random = Main.random(1, 3);
+        int random = Utils.random(1, 3);
         RoleplayItem item;
         if (random == 1) {
             item = RoleplayItem.SNUFF;
@@ -167,8 +167,8 @@ public class PfeifenTransport implements CommandExecutor, Listener {
 
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§cTransport§8]§7 " + player.getName() + " hat deiner Fraktion " + amount + " " + item.getDisplayName() + "§7 gebracht.");
         factionData.storage.addItem(item, amount);
-        playerManager.addExp(player, Main.random(20, 50));
-        playerManager.addExp(player, EXPType.POPULARITY, Main.random(100, 200));
+        playerManager.addExp(player, Utils.random(20, 50));
+        playerManager.addExp(player, EXPType.POPULARITY, Utils.random(100, 200));
         player.removePotionEffect(PotionEffectType.SLOW);
         playerData.setVariable("job", null);
     }
