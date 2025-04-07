@@ -2,7 +2,7 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.ServerManager;
@@ -31,8 +31,8 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 1) {
-            FactionData factionData = null;
-            for (FactionData fdata : factionManager.getFactions()) {
+            Faction factionData = null;
+            for (Faction fdata : factionManager.getFactions()) {
                 if (fdata.getName().equalsIgnoreCase(args[0])) {
                     factionData = fdata;
                 }
@@ -55,7 +55,7 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
             }
         } else {
             player.sendMessage("§7   ===§8[§6Fraktionen§8]§7===");
-            for (FactionData factionData : factionManager.getFactions()) {
+            for (Faction factionData : factionManager.getFactions()) {
                 if (!factionData.isActive()) continue;
                 int count = factionManager.getOnlineMemberCount(factionData.getName());
                 player.sendMessage("§8 ➥ §" + factionData.getPrimaryColor() + factionData.getFullname() + "§8 - §7" + count + " online");
@@ -70,8 +70,8 @@ public class FrakInfoCommand implements CommandExecutor, TabCompleter {
         return TabCompletion.getBuilder(args)
                 .addAtIndex(1, factionManager.getFactions()
                         .stream()
-                        .filter(FactionData::isActive)
-                        .map(FactionData::getName)
+                        .filter(Faction::isActive)
+                        .map(Faction::getName)
                         .toList())
                 .build();
     }

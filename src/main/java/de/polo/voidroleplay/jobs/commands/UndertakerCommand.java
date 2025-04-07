@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.Corpse;
@@ -6,7 +6,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -17,6 +17,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 /**
  * @author Mayson1337
@@ -97,7 +99,7 @@ public class UndertakerCommand implements CommandExecutor {
     }
 
     private void showRoute(Player player, Corpse corpse) {
-        Main.getInstance().utils.navigationManager.createNaviByCord(player, (int) corpse.getSkull().getLocation().getX(), (int) corpse.getSkull().getLocation().getY(), (int) corpse.getSkull().getLocation().getZ());
+        navigationService.createNaviByCord(player, (int) corpse.getSkull().getLocation().getX(), (int) corpse.getSkull().getLocation().getY(), (int) corpse.getSkull().getLocation().getZ());
     }
 
     private void handlePayout(Player player) {

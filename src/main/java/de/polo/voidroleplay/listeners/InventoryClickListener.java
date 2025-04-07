@@ -1,11 +1,11 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
@@ -49,7 +49,7 @@ public class InventoryClickListener implements Listener {
             return;
         Player player = (Player) event.getWhoClicked();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = null;
+        Faction factionData = null;
         if (playerData.getVariable("current_inventory") == null) return;
         if (playerData.getFaction() != null) factionData = factionManager.getFactionData(playerData.getFaction());
         if (playerData.getVariable("current_inventory").toString().contains("edit_factionplayer_")) {

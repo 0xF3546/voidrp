@@ -2,7 +2,7 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -61,7 +61,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 2) {
             List<String> factions = new ObjectArrayList<>();
-            for (FactionData factionData : factionManager.getFactions()) {
+            for (Faction factionData : factionManager.getFactions()) {
                 factions.add(factionData.getName());
             }
             return factions;
@@ -73,7 +73,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
                         .toList())
                 .addAtIndex(2, factionManager.getFactions()
                         .stream()
-                        .map(FactionData::getName)
+                        .map(Faction::getName)
                         .toList())
                 .build();
     }

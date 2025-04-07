@@ -3,7 +3,6 @@ package de.polo.voidroleplay.admin.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
-import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.manager.BlockManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
@@ -19,12 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class RegisterblockCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final CoreDatabase coreDatabase;
     private final BlockManager blockManager;
 
-    public RegisterblockCommand(PlayerManager playerManager, CoreDatabase coreDatabase, BlockManager blockManager) {
+    public RegisterblockCommand(PlayerManager playerManager, BlockManager blockManager) {
         this.playerManager = playerManager;
-        this.coreDatabase = coreDatabase;
         this.blockManager = blockManager;
         Main.registerCommand("registerblock", this);
     }

@@ -2,7 +2,7 @@ package de.polo.voidroleplay.utils.gameplay;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.game.base.crypto.Crypto;
 import de.polo.voidroleplay.game.base.extra.drop.Drop;
@@ -15,6 +15,7 @@ import de.polo.voidroleplay.game.faction.houseban.Houseban;
 import de.polo.voidroleplay.game.faction.plants.PlantFunctions;
 import de.polo.voidroleplay.game.faction.staat.GOVRaid;
 import de.polo.voidroleplay.game.faction.staat.StaatsbankRob;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -261,7 +262,7 @@ public class GamePlay implements Listener {
                     return;
                 }
                 RoleplayItem item = event.getPlayerData().getVariable("drugstorage::roleplayitem");
-                FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+                Faction factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
                 if (item == RoleplayItem.PIPE) {
                     item = RoleplayItem.FACTION_PIPE;
                 }
@@ -298,7 +299,7 @@ public class GamePlay implements Listener {
                 if (item == RoleplayItem.PIPE) {
                     item = RoleplayItem.FACTION_PIPE;
                 }
-                FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+                Faction factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
                 if (!event.getPlayerData().getInventory().removeItem(item, amount)) {
                     event.getPlayer().sendMessage(Prefix.ERROR + "So viel hast du nicht dabei.");
                     return;
@@ -409,7 +410,7 @@ public class GamePlay implements Listener {
                     return;
                 }
                 PlayerData playerData = playerManager.getPlayerData(event.getPlayer());
-                FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                Faction factionData = factionManager.getFactionData(playerData.getFaction());
                 if (amount > factionData.storage.getWeed()) {
                     event.getPlayer().sendMessage(Prefix.ERROR + "So viel Marihuana hat deine Fraktion nicht.");
                     return;
@@ -519,7 +520,7 @@ public class GamePlay implements Listener {
             }
         }
 
-        for (FactionData factionData : factionManager.getFactions()) {
+        for (Faction factionData : factionManager.getFactions()) {
             LocalDateTime proceedingStarted = factionData.storage.getProceedingStarted();
 
             if (proceedingStarted != null) {
@@ -629,7 +630,7 @@ public class GamePlay implements Listener {
         Utils.Tablist.updatePlayer(player);
     }
 
-    public void openGOVRaidGUI(FactionData factionData, Player attacker) {
+    public void openGOVRaidGUI(Faction factionData, Player attacker) {
         InventoryManager inventoryManager = new InventoryManager(attacker, 27, "§8 » §cRazzia");
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§" + factionData.getPrimaryColor() + factionData.getFullname() + " raiden")) {
             @Override
@@ -715,7 +716,7 @@ public class GamePlay implements Listener {
     public void openStaatsbankRaub(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return;
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank");
         if (staatsbankRob == null) {
             int count = factionManager.getOnlineMemberCount("Polizei");
@@ -775,7 +776,7 @@ public class GamePlay implements Listener {
     private void openVaults(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return;
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank §8-§6 Schließfächer");
         for (int i = 0; i < staatsbankRob.getVaults(); i++) {
             int finalI = i + 1;
@@ -815,7 +816,7 @@ public class GamePlay implements Listener {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in keiner Bad Fraktion!");
             return;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.isBadFrak()) {
             player.sendMessage(Prefix.ERROR + "Du bist in keiner Bad Fraktion!");
             return;
@@ -999,7 +1000,7 @@ public class GamePlay implements Listener {
 
         public void open(Player player) {
             PlayerData playerData = playerManager.getPlayerData(player);
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Drogenlager (" + factionData.getName() + ")", true, true);
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCocaine() + "g")) {
                 @Override

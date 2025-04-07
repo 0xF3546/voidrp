@@ -1,11 +1,11 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;
@@ -24,6 +24,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 public class FarmerCommand implements CommandExecutor {
     public final String prefix = "§8[§eFarmer§8] §7";
@@ -209,7 +211,7 @@ public class FarmerCommand implements CommandExecutor {
         //      playerData.setScoreboard("weizen", scoreboard);
         player.sendMessage("§8[§eLieferant§8]§7 Bringe das Weizen zur Mühle.");
         player.sendMessage("§8 ➥ §7Nutze §8/§edrop§7 um das Weizen abzugeben.");
-        utils.navigationManager.createNavi(player, "Mühle", true);
+        navigationService.createNavi(player, "Mühle", true);
     }
 
     public void dropTransport(Player player) {

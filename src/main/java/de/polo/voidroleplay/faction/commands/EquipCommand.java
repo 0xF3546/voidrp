@@ -2,7 +2,8 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponType;
@@ -161,7 +162,7 @@ public class EquipCommand implements CommandExecutor, Listener {
     }
 
     private void openMain(Player player, PlayerData playerData) {
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §" + factionData.getPrimaryColor() + factionData.getName() + " Equip", true, true);
         String ERROR_NOT_ENOUGH_EQUIP = Prefix.ERROR + "Deine Fraktion hat nicht genug Equip-Punkte.";
         int i = 0;
@@ -380,11 +381,11 @@ public class EquipCommand implements CommandExecutor, Listener {
 
     private void logBuy(Player player, String item, int equipPoints) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO faction_equip_logs (player, item, factionId, itemPoints) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), item, factionData.getId(), equipPoints);
     }
 
-    private void openExtraShop(Player player, PlayerData playerData, FactionData factionData) {
+    private void openExtraShop(Player player, PlayerData playerData, Faction factionData) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cExtra", true, true);
         if (playerData.getFaction().equalsIgnoreCase("Terroristen")) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
@@ -456,7 +457,7 @@ public class EquipCommand implements CommandExecutor, Listener {
                 event.end();
                 return;
             }
-            FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+            Faction factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
             try {
                 int money = Integer.parseInt(event.getMessage());
                 if (money < 1) {

@@ -1,7 +1,8 @@
 package de.polo.voidroleplay.player.entities;
 
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.enums.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -14,12 +15,27 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public interface VoidPlayer {
-    UUID getUuid();
     Player getPlayer();
-    String getName();
     PlayerData getData();
-    Location getLocation();
-    void sendMessage(String message);
-    void sendMessage(Component component, Prefix prefix);
+    MiniJob getMiniJob();
+    void setMiniJob(MiniJob miniJob);
+    default UUID getUuid() {
+        return getPlayer().getUniqueId();
+    }
+    default String getName() {
+        return getPlayer().getName();
+    }
+    default Location getLocation() {
+        return getPlayer().getLocation();
+    }
+    default void sendMessage(String message) {
+        this.sendMessage(Component.text(message));
+    }
+    default void sendMessage(String message, Prefix prefix) {
+        this.sendMessage(Component.text(prefix.getPrefix() + message));
+    }
+    default void sendMessage(final Component component, final Prefix prefix) {
+        this.sendMessage(Component.text(prefix.getPrefix() + component));
+    }
     void sendMessage(Component component);
 }

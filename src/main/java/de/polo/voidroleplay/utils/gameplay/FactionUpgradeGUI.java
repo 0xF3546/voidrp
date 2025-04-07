@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.utils.gameplay;
 
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -29,7 +29,7 @@ public class FactionUpgradeGUI {
 
     public void open(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bFraktionsupgrades", true, true);
         int level = factionData.upgrades.getDrugEarningLevel();
         int upgradeDrugPrice = (int) (Math.pow(2, level - 1) * 400000);

@@ -2,8 +2,8 @@ package de.polo.voidroleplay.faction.service.impl;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
-import de.polo.voidroleplay.faction.entity.FactionData;
-import de.polo.voidroleplay.faction.entity.FactionGradeData;
+import de.polo.voidroleplay.faction.entity.Faction;
+import de.polo.voidroleplay.faction.entity.FactionGrade;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.faction.enums.FactionType;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -30,8 +30,8 @@ import java.util.*;
 
 public class FactionManager {
     public final SubGroups subGroups;
-    private final Map<String, FactionData> factionDataMap = new HashMap<>();
-    private final Map<String, FactionGradeData> factionGradeDataMap = new HashMap<>();
+    private final Map<String, Faction> factionDataMap = new HashMap<>();
+    private final Map<String, FactionGrade> factionGradeDataMap = new HashMap<>();
     private final Map<Integer, BlacklistData> blacklistDataMap = new HashMap<>();
     private final PlayerManager playerManager;
     private final List<SubTeam> subTeams = new ObjectArrayList<>();
@@ -49,7 +49,7 @@ public class FactionManager {
         subGroups = new SubGroups(this);
     }
 
-    public Collection<FactionData> getFactions() {
+    public Collection<Faction> getFactions() {
         return factionDataMap.values();
     }
 
@@ -84,7 +84,7 @@ public class FactionManager {
                 "LEFT JOIN faction_upgrades AS fu ON f.id  = fu.factionId " +
                 "LEFT JOIN faction_equip AS fe ON f.id = fe.factionId");
         while (locs.next()) {
-            FactionData factionData = new FactionData(FactionType.valueOf(locs.getString("type")));
+            Faction factionData = new Faction(FactionType.valueOf(locs.getString("type")));
             factionData.setId(locs.getInt("id"));
             factionData.setName(locs.getString("name"));
             factionData.setChatColor(ChatColor.valueOf(locs.getString("chatColor")));
@@ -145,13 +145,13 @@ public class FactionManager {
 
         ResultSet grades = statement.executeQuery("SELECT * FROM faction_grades");
         while (grades.next()) {
-            FactionGradeData factionGradeData = new FactionGradeData();
-            factionGradeData.setId(grades.getInt(1));
-            factionGradeData.setFaction(grades.getString(2));
-            factionGradeData.setGrade(grades.getInt(3));
-            factionGradeData.setName(grades.getString(4));
-            factionGradeData.setPayday(grades.getInt(5));
-            factionGradeDataMap.put(grades.getString(2) + "_" + grades.getInt(3), factionGradeData);
+            FactionGrade factionGrade = new FactionGrade();
+            factionGrade.setId(grades.getInt(1));
+            factionGrade.setFaction(grades.getString(2));
+            factionGrade.setGrade(grades.getInt(3));
+            factionGrade.setName(grades.getString(4));
+            factionGrade.setPayday(grades.getInt(5));
+            factionGradeDataMap.put(grades.getString(2) + "_" + grades.getInt(3), factionGrade);
         }
 
         ResultSet blacklist = statement.executeQuery("SELECT * FROM `blacklist`");
@@ -344,33 +344,33 @@ public class FactionManager {
     }
 
     public String getFactionPrimaryColor(String faction) {
-        FactionData factionData = factionDataMap.get(faction);
+        Faction factionData = factionDataMap.get(faction);
         return factionData.getPrimaryColor();
     }
 
     public String getFactionSecondaryColor(String faction) {
-        FactionData factionData = factionDataMap.get(faction);
+        Faction factionData = factionDataMap.get(faction);
         return factionData.getSecondaryColor();
     }
 
     public String getFactionFullname(String faction) {
-        FactionData factionData = factionDataMap.get(faction);
+        Faction factionData = factionDataMap.get(faction);
         return factionData.getFullname();
     }
 
     public String getPlayerFactionRankName(Player p) {
-        FactionGradeData factionGradeData = factionGradeDataMap.get(faction(p) + "_" + faction_grade(p));
-        return factionGradeData.getName();
+        FactionGrade factionGrade = factionGradeDataMap.get(faction(p) + "_" + faction_grade(p));
+        return factionGrade.getName();
     }
 
     public String getRankName(String faction, int rang) {
-        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rang);
-        return factionGradeData.getName();
+        FactionGrade factionGrade = factionGradeDataMap.get(faction + "_" + rang);
+        return factionGrade.getName();
     }
 
     public Integer getPaydayFromFaction(String faction, Integer rank) {
-        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
-        return factionGradeData.getPayday();
+        FactionGrade factionGrade = factionGradeDataMap.get(faction + "_" + rank);
+        return factionGrade.getPayday();
     }
 
     public boolean isPlayerInGoodFaction(Player player) {
@@ -380,18 +380,18 @@ public class FactionManager {
     }
 
     public Integer factionBank(String faction) {
-        FactionData factionData = factionDataMap.get(faction);
+        Faction factionData = factionDataMap.get(faction);
         return factionData.getBank();
     }
 
     @SneakyThrows
     public void addFactionMoney(String faction, Integer amount, String reason) throws SQLException {
-        FactionData factionData = factionDataMap.get(faction);
+        Faction factionData = factionDataMap.get(faction);
         factionData.addBankMoney(amount, reason);
     }
 
     public boolean removeFactionMoney(String faction, Integer amount, String reason) throws SQLException {
-        FactionData factionData = factionDataMap.get(faction);
+        Faction factionData = factionDataMap.get(faction);
         return factionData.removeFactionMoney(amount, reason);
     }
 
@@ -445,9 +445,9 @@ public class FactionManager {
     }
 
     public boolean changeRankPayDay(String faction, int rank, int payday) throws SQLException {
-        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
-        if (factionGradeData != null) {
-            factionGradeData.setPayday(payday);
+        FactionGrade factionGrade = factionGradeDataMap.get(faction + "_" + rank);
+        if (factionGrade != null) {
+            factionGrade.setPayday(payday);
             Main.getInstance().getCoreDatabase().updateAsync("UPDATE faction_grades SET payday = ? WHERE faction = ? AND grade = ?",
                     payday,
                     faction,
@@ -459,9 +459,9 @@ public class FactionManager {
     }
 
     public boolean changeRankName(String faction, int rank, String name) throws SQLException {
-        FactionGradeData factionGradeData = factionGradeDataMap.get(faction + "_" + rank);
-        if (factionGradeData != null) {
-            factionGradeData.setName(name);
+        FactionGrade factionGrade = factionGradeDataMap.get(faction + "_" + rank);
+        if (factionGrade != null) {
+            factionGrade.setName(name);
             Main.getInstance().getCoreDatabase().updateAsync("UPDATE faction_grades SET name = ? WHERE faction = ? AND grade = ?",
                     name,
                     faction,
@@ -503,9 +503,9 @@ public class FactionManager {
 
     public boolean isInBündnisWith(Player player, String faction) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        FactionData factionData = Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction());
+        Faction factionData = Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction());
         if (factionData == null) return false;
-        FactionData val = getFactionData(faction);
+        Faction val = getFactionData(faction);
         System.out.println("VAL: " + val.getName());
         System.out.println("FACTIONDATA: " + factionData.getName());
         return val.getId() == factionData.getAllianceFaction() || val.getId() == factionData.getId();
@@ -534,8 +534,8 @@ public class FactionManager {
         return count;
     }
 
-    public FactionData getFactionData(int factionId) {
-        for (FactionData data : factionDataMap.values()) {
+    public Faction getFactionData(int factionId) {
+        for (Faction data : factionDataMap.values()) {
             if (data.getId() == factionId) {
                 return data;
             }
@@ -543,8 +543,8 @@ public class FactionManager {
         return null;
     }
 
-    public FactionData getFactionData(String faction) {
-        for (FactionData factionData : factionDataMap.values()) {
+    public Faction getFactionData(String faction) {
+        for (Faction factionData : factionDataMap.values()) {
             if (factionData.getName().equalsIgnoreCase(faction)) return factionData;
         }
         return null;
@@ -581,7 +581,7 @@ public class FactionManager {
 
     @SneakyThrows
     public Collection<FactionPlayerData> getFactionMember(String faction) {
-        FactionData factionData = getFactionData(faction);
+        Faction factionData = getFactionData(faction);
         if (factionData == null) return null;
 
         List<FactionPlayerData> factionPlayers = new ObjectArrayList<>();
@@ -655,7 +655,7 @@ public class FactionManager {
 
     @SneakyThrows
     public void setFactionMOTD(int factionId, String motd) {
-        FactionData factionData = getFactionData(factionId);
+        Faction factionData = getFactionData(factionId);
         factionData.setMotd(motd);
         Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET motd = ? WHERE id = ?",
                 motd, factionId);
@@ -663,14 +663,14 @@ public class FactionManager {
 
     @SneakyThrows
     public void setFactionChatColor(int factionId, ChatColor color) {
-        FactionData factionData = getFactionData(factionId);
+        Faction factionData = getFactionData(factionId);
         factionData.setChatColor(color);
         Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET chatColor = ? WHERE id = ?",
                 color.name(), factionId);
     }
 
     @SneakyThrows
-    public void updateBanner(RegisteredBlock block, FactionData faction) {
+    public void updateBanner(RegisteredBlock block, Faction faction) {
         SprayableBanner banner = getSprayAbleBannerByBlockId(block.getId());
         if (banner == null) {
             SprayableBanner b = new SprayableBanner(block.getId(), faction.getId());

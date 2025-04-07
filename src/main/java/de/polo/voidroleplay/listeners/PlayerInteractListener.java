@@ -14,7 +14,7 @@ import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.ATM;
 import de.polo.voidroleplay.storage.ClickedEventBlock;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.Grenade;
 import de.polo.voidroleplay.storage.Molotov;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -164,7 +164,7 @@ public class PlayerInteractListener implements Listener {
                             if (playerData.getFaction() == null) return;
                             InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
                             Block b = event.getClickedBlock();
-                            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                            Faction factionData = factionManager.getFactionData(playerData.getFaction());
                             if (!factionManager.isBannerRegistered(block)) {
                                 factionManager.updateBanner(block, factionData);
                             }
@@ -226,7 +226,7 @@ public class PlayerInteractListener implements Listener {
                                     event.setCancelled(true);
                                     if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
                                         System.out.println(blockFaction);
-                                        FactionData defender = factionManager.getFactionData(blockFaction);
+                                        Faction defender = factionManager.getFactionData(blockFaction);
                                         Main.getInstance().gamePlay.openGOVRaidGUI(defender, player);
                                     }
                                 }

@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.faction.streetwar;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -104,13 +104,13 @@ public class Streetwar implements CommandExecutor {
         Bukkit.broadcastMessage("");
         if (streetwarData.getDefender_points() >= 450) {
             winner = streetwarData.getDefender();
-            FactionData factionData = factionManager.getFactionData(streetwarData.getDefender());
-            FactionData loserFaction = factionManager.getFactionData(streetwarData.getAttacker());
+            Faction factionData = factionManager.getFactionData(streetwarData.getDefender());
+            Faction loserFaction = factionManager.getFactionData(streetwarData.getAttacker());
             Bukkit.broadcastMessage("§8[§6§lSTREETWAR§8]§e Die Fraktion §6" + factionData.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + loserFaction.getFullname() + "§e mit §6" + streetwarData.getDefender_points() + " zu " + streetwarData.getAttacker_points() + "§e gewonnen!");
         } else if (streetwarData.getAttacker_points() >= 450) {
             winner = streetwarData.getAttacker();
-            FactionData factionData = factionManager.getFactionData(streetwarData.getDefender());
-            FactionData loserFaction = factionManager.getFactionData(streetwarData.getAttacker());
+            Faction factionData = factionManager.getFactionData(streetwarData.getDefender());
+            Faction loserFaction = factionManager.getFactionData(streetwarData.getAttacker());
             Bukkit.broadcastMessage("§8[§6§lSTREETWAR§8]§e Die Fraktion §6" + loserFaction.getFullname() + "§e hat den Streetwar gegen die Fraktion §6" + factionData.getFullname() + "§e mit §6" + streetwarData.getAttacker_points() + " zu " + streetwarData.getDefender_points() + "§e gewonnen!");
         }
         Bukkit.broadcastMessage("");
@@ -122,8 +122,8 @@ public class Streetwar implements CommandExecutor {
     public void acceptStreetwar(Player player, String attackerFaction) {
         CoreDatabase coreDatabase = Main.getInstance().coreDatabase;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        FactionData attackerData = factionManager.getFactionData(attackerFaction);
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction attackerData = factionManager.getFactionData(attackerFaction);
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§a Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag angenommen.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§a " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " angenommen.");
         String query = "INSERT INTO streetwar (attacker, defender) VALUES (?, ?)";
@@ -153,8 +153,8 @@ public class Streetwar implements CommandExecutor {
 
     public void denyStreetwar(Player player, String attackerFaction) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        FactionData attackerData = factionManager.getFactionData(attackerFaction);
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction attackerData = factionManager.getFactionData(attackerFaction);
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§6Streetwar§8]§c Die Fraktion " + factionData.getFullname() + " hat den Streetwar-Antrag abgelehnt.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§6Streetwar§8]§c " + player.getName() + " hat den Streetwar-Antrag gegen " + attackerData.getFullname() + " abgelehnt.");
     }
@@ -168,7 +168,7 @@ public class Streetwar implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.canDoGangwar()) {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion kann keinen Streetwar starten.");
             return false;
@@ -197,7 +197,7 @@ public class Streetwar implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Es ist kein Fraktionsleader der Gegner-Partei online.");
             return false;
         }
-        FactionData defenderData = factionManager.getFactionData(playerManager.getPlayerData(availablePlayers.get(0).getUniqueId()).getFaction());
+        Faction defenderData = factionManager.getFactionData(playerManager.getPlayerData(availablePlayers.get(0).getUniqueId()).getFaction());
         if (!defenderData.canDoGangwar()) {
             player.sendMessage(Prefix.ERROR + "Die Gegner-Partei kann keinen Streetwar starten.");
             return false;

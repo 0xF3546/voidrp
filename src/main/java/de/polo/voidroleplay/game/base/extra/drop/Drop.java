@@ -3,7 +3,6 @@ package de.polo.voidroleplay.game.base.extra.drop;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.storage.NaviData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
@@ -18,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.logging.Logger;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 /**
  * drop class to handle drop events
@@ -36,7 +37,7 @@ public class Drop {
     public Drop(Location location) {
         lastBlock = location.getBlock();
         this.location = location;
-        NaviData naviData = NavigationManager.getNearestNaviPoint(location);
+        NaviData naviData = navigationService.getNearestNaviPoint(location);
         Location naviLocation = Main.getInstance().locationManager.getLocation(naviData.getLocation());
         if (location.distance(naviLocation) > 100) {
             Bukkit.broadcastMessage("§8[§cDrop§8] §cSchmuggler haben eine Kiste verloren. Informanten haben die Koordinaten X: " + location.getX() + " Y: " + location.getY() + " Z: " + location.getZ() + " übermittelt.");

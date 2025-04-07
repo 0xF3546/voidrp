@@ -19,6 +19,7 @@ import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.Database;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.events.christmas.commands.AdventskalenderCommand;
+import de.polo.voidroleplay.events.collect.commands.WarpEventCommand;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.faction.commands.*;
 import de.polo.voidroleplay.faction.service.FactionService;
@@ -34,7 +35,13 @@ import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.housing.commands.AusziehenCommand;
 import de.polo.voidroleplay.housing.services.HouseService;
 import de.polo.voidroleplay.housing.services.impl.CoreHouseService;
+import de.polo.voidroleplay.jobs.commands.*;
 import de.polo.voidroleplay.listeners.*;
+import de.polo.voidroleplay.location.services.LocationService;
+import de.polo.voidroleplay.location.services.NavigationService;
+import de.polo.voidroleplay.location.services.impl.CoreLocationService;
+import de.polo.voidroleplay.location.services.impl.CoreNavigationService;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.news.services.NewsService;
 import de.polo.voidroleplay.news.services.impl.CoreNewsService;
@@ -76,6 +83,8 @@ public final class Main extends JavaPlugin {
     public static HouseService houseService;
     public static NewsService newsService;
     public static AgreementService agreementService;
+    public static LocationService locationService;
+    public static NavigationService navigationService;
 
     @Getter
     public CooldownManager cooldownManager;
@@ -155,6 +164,8 @@ public final class Main extends JavaPlugin {
         supportService = new CoreSupportService();
         adminService = new CoreAdminService();
         agreementService = new CoreAgreementService();
+        locationService = new CoreLocationService();
+        navigationService = new CoreNavigationService();
 
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
@@ -168,7 +179,7 @@ public final class Main extends JavaPlugin {
         factionManager = new FactionManager(playerManager);
         blockManager = new BlockManager(coreDatabase);
         houseManager = new HouseManager(playerManager, blockManager, locationManager);
-        utils = new Utils(playerManager, adminManager, factionManager, locationManager, houseManager, new NavigationManager(playerManager), companyManager);
+        utils = new Utils(playerManager, adminManager, factionManager, locationManager, houseManager, companyManager);
         vehicles = new Vehicles(playerManager, locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
@@ -302,7 +313,8 @@ public final class Main extends JavaPlugin {
                 AnwaltCommand.class,
                 MaklerCommand.class,
                 SellHouseCommand.class,
-                VertragCommand.class
+                VertragCommand.class,
+                SewerCleanerCommand.class
         );
 
 
@@ -365,7 +377,6 @@ public final class Main extends JavaPlugin {
         public InviteCommand inviteCommand;
         public RentCommand rentCommand;
         public LumberjackCommand lumberjackCommand;
-        public ApfelplantageCommand apfelplantageCommand;
         public MineCommand mineCommand;
         public ArrestCommand arrestCommand;
         public TPCommand tpCommand;
@@ -388,7 +399,6 @@ public final class Main extends JavaPlugin {
         public UnbanCommand unbanCommand;
         public GetVehCommand getVehCommand;
         public GoToVehCommand goToVehCommand;
-        public NavigationManager navigationManager;
         public EinreiseCommand einreiseCommand;
         public RegisterHouseCommand registerHouseCommand;
         public ReinforcementCommand reinforcementCommand;
@@ -589,7 +599,6 @@ public final class Main extends JavaPlugin {
             inviteCommand = new InviteCommand(playerManager, factionManager, utils, businessManager);
             rentCommand = new RentCommand(playerManager, locationManager, utils);
             lumberjackCommand = new LumberjackCommand(playerManager, locationManager);
-            apfelplantageCommand = new ApfelplantageCommand(playerManager, locationManager);
             mineCommand = new MineCommand(playerManager, locationManager);
             arrestCommand = new ArrestCommand(playerManager, factionManager, utils);
             tpCommand = new TPCommand(playerManager, adminManager);
@@ -612,7 +621,6 @@ public final class Main extends JavaPlugin {
             unbanCommand = new UnbanCommand(playerManager, adminManager);
             getVehCommand = new GetVehCommand(playerManager);
             goToVehCommand = new GoToVehCommand(playerManager);
-            navigationManager = new NavigationManager(playerManager);
             einreiseCommand = new EinreiseCommand(playerManager, locationManager);
             registerHouseCommand = new RegisterHouseCommand(playerManager);
             reinforcementCommand = new ReinforcementCommand(playerManager, factionManager);
@@ -673,7 +681,7 @@ public final class Main extends JavaPlugin {
             banListCommand = new BanListCommand(playerManager);
             gmCommand = new GMCommand(playerManager);
             noteCommand = new NoteCommand(playerManager, utils);
-            registerblockCommand = new RegisterblockCommand(playerManager, coreDatabase, blockManager);
+            registerblockCommand = new RegisterblockCommand(playerManager, blockManager);
             registerATMCommand = new RegisterATMCommand(playerManager, adminManager);
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
@@ -690,8 +698,8 @@ public final class Main extends JavaPlugin {
             ausziehenCommand = new AusziehenCommand(utils);
             companyCommand = new CompanyCommand(playerManager, companyManager, locationManager);
             dailyBonusCommand = new DailyBonusCommand(playerManager, locationManager);
-            winzerCommand = new WinzerCommand(playerManager, locationManager, navigationManager);
-            rebstockCommand = new RebstockCommand(playerManager, navigationManager);
+            winzerCommand = new WinzerCommand();
+            rebstockCommand = new RebstockCommand(playerManager);
             muschelSammlerCommand = new MuschelSammlerCommand(playerManager, locationManager);
             gasStationCommand = new GasStationCommand(playerManager, locationManager, companyManager);
             resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager, adminManager);
@@ -704,7 +712,7 @@ public final class Main extends JavaPlugin {
             flyCommand = new FlyCommand(playerManager, adminManager);
             workstationCommand = new WorkstationCommand(playerManager);
             weaponcrafterCommand = new WeaponcrafterCommand(locationManager, playerManager);
-            sperrzoneCommand = new SperrzoneCommand(playerManager, locationManager);
+            sperrzoneCommand = new SperrzoneCommand();
             sperrzonenCommand = new SperrzonenCommand(playerManager);
             faqCommand = new FAQCommand();
             karmaCommand = new KarmaCommand(playerManager);

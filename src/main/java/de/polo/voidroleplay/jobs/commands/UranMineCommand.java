@@ -1,11 +1,11 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.handler.CommandBase;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -141,7 +141,7 @@ public class UranMineCommand extends CommandBase implements Listener {
 
         ItemManager.addCustomItem(player, RoleplayItem.URAN, 1);
         player.sendMessage(Component.text(Prefix.MAIN + "Du hast ein Uran abgebaut. Bringe es nun zum Atomkraftwerk"));
-        utils.navigationManager.createNavi(player, "Atomkraftwerk", true);
+        navigationService.createNavi(player, "Atomkraftwerk", true);
         event.getBlock().setType(Material.STONE);
         removeEquip(VoidAPI.getPlayer(player));
         rollOutMine();
@@ -149,8 +149,7 @@ public class UranMineCommand extends CommandBase implements Listener {
 
     @EventHandler
     public void onNaviReach(NaviReachEvent event) {
-        Player player = event.getPlayer();
         if (!event.getNavi().equalsIgnoreCase("Atomkraftwerk")) return;
-        drop(VoidAPI.getPlayer(player));
+        drop(event.getPlayer());
     }
 }

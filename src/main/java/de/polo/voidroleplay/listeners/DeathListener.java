@@ -3,7 +3,7 @@ package de.polo.voidroleplay.listeners;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.commands.BombeCommand;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
@@ -198,7 +198,7 @@ public class DeathListener implements Listener {
                     for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                         if (blacklistData.getUuid().equals(player.getUniqueId().toString())) {
                             if (killerData.getFaction().equals(blacklistData.getFaction())) {
-                                FactionData factionData = factionManager.getFactionData(blacklistData.getFaction());
+                                Faction factionData = factionManager.getFactionData(blacklistData.getFaction());
                                 player.sendMessage("§8[§cBlacklist§8]§7 Du wurdest getötet, weil du auf der Blacklist der " + factionData.getFullname() + " bist.");
                                 killerData.addKarma(Utils.random(1, 3), false);
                                 removeKarma = false;

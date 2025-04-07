@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -34,7 +34,7 @@ public class FactionsCommand implements CommandExecutor {
             return false;
         }
         player.sendMessage("§7   ===§8[§bFraktionen§8]§7===");
-        for (FactionData factionData : factionManager.getFactions()) {
+        for (Faction factionData : factionManager.getFactions()) {
             TextComponent faction = new TextComponent("§8 ➥ §" + factionData.getPrimaryColor() + factionData.getName());
             faction.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§" + factionData.getSecondaryColor() + Utils.toDecimalFormat(factionData.getBank()) + "$ §8| §" + factionData.getSecondaryColor() + factionManager.getMemberCount(factionData.getName()) + "§7/§" + factionData.getSecondaryColor() + factionData.getMaxMember())));
             player.spigot().sendMessage(faction);

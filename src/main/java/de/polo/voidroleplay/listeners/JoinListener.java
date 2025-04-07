@@ -2,11 +2,11 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.VoidAPI;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.vehicle.Vehicles;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Utils;
@@ -53,7 +53,7 @@ public class JoinListener implements Listener {
             adminManager.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getFaction() != null) {
-                FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+                Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
                 player.sendMessage("§8 ➥ §6[FMOTD] " + factionData.getMotd());
             }
             Utils.Tablist.setTablist(player, null);

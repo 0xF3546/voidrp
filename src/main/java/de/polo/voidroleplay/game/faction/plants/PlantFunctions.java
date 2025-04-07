@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.faction.plants;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
@@ -9,7 +9,7 @@ import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -59,7 +59,7 @@ public class PlantFunctions implements Listener {
         return null;
     }
 
-    private Collection<Plant> getPlantsByFaction(FactionData factionData) {
+    private Collection<Plant> getPlantsByFaction(Faction factionData) {
         return plants.stream().filter(x -> x.getPlanter() == factionData).collect(Collectors.toList());
     }
 
@@ -72,7 +72,7 @@ public class PlantFunctions implements Listener {
 
     public String plant(Player player, PlantType plantType, Block block) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.isBadFrak()) {
             return "Deine Fraktion kann keine Plantagen legen.";
         }
@@ -94,7 +94,7 @@ public class PlantFunctions implements Listener {
 
     public void openPlant(Player player, Plant plant) {
         if (plant == null) return;
-        FactionData factionData = plant.getPlanter();
+        Faction factionData = plant.getPlanter();
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §2Plantage", true, false);
         int i = 0;
@@ -266,7 +266,7 @@ public class PlantFunctions implements Listener {
             }
         }
         if (event.getMinute() % 15 == 0) {
-            for (FactionData factionData : factionManager.getFactions().stream().filter(FactionData::isBadFrak).toList()) {
+            for (Faction factionData : factionManager.getFactions().stream().filter(Faction::isBadFrak).toList()) {
                 int wateredFertilized = (int) plants.stream().filter(x -> (x.getPlanter() == factionData) && x.getWater() < 5 && x.getFertilizer() < 5).count();
                 int inProgress = (int) plants.stream().filter(x -> x.getPlanter() == factionData).count() - wateredFertilized;
                 int degenerate = (int) plants.stream().filter(x -> x.getPlanter() == factionData && x.getTime() < 1).count();

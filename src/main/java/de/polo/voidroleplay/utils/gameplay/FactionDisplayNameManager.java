@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.utils.gameplay;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class FactionDisplayNameManager {
 
     public void updateForFaction(String faction) {
-        FactionData factionData = Main.getInstance().factionManager.getFactionData(faction);
+        Faction factionData = Main.getInstance().factionManager.getFactionData(faction);
         if (factionData == null) return;
 
         // Legen Sie einen Rang für diese Fraktion fest. Der Prefix wird aus der Fraktionsfarbe abgeleitet.

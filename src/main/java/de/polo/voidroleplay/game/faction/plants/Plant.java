@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.game.faction.plants;
 
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.utils.enums.PlantType;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class Plant {
     @Getter
-    private final FactionData planter;
+    private final Faction planter;
 
     @Getter
     private final LocalDateTime planted;
@@ -41,7 +41,7 @@ public class Plant {
     @Setter
     private boolean receivedXP = false;
 
-    public Plant(FactionData planter, LocalDateTime planted, Block block, PlantType plantType) {
+    public Plant(Faction planter, LocalDateTime planted, Block block, PlantType plantType) {
         this.planter = planter;
         this.planted = planted;
         this.block = block;

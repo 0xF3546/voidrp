@@ -3,7 +3,7 @@ package de.polo.voidroleplay.faction.service.impl;
 import de.polo.voidroleplay.faction.service.FactionService;
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
@@ -142,12 +142,12 @@ public class CoreFactionService implements FactionService {
     }
 
     @Override
-    public FactionData getFactionData(int factionId) {
+    public Faction getFactionData(int factionId) {
         return factionManager.getFactionData(factionId);
     }
 
     @Override
-    public FactionData getFactionData(String faction) {
+    public Faction getFactionData(String faction) {
         return factionManager.getFactionData(faction);
     }
 
@@ -192,7 +192,7 @@ public class CoreFactionService implements FactionService {
     }
 
     @Override
-    public void updateBanner(RegisteredBlock block, FactionData faction) throws Exception {
+    public void updateBanner(RegisteredBlock block, Faction faction) throws Exception {
         factionManager.updateBanner(block, faction);
     }
 

@@ -3,7 +3,7 @@ package de.polo.voidroleplay.utils.player;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.commands.GeldlieferantCommand;
 import de.polo.voidroleplay.storage.ATM;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -199,7 +199,7 @@ public class BankingUtils implements Listener {
 
     private void openCompanyBankMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §6Firmenkonto", true, true);
         inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getCompany().getBank()) + "$"))) {
             @Override
@@ -295,7 +295,7 @@ public class BankingUtils implements Listener {
 
     public void openFactionBankMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §" + factionData.getPrimaryColor() + "Fraktionskonto", true, true);
         inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(factionData.getBank()) + "$"))) {
             @Override
@@ -518,7 +518,7 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (factionManager.factionBank(event.getPlayerData().getFaction()) >= amount) {
-                    FactionData factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
+                    Faction factionData = factionManager.getFactionData(event.getPlayerData().getFaction());
                     takeOut(player, factionData, amount);
                 } else {
                     player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank.");
@@ -567,7 +567,7 @@ public class BankingUtils implements Listener {
         }
     }
 
-    private void takeOut(Player player, FactionData factionData, int amount) {
+    private void takeOut(Player player, Faction factionData, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (factionData.getTookOut() + amount >= 50000) {
             checkTakeOut(player, factionData, amount);
@@ -576,7 +576,7 @@ public class BankingUtils implements Listener {
         }
     }
 
-    private void checkTakeOut(Player player, FactionData factionData, int amount) {
+    private void checkTakeOut(Player player, Faction factionData, int amount) {
         int tax = amount / 3;
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWillst du " + amount + " auszahlen?");
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aJa", "§8 ➥ §c" + Utils.toDecimalFormat(tax) + "$ Steuern")) {
@@ -593,7 +593,7 @@ public class BankingUtils implements Listener {
         });
     }
 
-    private void finallyTakeout(Player player, FactionData factionData, int amount) {
+    private void finallyTakeout(Player player, Faction factionData, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
         factionData.setTookOut(factionData.getTookOut() + amount);
         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ ausgezahlt.");

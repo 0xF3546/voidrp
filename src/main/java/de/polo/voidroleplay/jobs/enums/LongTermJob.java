@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.player.enums;
+package de.polo.voidroleplay.jobs.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

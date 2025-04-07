@@ -2,7 +2,7 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -69,7 +69,7 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
                         .toList())
                 .addAtIndex(2, factionManager.getFactions()
                         .stream()
-                        .map(FactionData::getName)
+                        .map(Faction::getName)
                         .toList())
                 .addAtIndex(3, List.of("0", "1", "2", "3", "4", "5", "6"))
                 .build();

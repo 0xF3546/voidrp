@@ -1,8 +1,7 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.block.Block;
@@ -12,13 +11,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static de.polo.voidroleplay.Main.navigationService;
+
 public class RebstockCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final NavigationManager navigationManager;
 
-    public RebstockCommand(PlayerManager playerManager, NavigationManager navigationManager) {
+    public RebstockCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.navigationManager = navigationManager;
         Main.registerCommand("rebstock", this);
     }
 
@@ -35,7 +34,7 @@ public class RebstockCommand implements CommandExecutor {
             return false;
         }
         Block block = playerData.getVariable("grapevine");
-        navigationManager.createNaviByCord(player, block.getX(), block.getY(), block.getZ());
+        navigationService.createNaviByCord(player, block.getX(), block.getY(), block.getZ());
         player.sendMessage("§8[§5Winzer§8]§7 Dein Rebstock wurde markiert.");
         return false;
     }

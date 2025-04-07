@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -40,7 +40,7 @@ public class DepartmentChatCommand implements CommandExecutor {
             player.sendMessage(PhoneUtils.ERROR_FLIGHTMODE);
             return false;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (args.length >= 1) {
             StringBuilder msg = new StringBuilder(args[0]);
             for (int i = 1; i < args.length; i++) {
@@ -55,7 +55,7 @@ public class DepartmentChatCommand implements CommandExecutor {
                     }
                 }
             }
-            FactionData alliance = Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction());
+            Faction alliance = Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction());
             if (alliance == null) return false;
             factionManager.sendCustomMessageToFactions("§c" + playerData.getFaction() + " " + player.getName() + "§8:§7 " + msg, alliance.getName(), playerData.getFaction());
         } else {

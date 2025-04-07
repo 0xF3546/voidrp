@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.game.faction.staat;
 
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +19,7 @@ public class GOVRaid {
 
     @Getter
     @Setter
-    private FactionData defender;
+    private Faction defender;
 
     @Getter
     @Setter

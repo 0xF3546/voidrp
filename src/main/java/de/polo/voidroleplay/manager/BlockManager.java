@@ -2,7 +2,7 @@ package de.polo.voidroleplay.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -125,7 +125,7 @@ public class BlockManager {
         return registeredBlocks;
     }
 
-    public void updateBlocksAtScenario(String scenario, FactionData faction) {
+    public void updateBlocksAtScenario(String scenario, Faction faction) {
         List<RegisteredBlock> blocks = registeredBlocks.stream().filter(b -> b.getInfo().equalsIgnoreCase("gangzone") && b.getInfoValue().equalsIgnoreCase(scenario)).collect(Collectors.toList());
         for (RegisteredBlock block : blocks) {
             BlockState state = block.getLocation().getBlock().getState();

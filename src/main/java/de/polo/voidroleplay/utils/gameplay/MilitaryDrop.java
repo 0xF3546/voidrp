@@ -1,9 +1,10 @@
 package de.polo.voidroleplay.utils.gameplay;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.enums.FactionType;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.manager.*;
@@ -37,7 +38,7 @@ public class MilitaryDrop implements Listener {
     private final List<Player> joinedPlayers = new ObjectArrayList<>();
     private final List<Player> alivePlayers = new ObjectArrayList<>();
 
-    private final HashMap<FactionData, Integer> stats = new HashMap<>();
+    private final HashMap<Faction, Integer> stats = new HashMap<>();
     private final HashMap<String, Location> factionSpawns = new HashMap<>();
     private final List<Location> spawns = new ObjectArrayList<>();
     private final List<Location> chestSpawns = new ObjectArrayList<>();
@@ -45,7 +46,7 @@ public class MilitaryDrop implements Listener {
     private boolean freezePlayers = false;
     private boolean isRoundActive = false;
     private int currentRound = 0;
-    private FactionData staat = null;
+    private Faction staat = null;
     private int arenaSize = 200;
 
     public MilitaryDrop(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
@@ -60,7 +61,7 @@ public class MilitaryDrop implements Listener {
 
     public void start() {
         ACTIVE = true;
-        staat = new FactionData(FactionType.GOVERNMENT);
+        staat = new Faction(FactionType.GOVERNMENT);
         staat.setFullname("Staat");
         staat.setName("Staat");
         staat.setPrimaryColor("9");
@@ -82,11 +83,11 @@ public class MilitaryDrop implements Listener {
             player.setGameMode(GameMode.SPECTATOR);
         }
 
-        FactionData topFaction = null;
+        Faction topFaction = null;
         int maxPoints = 0;
         int countTopFactions = 0;
 
-        for (Map.Entry<FactionData, Integer> entry : stats.entrySet()) {
+        for (Map.Entry<Faction, Integer> entry : stats.entrySet()) {
             if (entry.getValue() > maxPoints) {
                 maxPoints = entry.getValue();
                 topFaction = entry.getKey();
@@ -118,7 +119,7 @@ public class MilitaryDrop implements Listener {
         if (joinedPlayers.contains(player)) return false;
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return false;
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (!(playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei") || factionData.isBadFrak())) {
             return false;
         }
@@ -195,7 +196,7 @@ public class MilitaryDrop implements Listener {
     private void rollWinner() {
         System.out.println("Teams: " + getTeamsAlive().size());
         if (getTeamsAlive().size() <= 1) {
-            FactionData winner = getTeamsAlive().stream().findFirst().get();
+            Faction winner = getTeamsAlive().stream().findFirst().get();
             addPoints(winner.getName(), 20);
             sendRankingListToPlayers();
             sendMessage("§8[§cMilitärabsturz§8]§f Die Fraktion " + winner.getFullname() + " haben die Runde gewonnen!");
@@ -205,12 +206,12 @@ public class MilitaryDrop implements Listener {
     }
 
     private void sendRankingListToPlayers() {
-        List<Map.Entry<FactionData, Integer>> sortedStats = new ObjectArrayList<>(stats.entrySet());
+        List<Map.Entry<Faction, Integer>> sortedStats = new ObjectArrayList<>(stats.entrySet());
         sortedStats.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
         StringBuilder rankingMessage = new StringBuilder("§8[§cMilitärabsturz§8]§f Rangliste nach dieser Runde:\n");
         int rank = 1;
-        for (Map.Entry<FactionData, Integer> entry : sortedStats) {
+        for (Map.Entry<Faction, Integer> entry : sortedStats) {
             rankingMessage.append("§6§l#").append(rank).append(" §7")
                     .append(entry.getKey().getFullname()).append("§8:§e ")
                     .append(entry.getValue()).append(" Punkte\n");
@@ -259,7 +260,7 @@ public class MilitaryDrop implements Listener {
     }
 
     private void sendMessage(String message) {
-        for (FactionData factionData : getTeams()) {
+        for (Faction factionData : getTeams()) {
             if (staat == factionData) {
                 factionManager.sendCustomMessageToFaction("Polizei", message);
                 factionManager.sendCustomMessageToFaction("FBI", message);
@@ -269,40 +270,40 @@ public class MilitaryDrop implements Listener {
         }
     }
 
-    private Collection<FactionData> getTeamsAlive() {
-        List<FactionData> factions = new ObjectArrayList<>();
+    private Collection<Faction> getTeamsAlive() {
+        List<Faction> factions = new ObjectArrayList<>();
         for (Player player : alivePlayers) {
             if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                FactionData data = getStaat();
+                Faction data = getStaat();
                 if (!factions.contains(data)) factions.add(data);
                 continue;
             }
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factions.contains(factionData)) factions.add(factionData);
         }
 
         return factions;
     }
 
-    private Collection<FactionData> getTeams() {
-        List<FactionData> factions = new ObjectArrayList<>();
+    private Collection<Faction> getTeams() {
+        List<Faction> factions = new ObjectArrayList<>();
         for (Player player : joinedPlayers) {
             if (player == null) continue;
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
-                FactionData data = getStaat();
+                Faction data = getStaat();
                 if (!factions.contains(data)) factions.add(data);
                 continue;
             }
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factions.contains(factionData)) factions.add(factionData);
         }
         return factions;
     }
 
-    private FactionData getStaat() {
+    private Faction getStaat() {
         return staat;
     }
 
@@ -372,7 +373,7 @@ public class MilitaryDrop implements Listener {
     }
 
     private void addPoints(String faction, int points) {
-        FactionData factionData;
+        Faction factionData;
         if (faction.equalsIgnoreCase("Staat")) {
             factionData = staat;
         } else {

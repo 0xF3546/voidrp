@@ -3,7 +3,6 @@ package de.polo.voidroleplay.utils.player;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
-import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -12,13 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import static de.polo.voidroleplay.Main.navigationService;
+
 public class Tutorial implements Listener {
     private final PlayerManager playerManager;
-    private final NavigationManager navigationManager;
 
-    public Tutorial(PlayerManager playerManager, NavigationManager navigationManager) {
+    public Tutorial(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.navigationManager = navigationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -34,7 +33,7 @@ public class Tutorial implements Listener {
         playerTutorial.setStage(1);
         Utils.waitSeconds(4, () -> {
             player.sendMessage("§8[§9Tutorial§8]§7 Als erstes musst du dir einen Personalausweis erstellen. Gehe dazu in die Stadthalle, folge dazu einfach der Route!");
-            navigationManager.createNaviByCord(player, 133, 72, 157);
+            navigationService.createNaviByCord(player, 133, 72, 157);
         });
     }
 
@@ -71,7 +70,7 @@ public class Tutorial implements Listener {
                 Utils.waitSeconds(3, () -> {
                     player.sendMessage("§b   Info:§f Wenn du nun Shift + F drückst an der Stadthalle (Sneak und Item-Wechsel), öffnet sich ein Lager in welchem du Wertgegenstände lagern kannst.");
                     Utils.waitSeconds(3, () -> {
-                        navigationManager.createNaviByLocation(player, "Shop-1");
+                        navigationService.createNaviByLocation(player, "Shop-1");
                         player.sendMessage("§8[§9Tutorial§8]§7 Begib dich nun zum Shop. (/navi [Shop] Stadthalle)");
                     });
                 });
@@ -125,8 +124,8 @@ public class Tutorial implements Listener {
 
     @EventHandler
     public void onNaviReach(NaviReachEvent event) {
-        if (event.getPlayerData().getVariable("tutorial") != null) {
-            Player player = event.getPlayer();
+        if (event.getPlayer().getData().getVariable("tutorial") != null) {
+            Player player = event.getPlayer().getPlayer();
             if (event.getNavi().equals("einreise")) {
                 player.sendMessage("§8[§9Tutorial§8]§7 Erstelle dir nun einen Personalausweis!");
             }

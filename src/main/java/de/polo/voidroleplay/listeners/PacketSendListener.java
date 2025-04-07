@@ -8,7 +8,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.BlacklistData;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WantedReason;
 import net.kyori.adventure.text.Component;
@@ -52,7 +52,7 @@ public class PacketSendListener implements PacketListener {
             PlayerData senderData = playerManager.getPlayerData(sender.getUniqueId());
             if (targetData == null || senderData == null) continue;
 
-            FactionData factionData = factionManager.getFactionData(senderData.getFaction());
+            Faction factionData = factionManager.getFactionData(senderData.getFaction());
 
             entry.setDisplayName(null);
 
@@ -94,7 +94,7 @@ public class PacketSendListener implements PacketListener {
         }
     }
 
-    private void processSameFaction(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData targetData, FactionData factionData) {
+    private void processSameFaction(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData targetData, Faction factionData) {
         if (!targetData.getFaction().equalsIgnoreCase(factionData.getName())) return;
         entry.setDisplayName(Component.text("§" + factionData.getPrimaryColor() + sender.getName()));
         //entry.getGameProfile().setName("§" + factionData.getPrimaryColor() + sender.getName());

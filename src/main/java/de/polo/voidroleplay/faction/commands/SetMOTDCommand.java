@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -45,7 +45,7 @@ public class SetMOTDCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /setmotd [MOTD]");
             return false;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         String motd = Utils.stringArrayToString(args);
         factionManager.setFactionMOTD(factionData.getId(), motd);
         factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat die MOTD zu \"" + motd + "\" geändert.");

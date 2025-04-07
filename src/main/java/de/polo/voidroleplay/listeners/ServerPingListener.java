@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +31,7 @@ public class ServerPingListener implements Listener {
             ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'");
             if (res.next()) {
                 if (res.getString(3) != null) {
-                    FactionData factionData = factionManager.getFactionData(res.getString(3));
+                    Faction factionData = factionManager.getFactionData(res.getString(3));
                     secondline = "§8 » §6Level§8:§e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §" + factionData.getPrimaryColor() + factionData.getName();
                 } else {
                     secondline = "§8 » §6Level§8:§e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §7Zivilist";

@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
-import static de.polo.voidroleplay.Main.utils;
+import static de.polo.voidroleplay.Main.navigationService;
 
 @CommandBase.CommandMeta(name = "catchfish")
 public class CatchFishCommand extends CommandBase implements Listener {
@@ -92,7 +92,7 @@ public class CatchFishCommand extends CommandBase implements Listener {
             player.sendMessage(PREFIX + "Du bist fertig. Gehe nun zurück zum Hochseefischer.");
             return;
         }
-        utils.getNavigationManager().createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
+        navigationService.createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
     @EventHandler

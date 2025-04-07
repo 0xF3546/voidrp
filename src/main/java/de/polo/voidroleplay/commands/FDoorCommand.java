@@ -1,11 +1,11 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.manager.BlockManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -45,7 +45,7 @@ public class FDoorCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /fdoor [Fraktion]");
                 return false;
             }
-            for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
+            for (Faction factionData : Main.getInstance().factionManager.getFactions()) {
                 if (!factionData.getName().equalsIgnoreCase(args[0])) continue;
                 faction = factionData.getName();
             }

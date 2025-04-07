@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -50,7 +50,7 @@ public class FraktionsChatCommand implements CommandExecutor, TabCompleter {
             if (args.length >= 1) {
                 String msg = Utils.stringArrayToString(args);
                 String playerfac = factionManager.faction(player);
-                FactionData factionData = factionManager.getFactionData(playerfac);
+                Faction factionData = factionManager.getFactionData(playerfac);
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     if (Objects.equals(factionManager.faction(players), playerfac)) {
                         players.sendMessage(factionData.getChatColor() + factionManager.getPlayerFactionRankName(player) + " " + player.getName() + "§8:§7 " + msg);

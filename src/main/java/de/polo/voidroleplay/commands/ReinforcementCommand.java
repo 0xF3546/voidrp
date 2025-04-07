@@ -2,7 +2,7 @@ package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -22,6 +22,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 public class ReinforcementCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -74,7 +76,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         if (args.length >= 3) {
                             Location loc = new Location(player.getWorld(), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                             String type = args[5];
-                            Main.getInstance().utils.navigationManager.createNaviByCord(player, (int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
+                            navigationService.createNaviByCord(player, (int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
                             if (!type.equals("dep")) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {
                                     PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
@@ -132,7 +134,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         continue;
                     }
                 }
-                FactionData alliance = Main.getInstance().gamePlay.alliance.getAlliance(pData.getFaction());
+                Faction alliance = Main.getInstance().gamePlay.alliance.getAlliance(pData.getFaction());
                 if (alliance == null) continue;
                 System.out.println(alliance.getName());
                 if (playerData.getFaction().equalsIgnoreCase(alliance.getName()) || playerData.getFaction().equalsIgnoreCase(pData.getFaction())) {

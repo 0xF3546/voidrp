@@ -20,23 +20,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import static de.polo.voidroleplay.Main.playerService;
+
 public class TeamSpeak {
-    static int GastChannel = 9;
-    private static TeamSpeak teamSpeak;
-    private final Utils utils;
-    private final PlayerManager playerManager;
-    private final FactionManager factionManager;
-
-    public TeamSpeak(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
-        this.utils = utils;
-        this.playerManager = playerManager;
-        this.factionManager = factionManager;
-
-    }
-
     @SneakyThrows
     public static void reloadPlayer(UUID uuid) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(uuid);
+        PlayerData playerData = playerService.getPlayerData(uuid);
         System.out.println("RELOADING " + uuid);
         Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT teamSpeakUID FROM players WHERE uuid = ?");
@@ -79,7 +68,7 @@ public class TeamSpeak {
 
     @SneakyThrows
     public static void unlinkPlayer(UUID uuid) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(uuid);
+        PlayerData playerData = playerService.getPlayerData(uuid);
         System.out.println("RELOADING " + uuid);
         Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT teamSpeakUID FROM players WHERE uuid = ?");
@@ -126,7 +115,7 @@ public class TeamSpeak {
     }
 
     public static void verifyUser(Player player, String uid) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             String token = String.valueOf(Utils.random(43258, 213478234));
             try {
@@ -171,9 +160,4 @@ public class TeamSpeak {
             }
         });
     }
-
-    public static TeamSpeak getTeamSpeak() {
-        return teamSpeak;
-    }
-
 }

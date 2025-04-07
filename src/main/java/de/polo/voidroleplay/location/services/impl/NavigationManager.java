@@ -1,7 +1,10 @@
-package de.polo.voidroleplay.manager;
+package de.polo.voidroleplay.location.services.impl;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.handler.TabCompletion;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
+import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.LocationData;
 import de.polo.voidroleplay.storage.NaviData;
@@ -193,7 +196,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                                         public void onClick(InventoryClickEvent event) {
                                             player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + newNavi.getName().replace("&", "§") + "§7 gesetzt.");
                                             LocationData locationData = LocationManager.locationDataMap.get(newNavi.getLocation());
-                                            Main.getInstance().utils.navigationManager.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                                            createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                                             player.closeInventory();
                                         }
                                     });
@@ -214,7 +217,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                         public void onClick(InventoryClickEvent event) {
                             player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
                             LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
-                            Main.getInstance().utils.navigationManager.createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
+                            createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                             player.closeInventory();
                         }
                     });
@@ -267,7 +270,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                     player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
                     if (player.getLocation().distance(targetLocation) <= 5) {
                         this.cancel();
-                        Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
+                        Bukkit.getPluginManager().callEvent(new NaviReachEvent(VoidAPI.getPlayer(player), playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
                         player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
                         playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", null);
                     }
@@ -318,7 +321,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
                                 player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
-                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
+                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(VoidAPI.getPlayer(player), playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
                                 playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", null);
                             }
                         } else {
@@ -357,7 +360,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                             if (player.getLocation().distance(targetLocation) <= 5) {
                                 this.cancel();
                                 player.sendMessage("§8[§6GPS§8]§e Du hast dein Ziel erreicht.");
-                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(player, playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
+                                Bukkit.getPluginManager().callEvent(new NaviReachEvent(VoidAPI.getPlayer(player), playerManager.getPlayerData(player.getUniqueId()).getVariable("navi"), targetLocation));
                                 playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", null);
                             }
                         } else {

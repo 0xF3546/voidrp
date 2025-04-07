@@ -12,6 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static de.polo.voidroleplay.Main.navigationService;
+
 public class OrtenCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
@@ -70,7 +72,7 @@ public class OrtenCommand implements CommandExecutor {
                     cancel();
                     return;
                 }
-                utils.navigationManager.createNaviByCord(player, (int) targetplayer.getLocation().getX(), (int) targetplayer.getLocation().getY(), (int) targetplayer.getLocation().getZ());
+                navigationService.createNaviByCord(player, (int) targetplayer.getLocation().getX(), (int) targetplayer.getLocation().getY(), (int) targetplayer.getLocation().getZ());
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
         return false;

@@ -13,6 +13,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static de.polo.voidroleplay.Main.navigationService;
+
 public class AcceptServiceCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
@@ -35,7 +37,7 @@ public class AcceptServiceCommand implements CommandExecutor {
                     if (serviceData != null) {
                         if (serviceData.getAcceptedByUuid() == null) {
                             serviceData.setAcceptedByUuid(player.getUniqueId().toString());
-                            utils.navigationManager.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
+                            navigationService.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 PlayerData playersData = playerManager.getPlayerData(p);
                                 if (playersData.getFaction() == null) continue;

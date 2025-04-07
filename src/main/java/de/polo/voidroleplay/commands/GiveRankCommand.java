@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -71,7 +71,7 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Fehler beim setzen der Ränge, bitte warte bis der Server neugestartet wurde.");
             return false;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         player.sendMessage("§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Du hast " + targetplayer.getName() + " Rang " + rang + " gegeben!");
         Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET faction_grade = ? WHERE uuid = ?", rang, targetplayer.getUniqueId().toString());
         if (targetplayer.isOnline()) {

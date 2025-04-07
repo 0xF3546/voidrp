@@ -2,7 +2,7 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.BlacklistData;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.faction.blacklist.BlacklistReason;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -46,7 +46,7 @@ public class ModifyBlacklistCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.hasBlacklist()) {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion hat keine Blacklist.");
             return false;
@@ -113,7 +113,7 @@ public class ModifyBlacklistCommand implements CommandExecutor, TabCompleter {
             Player player = (Player) sender;
             PlayerData playerData = playerManager.getPlayerData(player);
             if (playerData.getFaction() == null) return new ObjectArrayList<>();
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             for (BlacklistReason reason : factionData.getBlacklistReasons()) {
                 reasons.add(reason.getReason());
             }

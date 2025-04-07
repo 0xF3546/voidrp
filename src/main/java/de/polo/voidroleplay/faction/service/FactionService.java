@@ -2,7 +2,7 @@ package de.polo.voidroleplay.faction.service;
 
 import de.polo.voidroleplay.game.faction.SprayableBanner;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
@@ -45,8 +45,8 @@ public interface FactionService {
     boolean isInAllianceWith(Player player, String faction);
     int getMemberCount(String faction);
     int getOnlineMemberCount(String faction);
-    FactionData getFactionData(int factionId);
-    FactionData getFactionData(String faction);
+    Faction getFactionData(int factionId);
+    Faction getFactionData(String faction);
     boolean isFactionMemberInRange(String faction, Location location, int range, boolean ignoreDeath);
     Collection<PlayerData> getFactionMembersInRange(String faction, Location location, int range, boolean ignoreDeath);
     PlayerData getFactionOfPlayer(UUID uuid) throws Exception;
@@ -55,7 +55,7 @@ public interface FactionService {
     Collection<SubTeam> getSubTeams(int factionId);
     void setFactionMOTD(int factionId, String motd) throws Exception;
     void setFactionChatColor(int factionId, ChatColor color) throws Exception;
-    void updateBanner(RegisteredBlock block, FactionData faction) throws Exception;
+    void updateBanner(RegisteredBlock block, Faction faction) throws Exception;
     boolean canSprayBanner(RegisteredBlock block);
     boolean isBannerRegistered(RegisteredBlock block);
     Collection<SprayableBanner> getBanners();

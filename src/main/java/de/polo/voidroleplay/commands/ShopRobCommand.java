@@ -4,7 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.utils.Prefix;

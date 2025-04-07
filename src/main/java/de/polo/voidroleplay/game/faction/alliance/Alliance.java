@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.game.faction.alliance;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -36,8 +36,8 @@ public class Alliance implements CommandExecutor {
 
     @SneakyThrows
     public void endAlliance(String faction) {
-        FactionData factionData = factionManager.getFactionData(faction);
-        FactionData otherFaction = factionManager.getFactionData(factionData.getAllianceFaction());
+        Faction factionData = factionManager.getFactionData(faction);
+        Faction otherFaction = factionManager.getFactionData(factionData.getAllianceFaction());
         factionManager.sendCustomMessageToFactions("§8[§cBündnis§8]§c Die Fraktion §" + factionData.getPrimaryColor() + factionData.getFullname() + "§c hat das Bündnis beendet!", factionData.getName(), otherFaction.getName());
         factionData.setAllianceFaction(0);
         factionData.save();
@@ -48,8 +48,8 @@ public class Alliance implements CommandExecutor {
     public void accept(Player player, String attackerFaction) {
         CoreDatabase coreDatabase = Main.getInstance().coreDatabase;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        FactionData attackerData = factionManager.getFactionData(attackerFaction);
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction attackerData = factionManager.getFactionData(attackerFaction);
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§cBündnis§8]§a Die Fraktion " + factionData.getFullname() + " hat den Bündnis-Vertrag angenommen.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§cBündnis§8]§a " + player.getName() + " hat den Bündnis-Vertrag mit " + attackerData.getFullname() + " angenommen.");
         factionData.setAllianceFaction(attackerData.getId());
@@ -63,14 +63,14 @@ public class Alliance implements CommandExecutor {
 
     public void deny(Player player, String attackerFaction) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
-        FactionData attackerData = factionManager.getFactionData(attackerFaction);
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction attackerData = factionManager.getFactionData(attackerFaction);
         factionManager.sendCustomMessageToFaction(attackerFaction, "§8[§cBündnis§8]§c Die Fraktion " + factionData.getFullname() + " hat den Bündnis-Vertrag abgelehnt.");
         factionManager.sendCustomMessageToFaction(factionData.getName(), "§8[§cBündnis§8]§c " + player.getName() + " hat den Bündnis-Vertrag gegen " + attackerData.getFullname() + " abgelehnt.");
     }
 
-    public FactionData getAlliance(String faction) {
-        for (FactionData factionData : factionManager.getFactions()) {
+    public Faction getAlliance(String faction) {
+        for (Faction factionData : factionManager.getFactions()) {
             if (factionData.getName().equalsIgnoreCase(faction)) {
                 if (factionData.getAllianceFaction() == 0) return null;
                 return factionManager.getFactionData(factionData.getAllianceFaction());

@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.game.base.housing.House;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.base.extra.Storage;
@@ -48,6 +48,8 @@ import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 public class PlayerSwapHandItemsListener implements Listener {
     private final PlayerManager playerManager;
@@ -309,7 +311,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                         player.closeInventory();
                         return;
                     }
-                    FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                    Faction factionData = factionManager.getFactionData(playerData.getFaction());
                     if (factionData.getCurrent_gangwar() != null) {
                         if (!gangwarUtils.joinGangwar(player, factionData.getCurrent_gangwar())) return;
                         Gangwar gangwarData = gangwarUtils.getGangwarByZone(factionData.getCurrent_gangwar());
@@ -366,7 +368,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     player.closeInventory();
-                    Main.getInstance().utils.navigationManager.createNaviByCord(player, (int) dealer.getLocation().getX(), (int) dealer.getLocation().getY(), (int) dealer.getLocation().getZ());
+                    navigationService.createNaviByCord(player, (int) dealer.getLocation().getX(), (int) dealer.getLocation().getY(), (int) dealer.getLocation().getZ());
                 }
             });
             index++;

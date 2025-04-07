@@ -6,6 +6,7 @@ import de.polo.voidroleplay.agreement.services.VertragUtil;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -32,8 +33,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Utils {
     static Scoreboard sb;
     @Getter
-    public final NavigationManager navigationManager;
-    @Getter
     public final PayDayUtils payDayUtils;
     @Getter
     public final BankingUtils bankingUtils;
@@ -57,12 +56,11 @@ public class Utils {
     @Getter
     public Tutorial tutorial;
 
-    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, NavigationManager navigationManager, CompanyManager companyManager) {
+    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, CompanyManager companyManager) {
         deathUtil = new DeathUtils(playerManager, adminManager, locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
         staatUtil = new StaatUtil(playerManager, factionManager, locationManager, this);
-        this.navigationManager = navigationManager;
-        tutorial = new Tutorial(playerManager, navigationManager);
+        tutorial = new Tutorial(playerManager);
         this.houseManager = houseManager;
         payDayUtils = new PayDayUtils(playerManager, factionManager);
         bankingUtils = new BankingUtils(playerManager, factionManager);

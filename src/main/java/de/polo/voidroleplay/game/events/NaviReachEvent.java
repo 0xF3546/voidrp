@@ -1,19 +1,24 @@
 package de.polo.voidroleplay.game.events;
 
-import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.player.entities.VoidPlayer;
+import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class NaviReachEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final Player player;
+
+    @Getter
+    private final VoidPlayer player;
+
+    @Getter
     private final String navi;
+
+    @Getter
     private final Location location;
 
-    public NaviReachEvent(Player player, String navi, Location location) {
+    public NaviReachEvent(VoidPlayer player, String navi, Location location) {
         this.player = player;
         this.navi = navi;
         this.location = location;
@@ -21,18 +26,6 @@ public class NaviReachEvent extends Event {
 
     public static HandlerList getHandlerList() {
         return handlers;
-    }
-
-    public String getNavi() {
-        return navi;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public PlayerData getPlayerData() {
-        return Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
     }
 
     @Override

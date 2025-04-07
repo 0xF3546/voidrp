@@ -2,15 +2,14 @@ package de.polo.voidroleplay.player.services.impl;
 
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.VoidAPI;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.player.enums.Gender;
 import de.polo.voidroleplay.player.enums.HealthInsurance;
 import de.polo.voidroleplay.player.enums.IllnessType;
-import de.polo.voidroleplay.player.enums.LongTermJob;
+import de.polo.voidroleplay.jobs.enums.LongTermJob;
 import de.polo.voidroleplay.storage.Weapon;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
@@ -266,7 +265,7 @@ public class PlayerManager implements Listener {
                 }
 
                 if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
-                    FactionData factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+                    Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
                     for (SubTeam subTeam : Main.getInstance().factionManager.getSubTeams(factionData.getId())) {
                         if (!(subTeam.getId() == result.getInt("subTeam"))) continue;
                         playerData.setSubTeam(subTeam);
@@ -757,21 +756,21 @@ public class PlayerManager implements Listener {
 
                 if (Utils.getTime().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
                     if (Utils.getTime().getMinute() == 30 && Utils.getTime().getHour() == 17) {
-                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        String[] factions = factionManager.getFactions().stream().map(Faction::getName).toArray(String[]::new);
                         factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 90 Minuten ist die Auktion beendet!", factions);
                     }
                     if (Utils.getTime().getMinute() == 30 && Utils.getTime().getHour() == 18) {
-                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        String[] factions = factionManager.getFactions().stream().map(Faction::getName).toArray(String[]::new);
                         factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 30 Minuten ist die Auktion beendet!", factions);
                     }
 
                     if (Utils.getTime().getMinute() == 45 && Utils.getTime().getHour() == 18) {
-                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        String[] factions = factionManager.getFactions().stream().map(Faction::getName).toArray(String[]::new);
                         factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 15 Minuten ist die Auktion beendet!", factions);
                     }
 
                     if (Utils.getTime().getMinute() == 55 && Utils.getTime().getHour() == 18) {
-                        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+                        String[] factions = factionManager.getFactions().stream().map(Faction::getName).toArray(String[]::new);
                         factionManager.sendCustomLeaderMessageToFactions("§8[§3Bank§8]§a In 5 Minuten ist die Auktion beendet!", factions);
                     }
 
@@ -785,7 +784,7 @@ public class PlayerManager implements Listener {
                     Bukkit.getPluginManager().callEvent(new HourTickEvent(currentHour));
 
                     // Batch-Operation für Fraktionsdaten-Update
-                    for (FactionData factionData : Main.getInstance().factionManager.getFactions()) {
+                    for (Faction factionData : Main.getInstance().factionManager.getFactions()) {
                         double zinsen = Math.round(factionData.getBank() * 0.00075);
                         double steuern = Math.round(factionData.getBank() * 0.00035);
                         if (factionData.getBank() >= factionData.upgrades.getTax()) {
@@ -862,7 +861,7 @@ public class PlayerManager implements Listener {
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);
     }
 
-    private void sendFactionPaydayMessage(Player player, FactionData factionData, double zinsen, double steuern, double plus, int auction, int banner, int govTaxes) {
+    private void sendFactionPaydayMessage(Player player, Faction factionData, double zinsen, double steuern, double plus, int auction, int banner, int govTaxes) {
         player.sendMessage(" ");
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "KONTOAUSZUG (" + factionData.getName() + ")§8]§7===");
         player.sendMessage("§8 ➥ §9Zinsen§8:§a +" + (int) zinsen + "$");
@@ -1128,7 +1127,7 @@ public class PlayerManager implements Listener {
             }
         });
         if (playerData.getFaction() != null) {
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             inventoryManager.setItem(new CustomItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
@@ -128,7 +128,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         playerData.setVariable("job", "hochseefischer");
         playerData.setVariable("hochseefischer_kg", 0);
         Location location = getNearstLocation(player.getPlayer());
-        utils.getNavigationManager().createNaviByCord(player.getPlayer(), (int) location.getX(), (int) location.getY(), (int) location.getZ());
+        navigationService.createNaviByCord(player.getPlayer(), (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
     private void quitJob(Player player, boolean silent) {

@@ -6,7 +6,6 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -26,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 public class BombeCommand implements CommandExecutor, Listener {
 
@@ -100,7 +101,7 @@ public class BombeCommand implements CommandExecutor, Listener {
         ItemManager.removeCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
         bomb = new Bomb(Utils.getTime(), block, 15);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), bomb.getColor()));
-        Bukkit.broadcastMessage("§8[§6News§8] §6Achtung! es wurde eine bombe gefunden, in der nähe von: " + NavigationManager.getNearestNaviPoint(bomb.getBlock().getLocation()).getName().replace("&", "§"));
+        Bukkit.broadcastMessage("§8[§6News§8] §6Achtung! es wurde eine bombe gefunden, in der nähe von: " + navigationService.getNearestNaviPoint(bomb.getBlock().getLocation()).getName().replace("&", "§"));
         ACTIVE = true;
         lastBomb = Utils.getTime();
 

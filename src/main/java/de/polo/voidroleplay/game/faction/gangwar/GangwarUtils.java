@@ -3,14 +3,14 @@ package de.polo.voidroleplay.game.faction.gangwar;
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.WeaponType;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -90,7 +90,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("info")) {
                 player.sendMessage("§7   ===§8[§cGangwar§8]§7===");
                 for (IGangzone gangZone : gangZones) {
-                    FactionData factionData = factionManager.getFactionData(gangZone.getOwner());
+                    Faction factionData = factionManager.getFactionData(gangZone.getOwner());
                     player.sendMessage("§8 ➥ §e" + gangZone.getName() + " §8| §" + factionData.getPrimaryColor() + factionData.getFullname());
                 }
             }
@@ -98,7 +98,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("leave")) {
                 if (playerData.getFaction() != null && !Objects.equals(playerData.getFaction(), "Zivilist")) {
                     if (playerData.getVariable("gangwar") != null) {
-                        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                        Faction factionData = factionManager.getFactionData(playerData.getFaction());
                         if (factionData.getCurrent_gangwar() != null) {
                             leaveGangwar(player);
                             player.sendMessage("§8[§cGangwar§8]§7 Du hast den Gangwar verlassen.");
@@ -146,7 +146,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM | HH:mm");
                             String date = gangwarData.getLastAttack().toLocalDateTime().format(formatter);
 
-                            FactionData ownerData = factionManager.getFactionData(gangwarData.getOwner());
+                            Faction ownerData = factionManager.getFactionData(gangwarData.getOwner());
                             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§bInformationen", Arrays.asList("§8 ➥ §6Besitzer§8:§e " + ownerData.getFullname(), "§8 ➥ §6Letzter Angriff§8:§e " + date))) {
                                 @Override
                                 public void onClick(InventoryClickEvent event) {
@@ -161,7 +161,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                                 });
                                 return false;
                             }
-                            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                            Faction factionData = factionManager.getFactionData(playerData.getFaction());
                             if (factionData.canDoGangwar()) {
                                 inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aAttackieren")) {
                                     @Override
@@ -200,7 +200,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         Gangwar gangwarData = getGangwarByZone(zone);
         playerData.setVariable("inventory::gangwar", player.getInventory().getContents());
         // playerData.setVariable("inventory::gangwar", InventoryUtils.serializeInventory(player.getInventory()));
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         BossBar bossBar = Bukkit.createBossBar("Lade Gangwar...", BarColor.RED, BarStyle.SOLID);
         playerData.setBossBar("gangwar", bossBar);
         player.getInventory().clear();
@@ -286,7 +286,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         }
         if ((Utils.getTime().getHour() >= 19 && Utils.getTime().getHour() < 21 || (playerData.isAduty() && playerData.getPermlevel() >= 80))) {
             IGangzone gangzone = getGangzoneByName(zone);
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.canDoGangwar()) {
                 player.sendMessage(Prefix.ERROR + "Deine Fraktion kann kein Gangwar-Gebiet angreifen.");
                 return;
@@ -307,7 +307,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 player.sendMessage(Prefix.ERROR + "Du kannst dein eigenes Gebiet nicht angreifen.");
                 return;
             }
-            FactionData defenderData = factionManager.getFactionData(gangzone.getOwner());
+            Faction defenderData = factionManager.getFactionData(gangzone.getOwner());
             if (defenderData.getCurrent_gangwar() != null) {
                 player.sendMessage(Prefix.ERROR + "Diese Fraktion ist bereits im Gangwar.");
                 return;
@@ -376,8 +376,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
 
     public synchronized void endGangwar(String zone) {
         Gangwar gangwarData = getGangwarByZone(zone);
-        FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
-        FactionData defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
+        Faction attackerData = factionManager.getFactionData(gangwarData.getAttacker());
+        Faction defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
         if (gangwarData.getDefenderPoints() >= gangwarData.getAttackerPoints()) {
             for (Player players : Bukkit.getOnlinePlayers()) {
                 String playersFaction = playerManager.getPlayerData(players.getUniqueId()).getFaction();

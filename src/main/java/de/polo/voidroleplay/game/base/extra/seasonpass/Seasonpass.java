@@ -6,7 +6,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.SoundManager;
@@ -245,7 +245,7 @@ public class Seasonpass implements CommandExecutor {
         Quest quest = availableQuests.get(randomIndex);
         if (quest.isBadFaction()) {
             if (playerData.getFaction() == null) return getRandomQuest(playerData);
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (factionData.isBadFrak()) {
                 return quest;
             } else {
@@ -254,7 +254,7 @@ public class Seasonpass implements CommandExecutor {
         }
         if (quest.isStaatFaction()) {
             if (playerData.getFaction() == null) return getRandomQuest(playerData);
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (factionData.getName().equalsIgnoreCase("FBI") || factionData.getName().equalsIgnoreCase("Polizei")) {
                 return quest;
             } else {

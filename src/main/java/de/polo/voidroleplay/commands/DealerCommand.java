@@ -3,9 +3,10 @@ package de.polo.voidroleplay.commands;
 import de.polo.api.faction.gangwar.IGangzone;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.Dealer;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -54,7 +55,7 @@ public class DealerCommand implements CommandExecutor {
 
     private void open(Player player, Dealer dealer) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        FactionData factionData = factionManager.getFactionData(dealer.getOwner());
+        Faction factionData = factionManager.getFactionData(dealer.getOwner());
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer §8(§" + factionData.getPrimaryColor() + factionData.getName() + "§8)", true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §eBenötigt§8: §71 Joint")) {
             @Override
@@ -101,7 +102,7 @@ public class DealerCommand implements CommandExecutor {
                     player.sendMessage(Prefix.ERROR + "Der Dealer ist aktuell überfüllt.");
                     return;
                 }
-                FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                Faction factionData = factionManager.getFactionData(playerData.getFaction());
                 double amount = dealer.getPrice();
                 if (Utils.getTime().getHour() >= 18 && Utils.getTime().getHour() < 22) {
                     amount = amount * 1.08;

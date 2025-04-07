@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -43,7 +43,7 @@ public class SubTeamCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /subteam [list/add/remove/invite/uninvite] [Name/Spieler]");
             return false;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (args[0].equalsIgnoreCase("list")) {
             player.sendMessage("§7   ===§8[§9Sub-Teams§8]§7===");
             for (SubTeam subTeam : factionManager.getSubTeams(factionData.getId())) {

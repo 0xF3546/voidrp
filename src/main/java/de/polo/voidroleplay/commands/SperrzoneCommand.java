@@ -3,8 +3,7 @@ package de.polo.voidroleplay.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.NaviData;
 import de.polo.voidroleplay.storage.PlayerData;
-import de.polo.voidroleplay.manager.LocationManager;
-import de.polo.voidroleplay.manager.NavigationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -19,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static de.polo.voidroleplay.Main.*;
+
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -26,26 +27,21 @@ import java.util.List;
  */
 public class SperrzoneCommand implements CommandExecutor {
     public static final List<String> sperrzonen = new ObjectArrayList<>();
-    private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public SperrzoneCommand(PlayerManager playerManager, LocationManager locationManager) {
-        this.playerManager = playerManager;
-        this.locationManager = locationManager;
-
+    public SperrzoneCommand() {
         Main.registerCommand("sperrzone", this);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player);
+        PlayerData playerData = playerService.getPlayerData(player);
         if (!playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei")) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        NaviData naviData = NavigationManager.getNearestNaviPoint(player.getLocation());
-        Location location = locationManager.getLocation(naviData.getLocation());
+        NaviData naviData = navigationService.getNearestNaviPoint(player.getLocation());
+        Location location = locationService.getLocation(naviData.getLocation());
         for (String point : sperrzonen) {
             if (args.length >= 1) {
                 if (Utils.stringArrayToString(args).replace("&", "§").equalsIgnoreCase(point)) {

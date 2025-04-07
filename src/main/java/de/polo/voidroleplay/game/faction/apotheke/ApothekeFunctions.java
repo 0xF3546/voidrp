@@ -2,9 +2,10 @@ package de.polo.voidroleplay.game.faction.apotheke;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.ApothekeTakeOut;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
 import de.polo.voidroleplay.game.events.MinuteTickEvent;
@@ -102,8 +103,8 @@ public class ApothekeFunctions implements Listener {
         String owner = "§9Staat";
         boolean canAttack = false;
 
-        FactionData apothekeFactionData = apotheke.isStaat() ? null : factionManager.getFactionData(apotheke.getOwner());
-        FactionData playerFactionData = playerData.getFaction() != null
+        Faction apothekeFactionData = apotheke.isStaat() ? null : factionManager.getFactionData(apotheke.getOwner());
+        Faction playerFactionData = playerData.getFaction() != null
                 ? factionManager.getFactionData(playerData.getFaction())
                 : null;
 
@@ -294,7 +295,7 @@ public class ApothekeFunctions implements Listener {
             }
         }
         if ((Utils.getTime().getHour() >= 16 && Utils.getTime().getHour() <= 22)) {
-            for (FactionData factionData : factionManager.getFactions()) {
+            for (Faction factionData : factionManager.getFactions()) {
                 int plus = 0;
                 for (Apotheke apotheke : getApotheken()) {
                     if (apotheke.getOwner() != null) {

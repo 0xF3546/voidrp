@@ -1,13 +1,14 @@
 package de.polo.voidroleplay.manager;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.game.base.shops.ShopData;
 import de.polo.voidroleplay.game.base.shops.ShopItem;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.game.faction.gangwar.Gangwar;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.Prefix;
@@ -297,8 +298,8 @@ public class ServerManager {
                 if (utils.getCurrentHour() >= 0 && utils.getCurrentHour() < 22) {
                     for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {
                         if (gangwarData.getAttacker() != null) {
-                            FactionData attackerData = factionManager.getFactionData(gangwarData.getAttacker());
-                            FactionData defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
+                            Faction attackerData = factionManager.getFactionData(gangwarData.getAttacker());
+                            Faction defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
                                 if (playerData == null) continue;

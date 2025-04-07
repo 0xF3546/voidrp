@@ -7,13 +7,13 @@ import de.polo.voidroleplay.storage.Ticket;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.NavigationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.manager.SupportManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import static de.polo.voidroleplay.Main.*;
 
 /**
  * @author Mayson1337
@@ -71,12 +73,12 @@ public class TicketCommand implements CommandExecutor {
                 if (event.isLeftClick()) {
                     player.teleport(finalTarget.getLocation());
                     player.sendMessage(Prefix.SUPPORT + "Du hast dich zu " + finalTarget.getName() + " teleportiert.");
-                    Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", ChatColor.AQUA);
+                    adminService.sendGuideMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", Color.AQUA);
                 } else {
-                    NaviData nearest = NavigationManager.getNearestNaviPoint(finalTarget.getLocation());
-                    finalTarget.teleport(Main.getInstance().locationManager.getLocation(nearest.getLocation()));
+                    NaviData nearest = navigationService.getNearestNaviPoint(finalTarget.getLocation());
+                    finalTarget.teleport(locationService.getLocation(nearest.getLocation()));
                     player.sendMessage(Prefix.SUPPORT + "Du hast " + finalTarget.getName() + " zu " + nearest.getName() + "§7 teleportiert.");
-                    Main.getInstance().adminManager.sendGuideMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), ChatColor.AQUA);
+                    adminService.sendGuideMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), Color.AQUA);
                 }
             }
         });

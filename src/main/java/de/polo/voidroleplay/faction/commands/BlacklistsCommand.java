@@ -2,7 +2,7 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.BlacklistData;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -33,7 +33,7 @@ public class BlacklistsCommand implements CommandExecutor {
         player.sendMessage("§7   ===§8[§cBlacklists§8]§7===");
         for (BlacklistData blacklistData : factionManager.getBlacklists()) {
             if (blacklistData.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
-                FactionData factionData = factionManager.getFactionData(blacklistData.getFaction());
+                Faction factionData = factionManager.getFactionData(blacklistData.getFaction());
                 TextComponent message = new TextComponent("§8 - §" + factionData.getPrimaryColor() + factionData.getFullname() + "§8: §a" + blacklistData.getPrice() + "$ §7| §c" + blacklistData.getKills() + " Kills §8| §7" + blacklistData.getReason());
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/blacklist pay " + blacklistData.getFaction()));
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§a§oBezahlen")));

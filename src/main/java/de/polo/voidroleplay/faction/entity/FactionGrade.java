@@ -1,6 +1,6 @@
 package de.polo.voidroleplay.faction.entity;
 
-public class FactionGradeData {
+public class FactionGrade {
     private int id;
     private String faction;
     private int grade;

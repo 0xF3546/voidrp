@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -57,7 +57,7 @@ public class DropCommand implements CommandExecutor {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe deiner Fraktion."));
             return;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         int amount = Utils.random(100, 150);
         playerData.setVariable("job", null);
         factionData.setEquipPoints(factionData.getEquipPoints() + amount);

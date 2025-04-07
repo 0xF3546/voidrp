@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -65,7 +65,7 @@ public class PlayerInfoCommand implements CommandExecutor {
                     }
                     String faction = "Zivilist";
                     if (targetplayerdata.getFaction() != null) {
-                        FactionData factionData = factionManager.getFactionData(targetplayerdata.getFaction());
+                        Faction factionData = factionManager.getFactionData(targetplayerdata.getFaction());
                         faction = factionData.getFullname();
                     }
                     if (targetplayerdata.isAduty()) {

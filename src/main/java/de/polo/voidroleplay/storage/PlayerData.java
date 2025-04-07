@@ -5,6 +5,7 @@ import de.polo.voidroleplay.game.base.extra.PlayerIllness;
 import de.polo.voidroleplay.game.base.extra.seasonpass.PlayerQuest;
 import de.polo.voidroleplay.game.base.farming.PlayerWorkstation;
 import de.polo.voidroleplay.game.faction.staat.SubTeam;
+import de.polo.voidroleplay.jobs.enums.LongTermJob;
 import de.polo.voidroleplay.manager.PlayerPetManager;
 import de.polo.voidroleplay.player.enums.*;
 import de.polo.voidroleplay.utils.Utils;

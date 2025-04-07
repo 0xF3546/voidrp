@@ -1,14 +1,14 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -32,6 +32,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 /**
  * @author Mayson1337
@@ -82,7 +84,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
     private void openMenu(Player player) {
         int i = 0;
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Pfeifentransport");
-        for (FactionData factionData : factionManager.getFactions()) {
+        for (Faction factionData : factionManager.getFactions()) {
             if (!factionData.isActive()) continue;
             if (factionData.isBadFrak() || factionData.getName().equalsIgnoreCase("ICA")) {
                 int amountDelivered = 0;
@@ -112,7 +114,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         }
     }
 
-    private void startTransport(Player player, FactionData factionData, int amount) {
+    private void startTransport(Player player, Faction factionData, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (locationManager.getDistanceBetweenCoords(player, "drugtransport") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Pfeifentransport.");
@@ -121,7 +123,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         lastTransport = Utils.getTime();
         player.sendMessage(Prefix.MAIN + "Du startest den Transport, begib dich zum Navipunkt!");
         playerData.setVariable("transport::amount", amount);
-        Main.getInstance().utils.navigationManager.createNaviByLocation(player, factionData.getName());
+        navigationService.createNaviByLocation(player, factionData.getName());
         playerData.setVariable("job", "pfeifentransport");
         if (amount < 1 || amount > 50) {
             player.sendMessage(Prefix.ERROR + "Du kannst nur zwischen 1 und 50 Pfeifen transportieren");
@@ -140,7 +142,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
 
     public void dropTransport(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        FactionData factionData = playerData.getVariable("transport:faction");
+        Faction factionData = playerData.getVariable("transport:faction");
         if (locationManager.getDistanceBetweenCoords(player, factionData.getName()) > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe von " + factionData.getName());
             return;
@@ -179,7 +181,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
         if (event.getSubmitTo().equalsIgnoreCase("transport::pfeife")) {
             try {
                 int amount = Integer.parseInt(event.getMessage());
-                FactionData factionData = event.getPlayerData().getVariable("transport:faction");
+                Faction factionData = event.getPlayerData().getVariable("transport:faction");
                 if (transports.get(factionData.getName()) != null) {
                     int fStats = transports.get(factionData.getName());
                     if (fStats + amount > 50) {

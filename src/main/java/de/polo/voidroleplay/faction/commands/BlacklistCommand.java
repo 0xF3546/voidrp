@@ -3,7 +3,7 @@ package de.polo.voidroleplay.faction.commands;
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.TabCompletion;
 import de.polo.voidroleplay.storage.BlacklistData;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -43,7 +43,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (!factionData.hasBlacklist() && !args[0].equalsIgnoreCase("pay")) {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion hat keine Blacklist.");
             return false;
@@ -171,7 +171,7 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
             }
             player.sendMessage(Prefix.ERROR + player1.getName() + " ist nicht auf der Blacklist.");
         } else if (args[0].equalsIgnoreCase("pay")) {
-            for (FactionData factionData1 : factionManager.getFactions()) {
+            for (Faction factionData1 : factionManager.getFactions()) {
                 if (factionData1.getName().equalsIgnoreCase(args[1]) || factionData1.getFullname().equalsIgnoreCase(args[1])) {
                     for (BlacklistData blacklistData : factionManager.getBlacklists()) {
                         if (blacklistData.getFaction().equals(factionData1.getName())) {

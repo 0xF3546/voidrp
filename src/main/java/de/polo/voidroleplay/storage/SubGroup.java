@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.storage;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
@@ -25,7 +25,7 @@ public class SubGroup {
         this.factionId = factionId;
     }
 
-    public FactionData getFaction() {
+    public Faction getFaction() {
         return Main.getInstance().factionManager.getFactionData(factionId);
     }
 

@@ -1,6 +1,7 @@
-package de.polo.voidroleplay.manager;
+package de.polo.voidroleplay.location.services.impl;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.database.impl.CoreDatabase;

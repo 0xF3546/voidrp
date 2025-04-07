@@ -1,7 +1,6 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -9,6 +8,7 @@ import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.*;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.SoundManager;
+import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -22,26 +22,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
+import static de.polo.voidroleplay.Main.*;
 
 public class WinzerCommand implements CommandExecutor {
-    private final PlayerManager playerManager;
-    private final LocationManager locationManager;
-    private final NavigationManager navigationManager;
 
-    public WinzerCommand(PlayerManager playerManager, LocationManager locationManager, NavigationManager navigationManager) {
-        this.playerManager = playerManager;
-        this.locationManager = locationManager;
-        this.navigationManager = navigationManager;
+    public WinzerCommand() {
         Main.registerCommand("winzer", this);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
-            if (locationManager.getDistanceBetweenCoords(player, "winzer") <= 5) {
+            if (locationService.getDistanceBetweenCoords(player, "winzer") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §5Winzer", true, true);
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "winzer") && playerData.getVariable("job") == null) {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aWinzer starten")) {
@@ -106,7 +100,7 @@ public class WinzerCommand implements CommandExecutor {
         if (event.getBlock().getType() != Material.JUNGLE_LEAVES) {
             return;
         }
-        PlayerData playerData = playerManager.getPlayerData(player);
+        PlayerData playerData = playerService.getPlayerData(player);
         if (playerData.getIntVariable("winzer") <= 0) {
             return;
         }
@@ -143,7 +137,7 @@ public class WinzerCommand implements CommandExecutor {
     }
 
     private void checked(Player player) {
-        PlayerData playerData = playerManager.getPlayerData(player);
+        PlayerData playerData = playerService.getPlayerData(player);
         Main.getInstance().seasonpass.didQuest(player, 9);
         playerData.setIntVariable("winzer", playerData.getIntVariable("winzer") - 1);
         playerData.setIntVariable("winzer_harvested", playerData.getIntVariable("winzer_harvested") + Utils.random(1, 3));
@@ -180,10 +174,10 @@ public class WinzerCommand implements CommandExecutor {
         }
 
         if (targetBlock != null) {
-            PlayerData playerData = playerManager.getPlayerData(player);
+            PlayerData playerData = playerService.getPlayerData(player);
             player.sendMessage("§8[§5Winzer§8]§7 Hier ist ein neuer Rebstock.");
             playerData.setVariable("grapevine", targetBlock);
-            navigationManager.createNaviByCord(player, targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
+            navigationService.createNaviByCord(player, targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
         } else {
             findGrapevine(player);
         }
@@ -192,7 +186,7 @@ public class WinzerCommand implements CommandExecutor {
 
     private void startJob(Player player) {
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "winzer")) {
-            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+            PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
             playerData.setVariable("job", "Winzer");
             player.sendMessage("§8[§5Winzer§8]§7 Du bist nun Winzer.");
             int trees = 6;
@@ -211,21 +205,18 @@ public class WinzerCommand implements CommandExecutor {
         }
     }
 
+    @SneakyThrows
     public void quitJob(Player player, boolean silent) {
         Main.getInstance().beginnerpass.didQuest(player, 5);
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
         int payout = ServerManager.getPayout("winzer") * playerData.getIntVariable("winzer_harvested");
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player);
-        if (playerData.getIntVariable("winzer") <= 0) playerManager.addExp(player, Utils.random(12, 20));
+        if (playerData.getIntVariable("winzer") <= 0) playerService.addExp(player, Utils.random(12, 20));
         //playerData.getScoreboard("winzer").killScoreboard();
         player.closeInventory();
-        try {
-            playerManager.addBankMoney(player, payout, "Auszahlung Winzer");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        playerService.addBankMoney(player, payout, "Auszahlung Winzer");
         Main.getInstance().getCooldownManager().setCooldown(player, "winzer", 600);
         Inventory inv = player.getInventory();
         for (ItemStack item : inv.getContents()) {

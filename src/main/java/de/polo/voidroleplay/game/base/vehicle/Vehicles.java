@@ -5,7 +5,7 @@ import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.player.ScoreboardAPI;
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static de.polo.voidroleplay.Main.navigationService;
 import static de.polo.voidroleplay.Main.utils;
 
 public class Vehicles implements Listener, CommandExecutor {
@@ -526,7 +527,7 @@ public class Vehicles implements Listener, CommandExecutor {
                         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§c" + data.getType())) {
                             @Override
                             public void onClick(InventoryClickEvent event) {
-                                utils.navigationManager.createNaviByCord(player, data.getX(), data.getY(), data.getZ());
+                                navigationService.createNaviByCord(player, data.getX(), data.getY(), data.getZ());
                                 player.sendMessage("§aDein Fahrzeug wurde markiert.");
                             }
                         });

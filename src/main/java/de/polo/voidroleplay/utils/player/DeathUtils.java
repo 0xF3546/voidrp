@@ -6,7 +6,7 @@ import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.RegisteredBlock;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import static de.polo.voidroleplay.Main.navigationService;
 import static de.polo.voidroleplay.Main.utils;
 
 public class DeathUtils {
@@ -284,7 +285,7 @@ public class DeathUtils {
         }
         corpse.getSkull().remove();
         playerData.setVariable("job::corpse::pickedup", true);
-        Main.getInstance().utils.navigationManager.createNaviByLocation(player, "undertaker");
+        navigationService.createNaviByLocation(player, "undertaker");
         player.sendMessage(Prefix.MAIN + "Du hast eine Leiche aufgesammelt, begib dich nun zum Bestatter.");
     }
 

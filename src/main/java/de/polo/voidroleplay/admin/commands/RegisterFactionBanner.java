@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.admin.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -67,7 +67,7 @@ public class RegisterFactionBanner implements CommandExecutor {
         bannerObject.put("baseColor", banner.getType().name());
         bannerObject.put("patterns", jsonArray);
 
-        FactionData factionData = factionManager.getFactionData(strings[0]);
+        Faction factionData = factionManager.getFactionData(strings[0]);
         if (factionData == null) {
             player.sendMessage(Prefix.ERROR + "Fraktion nicht gefunden.");
             return false;

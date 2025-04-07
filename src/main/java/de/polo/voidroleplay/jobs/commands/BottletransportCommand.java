@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
@@ -55,7 +55,7 @@ public class BottletransportCommand extends CommandBase {
         playerData.setVariable("job", "flaschentransport");
         int amount = Utils.random(2, 4);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + " erhalten, bringe diese in das Lager der Bar."));
-        utils.navigationManager.createNaviByLocation(player.getPlayer(), "bar_storage");
+        navigationService.createNaviByLocation(player.getPlayer(), "bar_storage");
         playerData.setVariable("job::flaschentransport::amount", amount);
     }
 

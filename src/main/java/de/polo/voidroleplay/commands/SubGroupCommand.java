@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.SubGroup;
 import de.polo.voidroleplay.game.events.SubmitChatEvent;
@@ -9,7 +9,7 @@ import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.manager.ItemManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import org.bukkit.Material;
@@ -109,7 +109,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
         if (playerData.getFaction() == null) {
             errorMessage = "Du bist in keiner Fraktion.";
         } else {
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.isBadFrak()) {
                 errorMessage = "Dieses Feature ist nur für Bad-Fraktionen.";
             } else {
@@ -126,7 +126,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
                 }
             });
         } else {
-            FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+            Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (factionData.getSubGroupId() == 0) {
                 inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§7An Fraktion binden")) {
                     @Override
@@ -147,7 +147,7 @@ public class SubGroupCommand implements CommandExecutor, Listener {
                     public void onClick(InventoryClickEvent event) {
                         player.closeInventory();
                         SubGroup subGroup = playerData.getSubGroup();
-                        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+                        Faction factionData = factionManager.getFactionData(playerData.getFaction());
                         factionManager.subGroups.sendMessage("§8[§f" + subGroup.getName() + "§8] §" + factionData.getPrimaryColor() + player.getName() + " hat die Gruppierung als Offizielle " + factionData.getFullname() + " UG entfernt.", subGroup);
                         factionManager.sendMessageToFaction(factionData.getName(), player.getName() + " hat die Gruppierung \"" + subGroup.getName() + "\" als Offizielle Gruppierung entfernt.");
                         subGroup.setFactionId(0);

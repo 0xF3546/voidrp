@@ -2,7 +2,7 @@ package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.BusinessData;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.BusinessManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -138,7 +138,7 @@ public class InviteCommand implements CommandExecutor {
 
     private void inviteToFaction(Player player, Player targetplayer) {
         String playerfac = factionManager.faction(player);
-        FactionData factionData = factionManager.getFactionData(playerfac);
+        Faction factionData = factionManager.getFactionData(playerfac);
         if (player.getLocation().distance(targetplayer.getLocation()) >= 5) {
             player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");
             return;

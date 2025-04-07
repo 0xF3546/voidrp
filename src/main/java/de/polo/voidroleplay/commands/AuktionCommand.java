@@ -1,10 +1,10 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
-import de.polo.voidroleplay.manager.LocationManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.GlobalStats;
 import de.polo.voidroleplay.utils.Prefix;
@@ -68,13 +68,13 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
             sortedFactionBets.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
             player.sendMessage("§7   ===§8[§3Bank§8]§7===");
             for (Map.Entry<String, Integer> entry : sortedFactionBets) {
-                FactionData fData = factionManager.getFactionData(entry.getKey());
+                Faction fData = factionManager.getFactionData(entry.getKey());
                 if (fData == null) continue;
                 player.sendMessage("§8 ➥ §" + fData.getPrimaryColor() + fData.getName() + "§8:§a " + Utils.toDecimalFormat(entry.getValue()) + "$");
             }
             return true;
         }
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         if (locationManager.getDistanceBetweenCoords(player, "bank") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Bank.");
             return false;
@@ -89,7 +89,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(Prefix.ERROR + "Der Betrag muss mindestens 1 Betragen");
                 return false;
             }
-            String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+            String[] factions = factionManager.getFactions().stream().map(Faction::getName).toArray(String[]::new);
             factionManager.sendCustomLeaderMessageToFactions("§8[§3Auktion§8]§7 Die Fraktion §" + factionData.getPrimaryColor() + factionData.getFullname() + "§7 haben Ihr Gebot um §a" + Utils.toDecimalFormat(amount) + "$§7 erhöht.", factions);
             factionManager.sendMessageToFaction(playerData.getFaction(), factionManager.getPlayerFactionRankName(player) + " " + player.getName() + " hat das Gebot der Fraktion um " + Utils.toDecimalFormat(amount) + "$ erhöht.");
             playerData.removeMoney(amount, "Auktion - Bet");
@@ -117,7 +117,7 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
     }
 
     @SneakyThrows
-    private void payIn(FactionData factionData, int amount) {
+    private void payIn(Faction factionData, int amount) {
         Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO auction_bets (faction, amount) VALUES (?, ?)");
         statement.setString(1, factionData.getName());
@@ -152,13 +152,13 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
         String winningFactionName = highestBidEntry.getKey();
         int amount = highestBidEntry.getValue();
 
-        FactionData winningFaction = factionManager.getFactionData(winningFactionName);
+        Faction winningFaction = factionManager.getFactionData(winningFactionName);
         if (winningFaction == null) {
             factionManager.sendCustomLeaderMessageToFactions("§8[§3Auktion§8]§7 Ein Fehler ist aufgetreten: Die gewinnende Fraktion konnte nicht gefunden werden.");
             return;
         }
 
-        String[] factions = factionManager.getFactions().stream().map(FactionData::getName).toArray(String[]::new);
+        String[] factions = factionManager.getFactions().stream().map(Faction::getName).toArray(String[]::new);
         factionManager.sendCustomLeaderMessageToFactions(
                 "§8[§3Auktion§8]§7 Die Fraktion §" + winningFaction.getPrimaryColor() + winningFaction.getFullname() +
                         "§7 hat mit einem Einsatz von §a" + amount + "$§7 die Auktion gewonnen!",

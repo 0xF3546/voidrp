@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.game.faction.apotheke.Apotheke;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -32,7 +32,7 @@ public class ApothekenCommand implements CommandExecutor {
             if (apotheke.getOwner().equalsIgnoreCase("staat")) {
                 player.sendMessage("§8 ➥ §eApotheke-" + apotheke.getId() + "§8 | §9Staat");
             } else {
-                FactionData factionData = factionManager.getFactionData(apotheke.getOwner());
+                Faction factionData = factionManager.getFactionData(apotheke.getOwner());
                 String attackable = "";
                 long minutesDifference = gamePlay.apotheke.getMinuteDifference(apotheke);
                 if (minutesDifference < 60 && minutesDifference >= 0) {

@@ -1,8 +1,9 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
+import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.storage.*;
 import de.polo.voidroleplay.game.base.shops.ShopData;
@@ -31,6 +32,8 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
+
+import static de.polo.voidroleplay.Main.navigationService;
 
 public class TabletUtils implements Listener {
     private final PlayerManager playerManager;
@@ -206,7 +209,7 @@ public class TabletUtils implements Listener {
     public void openPlayerAktenList(Player player, int page) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         playerData.setIntVariable("current_page", page);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Akten §8- §9Seite§8:§7 " + page, true, false);
         int i = 0;
@@ -247,7 +250,7 @@ public class TabletUtils implements Listener {
 
     public void editPlayerAkte(Player player, UUID uuid) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        FactionData factionData = factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = factionManager.getFactionData(playerData.getFaction());
         OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
         InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + targetplayer.getName(), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName())) {
@@ -511,7 +514,7 @@ public class TabletUtils implements Listener {
                                 });
                             } else {
                                 player.closeInventory();
-                                utils.navigationManager.createNaviByCord(player, playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ());
+                                navigationService.createNaviByCord(player, playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ());
                                 player.sendMessage("§8[§3Tablet§8]§7 Der Standort deines Fahrzeuges wurde dir markiert.");
                             }
                         }

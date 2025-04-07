@@ -21,7 +21,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class FactionData {
+public class Faction {
     public Storage storage = new Storage(this);
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
@@ -79,7 +79,7 @@ public class FactionData {
     @Setter
     private int equipPoints;
 
-    public FactionData(FactionType factionType) {
+    public Faction(FactionType factionType) {
         this.factionType = factionType;
     }
 
@@ -347,7 +347,7 @@ public class FactionData {
     }
 
     public class Storage {
-        private final FactionData factionData;
+        private final Faction factionData;
         private int weed;
         private int joint;
         private int cocaine;
@@ -359,7 +359,7 @@ public class FactionData {
         private int crystal;
         private LocalDateTime proceedingStarted;
 
-        public Storage(FactionData factionData) {
+        public Storage(Faction factionData) {
             this.factionData = factionData;
         }
 
@@ -507,7 +507,7 @@ public class FactionData {
     }
 
     public class Upgrades {
-        private final FactionData factionData;
+        private final Faction factionData;
         private int drugEarningLevel;
         private int taxLevel;
         private int weaponLevel;
@@ -515,7 +515,7 @@ public class FactionData {
         private int tax;
         private float weapon;
 
-        public Upgrades(FactionData factionData) {
+        public Upgrades(Faction factionData) {
             this.factionData = factionData;
         }
 
@@ -581,11 +581,11 @@ public class FactionData {
     }
 
     public class factionEquip {
-        private final FactionData factionData;
+        private final Faction factionData;
         private int sturmgewehr;
         private int sturmgewehr_ammo;
 
-        public factionEquip(FactionData factionData) {
+        public factionEquip(Faction factionData) {
             this.factionData = factionData;
         }
 

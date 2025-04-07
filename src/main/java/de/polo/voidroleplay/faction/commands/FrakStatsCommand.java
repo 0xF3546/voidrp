@@ -1,7 +1,7 @@
 package de.polo.voidroleplay.faction.commands;
 
 import de.polo.voidroleplay.Main;
-import de.polo.voidroleplay.faction.entity.FactionData;
+import de.polo.voidroleplay.faction.entity.Faction;
 import de.polo.voidroleplay.faction.entity.FactionPlayerData;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
@@ -34,7 +34,7 @@ public class FrakStatsCommand implements CommandExecutor {
         if (playerData.getFaction() == null) {
             player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
         }
-        FactionData factionData = null;
+        Faction factionData = null;
         if (!playerData.isAduty()) {
             factionData = factionManager.getFactionData(playerData.getFaction());
         } else {
