@@ -1,8 +1,10 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.game.events.SecondTickEvent;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.player.entities.VoidPlayer;
@@ -117,6 +119,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
     }
 
     private void startJob(VoidPlayer player) {
+        player.setMiniJob(MiniJob.DEEP_SEA_FISHERMAN);
         PlayerData playerData = player.getData();
         if (playerData == null) return;
         Boat boat = (Boat) player.getPlayer().getWorld().spawnEntity(locationManager.getLocation("hochseefischer_boat_out"), EntityType.BOAT);
@@ -132,6 +135,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
     }
 
     private void quitJob(Player player, boolean silent) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         Boat boat = spawnedBoats.get(player);
         Main.getInstance().getCooldownManager().setCooldown(player, "hochseefischer", 1200);
         if (boat != null) boat.remove();

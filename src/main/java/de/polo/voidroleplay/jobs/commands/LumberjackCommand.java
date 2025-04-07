@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -195,6 +197,7 @@ public class LumberjackCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player, boolean silent) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);
@@ -225,6 +228,7 @@ public class LumberjackCommand implements CommandExecutor {
     }
 
     public void startJob(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(MiniJob.LUMBERJACK);
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "holzfäller")) {
             Main.getInstance().getCooldownManager().setCooldown(player, "holzfäller", 600);
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());

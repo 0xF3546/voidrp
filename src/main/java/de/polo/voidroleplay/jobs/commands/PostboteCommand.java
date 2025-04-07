@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -115,6 +117,7 @@ public class PostboteCommand implements CommandExecutor {
     }
 
     public void startTransport(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(MiniJob.POSTMAN);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("post", Utils.random(2, 5));
         playerData.setVariable("job", "Postbote");
@@ -126,6 +129,7 @@ public class PostboteCommand implements CommandExecutor {
     }
 
     public void dropTransport(Player player, int house) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         int payout = Utils.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
         player.sendMessage("§8[§ePostbote§8]§7 Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");

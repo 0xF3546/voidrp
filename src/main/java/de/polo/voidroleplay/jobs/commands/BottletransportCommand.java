@@ -2,6 +2,7 @@ package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.manager.ServerManager;
 import de.polo.voidroleplay.player.entities.VoidPlayer;
 import de.polo.voidroleplay.storage.PlayerData;
@@ -53,6 +54,7 @@ public class BottletransportCommand extends CommandBase {
 
     private void startJob(VoidPlayer player, PlayerData playerData) {
         playerData.setVariable("job", "flaschentransport");
+        player.setMiniJob(MiniJob.BOTTLE_TRANSPORT);
         int amount = Utils.random(2, 4);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + " erhalten, bringe diese in das Lager der Bar."));
         navigationService.createNaviByLocation(player.getPlayer(), "bar_storage");
@@ -60,6 +62,7 @@ public class BottletransportCommand extends CommandBase {
     }
 
     private void drop(VoidPlayer player, PlayerData playerData) {
+        player.setMiniJob(null);
         int boxPrice = Utils.random(ServerManager.getPayout("flaschenlieferant_kiste_from"), ServerManager.getPayout("flaschenlieferant_kiste_to"));
         int amount = playerData.getVariable("job::flaschentransport::amount");
         if (amount <= 0) return;

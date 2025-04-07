@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.Corpse;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -88,6 +90,7 @@ public class UndertakerCommand implements CommandExecutor {
                         playerData.setVariable("job", "corpse");
                         playerData.setVariable("job::corpse", corpse);
                         playerData.setVariable("job::corpse::pickedup", false);
+                        VoidAPI.getPlayer(player).setMiniJob(MiniJob.UNDERTAKER);
                         showRoute(player, corpse);
                         player.sendMessage(Prefix.MAIN + "Die Leiche wurde markiert, begib dich hin und sammel Sie auf (Shift + F).");
                     }
@@ -103,6 +106,7 @@ public class UndertakerCommand implements CommandExecutor {
     }
 
     private void handlePayout(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         PlayerData playerData = playerManager.getPlayerData(player);
         Corpse corpse = playerData.getVariable("job::corpse");
         playerData.addMoney(corpse.getPrice(), "Bestatter");

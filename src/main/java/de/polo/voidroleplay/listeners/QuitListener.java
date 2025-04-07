@@ -2,7 +2,6 @@ package de.polo.voidroleplay.listeners;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.VoidAPI;
-import de.polo.voidroleplay.commands.ApfelplantageCommand;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.storage.ServiceData;
 import de.polo.voidroleplay.storage.Ticket;
@@ -98,9 +97,6 @@ QuitListener implements Listener {
                 switch (playerData.getVariable("job").toString()) {
                     case "lumberjack":
                         commands.lumberjackCommand.quitJob(player, true);
-                        break;
-                    case "apfelsammler":
-                        ApfelplantageCommand.quitJob(player);
                         break;
                     case "mine":
                         commands.mineCommand.quitJob(player);

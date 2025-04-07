@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -186,6 +188,7 @@ public class WinzerCommand implements CommandExecutor {
 
     private void startJob(Player player) {
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "winzer")) {
+            VoidAPI.getPlayer(player).setMiniJob(MiniJob.WINZER);
             PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
             playerData.setVariable("job", "Winzer");
             player.sendMessage("§8[§5Winzer§8]§7 Du bist nun Winzer.");
@@ -207,6 +210,7 @@ public class WinzerCommand implements CommandExecutor {
 
     @SneakyThrows
     public void quitJob(Player player, boolean silent) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         playerData.setVariable("job", null);

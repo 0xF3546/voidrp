@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
@@ -116,6 +118,7 @@ public class MuellmannCommand implements CommandExecutor {
     }
 
     public void startTransport(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(MiniJob.WASTE_COLLECTOR);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("muell", Utils.random(2, 5));
         playerData.setIntVariable("muellkg", 0);
@@ -128,6 +131,7 @@ public class MuellmannCommand implements CommandExecutor {
     }
 
     public void dropTransport(Player player, int house) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.sendMessage("§8[§9Müllmann§8]§7 Du den Müll von §6Haus " + house + "§7 entleert.");
         SoundManager.successSound(player);

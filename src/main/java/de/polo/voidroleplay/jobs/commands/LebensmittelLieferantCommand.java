@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
@@ -34,7 +36,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("job") == null) {
             if (locationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
-                playerData.setVariable("job", "lieferant");
+                VoidAPI.getPlayer(player).setMiniJob(MiniJob.FOOD_SUPPLIER);
                 player.sendMessage(prefix + "Du bist nun §aLebensmittel-Lieferant§7.");
                 player.sendMessage(prefix + "Bringe die Lebensmittel zu einem Shop deiner Wahl!");
                 playerData.setIntVariable("snacks", Utils.random(3, 7));
@@ -81,6 +83,7 @@ public class LebensmittelLieferantCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("drinks", null);

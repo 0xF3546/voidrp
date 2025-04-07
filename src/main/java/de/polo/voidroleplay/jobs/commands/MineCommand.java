@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.location.services.impl.LocationManager;
@@ -43,6 +45,7 @@ public class MineCommand implements CommandExecutor {
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mine")) {
                         if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
                             playerData.setVariable("job", "mine");
+                            VoidAPI.getPlayer(player).setMiniJob(MiniJob.MINER);
                             player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
                             player.sendMessage(prefix + "Baue nun Erze ab.");
                             /*Scoreboard scoreboard = new Scoreboard(player);
@@ -93,6 +96,7 @@ public class MineCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         Main.getInstance().beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         //playerData.getScoreboard("mine").killScoreboard();

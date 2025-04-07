@@ -1,6 +1,8 @@
 package de.polo.voidroleplay.jobs.commands;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.VoidAPI;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
@@ -25,6 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
 
+import static de.polo.voidroleplay.Main.beginnerpass;
 import static de.polo.voidroleplay.Main.navigationService;
 
 public class FarmerCommand implements CommandExecutor {
@@ -135,7 +138,7 @@ public class FarmerCommand implements CommandExecutor {
     }
 
     public void quitJob(Player player) {
-        Main.getInstance().beginnerpass.didQuest(player, 5);
+        beginnerpass.didQuest(player, 5);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getVariable("job") == "weizenlieferant") {
             playerData.setVariable("job", null);
@@ -203,6 +206,7 @@ public class FarmerCommand implements CommandExecutor {
     }
 
     public void startTransport(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(MiniJob.FARMER);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("weizen", Utils.random(2, 5));
         playerData.setVariable("job", "weizenlieferant");
@@ -215,6 +219,7 @@ public class FarmerCommand implements CommandExecutor {
     }
 
     public void dropTransport(Player player) {
+        VoidAPI.getPlayer(player).setMiniJob(null);
         if (locationManager.getDistanceBetweenCoords(player, "Mühle") < 5) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             int payout = Utils.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));

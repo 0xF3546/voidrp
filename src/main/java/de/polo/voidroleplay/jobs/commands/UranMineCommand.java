@@ -4,6 +4,7 @@ import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.VoidAPI;
 import de.polo.voidroleplay.game.events.NaviReachEvent;
 import de.polo.voidroleplay.handler.CommandBase;
+import de.polo.voidroleplay.jobs.enums.MiniJob;
 import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.location.services.impl.LocationManager;
 import de.polo.voidroleplay.manager.ServerManager;
@@ -71,6 +72,7 @@ public class UranMineCommand extends CommandBase implements Listener {
             return;
         }
         playerData.setVariable("job", "Urantransport");
+        player.setMiniJob(MiniJob.URANIUM_MINER);
         player.sendMessage(Component.text(Prefix.MAIN + "Finde die Uranquelle (Smaragderz) und baue Sie ab. Bringe diese anschließend zum Atomkraftwerk"));
         equip(player);
         checkForRollout();
@@ -102,6 +104,7 @@ public class UranMineCommand extends CommandBase implements Listener {
     }
 
     private void drop(VoidPlayer player) {
+        player.setMiniJob(null);
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getPlayer());
         if (playerData == null) return;
         if (locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") > 10) {

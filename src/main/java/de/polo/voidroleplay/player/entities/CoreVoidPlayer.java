@@ -19,7 +19,6 @@ public class CoreVoidPlayer implements VoidPlayer{
     private final Player player;
 
     @Getter
-    @Setter
     private MiniJob miniJob;
 
     public CoreVoidPlayer(Player player) {
@@ -34,5 +33,14 @@ public class CoreVoidPlayer implements VoidPlayer{
     @Override
     public void sendMessage(Component component) {
         player.sendMessage(component);
+    }
+
+    public void setMiniJob(MiniJob miniJob) {
+        this.miniJob = miniJob;
+        if (miniJob == null) {
+            getData().setVariable("job", null);
+            return;
+        }
+        getData().setVariable("job", miniJob.getName());
     }
 }
