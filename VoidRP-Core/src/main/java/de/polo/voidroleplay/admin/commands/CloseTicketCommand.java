@@ -1,0 +1,66 @@
+package de.polo.voidroleplay.admin.commands;
+
+import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.storage.PlayerData;
+import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.player.services.impl.PlayerManager;
+import de.polo.voidroleplay.manager.SupportManager;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
+import de.polo.voidroleplay.utils.player.PlayerPacket;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class CloseTicketCommand implements CommandExecutor {
+    private final PlayerManager playerManager;
+    private final SupportManager supportManager;
+    private final AdminManager adminManager;
+    private final Utils utils;
+
+    public CloseTicketCommand(PlayerManager playerManager, SupportManager supportManager, AdminManager adminManager, Utils utils) {
+        this.playerManager = playerManager;
+        this.supportManager = supportManager;
+        this.adminManager = adminManager;
+        this.utils = utils;
+        Main.registerCommand("closesupport", this);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.getPermlevel() >= 40) {
+            Player targetplayer = null;
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                if (supportManager.getTicket(player).getCreator() == players.getUniqueId()) {
+                    targetplayer = players;
+                    Utils.Tablist.updatePlayer(players);
+                }
+                if (supportManager.getTicket(player).getEditors().contains(players.getUniqueId()) && player != players) {
+                    players.sendMessage(Prefix.SUPPORT + "§aDas Ticket wurde von §2" + player.getName() + "§a geschlossen.");
+                    Utils.Tablist.updatePlayer(players);
+                }
+            }
+            if (!supportManager.deleteTicketConnection(player, targetplayer)) {
+                player.sendMessage(Prefix.SUPPORT + "Du bearbeitest kein Ticket.");
+                return false;
+            }
+            Utils.Tablist.updatePlayer(player);
+            targetplayer.sendMessage(Prefix.SUPPORT + "§c" + playerManager.rang(player) + " " + player.getName() + " hat dein Ticket geschlossen!");
+            utils.sendActionBar(targetplayer, "§c§lDein Ticket wurde geschlossen!");
+            player.sendMessage(Prefix.SUPPORT + "§aDu hast das Ticket von §2" + targetplayer.getName() + "§a geschlossen.");
+            PlayerPacket playerPacket = new PlayerPacket(player);
+            playerPacket.renewPacket();
+            PlayerPacket targetPacket = new PlayerPacket(targetplayer);
+            targetPacket.renewPacket();
+            adminManager.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", ChatColor.YELLOW);
+        } else {
+            player.sendMessage(Prefix.ERROR_NOPERMISSION);
+        }
+        return false;
+    }
+}

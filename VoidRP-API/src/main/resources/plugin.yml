@@ -1,0 +1,6 @@
+name: VoidRP-API
+version: '1.0-SNAPSHOT'
+main: org.einstify.voidRPAPI.Main
+api-version: '1.20'
+authors: [EinsTify]
+description: joa Nametags färben
