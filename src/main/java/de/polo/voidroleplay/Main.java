@@ -61,6 +61,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -135,6 +136,10 @@ public final class Main extends JavaPlugin {
         if (cmd != null) {
             cmd.setTabCompleter(c);
         }
+    }
+
+    public static void registerListener(Listener listener) {
+        Bukkit.getPluginManager().registerEvents(listener, instance);
     }
 
     @Override
