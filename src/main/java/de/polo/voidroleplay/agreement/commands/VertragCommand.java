@@ -1,8 +1,8 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.agreement.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.Prefix;
-import de.polo.voidroleplay.utils.VertragUtil;
+import de.polo.voidroleplay.agreement.services.VertragUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

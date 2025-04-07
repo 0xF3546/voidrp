@@ -8,7 +8,7 @@ import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.VertragUtil;
+import de.polo.voidroleplay.agreement.services.VertragUtil;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

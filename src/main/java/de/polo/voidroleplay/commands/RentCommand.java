@@ -6,7 +6,7 @@ import de.polo.voidroleplay.manager.LocationManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.VertragUtil;
+import de.polo.voidroleplay.agreement.services.VertragUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

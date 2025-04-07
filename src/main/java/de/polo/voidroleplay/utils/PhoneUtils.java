@@ -1,6 +1,7 @@
 package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
+import de.polo.voidroleplay.agreement.services.VertragUtil;
 import de.polo.voidroleplay.storage.PhoneCall;
 import de.polo.voidroleplay.storage.PlayerData;
 import de.polo.voidroleplay.game.base.crypto.Miner;

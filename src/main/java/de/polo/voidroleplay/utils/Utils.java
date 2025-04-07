@@ -2,6 +2,7 @@ package de.polo.voidroleplay.utils;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.agreement.services.VertragUtil;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.game.faction.gangwar.GangwarUtils;

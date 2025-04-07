@@ -5,10 +5,21 @@ import com.comphenix.protocol.ProtocolManager;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import de.polo.api.nametags.INameTagProvider;
+import de.polo.voidroleplay.admin.services.AdminService;
+import de.polo.voidroleplay.admin.services.SupportService;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
+import de.polo.voidroleplay.admin.services.impl.CoreAdminService;
+import de.polo.voidroleplay.admin.services.impl.CoreSupportService;
+import de.polo.voidroleplay.agreement.commands.AblehnenVertrag;
+import de.polo.voidroleplay.agreement.commands.AnnehmenCommand;
+import de.polo.voidroleplay.agreement.commands.VertragCommand;
+import de.polo.voidroleplay.agreement.services.AgreementService;
+import de.polo.voidroleplay.agreement.services.VertragUtil;
+import de.polo.voidroleplay.agreement.services.impl.CoreAgreementService;
 import de.polo.voidroleplay.commands.*;
 import de.polo.voidroleplay.database.Database;
 import de.polo.voidroleplay.database.impl.CoreDatabase;
+import de.polo.voidroleplay.events.christmas.commands.AdventskalenderCommand;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.faction.commands.*;
 import de.polo.voidroleplay.faction.service.FactionService;
@@ -59,9 +70,12 @@ public final class Main extends JavaPlugin {
 
     public static Database database;
     public static PlayerService playerService;
+    public static AdminService adminService;
+    public static SupportService supportService;
     public static FactionService factionService;
     public static HouseService houseService;
     public static NewsService newsService;
+    public AgreementService agreementService;
 
     @Getter
     public CooldownManager cooldownManager;
@@ -90,7 +104,6 @@ public final class Main extends JavaPlugin {
     public static CompanyManager companyManager;
     public static Seasonpass seasonpass;
     public static Beginnerpass beginnerpass;
-    private NPCManager npc;
 
     @Getter
     private ScoreboardAPI scoreboardAPI;
@@ -139,8 +152,10 @@ public final class Main extends JavaPlugin {
         playerService = new CorePlayerService();
         houseService = new CoreHouseService();
         newsService = new CoreNewsService();
+        supportService = new CoreSupportService();
+        adminService = new CoreAdminService();
+        agreementService = new CoreAgreementService();
 
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
         scoreboardAPI = new ScoreboardAPI(scoreboardManager);
@@ -163,8 +178,7 @@ public final class Main extends JavaPlugin {
         weaponManager = new WeaponManager(utils, playerManager);
         newsManager = new NewsManager();
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
-        npc = new NPCManager(playerManager);
-        gamePlay = new GamePlay(playerManager, utils, coreDatabase, factionManager, locationManager, npc);
+        gamePlay = new GamePlay(playerManager, utils, coreDatabase, factionManager, locationManager);
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);

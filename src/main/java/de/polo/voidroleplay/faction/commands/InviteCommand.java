@@ -12,7 +12,7 @@ import de.polo.voidroleplay.manager.ItemManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.Utils;
-import de.polo.voidroleplay.utils.VertragUtil;
+import de.polo.voidroleplay.agreement.services.VertragUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;

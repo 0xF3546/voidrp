@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.events.christmas.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.handler.CommandBase;

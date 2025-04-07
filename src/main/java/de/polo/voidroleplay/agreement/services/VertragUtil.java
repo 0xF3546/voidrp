@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.utils;
+package de.polo.voidroleplay.agreement.services;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.storage.Agreement;
@@ -10,6 +10,9 @@ import de.polo.voidroleplay.game.base.housing.HouseManager;
 import de.polo.voidroleplay.admin.services.impl.AdminManager;
 import de.polo.voidroleplay.faction.service.impl.FactionManager;
 import de.polo.voidroleplay.player.services.impl.PlayerManager;
+import de.polo.voidroleplay.utils.PhoneUtils;
+import de.polo.voidroleplay.utils.Prefix;
+import de.polo.voidroleplay.utils.Utils;
 import de.polo.voidroleplay.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.md_5.bungee.api.chat.ClickEvent;

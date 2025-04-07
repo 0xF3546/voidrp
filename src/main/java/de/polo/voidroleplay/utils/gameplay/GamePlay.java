@@ -20,7 +20,6 @@ import de.polo.voidroleplay.player.services.impl.PlayerManager;
 import de.polo.voidroleplay.utils.inventory.CustomItem;
 import de.polo.voidroleplay.utils.inventory.InventoryManager;
 import de.polo.voidroleplay.storage.*;
-import de.polo.voidroleplay.utils.NPCManager;
 import de.polo.voidroleplay.utils.Prefix;
 import de.polo.voidroleplay.utils.StaatUtil;
 import de.polo.voidroleplay.utils.Utils;
@@ -70,7 +69,6 @@ public class GamePlay implements Listener {
     @Getter
     private final FFA ffa;
     private final List<Dealer> currentDealer = new ObjectArrayList<>();
-    private final NPCManager npc;
     private final List<GOVRaid> govRaids = new ObjectArrayList<>();
     private final List<PlayerDrugUsage> drugUsages = new ObjectArrayList<>();
     @Getter
@@ -84,7 +82,7 @@ public class GamePlay implements Listener {
     private boolean isStaatsbankRobBlocked = false;
 
     @SneakyThrows
-    public GamePlay(PlayerManager playerManager, Utils utils, CoreDatabase coreDatabase, FactionManager factionManager, LocationManager locationManager, NPCManager npc) {
+    public GamePlay(PlayerManager playerManager, Utils utils, CoreDatabase coreDatabase, FactionManager factionManager, LocationManager locationManager) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.coreDatabase = coreDatabase;
@@ -100,7 +98,6 @@ public class GamePlay implements Listener {
         militaryDrop = new MilitaryDrop(playerManager, factionManager, locationManager);
         ffa = new FFA(playerManager, locationManager);
         crypto = new Crypto();
-        this.npc = npc;
 
         /*
         Dealer System: deaktiviert

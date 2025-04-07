@@ -1,4 +1,4 @@
-package de.polo.voidroleplay.commands;
+package de.polo.voidroleplay.agreement.commands;
 
 import de.polo.voidroleplay.Main;
 import de.polo.voidroleplay.utils.Utils;
