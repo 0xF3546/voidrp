@@ -19,9 +19,11 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +45,7 @@ import static de.polo.core.Main.locationService;
 public class SewerCleanerCommand extends CommandBase implements Listener {
 
     private final Material sewerCleanerMaterial = Material.DIRT;
-    private final Material cleaningItem = Material.BUCKET;
+    private final Material cleaningItem = Material.BRUSH;
     private final List<Block> cleanedBlocks = new ObjectArrayList<>();
 
     public SewerCleanerCommand(@NotNull CommandMeta meta) {
@@ -67,11 +69,13 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
     private void startJob(VoidPlayer player) {
         player.setMiniJob(MiniJob.SEWER_CLEANER);
         player.getData().setVariable("job::cleaning::blocks", Utils.random(3, 6));
+        equip(player);
     }
 
     private void endJob(VoidPlayer player) {
         player.sendMessage("Du hast deinen Minijob beendet.", Prefix.INFO);
         player.setMiniJob(null);
+        unEquip(player);
     }
 
     private void openCleaningInventory(VoidPlayer player, Block block) {
@@ -108,12 +112,20 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
         }
     }
 
+    private void equip(VoidPlayer voidPlayer) {
+        ItemStack item = new ItemBuilder(cleaningItem).setName("§7Reinigungsgerät").build();
+        voidPlayer.getPlayer().getInventory().addItem(item);
+    }
+
+    private void unEquip(VoidPlayer voidPlayer) {
+        voidPlayer.getPlayer().getInventory().removeItem(new ItemStack(cleaningItem));
+    }
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         VoidPlayer player = VoidAPI.getPlayer(event.getPlayer());
         if (!player.getMiniJob().equals(MiniJob.SEWER_CLEANER)) return;
         if (event.getClickedBlock().getType().equals(sewerCleanerMaterial)) {
-            player.sendMessage("Du hast den Abwasserkanal gereinigt.", Prefix.INFO);
             openCleaningInventory(player, event.getClickedBlock());
         }
     }
@@ -125,6 +137,14 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
                 block.setType(sewerCleanerMaterial);
             }
             cleanedBlocks.clear();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onQuit(PlayerQuitEvent event) {
+        VoidPlayer player = VoidAPI.getPlayer(event.getPlayer());
+        if (player.getMiniJob() != null) {
+            endJob(player);
         }
     }
 }
