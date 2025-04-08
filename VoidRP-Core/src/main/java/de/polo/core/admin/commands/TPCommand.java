@@ -31,17 +31,17 @@ public class TPCommand implements CommandExecutor {
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /tp [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /tp [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         // ISSUE VRP-10003: fixed by adding null check for targetplayer
         if (targetplayer == null || !targetplayer.isOnline()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
         player.teleport(targetplayer.getLocation());

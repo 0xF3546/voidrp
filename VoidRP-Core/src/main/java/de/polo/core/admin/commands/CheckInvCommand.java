@@ -28,14 +28,14 @@ public class CheckInvCommand implements CommandExecutor {
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length >= 1) {
             Player targetplayer = Bukkit.getPlayer(args[0]);
             player.openInventory(targetplayer.getInventory());
         } else {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /checkinv [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /checkinv [Spieler]");
         }
         return false;
     }

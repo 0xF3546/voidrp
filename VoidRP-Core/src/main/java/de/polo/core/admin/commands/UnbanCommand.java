@@ -29,7 +29,7 @@ public class UnbanCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        String syntax_error = Prefix.ADMIN_ERROR + "Syntax-Fehler: /unban [Spieler]";
+        String syntax_error = Prefix.ERROR + "Syntax-Fehler: /unban [Spieler]";
         if (playerData.getPermlevel() < 70) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;

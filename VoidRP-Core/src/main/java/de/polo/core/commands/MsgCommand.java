@@ -32,7 +32,7 @@ public class MsgCommand implements CommandExecutor {
                 targetplayer.sendMessage("§d" + playerData.getRang() + " " + player.getName() + " zu dir: " + msg);
                 player.sendMessage("§dDu zu " + targetplayer.getName() + ": " + msg);
             } else {
-                player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /msg [Spieler] [Nachricht]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /msg [Spieler] [Nachricht]");
             }
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);

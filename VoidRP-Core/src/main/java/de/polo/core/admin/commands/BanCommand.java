@@ -53,7 +53,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 4) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /ban [name/uuid] [Wert] [Zeit] [Grund]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /ban [name/uuid] [Wert] [Zeit] [Grund]");
             return false;
         }
 
@@ -64,7 +64,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
 
         LocalDateTime banEndDate = parseBanDuration(banDuration);
         if (banEndDate == null) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Ungültige Zeitangabe. Beispiele: 1h, 2d, 3m");
+            player.sendMessage(Prefix.ERROR + "Ungültige Zeitangabe. Beispiele: 1h, 2d, 3m");
             return false;
         }
 
@@ -73,7 +73,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         } else if ("uuid".equals(targetType)) {
             banPlayerByUUID(player, targetValue, banReason, banEndDate);
         } else {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Ungültiger Typ. Verwende 'name' oder 'uuid'.");
+            player.sendMessage(Prefix.ERROR + "Ungültiger Typ. Verwende 'name' oder 'uuid'.");
             return false;
         }
 
@@ -102,7 +102,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             } catch (SQLException e) {
-                executor.sendMessage(Prefix.ADMIN_ERROR + "Datenbankfehler: " + e.getMessage());
+                executor.sendMessage(Prefix.ERROR + "Datenbankfehler: " + e.getMessage());
                 e.printStackTrace();
                 return;
             }
@@ -112,7 +112,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
             applyBan(targetUUID, playerName, executor.getName(), reason, endDate);
             broadcastBanMessage(executor, playerName, reason);
         } else {
-            executor.sendMessage(Prefix.ADMIN_ERROR + "Spieler nicht gefunden.");
+            executor.sendMessage(Prefix.ERROR + "Spieler nicht gefunden.");
         }
     }
 
@@ -121,7 +121,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         try {
             targetUUID = UUID.fromString(uuidString);
         } catch (IllegalArgumentException e) {
-            executor.sendMessage(Prefix.ADMIN_ERROR + "Ungültige UUID.");
+            executor.sendMessage(Prefix.ERROR + "Ungültige UUID.");
             return;
         }
 
@@ -135,7 +135,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
                 }
             }
         } catch (SQLException e) {
-            executor.sendMessage(Prefix.ADMIN_ERROR + "Datenbankfehler: " + e.getMessage());
+            executor.sendMessage(Prefix.ERROR + "Datenbankfehler: " + e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -144,7 +144,7 @@ public class BanCommand implements CommandExecutor, TabCompleter {
             applyBan(targetUUID, targetName, executor.getName(), reason, endDate);
             broadcastBanMessage(executor, targetName, reason);
         } else {
-            executor.sendMessage(Prefix.ADMIN_ERROR + "Spieler nicht gefunden.");
+            executor.sendMessage(Prefix.ERROR + "Spieler nicht gefunden.");
         }
     }
 

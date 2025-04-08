@@ -78,7 +78,7 @@ public class PlayerInfoCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Spieler nicht gefunden.");
             }
         } else {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /playerinfo [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /playerinfo [Spieler]");
         }
         return false;
     }

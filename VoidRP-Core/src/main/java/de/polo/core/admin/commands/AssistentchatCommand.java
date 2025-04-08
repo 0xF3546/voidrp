@@ -31,7 +31,7 @@ public class AssistentchatCommand implements CommandExecutor {
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Error: /guidechat [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Error: /guidechat [Nachricht]");
             return false;
         }
 

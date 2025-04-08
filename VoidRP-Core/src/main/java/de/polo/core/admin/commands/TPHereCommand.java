@@ -31,16 +31,16 @@ public class TPHereCommand implements CommandExecutor {
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /tphere [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /tphere [Spieler]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (!targetplayer.isOnline()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
         targetplayer.teleport(player.getLocation());

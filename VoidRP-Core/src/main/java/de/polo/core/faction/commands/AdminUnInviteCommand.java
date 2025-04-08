@@ -37,11 +37,11 @@ public class AdminUnInviteCommand implements CommandExecutor {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.isAduty()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (!(args.length >= 1)) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /auninvite [Spieler]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /auninvite [Spieler]");
             return false;
         }
         if (playerData.getPermlevel() < 80) {
@@ -73,7 +73,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
             }
-            player.sendMessage(Prefix.ADMIN_ERROR + "Du hast " + offlinePlayer.getName() + " aus der Fraktion geworfen.");
+            player.sendMessage(Prefix.ERROR + "Du hast " + offlinePlayer.getName() + " aus der Fraktion geworfen.");
             return true;
         }
         player.sendMessage(Prefix.ERROR + args[0] + " wurde nicht gefunden.");

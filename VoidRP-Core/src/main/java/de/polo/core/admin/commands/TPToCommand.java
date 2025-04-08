@@ -43,10 +43,10 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
                 player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 2);
             } else {
-                player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /tpto [Punkt]");
+                player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /tpto [Punkt]");
             }
         } else {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
         }
         return false;
     }

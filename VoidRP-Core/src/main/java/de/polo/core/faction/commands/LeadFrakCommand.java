@@ -43,7 +43,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args.length < 2) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /leadfrak [Spieler] [Fraktion]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /leadfrak [Spieler] [Fraktion]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);

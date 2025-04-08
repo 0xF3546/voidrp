@@ -34,12 +34,12 @@ public class KickCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /kick [Spieler] [Grund]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /kick [Spieler] [Grund]");
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (targetplayer == null && !targetplayer.isOnline()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + args[0] + " ist nicht online.");
+            player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
         StringBuilder message = new StringBuilder();

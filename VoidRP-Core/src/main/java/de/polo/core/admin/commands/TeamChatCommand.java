@@ -35,7 +35,7 @@ public class TeamChatCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Error: /teamchat [Nachricht]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Error: /teamchat [Nachricht]");
             return false;
         }
         String msg = Utils.stringArrayToString(args);

@@ -40,7 +40,7 @@ public class SpecCommand implements CommandExecutor {
                         player.sendMessage(Prefix.ADMIN + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
                         adminManager.send_message(player.getName() + " beobachtet nun " + targetplayer.getName(), ChatColor.RED);
                     } else {
-                        player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /spec [Spieler]");
+                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /spec [Spieler]");
                     }
                 } else {
                     player.setGameMode(GameMode.SURVIVAL);
@@ -51,7 +51,7 @@ public class SpecCommand implements CommandExecutor {
                     adminManager.send_message(player.getName() + " hat den Beobachter-Modus verlassen.", ChatColor.RED);
                 }
             } else {
-                player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst.");
+                player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
             }
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);

@@ -31,11 +31,11 @@ public class GoToVehCommand implements CommandExecutor {
             return false;
         }
         if (!playerData.isAduty()) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Du bist nicht im Admindienst!");
+            player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
         if (args.length < 1) {
-            player.sendMessage(Prefix.ADMIN_ERROR + "Syntax-Fehler: /gotovehicle [ID]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /gotovehicle [ID]");
             return false;
         }
         for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
