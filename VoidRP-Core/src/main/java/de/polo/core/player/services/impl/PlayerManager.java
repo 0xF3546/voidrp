@@ -142,273 +142,277 @@ public class PlayerManager implements Listener {
             }*/
     }
 
+    @SneakyThrows
     public void loadPlayer(Player player) {
         UUID uuid = player.getUniqueId();
-        try {
-            Statement statement = Main.getInstance().coreDatabase.getStatement();
-            assert statement != null;
-            String query = "SELECT players.*, player_addonxp.* " +
-                    "FROM players " +
-                    "LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid " +
-                    "WHERE players.uuid = '" + uuid + "'";
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
+        assert statement != null;
+        String query = "SELECT players.*, player_addonxp.* " +
+                "FROM players " +
+                "LEFT JOIN player_addonxp ON players.uuid = player_addonxp.uuid " +
+                "WHERE players.uuid = '" + uuid + "'";
 
-            ResultSet result = statement.executeQuery(query);
-            if (result.next()) {
-                if (result.getString("player_name") != null) {
-                    if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
-                        List<Integer> houses = new ObjectArrayList<>();
-                        for (House house : HouseManager.houseDataMap.values()) {
-                            if (house.getOwner() == null) continue;
-                            if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
-                                houses.add(house.getId());
-                            }
+        ResultSet result = statement.executeQuery(query);
+        if (result.next()) {
+            if (result.getString("player_name") != null) {
+                if (!result.getString("player_name").equalsIgnoreCase(player.getName())) {
+                    List<Integer> houses = new ObjectArrayList<>();
+                    for (House house : HouseManager.houseDataMap.values()) {
+                        if (house.getOwner() == null) continue;
+                        if (house.getOwner().equalsIgnoreCase(player.getUniqueId().toString())) {
+                            houses.add(house.getId());
                         }
-                        for (int house : houses) {
-                            for (RegisteredBlock block : blockManager.getBlocks()) {
-                                if (block.getInfo() == null) continue;
-                                if (block.getInfoValue() == null) continue;
-                                try {
-                                    if (block.getInfo().equalsIgnoreCase("house") && Integer.parseInt(block.getInfoValue()) == house) {
-                                        Block b = block.getLocation().getBlock();
-                                        Sign sign = (Sign) b.getState();
-                                        sign.setLine(2, "§0" + player.getName());
-                                        sign.update();
-                                    }
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();  // Oder eine andere Form der Fehlermeldung
+                    }
+                    for (int house : houses) {
+                        for (RegisteredBlock block : blockManager.getBlocks()) {
+                            if (block.getInfo() == null) continue;
+                            if (block.getInfoValue() == null) continue;
+                            if (!block.getInfo().equalsIgnoreCase("house")) continue;
+                            try {
+                                int blockHouseNumber = Integer.parseInt(block.getInfoValue());
+                                if (blockHouseNumber == house) {
+                                    Block b = block.getLocation().getBlock();
+                                    Sign sign = (Sign) b.getState();
+                                    sign.setLine(2, "§0" + player.getName());
+                                    sign.update();
                                 }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
                         }
                     }
                 }
-                PlayerData playerData = new PlayerData(player);
-                playerData.setUuid(player.getUniqueId());
-                playerData.setFirstname(result.getString("firstname"));
-                playerData.setLastname(result.getString("lastname"));
-                playerData.setBargeld(result.getInt("bargeld"));
-                playerData.setBank(result.getInt("bank"));
-                playerData.setVisum(result.getInt("visum"));
-                playerData.setPermlevel(result.getInt("player_permlevel"));
-                playerData.setRang(result.getString("player_rank"));
-                playerData.setAduty(false);
-                playerData.setLevel(result.getInt("level"));
-                playerData.setExp(result.getInt("exp"));
-                playerData.setDead(result.getBoolean("isDead"));
-                if (result.getBoolean("isDead")) {
-                    playerData.setDeathTime(result.getInt("deathTime"));
-                    playerData.setHitmanDead(result.getBoolean("isHitmanDead"));
-                    playerData.setStabilized(result.getBoolean("isStabilized"));
-                }
-                playerData.setNumber(result.getInt("number"));
-                playerData.setDuty(result.getBoolean("isDuty"));
-                if (result.getString("gender") != null) {
-                    playerData.setGender(Gender.valueOf(result.getString("gender")));
-                }
-                playerData.setBirthday(result.getDate("birthday"));
-                playerData.setId(result.getInt("id"));
-                playerData.setHouseSlot(result.getInt("houseSlot"));
-                playerData.setCurrentHours(result.getInt("current_hours"));
-                if (result.getDate("rankDuration") != null) {
-                    java.sql.Date utilDate = new Date(result.getDate("rankDuration").getTime());
-                    Instant instant = Instant.ofEpochMilli(utilDate.getTime());
-                    playerData.setRankDuration(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
-                }
-                if (result.getDate("lastPremiumBonus") != null) {
-                    java.sql.Date utilDate = new Date(result.getDate("lastPremiumBonus").getTime());
-                    Instant instant = Instant.ofEpochMilli(utilDate.getTime());
-                    playerData.setLastPremiumBonus(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
-                }
-                System.out.println(result.getDate("dailyBonusRedeemed"));
-                if (result.getDate("dailyBonusRedeemed") != null) {
-                    java.sql.Date sqlDate = result.getDate("dailyBonusRedeemed");
-                    Instant instant = Instant.ofEpochMilli(sqlDate.getTime());
-                    playerData.setDailyBonusRedeemed(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
-                }
-                if (result.getDate("lastPayDay") != null) {
-                    java.sql.Date utilDate = result.getDate("lastPayDay");
-                    Instant instant = Instant.ofEpochMilli(utilDate.getTime());
-                    playerData.setLastPayDay(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
-                }
-                if (result.getDate("boostDuration") != null)
-                    playerData.setBoostDuration(result.getTimestamp("boostDuration").toLocalDateTime());
-                if (result.getDate("lastContract") != null)
-                    playerData.setLastContract(result.getTimestamp("lastContract").toLocalDateTime());
-                playerData.setSecondaryTeam(result.getString("secondaryTeam"));
-                playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
-                playerData.setSpawn(result.getString("spawn"));
-                playerData.setJob(result.getString("job"));
-                player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));
-                player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
+            }
+            PlayerData playerData = new PlayerData(player);
+            playerData.setUuid(player.getUniqueId());
+            playerData.setFirstname(result.getString("firstname"));
+            playerData.setLastname(result.getString("lastname"));
+            playerData.setBargeld(result.getInt("bargeld"));
+            playerData.setBank(result.getInt("bank"));
+            playerData.setVisum(result.getInt("visum"));
+            playerData.setPermlevel(result.getInt("player_permlevel"));
+            playerData.setRang(result.getString("player_rank"));
+            playerData.setAduty(false);
+            playerData.setLevel(result.getInt("level"));
+            playerData.setExp(result.getInt("exp"));
+            playerData.setDead(result.getBoolean("isDead"));
+            if (result.getBoolean("isDead")) {
+                playerData.setDeathTime(result.getInt("deathTime"));
+                playerData.setHitmanDead(result.getBoolean("isHitmanDead"));
+                playerData.setStabilized(result.getBoolean("isStabilized"));
+            }
+            playerData.setNumber(result.getInt("number"));
+            playerData.setDuty(result.getBoolean("isDuty"));
+            if (result.getString("gender") != null) {
+                playerData.setGender(Gender.valueOf(result.getString("gender")));
+            }
+            playerData.setBirthday(result.getDate("birthday"));
+            playerData.setId(result.getInt("id"));
+            playerData.setHouseSlot(result.getInt("houseSlot"));
+            playerData.setCurrentHours(result.getInt("current_hours"));
+            if (result.getDate("rankDuration") != null) {
+                java.sql.Date utilDate = new Date(result.getDate("rankDuration").getTime());
+                Instant instant = Instant.ofEpochMilli(utilDate.getTime());
+                playerData.setRankDuration(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
+            }
+            if (result.getDate("lastPremiumBonus") != null) {
+                java.sql.Date utilDate = new Date(result.getDate("lastPremiumBonus").getTime());
+                Instant instant = Instant.ofEpochMilli(utilDate.getTime());
+                playerData.setLastPremiumBonus(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
+            }
+            System.out.println(result.getDate("dailyBonusRedeemed"));
+            if (result.getDate("dailyBonusRedeemed") != null) {
+                java.sql.Date sqlDate = result.getDate("dailyBonusRedeemed");
+                Instant instant = Instant.ofEpochMilli(sqlDate.getTime());
+                playerData.setDailyBonusRedeemed(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
+            }
+            if (result.getDate("lastPayDay") != null) {
+                java.sql.Date utilDate = result.getDate("lastPayDay");
+                Instant instant = Instant.ofEpochMilli(utilDate.getTime());
+                playerData.setLastPayDay(instant.atZone(ZoneId.systemDefault()).toLocalDateTime());
+            }
+            if (result.getDate("boostDuration") != null)
+                playerData.setBoostDuration(result.getTimestamp("boostDuration").toLocalDateTime());
+            if (result.getDate("lastContract") != null)
+                playerData.setLastContract(result.getTimestamp("lastContract").toLocalDateTime());
+            playerData.setSecondaryTeam(result.getString("secondaryTeam"));
+            playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
+            playerData.setSpawn(result.getString("spawn"));
+            playerData.setJob(result.getString("job"));
+            player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));
+            player.setExp((float) playerData.getExp() / playerData.getNeeded_exp());
 
-                playerData.setAtmBlown(result.getInt("atmBlown"));
-                playerData.setSubGroupGrade(result.getInt("subGroup_grade"));
-                playerData.setSubGroupId(result.getInt("subGroup"));
-                playerData.setKarma(result.getInt("karma"));
-                playerData.setVotes(result.getInt("votes"));
-                playerData.setChurch(result.getBoolean("isChurch"));
-                playerData.setBaptized(result.getBoolean("isBaptized"));
-                if (result.getDate("factionCooldown") != null) playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
-                playerData.setFactionJoin(Utils.toLocalDateTime(result.getDate("factionJoin")));
-                playerData.setEventPoints(result.getInt("eventPoints"));
-                playerData.setCrypto(result.getFloat("crypto"));
-                playerData.setRewardTime(result.getInt("rewardTime"));
-                playerData.setRewardId(result.getInt("rewardId"));
-                playerData.getInventory().setSize(result.getInt("inventorySize"));
-                if (!result.getBoolean("tpNewmap")) {
-                    locationManager.useLocation(player, "stadthalle");
-                    coreDatabase.updateAsync("UPDATE players SET tpNewmap = true WHERE uuid = ?", player.getUniqueId().toString());
+            playerData.setAtmBlown(result.getInt("atmBlown"));
+            playerData.setSubGroupGrade(result.getInt("subGroup_grade"));
+            playerData.setSubGroupId(result.getInt("subGroup"));
+            playerData.setKarma(result.getInt("karma"));
+            playerData.setVotes(result.getInt("votes"));
+            playerData.setChurch(result.getBoolean("isChurch"));
+            playerData.setBaptized(result.getBoolean("isBaptized"));
+            if (result.getDate("factionCooldown") != null)
+                playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+            playerData.setFactionJoin(Utils.toLocalDateTime(result.getDate("factionJoin")));
+            playerData.setEventPoints(result.getInt("eventPoints"));
+            playerData.setCrypto(result.getFloat("crypto"));
+            playerData.setRewardTime(result.getInt("rewardTime"));
+            playerData.setRewardId(result.getInt("rewardId"));
+            playerData.getInventory().setSize(result.getInt("inventorySize"));
+            if (!result.getBoolean("tpNewmap")) {
+                locationManager.useLocation(player, "stadthalle");
+                coreDatabase.updateAsync("UPDATE players SET tpNewmap = true WHERE uuid = ?", player.getUniqueId().toString());
+            }
+
+            if (result.getString("faction") != null) {
+                playerData.setFaction(result.getString("faction"));
+                playerData.setFactionGrade(result.getInt("faction_grade"));
+                playerData.setLeader(result.getBoolean("isLeader"));
+            }
+
+            if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
+                Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+                for (SubTeam subTeam : Main.getInstance().factionManager.getSubTeams(factionData.getId())) {
+                    if (!(subTeam.getId() == result.getInt("subTeam"))) continue;
+                    playerData.setSubTeam(subTeam);
                 }
+            }
 
-                if (result.getString("faction") != null) {
-                    playerData.setFaction(result.getString("faction"));
-                    playerData.setFactionGrade(result.getInt("faction_grade"));
-                    playerData.setLeader(result.getBoolean("isLeader"));
-                }
-
-                if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
-                    Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
-                    for (SubTeam subTeam : Main.getInstance().factionManager.getSubTeams(factionData.getId())) {
-                        if (!(subTeam.getId() == result.getInt("subTeam"))) continue;
-                        playerData.setSubTeam(subTeam);
-                    }
-                }
-
-                if (!result.getBoolean("jugendschutz")) {
-                    playerData.setVariable("jugendschutz", "muss");
-                    Utils.waitSeconds(1, () -> {
-                        InventoryManager inventory = new InventoryManager(player, 27, Component.text("§c§lJugendschutz"), true, false);
-                        playerData.setVariable("originClass", this);
-                        inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                playerData.setVariable("jugendschutz", null);
-                                player.closeInventory();
-                                player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
-                                coreDatabase.updateAsync("UPDATE players SET jugendschutz = true, jugendschutz_accepted = NOW() WHERE uuid = ?",
-                                        player.getUniqueId().toString());
-                                player.closeInventory();
-                            }
-                        });
-                        inventory.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist", "§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7", "§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt", "§c§l und habe keine Erlaubnis meiner Eltern"))) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                player.closeInventory();
-                                player.kickPlayer("§cDa du den Jugendschutz nicht aktzeptieren konntest, kannst du auf dem Server §lnicht§c Spielen.\n§cBitte deine Erziehungsberechtigten um Erlabunis oder warte bis du 18 bist.");
-                            }
-                        });
-                        for (int i = 0; i < 27; i++) {
-                            if (i != 15 && i != 11) {
-                                inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
-                                    @Override
-                                    public void onClick(InventoryClickEvent event) {
-
-                                    }
-                                });
-                            }
+            if (!result.getBoolean("jugendschutz")) {
+                playerData.setVariable("jugendschutz", "muss");
+                Utils.waitSeconds(1, () -> {
+                    InventoryManager inventory = new InventoryManager(player, 27, Component.text("§c§lJugendschutz"), true, false);
+                    playerData.setVariable("originClass", this);
+                    inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            playerData.setVariable("jugendschutz", null);
+                            player.closeInventory();
+                            player.sendMessage("§8[§c§lJugendschutz§8]§a Du hast den Jugendschutz aktzeptiert.");
+                            coreDatabase.updateAsync("UPDATE players SET jugendschutz = true, jugendschutz_accepted = NOW() WHERE uuid = ?",
+                                    player.getUniqueId().toString());
+                            player.closeInventory();
                         }
                     });
-                }
-                int tutorial = result.getInt("tutorial");
-                playerData.setHours(result.getInt("playtime_hours"));
-                playerData.setMinutes(result.getInt("playtime_minutes"));
-                playerData.setAFK(false);
-                playerData.setHealthInsurance(HealthInsurance.valueOf(result.getString("healthInsurance")));
+                    inventory.setItem(new CustomItem(15, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==", 1, 0, "§c§lIch bestätige nicht", Arrays.asList("§7Klicke hier, wenn du keine 18 Jahre alt bist", "§7 und nicht die §fZustimmung§7 eines §fErziehungsberechtigten§7", "§7hast, derartige Spiele zu Spielen", "\n", "§8 ➥ §7[§6Klick§7]§c§l Ich bin keine 18 Jahre alt", "§c§l und habe keine Erlaubnis meiner Eltern"))) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            player.closeInventory();
+                            player.kickPlayer("§cDa du den Jugendschutz nicht aktzeptieren konntest, kannst du auf dem Server §lnicht§c Spielen.\n§cBitte deine Erziehungsberechtigten um Erlabunis oder warte bis du 18 bist.");
+                        }
+                    });
+                    for (int i = 0; i < 27; i++) {
+                        if (i != 15 && i != 11) {
+                            inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
+                                @Override
+                                public void onClick(InventoryClickEvent event) {
 
-                JSONObject object = new JSONObject(result.getString("relationShip"));
-                HashMap<String, String> map = new HashMap<>();
-                for (String key : object.keySet()) {
-                    String value = (String) object.get(key);
-                    map.put(key, value);
-                }
-                playerData.setRelationShip(map);
-
-                playerData.setWarns(result.getInt("warns"));
-                playerData.setBusiness(result.getInt("business"));
-                playerData.setBusiness_grade(result.getInt("business_grade"));
-                playerData.setBloodType(result.getString("bloodtype"));
-                playerData.setForumID(result.getInt("forumID"));
-                playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
-                playerData.setLoyaltyBonus(result.getInt("loyaltyBonus"));
-                if (result.getString("longTermJob") != null) playerData.setLongTermJob(LongTermJob.valueOf(result.getString("longTermJob")));
-
-                playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
-
-                playerData.setCanInteract(true);
-                playerData.setFlightmode(false);
-                playerData.setCoins(result.getInt("coins"));
-                playerData.setCompany(null);
-                if (result.getInt("company") != 0) {
-                    Company company = companyManager.getCompanyById(result.getInt("company"));
-                    if (company != null) {
-                        playerData.setCompany(company);
-                        if (company.getRoles() != null) {
-                            for (CompanyRole role : company.getRoles()) {
-                                if (role == null) continue;
-                                if (role.getId() == result.getInt("companyRole")) {
-                                    playerData.setCompanyRole(role);
                                 }
+                            });
+                        }
+                    }
+                });
+            }
+            int tutorial = result.getInt("tutorial");
+            playerData.setHours(result.getInt("playtime_hours"));
+            playerData.setMinutes(result.getInt("playtime_minutes"));
+            playerData.setAFK(false);
+            playerData.setHealthInsurance(HealthInsurance.valueOf(result.getString("healthInsurance")));
+
+            JSONObject object = new JSONObject(result.getString("relationShip"));
+            HashMap<String, String> map = new HashMap<>();
+            for (String key : object.keySet()) {
+                String value = (String) object.get(key);
+                map.put(key, value);
+            }
+            playerData.setRelationShip(map);
+
+            playerData.setWarns(result.getInt("warns"));
+            playerData.setBusiness(result.getInt("business"));
+            playerData.setBusiness_grade(result.getInt("business_grade"));
+            playerData.setBloodType(result.getString("bloodtype"));
+            playerData.setForumID(result.getInt("forumID"));
+            playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
+            playerData.setLoyaltyBonus(result.getInt("loyaltyBonus"));
+            if (result.getString("longTermJob") != null)
+                playerData.setLongTermJob(LongTermJob.valueOf(result.getString("longTermJob")));
+
+            playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
+
+            playerData.setCanInteract(true);
+            playerData.setFlightmode(false);
+            playerData.setCoins(result.getInt("coins"));
+            playerData.setCompany(null);
+            if (result.getInt("company") != 0) {
+                Company company = companyManager.getCompanyById(result.getInt("company"));
+                if (company != null) {
+                    playerData.setCompany(company);
+                    if (company.getRoles() != null) {
+                        for (CompanyRole role : company.getRoles()) {
+                            if (role == null) continue;
+                            if (role.getId() == result.getInt("companyRole")) {
+                                playerData.setCompanyRole(role);
                             }
                         }
                     }
                 }
+            }
 
                 /*for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
                     playerData.addWorkstation(workstation);
                 }*/
 
-                player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
-                player.setLevel(result.getInt("level"));
+            player_rent.put(player.getUniqueId().toString(), result.getInt("rent"));
+            player.setLevel(result.getInt("level"));
 
-                playerData.addonXP.setFishingXP(result.getInt("fishingXP"));
-                playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
-                playerData.addonXP.setLumberjackLevel(result.getInt("lumberjackLevel"));
-                playerData.addonXP.setLumberjackXP(result.getInt("lumberjackXP"));
-                playerData.addonXP.setPopularityLevel(result.getInt("popularityLevel"));
-                playerData.addonXP.setPopularityXP(result.getInt("popularityXP"));
-                playerData.addonXP.setMinerLevel(result.getInt("miningLevel"));
-                playerData.addonXP.setMinerXP(result.getInt("minerXP"));
+            playerData.addonXP.setFishingXP(result.getInt("fishingXP"));
+            playerData.addonXP.setFishingLevel(result.getInt("fishingLevel"));
+            playerData.addonXP.setLumberjackLevel(result.getInt("lumberjackLevel"));
+            playerData.addonXP.setLumberjackXP(result.getInt("lumberjackXP"));
+            playerData.addonXP.setPopularityLevel(result.getInt("popularityLevel"));
+            playerData.addonXP.setPopularityXP(result.getInt("popularityXP"));
+            playerData.addonXP.setMinerLevel(result.getInt("miningLevel"));
+            playerData.addonXP.setMinerXP(result.getInt("minerXP"));
 
-                ResultSet jail = statement.executeQuery("SELECT `wps` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
-                if (jail.next()) {
-                    playerData.setHafteinheiten(jail.getInt(1));
-                    playerData.setJailed(true);
-                }
-                playerData.setIntVariable("afk", 0);
+            ResultSet jail = statement.executeQuery("SELECT `wps` FROM `Jail` WHERE `uuid` = '" + uuid + "'");
+            if (jail.next()) {
+                playerData.setHafteinheiten(jail.getInt(1));
+                playerData.setJailed(true);
+            }
+            playerData.setIntVariable("afk", 0);
 
 
-                playerDataMap.put(uuid, playerData);
-                if (playerData.getRewardId() == 0) {
-                    PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
-                    playerData.setRewardId(playtimeReward.getId());
-                    playerData.setRewardTime(playtimeReward.getHour());
-                    playerData.save();
-                }
-                if (tutorial != 0) {
-                    playerData.setVariable("tutorial", new PlayerTutorial(player, playerData, tutorial));
-                    utils.tutorial.start(player);
-                }
-                if (playerData.getRankDuration() != null) {
-                    LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    if (date.isBefore(Utils.getTime())) {
-                        player.sendMessage(Prefix.MAIN + "Dein " + playerData.getRang() + " ist ausgelaufen.");
-                        coreDatabase.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId().toString());
-                        if (playerData.getBusiness() != null) {
-                            BusinessData business = businessManager.getBusinessData(playerData.getBusiness());
-                            if (business != null) {
-                                if (business.getOwner().equals(player.getUniqueId())) {
-                                    business.setActive(false);
-                                    business.save();
-                                }
+            playerDataMap.put(uuid, playerData);
+            if (playerData.getRewardId() == 0) {
+                PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
+                playerData.setRewardId(playtimeReward.getId());
+                playerData.setRewardTime(playtimeReward.getHour());
+                playerData.save();
+            }
+            if (tutorial != 0) {
+                playerData.setVariable("tutorial", new PlayerTutorial(player, playerData, tutorial));
+                utils.tutorial.start(player);
+            }
+            if (playerData.getRankDuration() != null) {
+                LocalDateTime date = playerData.getRankDuration().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                if (date.isBefore(Utils.getTime())) {
+                    player.sendMessage(Prefix.MAIN + "Dein " + playerData.getRang() + " ist ausgelaufen.");
+                    coreDatabase.updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", player.getUniqueId().toString());
+                    if (playerData.getBusiness() != null) {
+                        BusinessData business = businessManager.getBusinessData(playerData.getBusiness());
+                        if (business != null) {
+                            if (business.getOwner().equals(player.getUniqueId())) {
+                                business.setActive(false);
+                                business.save();
                             }
                         }
-                        setRang(uuid, "Spieler");
                     }
+                    setRang(uuid, "Spieler");
                 }
-                if (playerData.isDuty()) {
-                    factionManager.setDuty(player, true);
-                }
-                updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
-                if (playerData.isDead()) utils.deathUtil.killPlayer(player);
+            }
+            if (playerData.isDuty()) {
+                factionManager.setDuty(player, true);
+            }
+            updatePlayer(player.getUniqueId().toString(), player.getName(), String.valueOf(player.getAddress()).replace("/", ""));
+            if (playerData.isDead()) utils.deathUtil.killPlayer(player);
 
                 /*
                 Labor: deaktiviert
@@ -420,36 +424,33 @@ public class PlayerManager implements Listener {
                     laboratory.start();
                 }*/
 
-                seasonpass.loadPlayerQuests(player.getUniqueId());
-                beginnerpass.loadPlayerQuests(player.getUniqueId());
-                utils.staatUtil.loadParole(player);
-                LoyaltyBonusTimer timer = getLoyaltyTimer(player.getUniqueId());
-                if (timer != null) {
-                    player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Da du dich innerhalb von 3 Minuten eingeloggt hast, läuft dein Treuebonus weiter."));
-                    long offlineMinutes = Duration.between(timer.getStopped(), Utils.getTime()).toMinutes();
-                    timer.setStarted(timer.getStarted().plusMinutes(offlineMinutes));
-                    timer.setStopped(null);
-                } else {
-                    LoyaltyBonusTimer loyaltyBonusTimer = new LoyaltyBonusTimer(player.getUniqueId());
-                    loyaltyBonusTimer.setStarted(Utils.getTime());
-                    loyaltyBonusCache.add(loyaltyBonusTimer);
-                }
+            seasonpass.loadPlayerQuests(player.getUniqueId());
+            beginnerpass.loadPlayerQuests(player.getUniqueId());
+            utils.staatUtil.loadParole(player);
+            LoyaltyBonusTimer timer = getLoyaltyTimer(player.getUniqueId());
+            if (timer != null) {
+                player.sendMessage(Component.text("§8[§3Treuebonus§8]§b Da du dich innerhalb von 3 Minuten eingeloggt hast, läuft dein Treuebonus weiter."));
+                long offlineMinutes = Duration.between(timer.getStopped(), Utils.getTime()).toMinutes();
+                timer.setStarted(timer.getStarted().plusMinutes(offlineMinutes));
+                timer.setStopped(null);
+            } else {
+                LoyaltyBonusTimer loyaltyBonusTimer = new LoyaltyBonusTimer(player.getUniqueId());
+                loyaltyBonusTimer.setStarted(Utils.getTime());
+                loyaltyBonusCache.add(loyaltyBonusTimer);
+            }
 
-                gamePlay.displayNameManager.reloadDisplayNames(player);
-                if (playerData.getFaction() != null) {
-                    for (PlayerData pData : getPlayers()) {
-                        if (pData.getFaction() == null) continue;
-                        if (pData.getFaction().equalsIgnoreCase(playerData.getFaction())) {
-                            gamePlay.displayNameManager.reloadDisplayNames(pData.getPlayer());
-                        }
+            gamePlay.displayNameManager.reloadDisplayNames(player);
+            if (playerData.getFaction() != null) {
+                for (PlayerData pData : getPlayers()) {
+                    if (pData.getFaction() == null) continue;
+                    if (pData.getFaction().equalsIgnoreCase(playerData.getFaction())) {
+                        gamePlay.displayNameManager.reloadDisplayNames(pData.getPlayer());
                     }
                 }
-                Main.getInstance().commands.checkoutWebshopCommand.loadShopBuys(player);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            player.kick();
+            Main.getInstance().commands.checkoutWebshopCommand.loadShopBuys(player);
         }
+
     }
 
     public LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {

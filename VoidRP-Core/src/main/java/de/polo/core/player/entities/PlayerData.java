@@ -384,9 +384,11 @@ public class PlayerData implements PlayerCharacter {
         ResultSet result = statement.executeQuery();
         while (result.next()) {
             PlayerIllness playerIllness = new PlayerIllness(IllnessType.valueOf(result.getString("illness")));
-            playerIllness.setId(result.getInt(id));
+            playerIllness.setId(result.getInt("id"));
             illnesses.add(playerIllness);
         }
+        result.close();
+        connection.close();
     }
 
 /*    @SneakyThrows

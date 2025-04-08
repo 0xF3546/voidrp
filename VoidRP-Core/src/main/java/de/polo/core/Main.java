@@ -77,12 +77,18 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
 public final class Main extends JavaPlugin implements Server {
+
+    private ConfigurableApplicationContext springContext;
 
     @Getter
     private static Main instance;
@@ -166,6 +172,7 @@ public final class Main extends JavaPlugin implements Server {
 
     @Override
     public void onEnable() {
+        startSpringBoot();
 
         if (!Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
             getLogger().severe("ProtocolLib not found!");
@@ -237,6 +244,12 @@ public final class Main extends JavaPlugin implements Server {
         SingleLineOptions.USE_NORMAL_LOGGER_INSTEAD_OF_PRINT.enabled(false);
     }
 
+    private void startSpringBoot() {
+        new Thread(() -> {
+            springContext = SpringApplication.run(VoidSpringApplication.class);
+        }).start();
+    }
+
     private void registerListener(Commands commands) {
 
         new JoinListener(playerManager, adminManager, utils, locationManager, serverManager);
@@ -286,6 +299,9 @@ public final class Main extends JavaPlugin implements Server {
 
     @Override
     public void onDisable() {
+        if (springContext != null) {
+            springContext.close();
+        }
         if (gamePlay != null && gamePlay.activeDrop != null) {
             gamePlay.activeDrop.cleanup();
         }
@@ -777,5 +793,13 @@ public final class Main extends JavaPlugin implements Server {
             voidAPI.registerCommands();
             voidAPI.registerListener(this);
         }
+    }
+
+    @Override
+    public @Nullable <T> T getBean(@NotNull final Class<T> clazz) {
+        if (springContext == null) {
+            return null;
+        }
+        return springContext.getBean(clazz);
     }
 }
