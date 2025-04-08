@@ -67,6 +67,11 @@
       <option name="url" value="https://repo.codemc.io/repository/maven-releases/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="maven_central" />
+      <option name="name" value="maven_central" />
+      <option name="url" value="https://repo.maven.apache.org/maven2/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="dmulloy2-repo" />
       <option name="name" value="dmulloy2-repo" />
       <option name="url" value="https://repo.dmulloy2.net/repository/public/" />

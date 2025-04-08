@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/VoidRP-API/VoidRP-API.iml" filepath="$PROJECT_DIR$/VoidRP-API/VoidRP-API.iml" />
       <module fileurl="file://$PROJECT_DIR$/VoidRP-Core/VoidRP-Core.iml" filepath="$PROJECT_DIR$/VoidRP-Core/VoidRP-Core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/VoidRP-API/voidrp-api.iml" filepath="$PROJECT_DIR$/VoidRP-API/voidrp-api.iml" />
     </modules>
   </component>
 </project>
