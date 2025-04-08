@@ -1,0 +1,240 @@
+package de.polo.core.utils.player;
+
+import de.polo.core.player.entities.PlayerData;
+import de.polo.core.Main;
+import de.polo.core.storage.*;
+import de.polo.core.game.events.SubmitChatEvent;
+import de.polo.core.manager.ItemManager;
+import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.manager.WeaponManager;
+import de.polo.core.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class FFAUtils implements CommandExecutor, Listener {
+    public static final Map<Integer, FFALobbyData> FFAlobbyDataMap = new HashMap<>();
+    public static final Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
+    private final PlayerManager playerManager;
+    private final LocationManager locationManager;
+
+    public FFAUtils(PlayerManager playerManager, LocationManager locationManager) {
+        this.playerManager = playerManager;
+        this.locationManager = locationManager;
+        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
+        try {
+            loadFFALobbys();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Main.registerCommand("ffa", this);
+    }
+
+    public static void createLobby(Player player, int players, String password) {
+        FFALobbyData ffaLobbyData = new FFALobbyData();
+        ffaLobbyData.setId(FFAlobbyDataMap.size() + 1);
+        ffaLobbyData.setMaxPlayer(players);
+        ffaLobbyData.setName(player.getUniqueId().toString());
+        ffaLobbyData.setDisplayname("§6" + player.getName() + "'s Lobby");
+        if (password != null) ffaLobbyData.setPassword(password);
+        FFAlobbyDataMap.put(FFAlobbyDataMap.size() + 1, ffaLobbyData);
+        SoundManager.successSound(player);
+        player.closeInventory();
+    }
+
+    private void loadFFALobbys() throws SQLException {
+        Statement statement = Main.getInstance().coreDatabase.getStatement();
+        ResultSet lobby = statement.executeQuery("SELECT * FROM `ffa_lobbys`");
+        while (lobby.next()) {
+            FFALobbyData ffaLobbyData = new FFALobbyData();
+            ffaLobbyData.setId(lobby.getInt(1));
+            ffaLobbyData.setName(lobby.getString(2));
+            ffaLobbyData.setDisplayname(lobby.getString(3));
+            ffaLobbyData.setMaxPlayer(lobby.getInt(4));
+            ffaLobbyData.setPlayers(0);
+            FFAlobbyDataMap.put(lobby.getInt(1), ffaLobbyData);
+        }
+
+        ResultSet result = statement.executeQuery("SELECT * FROM ffa_spawnpoints");
+        while (result.next()) {
+            FFASpawnPoints ffaSpawnPoints = new FFASpawnPoints();
+            ffaSpawnPoints.setId(result.getInt(1));
+            ffaSpawnPoints.setLobby_type(result.getString(2));
+            ffaSpawnPoints.setX(result.getInt(3));
+            ffaSpawnPoints.setY(result.getInt(4));
+            ffaSpawnPoints.setZ(result.getInt(5));
+            ffaSpawnPoints.setWelt(Bukkit.getWorld(result.getString(6)));
+            ffaSpawnPoints.setYaw(result.getFloat(7));
+            ffaSpawnPoints.setPitch(result.getFloat(8));
+            FFAspawnpointDataMap.put(result.getString(2), ffaSpawnPoints);
+        }
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = (Player) sender;
+        player.sendMessage(Prefix.ERROR + "FFA ist gerade nicht Spielbar.");
+        return false;
+    }
+
+    public void openFFAMenu(Player player, int page) {
+        if (page <= 0) return;
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        playerData.setVariable("current_inventory", "ffa_menu");
+        playerData.setIntVariable("current_page", page);
+        Inventory inv = Bukkit.createInventory(player, 27, "§8» §6FFA-Lobbys §8- §6Seite§8:§7 " + page);
+        int i = 0;
+        int j = 0;
+        for (FFALobbyData lobbyData : FFAlobbyDataMap.values()) {
+            if (i >= (18 * (page - 1)) && i < (18 * page)) {
+                int slotIndex = i % 9;
+                j++;
+                if (j > 9) {
+                    slotIndex += 9;
+                }
+
+                if (lobbyData.getPlayers() < lobbyData.getMaxPlayer()) {
+                    inv.setItem(slotIndex, ItemManager.createItem(Material.LIME_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
+                    ItemMeta meta = inv.getItem(slotIndex).getItemMeta();
+                    meta.getPersistentDataContainer().set(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER, lobbyData.getId());
+                    inv.getItem(slotIndex).setItemMeta(meta);
+                } else {
+                    inv.setItem(slotIndex, ItemManager.createItem(Material.GRAY_DYE, 1, 0, lobbyData.getDisplayname().replace("&", "§"), "§8 ➥ §eSpieler§8:§7 " + lobbyData.getPlayers() + "/" + lobbyData.getMaxPlayer()));
+                }
+            }
+            i++;
+        }
+        inv.setItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite"));
+        inv.setItem(22, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen"));
+        inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cVorherige Seite"));
+        player.openInventory(inv);
+    }
+
+    public void joinLobby(Player player, int id) {
+        FFALobbyData lobbyData = FFAlobbyDataMap.get(id);
+        if (lobbyData.getPlayers() < lobbyData.getMaxPlayer()) {
+            player.closeInventory();
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+            playerData.setIntVariable("current_lobby", id);
+            playerData.setVariable("current_lobby", lobbyData.getName());
+            lobbyData.setPlayers(lobbyData.getPlayers() + 1);
+            player.sendMessage("§8[§6FFA§8]§e Du betrittst: " + lobbyData.getDisplayname().replace("&", "§"));
+            player.sendMessage("§8 ➥ §7Nutze §8/§effa leave §7um die Arena zu verlassen.");
+            Main.getInstance().weaponManager.giveWeapon(player, de.polo.core.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.FFA);
+            useSpawn(player, id);
+        } else {
+            player.sendMessage("§8[§6FFA§8]§c Diese Lobby ist voll!");
+        }
+    }
+
+    public void leaveFFA(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        FFALobbyData lobbyData = FFAlobbyDataMap.get(playerData.getIntVariable("current_lobby"));
+        lobbyData.setPlayers(lobbyData.getPlayers() - 1);
+        locationManager.useLocation(player, "ffa");
+        playerData.setIntVariable("current_lobby", null);
+        playerData.setVariable("current_lobby", null);
+        for (ItemStack item : player.getInventory().getContents()) {
+            for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
+                if (weaponData.getMaterial() != null && item != null) {
+                    if (item.getType() == weaponData.getMaterial()) {
+                        ItemMeta meta = item.getItemMeta();
+                        Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        if (weapon.getWeaponType() == WeaponType.FFA) {
+                            Main.getInstance().weaponManager.removeWeapon(player, item);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void useSpawn(Player player, int ffa) {
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        List<FFASpawnPoints> keysWithIdOne = new ObjectArrayList<>();
+        for (FFASpawnPoints spawnPoints : FFAspawnpointDataMap.values()) {
+            if (spawnPoints.getLobby_type().equals(playerData.getVariable("current_lobby"))) {
+                keysWithIdOne.add(spawnPoints);
+            }
+        }
+
+        int randomKeyIndex = ThreadLocalRandom.current().nextInt(keysWithIdOne.size() + 1);
+        FFASpawnPoints randomValue = keysWithIdOne.get(randomKeyIndex);
+        player.teleport(new Location(randomValue.getWelt(), randomValue.getX(), randomValue.getY(), randomValue.getZ()));
+    }
+
+    @EventHandler
+    public void onChatSubmit(SubmitChatEvent event) {
+        Player player = event.getPlayer();
+        System.out.println(event.getSubmitTo());
+        if (event.getSubmitTo().equalsIgnoreCase("ffa")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            event.getPlayerData().setVariable("ffa_password", event.getMessage());
+            event.end();
+            event.getPlayerData().setVariable("current_inventory", "ffa_createlobby");
+            Inventory inv = Bukkit.createInventory(player, 27, "§8 » §aLobby erstellen");
+            inv.setItem(11, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§eMaximale Spieler", "Lädt..."));
+            ItemMeta imeta = inv.getItem(11).getItemMeta();
+            imeta.setLore(Arrays.asList("§8 ➥ §7[§6Linksklick§8]§e +1 Slot", "§8 ➥ §7[§6Rechtsklick§8]§e -1 Slot"));
+            inv.getItem(11).setItemMeta(imeta);
+            inv.setItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§aLobby", "Lädt..."));
+            ItemMeta itemMeta = inv.getItem(13).getItemMeta();
+            if (event.getPlayerData().getVariable("ffa_password") == null) {
+                itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + event.getPlayerData().getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§c Nicht vorhanden"));
+            } else {
+                itemMeta.setLore(Arrays.asList("§8 ➥ §eMaximale Spieler§8:§7 " + event.getPlayerData().getIntVariable("ffa_maxplayer"), "§8 ➥ §ePasswort§8:§a " + event.getPlayerData().getVariable("ffa_password")));
+            }
+            inv.getItem(13).setItemMeta(itemMeta);
+            inv.setItem(15, ItemManager.createItem(Material.CHEST, 1, 0, "§ePasswort setzen"));
+            inv.setItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück"));
+            inv.setItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§aLobby erstellen"));
+            for (int i = 0; i < 27; i++) {
+                if (inv.getItem(i) == null) {
+                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8"));
+                }
+            }
+            player.openInventory(inv);
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("ffa_joinpassword")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            FFALobbyData lobbyData = FFAlobbyDataMap.get(event.getPlayerData().getIntVariable("ffa_passwordlobby"));
+            if (lobbyData.getPassword().equalsIgnoreCase(event.getMessage())) {
+                joinLobby(player, event.getPlayerData().getIntVariable("ffa_passwordlobby"));
+                event.getPlayerData().setIntVariable("ffa_passwordlobby", null);
+                event.end();
+            } else {
+                player.sendMessage("§8[§6FFA§8]§c Das Passwort ist falsch.");
+            }
+        }
+    }
+}

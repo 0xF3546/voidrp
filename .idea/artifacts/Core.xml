@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Core">
+    <output-path>$PROJECT_DIR$/out/artifacts/Core</output-path>
+    <root id="archive" name="Core.jar">
+      <element id="module-output" name="VoidRP-Core" />
+      <element id="library" level="project" name="Maven: com.zaxxer:HikariCP:6.2.1" />
+      <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:2.0.7" />
+      <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.4.8" />
+      <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.4.8" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" />
+      <element id="library" level="project" name="Maven: org.json:json:20230227" />
+    </root>
+  </artifact>
+</component>
