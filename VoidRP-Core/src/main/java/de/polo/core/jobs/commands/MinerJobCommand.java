@@ -1,12 +1,12 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.utils.Prefix;
@@ -17,6 +17,7 @@ import de.polo.core.utils.enums.MinerItem;
 import de.polo.core.utils.enums.PickaxeType;
 import de.polo.core.utils.gameplay.GamePlay;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -65,7 +66,7 @@ public class MinerJobCommand implements CommandExecutor {
     }
 
     private void open(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Miner");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§7Miner"));
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§7Spitzhacken")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -82,7 +83,7 @@ public class MinerJobCommand implements CommandExecutor {
 
     private void openBuyMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Miner");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§7Miner"));
         int i = 10;
         for (PickaxeType type : PickaxeType.values()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(type.getMaterial(), 1, 0, type.getDisplayName(), "§8 ➥ §cLevel " + type.getMinLevel())) {
@@ -114,7 +115,7 @@ public class MinerJobCommand implements CommandExecutor {
 
     private void openVerkauf(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Verkauf", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§7Verkauf"));
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {

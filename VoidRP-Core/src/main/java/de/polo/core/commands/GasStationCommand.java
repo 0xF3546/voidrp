@@ -1,17 +1,18 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.storage.GasStationData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.CompanyManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -53,7 +54,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
 
     private void openGasStation(Player player, GasStationData gasStationData) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cTankstelle " + gasStationData.getName(), true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cTankstelle " + gasStationData.getName()), true, true);
         if (playerData.getCompany() != null) {
             inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eBusiness-Übersicht")) {
                 @Override
@@ -70,7 +71,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
             openBusinessBuyOverview(player, gasStationData);
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + gasStationData.getName() + " (Business)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §c" + gasStationData.getName() + " (Business)"), true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -109,7 +110,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
     }
 
     private void openBusinessBuyOverview(Player player, GasStationData gasStationData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + gasStationData.getName() + " (Business kaufen)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §c" + gasStationData.getName() + " (Business kaufen)"), true, true);
         PlayerData playerData = playerManager.getPlayerData(player);
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.PAPER, 1, 0, "§3Statistiken", Arrays.asList("§8 ➥§bTyp§8:§7 Tankstelle", "§8 ➥§bPreis§8:§7 3.250.000$"))) {
             @Override

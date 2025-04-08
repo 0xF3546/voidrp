@@ -34,20 +34,22 @@ public class PlayerPowerUpManager {
     @SneakyThrows
     private void load() {
         powerUps.clear();
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_powerups WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            PlayerPowerUp powerUp = new PlayerPowerUp(Powerup.valueOf(result.getString("powerup")));
-            powerUp.setId(result.getInt("id"));
-            powerUp.setUpgrades(result.getInt("upgrades"));
-            powerUp.setAmount(result.getInt("amount"));
-            powerUps.add(powerUp);
+
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_powerups WHERE uuid = ?")) {
+
+            statement.setString(1, player.getUniqueId().toString());
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    PlayerPowerUp powerUp = new PlayerPowerUp(Powerup.valueOf(result.getString("powerup")));
+                    powerUp.setId(result.getInt("id"));
+                    powerUp.setUpgrades(result.getInt("upgrades"));
+                    powerUp.setAmount(result.getInt("amount"));
+                    powerUps.add(powerUp);
+                }
+            }
         }
-        statement.close();
-        result.close();
-        connection.close();
     }
 
     public Collection<PlayerPowerUp> getPowerUps() {

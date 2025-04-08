@@ -1,13 +1,14 @@
-package de.polo.core.commands;
+package de.polo.core.player.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,7 +44,7 @@ public class JailCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Gefängnis.");
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cGefängnis");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cGefängnis"));
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§7Bewährung", Arrays.asList("§8 ➥ §7" + playerData.getHafteinheiten() / 2 + " Hafteinheiten", "§8 ➥ §7" + playerData.getHafteinheiten() * 2 + "min Bewährung"))) {
             @SneakyThrows
             @Override

@@ -1,12 +1,12 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -15,6 +15,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;
 import de.polo.core.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -83,7 +84,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
 
     private void openMenu(Player player) {
         int i = 0;
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Pfeifentransport");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Pfeifentransport"));
         for (Faction factionData : factionManager.getFactions()) {
             if (!factionData.isActive()) continue;
             if (factionData.isBadFrak() || factionData.getName().equalsIgnoreCase("ICA")) {

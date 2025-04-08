@@ -1,5 +1,7 @@
 package de.polo.core.utils;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.storage.PhoneCall;
@@ -7,8 +9,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.base.crypto.Miner;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.game.events.SubmitChatEvent;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.api.player.enums.Gender;
@@ -16,6 +16,7 @@ import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.player.ChatUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -99,7 +100,7 @@ public class PhoneUtils implements Listener {
 
     public void openPhone(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eHandy", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §eHandy"), true, true);
         int unreadMessages = 0;
         try {
             Statement statement = Main.getInstance().coreDatabase.getStatement();
@@ -156,7 +157,7 @@ public class PhoneUtils implements Listener {
 
     public void openSettings(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §7Einstellungen", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §7Einstellungen"), true, true);
         if (playerData.isFlightmode()) {
             inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.GREEN_STAINED_GLASS_PANE, 1, 0, "§aFlugmodus abschalten")) {
                 @Override
@@ -190,7 +191,7 @@ public class PhoneUtils implements Listener {
 
     public void openBanking(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §3Banking", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §3Banking"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTY0MzlkMmUzMDZiMjI1NTE2YWE5YTZkMDA3YTdlNzVlZGQyZDUwMTVkMTEzYjQyZjQ0YmU2MmE1MTdlNTc0ZiJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §7" + new DecimalFormat("#,###").format(playerData.getBank()) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -225,7 +226,7 @@ public class PhoneUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `bank_logs` WHERE LOWER(`reason`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §bTransaktionen §8- §bSeite§8:§7 " + page, true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §bTransaktionen §8- §bSeite§8:§7 " + page), true, true);
         int i = 0;
         int rows = 0;
         while (result.next()) {
@@ -284,7 +285,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
                 }
 
-                @Override
+                /*@Override
                 @SneakyThrows
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
@@ -297,7 +298,7 @@ public class PhoneUtils implements Listener {
                     }
                     openTransactions(event.getPlayer(), 1, event.getMessage());
                     event.end();
-                }
+                }*/
             });
         } else {
             inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche löschen")) {
@@ -326,7 +327,7 @@ public class PhoneUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `phone_messages` WHERE LOWER(`message`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY datum DESC");
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eNachrichten §8- §eSeite§8:§7 " + page, true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §eNachrichten §8- §eSeite§8:§7 " + page), true, true);
         int i = 0;
         int rows = 0;
         while (result.next()) {
@@ -390,7 +391,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§6SMS§8]§7 Gib nun die Nachricht an.");
                 }
 
-                @Override
+                /*@Override
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checkmessages")) {
                         return;
@@ -406,7 +407,7 @@ public class PhoneUtils implements Listener {
                         throw new RuntimeException(e);
                     }
                     event.end();
-                }
+                }*/
             });
         } else {
             inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche leeren")) {
@@ -435,7 +436,7 @@ public class PhoneUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT * FROM `phone_contacts` WHERE LOWER(`contact_name`) LIKE LOWER('%" + search + "%') ");
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §6Kontakte §8- §6Seite§8:§7 " + page, true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §6Kontakte §8- §6Seite§8:§7 " + page), true, true);
         int i = 0;
         int rows = 0;
         while (result.next()) {
@@ -485,7 +486,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§6Kontakte§8]§7 Gib nun den Namen des Kontaktes ein.");
                 }
 
-                @Override
+                /*@Override
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equals("contactsearch")) {
                         return;
@@ -501,7 +502,7 @@ public class PhoneUtils implements Listener {
                         throw new RuntimeException(e);
                     }
                     event.end();
-                }
+                }*/
             });
         } else {
             inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche leeren")) {
@@ -578,13 +579,13 @@ public class PhoneUtils implements Listener {
     }
 
     public void openCallApp(Player player, boolean isNew) {
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "Lade...", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("Lade..."));
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (isNew) {
-            inventoryManager = new InventoryManager(player, 54, "§8 » §aAnrufen§8:§2 ", true, true);
+            inventoryManager = new InventoryManager(player, 54, Component.text("§8 » §aAnrufen§8:§2 "), true, true);
             playerData.setVariable("current_phone_callnumber", "");
         } else {
-            inventoryManager = new InventoryManager(player, 54, "§8 » §aAnrufen§8:§2 " + playerData.getVariable("current_phone_callnumber"), true, true);
+            inventoryManager = new InventoryManager(player, 54, Component.text("§8 » §aAnrufen§8:§2 " + playerData.getVariable("current_phone_callnumber")), true, true);
         }
         inventoryManager.setItem(new CustomItem(12, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmNmYWZmYThjNmM3ZjYyNjIxNjgyZmU1NjcxMWRjM2I4OTQ0NjVmZGY3YTYyZjQzYjMxYTBkMzQwM2YzNGU3In19fQ==", 1, 0, "§6§l1")) {
             @Override
@@ -860,7 +861,7 @@ public class PhoneUtils implements Listener {
 
     public void openInternet(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §bInternet", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §bInternet"), true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.DIAMOND, 1, 0, "§bAnwalt", "§8 ➥ §7Anwalt anheuern (§c15-55$/PayDay§7)")) {
             @SneakyThrows
             @Override
@@ -902,7 +903,7 @@ public class PhoneUtils implements Listener {
 
     private void openCryptoWallet(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eCrypto Wallet");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §eCrypto Wallet"));
         inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Arrays.asList("§8 ➥ §a" + playerData.getCrypto() + " Coins", "§8 ➥ §ePreis§8:§7 " + Main.getInstance().gamePlay.getCrypto().getPrice() + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -952,7 +953,7 @@ public class PhoneUtils implements Listener {
 
     private void openSellApp(Player player, int page) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cVerkauf §8-§c Seite§8: §7" + page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cVerkauf §8-§c Seite§8: §7" + page));
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§cNächste Seite")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -974,11 +975,11 @@ public class PhoneUtils implements Listener {
     }
 
     private void openBuyApp(Player player, int page) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aAnkauf §8-§a Seite§8: §7" + page);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §aAnkauf §8-§a Seite§8: §7" + page));
     }
 
     private void openFarmManager(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eFarmen");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eFarmen"));
         int i = 0;
         for (House house : Main.getInstance().houseManager.getHouses(player)) {
             if (!house.isServerRoom()) return;
@@ -996,7 +997,7 @@ public class PhoneUtils implements Listener {
 
     private void openTransaction(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eWallet-Überweisung");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eWallet-Überweisung"));
         Player target = playerData.getVariable("wallet::transaction::toPlayer");
         inventoryManager.setItem(new CustomItem(12, target == null ? ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§7Spieler angeben") : ItemManager.createItemHead(target.getUniqueId().toString(), 1, 0, "§7" + target.getName())) {
             @Override
@@ -1044,7 +1045,7 @@ public class PhoneUtils implements Listener {
         } else {
             result = statement.executeQuery("SELECT *, DATE_FORMAT(created, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `crypto_transactions` WHERE LOWER(`reason`) LIKE LOWER('%" + search + "%') AND `uuid` = '" + player.getUniqueId() + "' ORDER BY created DESC");
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §bTransaktionen §8- §bSeite§8:§7 " + page, true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §bTransaktionen §8- §bSeite§8:§7 " + page), true, true);
         int i = 0;
         int rows = 0;
         while (result.next()) {
@@ -1095,7 +1096,7 @@ public class PhoneUtils implements Listener {
                     player.sendMessage("§8[§3Banking§8]§7 Gib nun den Transaktionsgrund an.");
                 }
 
-                @Override
+                /*@Override
                 @SneakyThrows
                 public void onChatSubmit(SubmitChatEvent event) {
                     if (!event.getSubmitTo().equalsIgnoreCase("checktransactions")) {
@@ -1108,7 +1109,7 @@ public class PhoneUtils implements Listener {
                     }
                     openTransactions(event.getPlayer(), 1, event.getMessage());
                     event.end();
-                }
+                }*/
             });
         } else {
             inventoryManager.setItem(new CustomItem(23, ItemManager.createItem(Material.CLOCK, 1, 0, "§7Suche löschen")) {
@@ -1124,7 +1125,7 @@ public class PhoneUtils implements Listener {
     @SneakyThrows
     private void openDatingApp(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §5Swiper"), true, true);
         Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM app_dating_profiles WHERE uuid = ?");
         statement.setString(1, player.getUniqueId().toString());
@@ -1212,7 +1213,7 @@ public class PhoneUtils implements Listener {
     private void openSwiping(Player player) {
         try {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §5Swiper", true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §5Swiper"), true, true);
             Connection connection = Main.getInstance().coreDatabase.getConnection();
 
             PreparedStatement statement = connection.prepareStatement(

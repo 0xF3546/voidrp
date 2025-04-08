@@ -1,5 +1,7 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.faction.entity.Faction;
@@ -9,8 +11,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponType;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.*;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
@@ -73,7 +73,7 @@ public class EquipCommand implements CommandExecutor, Listener {
     }
 
     private void openNews(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Equip (News)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Equip (News)"), true, true);
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.WRITABLE_BOOK, 1, 0, "§7Buch")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -88,7 +88,7 @@ public class EquipCommand implements CommandExecutor, Listener {
     }
 
     private void openMedic(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Equip (Medic)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Equip (Medic)"), true, true);
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(RoleplayItem.BANDAGE.getMaterial(), 1, 0, RoleplayItem.BANDAGE.getDisplayName())) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -114,7 +114,7 @@ public class EquipCommand implements CommandExecutor, Listener {
     }
 
     private void openChurch(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Equip (Kirche)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Equip (Kirche)"), true, true);
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.WATER, 1, 0, "§fKirchquell Wasser")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -163,7 +163,7 @@ public class EquipCommand implements CommandExecutor, Listener {
 
     private void openMain(Player player, PlayerData playerData) {
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §" + factionData.getPrimaryColor() + factionData.getName() + " Equip", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §" + factionData.getPrimaryColor() + factionData.getName() + " Equip"), true, true);
         String ERROR_NOT_ENOUGH_EQUIP = Prefix.ERROR + "Deine Fraktion hat nicht genug Equip-Punkte.";
         int i = 0;
         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(RoleplayItem.BULLETPROOF.getMaterial(), 1, 0, RoleplayItem.BULLETPROOF.getDisplayName())) {
@@ -386,7 +386,7 @@ public class EquipCommand implements CommandExecutor, Listener {
     }
 
     private void openExtraShop(Player player, PlayerData playerData, Faction factionData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cExtra", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cExtra"), true, true);
         if (playerData.getFaction().equalsIgnoreCase("Terroristen")) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SPRENGSTOFF.getMaterial(), 1, 0, RoleplayItem.SPRENGSTOFF.getDisplayName())) {
                 @Override

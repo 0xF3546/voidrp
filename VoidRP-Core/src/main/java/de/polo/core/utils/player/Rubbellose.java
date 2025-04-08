@@ -1,11 +1,12 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class Rubbellose {
     public void startGame(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         player.closeInventory();
-        InventoryManager inventoryManager = new InventoryManager(player, 54, "§6§lRubbellos", true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 54, Component.text("§6§lRubbellos"), true, false);
         playerData.setIntVariable("rubbellose_gemacht", 0);
         playerData.setIntVariable("rubbellose_wins", 0);
         int greenBlocksPlaced = 0;

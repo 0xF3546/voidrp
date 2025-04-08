@@ -11,10 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,35 +26,49 @@ public class CompanyManager {
 
     @SneakyThrows
     private void init() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM companies");
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            Company company = new Company();
-            company.setId(result.getInt("id"));
-            company.setOwner(UUID.fromString(result.getString("owner")));
-            company.setBank(result.getInt("bank"));
-            company.setName(result.getString("name"));
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM company_roles WHERE companyId = ?");
-            preparedStatement.setInt(1, result.getInt("id"));
-            ResultSet roleResult = preparedStatement.executeQuery();
-            while (roleResult.next()) {
-                CompanyRole role = new CompanyRole();
-                role.setCompany(company);
-                role.setName(roleResult.getString("name"));
-                role.setId(roleResult.getInt("id"));
-                String permissionsJson = roleResult.getString("permissions");
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-                    List<String> permissions = mapper.readValue(permissionsJson, new TypeReference<List<String>>() {
-                    });
-                    role.setPermissions(permissions);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        // Versuche, die Verbindung und die PreparedStatement Objekte zu verwalten
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM companies");
+             ResultSet result = statement.executeQuery()) {
+
+            while (result.next()) {
+                Company company = new Company();
+                company.setId(result.getInt("id"));
+                company.setOwner(UUID.fromString(result.getString("owner")));
+                company.setBank(result.getInt("bank"));
+                company.setName(result.getString("name"));
+
+                // Rollen für die Company abfragen
+                try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM company_roles WHERE companyId = ?")) {
+                    preparedStatement.setInt(1, company.getId()); // Setze den Parameter vor der Abfrage
+
+                    try (ResultSet roleResult = preparedStatement.executeQuery()) {
+                        while (roleResult.next()) {
+                            CompanyRole role = new CompanyRole();
+                            role.setCompany(company);
+                            role.setName(roleResult.getString("name"));
+                            role.setId(roleResult.getInt("id"));
+                            String permissionsJson = roleResult.getString("permissions");
+                            ObjectMapper mapper = new ObjectMapper();
+                            try {
+                                List<String> permissions = mapper.readValue(permissionsJson, new TypeReference<List<String>>() {});
+                                role.setPermissions(permissions);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            company.addRole(role);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace(); // Fehlerbehandlung für die ResultSet-Schleife
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace(); // Fehlerbehandlung für PreparedStatement
                 }
-                company.addRole(role);
+
+                companies.add(company);
             }
-            companies.add(company);
+        } catch (SQLException e) {
+            e.printStackTrace(); // Fehlerbehandlung für die Hauptabfrage
         }
     }
 

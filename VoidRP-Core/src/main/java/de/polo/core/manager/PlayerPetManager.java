@@ -35,15 +35,23 @@ public class PlayerPetManager {
     @SneakyThrows
     private void load() {
         pets.clear();
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_pets WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            PlayerPed ped = new PlayerPed(Pet.valueOf(result.getString("pet")), result.getBoolean("active"));
-            pets.add(ped);
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_pets WHERE uuid = ?")) {
+
+            statement.setString(1, player.getUniqueId().toString());
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    PlayerPed ped = new PlayerPed(
+                            Pet.valueOf(result.getString("pet")),
+                            result.getBoolean("active")
+                    );
+                    pets.add(ped);
+                }
+            }
         }
     }
+
 
     @SneakyThrows
     public void addPet(PlayerPed pet, boolean save) {

@@ -1,13 +1,23 @@
-package de.polo.core.utils.inventory;
+package de.polo.api.Utils.inventorymanager;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * This class is used to cache {@link CustomItem}s in {@link InventoryManager}s.
+ * It caches the {@link CustomItem}s in a {@link ConcurrentHashMap} with the {@link InventoryManager} as key and a {@link Set} of {@link CustomItem}s as value.
+ * This class is used to prevent {@link CustomItem}s from being duplicated in {@link InventoryManager}s.
+ *
+ * @author Erik Pförtner
+ * @see InventoryManager
+ * @see CustomItem
+ * @version 1.0.0
+ */
 public class CustomItemInventoryCache {
 
-    private static CustomItemInventoryCache instance;
     private final ConcurrentHashMap<InventoryManager, Set<CustomItem>> customItemHashMap;
+    private static CustomItemInventoryCache instance;
 
     /**
      * Creates a new {@link CustomItemInventoryCache} instance.
@@ -22,16 +32,6 @@ public class CustomItemInventoryCache {
     }
 
     /**
-     * Returns the {@link CustomItemInventoryCache} instance.
-     *
-     * @return the {@link CustomItemInventoryCache} instance
-     * @since 1.0.0
-     */
-    public static CustomItemInventoryCache getInstance() {
-        return instance;
-    }
-
-    /**
      * Returns the {@link ConcurrentHashMap} that contains the {@link CustomItem}s.
      *
      * @return the {@link ConcurrentHashMap} that contains the {@link CustomItem}s
@@ -40,6 +40,16 @@ public class CustomItemInventoryCache {
      */
     public ConcurrentHashMap<InventoryManager, Set<CustomItem>> getCustomItemHashMap() {
         return customItemHashMap;
+    }
+
+    /**
+     * Returns the {@link CustomItemInventoryCache} instance.
+     *
+     * @return the {@link CustomItemInventoryCache} instance
+     * @since 1.0.0
+     */
+    public static CustomItemInventoryCache getInstance() {
+        return instance;
     }
 
     /**

@@ -1,12 +1,12 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.manager.ItemManager;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.storage.LoyaltyBonusTimer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
@@ -45,7 +45,7 @@ public class TreuebonusCommand extends CommandBase implements TabCompleter {
     }
 
     private void openShop(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bTreueshop");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §bTreueshop"));
         int levelUpPrice = playerData.getLevel() * 15;
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.EXPERIENCE_BOTTLE, 1, 0, "§cLevelup", "§8 ➥ §b" + levelUpPrice + " Treuepunkte")) {
             @Override

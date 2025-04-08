@@ -1,14 +1,15 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.base.farming.PlayerWorkstation;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.Workstation;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -95,7 +96,7 @@ public class WorkstationCommand implements CommandExecutor {
 
     private void openRentRequest(Player player, Workstation workstation) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Workstation mieten");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Workstation mieten"));
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(workstation.getOutputItem().getMaterial(), 1, 0, "§7Workstation mieten", Arrays.asList("§8 ➥ §7Typ§8:§7 " + workstation.getName(), "§8 ➥ §7Benötigtes Material§8: §7" + workstation.getInputItem().getDisplayName(), "§8 ➥ §7Verarbeitetes Material§8: §7" + workstation.getOutputItem().getDisplayName(), "§8 ➥ §7Verarbeitungswert§8: §7" + workstation.getTickInput() + " zu " + workstation.getTickOutput()))) {
             @Override
             public void onClick(InventoryClickEvent event) {

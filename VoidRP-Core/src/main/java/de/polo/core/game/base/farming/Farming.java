@@ -51,22 +51,30 @@ public class Farming implements Listener, CommandExecutor, TabCompleter {
     }
 
     private void loadData() throws SQLException {
-        Statement statement = Main.getInstance().coreDatabase.getStatement();
-        ResultSet res = statement.executeQuery("SELECT * FROM farming");
-        while (res.next()) {
-            FarmingData farmingData = new FarmingData();
-            farmingData.setId(res.getInt(1));
-            farmingData.setFarmer(res.getBoolean(2));
-            farmingData.setType(res.getString(3));
-            farmingData.setAmount(res.getInt(4));
-            farmingData.setDuration(res.getInt(5));
-            farmingData.setNeeded_item(res.getString(6));
-            farmingData.setItem(Material.valueOf(res.getString(7)));
-            farmingData.setItemName(res.getString(8));
-            farmingData.setDrug(res.getString(10));
-            farmingDataMap.put(res.getString(3), farmingData);
+        // Versuche, die Verbindung und das Statement richtig zu verwalten
+        try (Statement statement = Main.getInstance().coreDatabase.getStatement();
+             ResultSet res = statement.executeQuery("SELECT * FROM farming")) {
+
+            while (res.next()) {
+                FarmingData farmingData = new FarmingData();
+                farmingData.setId(res.getInt(1));
+                farmingData.setFarmer(res.getBoolean(2));
+                farmingData.setType(res.getString(3));
+                farmingData.setAmount(res.getInt(4));
+                farmingData.setDuration(res.getInt(5));
+                farmingData.setNeeded_item(res.getString(6));
+                farmingData.setItem(Material.valueOf(res.getString(7)));
+                farmingData.setItemName(res.getString(8));
+                farmingData.setDrug(res.getString(10));
+
+                // Die farmingData in der Map speichern
+                farmingDataMap.put(res.getString(3), farmingData);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Fehlerbehandlung für SQL-Ausnahmen
         }
     }
+
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {

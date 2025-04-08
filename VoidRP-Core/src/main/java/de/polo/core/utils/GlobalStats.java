@@ -18,13 +18,17 @@ public class GlobalStats {
 
     @SneakyThrows
     public static void load() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM globalvariables");
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            values.put(result.getString("type"), result.getString("value"));
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM globalvariables");
+             ResultSet result = statement.executeQuery()) {
+
+            while (result.next()) {
+                values.put(result.getString("type"), result.getString("value"));
+            }
+
         }
     }
+
 
     public static String getValue(String value) {
         return values.get(value);

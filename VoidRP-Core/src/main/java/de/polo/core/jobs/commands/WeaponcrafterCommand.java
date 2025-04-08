@@ -1,14 +1,15 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.RoleplayItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -53,7 +54,7 @@ public class WeaponcrafterCommand implements CommandExecutor {
     }
 
     private void open(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Waffenhersteller");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Waffenhersteller"));
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LEATHER_HORSE_ARMOR, 1, 0, "§cMarksman", "§8 ➥ §c200 Waffenteile")) {
             @Override
             public void onClick(InventoryClickEvent event) {

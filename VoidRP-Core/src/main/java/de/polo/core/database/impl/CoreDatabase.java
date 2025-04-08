@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class CoreDatabase implements Database {
-    static final String url = "jdbc:mysql://185.117.3.65/minecraft?autoReconnect=true&useSSL=false";
     static String user = null;
     static String password = null;
     private HikariDataSource dataSource;
@@ -31,29 +30,41 @@ public class CoreDatabase implements Database {
     @Override
     @SneakyThrows(IOException.class)
     public void setup() {
-        File file = new File("plugins//roleplay//database.yml");
+        File folder = new File("plugins/roleplay");
+        if (!folder.exists()) {
+            folder.mkdirs(); // erstellt den Ordner (auch verschachtelt)
+        }
+
+        File file = new File(folder, "database.yml");
+
         if (!file.exists()) {
             file.createNewFile();
-            SingleLine.from(YamlConfiguration.loadConfiguration(new File("plugins//roleplay//database.yml")))
-                    .execute(cfg -> cfg.set("password", "Datenbank-Passwort"))
-                    .execute(cfg -> cfg.set("user", "Datenbank-Benutzer"))
-                    .async(cfg -> {
-                        try {
-                            cfg.save(file);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            config.set("password", "Datenbank-Passwort");
+            config.set("user", "Datenbank-Benutzer");
+            config.set("host", "Datenbank-Host");
+            config.set("table", "Datenbank-Name");
+            config.save(file);
             return;
         }
+
         FileConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        SingleLine.from(new HikariConfig())
-                .execute(config -> config.setJdbcUrl(url))
-                .execute(config -> config.setUsername(yaml.getString("user")))
-                .execute(config -> config.setPassword(yaml.getString("password")))
-                .execute(config -> config.setMaximumPoolSize(100000))
-                .execute(config -> config.setIdleTimeout(10000))
-                .execute(config -> dataSource = new HikariDataSource(config));
+
+        HikariConfig hikariConfig = new HikariConfig();
+        System.out.println("Connecting to database...");
+        System.out.println("Host: " + yaml.getString("host"));
+        System.out.println("User: " + yaml.getString("user"));
+        System.out.println("Table: " + yaml.getString("table"));
+        hikariConfig.setJdbcUrl("jdbc:mysql://" + yaml.getString("host") + "/" + yaml.getString("table") + "?autoReconnect=true&useSSL=false");
+        hikariConfig.setUsername(yaml.getString("user"));
+        hikariConfig.setPassword(yaml.getString("password"));
+        hikariConfig.setMaximumPoolSize(100000); // 100000 war extrem hoch
+        hikariConfig.setMinimumIdle(5);
+        hikariConfig.setLeakDetectionThreshold(10000); // Warnung, wenn Verbindung >10 Sek offen
+        hikariConfig.setIdleTimeout(10000);
+
+        dataSource = new HikariDataSource(hikariConfig);
     }
 
     @Override

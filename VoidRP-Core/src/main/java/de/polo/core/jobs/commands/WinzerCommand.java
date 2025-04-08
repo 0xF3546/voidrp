@@ -1,16 +1,17 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.*;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.player.SoundManager;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -38,7 +39,7 @@ public class WinzerCommand implements CommandExecutor {
         PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
             if (locationService.getDistanceBetweenCoords(player, "winzer") <= 5) {
-                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §5Winzer", true, true);
+                InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §5Winzer"));
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "winzer") && playerData.getVariable("job") == null) {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aWinzer starten")) {
                         @Override
@@ -111,7 +112,7 @@ public class WinzerCommand implements CommandExecutor {
             player.sendMessage("§8[§5Winzer§8]§7 Das ist der falsche Rebstock.");
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 54, "§5Rebstock", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 54, Component.text("§5Rebstock"), true, true);
         for (int i = 0; i < Utils.random(10, 15); i++) {
             inventoryManager.setItem(new CustomItem(Utils.random(0, 53), ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5Weintraube")) {
                 @Override

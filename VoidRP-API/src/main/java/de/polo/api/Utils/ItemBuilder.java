@@ -1,4 +1,4 @@
-package de.polo.core.utils;
+package de.polo.api.Utils;
 
 /**
  * @author Mayson1337

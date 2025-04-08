@@ -59,18 +59,23 @@ public class BusinessManager {
     }
 
     private void loadBusinesses() throws SQLException {
-        Statement statement = Main.getInstance().coreDatabase.getStatement();
-        ResultSet locs = statement.executeQuery("SELECT * FROM business");
-        while (locs.next()) {
-            BusinessData businessData = new BusinessData();
-            businessData.setId(locs.getInt("id"));
-            businessData.setOwner(UUID.fromString(locs.getString("owner")));
-            businessData.setName(locs.getString("name"));
-            businessData.setFullname(locs.getString("fullname"));
-            businessData.setBank(locs.getInt("bank"));
-            businessData.setMaxMember(25);
-            businessData.setActive(locs.getBoolean("activated"));
-            businesses.add(businessData);
+        businesses.clear(); // Optional, falls du sichergehen willst, dass nichts doppelt ist
+
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM business");
+             ResultSet locs = statement.executeQuery()) {
+
+            while (locs.next()) {
+                BusinessData businessData = new BusinessData();
+                businessData.setId(locs.getInt("id"));
+                businessData.setOwner(UUID.fromString(locs.getString("owner")));
+                businessData.setName(locs.getString("name"));
+                businessData.setFullname(locs.getString("fullname"));
+                businessData.setBank(locs.getInt("bank"));
+                businessData.setMaxMember(25);
+                businessData.setActive(locs.getBoolean("activated"));
+                businesses.add(businessData);
+            }
         }
     }
 

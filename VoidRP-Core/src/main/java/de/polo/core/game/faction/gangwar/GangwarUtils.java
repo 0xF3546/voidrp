@@ -1,5 +1,7 @@
 package de.polo.core.game.faction.gangwar;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
@@ -7,8 +9,6 @@ import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponType;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -17,6 +17,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.enums.Weapon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
@@ -141,7 +142,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         }
                         if (locationManager.getDistanceBetweenCoords(player, "gangwar_attack_" + msg.toString().replace(" ", "")) < 5) {
                             IGangzone gangwarData = getGangzoneByName(msg.toString());
-                            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §c" + gangwarData.getName(), true, true);
+                            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §c" + gangwarData.getName()), true, true);
 
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM | HH:mm");
                             String date = gangwarData.getLastAttack().toLocalDateTime().format(formatter);

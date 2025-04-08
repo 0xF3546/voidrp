@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
@@ -11,8 +13,6 @@ import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.game.faction.gangwar.Gangwar;
 import de.polo.core.game.faction.gangwar.GangwarUtils;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
@@ -23,6 +23,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.*;
 import de.polo.core.utils.player.ChatUtils;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -83,7 +84,7 @@ public class PlayerSwapHandItemsListener implements Listener {
             return;
         }
         if (playerManager.isCarrying(player)) {
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Tragen");
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Tragen"));
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§cFrei lassen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -98,7 +99,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         if (stack.getType().equals(Material.WRITTEN_BOOK)) {
             BookMeta meta = (BookMeta) stack.getItemMeta();
             if (meta.getAuthor() != null && meta.getAuthor().equalsIgnoreCase("Void News")) {
-                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eZeitung / Buch");
+                InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eZeitung / Buch"));
                 inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.BOOK, 1, 0, "§eBearbeiten")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -116,7 +117,7 @@ public class PlayerSwapHandItemsListener implements Listener {
             if (playerData.getVariable("job").toString().equalsIgnoreCase("corpse")) {
                 Corpse corpse = Main.getInstance().utils.deathUtil.getNearbyCorpse(player.getLocation(), 3);
                 if (corpse != null) {
-                    InventoryManager inventoryManager = new InventoryManager(player, 27, "§8Leiche");
+                    InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8Leiche"));
                     inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.WITHER_SKELETON_SKULL, 1, 0, "§8Leiche aufheben")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
@@ -206,7 +207,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         System.out.println(targetplayer.getName());
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         if (targetplayerData.getVariable("gangwar") != null) return;
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Bewusstlose Person (" + nearestSkull.getName() + ")"), true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.PAPER, 1, 0, "§7Personalausweis nehmen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -287,7 +288,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
     private void openFactionStorage(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Fraktionslager");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Fraktionslager"));
         boolean canTakeout = true;
         for (UUID uuid : ServerManager.factionStorageWeaponsTookout) {
             if (player.getUniqueId().equals(uuid)) canTakeout = false;
@@ -357,7 +358,7 @@ public class PlayerSwapHandItemsListener implements Listener {
     }
 
     private void openDealers(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cDealer"));
         Collection<Dealer> dealers = Main.getInstance().gamePlay.getCurrentDealer();
 
         List<Integer> slots = Arrays.asList(11, 13, 15);
@@ -379,7 +380,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
     private void openBag(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Deine Tasche", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Deine Tasche"), true, true);
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BOOK, 1, 0, "§ePortmonee", "§8 ➥ §7" + Utils.toDecimalFormat(playerData.getBargeld()) + "$")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -429,7 +430,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
     private void openPetMenu(Player player, PlayerData playerData) {
         int i = 0;
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aTiere", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §aTiere"), true, true);
         for (PetStoreItem petStoreItem : PetStoreItem.values()) {
             String priceTag = null;
             if (petStoreItem.getPriceType().equals(PriceType.CASH)) {
@@ -499,7 +500,7 @@ public class PlayerSwapHandItemsListener implements Listener {
     }
 
     private void openStatistics(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eStatistiken", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eStatistiken"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§6" + player.getName(), Arrays.asList("§8 ➥ §eLevel§8:§7 " + playerData.getLevel() + " (" + playerData.getExp() + "/" + playerData.getNeeded_exp() + ")", "§8 ➥ §eVisum§8:§7 " + playerData.getVisum() + " (" + playerData.getCurrentHours() + "/" + (playerData.getVisum() * 4) + ")"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -545,7 +546,7 @@ public class PlayerSwapHandItemsListener implements Listener {
     }
 
     private void openCoinShop(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eCoin-Shop", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eCoin-Shop"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Collections.singletonList("§8 ➥ §e" + Utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -590,7 +591,7 @@ public class PlayerSwapHandItemsListener implements Listener {
     }
 
     public void openRankShop(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eRänge", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eRänge"), true, true);
         Inventory inv = Bukkit.createInventory(player, 27, "§8 » §eRänge");
         inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Collections.singletonList("§8 ➥ §e" + Utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
             @Override
@@ -632,7 +633,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
     private void openExtraShop(Player player, PlayerData playerData) {
         playerData.setVariable("current_inventory", "coinshop_extras");
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Extras", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §2Extras"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhNzU5OTVjZTUzYmQzNjllZDczNjE1YmYzMjNlMTRhOWNkNzc4OGNhNWFjYjY1YjBiMWFmNTY0NWRkZDA5MSJ9fX0=", 1, 0, "§6Guthaben", Collections.singletonList("§8 ➥ §e" + Utils.toDecimalFormat(playerData.getCoins()) + " Coins"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -736,7 +737,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
     private void openPowerUpMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bPowerups");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §bPowerups"));
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.EXPERIENCE_BOTTLE, 1, 0, "§bEXP", Arrays.asList("§8 » §e" + playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() + "% §8➡ §6" + (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.EXP).getAmount() + Powerup.EXP.getUpgradeAmount()) + "%", "", "§b » §7Erhöht den EXP-Output", "§8 » §a" + Utils.toDecimalFormat(playerData.getPlayerPowerUpManager().getUpgradePrice(Powerup.EXP)) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {

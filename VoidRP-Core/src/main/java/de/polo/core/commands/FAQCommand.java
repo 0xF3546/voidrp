@@ -1,9 +1,10 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +34,7 @@ public class FAQCommand implements CommandExecutor {
     }
 
     void open(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6FAQ");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6FAQ"));
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§7Support")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -65,7 +66,7 @@ public class FAQCommand implements CommandExecutor {
     }
 
     private void openFarmingJobs(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6FAQ §8» §eFarming & Jobs");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6FAQ §8» §eFarming & Jobs"));
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§7Farming", Collections.singletonList("§8 ➥ §7Du kannst auf mehreren Feldern, wie z.B. Aramid, Farmen gehen. Schaue dafür ins Navi, begib dich zum Feld und baue die entsprechenden Blöcke ab."))) {
             @Override
             public void onClick(InventoryClickEvent event) {

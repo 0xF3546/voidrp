@@ -1,12 +1,13 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.TeamSpeak;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +34,7 @@ public class SettingsCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Einstellungen");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Einstellungen"));
         int i = 0;
         if (playerData.getTeamSpeakUID() == null) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§7§mTeamSpeak neu synchronisieren", "§8 ➥ §cDu hast dein TeamSpeak nicht verbunden")) {

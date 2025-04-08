@@ -42,73 +42,83 @@ public class LocationManager {
     }
 
     private void loadLocations() throws SQLException {
-        Statement statement = coreDatabase.getStatement();
-        ResultSet locs = statement.executeQuery("SELECT * FROM locations");
-        while (locs.next()) {
-            LocationData locationData = new LocationData();
-            locationData.setId(locs.getInt(1));
-            locationData.setName(locs.getString(2).toLowerCase());
-            locationData.setX(locs.getInt(3));
-            locationData.setY(locs.getInt(4));
-            locationData.setZ(locs.getInt(5));
-            locationData.setWelt(locs.getString(6));
-            locationData.setYaw(locs.getFloat(7));
-            locationData.setPitch(locs.getFloat(8));
-            locationData.setType(locs.getString(9));
-            locationData.setInfo(locs.getString(10));
-            locationDataMap.put(locs.getString(2).toLowerCase(), locationData);
-        }
+        // Versuche, alle Ressourcen mit try-with-resources zu verwalten
+        try (Statement statement = coreDatabase.getStatement()) {
 
-        ResultSet shop = statement.executeQuery("SELECT * FROM shops");
-        List<Object[]> shopList = new ObjectArrayList<>();
-        while (shop.next()) {
-            Object[] row = new Object[8];
-            row[0] = shop.getInt(1);
-            row[1] = shop.getString(2);
-            row[2] = shop.getInt(3);
-            row[3] = shop.getInt(4);
-            row[4] = shop.getInt(5);
-            row[5] = shop.getString(6);
-            row[6] = shop.getFloat(7);
-            row[7] = shop.getFloat(8);
-            shopList.add(row);
-        }
-        shops = new Object[shopList.size()][];
-        for (int i = 0; i < shopList.size(); i++) {
-            shops[i] = shopList.get(i);
-        }
+            // Locations abfragen
+            try (ResultSet locs = statement.executeQuery("SELECT * FROM locations")) {
+                while (locs.next()) {
+                    LocationData locationData = new LocationData();
+                    locationData.setId(locs.getInt(1));
+                    locationData.setName(locs.getString(2).toLowerCase());
+                    locationData.setX(locs.getInt(3));
+                    locationData.setY(locs.getInt(4));
+                    locationData.setZ(locs.getInt(5));
+                    locationData.setWelt(locs.getString(6));
+                    locationData.setYaw(locs.getFloat(7));
+                    locationData.setPitch(locs.getFloat(8));
+                    locationData.setType(locs.getString(9));
+                    locationData.setInfo(locs.getString(10));
+                    locationDataMap.put(locs.getString(2).toLowerCase(), locationData);
+                }
+            }
 
-        ResultSet gas = statement.executeQuery("SELECT * FROM gasstations");
-        while (gas.next()) {
-            GasStationData gasStationData = new GasStationData();
-            gasStationData.setId(gas.getInt(1));
-            gasStationData.setName(gas.getString(2));
-            gasStationData.setX(gas.getInt(3));
-            gasStationData.setY(gas.getInt(4));
-            gasStationData.setZ(gas.getInt(5));
-            gasStationData.setWelt(Bukkit.getWorld(gas.getString(6)));
-            gasStationData.setYaw(gas.getFloat(7));
-            gasStationData.setPitch(gas.getFloat(8));
-            gasStationData.setPrice(gas.getInt(9));
-            gasStationData.setLiterprice(gas.getInt(10));
-            gasStationData.setLiter(gas.getInt(11));
-            gasStationData.setCompany(gas.getInt("company"));
-            gasStationData.setBank(gas.getInt("bank"));
-            gasStationDataMap.put(gas.getInt(1), gasStationData);
-        }
+            // Shops abfragen
+            try (ResultSet shop = statement.executeQuery("SELECT * FROM shops")) {
+                List<Object[]> shopList = new ObjectArrayList<>();
+                while (shop.next()) {
+                    Object[] row = new Object[8];
+                    row[0] = shop.getInt(1);
+                    row[1] = shop.getString(2);
+                    row[2] = shop.getInt(3);
+                    row[3] = shop.getInt(4);
+                    row[4] = shop.getInt(5);
+                    row[5] = shop.getString(6);
+                    row[6] = shop.getFloat(7);
+                    row[7] = shop.getFloat(8);
+                    shopList.add(row);
+                }
+                shops = new Object[shopList.size()][];
+                for (int i = 0; i < shopList.size(); i++) {
+                    shops[i] = shopList.get(i);
+                }
+            }
 
-        ResultSet navi = statement.executeQuery("SELECT * FROM navi");
-        while (navi.next()) {
-            NaviData naviData = new NaviData();
-            naviData.setId(navi.getInt(1));
-            naviData.setisGroup(navi.getBoolean(2));
-            naviData.setGroup(navi.getString(3));
-            naviData.setName(navi.getString(4));
-            if (navi.getString(5) != null) naviData.setLocation(navi.getString(5));
-            naviData.setItem(Material.valueOf(navi.getString(6)));
-            naviDataMap.put(navi.getInt(1), naviData);
-        }
+            // Gasstationen abfragen
+            try (ResultSet gas = statement.executeQuery("SELECT * FROM gasstations")) {
+                while (gas.next()) {
+                    GasStationData gasStationData = new GasStationData();
+                    gasStationData.setId(gas.getInt(1));
+                    gasStationData.setName(gas.getString(2));
+                    gasStationData.setX(gas.getInt(3));
+                    gasStationData.setY(gas.getInt(4));
+                    gasStationData.setZ(gas.getInt(5));
+                    gasStationData.setWelt(Bukkit.getWorld(gas.getString(6)));
+                    gasStationData.setYaw(gas.getFloat(7));
+                    gasStationData.setPitch(gas.getFloat(8));
+                    gasStationData.setPrice(gas.getInt(9));
+                    gasStationData.setLiterprice(gas.getInt(10));
+                    gasStationData.setLiter(gas.getInt(11));
+                    gasStationData.setCompany(gas.getInt("company"));
+                    gasStationData.setBank(gas.getInt("bank"));
+                    gasStationDataMap.put(gas.getInt(1), gasStationData);
+                }
+            }
 
+            // Navi abfragen
+            try (ResultSet navi = statement.executeQuery("SELECT * FROM navi")) {
+                while (navi.next()) {
+                    NaviData naviData = new NaviData();
+                    naviData.setId(navi.getInt(1));
+                    naviData.setisGroup(navi.getBoolean(2));
+                    naviData.setGroup(navi.getString(3));
+                    naviData.setName(navi.getString(4));
+                    if (navi.getString(5) != null) naviData.setLocation(navi.getString(5));
+                    naviData.setItem(Material.valueOf(navi.getString(6)));
+                    naviDataMap.put(navi.getInt(1), naviData);
+                }
+            }
+        }
     }
 
     public void setLocation(String name, Player p) {

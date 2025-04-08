@@ -1,5 +1,7 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.commands.GeldlieferantCommand;
 import de.polo.core.storage.ATM;
@@ -7,8 +9,6 @@ import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
@@ -82,7 +82,7 @@ public class BankingUtils implements Listener {
 
     public void openBankMenu(Player player, ATM atm) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §aBankautomat " + atm.getId(), true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 45, Component.text("§8 » §aBankautomat " + atm.getId()), true, true);
         playerData.setVariable("atm", atm);
         playerData.setVariable("atm_name", atm.getName());
         inventoryManager.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhkNWEzOGQ2YmZjYTU5Nzg2NDE3MzM2M2QyODRhOGQzMjljYWFkOTAxOGM2MzgxYjFiNDI5OWI4YjhiOTExYyJ9fX0=", 1, 0, "§cAuszahlen", null)) {
@@ -200,7 +200,7 @@ public class BankingUtils implements Listener {
     private void openCompanyBankMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
-        InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §6Firmenkonto", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 45, Component.text("§8 » §6Firmenkonto"), true, true);
         inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(playerData.getCompany().getBank()) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -259,7 +259,7 @@ public class BankingUtils implements Listener {
 
     private void openRobInventory(Player player, ATM atm) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 54, "§cATM-Raub " + atm.getName(), true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 54, Component.text("§cATM-Raub " + atm.getName()), true, true);
         playerData.setVariable("atm::rob::collected", 0);
         for (int i = 0; i < Utils.random(12, 20); i++) {
             int cash = Utils.random(25, 50);
@@ -296,7 +296,7 @@ public class BankingUtils implements Listener {
     public void openFactionBankMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
-        InventoryManager inventoryManager = new InventoryManager(player, 45, "§8 » §" + factionData.getPrimaryColor() + "Fraktionskonto", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 45, Component.text("§8 » §" + factionData.getPrimaryColor() + "Fraktionskonto"), true, true);
         inventoryManager.setItem(new CustomItem(13, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBmZmFkMzNkMjkzYjYxNzY1ZmM4NmFiNTU2MDJiOTU1YjllMWU3NTdhOGU4ODVkNTAyYjNkYmJhNTQyNTUxNyJ9fX0=", 1, 0, "§bKontostand", Collections.singletonList("§8 ➥ §a" + new DecimalFormat("#,###").format(factionData.getBank()) + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -358,7 +358,7 @@ public class BankingUtils implements Listener {
     @SneakyThrows
     private void openTransactionMenu(Player player, Player target, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§7Transaktion");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§7Transaktion"));
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItemHead(target.getUniqueId().toString(), 1, 0, "§7" + target.getName())) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -577,7 +577,7 @@ public class BankingUtils implements Listener {
 
     private void checkTakeOut(Player player, Faction factionData, int amount) {
         int tax = amount / 3;
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWillst du " + amount + " auszahlen?");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§cWillst du " + amount + " auszahlen?"));
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aJa", "§8 ➥ §c" + Utils.toDecimalFormat(tax) + "$ Steuern")) {
             @Override
             public void onClick(InventoryClickEvent event) {

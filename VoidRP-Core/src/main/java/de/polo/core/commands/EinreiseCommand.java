@@ -1,16 +1,17 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.api.player.enums.Gender;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -61,7 +62,7 @@ public class EinreiseCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Einreise.");
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §6Void Roleplay Einreiseamt", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §6Void Roleplay Einreiseamt"), true, true);
         inventoryManager.setItem(new CustomItem(1, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + playerData.getVariable("einreise_firstname"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -137,7 +138,7 @@ public class EinreiseCommand implements CommandExecutor {
 
     private void openDOBChanger(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §6Void Roleplay Einreiseamt", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §6Void Roleplay Einreiseamt"), true, true);
         LocalDate date = playerData.getVariable("einreise_dob");
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override

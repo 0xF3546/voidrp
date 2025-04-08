@@ -1,9 +1,9 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -42,7 +42,7 @@ public class DailyBonusCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Bonus-Händlers.");
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBonushändler", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §bBonushändler"), true, true);
 
         if (!playerData.hasReceivedBonus()) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aRelease-Bonus erhalten", Arrays.asList("§8 ➥ §b1.000 EXP", "§8 ➥ §a10.000$", "§8 ➥ §e200 Coins", "", "§8 ➥ §aKlicke um mehr auszuwählen"))) {
@@ -84,7 +84,7 @@ public class DailyBonusCommand implements CommandExecutor {
     private void openSelectDrug(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
 
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Weitere Auswahl", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §2Weitere Auswahl"), true, true);
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.RED_DYE, 1, 0, "§c+40g Schmerzmittel")) {
             @SneakyThrows
             @Override

@@ -1,10 +1,20 @@
-package de.polo.core.utils.inventory;
+package de.polo.api.Utils.inventorymanager;
 
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Optional;
 
+/**
+ * Creates a cache for the {@link InventoryManager} class.
+ * This class is used to store the {@link InventoryManager} for each player.
+ * Each player can only have one {@link InventoryManager} at a time.
+ * This is used to prevent the player from opening multiple inventories at once.
+ *
+ * @author Erik Pförtner
+ * @version 1.0.0
+ * @see InventoryManager
+ */
 public class CustomInventoryCache {
 
     private final HashMap<Player, InventoryManager> inventoryHashMap;

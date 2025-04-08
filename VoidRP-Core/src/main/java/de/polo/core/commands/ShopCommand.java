@@ -1,5 +1,7 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -8,13 +10,12 @@ import de.polo.core.storage.PlayerWeapon;
 import de.polo.core.game.base.shops.ShopData;
 import de.polo.core.game.base.shops.ShopItem;
 import de.polo.core.manager.*;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.Paymethod;
 import de.polo.core.utils.enums.ShopType;
 import de.polo.core.utils.enums.Weapon;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -61,7 +62,7 @@ public class ShopCommand implements CommandExecutor {
 
     private void openShop(Player player, ShopData shopData) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventory = new InventoryManager(player, 54, "§8» §c" + shopData.getName(), true, false);
+        InventoryManager inventory = new InventoryManager(player, 54, Component.text("§8» §c" + shopData.getName()), true, false);
 
         for (int i = 0; i < 54; i++) {
             if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
@@ -112,7 +113,7 @@ public class ShopCommand implements CommandExecutor {
 
     private void openShoppingCart(Player player, ShopData shopData) {
         List<ShopItem> cart = shoppingCarts.getOrDefault(player.getUniqueId(), new ArrayList<>());
-        InventoryManager inventory = new InventoryManager(player, 54, "§8» §cWarenkorb", true, true);
+        InventoryManager inventory = new InventoryManager(player, 54, Component.text("§8» §cWarenkorb"), true, true);
 
         int index = 0;
         for (ShopItem item : cart) {
@@ -143,7 +144,7 @@ public class ShopCommand implements CommandExecutor {
     }
 
     private void askForPaymethod(Player player, ShopData shopData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aZahlungsmethode");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §aZahlungsmethode"));
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§aBar")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -235,7 +236,7 @@ public class ShopCommand implements CommandExecutor {
             return;
         }
 
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + shopData.getName() + " (Business)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §c" + shopData.getName() + " (Business)"));
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -247,7 +248,7 @@ public class ShopCommand implements CommandExecutor {
     }
 
     private void openBusinessBuyOverview(Player player, ShopData shopData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §cBusiness kaufen", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §cBusiness kaufen"), true, true);
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.EMERALD_BLOCK, 1, 0, "§aBusiness kaufen für " + shopData.getType().getPrice() + "$")) {
             @SneakyThrows
             @Override

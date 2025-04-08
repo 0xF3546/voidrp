@@ -1,15 +1,16 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -38,7 +39,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
         Player player = (Player) sender;
         if (locationManager.getDistanceBetweenCoords(player, "nachrichten") < 5) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Nachrichtengebäude", true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Nachrichtengebäude"), true, true);
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2Werbung schalten", "§8 ➥ §7" + ServerManager.getPayout("werbung") + "$/Zeichen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

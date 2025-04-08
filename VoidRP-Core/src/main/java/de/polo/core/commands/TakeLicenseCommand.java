@@ -1,10 +1,10 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.manager.ItemManager;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import de.polo.api.player.enums.License;
@@ -52,7 +52,7 @@ public class TakeLicenseCommand extends CommandBase {
             return;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §6Lizenzentnahme");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §6Lizenzentnahme"));
         int i = 0;
         for (License license : targetData.getLicenses()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§cWaffenschein")) {

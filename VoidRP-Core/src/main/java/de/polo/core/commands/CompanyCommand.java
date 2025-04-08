@@ -1,17 +1,18 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.storage.Company;
 import de.polo.core.storage.CompanyRole;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.CompanyManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,7 +59,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
 
     private void openManageMenu(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§6Firma gründen", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§6Firma gründen"), true, true);
         if (playerData.getVariable("company::name") == null) playerData.setVariable("company::name", "Name");
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6" + playerData.getVariable("company::name"), "§8 ➥ §7[§6Rechtsklick§7] Klicke um den Namen zu ändern")) {
             @Override

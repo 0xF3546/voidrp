@@ -1,10 +1,10 @@
 package de.polo.core.game.base.vehicle;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.storage.*;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -12,6 +12,7 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.player.ScoreboardAPI;
 import de.polo.core.utils.player.SoundManager;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -370,7 +371,7 @@ public class Vehicles implements Listener, CommandExecutor {
                                 int dif = vehicleData.getMaxFuel() - (int) fuel;
                                 playerData.setIntVariable("current_fuel", (int) fuel);
                                 playerData.setIntVariable("plusfuel", 0);
-                                InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §6Tankstelle", true, false);
+                                InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §6Tankstelle"), true, false);
 
                                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§6" + type, Arrays.asList("§7 ➥ §8[§6Linksklick§8]§7 Tankoptionen", "§7 ➥ §8[§6Rechtsklick§8]§7 Volltanken (§a" + dif * gasStationData.getLiterprice() + "$§7)"))) {
                                     @SneakyThrows
@@ -404,7 +405,7 @@ public class Vehicles implements Listener, CommandExecutor {
 
     private void updateGasInventory(Player player, Entity entity, GasStationData gasStationData, VehicleData vehicleData) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inv = new InventoryManager(player, 27, "§8 » §6Tankstelle", true, false);
+        InventoryManager inv = new InventoryManager(player, 27, Component.text("§8 » §6Tankstelle"), true, false);
         inv.setItem(new CustomItem(10, ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5-10 Liter")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -520,7 +521,7 @@ public class Vehicles implements Listener, CommandExecutor {
                 player.openInventory(inv);
             }
             if (args[0].equalsIgnoreCase("find")) {
-                InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §cFahrzeug suchen", true, false);
+                InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §cFahrzeug suchen"), true, false);
                 int i = 0;
                 for (PlayerVehicleData data : playerVehicleDataMap.values()) {
                     if (data.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {

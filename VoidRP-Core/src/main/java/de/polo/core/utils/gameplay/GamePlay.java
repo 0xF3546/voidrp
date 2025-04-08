@@ -1,5 +1,7 @@
 package de.polo.core.utils.gameplay;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.database.impl.CoreDatabase;
@@ -19,8 +21,6 @@ import de.polo.core.game.faction.staat.StaatsbankRob;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.manager.*;
 import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.storage.*;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.StaatUtil;
@@ -632,7 +632,7 @@ public class GamePlay implements Listener {
     }
 
     public void openGOVRaidGUI(Faction factionData, Player attacker) {
-        InventoryManager inventoryManager = new InventoryManager(attacker, 27, "§8 » §cRazzia");
+        InventoryManager inventoryManager = new InventoryManager(attacker, 27, Component.text("§8 » §cRazzia"));
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§" + factionData.getPrimaryColor() + factionData.getFullname() + " raiden")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -718,7 +718,7 @@ public class GamePlay implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return;
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §3Staatsbank"));
         if (staatsbankRob == null) {
             int count = factionManager.getOnlineMemberCount("Polizei");
             count += factionManager.getOnlineMemberCount("FBI");
@@ -778,7 +778,7 @@ public class GamePlay implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return;
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Staatsbank §8-§6 Schließfächer");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §3Staatsbank §8-§6 Schließfächer"));
         for (int i = 0; i < staatsbankRob.getVaults(); i++) {
             int finalI = i + 1;
             if (staatsbankRob.getVaultsOpen() > i) {
@@ -840,7 +840,7 @@ public class GamePlay implements Listener {
     }
 
     public void openBombGUI(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bFraktionsupgrades", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §bFraktionsupgrades"), true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), "§aGrün")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -897,7 +897,7 @@ public class GamePlay implements Listener {
         }
 
         public void openEvidence(Player player) {
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3Asservatenkammer", true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §3Asservatenkammer"), true, true);
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §7" + StaatUtil.Asservatemkammer.getCocaine() + "g")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -921,7 +921,7 @@ public class GamePlay implements Listener {
         private void interactDrugStorage(Player player, RoleplayItem item) {
             PlayerData playerData = playerManager.getPlayerData(player);
 
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3" + item.getDisplayName(), true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §3" + item.getDisplayName()), true, true);
             inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§3Einlagern")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -955,7 +955,7 @@ public class GamePlay implements Listener {
         private void interactEvidence(Player player, RoleplayItem item) {
             PlayerData playerData = playerManager.getPlayerData(player);
 
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §3" + item.getDisplayName(), true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §3" + item.getDisplayName()), true, true);
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.RED_DYE, 1, 0, "§4Verbrennen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -1002,7 +1002,7 @@ public class GamePlay implements Listener {
         public void open(Player player) {
             PlayerData playerData = playerManager.getPlayerData(player);
             Faction factionData = factionManager.getFactionData(playerData.getFaction());
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §2Drogenlager (" + factionData.getName() + ")", true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §2Drogenlager (" + factionData.getName() + ")"), true, true);
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §7" + factionData.storage.getCocaine() + "g")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {

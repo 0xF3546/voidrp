@@ -1,5 +1,7 @@
 package de.polo.core.game.faction.apotheke;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.location.services.impl.LocationManager;
@@ -10,8 +12,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.game.events.MinuteTickEvent;
 import de.polo.core.manager.*;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.Drug;
@@ -29,6 +29,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.Duration;
@@ -55,17 +56,28 @@ public class ApothekeFunctions implements Listener {
         this.playerManager = playerManager;
         this.locationManager = locationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-        Statement statement = coreDatabase.getStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM apotheken");
-        while (resultSet.next()) {
-            Apotheke apotheke = new Apotheke();
-            apotheke.setId(resultSet.getInt("id"));
-            apotheke.setStaat(resultSet.getBoolean("isStaat"));
-            apotheke.setOwner(resultSet.getString("owner"));
-            apotheke.setLastAttack(resultSet.getTimestamp("lastAttack").toLocalDateTime());
-            apotheken.add(apotheke);
+        loadApotheken();
+    }
+
+    @SneakyThrows
+    private void loadApotheken() {
+        apotheken.clear();
+
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM apotheken")) {
+
+            while (resultSet.next()) {
+                Apotheke apotheke = new Apotheke();
+                apotheke.setId(resultSet.getInt("id"));
+                apotheke.setStaat(resultSet.getBoolean("isStaat"));
+                apotheke.setOwner(resultSet.getString("owner"));
+                apotheke.setLastAttack(resultSet.getTimestamp("lastAttack").toLocalDateTime());
+                apotheken.add(apotheke);
+            }
         }
     }
+
 
     private Apotheke getById(int id) {
         for (Apotheke apotheke : getApotheken()) {
@@ -119,7 +131,7 @@ public class ApothekeFunctions implements Listener {
         }
 
         InventoryManager inventoryManager = new InventoryManager(player, 27,
-                "§8 » §cApotheke (" + owner + "§c)", true, true);
+                Component.text("§8 » §cApotheke (" + owner + "§c)"), true, true);
 
         boolean finalCanAttack = canAttack;
         CustomItem infoItem = new CustomItem(

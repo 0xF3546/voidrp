@@ -52,25 +52,36 @@ public class Storage implements Listener {
 
     @SneakyThrows
     public static Storage load(int storageId) {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?");
-        statement.setInt(1, storageId);
-        ResultSet resultSet = statement.executeQuery();
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM storages WHERE id = ?")) {
 
-        if (resultSet.next()) {
-            Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
-            storage.setId(resultSet.getInt("id"));
-            storage.setFactionId(resultSet.getInt("factionId"));
-            storage.setVehicleId(resultSet.getInt("vehicleId"));
-            storage.setPlayer(resultSet.getString("player"));
-            if (resultSet.getString("extra") != null) {
-                storage.setExtra(Storages.valueOf(resultSet.getString("extra")));
+            statement.setInt(1, storageId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    Storage storage = new Storage(StorageType.valueOf(resultSet.getString("storageType")));
+                    storage.setId(resultSet.getInt("id"));
+                    storage.setFactionId(resultSet.getInt("factionId"));
+                    storage.setVehicleId(resultSet.getInt("vehicleId"));
+                    storage.setPlayer(resultSet.getString("player"));
+
+                    String extra = resultSet.getString("extra");
+                    if (extra != null && !extra.isEmpty()) {
+                        storage.setExtra(Storages.valueOf(extra));
+                    }
+
+                    String inventorySerialized = resultSet.getString("inventory");
+                    if (inventorySerialized != null) {
+                        storage.setInventory(InventoryUtils.deserializeInventory(inventorySerialized));
+                    }
+
+                    return storage;
+                }
             }
-            storage.setInventory(InventoryUtils.deserializeInventory(resultSet.getString("inventory")));
-            return storage;
         }
         return null;
     }
+
 
     @SneakyThrows
     public static Storage getStorageByTypeAndPlayer(StorageType storageType, Player player, Object value) {

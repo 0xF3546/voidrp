@@ -1,5 +1,7 @@
 package de.polo.core.location.services.impl;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.handler.TabCompletion;
@@ -11,8 +13,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.game.events.NaviReachEvent;
 import de.polo.core.game.events.SubmitChatEvent;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.SoundManager;
@@ -164,7 +164,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
 
     public void openNavi(Player player, String search) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventory = new InventoryManager(player, 36, "§8 » §6GPS Navigator", true, false);
+        InventoryManager inventory = new InventoryManager(player, 36, Component.text("§8 » §6GPS Navigator"), true, false);
         playerData.setVariable("originClass", this);
 
         int i = 10;
@@ -176,7 +176,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             SoundManager.clickSound(player);
-                            InventoryManager naviInventory = new InventoryManager(player, 36, "§8 » " + naviData.getName().replace("&", "§"), true, false);
+                            InventoryManager naviInventory = new InventoryManager(player, 36, Component.text("§8 » " + naviData.getName().replace("&", "§")), true, false);
 
                             naviInventory.setItem(new CustomItem(27, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§c◀ Zurück")) {
                                 @Override

@@ -1,10 +1,10 @@
 package de.polo.core.game.base.ffa;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponType;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -16,6 +16,7 @@ import de.polo.core.utils.enums.Weapon;
 import de.polo.core.utils.player.PlayerFFAStats;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -63,30 +64,48 @@ public class FFA implements CommandExecutor {
     private void load() {
         lobbies.clear();
         playerFFAStats.clear();
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM ffa_lobbies");
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            FFALobby lobby = new FFALobby(result.getInt("id"), result.getString("name"), result.getInt("maxPlayer"));
-            lobby.setFfaLobbyType(FFALobbyType.valueOf(result.getString("lobbyType")));
-            lobbies.add(lobby);
-            PreparedStatement spawnPoints = connection.prepareStatement("SELECT * FROM ffa_spawnpoints WHERE lobbyId = ?");
-            spawnPoints.setInt(1, lobby.getId());
-            ResultSet spawn = spawnPoints.executeQuery();
-            while (spawn.next()) {
-                Location location = new Location(Bukkit.getWorld(spawn.getString("welt")), spawn.getInt("x"), spawn.getInt("y"), spawn.getInt("z"), spawn.getFloat("yaw"), spawn.getFloat("pitch"));
-                FFASpawn ffaSpawn = new FFASpawn(spawn.getInt("id"), spawn.getInt("lobbyId"), location);
-                lobby.addSpawn(ffaSpawn);
-            }
-        }
 
-        PreparedStatement statsStatement = connection.prepareStatement("SELECT * FROM player_ffa_stats");
-        ResultSet stats = statsStatement.executeQuery();
-        while (stats.next()) {
-            PlayerFFAStats playerStats = new PlayerFFAStats(stats.getString("uuid"), stats.getInt("kills"), stats.getInt("deaths"));
-            playerStats.setFfaStatsType(FFAStatsType.valueOf(stats.getString("statsType")));
-            playerStats.setId(stats.getInt("id"));
-            playerFFAStats.add(playerStats);
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement lobbyStatement = connection.prepareStatement("SELECT * FROM ffa_lobbies");
+             ResultSet lobbyResult = lobbyStatement.executeQuery()) {
+
+            while (lobbyResult.next()) {
+                FFALobby lobby = new FFALobby(lobbyResult.getInt("id"), lobbyResult.getString("name"), lobbyResult.getInt("maxPlayer"));
+                lobby.setFfaLobbyType(FFALobbyType.valueOf(lobbyResult.getString("lobbyType")));
+                lobbies.add(lobby);
+
+                try (PreparedStatement spawnPoints = connection.prepareStatement("SELECT * FROM ffa_spawnpoints WHERE lobbyId = ?")) {
+                    spawnPoints.setInt(1, lobby.getId());
+                    try (ResultSet spawn = spawnPoints.executeQuery()) {
+                        while (spawn.next()) {
+                            Location location = new Location(
+                                    Bukkit.getWorld(spawn.getString("welt")),
+                                    spawn.getInt("x"),
+                                    spawn.getInt("y"),
+                                    spawn.getInt("z"),
+                                    spawn.getFloat("yaw"),
+                                    spawn.getFloat("pitch")
+                            );
+                            FFASpawn ffaSpawn = new FFASpawn(spawn.getInt("id"), spawn.getInt("lobbyId"), location);
+                            lobby.addSpawn(ffaSpawn);
+                        }
+                    }
+                }
+            }
+
+            try (PreparedStatement statsStatement = connection.prepareStatement("SELECT * FROM player_ffa_stats");
+                 ResultSet stats = statsStatement.executeQuery()) {
+                while (stats.next()) {
+                    PlayerFFAStats playerStats = new PlayerFFAStats(
+                            stats.getString("uuid"),
+                            stats.getInt("kills"),
+                            stats.getInt("deaths")
+                    );
+                    playerStats.setFfaStatsType(FFAStatsType.valueOf(stats.getString("statsType")));
+                    playerStats.setId(stats.getInt("id"));
+                    playerFFAStats.add(playerStats);
+                }
+            }
         }
     }
 
@@ -160,7 +179,7 @@ public class FFA implements CommandExecutor {
             player.sendMessage("§cDu bist nicht in der Rangliste.");
         }*/
 
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eStats§8 - " + type.getDisplayName());
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eStats§8 - " + type.getDisplayName()));
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(player.getUniqueId().toString(), 1, 0, "§6§l#" + playerRank + "§7 " + player.getName())) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -196,7 +215,7 @@ public class FFA implements CommandExecutor {
 
 
     private void openFFAMenu(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cFree for All");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cFree for All"));
         int i = 0;
         for (FFALobby lobby : lobbies) {
             int players = getPlayersInLobby(lobby.getId()).size();

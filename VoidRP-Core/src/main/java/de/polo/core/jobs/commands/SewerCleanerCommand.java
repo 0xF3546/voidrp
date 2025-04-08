@@ -1,5 +1,8 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.ItemBuilder;
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.game.events.MinuteTickEvent;
@@ -10,8 +13,6 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
 import de.polo.api.Utils.enums.Prefix;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
@@ -74,9 +75,9 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
     }
 
     private void openCleaningInventory(VoidPlayer player, Block block) {
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, "§7Reinigung ", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§7Reinigung "), true, true);
         for (int i = 0; i < Utils.random(12, 20); i++) {
-            inventoryManager.setItem(new CustomItem(Utils.random(0, 53), ItemManager.createItem(Material.DIRT, 1, 0, "§7Dreck")) {
+            inventoryManager.setItem(new CustomItem(Utils.random(0, 53), new ItemBuilder(Material.DIRT).setName("§7Dreck").build()) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     ItemStack item = event.getCurrentItem();

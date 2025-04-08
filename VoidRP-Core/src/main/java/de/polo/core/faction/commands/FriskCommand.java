@@ -1,11 +1,11 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.WeaponManager;
@@ -109,7 +109,7 @@ public class FriskCommand implements CommandExecutor {
         int iCount = Utils.roundUpToMultipleOfNine(items.size() + playerInventoryItems.size());
         if (iCount == 0) iCount = 9;
 
-        InventoryManager inventoryManager = new InventoryManager(player, iCount, "§8 » §b" + targetplayer.getName() + " (" + items.size() + " Gegenstände)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, iCount, Component.text("§8 » §b" + targetplayer.getName() + " (" + items.size() + " Gegenstände"));
         int i = 0;
         for (ItemStack stack : items) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(stack.getType(), stack.getAmount(), 0, stack.getItemMeta().getDisplayName())) {

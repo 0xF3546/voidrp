@@ -1,14 +1,15 @@
 package de.polo.core.game.base.farming;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.Workstation;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -132,7 +133,7 @@ public class PlayerWorkstation {
     public void open() {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Workstation (" + this.Workstation.getName() + ")");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Workstation (" + this.Workstation.getName() + ")"));
 
         inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.REDSTONE, 1, 0, "§cAusmieten", "§8 ➥ §4§lAchtung!§4 Du verlierst deine Workstation-Items.")) {
             @Override
@@ -167,7 +168,7 @@ public class PlayerWorkstation {
         if (player == null) return;
         int newInputCount = ItemManager.getCustomItemCount(player, Workstation.getInputItem());
 
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Workstation (" + this.Workstation.getName() + ")");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Workstation (" + this.Workstation.getName() + ")"));
 
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Workstation.getInputItem().getMaterial(), 1, 0, Workstation.getInputItem().getDisplayName(), "§8 » §eKlicke um " + input + " Stück auszulagern.")) {
             @Override

@@ -1,5 +1,7 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.game.events.SecondTickEvent;
@@ -9,8 +11,6 @@ import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.utils.Utils;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.storage.LocationData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
@@ -66,7 +66,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe des Hochseefischers."));
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §bHochseefischer", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §bHochseefischer"), true, true);
         if (!Main.getInstance().getCooldownManager().isOnCooldown(player.getPlayer(), "hochseefischer") && playerData.getVariable("job") == null) {
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHochseefischer starten")) {
                 @Override

@@ -1,14 +1,15 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.base.housing.House;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,7 +38,7 @@ public class ChangeSpawnCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bSpawn ändern", true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §bSpawn ändern"), true, false);
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cKrankenhaus")) {
             @Override
             public void onClick(InventoryClickEvent event) {

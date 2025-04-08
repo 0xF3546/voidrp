@@ -1,15 +1,16 @@
 package de.polo.core.utils.gameplay;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,7 +31,7 @@ public class FactionUpgradeGUI {
     public void open(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bFraktionsupgrades", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §bFraktionsupgrades"), true, true);
         int level = factionData.upgrades.getDrugEarningLevel();
         int upgradeDrugPrice = (int) (Math.pow(2, level - 1) * 400000);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, "§2Drogen-Multiplier", Arrays.asList("§8 ➥§e Aktuell§8:§7 " + factionData.upgrades.getDrugEarning() + "x", "§8 ➥§7Plantagen produzieren mehr Drogen", "", "§8 » §aUpgrade für " + Utils.toDecimalFormat(upgradeDrugPrice) + "$"))) {

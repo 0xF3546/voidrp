@@ -68,20 +68,22 @@ public class House {
 
     @SneakyThrows
     private void loadMiner() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM crypto_miner WHERE houseNumber = ?");
-        statement.setInt(1, number);
-        ResultSet res = statement.executeQuery();
-        while (res.next()) {
-            Miner m = new Miner();
-            m.setActive(res.getBoolean("active"));
-            m.setId(res.getInt("id"));
-            m.setKWh(res.getFloat("kWh"));
-            m.setCoins(res.getFloat("coins"));
-            activeMiner.add(m);
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM crypto_miner WHERE houseNumber = ?")) {
+            statement.setInt(1, number);
+            try (ResultSet res = statement.executeQuery()) {
+                while (res.next()) {
+                    Miner m = new Miner();
+                    m.setActive(res.getBoolean("active"));
+                    m.setId(res.getInt("id"));
+                    m.setKWh(res.getFloat("kWh"));
+                    m.setCoins(res.getFloat("coins"));
+                    activeMiner.add(m);
+                }
+            }
         }
-
     }
+
 
     @SneakyThrows
     public void save() {

@@ -1,18 +1,19 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.storage.BusinessData;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.manager.BusinessManager;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.agreement.services.VertragUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -53,7 +54,7 @@ public class InviteCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + args[0] + " ist nicht online.");
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§3" + targetplayer.getName() + " einladen", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§3" + targetplayer.getName() + " einladen"), true, true);
         int i = 0;
         if (playerData.getCompany() != null) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.BOOK, 1, 0, "§6In Firma einladen")) {

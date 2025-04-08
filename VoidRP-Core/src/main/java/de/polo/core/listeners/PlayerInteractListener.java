@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.game.base.extra.Storage;
 import de.polo.core.game.base.extra.drop.Drop;
@@ -10,8 +12,6 @@ import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.WeaponManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.storage.ATM;
 import de.polo.core.storage.ClickedEventBlock;
 import de.polo.core.faction.entity.Faction;
@@ -32,6 +32,7 @@ import de.polo.core.utils.player.ChatUtils;
 import de.polo.core.utils.player.PlayerPacket;
 import de.polo.core.utils.player.Rubbellose;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -162,7 +163,7 @@ public class PlayerInteractListener implements Listener {
 
                         if (block.getInfo().equalsIgnoreCase("banner")) {
                             if (playerData.getFaction() == null) return;
-                            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §bBanner " + block.getInfoValue());
+                            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §bBanner " + block.getInfoValue()));
                             Block b = event.getClickedBlock();
                             Faction factionData = factionManager.getFactionData(playerData.getFaction());
                             if (!factionManager.isBannerRegistered(block)) {
@@ -301,7 +302,7 @@ public class PlayerInteractListener implements Listener {
                     Material[] items = {Material.POTATO, Material.POISONOUS_POTATO, Material.GLASS_BOTTLE};
                     if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mülleimer")) {
                         Main.getInstance().getCooldownManager().setCooldown(player, "mülleimer", 30);
-                        InventoryManager inventoryManager = new InventoryManager(player, 9, "§7Mülleimer", false, false);
+                        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§7Mülleimer"), false, false);
                         for (int i = 0; i < Utils.random(3, 4); i++) {
                             inventoryManager.setItem(new CustomItem(Utils.random(0, 8), ItemManager.createItem(items[new Random().nextInt(items.length)], 1, 0, new ItemStack(items[new Random().nextInt(items.length)]).getItemMeta().getDisplayName())) {
                                 @Override
@@ -340,7 +341,7 @@ public class PlayerInteractListener implements Listener {
                             // ISSUE VRP-10001: Null check for houseData
                             if (houseData != null) {
                                 playerData.setIntVariable("current_house", houseData.getNumber());
-                                InventoryManager inventoryManager = new InventoryManager(player, 45, "", true, true);
+                                InventoryManager inventoryManager = new InventoryManager(player, 45, Component.text(""), true, true);
                                 if (houseData.getOwner() != null) {
                                     OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
                                     inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName())) {
@@ -582,7 +583,7 @@ public class PlayerInteractListener implements Listener {
                 if (itemStack.getAmount() >= 1) player.getInventory().setItemInMainHand(itemStack);
                 playerManager.addExp(player, Utils.random(50, 100));
             } else if (event.getItem().getItemMeta().getDisplayName().equals(RoleplayItem.PIPE.getDisplayName())) {
-                InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
+                InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text(""), true, true);
                 inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(RoleplayItem.BOX_WITH_JOINTS.getMaterial(), 1, 0, RoleplayItem.BOX_WITH_JOINTS.getDisplayName(), "§8 ➥ §aVerpacke 3 Joints in einer Kiste.")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {
@@ -598,7 +599,7 @@ public class PlayerInteractListener implements Listener {
                     }
                 });
             } else if (event.getItem().getItemMeta().getDisplayName().equals("§eMuschel")) {
-                InventoryManager inventoryManager = new InventoryManager(player, 27, "", true, true);
+                InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text(""), true, true);
                 inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.BIRCH_BUTTON, 1, 0, "§eMuschel öffnen")) {
                     @Override
                     public void onClick(InventoryClickEvent event) {

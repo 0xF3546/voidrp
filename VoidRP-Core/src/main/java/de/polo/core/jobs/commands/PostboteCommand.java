@@ -1,12 +1,12 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -14,6 +14,7 @@ import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,7 +42,7 @@ public class PostboteCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "postbote") <= 5) {
-                InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §ePostbote", true, true);
+                InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §ePostbote"));
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "postbote") && playerData.getVariable("job") == null) {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aPostbote starten")) {
                         @Override

@@ -1,12 +1,13 @@
 package de.polo.core.utils;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +42,7 @@ public class ComputerUtils implements Listener {
 
     public void openComputer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eComputer", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §eComputer"), true, true);
         if (playerData.isDuty()) {
             inventoryManager.setItem(new CustomItem(10, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cAus Dienst gehen")) {
                 @Override

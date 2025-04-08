@@ -1,16 +1,17 @@
 package de.polo.core.game.base.extra.beginnerpass;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -100,7 +101,7 @@ public class Beginnerpass implements CommandExecutor {
         addRemainingQuests(playerData);
 
         // Inventar erstellen und anzeigen
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Beginnerpass");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Beginnerpass"));
         int slot = 0;
         for (PlayerQuest playerQuest : playerData.getBeginnerQuests()) {
             if (slot >= 27) break; // Sicherheitsmaßnahme

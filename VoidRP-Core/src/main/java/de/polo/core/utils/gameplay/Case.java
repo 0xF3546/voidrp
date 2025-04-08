@@ -1,13 +1,14 @@
 package de.polo.core.utils.gameplay;
 
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.CaseType;
 import de.polo.core.utils.enums.Weapon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class Case {
     }
 
     private void init() {
-        inventoryManager = new InventoryManager(player, 27, caseType.getDisplayName(), true, true);
+        inventoryManager = new InventoryManager(player, 27, Component.text(caseType.getDisplayName()), true, true);
         spinWheel();
     }
 

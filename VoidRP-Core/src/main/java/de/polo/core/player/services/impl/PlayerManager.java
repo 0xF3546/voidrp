@@ -1,5 +1,7 @@
 package de.polo.core.player.services.impl;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
@@ -24,8 +26,6 @@ import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.game.faction.SprayableBanner;
 import de.polo.core.game.faction.gangwar.Gangwar;
 import de.polo.core.game.faction.staat.SubTeam;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.GlobalStats;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.TeamSpeak;
@@ -276,7 +276,7 @@ public class PlayerManager implements Listener {
                 if (!result.getBoolean("jugendschutz")) {
                     playerData.setVariable("jugendschutz", "muss");
                     Utils.waitSeconds(1, () -> {
-                        InventoryManager inventory = new InventoryManager(player, 27, "§c§lJugendschutz", true, false);
+                        InventoryManager inventory = new InventoryManager(player, 27, Component.text("§c§lJugendschutz"), true, false);
                         playerData.setVariable("originClass", this);
                         inventory.setItem(new CustomItem(11, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTkyZTMxZmZiNTljOTBhYjA4ZmM5ZGMxZmUyNjgwMjAzNWEzYTQ3YzQyZmVlNjM0MjNiY2RiNDI2MmVjYjliNiJ9fX0=", 1, 0, "§a§lIch bestäige", Arrays.asList("§7VoidRoleplay simuliert das §fechte Leben§7, weshalb mit §7Gewalt§7,", " §fSexualität§7, §fvulgärer Sprache§7, §fDrogen§7", "§7 und §fAlkohol§7 gerechnet werden muss.", "\n", "§7Bitte bestätige, dass du mindestens §e18 Jahre§7", "§7 alt bist oder die §aErlaubnis§7 eines §fErziehungsberechtigten§7 hast.", "§7Das VoidRoleplay Team behält sich vor", "§7 diesen Umstand ggf. unangekündigt zu prüfen", "\n", "§8 ➥ §7[§6Klick§7]§7 §a§lIch bin 18 Jahre alt oder", "§a§l habe die Erlaubnis meiner Eltern"))) {
                             @Override
@@ -1055,7 +1055,7 @@ public class PlayerManager implements Listener {
         // ISSUE VRP-10003: Added null check for playerData
         if (playerData == null) return;
         if (targetData.isAFK() || playerData.isCuffed() || playerData.isDead()) return;
-        InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
+        InventoryManager inventoryManager = new InventoryManager(player, 54, Component.text("§8 » §6Interaktionsmenü"));
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName())) {
             @Override
@@ -1140,7 +1140,7 @@ public class PlayerManager implements Listener {
     }
 
     public void openFactionInteractionMenu(Player player, Player targetplayer, String faction) {
-        InventoryManager inventoryManager = new InventoryManager(player, 54, "§8 » §6Interaktionsmenü");
+        InventoryManager inventoryManager = new InventoryManager(player, 54, Component.text("§8 » §6Interaktionsmenü"));
         PlayerData playerData = getPlayerData(player.getUniqueId());
         if (targetplayer == null) return;
         PlayerData targetplayerData = getPlayerData(targetplayer.getUniqueId());

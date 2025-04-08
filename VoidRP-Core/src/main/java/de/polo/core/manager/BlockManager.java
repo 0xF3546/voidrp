@@ -31,22 +31,28 @@ public class BlockManager {
 
     @SneakyThrows
     private void init() {
-        Statement statement = coreDatabase.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM blocks");
-        ObjectMapper mapper = new ObjectMapper();
-        while (result.next()) {
-            RegisteredBlock block = new RegisteredBlock();
-            block.setInfo(result.getString("info"));
-            block.setInfoValue(result.getString("infoValue"));
-            block.setId(result.getInt("id"));
-            block.setLocation(new Location(Bukkit.getWorld(result.getString("world")), result.getDouble("x"), result.getDouble("y"), result.getDouble("z")));
-            String b = result.getString("block");
-            if (b != null) {
-                block.setMaterial(Material.valueOf(b));
+        // Versuche, die Verbindung und die PreparedStatement Objekte zu verwalten
+        try (Statement statement = coreDatabase.getStatement();
+             ResultSet result = statement.executeQuery("SELECT * FROM blocks")) {
+
+            ObjectMapper mapper = new ObjectMapper();
+            while (result.next()) {
+                RegisteredBlock block = new RegisteredBlock();
+                block.setInfo(result.getString("info"));
+                block.setInfoValue(result.getString("infoValue"));
+                block.setId(result.getInt("id"));
+                block.setLocation(new Location(Bukkit.getWorld(result.getString("world")), result.getDouble("x"), result.getDouble("y"), result.getDouble("z")));
+
+                String b = result.getString("block");
+                if (b != null) {
+                    block.setMaterial(Material.valueOf(b));
+                }
+
+                registeredBlocks.add(block);
             }
-            registeredBlocks.add(block);
-        }
+        } // Alle Ressourcen wie Statement und ResultSet werden automatisch geschlossen
     }
+
 
     public RegisteredBlock getBlockAtLocation(Location location) {
         for (RegisteredBlock block : registeredBlocks) {

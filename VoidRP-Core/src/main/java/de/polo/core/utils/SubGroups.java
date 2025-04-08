@@ -25,18 +25,23 @@ public class SubGroups {
 
     @SneakyThrows
     private void load() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM subgroups");
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            SubGroup group = new SubGroup();
-            group.setId(result.getInt("id"));
-            group.setFactionId(result.getInt("faction"));
-            group.setName(result.getString("name"));
-            group.setBank(result.getInt("bank"));
-            subGroupList.add(group);
+        subGroupList.clear();
+
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM subgroups");
+             ResultSet result = statement.executeQuery()) {
+
+            while (result.next()) {
+                SubGroup group = new SubGroup();
+                group.setId(result.getInt("id"));
+                group.setFactionId(result.getInt("faction"));
+                group.setName(result.getString("name"));
+                group.setBank(result.getInt("bank"));
+                subGroupList.add(group);
+            }
         }
     }
+
 
     public SubGroup getSubGroup(int groupId) {
         for (SubGroup group : subGroupList) {

@@ -85,16 +85,21 @@ public class Faction {
 
     @SneakyThrows
     public void loadReasons() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM blacklistreasons WHERE faction = ?");
-        statement.setInt(1, id);
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            BlacklistReason reason = new BlacklistReason(result.getString("reason"), result.getInt("price"), result.getInt("kills"));
-            reason.setId(result.getInt("id"));
-            blacklistReasons.add(reason);
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM blacklistreasons WHERE faction = ?")) {
+
+            statement.setInt(1, id);
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    BlacklistReason reason = new BlacklistReason(result.getString("reason"), result.getInt("price"), result.getInt("kills"));
+                    reason.setId(result.getInt("id"));
+                    blacklistReasons.add(reason);
+                }
+            }
         }
     }
+
 
     public String getPrimaryColor() {
         return primaryColor;

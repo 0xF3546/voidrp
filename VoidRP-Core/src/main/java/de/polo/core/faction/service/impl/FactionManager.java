@@ -68,111 +68,125 @@ public class FactionManager {
 
     @SneakyThrows
     private void loadBanners() {
-        Statement statement = Main.getInstance().coreDatabase.getStatement();
+        sprayableBanners.clear();
 
-        ResultSet locs = statement.executeQuery("SELECT * FROM faction_banner");
-        while (locs.next()) {
-            SprayableBanner banner = new SprayableBanner(locs.getInt("registeredBlock"), locs.getInt("factionId"));
-            sprayableBanners.add(banner);
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM faction_banner");
+             ResultSet locs = statement.executeQuery()) {
+
+            while (locs.next()) {
+                SprayableBanner banner = new SprayableBanner(locs.getInt("registeredBlock"), locs.getInt("factionId"));
+                sprayableBanners.add(banner);
+            }
         }
     }
 
     private void loadFactions() throws SQLException {
-        Statement statement = Main.getInstance().coreDatabase.getStatement();
+        // Versuche, alle Ressourcen mit try-with-resources zu verwalten
+        try (Statement statement = Main.getInstance().coreDatabase.getStatement()) {
 
-        ResultSet locs = statement.executeQuery("SELECT f.*, fs.*, fu.*, fe.* FROM factions AS f " +
-                "LEFT JOIN faction_storage AS fs ON f.id = fs.factionId " +
-                "LEFT JOIN faction_upgrades AS fu ON f.id  = fu.factionId " +
-                "LEFT JOIN faction_equip AS fe ON f.id = fe.factionId");
-        while (locs.next()) {
-            Faction factionData = new Faction(FactionType.valueOf(locs.getString("type")));
-            factionData.setId(locs.getInt("id"));
-            factionData.setName(locs.getString("name"));
-            factionData.setChatColor(ChatColor.valueOf(locs.getString("chatColor")));
-            factionData.setFullname(locs.getString("fullname"));
-            factionData.setPrimaryColor(locs.getString("primaryColor"));
-            factionData.setSecondaryColor(locs.getString("secondaryColor"));
-            factionData.setBank(locs.getInt("bank"));
-            factionData.setMaxMember(locs.getInt("maxMember"));
-            factionData.setTeamSpeakID(locs.getInt("TeamSpeakID"));
-            factionData.setChannelGroupID(locs.getInt("ChannelGroupID"));
-            factionData.setHasBlacklist(locs.getBoolean("hasBlacklist"));
-            factionData.setDoGangwar(locs.getBoolean("doGangwar"));
-            factionData.setForumID(locs.getInt("forumID"));
-            factionData.setForumID_Leader(locs.getInt("forumID_Leader"));
-            factionData.setHasLaboratory(locs.getBoolean("hasLaboratory"));
-            factionData.setJointsMade(locs.getInt("jointsMade"));
-            factionData.setLaboratory(locs.getInt("laboratory"));
-            factionData.setBadFrak(locs.getBoolean("isBadFrak"));
-            factionData.setAllianceFaction(locs.getInt("alliance"));
-            factionData.setMotd(locs.getString("motd"));
-            factionData.setEquipPoints(locs.getInt("equippoints"));
-            factionData.setActive(locs.getBoolean("isActive"));
-            if (locs.getString("banner") != null) {
-                String bannerData = locs.getString("banner");
+            // Abfrage 1: Factions
+            try (ResultSet locs = statement.executeQuery("SELECT f.*, fs.*, fu.*, fe.* FROM factions AS f " +
+                    "LEFT JOIN faction_storage AS fs ON f.id = fs.factionId " +
+                    "LEFT JOIN faction_upgrades AS fu ON f.id  = fu.factionId " +
+                    "LEFT JOIN faction_equip AS fe ON f.id = fe.factionId")) {
+                while (locs.next()) {
+                    Faction factionData = new Faction(FactionType.valueOf(locs.getString("type")));
+                    factionData.setId(locs.getInt("id"));
+                    factionData.setName(locs.getString("name"));
+                    factionData.setChatColor(ChatColor.valueOf(locs.getString("chatColor")));
+                    factionData.setFullname(locs.getString("fullname"));
+                    factionData.setPrimaryColor(locs.getString("primaryColor"));
+                    factionData.setSecondaryColor(locs.getString("secondaryColor"));
+                    factionData.setBank(locs.getInt("bank"));
+                    factionData.setMaxMember(locs.getInt("maxMember"));
+                    factionData.setTeamSpeakID(locs.getInt("TeamSpeakID"));
+                    factionData.setChannelGroupID(locs.getInt("ChannelGroupID"));
+                    factionData.setHasBlacklist(locs.getBoolean("hasBlacklist"));
+                    factionData.setDoGangwar(locs.getBoolean("doGangwar"));
+                    factionData.setForumID(locs.getInt("forumID"));
+                    factionData.setForumID_Leader(locs.getInt("forumID_Leader"));
+                    factionData.setHasLaboratory(locs.getBoolean("hasLaboratory"));
+                    factionData.setJointsMade(locs.getInt("jointsMade"));
+                    factionData.setLaboratory(locs.getInt("laboratory"));
+                    factionData.setBadFrak(locs.getBoolean("isBadFrak"));
+                    factionData.setAllianceFaction(locs.getInt("alliance"));
+                    factionData.setMotd(locs.getString("motd"));
+                    factionData.setEquipPoints(locs.getInt("equippoints"));
+                    factionData.setActive(locs.getBoolean("isActive"));
+                    if (locs.getString("banner") != null) {
+                        String bannerData = locs.getString("banner");
 
-                JSONObject bannerObject = new JSONObject(bannerData);
+                        JSONObject bannerObject = new JSONObject(bannerData);
 
-                String bannerTypeString = bannerObject.getString("baseColor");
-                factionData.setBannerColor(Material.valueOf(bannerTypeString));
+                        String bannerTypeString = bannerObject.getString("baseColor");
+                        factionData.setBannerColor(Material.valueOf(bannerTypeString));
 
-                JSONArray jsonArray = bannerObject.getJSONArray("patterns");
-                List<Pattern> patterns = new ObjectArrayList<>();
+                        JSONArray jsonArray = bannerObject.getJSONArray("patterns");
+                        List<Pattern> patterns = new ObjectArrayList<>();
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject patternObject = jsonArray.getJSONObject(i);
-                    DyeColor color = DyeColor.valueOf(patternObject.getString("color"));
-                    PatternType type = PatternType.valueOf(patternObject.getString("type"));
-                    patterns.add(new Pattern(color, type));
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject patternObject = jsonArray.getJSONObject(i);
+                            DyeColor color = DyeColor.valueOf(patternObject.getString("color"));
+                            PatternType type = PatternType.valueOf(patternObject.getString("type"));
+                            patterns.add(new Pattern(color, type));
+                        }
+
+                        factionData.setBannerPattern(patterns);
+                    }
+                    factionData.storage.setJoint(locs.getInt("joint"));
+                    factionData.storage.setWeed(locs.getInt("weed"));
+                    factionData.storage.setCocaine(locs.getInt("cocaine"));
+                    factionData.storage.setKevlar(locs.getInt("kevlar"));
+                    factionData.storage.setNoble_joint(locs.getInt("noble_joint"));
+                    factionData.storage.setCrystal(locs.getInt("crystal"));
+                    factionData.upgrades.setTaxLevel(locs.getInt("tax"));
+                    factionData.upgrades.setWeaponLevel(locs.getInt("weapon"));
+                    factionData.upgrades.setDrugEarningLevel(locs.getInt("drug_earning"));
+                    factionData.equip.setSturmgewehr(locs.getInt("sturmgewehr"));
+                    factionData.equip.setSturmgewehr_ammo(locs.getInt("sturmgewehr_ammo"));
+                    factionData.upgrades.calculate();
+                    factionDataMap.put(locs.getString(2), factionData);
+                    factionData.loadReasons();
                 }
-
-                factionData.setBannerPattern(patterns);
             }
-            factionData.storage.setJoint(locs.getInt("joint"));
-            factionData.storage.setWeed(locs.getInt("weed"));
-            factionData.storage.setCocaine(locs.getInt("cocaine"));
-            factionData.storage.setKevlar(locs.getInt("kevlar"));
-            factionData.storage.setNoble_joint(locs.getInt("noble_joint"));
-            factionData.storage.setCrystal(locs.getInt("crystal"));
-            factionData.upgrades.setTaxLevel(locs.getInt("tax"));
-            factionData.upgrades.setWeaponLevel(locs.getInt("weapon"));
-            factionData.upgrades.setDrugEarningLevel(locs.getInt("drug_earning"));
-            factionData.equip.setSturmgewehr(locs.getInt("sturmgewehr"));
-            factionData.equip.setSturmgewehr_ammo(locs.getInt("sturmgewehr_ammo"));
-            factionData.upgrades.calculate();
-            factionDataMap.put(locs.getString(2), factionData);
-            factionData.loadReasons();
-        }
 
-        ResultSet grades = statement.executeQuery("SELECT * FROM faction_grades");
-        while (grades.next()) {
-            FactionGrade factionGrade = new FactionGrade();
-            factionGrade.setId(grades.getInt(1));
-            factionGrade.setFaction(grades.getString(2));
-            factionGrade.setGrade(grades.getInt(3));
-            factionGrade.setName(grades.getString(4));
-            factionGrade.setPayday(grades.getInt(5));
-            factionGradeDataMap.put(grades.getString(2) + "_" + grades.getInt(3), factionGrade);
-        }
+            // Abfrage 2: Faction Grades
+            try (ResultSet grades = statement.executeQuery("SELECT * FROM faction_grades")) {
+                while (grades.next()) {
+                    FactionGrade factionGrade = new FactionGrade();
+                    factionGrade.setId(grades.getInt(1));
+                    factionGrade.setFaction(grades.getString(2));
+                    factionGrade.setGrade(grades.getInt(3));
+                    factionGrade.setName(grades.getString(4));
+                    factionGrade.setPayday(grades.getInt(5));
+                    factionGradeDataMap.put(grades.getString(2) + "_" + grades.getInt(3), factionGrade);
+                }
+            }
 
-        ResultSet blacklist = statement.executeQuery("SELECT * FROM `blacklist`");
-        while (blacklist.next()) {
-            BlacklistData blacklistData = new BlacklistData();
-            blacklistData.setId(blacklist.getInt(1));
-            blacklistData.setUuid(blacklist.getString(2));
-            blacklistData.setFaction(blacklist.getString(3));
-            blacklistData.setReason(blacklist.getString(4));
-            blacklistData.setKills(blacklist.getInt(5));
-            blacklistData.setPrice(blacklist.getInt(6));
-            blacklistData.setDate(blacklist.getString(7));
-            blacklistDataMap.put(blacklist.getInt(1), blacklistData);
-        }
+            // Abfrage 3: Blacklist
+            try (ResultSet blacklist = statement.executeQuery("SELECT * FROM `blacklist`")) {
+                while (blacklist.next()) {
+                    BlacklistData blacklistData = new BlacklistData();
+                    blacklistData.setId(blacklist.getInt(1));
+                    blacklistData.setUuid(blacklist.getString(2));
+                    blacklistData.setFaction(blacklist.getString(3));
+                    blacklistData.setReason(blacklist.getString(4));
+                    blacklistData.setKills(blacklist.getInt(5));
+                    blacklistData.setPrice(blacklist.getInt(6));
+                    blacklistData.setDate(blacklist.getString(7));
+                    blacklistDataMap.put(blacklist.getInt(1), blacklistData);
+                }
+            }
 
-        ResultSet subteams = statement.executeQuery("SELECT * FROM faction_subteams");
-        while (subteams.next()) {
-            SubTeam subTeam = new SubTeam(subteams.getInt("faction"), subteams.getString("name"));
-            subTeam.setId(subteams.getInt("id"));
-            subTeams.add(subTeam);
+            // Abfrage 4: Subteams
+            try (ResultSet subteams = statement.executeQuery("SELECT * FROM faction_subteams")) {
+                while (subteams.next()) {
+                    SubTeam subTeam = new SubTeam(subteams.getInt("faction"), subteams.getString("name"));
+                    subTeam.setId(subteams.getInt("id"));
+                    subTeams.add(subTeam);
+                }
+            }
         }
     }
 

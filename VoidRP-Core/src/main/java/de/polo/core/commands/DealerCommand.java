@@ -1,5 +1,7 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
@@ -9,13 +11,12 @@ import de.polo.core.storage.Dealer;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.manager.*;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.gameplay.GamePlay;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -56,7 +57,7 @@ public class DealerCommand implements CommandExecutor {
     private void open(Player player, Dealer dealer) {
         PlayerData playerData = playerManager.getPlayerData(player);
         Faction factionData = factionManager.getFactionData(dealer.getOwner());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer §8(§" + factionData.getPrimaryColor() + factionData.getName() + "§8)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cDealer §8(§" + factionData.getPrimaryColor() + factionData.getName() + "§8)"), true, true);
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(RoleplayItem.SNUFF.getMaterial(), 1, 0, RoleplayItem.SNUFF.getDisplayName(), "§8 ➥ §eBenötigt§8: §71 Joint")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -161,7 +162,7 @@ public class DealerCommand implements CommandExecutor {
     }
 
     private void openPurchase(Player player, Dealer dealer) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cDealer (Ankauf)", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cDealer (Ankauf)"), true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {

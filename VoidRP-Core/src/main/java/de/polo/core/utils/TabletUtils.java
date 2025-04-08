@@ -1,5 +1,7 @@
 package de.polo.core.utils;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
@@ -13,8 +15,6 @@ import de.polo.core.game.base.vehicle.VehicleData;
 import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.*;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
@@ -60,7 +60,7 @@ public class TabletUtils implements Listener {
     }
 
     public void openTablet(Player player) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §eTablet", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §eTablet"), true, true);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         int i = 2;
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PLAYER_HEAD, 1, 0, "§cFraktionsapp")) {
@@ -127,7 +127,7 @@ public class TabletUtils implements Listener {
 
     private void openCitizienDatabase(Player player, int page, String search) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §3Bürgerdatenbank", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §3Bürgerdatenbank"), true, true);
         int i = 0;
         int j = 0;
         for (PlayerData playersData : playerManager.getPlayers()) {
@@ -190,7 +190,7 @@ public class TabletUtils implements Listener {
     public void openAktenApp(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (Objects.equals(playerData.getFaction(), "FBI") || Objects.equals(playerData.getFaction(), "Polizei")) {
-            InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §1Aktenapp", true, true);
+            InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §1Aktenapp"), true, true);
             inventoryManager.setItem(new CustomItem(0, ItemManager.createItem(Material.PAPER, 1, 0, "§9Aktenübersicht")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -212,7 +212,7 @@ public class TabletUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
         playerData.setIntVariable("current_page", page);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Akten §8- §9Seite§8:§7 " + page, true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §9Akten §8- §9Seite§8:§7 " + page), true, false);
         int i = 0;
         int j = 0;
         for (Player players : Bukkit.getOnlinePlayers()) {
@@ -253,7 +253,7 @@ public class TabletUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
         OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §c" + targetplayer.getName(), true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §c" + targetplayer.getName()), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§8» §6" + targetplayer.getName())) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -301,7 +301,7 @@ public class TabletUtils implements Listener {
     public void openAktenList(Player player, int page, String search) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page), true, false);
         Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = null;
         if (search == null) {
@@ -381,7 +381,7 @@ public class TabletUtils implements Listener {
     public void openPlayerAkte(Player player, UUID target, int page) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page, true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §9Aktenübersicht §8- §9Seite§8:§7 " + page), true, false);
         Statement statement = Main.getInstance().coreDatabase.getStatement();
         ResultSet result = statement.executeQuery("SELECT `id`, `akte`, `hafteinheiten`, `geldstrafe`, `vergebendurch`, DATE_FORMAT(datum, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM `player_akten` WHERE `uuid` = '" + target + "'");
         Player targetplayer = Bukkit.getPlayer(target);
@@ -429,7 +429,7 @@ public class TabletUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (!playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei"))
             return;
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §6Gefängnis §8- §6Seite§8:§7 " + page, true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §6Gefängnis §8- §6Seite§8:§7 " + page), true, true);
         int i = 0;
         int j = 0;
         for (JailData jailData : StaatUtil.jailDataMap.values()) {
@@ -473,7 +473,7 @@ public class TabletUtils implements Listener {
     public void openVehiclesApp(Player player, int page) {
         if (page <= 0) return;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8» §6Fahrzeuge §8- §6Seite§8:§7 " + page, true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §6Fahrzeuge §8- §6Seite§8:§7 " + page), true, false);
         int i = 0;
         int j = 0;
         for (PlayerVehicleData playerVehicleData : Vehicles.playerVehicleDataMap.values()) {
@@ -491,7 +491,7 @@ public class TabletUtils implements Listener {
                         public void onClick(InventoryClickEvent event) {
                             if (event.isRightClick()) {
                                 int price = (int) (vehicleData.getPrice() * 0.75);
-                                InventoryManager sellInventory = new InventoryManager(player, 27, "§8 » §e" + vehicleData.getName() + " verkaufen");
+                                InventoryManager sellInventory = new InventoryManager(player, 27, Component.text("§8 » §e" + vehicleData.getName() + " verkaufen"));
                                 sellInventory.setItem(new CustomItem(12, ItemManager.createItem(Material.GREEN_WOOL, 1, 0, "§aVerkaufen", "§8 ➥ §7" + Utils.toDecimalFormat(price) + "$")) {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
@@ -547,7 +547,7 @@ public class TabletUtils implements Listener {
 
     public void createAkte(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §aAkte einfügen");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §aAkte einfügen"));
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.CHEST, 1, 0, "§aAkte", playerData.getVariable("input_reason") != null ? "§8 ➥ §e" + playerData.getVariable("input_reason") : "§8 ➥ §cNicht angegeben")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -589,7 +589,7 @@ public class TabletUtils implements Listener {
 
     public void openCompanyApp(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6" + playerData.getCompany().getName(), true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6" + playerData.getCompany().getName()), true, true);
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6Rollen verwalten")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -618,7 +618,7 @@ public class TabletUtils implements Listener {
 
     public void openAssetApp(Player player, boolean isAddingPermission) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Assets", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6" + playerData.getCompany().getName()), true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -679,7 +679,7 @@ public class TabletUtils implements Listener {
     @SneakyThrows
     public void openCompanyMember(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Mitarbeiter"), true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -713,7 +713,7 @@ public class TabletUtils implements Listener {
 
     private void editCompanyPlayer(Player player, String uuid, String player_name) {
         PlayerData pData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter (" + player_name + ")", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Mitarbeiter (" + player_name + ")"), true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -758,7 +758,7 @@ public class TabletUtils implements Listener {
 
     private void openPlayerSetRole(Player player, String uuid, String player_name) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Mitarbeiter Rolle (" + player_name + ")", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Mitarbeiter Rolle (" + player_name + ")"), true, true);
         inventoryManager.setItem(new CustomItem(18, ItemManager.createItem(Material.NETHER_WART, 1, 0, "§cZurück")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -792,7 +792,7 @@ public class TabletUtils implements Listener {
 
     public void openRoles(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Rollen verwalten (" + playerData.getCompany().getRoles().size() + ")", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Rollen verwalten (" + playerData.getCompany().getRoles().size() + ")"), true, true);
         int i = 0;
         for (CompanyRole role : playerData.getCompany().getRoles()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6" + role.getName())) {
@@ -836,7 +836,7 @@ public class TabletUtils implements Listener {
 
     private void editRole(Player player, CompanyRole role) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Rolle bearbeiten (" + role.getName() + ")", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Rolle bearbeiten (" + role.getName() + ")"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + role.getName())) {
             @Override
             public void onClick(InventoryClickEvent event) {

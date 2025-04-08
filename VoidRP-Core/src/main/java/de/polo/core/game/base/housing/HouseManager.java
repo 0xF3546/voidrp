@@ -1,5 +1,7 @@
 package de.polo.core.game.base.housing;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -12,8 +14,6 @@ import de.polo.core.game.base.extra.Storage;
 import de.polo.core.game.events.MinuteTickEvent;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.*;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.housing.enums.HouseType;
@@ -264,7 +264,7 @@ public class HouseManager implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Hausaddon-Shops.");
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Hausaddon-Shop"));
         int i = 0;
         for (House house : getHouses(player)) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Haus " + house.getNumber(), Arrays.asList("§8 ➥ §eServer-Raum§8: " + (!house.isServerRoom() ? "§cNein" : "§aJa"), "§8 ➥ §eCrypto-Miner§8: §7" + house.getActiveMiner().size() + "§8/§7" + house.getMaxMiner(), "§8 ➥ §eServer§8: §7" + house.getServer() + "§8/§7" + house.getMaxServer(), "§8 ➥ §eMieterslots§8: §7" + house.getTotalSlots()))) {
@@ -280,7 +280,7 @@ public class HouseManager implements CommandExecutor, Listener {
 
     private void openHouseAddonMenu(Player player, House house) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §6Hausaddon-Shop");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Hausaddon-Shop"));
         int serverRoomPrice = ServerManager.getPayout("serverroom");
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(Material.IRON_BLOCK, 1, 0, "§6Server-Raum" + (house.isServerRoom() ? " §8[§cGekauft§8]" : ""), "§8 ➥ §a" + Utils.toDecimalFormat(serverRoomPrice) + "$")) {
             @Override
@@ -353,7 +353,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     public void openHouseServerRoom(Player player, House house) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ")");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Server-Raum (Haus " + house.getNumber() + ")"));
         int active = 0;
         float kWh = 0;
         if (!house.getActiveMiner().isEmpty()) {
@@ -388,7 +388,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     private void openCryptoRoom(Player player, House house) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Crypto");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Crypto"));
         int i = 0;
         for (Miner miner : house.getActiveMiner()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§eMiner", Arrays.asList("§8 ➥ §aStatus§8: " + (miner.isActive() ? "§aAktiv" : "§cInaktiv"), "§8 ➥ §bVerbrauch§8: §7" + miner.getKWh() + " kWh", "§8 ➥ §eCoins§8: §7" + miner.getCoins()))) {
@@ -402,7 +402,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     private void openCryptoMiner(Player player, House house, Miner miner) {
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Miner " + miner.getId());
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §7Server-Raum (Haus " + house.getNumber() + ") §8-§e Miner " + miner.getId()));
         inventoryManager.setItem(new CustomItem(3, ItemManager.createItem(Material.PAPER, 1, 0, miner.isActive() ? "§aAktiv" : "§cInaktiv")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -429,7 +429,7 @@ public class HouseManager implements CommandExecutor, Listener {
     }
 
     public void openCookMenu(Player player, House house) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§bKochmenü");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§bKochmenü"));
         inventoryManager.setItem(new CustomItem(12, ItemManager.createItem(RoleplayItem.CRYSTAL.getMaterial(), 1, 0, "§7Lager öffnen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -459,7 +459,7 @@ public class HouseManager implements CommandExecutor, Listener {
 
     public void openGunCabinet(Player player, House house) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§cWaffenschrank");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§cWaffenschrank"));
         int i = 0;
         for (PlayerWeapon playerWeapon : playerData.getWeapons()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(playerWeapon.getWeapon().getMaterial(), 1, 0, playerWeapon.getWeapon().getName(), Arrays.asList("§8 ➥ §c" + playerWeapon.getAmmo() + " Schuss", "§8 ➥ §c" + playerWeapon.getWear() + " Verschleiss", "", "§8[§6Linksklick§8]§7 Waffe entnehmen", "§8[§6Rechtsklick§8]§7 Munition entnehmen"))) {
@@ -497,7 +497,7 @@ public class HouseManager implements CommandExecutor, Listener {
 
     public void openHouseTreasury(Player player, House house) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§6Hauskasse");
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§6Hauskasse"));
         inventoryManager.setItem(new CustomItem(3, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzE0MzFkNjQ1ODdmZjZlZjk4YzA2NzU4MTA2ODFmOGMxM2JmOTZmNTFkOWNiMDdlZDc4NTJiMmZmZDEifX19", 1, 0, "§aEinzahlen", null)) {
             @Override
             public void onClick(InventoryClickEvent event) {

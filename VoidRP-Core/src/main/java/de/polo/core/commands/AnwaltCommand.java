@@ -1,10 +1,10 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.utils.Prefix;
 import de.polo.api.player.enums.License;
@@ -49,7 +49,7 @@ public class AnwaltCommand extends CommandBase {
     }
 
     private void openJobEntryMenu(VoidPlayer player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §7Anwalt");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Anwalt"));
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§aJob annehmen", "§8 ➥ §7Du musst diesen Job noch annehmen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
@@ -64,11 +64,11 @@ public class AnwaltCommand extends CommandBase {
             openJobEntryMenu(player, playerData);
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §7Anwalt");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Anwalt"));
     }
 
     private void openBuyMenu(VoidPlayer player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §7Anwalt");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Anwalt"));
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§6Lizenz kaufen", "§8 ➥ §a25.000$")) {
             @Override
             public void onClick(InventoryClickEvent event) {

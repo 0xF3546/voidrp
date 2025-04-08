@@ -26,9 +26,9 @@ public class ServerPingListener implements Listener {
         String secondline = "§8➥ §cRoleplay mit Stil. §8 × §bⓘ §adiscord.gg/void-roleplay";
         String motd = null;
 
-        try {
-            Statement statement = Main.getInstance().coreDatabase.getStatement();
-            ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'");
+        try (Statement statement = Main.getInstance().coreDatabase.getStatement();
+             ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'")) {
+
             if (res.next()) {
                 if (res.getString(3) != null) {
                     Faction factionData = factionManager.getFactionData(res.getString(3));
@@ -46,7 +46,8 @@ public class ServerPingListener implements Listener {
             }
             event.setMotd(firstline + "\n" + secondline);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            // Es wäre besser, hier eine angemessene Fehlerbehandlung einzubauen
         }
     }
 }

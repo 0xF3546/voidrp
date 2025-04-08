@@ -1,17 +1,18 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.storage.Corpse;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,7 +47,7 @@ public class UndertakerCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Bestatters.");
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §7Bestatter");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Bestatter"));
         if (playerData.getVariable("job") != null) {
             if (playerData.getVariable("job") == "corpse") {
                 boolean state = playerData.getVariable("job::corpse::pickedup");

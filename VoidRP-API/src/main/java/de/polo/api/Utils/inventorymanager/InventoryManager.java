@@ -1,21 +1,33 @@
-package de.polo.core.utils.inventory;
+package de.polo.api.Utils.inventorymanager;
 
-import de.polo.core.manager.ItemManager;
+import de.polo.api.Utils.ItemBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+/**
+ * This class is the heart of the InventoryManager API.
+ * It is used to create a new inventory for a player.
+ * It is also used to add items to the inventory.
+ *
+ * @author Erik Pförtner
+ * @version 1.0.0
+ * @see InventoryApiRegister
+ */
 public class InventoryManager {
 
-    private final String name;
-    private final int size;
-    private final UUID uuid;
-    private final boolean fillRest;
-    private final Inventory inv;
+    private Component name;
+    private int size;
+    private UUID uuid;
     public boolean canceled;
+    private Inventory inv;
+    private boolean fillRest;
 
     /**
      * This constructor is used to create a new inventory for a player.
@@ -26,7 +38,54 @@ public class InventoryManager {
      * @param canceled If the inventory should be canceled.
      * @since 1.0.0
      */
-    public InventoryManager(Player player, int size, String name, boolean canceled, boolean fillRest) {
+    public InventoryManager(Player player, int size, String name, boolean canceled) {
+        this.size = size;
+        this.name = Component.text(name);
+        this.uuid = player.getUniqueId();
+        this.canceled = canceled;
+        this.inv = Bukkit.createInventory(null, size, name);
+        InventoryApiRegister.getCustomInventoryCache().addInventory(player, this);
+        player.openInventory(inv);
+    }
+
+    /**
+     * This constructor is used to create a new inventory for a player.
+     * @param player The player who should get the inventory.
+     * @param size The size of the inventory.
+     * @param name The name of the inventory.
+     */
+    public InventoryManager(Player player, int size, Component name) {
+        create(player, size, name, true, true);
+    }
+
+    /**
+     * This constructor is used to create a new inventory for a player.
+     *
+     * @param player   The player who should get the inventory.
+     * @param size     The size of the inventory.
+     * @param name     The name of the inventory.
+     * @param canceled If the inventory should be canceled.
+     * @since 1.0.0
+     */
+    public InventoryManager(Player player, int size, Component name, boolean canceled) {
+        create(player, size, name, canceled, true);
+    }
+
+    /**
+     * This constructor is used to create a new inventory for a player.
+     *
+     * @param player   The player who should get the inventory.
+     * @param size     The size of the inventory.
+     * @param name     The name of the inventory.
+     * @param canceled If the inventory should be canceled.
+     * @param fillRest If the rest of the inventory should be filled with Black Stained Glass.
+     * @since 1.0.0
+     */
+    public InventoryManager(Player player, int size, Component name, boolean canceled, boolean fillRest) {
+        create(player, size, name, canceled, fillRest);
+    }
+
+    private void create(Player player, int size, Component name, boolean canceled, boolean fillRest) {
         this.size = size;
         this.name = name;
         this.uuid = player.getUniqueId();
@@ -34,32 +93,16 @@ public class InventoryManager {
         this.fillRest = fillRest;
         this.inv = Bukkit.createInventory(null, size, name);
         InventoryApiRegister.getCustomInventoryCache().addInventory(player, this);
-        if (this.fillRest) {
-            for (int i = 0; i < this.size; i++) {
-                if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
-                }
-            }
-        }
         player.openInventory(inv);
-    }
 
-    public InventoryManager(Player player, int size, String name) {
-        this.size = size;
-        this.name = name;
-        this.uuid = player.getUniqueId();
-        this.canceled = true;
-        this.fillRest = true;
-        this.inv = Bukkit.createInventory(null, size, name);
-        InventoryApiRegister.getCustomInventoryCache().addInventory(player, this);
-        if (this.fillRest) {
-            for (int i = 0; i < this.size; i++) {
+        if (fillRest) {
+            for (int i = 0; i < size; i++) {
                 if (inv.getItem(i) == null) {
-                    inv.setItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§c"));
+                    ItemStack stack = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).setName(" ").build();
+                    inv.setItem(i, stack);
                 }
             }
         }
-        player.openInventory(inv);
     }
 
     /**
@@ -88,16 +131,17 @@ public class InventoryManager {
      * @return The name of the {@link Inventory}.
      * @since 1.0.0
      */
-    public String getName() {
+    public Component getName() {
         return name;
     }
 
     /**
-     * Returns the UUID of the {@link Inventory}.
+     * Returns the UUID of the {@link Player} who owns the {@link Inventory}.
      *
-     * @return The UUID of the {@link Inventory}.
+     * @return The UUID of the {@link Player} who owns the {@link Inventory}.
      * @since 1.0.0
      */
+    @NotNull
     public UUID getUUID() {
         return uuid;
     }
@@ -118,6 +162,7 @@ public class InventoryManager {
      * @return The {@link Inventory}.
      * @since 1.0.0
      */
+    @NotNull
     public Inventory getInventory() {
         return inv;
     }
@@ -132,7 +177,7 @@ public class InventoryManager {
      * @see CustomItem
      * @since 1.0.0
      */
-    public void setItem(CustomItem customItem) {
+    public void setItem(@NotNull final CustomItem customItem) {
         getInventory().setItem(customItem.slot, customItem.itemStack);
         CustomItemInventoryCache.getInstance().addCustomItem(this, customItem);
     }
@@ -147,7 +192,7 @@ public class InventoryManager {
      * @see CustomItem
      * @since 1.0.0
      */
-    public void addItem(CustomItem customItem) {
+    public void addItem(@NotNull final CustomItem customItem) {
         getInventory().addItem(customItem.itemStack);
         CustomItemInventoryCache.getInstance().addCustomItem(this, customItem);
     }

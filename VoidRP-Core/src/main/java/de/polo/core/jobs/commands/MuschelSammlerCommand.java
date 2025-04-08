@@ -1,9 +1,9 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -11,6 +11,7 @@ import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -45,7 +46,7 @@ public class MuschelSammlerCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Muschelsammlers.");
             return false;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §eMuschelsammler", true, true);
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eMuschelsammler"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§bJobbeschreibung", "§8 ➥§7 Sammle Muscheln & verkaufe oder öffne diese.")) {
             @Override
             public void onClick(InventoryClickEvent event) {

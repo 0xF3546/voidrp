@@ -18,10 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -44,19 +41,26 @@ public class Streetwar implements CommandExecutor {
     @SneakyThrows
     public static void load() {
         CoreDatabase coreDatabase = Main.getInstance().coreDatabase;
-        Statement statement = coreDatabase.getStatement();
-        ResultSet res = statement.executeQuery("SELECT * FROM streetwar");
-        while (res.next()) {
-            StreetwarData streetwarData = new StreetwarData();
-            streetwarData.setId(res.getInt("id"));
-            streetwarData.setAttacker(res.getString("attacker"));
-            streetwarData.setDefender(res.getString("defender"));
-            streetwarData.setAttacker_points(res.getInt("attacker_points"));
-            streetwarData.setDefender_points(res.getInt("defender_points"));
-            streetwarData.setStarted(Utils.toLocalDateTime(res.getDate("started")));
-            streetwarDataMap.put(res.getInt(1), streetwarData);
-        }
+
+        try (Connection connection = coreDatabase.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet res = statement.executeQuery("SELECT * FROM streetwar")) {
+
+            while (res.next()) {
+                StreetwarData streetwarData = new StreetwarData();
+                streetwarData.setId(res.getInt("id"));
+                streetwarData.setAttacker(res.getString("attacker"));
+                streetwarData.setDefender(res.getString("defender"));
+                streetwarData.setAttacker_points(res.getInt("attacker_points"));
+                streetwarData.setDefender_points(res.getInt("defender_points"));
+                streetwarData.setStarted(Utils.toLocalDateTime(res.getDate("started")));
+
+                streetwarDataMap.put(streetwarData.getId(), streetwarData);
+            }
+
+        } // Connection, Statement und ResultSet werden automatisch geschlossen
     }
+
 
     public static boolean isInStreetwar(String faction) {
         for (StreetwarData streetwarData : streetwarDataMap.values()) {

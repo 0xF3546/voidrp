@@ -1,11 +1,11 @@
-package de.polo.core.commands;
+package de.polo.core.player.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.manager.ItemManager;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import de.polo.api.player.enums.HealthInsurance;
@@ -38,7 +38,7 @@ public class HealthInsuranceCommand extends CommandBase {
     }
 
     private void openHealthInsurance(Player player, PlayerData playerData) {
-        InventoryManager inventoryManager = new InventoryManager(player, 27, "§8 » §cKrankenkasse");
+        InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cKrankenkasse"));
         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§c" + HealthInsurance.BASIC.getName(), "§8 ➥ §a" + HealthInsurance.BASIC.getPrice() + "$/PayDay")) {
             @Override
             public void onClick(InventoryClickEvent event) {

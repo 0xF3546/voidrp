@@ -48,15 +48,22 @@ public class Houseban implements CommandExecutor, TabCompleter {
     @SneakyThrows
     private void loadAll() {
         housebans.clear();
-        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("SELECT * FROM housebans");
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            PlayerHouseban playerHouseban = new PlayerHouseban(UUID.fromString(result.getString("uuid")), result.getString("reason"), Utils.toLocalDateTime(result.getDate("until")));
-            playerHouseban.setId(result.getInt("id"));
-            playerHouseban.setPunisher(UUID.fromString(result.getString("punisher")));
-            housebans.add(playerHouseban);
+
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM housebans");
+             ResultSet result = statement.executeQuery()) {
+
+            while (result.next()) {
+                PlayerHouseban playerHouseban = new PlayerHouseban(
+                        UUID.fromString(result.getString("uuid")),
+                        result.getString("reason"),
+                        Utils.toLocalDateTime(result.getDate("until"))
+                );
+                playerHouseban.setId(result.getInt("id"));
+                playerHouseban.setPunisher(UUID.fromString(result.getString("punisher")));
+                housebans.add(playerHouseban);
+            }
         }
-        statement.close();
     }
 
     public PlayerHouseban getByUuid(UUID uuid) {

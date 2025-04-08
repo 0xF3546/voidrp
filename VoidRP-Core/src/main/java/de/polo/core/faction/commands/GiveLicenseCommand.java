@@ -1,11 +1,11 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.manager.ItemManager;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.storage.Agreement;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
@@ -52,7 +52,7 @@ public class GiveLicenseCommand extends CommandBase {
             return;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27,"§8 » §6Lizenzvergabe");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27,Component.text("§8 » §6Lizenzvergabe"));
         int i = 0;
         if (playerData.getFactionGrade() >= 4 && !targetData.hasLicense(License.WEAPON)) {
             int price = 12500;

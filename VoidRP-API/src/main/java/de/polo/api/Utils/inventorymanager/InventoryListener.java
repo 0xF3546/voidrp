@@ -1,4 +1,4 @@
-package de.polo.core.utils.inventory;
+package de.polo.api.Utils.inventorymanager;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +10,19 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.Optional;
 
+/**
+ * This class is used to listen to events that are related to the inventory.
+ * It is used to remove the inventory from the cache when the player closes the inventory.
+ * It is also used to remove the inventory from the cache when the player leaves the server.
+ * It is also used to remove the inventory from the cache when the player is kicked from the server.
+ *
+ * @author Erik Pförtner
+ * @version 1.0.0
+ * @see InventoryCloseEvent
+ * @see PlayerQuitEvent
+ * @see PlayerKickEvent
+ * @see Inventory
+ */
 public class InventoryListener implements Listener {
 
     /**
@@ -25,9 +38,8 @@ public class InventoryListener implements Listener {
      */
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (event.getPlayer() instanceof Player) {
+        if (event.getPlayer() instanceof Player player) {
             Inventory inv = event.getInventory();
-            Player player = (Player) event.getPlayer();
             Optional<InventoryManager> inventoryManagerOptional = InventoryApiRegister.getCustomInventoryCache().getInventory(player);
             if (inventoryManagerOptional.isPresent()) {
                 InventoryManager inventoryManager = inventoryManagerOptional.get();

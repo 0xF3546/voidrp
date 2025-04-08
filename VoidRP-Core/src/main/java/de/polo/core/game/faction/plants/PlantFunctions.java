@@ -1,13 +1,13 @@
 package de.polo.core.game.faction.plants;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.game.events.MinuteTickEvent;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.utils.inventory.CustomItem;
-import de.polo.core.utils.inventory.InventoryManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -17,6 +17,7 @@ import de.polo.core.utils.enums.PlantType;
 import de.polo.core.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -96,7 +97,7 @@ public class PlantFunctions implements Listener {
         if (plant == null) return;
         Faction factionData = plant.getPlanter();
         PlayerData playerData = playerManager.getPlayerData(player);
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §2Plantage", true, false);
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §2Plantage"), true, false);
         int i = 0;
         if (plant.getTime() < 30) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(plant.getType().getDrug().getItem().getMaterial(), 1, 0, "§2Ernten", "§8 ➥ §a" + plant.getYield() + "g")) {
@@ -173,7 +174,7 @@ public class PlantFunctions implements Listener {
     private void openBurnPlant(Player player, Plant plant) {
         Collection<Plant> nearbyPlants = getNearbyPlants(player.getLocation());
         if (nearbyPlants.size() == 0) return;
-        InventoryManager inventoryManager = new InventoryManager(player, 9, "§8 » §c" + nearbyPlants.size() + " Plantagen");
+        InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §c" + nearbyPlants.size() + " Plantagen"));
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.FLINT_AND_STEEL, 1, 0, "§cVerbrennen")) {
             @Override
             public void onClick(InventoryClickEvent event) {
