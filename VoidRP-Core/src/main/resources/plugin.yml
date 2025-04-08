@@ -1,6 +1,6 @@
 name: VoidRoleplay
 version: '${project.version}'
-main: de.polo.voidroleplay.Main
+main: de.polo.core.Main
 api-version: 1.20
 authors: [ Polo66 ]
 description: VoidRoleplay Script

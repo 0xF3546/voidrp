@@ -1,6 +1,6 @@
 package dev.vansen.singleline;
 
-import de.polo.voidroleplay.utils.BetterExecutor;
+import de.polo.core.utils.BetterExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

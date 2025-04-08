@@ -1,0 +1,51 @@
+package de.polo.core.game.faction.staat;
+
+import de.polo.core.Main;
+import de.polo.core.faction.entity.Faction;
+import de.polo.core.utils.Utils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.ChatColor;
+
+import java.util.List;
+
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class StaatsbankRob {
+    @Getter
+    private final List<Integer> openVaults = new ObjectArrayList<>();
+    @Getter
+    @Setter
+    private Faction attacker;
+    @Getter
+    @Setter
+    private int minutes = 0;
+    @Getter
+    @Setter
+    private int vaults;
+    @Getter
+    @Setter
+    private int vaultsOpen;
+
+    public StaatsbankRob() {
+        vaults = Utils.random(12, 20);
+    }
+
+    public void sendMessage(String message, ChatColor color, String... factions) {
+        Main.getInstance().factionManager.sendCustomMessageToFactions("§8[§3Staatsbank§8] " + color + message, factions);
+    }
+
+    public boolean openVault(int vault) {
+        if (openVaults.contains(vault)) return false;
+        openVaults.add(vault);
+        return true;
+    }
+
+    public boolean isVaultOpen(int vault) {
+        return openVaults.contains(vault);
+    }
+}

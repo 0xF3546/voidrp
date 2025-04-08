@@ -1,0 +1,33 @@
+package de.polo.core.base.commands;
+
+import de.polo.core.Main;
+import de.polo.core.utils.Utils;
+import de.polo.core.utils.player.PlayerPacket;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class AFKCommand implements CommandExecutor {
+    private final Utils utils;
+
+    public AFKCommand(Utils utils) {
+        this.utils = utils;
+        Main.registerCommand("afk", this);
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        Player player = (Player) sender;
+        utils.setAFK(player, true);
+        PlayerPacket packet = new PlayerPacket(player);
+        packet.renewPacket();
+        return false;
+    }
+}
