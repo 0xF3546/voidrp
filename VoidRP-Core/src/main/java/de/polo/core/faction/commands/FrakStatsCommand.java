@@ -9,6 +9,7 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -57,6 +58,7 @@ public class FrakStatsCommand implements CommandExecutor {
                 member++;
             }
         }
+        player.sendMessage(Component.text("§8 - §6Typ§8:§c " + factionData.getFactionType().getName()));
         player.sendMessage("§8 - §6Mitglieder§8:§c " + member + "/" + factionData.getMaxMember());
         player.sendMessage("§8 - §6PayDay§8:§c " + utils.getCurrentMinute() + "/60");
         return false;
