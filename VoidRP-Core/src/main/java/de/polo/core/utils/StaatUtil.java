@@ -25,6 +25,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static de.polo.core.Main.database;
+
 public class StaatUtil {
     public static final Map<String, JailData> jailDataMap = new HashMap<>();
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
@@ -211,14 +213,22 @@ public class StaatUtil {
 
     @SneakyThrows
     public void loadParole(Player player) {
-        PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement("SELECT * FROM Jail_Parole WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        if (result.next()) {
-            PlayerData playerData = playerManager.getPlayerData(player);
-            playerData.setJailParole(result.getInt("minutes_remaining"));
-        }
-        statement.close();
+        database.executeQueryAsync("SELECT * FROM Jail_Parole WHERE uuid = ?", player.getUniqueId().toString())
+                .thenAccept(result -> {
+                    PlayerData playerData = playerManager.getPlayerData(player);
+                    playerData.setJailParole((Integer) result.get(0).get("minutes_remaining"));
+                });
+        /*String sql = "SELECT * FROM Jail_Parole WHERE uuid = ?";
+
+        try (PreparedStatement statement = Main.getInstance().coreDatabase.getConnection().prepareStatement(sql)) {
+            statement.setString(1, player.getUniqueId().toString());
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    PlayerData playerData = playerManager.getPlayerData(player);
+                    playerData.setJailParole(result.getInt("minutes_remaining"));
+                }
+            }
+        }*/
     }
 
     @SneakyThrows

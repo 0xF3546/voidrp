@@ -103,7 +103,7 @@ public class CommandListener implements Listener {
 
         if (Bukkit.getServer().getHelpMap().getHelpTopic(args[0]) == null) {
             event.setCancelled(true);
-            player.sendMessage(Prefix.ERROR + "Der Befehl §c" + msg + " wurde nicht gefunden.");
+            player.sendMessage(Prefix.ERROR + "Der Befehl " + msg + " wurde nicht gefunden.");
             return;
         }
         if (playerData.isDead() && !playerData.isAduty()) {

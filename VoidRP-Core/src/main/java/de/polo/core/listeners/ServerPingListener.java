@@ -7,10 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
+import java.sql.*;
 
 public class ServerPingListener implements Listener {
     private final FactionManager factionManager;
@@ -24,30 +21,39 @@ public class ServerPingListener implements Listener {
     public void onServerPing(ServerListPingEvent event) {
         String firstline = "§6§lVoidRoleplay V2 §8| §eReallife & Roleplay §8[§e1.16.5§8]";
         String secondline = "§8➥ §cRoleplay mit Stil. §8 × §bⓘ §adiscord.gg/void-roleplay";
-        String motd = null;
 
-        try (Statement statement = Main.getInstance().coreDatabase.getStatement();
-             ResultSet res = statement.executeQuery("SELECT level, visum, faction FROM players WHERE adress = '" + event.getAddress().toString().replace("/", "") + "'")) {
+        String sql = "SELECT level, visum, faction FROM players WHERE adress = ?";
 
-            if (res.next()) {
-                if (res.getString(3) != null) {
-                    Faction factionData = factionManager.getFactionData(res.getString(3));
-                    secondline = "§8 » §6Level§8:§e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §" + factionData.getPrimaryColor() + factionData.getName();
-                } else {
-                    secondline = "§8 » §6Level§8:§e " + res.getInt(1) + " §8| §6Visum§8: §e" + res.getInt(2) + " §8| §6Fraktion§8: §7Zivilist";
-                }
-            } else {
-                SQLWarning warning = statement.getWarnings();
-                if (warning != null) {
-                    System.out.println("Warnung: " + warning.getMessage());
-                } else {
-                    System.out.println("Keine übereinstimmenden Datensätze gefunden.");
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            String cleanAddress = event.getAddress().toString().replace("/", "");
+            statement.setString(1, cleanAddress);
+
+            try (ResultSet res = statement.executeQuery()) {
+                if (res.next()) {
+                    int level = res.getInt("level");
+                    int visum = res.getInt("visum");
+                    String factionName = res.getString("faction");
+
+                    if (factionName != null) {
+                        Faction factionData = factionManager.getFactionData(factionName);
+                        String factionDisplay = factionData != null
+                                ? "§" + factionData.getPrimaryColor() + factionData.getName()
+                                : "§7Unbekannt";
+
+                        secondline = "§8 » §6Level§8:§e " + level + " §8| §6Visum§8: §e" + visum + " §8| §6Fraktion§8: " + factionDisplay;
+                    } else {
+                        secondline = "§8 » §6Level§8:§e " + level + " §8| §6Visum§8: §e" + visum + " §8| §6Fraktion§8: §7Zivilist";
+                    }
                 }
             }
+
             event.setMotd(firstline + "\n" + secondline);
+
         } catch (SQLException e) {
             e.printStackTrace();
-            // Es wäre besser, hier eine angemessene Fehlerbehandlung einzubauen
+            event.setMotd(firstline + "\n§cFehler beim Laden der Spielerinformationen.");
         }
     }
 }

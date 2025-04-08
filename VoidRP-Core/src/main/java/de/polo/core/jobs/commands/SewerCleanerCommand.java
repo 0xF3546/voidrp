@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static de.polo.core.Main.locationService;
+import static de.polo.core.Main.playerManager;
 
 /**
  * @author Mayson1337
@@ -43,6 +44,7 @@ import static de.polo.core.Main.locationService;
 )
 
 public class SewerCleanerCommand extends CommandBase implements Listener {
+    private final String PREFIX = "§9 " + MiniJob.SEWER_CLEANER.getName() + " §8┃ §8➜ §7";
 
     private final Material sewerCleanerMaterial = Material.DIRT;
     private final Material cleaningItem = Material.BRUSH;
@@ -63,23 +65,45 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
             player.sendMessage("Du hast bereits einen Minijob.", Prefix.ERROR);
             return;
         }
-        startJob(player);
+        openJobInventory(player);
+    }
+
+    private void openJobInventory(VoidPlayer player) {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §3" + MiniJob.SEWER_CLEANER.getName()), true, true);
+        ItemStack item = new ItemBuilder(Material.BRUSH).setName("§7Job starten").build();
+        if (player.getMiniJob() != null) {
+            item = new ItemBuilder(Material.BRUSH).setName("§7Job beenden").build();
+        }
+        inventoryManager.setItem(new CustomItem(13, item) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (player.getMiniJob() != null) {
+                    player.setMiniJob(null);
+                    player.sendMessage(PREFIX + "Du hast den Job beendet.");
+                    return;
+                }
+                startJob(player);
+                event.getWhoClicked().closeInventory();
+            }
+        });
     }
 
     private void startJob(VoidPlayer player) {
+        player.sendMessage(PREFIX + "Du hast den Job gestartet.");
         player.setMiniJob(MiniJob.SEWER_CLEANER);
         player.getData().setVariable("job::cleaning::blocks", Utils.random(3, 6));
         equip(player);
     }
 
     private void endJob(VoidPlayer player) {
+        player.sendMessage(PREFIX + "Du hast den Job beendet.");
         player.sendMessage("Du hast deinen Minijob beendet.", Prefix.INFO);
         player.setMiniJob(null);
         unEquip(player);
     }
 
     private void openCleaningInventory(VoidPlayer player, Block block) {
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§7Reinigung "), true, true);
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§7Reinigung"), true, true);
         for (int i = 0; i < Utils.random(12, 20); i++) {
             inventoryManager.setItem(new CustomItem(Utils.random(0, 53), new ItemBuilder(Material.DIRT).setName("§7Dreck").build()) {
                 @Override
@@ -98,13 +122,13 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
                     }
                     if (amount > 0) {
                         SoundManager.openSound(player.getPlayer());
-                        block.setType(Material.STONE);
-                        cleanedBlocks.add(block);
-                        int newAmount = (int) player.getData().getVariable("job::cleaning::blocks") - 1;
-                        player.getData().setVariable("job::cleaning::blocks", newAmount);
-                        if (newAmount <= 0) endJob(player);
                         return;
                     }
+                    block.setType(Material.STONE);
+                    cleanedBlocks.add(block);
+                    int newAmount = (int) player.getData().getVariable("job::cleaning::blocks") - 1;
+                    player.getData().setVariable("job::cleaning::blocks", newAmount);
+                    if (newAmount <= 0) endJob(player);
                     player.getPlayer().closeInventory();
                     SoundManager.successSound(player.getPlayer());
                 }
@@ -118,7 +142,7 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
     }
 
     private void unEquip(VoidPlayer voidPlayer) {
-        voidPlayer.getPlayer().getInventory().removeItem(new ItemStack(cleaningItem));
+        ItemManager.removeItem(voidPlayer.getPlayer(), cleaningItem, 1);
     }
 
     @EventHandler

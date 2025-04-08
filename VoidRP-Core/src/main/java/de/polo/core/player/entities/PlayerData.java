@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static de.polo.core.Main.database;
 import static de.polo.core.Main.playerManager;
 
 public class PlayerData implements PlayerCharacter {
@@ -378,17 +379,13 @@ public class PlayerData implements PlayerCharacter {
     @SneakyThrows
     private void loadIllnesses() {
         illnesses.clear();
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_illness WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            PlayerIllness playerIllness = new PlayerIllness(IllnessType.valueOf(result.getString("illness")));
-            playerIllness.setId(result.getInt("id"));
-            illnesses.add(playerIllness);
-        }
-        result.close();
-        connection.close();
+        database.executeQueryAsync("SELECT * FROM player_illness WHERE uuid = ?", player.getUniqueId().toString())
+                .thenAccept(result -> {
+                    Map<String, Object> row = result.get(0);
+                    PlayerIllness playerIllness = new PlayerIllness(IllnessType.valueOf((String) row.get("illness")));
+                    playerIllness.setId((Integer) row.get("id"));
+                    illnesses.add(playerIllness);
+                });
     }
 
 /*    @SneakyThrows
@@ -414,58 +411,79 @@ public class PlayerData implements PlayerCharacter {
     @SneakyThrows
     private void loadClickedEventBlocks() {
         clickedEventBlocks.clear();
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_eventblocks_clicked WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            ClickedEventBlock block = new ClickedEventBlock(result.getInt("blockId"));
-            clickedEventBlocks.add(block);
+        String sql = "SELECT * FROM player_eventblocks_clicked WHERE uuid = ?";
+
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, player.getUniqueId().toString());
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    ClickedEventBlock block = new ClickedEventBlock(result.getInt("blockId"));
+                    clickedEventBlocks.add(block);
+                }
+            }
         }
     }
 
     @SneakyThrows
     private void loadWeapons() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_gun_cabinet WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            weapons.add(new PlayerWeapon(result.getInt("id"), Weapon.valueOf(result.getString("weapon")),
-                    result.getInt("wear"),
-                    result.getInt("ammo"),
-                    WeaponType.NORMAL));
+        String sql = "SELECT * FROM player_gun_cabinet WHERE uuid = ?";
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, player.getUniqueId().toString());
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    weapons.add(new PlayerWeapon(
+                            result.getInt("id"),
+                            Weapon.valueOf(result.getString("weapon")),
+                            result.getInt("wear"),
+                            result.getInt("ammo"),
+                            WeaponType.NORMAL
+                    ));
+                }
+            }
         }
     }
 
     @SneakyThrows
     private void loadWanteds() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_wanteds WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        if (result.next()) {
-            wanted = new PlayerWanted(
-                    result.getInt("id"),
-                    result.getInt("wantedId"),
-                    UUID.fromString(result.getString("issuer")),
-                    result.getTimestamp("issued").toLocalDateTime(),
-                    result.getString("variations")
-            );
+        String sql = "SELECT * FROM player_wanteds WHERE uuid = ?";
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, player.getUniqueId().toString());
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    wanted = new PlayerWanted(
+                            result.getInt("id"),
+                            result.getInt("wantedId"),
+                            UUID.fromString(result.getString("issuer")),
+                            result.getTimestamp("issued").toLocalDateTime(),
+                            result.getString("variations")
+                    );
+                }
+            }
         }
     }
 
     @SneakyThrows
     private void loadLicenses() {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM player_licenses WHERE uuid = ?");
-        statement.setString(1, player.getUniqueId().toString());
-        ResultSet result = statement.executeQuery();
-        if (result.next()) {
-            License license = License.valueOf(result.getString("license"));
-            licenses.add(license);
+        String sql = "SELECT * FROM player_licenses WHERE uuid = ?";
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, player.getUniqueId().toString());
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    License license = License.valueOf(result.getString("license"));
+                    licenses.add(license);
+                }
+            }
         }
     }
+
 
     @SneakyThrows
     public boolean addClickedBlock(RegisteredBlock block) {

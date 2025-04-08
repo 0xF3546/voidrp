@@ -103,34 +103,47 @@ public class PlayerManager implements Listener {
         return playtimeRewards.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
     }
 
+    @SneakyThrows
     public boolean isCreated(UUID uuid) {
+        String sqlCheck = "SELECT uuid FROM players WHERE uuid = ?";
+        String sqlInsertPlayer = "INSERT INTO players (uuid, player_name, adress) VALUES (?, ?, ?)";
+        String sqlInsertAmmo = "INSERT INTO player_ammo (uuid) VALUES (?)";
+        String sqlInsertXp = "INSERT INTO player_addonxp (uuid) VALUES (?)";
 
-        try {
-            Statement statement = Main.getInstance().coreDatabase.getStatement();
-            assert statement != null;
-            ResultSet result = statement.executeQuery("SELECT `uuid` FROM `players` WHERE `uuid` = '" + uuid + "'");
-            if (result.next()) {
-                return true;
+        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+             PreparedStatement checkStmt = connection.prepareStatement(sqlCheck)) {
+
+            checkStmt.setString(1, uuid.toString());
+            try (ResultSet result = checkStmt.executeQuery()) {
+                if (result.next()) {
+                    return true;
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            Statement statement = Main.getInstance().coreDatabase.getStatement();
-            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-            java.util.Date date = new java.util.Date();
-            String newDate = formatter.format(date);
+
+            // Spieler ist nicht vorhanden – jetzt wird er erstellt
             Player player = Bukkit.getPlayer(uuid);
-            Connection connection = Main.getInstance().getCoreDatabase().getConnection();
-            statement.execute("INSERT INTO `players` (`uuid`, `player_name`, `adress`) VALUES ('" + uuid + "', '" + player.getName() + "', '" + player.getAddress() + "')");
-            statement.execute("INSERT INTO `player_ammo` (`uuid`) VALUES ('" + uuid + "')");
-            statement.execute("INSERT INTO `player_addonxp` (`uuid`) VALUES ('" + uuid + "')");
+            if (player == null) return false; // Optional: Sicherheit gegen null
+
+            try (PreparedStatement insertPlayer = connection.prepareStatement(sqlInsertPlayer);
+                 PreparedStatement insertAmmo = connection.prepareStatement(sqlInsertAmmo);
+                 PreparedStatement insertXp = connection.prepareStatement(sqlInsertXp)) {
+
+                insertPlayer.setString(1, uuid.toString());
+                insertPlayer.setString(2, player.getName());
+                insertPlayer.setString(3, player.getAddress().toString());
+                insertPlayer.executeUpdate();
+
+                insertAmmo.setString(1, uuid.toString());
+                insertAmmo.executeUpdate();
+
+                insertXp.setString(1, uuid.toString());
+                insertXp.executeUpdate();
+            }
+
             loadPlayer(player);
             setPlayerMove(player, true);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false; // False heißt: Spieler wurde jetzt neu erstellt
         }
-        return false;
     }
 
     public void updatePlayer(String uuid, String name, String adress) {
