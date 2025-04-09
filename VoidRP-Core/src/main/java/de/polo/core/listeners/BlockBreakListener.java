@@ -1,5 +1,8 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.jobs.MiningJob;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
@@ -63,26 +66,11 @@ public class BlockBreakListener implements Listener {
                         brokenBlocks.put(Utils.getTime(), event.getBlock());
                     }
                 }
-                if (playerData.getVariable("job") != null) {
-                    switch (playerData.getVariable("job").toString().toLowerCase()) {
-                        case "holzfäller":
-                            commands.lumberjackCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "mine":
-                            commands.mineCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "farmer":
-                            commands.farmerCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "winzer":
-                            commands.winzerCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "muschelsammler":
-                            commands.muschelSammlerCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        default:
-                            event.setCancelled(true);
-                            break;
+                VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                if (voidPlayer.getMiniJob() != null) {
+                    event.setCancelled(true);
+                    if (voidPlayer.getActiveJob() instanceof MiningJob) {
+                        ((MiningJob) voidPlayer.getActiveJob()).handleBlockBreak(voidPlayer, event);
                     }
                     Bukkit.getPluginManager().callEvent(new BreakPersistentBlockEvent(player, event.getBlock()));
                 } else {

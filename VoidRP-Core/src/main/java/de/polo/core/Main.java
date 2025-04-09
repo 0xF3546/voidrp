@@ -75,6 +75,7 @@ import de.polo.core.zone.services.impl.CoreZoneService;
 import dev.vansen.singleline.SingleLineOptions;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
@@ -234,7 +235,7 @@ public final class Main extends JavaPlugin implements Server {
         PacketEvents.getAPI().init();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.kickPlayer("§cDer Server wurde reloaded.");
+            player.kick(Component.text("§cDer Server wurde reloaded."));
         }
         registerAnnotatedCommands();
         getLogger().info("§VOIDROLEPLAY ROLEPLAY STARTED.");
@@ -360,7 +361,13 @@ public final class Main extends JavaPlugin implements Server {
                 VertragCommand.class,
                 SewerCleanerCommand.class,
                 NavigationCommand.class,
-                JobSkillsCommand.class
+                JobSkillsCommand.class,
+                LebensmittelLieferantCommand.class,
+                LumberjackCommand.class,
+                FarmerCommand.class,
+                MineCommand.class,
+                MuellmannCommand.class,
+                PostboteCommand.class
         );
 
 
@@ -422,8 +429,6 @@ public final class Main extends JavaPlugin implements Server {
         public AblehnenVertrag ablehnenVertrag;
         public InviteCommand inviteCommand;
         public RentCommand rentCommand;
-        public LumberjackCommand lumberjackCommand;
-        public MineCommand mineCommand;
         public ArrestCommand arrestCommand;
         public TPCommand tpCommand;
         public TPHereCommand tpHereCommand;
@@ -440,7 +445,6 @@ public final class Main extends JavaPlugin implements Server {
         public AuflegenCommand auflegenCommand;
         public JailtimeCommand jailtimeCommand;
         public DropCommand dropCommand;
-        public LebensmittelLieferantCommand lebensmittelLieferantCommand;
         public BanCommand banCommand;
         public UnbanCommand unbanCommand;
         public GetVehCommand getVehCommand;
@@ -472,9 +476,6 @@ public final class Main extends JavaPlugin implements Server {
         public DiscordCommand discordCommand;
         public DepartmentChatCommand departmentChatCommand;
         public MemberCommand memberCommand;
-        public FarmerCommand farmerCommand;
-        public MuellmannCommand muellmannCommand;
-        public PostboteCommand postboteCommand;
         public ContractsCommand contractsCommand;
         public ContractCommand contractCommand;
         public NachrichtenCommand nachrichtenCommand;
@@ -644,8 +645,6 @@ public final class Main extends JavaPlugin implements Server {
             ablehnenVertrag = new AblehnenVertrag(utils);
             inviteCommand = new InviteCommand(playerManager, factionManager, utils, businessManager);
             rentCommand = new RentCommand(playerManager, locationManager, utils);
-            lumberjackCommand = new LumberjackCommand(playerManager, locationManager);
-            mineCommand = new MineCommand(playerManager, locationManager);
             arrestCommand = new ArrestCommand(playerManager, factionManager, utils);
             tpCommand = new TPCommand(playerManager, adminManager);
             tpHereCommand = new TPHereCommand(playerManager, adminManager);
@@ -662,7 +661,6 @@ public final class Main extends JavaPlugin implements Server {
             auflegenCommand = new AuflegenCommand(utils);
             jailtimeCommand = new JailtimeCommand(playerManager);
             dropCommand = new DropCommand(playerManager, factionManager);
-            lebensmittelLieferantCommand = new LebensmittelLieferantCommand(playerManager, locationManager);
             banCommand = new BanCommand(playerManager, adminManager);
             unbanCommand = new UnbanCommand(playerManager, adminManager);
             getVehCommand = new GetVehCommand(playerManager);
@@ -694,9 +692,6 @@ public final class Main extends JavaPlugin implements Server {
             discordCommand = new DiscordCommand();
             departmentChatCommand = new DepartmentChatCommand(playerManager, factionManager);
             memberCommand = new MemberCommand(playerManager, factionManager);
-            farmerCommand = new FarmerCommand(playerManager, locationManager, utils);
-            muellmannCommand = new MuellmannCommand(playerManager, locationManager);
-            postboteCommand = new PostboteCommand(playerManager, locationManager);
             contractsCommand = new ContractsCommand(playerManager, factionManager);
             contractCommand = new ContractCommand(playerManager, factionManager);
             nachrichtenCommand = new NachrichtenCommand(playerManager, locationManager);

@@ -727,11 +727,11 @@ public class PlayerData implements PlayerCharacter {
     }
 
     @SneakyThrows
-    public void removeMoney(int amount, String reason) {
+    public boolean removeMoney(int amount, String reason) {
         setBargeld(getBargeld() - amount);
         Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
-
+        return true;
     }
 
     @SneakyThrows
@@ -744,10 +744,11 @@ public class PlayerData implements PlayerCharacter {
     }
 
     @SneakyThrows
-    public void removeBankMoney(int amount, String reason) {
+    public boolean removeBankMoney(int amount, String reason) {
         setBank(getBank() - amount);
         Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+        return true;
     }
 
     @SneakyThrows

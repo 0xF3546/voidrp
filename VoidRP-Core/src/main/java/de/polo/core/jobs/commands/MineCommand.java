@@ -1,146 +1,225 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.Utils.inventorymanager.CustomItem;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.jobs.MiningJob;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.Utils;
-import org.bukkit.Bukkit;
+import de.polo.core.utils.enums.EXPType;
+import de.polo.core.utils.player.SoundManager;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 
-public class MineCommand implements CommandExecutor {
-    public final Material[] blocks = new Material[]{Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE};
-    public final String prefix = "§8[§7Mine§8] §7";
-    private final PlayerManager playerManager;
-    private final LocationManager locationManager;
+import static de.polo.core.Main.locationManager;
+import static de.polo.core.Main.playerService;
 
-    public MineCommand(PlayerManager playerManager, LocationManager locationManager) {
-        this.playerManager = playerManager;
-        this.locationManager = locationManager;
-        Main.registerCommand("minenarbeiter", this);
+@CommandBase.CommandMeta(
+        name = "minenarbeiter",
+        usage = "/minenarbeiter"
+)
+public class MineCommand extends CommandBase implements MiningJob {
+    public final Material[] blocks = new Material[]{
+            Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.IRON_ORE,
+            Material.GOLD_ORE, Material.LAPIS_ORE, Material.REDSTONE_ORE
+    };
+    public final String prefix = "§8[§7Mine§8] §7";
+
+    public MineCommand(@NotNull CommandMeta meta) {
+        super(meta);
+    }
+
+    private static void scheduleOreRespawn(Location location, Material originalMaterial) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Block block = location.getBlock();
+                if (block.getType() == Material.STONE) {
+                    block.setType(originalMaterial);
+                }
+            }
+        }.runTaskLater(Main.getInstance(), 120 * 20);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (ServerManager.canDoJobs()) {
-            if (playerData.canInteract()) {
-                if (playerData.getVariable("job") == null) {
-                    if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "mine")) {
-                        if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
-                            playerData.setVariable("job", "mine");
-                            VoidAPI.getPlayer(player).setMiniJob(MiniJob.MINER);
-                            player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
-                            player.sendMessage(prefix + "Baue nun Erze ab.");
-                            /*Scoreboard scoreboard = new Scoreboard(player);
-                            scoreboard.createMineScoreboard();
-                            playerData.setScoreboard("mine", scoreboard);*/
-                            player.getInventory().addItem(ItemManager.createItem(Material.STONE_PICKAXE, 1, 0, "§6Spitzhacke"));
-                        } else {
-                            player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Mine§7!");
+            if (!playerData.canInteract()) {
+                player.sendMessage(Prefix.error_cantinteract);
+                return;
+            }
+
+            if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
+                InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Minenarbeiter"), true, true);
+
+                // Start Job Option
+                if (!playerService.isInJobCooldown(player, MiniJob.MINER) && player.getActiveJob() == null) {
+                    inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aMinensarbeiter starten")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            startJob(player);
+                            player.getPlayer().closeInventory();
                         }
-                    } else {
-                        player.sendMessage("§8[§7Mine§8]§7 Du kannst den Job erst in §f" + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "farmer")) + "§7 beginnen.");
-                    }
+                    });
                 } else {
-                    if (playerData.getVariable("job").equals("mine")) {
-                        if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
-                            player.sendMessage(prefix + "Du hast den Job Minenarbeiter beendet.");
-                            playerData.setVariable("job", null);
-                            //playerData.getScoreboard("mine").killScoreboard();
-                            quitJob(player);
-                        }
+                    if (player.getActiveJob() == null) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMinensarbeiter starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.MINER)) + "§7.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {}
+                        });
                     } else {
-                        player.sendMessage(Prefix.ERROR + "Du übst bereits den Job " + playerData.getVariable("job") + " aus.");
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMinensarbeiter starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
+                            @Override
+                            public void onClick(InventoryClickEvent event) {}
+                        });
                     }
                 }
+
+                // Quit Job Option
+                if (player.getActiveJob() == null) {
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {}
+                    });
+                } else if (!player.getMiniJob().equals(MiniJob.MINER)) {
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {}
+                    });
+                } else {
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Erze verkaufen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            quitJob(player);
+                            player.getPlayer().closeInventory();
+                        }
+                    });
+                }
             } else {
-                player.sendMessage(Prefix.error_cantinteract);
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe der Mine§7!");
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);
         }
-        return false;
     }
 
-    public void blockBroken(Player player, Block block, BlockBreakEvent event) {
-        event.setCancelled(true);
-        for (Material material : blocks) {
-            if (block.getType() == material) {
-                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-                player.getInventory().addItem(ItemManager.createItem(material, 1, 0, block.getType().name()));
-                block.setType(Material.STONE);
-                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                    if (block.getType() == Material.STONE) {
-                        block.setType(blocks[(int) (Math.random() * blocks.length)]);
-                    }
-                }, 2 * 60 * 20);
-            }
+    @Override
+    public void startJob(VoidPlayer player) {
+        if (!playerService.isInJobCooldown(player, MiniJob.MINER)) {
+            player.setMiniJob(MiniJob.MINER);
+            player.setActiveJob(this);
+
+            player.sendMessage(prefix + "Du bist nun Minenarbeiter§7.");
+            player.sendMessage(prefix + "Baue nun Erze ab.");
+
+            int pickaxeLevel = player.getData().getJobSkill(MiniJob.MINER).getLevel();
+            Material pickaxeType = pickaxeLevel < 5 ? Material.STONE_PICKAXE : Material.IRON_PICKAXE;
+            player.getPlayer().getInventory().addItem(ItemManager.createItem(pickaxeType, 1, 0, "§6Spitzhacke"));
+        } else {
+            player.sendMessage(prefix + "Du kannst den Job erst in §f" + Utils.getTime(playerService.getJobCooldown(player, MiniJob.MINER)) + "§7 beginnen.");
         }
     }
 
-    public void quitJob(Player player) {
-        VoidAPI.getPlayer(player).setMiniJob(null);
-        Main.getInstance().beginnerpass.didQuest(player, 5);
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        //playerData.getScoreboard("mine").killScoreboard();
-        int iron = ItemManager.getItem(player, Material.IRON_ORE);
-        int redstone = ItemManager.getItem(player, Material.REDSTONE_ORE);
-        int lapis = ItemManager.getItem(player, Material.LAPIS_ORE);
-        int gold = ItemManager.getItem(player, Material.GOLD_ORE);
-        int smaragd = ItemManager.getItem(player, Material.EMERALD_ORE);
-        int diamant = ItemManager.getItem(player, Material.DIAMOND_ORE);
+    @Override
+    public void endJob(VoidPlayer player) {
+        // Wird durch quitJob ersetzt
+    }
+
+    public void quitJob(VoidPlayer player) {
+        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+
+        int iron = ItemManager.getItem(player.getPlayer(), Material.IRON_ORE);
+        int redstone = ItemManager.getItem(player.getPlayer(), Material.REDSTONE_ORE);
+        int lapis = ItemManager.getItem(player.getPlayer(), Material.LAPIS_ORE);
+        int gold = ItemManager.getItem(player.getPlayer(), Material.GOLD_ORE);
+        int emerald = ItemManager.getItem(player.getPlayer(), Material.EMERALD_ORE);
+        int diamond = ItemManager.getItem(player.getPlayer(), Material.DIAMOND_ORE);
+
+        int earnings = 0;
         int exp = 0;
-        int verdienst = 0;
-        player.sendMessage(prefix + "Verdienst durch §7Eisenerz§8: §a+" + iron + "$");
-        verdienst = verdienst + (iron);
-        exp = (int) (exp + iron * 0.35);
-        player.sendMessage(prefix + "Verdienst durch §cRedstonerz§8: §a+" + redstone + "$");
-        verdienst = verdienst + (redstone);
-        exp = (int) (exp + redstone * 0.47);
-        player.sendMessage(prefix + "Verdienst durch §9Lapislazulierz§8: §a+" + lapis + "$");
-        verdienst = verdienst + (lapis);
-        exp = (int) (exp + lapis * 0.60);
-        player.sendMessage(prefix + "Verdienst durch §6Golderz§8: §a+" + gold + "$");
-        verdienst = verdienst + (gold);
-        exp = (int) (exp + gold * 0.8);
-        player.sendMessage(prefix + "Verdienst durch §aSmaragderz§8: §a+" + smaragd + "$");
-        verdienst = verdienst + (smaragd);
-        exp = (exp + smaragd);
-        player.sendMessage(prefix + "Verdienst durch §bDiamanterz§8: §a+" + diamant + "$");
-        verdienst = verdienst + (diamant);
-        exp = (int) (exp + diamant * 1.25);
-        try {
-            playerManager.addBankMoney(player, verdienst, "Auszahlung Minenarbeiter");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+        if (iron > 0) {
+            player.sendMessage(prefix + "Verdienst durch §7Eisenerz§8: §a+" + iron + "$");
+            earnings += iron;
+            exp += (int)(iron * 0.35);
         }
-        player.sendMessage(prefix + "Du hast insgesamt §a+" + verdienst + "$§7 verdient.");
-        playerManager.addExp(player, exp);
-        Inventory inv = player.getInventory();
+        if (redstone > 0) {
+            player.sendMessage(prefix + "Verdienst durch §cRedstonerz§8: §a+" + redstone + "$");
+            earnings += redstone;
+            exp += (int)(redstone * 0.47);
+        }
+        if (lapis > 0) {
+            player.sendMessage(prefix + "Verdienst durch §9Lapislazulierz§8: §a+" + lapis + "$");
+            earnings += lapis;
+            exp += (int)(lapis * 0.60);
+        }
+        if (gold > 0) {
+            player.sendMessage(prefix + "Verdienst durch §6Golderz§8: §a+" + gold + "$");
+            earnings += gold;
+            exp += (int)(gold * 0.8);
+        }
+        if (emerald > 0) {
+            player.sendMessage(prefix + "Verdienst durch §aSmaragderz§8: §a+" + emerald + "$");
+            earnings += emerald;
+            exp += emerald;
+        }
+        if (diamond > 0) {
+            player.sendMessage(prefix + "Verdienst durch §bDiamanterz§8: §a+" + diamond + "$");
+            earnings += diamond;
+            exp += (int)(diamond * 1.25);
+        }
+
+        if (earnings > 0) {
+            player.sendMessage(prefix + "Du hast insgesamt §a+" + earnings + "$§7 verdient.");
+            player.getData().addBankMoney(earnings, "Auszahlung Minenarbeiter");
+            SoundManager.successSound(player.getPlayer());
+            playerService.addExp(player.getPlayer(), EXPType.SKILL_MINER, exp);
+        } else {
+            player.sendMessage(prefix + "Du hast keine Erze abgebaut.");
+        }
+
+        Inventory inv = player.getPlayer().getInventory();
         for (Material material : blocks) {
             for (ItemStack item : inv.getContents()) {
-                if (item != null && (item.getType() == material || item.getType() == Material.STONE_PICKAXE)) {
+                if (item != null && (item.getType() == material || item.getType().name().contains("PICKAXE"))) {
                     inv.removeItem(item);
                 }
             }
         }
-        Main.getInstance().getCooldownManager().setCooldown(player, "mine", 600);
+
+        playerService.handleJobFinish(player, MiniJob.MINER, 3600, Utils.random(12, 20));
+        player.setMiniJob(null);
+        player.setActiveJob(null);
+    }
+
+    @Override
+    public void handleBlockBreak(VoidPlayer player, BlockBreakEvent event) {
+        Block block = event.getBlock();
+        for (Material material : blocks) {
+            if (block.getType() == material) {
+                event.setCancelled(true);
+                player.getPlayer().getInventory().addItem(ItemManager.createItem(material, 1, 0, block.getType().name()));
+                block.setType(Material.STONE);
+                scheduleOreRespawn(block.getLocation(), material);
+                playerService.addExp(player.getPlayer(), EXPType.SKILL_MINER, Utils.random(5, 10));
+                break;
+            }
+        }
     }
 }

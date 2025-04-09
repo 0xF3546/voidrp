@@ -1,9 +1,11 @@
 package de.polo.core.player.entities;
 
+import de.polo.api.jobs.Job;
 import de.polo.api.player.PlayerCharacter;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.MiniJob;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
@@ -20,6 +22,9 @@ public class CoreVoidPlayer implements VoidPlayer {
 
     @Getter
     private MiniJob miniJob;
+    @Getter
+    @Setter
+    private Job activeJob;
 
     public CoreVoidPlayer(Player player) {
         this.player = player;

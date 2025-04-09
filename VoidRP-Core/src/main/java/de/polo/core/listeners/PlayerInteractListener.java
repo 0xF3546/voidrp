@@ -523,7 +523,7 @@ public class PlayerInteractListener implements Listener {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
                                                 @Override
                                                 public void onClick(InventoryClickEvent event) {
-                                                    Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                    Main.getInstance().commands.postboteCommand.handleDrop(player, playerData.getIntVariable("current_house"));
                                                     player.closeInventory();
                                                 }
                                             });
@@ -540,7 +540,7 @@ public class PlayerInteractListener implements Listener {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
                                                 @Override
                                                 public void onClick(InventoryClickEvent event) {
-                                                    Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                    Main.getInstance().commands.muellmannCommand.handleDrop(player, playerData.getIntVariable("current_house"));
                                                     player.closeInventory();
                                                 }
                                             });

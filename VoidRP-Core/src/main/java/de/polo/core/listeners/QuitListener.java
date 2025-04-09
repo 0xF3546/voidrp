@@ -93,28 +93,6 @@ QuitListener implements Listener {
             throw new RuntimeException(e);
         }
         try {
-            if (playerData.getVariable("job") != null) {
-                switch (playerData.getVariable("job").toString()) {
-                    case "lumberjack":
-                        commands.lumberjackCommand.quitJob(player, true);
-                        break;
-                    case "mine":
-                        commands.mineCommand.quitJob(player);
-                        break;
-                    case "lieferant":
-                        commands.lebensmittelLieferantCommand.quitJob(player);
-                        break;
-                    case "farmer":
-                        commands.farmerCommand.quitJob(player);
-                        break;
-                    case "Postbote":
-                        commands.postboteCommand.quitJob(player, true);
-                        break;
-                    case "Müllmann":
-                        commands.muellmannCommand.quitJob(player, true);
-                        break;
-                }
-            }
             playerManager.savePlayer(player);
             Ticket ticket = supportManager.getTicket(player);
             if (ticket != null) {

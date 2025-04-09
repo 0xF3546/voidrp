@@ -34,16 +34,6 @@ public class CoreJobSkill implements JobSkill {
     }
 
     @Override
-    public int getLevel() {
-        return 0;
-    }
-
-    @Override
-    public int getExp() {
-        return 0;
-    }
-
-    @Override
     public void addExp(int exp) {
         this.exp += exp;
         if (this.exp >= getLevel() * 2250) {

@@ -253,6 +253,7 @@ public class CorePlayerService implements PlayerService {
     @Override
     public void handleJobFinish(VoidPlayer player, MiniJob job, int cooldown, int exp) {
         player.setMiniJob(null);
+        player.setActiveJob(null);
         Main.getInstance().getCooldownManager().setCooldown(player.getPlayer(), job.name(), cooldown);
         addExp(player.getPlayer(), exp);
         JobSkill skill = player.getData().getJobSkill(job);

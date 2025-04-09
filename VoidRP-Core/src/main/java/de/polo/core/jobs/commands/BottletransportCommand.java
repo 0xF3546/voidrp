@@ -72,6 +72,7 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
     @Override
     public void handleDrop(VoidPlayer player) {
         player.setMiniJob(null);
+        player.setActiveJob(this);
         int boxPrice = Utils.random(ServerManager.getPayout("flaschenlieferant_kiste_from"), ServerManager.getPayout("flaschenlieferant_kiste_to"));
         int amount = (int) player.getVariable("job::flaschentransport::amount");
         if (amount <= 0) return;

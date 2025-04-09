@@ -2,6 +2,7 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.jobs.Job;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.game.events.SecondTickEvent;
@@ -43,7 +44,7 @@ import static de.polo.core.Main.*;
  */
 
 @CommandBase.CommandMeta(name = "hochseefischer", usage = "/hochseefischer")
-public class HochseefischerCommand extends CommandBase implements Listener {
+public class HochseefischerCommand extends CommandBase implements Listener, Job {
     private static final HashMap<Player, Boat> spawnedBoats = new HashMap<>();
     private static final ObjectList<Location> spawnLocations = new ObjectArrayList<>();
 
@@ -111,14 +112,15 @@ public class HochseefischerCommand extends CommandBase implements Listener {
                     @Override
                     public void onClick(InventoryClickEvent event) {
                         player.getPlayer().closeInventory();
-                        quitJob(player.getPlayer(), false);
+                        endJob(player);
                     }
                 });
             }
         }
     }
 
-    private void startJob(VoidPlayer player) {
+    @Override
+    public void startJob(VoidPlayer player) {
         player.setMiniJob(MiniJob.DEEP_SEA_FISHERMAN);
         if (player.getData() == null) return;
         Boat boat = (Boat) player.getPlayer().getWorld().spawnEntity(locationManager.getLocation("hochseefischer_boat_out"), EntityType.BOAT);
@@ -133,19 +135,15 @@ public class HochseefischerCommand extends CommandBase implements Listener {
         navigationService.createNaviByCord(player.getPlayer(), (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
-    private void quitJob(Player player, boolean silent) {
-        VoidAPI.getPlayer(player).setMiniJob(null);
+    @Override
+    public void endJob(VoidPlayer player) {
         Boat boat = spawnedBoats.get(player);
-        Main.getInstance().getCooldownManager().setCooldown(player, "hochseefischer", 1200);
         if (boat != null) boat.remove();
         spawnedBoats.remove(player);
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         // ISSUE VRP-10000: fixed by adding null check
-        if (playerData == null) return;
-        playerData.setVariable("job", null);
-        int amount = playerData.getVariable("hochseefischer_kg") == null ? 0 : playerData.getVariable("hochseefischer_kg");
-        Main.getInstance().getPlayerManager().addExp(player, amount * 2);
-        playerData.addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
+        int amount = player.getVariable("hochseefischer_kg") == null ? 0 : (int) player.getVariable("hochseefischer_kg");
+        playerService.handleJobFinish(player, MiniJob.DEEP_SEA_FISHERMAN, 1200, amount * 2);
+        player.getData().addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
     }
 
     public static Collection<Location> getLocations() {
@@ -174,7 +172,7 @@ public class HochseefischerCommand extends CommandBase implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        quitJob(event.getPlayer(), true);
+        endJob(VoidAPI.getPlayer(event.getPlayer()));
     }
 
     @EventHandler

@@ -190,6 +190,7 @@ public class WinzerCommand implements CommandExecutor, MiningJob {
 
     public void startJob(VoidPlayer player) {
         if (!playerService.isInJobCooldown(player, MiniJob.WINZER)) {
+            player.setActiveJob(this);
             player.setMiniJob(MiniJob.WINZER);
             player.sendMessage("§8[§5Winzer§8]§7 Du bist nun Winzer.");
             int trees = 6;
