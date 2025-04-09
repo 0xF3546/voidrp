@@ -359,7 +359,8 @@ public final class Main extends JavaPlugin implements Server {
                 SellHouseCommand.class,
                 VertragCommand.class,
                 SewerCleanerCommand.class,
-                NavigationCommand.class
+                NavigationCommand.class,
+                JobSkillsCommand.class
         );
 
 

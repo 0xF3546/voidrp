@@ -1,6 +1,10 @@
 package de.polo.core.player.entities;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.JobSkill;
 import de.polo.api.player.PlayerCharacter;
+import de.polo.api.player.VoidPlayer;
 import de.polo.api.player.enums.Gender;
 import de.polo.api.player.enums.HealthInsurance;
 import de.polo.api.player.enums.IllnessType;
@@ -51,6 +55,7 @@ public class PlayerData implements PlayerCharacter {
     private final List<PlayerQuest> quests = new ObjectArrayList<>();
     private final List<de.polo.core.game.base.extra.beginnerpass.PlayerQuest> beginnerQuests = new ObjectArrayList<>();
     private final List<PlayerIllness> illnesses = new ObjectArrayList<>();
+    private final List<JobSkill> jobSkills = new ObjectArrayList<>();
     private final List<PlayerWeapon> weapons = new ObjectArrayList<>();
     private final List<ClickedEventBlock> clickedEventBlocks = new ObjectArrayList<>();
     private final HashMap<String, Object> variables = new HashMap<>();
@@ -318,6 +323,7 @@ public class PlayerData implements PlayerCharacter {
         loadWeapons();
         loadWanteds();
         loadLicenses();
+        loadJobSkills();
     }
 
     public PlayerData() {
@@ -381,10 +387,25 @@ public class PlayerData implements PlayerCharacter {
         illnesses.clear();
         database.executeQueryAsync("SELECT * FROM player_illness WHERE uuid = ?", player.getUniqueId().toString())
                 .thenAccept(result -> {
-                    Map<String, Object> row = result.get(0);
-                    PlayerIllness playerIllness = new PlayerIllness(IllnessType.valueOf((String) row.get("illness")));
-                    playerIllness.setId((Integer) row.get("id"));
-                    illnesses.add(playerIllness);
+                    for (Map<String, Object> row : result) {
+                        PlayerIllness playerIllness = new PlayerIllness(IllnessType.valueOf((String) row.get("illness")));
+                        playerIllness.setId((Integer) row.get("id"));
+                        illnesses.add(playerIllness);
+                    }
+                });
+    }
+
+    private void loadJobSkills() {
+        jobSkills.clear();
+        database.executeQueryAsync("SELECT * FROM player_jobskills WHERE uuid = ?", player.getUniqueId().toString())
+                .thenAccept(result -> {
+                    for (Map<String, Object> row : result) {
+                        MiniJob job = MiniJob.valueOf((String) row.get("job"));
+                        int level = (Integer) row.get("level");
+                        int exp = (Integer) row.get("exp");
+                        JobSkill jobSkill = new CoreJobSkill(getVoidPlayer(), job, level, exp);
+                        jobSkills.add(jobSkill);
+                    }
                 });
     }
 
@@ -683,6 +704,26 @@ public class PlayerData implements PlayerCharacter {
         setBargeld(getBargeld() + amount);
         Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+    }
+
+    @Override
+    public List<JobSkill> getJobSkills() {
+        return jobSkills;
+    }
+
+    public VoidPlayer getVoidPlayer() {
+        return VoidAPI.getPlayer(player);
+    }
+
+    @Override
+    public JobSkill getJobSkill(MiniJob job) {
+        JobSkill skill = jobSkills.stream().filter(js -> js.getJob().equals(job)).findFirst().orElse(null);
+        if (skill == null) {
+            skill = new CoreJobSkill(getVoidPlayer(), job, 1, 0);
+            database.insertAsync("INSERT INTO player_jobskills (uuid, job, level, exp) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), job.name(), 1, 0);
+            jobSkills.add(skill);
+        }
+        return skill;
     }
 
     @SneakyThrows

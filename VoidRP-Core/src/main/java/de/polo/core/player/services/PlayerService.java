@@ -1,5 +1,6 @@
 package de.polo.core.player.services;
 
+import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.game.base.extra.PlaytimeReward;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.LongTermJob;
@@ -62,4 +63,7 @@ public interface PlayerService {
     int getGeworbenCount(Player player) throws Exception;
     void kissPlayer(Player player, Player targetplayer);
     void setLongTermJob(VoidPlayer player, LongTermJob longTermJob);
+    void handleJobFinish(VoidPlayer player, MiniJob job, int cooldown, int exp);
+    boolean isInJobCooldown(VoidPlayer player, MiniJob job);
+    int getJobCooldown(VoidPlayer player, MiniJob job);
 }

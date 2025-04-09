@@ -1,11 +1,15 @@
 package de.polo.core.player.services.impl;
 
+import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.JobSkill;
+import de.polo.core.Main;
 import de.polo.core.game.base.extra.PlaytimeReward;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.LoyaltyBonusTimer;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;
 import org.bukkit.entity.Player;
 
@@ -244,5 +248,24 @@ public class CorePlayerService implements PlayerService {
     @Override
     public void setLongTermJob(VoidPlayer player, LongTermJob longTermJob) {
         playerManager.setLongTermJob(player, longTermJob);
+    }
+
+    @Override
+    public void handleJobFinish(VoidPlayer player, MiniJob job, int cooldown, int exp) {
+        player.setMiniJob(null);
+        Main.getInstance().getCooldownManager().setCooldown(player.getPlayer(), job.name(), cooldown);
+        addExp(player.getPlayer(), exp);
+        JobSkill skill = player.getData().getJobSkill(job);
+        skill.addExp(exp / Utils.random(2, 3));
+    }
+
+    @Override
+    public boolean isInJobCooldown(VoidPlayer player, MiniJob job) {
+        return Main.getInstance().getCooldownManager().isOnCooldown(player.getPlayer(), job.name());
+    }
+
+    @Override
+    public int getJobCooldown(VoidPlayer player, MiniJob job) {
+        return Main.getInstance().getCooldownManager().getRemainingTime(player.getPlayer(), job.name());
     }
 }

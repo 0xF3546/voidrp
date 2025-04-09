@@ -31,8 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static de.polo.core.Main.locationService;
-import static de.polo.core.Main.playerManager;
+import static de.polo.core.Main.*;
 
 /**
  * @author Mayson1337
@@ -99,8 +98,9 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
     public void endJob(VoidPlayer player) {
         player.sendMessage(PREFIX + "Du hast den Job beendet.");
         player.sendMessage("Du hast deinen Minijob beendet.", Prefix.INFO);
-        player.setMiniJob(null);
         unEquip(player);
+        playerService.handleJobFinish(player, MiniJob.SEWER_CLEANER, 720, Utils.random(12, 20));
+
     }
 
     private void openCleaningInventory(VoidPlayer player, Block block) {
