@@ -341,7 +341,7 @@ public class PlayerInteractListener implements Listener {
                             // ISSUE VRP-10001: Null check for houseData
                             if (houseData != null) {
                                 playerData.setIntVariable("current_house", houseData.getNumber());
-                                InventoryManager inventoryManager = new InventoryManager(player, 45, Component.text(""), true, true);
+                                InventoryManager inventoryManager = new InventoryManager(player, 45, Component.text("§8 » §7Haus " + houseData.getNumber()), true, true);
                                 if (houseData.getOwner() != null) {
                                     OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(houseData.getOwner()));
                                     inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(houseData.getOwner(), 1, 0, "§6Besitzer", "§8 ➥ §7" + owner.getName())) {
