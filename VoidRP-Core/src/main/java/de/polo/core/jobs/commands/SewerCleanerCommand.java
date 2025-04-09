@@ -14,7 +14,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.enums.EXPType;
 import de.polo.core.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
