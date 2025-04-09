@@ -30,26 +30,16 @@ public class CorePlayerSkill implements PlayerSkill{
     }
 
     @Override
-    public UniversalSkill getSkill() {
-        return skill;
-    }
-
-    @Override
-    public int getLevel() {
-        return level;
-    }
-
-    @Override
     public void addLevel(int skillPoints) {
         if (this.skillPoints >= skillPoints) {
             this.level += skillPoints;
             this.skillPoints -= skillPoints;
             database.updateAsync(
                     "UPDATE player_skills SET level = ?, skill_points = ? WHERE uuid = ? AND skill_type = ?",
-                    this.level, this.skillPoints, player.getUuid().toString(), skill.getName()
+                    this.level, this.skillPoints, player.getUuid().toString(), skill.name()
             );
         } else {
-            player.getPlayer().sendMessage("§cNicht genügend Skillpunkte!");
+            player.sendMessage("§cNicht genügend Skillpunkte!");
         }
     }
 
@@ -59,14 +49,9 @@ public class CorePlayerSkill implements PlayerSkill{
         this.level = 0;
         database.updateAsync(
                 "UPDATE player_skills SET level = 0, skill_points = ? WHERE uuid = ? AND skill_type = ?",
-                this.skillPoints, player.getUuid().toString(), skill.getName()
+                this.skillPoints, player.getUuid().toString(), skill.name()
         );
-        player.getPlayer().sendMessage("§6Dein Skill " + skill.getName() + " wurde zurückgesetzt!");
-    }
-
-    @Override
-    public int getSkillPoints() {
-        return skillPoints;
+        player.sendMessage("§6Dein Skill " + skill.name() + " wurde zurückgesetzt!");
     }
 
     @Override
@@ -75,12 +60,8 @@ public class CorePlayerSkill implements PlayerSkill{
         player.getPlayer().sendActionBar(Component.text("§3+" + points + " §7Skillpunkte erhalten! §8[§7" + this.skillPoints + "§8]"));
         database.updateAsync(
                 "UPDATE player_skills SET skill_points = ? WHERE uuid = ? AND skill = ?",
-                this.skillPoints, player.getUuid().toString(), skill.getName()
+                this.skillPoints, player.getUuid().toString(), skill.name()
         );
     }
 
-    @Override
-    public VoidPlayer getPlayer() {
-        return player;
-    }
 }
