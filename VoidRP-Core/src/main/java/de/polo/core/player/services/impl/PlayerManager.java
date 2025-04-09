@@ -368,6 +368,8 @@ public class PlayerManager implements Listener {
                     }
                 }
             }
+            playerData.setCrew(crewService.getCrew(result.getInt("crew")));
+            playerData.setCrewRank(crewService.getCrewRank(result.getInt("crewRank")));
 
                 /*for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
                     playerData.addWorkstation(workstation);

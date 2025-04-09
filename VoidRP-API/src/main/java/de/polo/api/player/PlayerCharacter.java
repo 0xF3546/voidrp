@@ -1,5 +1,7 @@
 package de.polo.api.player;
 
+import de.polo.api.crew.Crew;
+import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.MiniJob;
 
 import java.util.List;
@@ -18,4 +20,8 @@ public interface PlayerCharacter {
     boolean removeBankMoney(int amount, String reason);
     List<JobSkill> getJobSkills();
     JobSkill getJobSkill(MiniJob job);
+    Crew getCrew();
+    void setCrew(Crew crew);
+    CrewRank getCrewRank();
+    void setCrewRank(CrewRank rank);
 }

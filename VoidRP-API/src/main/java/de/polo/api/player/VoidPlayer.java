@@ -1,6 +1,7 @@
 package de.polo.api.player;
 
 import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.crew.Crew;
 import de.polo.api.jobs.Job;
 import de.polo.api.jobs.enums.MiniJob;
 import net.kyori.adventure.text.Component;

@@ -39,7 +39,7 @@ import static de.polo.core.Main.locationManager;
 import static de.polo.core.Main.playerService;
 
 @CommandBase.CommandMeta(
-        name = "holzfaeller",
+        name = "holzfäller",
         usage = "/holzfaeller"
 )
 public class LumberjackCommand extends CommandBase implements MiningJob {

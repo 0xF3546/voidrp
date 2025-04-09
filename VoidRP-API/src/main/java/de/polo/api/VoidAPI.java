@@ -39,6 +39,10 @@ public final class VoidAPI {
                 .orElse(null);
     }
 
+    public static List<VoidPlayer> getPlayers() {
+        return players;
+    }
+
     /**
      * Retrieves a Spring-managed bean from the application context by its type.
      *

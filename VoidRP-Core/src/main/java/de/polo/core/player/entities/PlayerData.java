@@ -1,6 +1,8 @@
 package de.polo.core.player.entities;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.crew.Crew;
+import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
 import de.polo.api.player.PlayerCharacter;
@@ -311,6 +313,14 @@ public class PlayerData implements PlayerCharacter {
     @Getter
     @Setter
     private LocalDateTime factionJoin;
+
+    @Getter
+    @Setter
+    private Crew crew;
+
+    @Getter
+    @Setter
+    private CrewRank crewRank;
 
     public PlayerData(Player player) {
         this.player = player;

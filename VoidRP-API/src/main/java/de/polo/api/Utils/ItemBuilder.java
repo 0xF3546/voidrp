@@ -9,6 +9,7 @@ package de.polo.api.Utils;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.annotations.Beta;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -110,6 +111,15 @@ public class ItemBuilder {
         ItemMeta meta = this.item.getItemMeta();
         assert meta != null;
         meta.setDisplayName(name);
+        this.item.setItemMeta(meta);
+        return this;
+    }
+
+    @NotNull
+    public ItemBuilder setName(@NotNull final Component name) {
+        ItemMeta meta = this.item.getItemMeta();
+        assert meta != null;
+        meta.displayName(name);
         this.item.setItemMeta(meta);
         return this;
     }

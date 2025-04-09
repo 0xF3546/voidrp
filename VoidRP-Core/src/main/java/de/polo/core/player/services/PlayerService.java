@@ -7,9 +7,11 @@ import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.core.storage.LoyaltyBonusTimer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.enums.EXPType;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -66,4 +68,5 @@ public interface PlayerService {
     void handleJobFinish(VoidPlayer player, MiniJob job, int cooldown, int exp);
     boolean isInJobCooldown(VoidPlayer player, MiniJob job);
     int getJobCooldown(VoidPlayer player, MiniJob job);
+    List<VoidPlayer> getPlayersInRange(Location location, int range);
 }

@@ -311,3 +311,6 @@ commands:
   sellhouse:
   sewercleaner:
   jobskills:
+  crew:
+  crewchat:
+    aliases: [c]

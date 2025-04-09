@@ -26,6 +26,10 @@ import de.polo.core.commands.BusinessChatCommand;
 import de.polo.core.commands.BusinessCommand;
 import de.polo.core.commands.GeworbenCommand;
 import de.polo.core.commands.JailtimeCommand;
+import de.polo.core.crew.commands.CrewChatCommand;
+import de.polo.core.crew.commands.CrewCommand;
+import de.polo.core.crew.services.CrewService;
+import de.polo.core.crew.services.impl.CoreCrewService;
 import de.polo.core.database.Database;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.events.christmas.commands.AdventskalenderCommand;
@@ -115,6 +119,7 @@ public final class Main extends JavaPlugin implements Server {
     public static LocationService locationService;
     public static NavigationService navigationService;
     public static ZoneService zoneService;
+    public static CrewService crewService;
 
     @Getter
     public CooldownManager cooldownManager;
@@ -230,6 +235,7 @@ public final class Main extends JavaPlugin implements Server {
         locationService = new CoreLocationService();
         navigationService = new CoreNavigationService();
         zoneService = new CoreZoneService();
+        crewService = new CoreCrewService();
 
         InventoryApiRegister.register(this);
         GlobalStats.load();
@@ -370,7 +376,9 @@ public final class Main extends JavaPlugin implements Server {
                 FarmerCommand.class,
                 MineCommand.class,
                 MuellmannCommand.class,
-                PostboteCommand.class
+                PostboteCommand.class,
+                CrewCommand.class,
+                CrewChatCommand.class
         );
 
         for (Class<? extends CommandBase> commandClass : commands) {
