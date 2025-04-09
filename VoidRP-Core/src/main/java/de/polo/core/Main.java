@@ -89,9 +89,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public final class Main extends JavaPlugin implements Server {
+    private final Map<Class<? extends CommandBase>, CommandBase> commandInstances = new HashMap<>();
 
     private ConfigurableApplicationContext springContext;
 
@@ -370,7 +373,6 @@ public final class Main extends JavaPlugin implements Server {
                 PostboteCommand.class
         );
 
-
         for (Class<? extends CommandBase> commandClass : commands) {
             CommandBase.CommandMeta meta = commandClass.getAnnotation(CommandBase.CommandMeta.class);
 
@@ -382,6 +384,9 @@ public final class Main extends JavaPlugin implements Server {
             try {
                 CommandBase command = commandClass.getDeclaredConstructor(CommandBase.CommandMeta.class)
                         .newInstance(meta);
+
+                commandInstances.put(commandClass, command); // Instanz speichern
+
                 getLogger().info("Befehl registriert: /" + meta.name());
             } catch (Exception e) {
                 getLogger().severe("Fehler beim Registrieren des Befehls " + commandClass.getName() + ": " + e.getMessage());
@@ -389,6 +394,11 @@ public final class Main extends JavaPlugin implements Server {
             }
         }
     }
+
+    public <T extends CommandBase> T getCommandInstance(Class<T> commandClass) {
+        return commandClass.cast(commandInstances.get(commandClass));
+    }
+
 
     public class Commands {
         private final Main voidAPI;

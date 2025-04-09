@@ -2,11 +2,14 @@ package de.polo.core.listeners;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.game.base.extra.Storage;
 import de.polo.core.game.base.extra.drop.Drop;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.game.events.SecondTickEvent;
+import de.polo.core.jobs.commands.MuellmannCommand;
+import de.polo.core.jobs.commands.PostboteCommand;
 import de.polo.core.manager.BlockManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
@@ -519,11 +522,11 @@ public class PlayerInteractListener implements Listener {
                                             }
                                         });
                                     } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
-                                        if (commands.postboteCommand.canGive(houseData.getNumber())) {
+                                        if (Main.getInstance().getCommandInstance(PostboteCommand.class).canGive(houseData.getNumber())) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
                                                 @Override
                                                 public void onClick(InventoryClickEvent event) {
-                                                    Main.getInstance().commands.postboteCommand.handleDrop(player, playerData.getIntVariable("current_house"));
+                                                    Main.getInstance().getCommandInstance(PostboteCommand.class).handleDrop(VoidAPI.getPlayer(player), playerData.getIntVariable("current_house"));
                                                     player.closeInventory();
                                                 }
                                             });
@@ -536,11 +539,11 @@ public class PlayerInteractListener implements Listener {
                                             });
                                         }
                                     } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                        if (commands.muellmannCommand.canGet(houseData.getNumber())) {
+                                        if (Main.getInstance().getCommandInstance(MuellmannCommand.class).canGet(houseData.getNumber())) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
                                                 @Override
                                                 public void onClick(InventoryClickEvent event) {
-                                                    Main.getInstance().commands.muellmannCommand.handleDrop(player, playerData.getIntVariable("current_house"));
+                                                    Main.getInstance().getCommandInstance(MuellmannCommand.class).handleDrop(VoidAPI.getPlayer(player), playerData.getIntVariable("current_house"));
                                                     player.closeInventory();
                                                 }
                                             });
