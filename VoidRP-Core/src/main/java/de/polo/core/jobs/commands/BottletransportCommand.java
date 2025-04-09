@@ -57,6 +57,7 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
     public void startJob(VoidPlayer player) {
         player.setVariable("job", "flaschentransport");
         player.setMiniJob(MiniJob.BOTTLE_TRANSPORT);
+        player.setActiveJob(this);
         int amount = Utils.random(2, 4);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + " erhalten, bringe diese in das Lager der Bar."));
         NavigationService navigationService = VoidAPI.getService(NavigationService.class);
