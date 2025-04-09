@@ -69,6 +69,9 @@ import de.polo.core.utils.*;
 import de.polo.core.utils.gameplay.GamePlay;
 import de.polo.core.utils.player.ScoreboardAPI;
 import de.polo.core.utils.player.ScoreboardManager;
+import de.polo.core.zone.ZoneEvents;
+import de.polo.core.zone.services.ZoneService;
+import de.polo.core.zone.services.impl.CoreZoneService;
 import dev.vansen.singleline.SingleLineOptions;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
@@ -107,6 +110,7 @@ public final class Main extends JavaPlugin implements Server {
     public static AgreementService agreementService;
     public static LocationService locationService;
     public static NavigationService navigationService;
+    public static ZoneService zoneService;
 
     @Getter
     public CooldownManager cooldownManager;
@@ -221,6 +225,7 @@ public final class Main extends JavaPlugin implements Server {
         agreementService = new CoreAgreementService();
         locationService = new CoreLocationService();
         navigationService = new CoreNavigationService();
+        zoneService = new CoreZoneService();
 
         InventoryApiRegister.register(this);
         GlobalStats.load();
@@ -293,6 +298,7 @@ public final class Main extends JavaPlugin implements Server {
         new ConsumeListener(playerManager);
         new EntityToggleGlideListener();
         new JumpListener(playerManager);
+        new ZoneEvents();
 
     }
 

@@ -1,0 +1,51 @@
+package de.polo.core.zone.entities;
+
+import de.polo.api.player.VoidPlayer;
+import de.polo.api.zone.Zone;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import org.bukkit.Location;
+
+import java.util.List;
+
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class CoreZone implements Zone {
+
+    @Getter
+    private final String name;
+
+    @Getter
+    private final int range;
+
+    @Getter
+    private final Location location;
+
+    private final List<VoidPlayer> playersInZone = new ObjectArrayList<>();
+
+    public CoreZone(String name, int range, Location location) {
+        this.name = name;
+        this.range = range;
+        this.location = location;
+    }
+
+    @Override
+    public List<VoidPlayer> getPlayersInZone() {
+        return playersInZone;
+    }
+
+    @Override
+    public void addPlayer(VoidPlayer player) {
+        if (!playersInZone.contains(player)) {
+            playersInZone.add(player);
+        }
+    }
+
+    @Override
+    public void removePlayer(VoidPlayer player) {
+        playersInZone.remove(player);
+    }
+}

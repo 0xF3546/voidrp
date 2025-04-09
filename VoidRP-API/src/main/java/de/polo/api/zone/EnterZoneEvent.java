@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.0.0
  * @since 1.0.0
  */
-abstract class EnterZoneEvent extends ZoneEvent {
+public class EnterZoneEvent extends ZoneEvent {
 
-    protected EnterZoneEvent(VoidPlayer player, Zone zone) {
+    public EnterZoneEvent(VoidPlayer player, Zone zone) {
         super(player, zone);
     }
 }

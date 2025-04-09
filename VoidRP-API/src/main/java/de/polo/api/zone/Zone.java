@@ -1,5 +1,10 @@
 package de.polo.api.zone;
 
+import de.polo.api.player.VoidPlayer;
+import org.bukkit.Location;
+
+import java.util.List;
+
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -7,4 +12,9 @@ package de.polo.api.zone;
  */
 public interface Zone {
     String getName();
+    int getRange();
+    Location getLocation();
+    List<VoidPlayer> getPlayersInZone();
+    void addPlayer(VoidPlayer player);
+    void removePlayer(VoidPlayer player);
 }
