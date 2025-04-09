@@ -40,6 +40,8 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
+import static de.polo.core.Main.adminService;
+
 public class DeathListener implements Listener {
     private final PlayerManager playerManager;
     private final AdminManager adminManager;
@@ -96,9 +98,9 @@ public class DeathListener implements Listener {
             return;
         } else {
             if (!playerData.isDead()) {
-                adminManager.send_message(player.getName() + " starb.", null);
+                adminService.send_message(player.getName() + " starb.", null);
             } else {
-                adminManager.send_message(player.getName() + " starb. (Rejoin)", null);
+                adminService.send_message(player.getName() + " starb. (Rejoin)", null);
             }
             playerData.setVariable("inventory::base", player.getInventory().getContents());
             player.getInventory().clear();

@@ -1,5 +1,8 @@
 package de.polo.api.Utils;
 
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Color;
+
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -13,5 +16,13 @@ public class ApiUtils {
             bar.append(i < progress ? "§3█" : "§7█");
         }
         return bar.toString();
+    }
+
+    public static String colorToHex(Color color) {
+        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    public static String colorToTextColor(Color color) {
+        return TextColor.color(color.getRed(), color.getGreen(), color.getBlue()).toString();
     }
 }

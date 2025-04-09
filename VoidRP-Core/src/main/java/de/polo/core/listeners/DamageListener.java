@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
@@ -42,7 +44,8 @@ public class DamageListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         // ISSUE VRP-10000: fixed by adding null check
         if (playerData != null) {
-            if (playerData.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.isInAcceptedTicket(player) || playerData.isDead() || playerData.isCuffed()) {
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+            if (voidPlayer.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.isInAcceptedTicket(player) || playerData.isDead() || playerData.isCuffed()) {
                 event.setCancelled(true);
                 return;
             }

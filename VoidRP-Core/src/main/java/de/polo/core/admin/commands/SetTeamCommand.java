@@ -9,11 +9,14 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import static de.polo.core.Main.adminService;
 
 public class SetTeamCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -50,7 +53,7 @@ public class SetTeamCommand implements CommandExecutor {
                 Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET rankDuration = null WHERE uuid = ?", offlinePlayer.getUniqueId().toString());
                 playerData.setRankDuration(null);
                 playerManager.setRang(offlinePlayer.getUniqueId(), rank);
-                adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", ChatColor.DARK_RED);
+                adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", Color.RED);
             } else {
                 player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }

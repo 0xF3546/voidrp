@@ -1,5 +1,7 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
@@ -49,7 +51,8 @@ public class ArrestCommand implements CommandExecutor {
                         if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
                             try {
                                 if (utils.staatUtil.arrestPlayer(targetplayer, player, false)) {
-                                    if (targetPlayerData.isAduty()) {
+                                    VoidPlayer targetVoidPlayer = VoidAPI.getPlayer(targetplayer);
+                                    if (targetVoidPlayer.isAduty()) {
                                         player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
                                         return false;
                                     }

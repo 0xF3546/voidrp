@@ -6,6 +6,7 @@ import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,8 @@ import org.bukkit.entity.Player;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import static de.polo.core.Main.adminService;
 
 public class UnbanCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -45,7 +48,7 @@ public class UnbanCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht in der Banlist gefudnen.");
                 return false;
             }
-            adminManager.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", ChatColor.RED);
+            adminService.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", Color.RED);
             player.sendMessage(Prefix.ADMIN + "Du hast " + res.getString(3) + " entbannt.");
             Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_bans WHERE LOWER(name) = ?", args[0].toLowerCase());
         } catch (SQLException e) {

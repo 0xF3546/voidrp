@@ -17,6 +17,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Objects;
 
+import static de.polo.core.Main.playerService;
+
 public abstract class CommandBase implements CommandExecutor {
 
     private final CommandMeta meta;
@@ -43,35 +45,35 @@ public abstract class CommandBase implements CommandExecutor {
             return true;
         }
 
-        Player player = (Player) sender;
-        PlayerData playerData = Main.getInstance().getPlayerManager().getPlayerData(player);
+        VoidPlayer player = VoidAPI.getPlayer((Player) sender);
 
-        if (playerData == null) {
+        if (player.getData() == null) {
             player.sendMessage(Prefix.ERROR + "Spielerdaten konnten nicht geladen werden.");
             return true;
         }
 
-        if (playerData.getPermlevel() < meta.permissionLevel()) {
+        if (player.getData().getPermlevel() < meta.permissionLevel()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
         }
-        if (meta.adminDuty() && !playerData.isAduty()) {
+        if (meta.adminDuty() && !player.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
             return true;
         }
+        PlayerData playerData = playerService.getPlayerData(player.getUuid());
         if (!Objects.equals(meta.faction(), "")) {
+
             if (playerData.getFaction() == null || !playerData.getFaction().equalsIgnoreCase(meta.faction())) {
                 player.sendMessage(Prefix.ERROR_NOPERMISSION);
                 return true;
             }
         }
-        if (meta.leader() && !playerData.isLeader()) {
+        if (meta.leader() && !player.getData().isLeader()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
         }
         try {
-            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
-            execute(voidPlayer, playerData, args);
+            execute(player, playerData, args);
         } catch (Exception e) {
             player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten: " + e.getMessage());
             e.printStackTrace();

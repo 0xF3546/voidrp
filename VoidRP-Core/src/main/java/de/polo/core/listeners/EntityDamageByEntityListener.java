@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -37,6 +39,7 @@ public class EntityDamageByEntityListener implements Listener {
 
             if (damager != null) {
                 PlayerData damagerData = playerManager.getPlayerData(damager.getUniqueId());
+                VoidPlayer voidDamager = VoidAPI.getPlayer(damager);
 
                 if (isInSupportOrJail(damager)) {
                     event.setCancelled(true);
@@ -45,7 +48,7 @@ public class EntityDamageByEntityListener implements Listener {
 
                 handleWeaponDamage(event, damager);
 
-                if (isProtectedEntity(event.getEntity(), damagerData)) {
+                if (isProtectedEntity(event.getEntity(), voidDamager)) {
                     event.setCancelled(true);
                 }
             }
@@ -85,7 +88,7 @@ public class EntityDamageByEntityListener implements Listener {
         }
     }
 
-    private boolean isProtectedEntity(Entity entity, PlayerData playerData) {
+    private boolean isProtectedEntity(Entity entity, VoidPlayer playerData) {
         return (entity.getType() == EntityType.ARMOR_STAND
                 || entity.getType() == EntityType.ITEM_FRAME
                 || entity.getType() == EntityType.PAINTING

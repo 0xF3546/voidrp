@@ -11,6 +11,7 @@ import de.polo.core.utils.Utils;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,8 +20,7 @@ import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static de.polo.core.Main.database;
-import static de.polo.core.Main.playerService;
+import static de.polo.core.Main.*;
 
 public class PlayerVoteListener implements Listener {
     private final PlayerManager playerManager;
@@ -39,7 +39,7 @@ public class PlayerVoteListener implements Listener {
         Vote vote = event.getVote();
         Player player = Bukkit.getPlayer(vote.getUsername());
         assert player != null;
-        adminManager.send_message(vote.getUsername() + " hat über " + vote.getServiceName() + " gevotet.", ChatColor.GRAY);
+        adminService.send_message(vote.getUsername() + " hat über " + vote.getServiceName() + " gevotet.", Color.GRAY);
         if (player.isOnline()) {
             PlayerData playerData = playerService.getPlayerData(player);
             player.sendMessage(Prefix.MAIN + "§6§lDanke§7 für deinen Vote!");

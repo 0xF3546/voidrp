@@ -1,5 +1,7 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.admin.services.impl.AdminManager;
@@ -13,6 +15,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import static de.polo.core.Main.adminService;
 
 public class RespawnCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -36,7 +40,8 @@ public class RespawnCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        if (!playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
@@ -56,7 +61,7 @@ public class RespawnCommand implements CommandExecutor {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         targetplayer.sendMessage(Prefix.MAIN + "§a" + player.getName() + " hat dich Respawnt!");
-        adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.", null);
+        adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.", null);
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         if (targetplayerData.getFaction() != null) {
             locationManager.useLocation(targetplayer, targetplayerData.getFaction());

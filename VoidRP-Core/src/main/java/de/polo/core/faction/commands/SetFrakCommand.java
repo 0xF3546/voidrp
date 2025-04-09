@@ -9,6 +9,7 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static de.polo.core.Main.adminService;
 
 public class SetFrakCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -43,7 +46,7 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
                 int rang = Integer.parseInt(args[2]);
                 if (rang >= 0 && rang <= 8) {
                     factionManager.setPlayerInFrak(targetplayer, frak, rang);
-                    adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " (Rang " + rang + ") gesetzt.", ChatColor.DARK_PURPLE);
+                    adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " (Rang " + rang + ") gesetzt.", Color.PURPLE);
                 } else {
                     player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /setfraktion [Spieler] [Fraktion] [Rang(1-8)]");
                     return false;

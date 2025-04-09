@@ -1,5 +1,7 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.admin.services.impl.AdminManager;
@@ -7,10 +9,13 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import static de.polo.core.Main.adminService;
 
 public class TPCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -30,7 +35,8 @@ public class TPCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        if (!playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
@@ -46,7 +52,7 @@ public class TPCommand implements CommandExecutor {
         }
         player.teleport(targetplayer.getLocation());
         player.sendMessage(Prefix.ADMIN + "Du hast dich zu §c" + targetplayer.getName() + "§7 teleportiert.");
-        adminManager.send_message(player.getName() + " hat sich zu " + targetplayer.getName() + " teleportiert.", ChatColor.RED);
+        adminService.send_message(player.getName() + " hat sich zu " + targetplayer.getName() + " teleportiert.", Color.RED);
         return false;
     }
 }

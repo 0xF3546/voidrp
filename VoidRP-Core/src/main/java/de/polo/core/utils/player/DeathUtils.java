@@ -32,8 +32,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import static de.polo.core.Main.navigationService;
-import static de.polo.core.Main.utils;
+import static de.polo.core.Main.*;
 
 public class DeathUtils {
     private final HashMap<String, Boolean> deathPlayer = new HashMap<>();
@@ -113,7 +112,7 @@ public class DeathUtils {
         playerData.setCuffed(false);
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
-        adminManager.send_message(player.getName() + " wurde wiederbelebt.", null);
+        adminService.send_message(player.getName() + " wurde wiederbelebt.", null);
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }

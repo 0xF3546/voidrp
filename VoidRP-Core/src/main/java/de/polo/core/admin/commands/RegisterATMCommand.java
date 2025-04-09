@@ -7,6 +7,7 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+import static de.polo.core.Main.adminService;
 import static de.polo.core.Main.database;
 
 public class RegisterATMCommand implements CommandExecutor {
@@ -46,7 +48,7 @@ public class RegisterATMCommand implements CommandExecutor {
                 .thenApply(key -> {
                     if (key.isPresent()) {
                         player.sendMessage(Prefix.GAMEDESIGN + "Du hast einen ATM registriert #" + key.get());
-                        adminManager.send_message(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", ChatColor.GOLD);
+                        adminService.send_message(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", Color.ORANGE);
                     }
                     return null;
                 });

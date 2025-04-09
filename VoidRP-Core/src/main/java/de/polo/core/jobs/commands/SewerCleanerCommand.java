@@ -103,8 +103,8 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
             inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", payoutText)) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    endJob(player);
                     player.getPlayer().closeInventory();
+                    endJob(player);
                 }
             });
         }

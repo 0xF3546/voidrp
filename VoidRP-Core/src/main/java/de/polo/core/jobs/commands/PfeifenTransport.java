@@ -2,6 +2,8 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
@@ -74,7 +76,8 @@ public class PfeifenTransport implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du kannst den Job nur alle 2 Stunden machen.");
             return false;
         }
-        if (!Utils.getTime().plusMinutes(15).isAfter(lastTransport) && !playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!Utils.getTime().plusMinutes(15).isAfter(lastTransport) && !voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Der Transport wurde in den letzten 15 Minuten bereits ausgeführt! (" + Duration.between(lastTransport, Utils.getTime()) + "min noch)");
             return false;
         }

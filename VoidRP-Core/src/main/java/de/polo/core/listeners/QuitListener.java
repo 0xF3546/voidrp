@@ -18,6 +18,7 @@ import de.polo.core.utils.enums.PlayerPed;
 import de.polo.core.utils.player.ScoreboardAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -27,6 +28,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
+
+import static de.polo.core.Main.adminService;
 
 public class
 QuitListener implements Listener {
@@ -56,7 +59,7 @@ QuitListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
         scoreboardAPI.clearScoreboards(player);
-        adminManager.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
+        adminService.send_message(player.getName() + " hat den Server verlassen.", Color.GRAY);
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             player.setGameMode(GameMode.SURVIVAL);
         }

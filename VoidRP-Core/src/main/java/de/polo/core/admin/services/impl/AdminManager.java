@@ -1,5 +1,7 @@
 package de.polo.core.admin.services.impl;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -11,6 +13,7 @@ import de.polo.core.utils.player.ScoreboardAPI;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
+
+import static de.polo.core.Main.adminService;
 
 public class AdminManager implements CommandExecutor, TabCompleter {
 
@@ -44,10 +49,11 @@ public class AdminManager implements CommandExecutor, TabCompleter {
         }
         RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
         if (args.length == 0) {
-            if (playerData.isAduty()) {
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+            if (voidPlayer.isAduty()) {
 
-                playerData.setAduty(false);
-                send_message(player.getName() + " hat den Admindienst verlassen.", ChatColor.RED);
+                voidPlayer.setAduty(false);
+                adminService.send_message(player.getName() + " hat den Admindienst verlassen.", Color.RED);
                 player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §cverlassen§7.");
                 player.setFlying(false);
                 player.setAllowFlight(false);
@@ -55,8 +61,8 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 player.setCollidable(true);
             } else {
 
-                send_message(player.getName() + " hat den Admindienst betreten.", ChatColor.RED);
-                playerData.setAduty(true);
+                adminService.send_message(player.getName() + " hat den Admindienst betreten.", Color.RED);
+                voidPlayer.setAduty(true);
                 player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §abetreten§7.");
                 player.setAllowFlight(true);
 
@@ -83,14 +89,14 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.hidePlayer(Main.getInstance(), player);
                         }
-                        send_message(player.getName() + " hat den Vanish betreten.", null);
+                        adminService.send_message(player.getName() + " hat den Vanish betreten.", null);
                     } else {
                         player.sendMessage(Prefix.ADMIN + "Du bist nun nicht mehr im Vanish.");
                         playerData.setVariable("isVanish", null);
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.showPlayer(Main.getInstance(), player);
                         }
-                        send_message(player.getName() + " hat den Vanish verlassen.", null);
+                        adminService.send_message(player.getName() + " hat den Vanish verlassen.", null);
                     }
                     break;
             }
@@ -117,30 +123,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 }
             }
         }.runTaskTimer(Main.getInstance(), 0L, 20L * 60); // Aktualisiert jede Minute
-    }
-
-    public void send_message(String msg, ChatColor color) {
-        if (color == null) {
-            color = ChatColor.AQUA;
-        }
-        for (Player player1 : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
-            if (playerData.isAduty() || playerData.isSendAdminMessages()) {
-                player1.sendMessage("§8[§c§l!§8] " + color + msg);
-            }
-        }
-    }
-
-    public void sendGuideMessage(String msg, ChatColor color) {
-        if (color == null) {
-            color = ChatColor.AQUA;
-        }
-        for (Player player1 : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
-            if (playerData.getPermlevel() >= 40) {
-                player1.sendMessage("§8[§eGuide§8] " + color + msg);
-            }
-        }
     }
 
     @SneakyThrows

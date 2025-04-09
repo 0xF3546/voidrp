@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -28,8 +30,9 @@ public class HungerListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.isAduty() || playerData.isDead()) {
+        if (voidPlayer.isAduty() || playerData.isDead()) {
             event.setCancelled(true);
             return;
         }

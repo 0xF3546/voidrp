@@ -21,6 +21,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
@@ -31,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static de.polo.core.Main.adminService;
 
 public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
@@ -101,7 +104,7 @@ public class VertragUtil {
                 case "faction_invite":
                     factionManager.setPlayerInFrak(player, curr.toString(), 0, true);
                     factionManager.sendMessageToFaction(curr.toString(), player.getName() + " ist der Fraktion beigetreten");
-                    adminManager.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
+                    adminService.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", Color.PURPLE);
                     Main.getInstance().beginnerpass.didQuest(player, 1);
                     break;
                 case "business_invite":

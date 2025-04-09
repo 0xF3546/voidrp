@@ -2,6 +2,7 @@ package de.polo.core.player.services.impl;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
@@ -205,7 +206,6 @@ public class PlayerManager implements Listener {
             playerData.setVisum(result.getInt("visum"));
             playerData.setPermlevel(result.getInt("player_permlevel"));
             playerData.setRang(result.getString("player_rank"));
-            playerData.setAduty(false);
             playerData.setLevel(result.getInt("level"));
             playerData.setExp(result.getInt("exp"));
             playerData.setDead(result.getBoolean("isDead"));
@@ -628,7 +628,8 @@ public class PlayerManager implements Listener {
                     return;
                 }
                 Utils.Tablist.setTablist(player, null);
-                playerData.setAduty(false);
+                VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                voidPlayer.setAduty(false);
             }
         }
     }
@@ -1316,7 +1317,7 @@ public class PlayerManager implements Listener {
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
-                            adminManager.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
+                            adminService.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", Color.ORANGE);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }

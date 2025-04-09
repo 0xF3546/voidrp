@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponData;
@@ -64,7 +66,8 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 }
             } else if (ItemManager.equals(item, RoleplayItem.CUFF)) {
                 if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "handschellen")) {
-                    if (targetPlayerData.isAduty()) {
+                    VoidPlayer targetVoidPlayer = VoidAPI.getPlayer(player);
+                    if (targetVoidPlayer.isAduty()) {
                         player.sendMessage(Prefix.ERROR + "Du kannst Spieler im Admindienst nicht fesseln.");
                         return;
                     }
@@ -185,14 +188,15 @@ public class PlayerInteractWithPlayerListener implements Listener {
                 }
             }
         }
-        if ((event.getRightClicked().getType() == EntityType.ARMOR_STAND || event.getRightClicked().getType() == EntityType.ITEM_FRAME || event.getRightClicked().getType() == EntityType.PAINTING) && !playerManager.getPlayerData(event.getPlayer().getUniqueId()).isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if ((event.getRightClicked().getType() == EntityType.ARMOR_STAND || event.getRightClicked().getType() == EntityType.ITEM_FRAME || event.getRightClicked().getType() == EntityType.PAINTING) && !voidPlayer.isAduty()) {
             event.setCancelled(true);
         }
         if (event.getRightClicked() instanceof Villager) {
             Villager villager = (Villager) event.getRightClicked();
             String command = villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "command"), PersistentDataType.STRING);
             if (command == null) return;
-            if (playerManager.getPlayerData(event.getPlayer().getUniqueId()).isAduty()) {
+            if (voidPlayer.isAduty()) {
                 String id_name = villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "name"), PersistentDataType.STRING);
                 event.getPlayer().sendMessage(Prefix.GAMEDESIGN + "Befehl§8:§f " + command + "§8 | §7ID-Name§8:§f " + id_name);
             } else {

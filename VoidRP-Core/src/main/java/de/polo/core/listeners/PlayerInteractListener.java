@@ -227,7 +227,7 @@ public class PlayerInteractListener implements Listener {
                             String playerFaction = playerData.getFaction().toLowerCase();
                             String blockFaction = rBlock.getInfoValue().toLowerCase();
 
-                            if (!playerData.isAduty() && !playerFaction.equals(blockFaction)) {
+                            if (!voidPlayer.isAduty() && !playerFaction.equals(blockFaction)) {
                                 if (!((blockFaction.equals("fbi") && playerFaction.equals("polizei")) ||
                                         (blockFaction.equals("polizei") && playerFaction.equals("fbi")))) {
                                     event.setCancelled(true);
@@ -252,7 +252,7 @@ public class PlayerInteractListener implements Listener {
                                 if (block.getType().toString().contains("SIGN")) {
                                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(block.getLocation());
                                     if (registeredBlock.getInfoValue() == null) continue;
-                                    if (!playerData.isAduty() && !utils.houseManager.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
+                                    if (!voidPlayer.isAduty() && !utils.houseManager.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
                                         event.setCancelled(true);
                                     }
                                 }

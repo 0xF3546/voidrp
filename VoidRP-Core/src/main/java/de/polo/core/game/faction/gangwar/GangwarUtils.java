@@ -2,7 +2,9 @@ package de.polo.core.game.faction.gangwar;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.api.gangwar.IGangzone;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.faction.entity.Faction;
@@ -285,7 +287,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR + "Gangwar kann an Sonntagen bespielt werden!");
             return;
         }
-        if ((Utils.getTime().getHour() >= 19 && Utils.getTime().getHour() < 21 || (playerData.isAduty() && playerData.getPermlevel() >= 80))) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if ((Utils.getTime().getHour() >= 19 && Utils.getTime().getHour() < 21 || (voidPlayer.isAduty() && playerData.getPermlevel() >= 80))) {
             IGangzone gangzone = getGangzoneByName(zone);
             Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.canDoGangwar()) {

@@ -1,5 +1,7 @@
 package de.polo.core.utils;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.agreement.services.VertragUtil;
@@ -204,7 +206,8 @@ public class Utils {
             player.sendMessage("§5Du bist nicht mehr abwesend.");
             playerData.setAFK(false);
             playerData.setIntVariable("afk", 0);
-            if (!playerData.isAduty()) {
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+            if (!voidPlayer.isAduty()) {
                 player.setCollidable(true);
             }
         }
@@ -264,11 +267,12 @@ public class Utils {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
             String suffix = "";
             String prefix = "";
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
             if (playerData.isAFK()) {
                 prefix = "§8[§5AFK§8]";
             } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
                 prefix = "§8[§2GM§8]";
-            } else if (player.getAllowFlight() && !player.getGameMode().equals(GameMode.SPECTATOR) && !playerData.isAduty()) {
+            } else if (player.getAllowFlight() && !player.getGameMode().equals(GameMode.SPECTATOR) && !voidPlayer.isAduty()) {
                 prefix = "§8[§5Fly§8]";
             }
 

@@ -1,5 +1,7 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.storage.DBPlayerData;
 import de.polo.core.player.entities.PlayerData;
@@ -10,6 +12,7 @@ import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,6 +20,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+
+import static de.polo.core.Main.adminService;
 
 public class AdminUnInviteCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -36,7 +41,8 @@ public class AdminUnInviteCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (!playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
@@ -59,7 +65,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
             return false;
         }
         if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
-            adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
+            adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", Color.PURPLE);
             if (offlinePlayer.isOnline()) {
                 try {
                     factionManager.removePlayerFromFrak(offlinePlayer.getPlayer());

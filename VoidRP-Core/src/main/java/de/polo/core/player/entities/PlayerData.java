@@ -573,21 +573,6 @@ public class PlayerData implements PlayerCharacter {
         this.isJailed = isJailed;
     }
 
-    public boolean isAduty() {
-        return isAduty;
-    }
-
-    public void setAduty(boolean aduty) {
-        isAduty = aduty;
-        if (aduty) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 0, true, false));
-
-        } else {
-            player.removePotionEffect(PotionEffectType.GLOWING);
-
-        }
-    }
-
     public void setIntVariable(String variable, Integer value) {
         if (this.integer_variables.get(variable) != null) {
             this.integer_variables.replace(variable, value);

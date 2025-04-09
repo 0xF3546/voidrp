@@ -21,7 +21,7 @@ import static de.polo.core.Main.*;
  */
 @CommandBase.CommandMeta(name = "bottletransport")
 public class BottletransportCommand extends CommandBase implements TransportJob {
-    private final String PREFIX = "§8[§2Flaschenlieferant§8]§7 ";
+    private final String PREFIX = "§2Flaschenlieferant §8┃ ➜§7 ";
     public BottletransportCommand(@NotNull CommandMeta meta) {
         super(meta);
     }

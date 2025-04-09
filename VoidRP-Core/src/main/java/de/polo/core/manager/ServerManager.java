@@ -242,7 +242,7 @@ public class ServerManager {
                         playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.WEEKLY);
                         Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.WEEKLY);
                     }
-                    Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der seasonpass wurde zurückgesetzt!");
+                    Bukkit.broadcastMessage("§6Seasonpass §8┃§7 Der seasonpass wurde zurückgesetzt!");
 
                     PreparedStatement ffaStatement = Main.getInstance().coreDatabase.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
                     ffaStatement.setString(1, FFAStatsType.WEEKLY.name());
@@ -262,16 +262,16 @@ public class ServerManager {
                     }
                 }
                 if (now.getMinute() == 45 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 15 Minuten neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart§8 ┃§c Der Server startet in 15 Minuten neu!");
                 }
                 if (now.getMinute() == 55 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 5 Minuten neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart §8┃§c Der Server startet in 5 Minuten neu!");
                 }
                 if (now.getMinute() == 57 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 3 Minuten neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart §8┃§c Der Server startet in 3 Minuten neu!");
                 }
                 if (now.getMinute() == 59 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 1 Minute neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart §8┃§c Der Server startet in 1 Minute neu!");
                 }
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
@@ -446,7 +446,7 @@ public class ServerManager {
                     announceTick = 5;
                     switch (announceType) {
                         case 1:
-                            TextComponent text = new TextComponent("§8[§6Regelwerk§8]§e Unwissenheit schützt vor Strafe nicht!");
+                            TextComponent text = new TextComponent("§6Regelwerk§8 ┃§e Unwissenheit schützt vor Strafe nicht!");
                             text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/rules"));
                             text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oRegelwerk öffnen")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -454,11 +454,11 @@ public class ServerManager {
                             }
                             break;
                         case 2:
-                            TextComponent forum = new TextComponent("§8[§9Discord§8]§3 Bist du schon auf unserem Discord?");
+                            TextComponent forum = new TextComponent("§9Discord§8 ┃§3 Bist du schon auf unserem Discord?");
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             Bukkit.spigot().broadcast(forum);
-                            TextComponent forum2 = new TextComponent("§8[§9Discord§8]§3 Fraktionen, Ankündigungen, Changelogs uvm.!");
+                            TextComponent forum2 = new TextComponent("§9Discord §8┃§3 Fraktionen, Ankündigungen, Changelogs uvm.!");
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -466,8 +466,7 @@ public class ServerManager {
                             }
                             break;
                         case 3:
-                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Warst du bereits auf unserem TeamSpeak?");
-                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Betritt noch heute unseren TeamSpeak unter §lvoidroleplay.de§3!");
+                            Bukkit.broadcastMessage("§9Control-Panel §8┃§3 Verwalte deine Spielerdaten im Control-Panel!");
                             break;
                     }
                     announceType++;

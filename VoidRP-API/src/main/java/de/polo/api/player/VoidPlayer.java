@@ -44,4 +44,8 @@ public interface VoidPlayer {
 
     void setVariable(String key, Object value);
     Object getVariable(String key);
+    boolean isAduty();
+    void setAduty(boolean aduty);
+    boolean notificationsEnabled();
+    void setNotificationsEnabled(boolean enabled);
 }

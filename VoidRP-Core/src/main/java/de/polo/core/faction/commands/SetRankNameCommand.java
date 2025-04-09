@@ -7,12 +7,15 @@ import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+
+import static de.polo.core.Main.adminService;
 
 public class SetRankNameCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -39,7 +42,7 @@ public class SetRankNameCommand implements CommandExecutor {
                     }
                     if (factionManager.changeRankName(playerData.getFaction(), Integer.parseInt(args[0]), newName.toString())) {
                         player.sendMessage(Prefix.FACTION + "Rangname von Rang §l" + args[0] + "§7 zu §l" + newName + "§7 geändert.");
-                        adminManager.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + newName + " gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
+                        adminService.send_message(player.getName() + " den Namen von Rang " + args[0] + " auf " + newName + " gesetzt (" + playerData.getFaction() + ").", Color.PURPLE);
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);

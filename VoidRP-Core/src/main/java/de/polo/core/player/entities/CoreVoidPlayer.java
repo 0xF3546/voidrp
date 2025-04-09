@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import static de.polo.core.Main.playerService;
 
@@ -25,6 +27,11 @@ public class CoreVoidPlayer implements VoidPlayer {
     @Getter
     @Setter
     private Job activeJob;
+
+    private boolean notificationsEnabled;
+
+    @Getter
+    private boolean aduty;
 
     public CoreVoidPlayer(Player player) {
         this.player = player;
@@ -50,6 +57,16 @@ public class CoreVoidPlayer implements VoidPlayer {
         return getData().getVariable(key);
     }
 
+    @Override
+    public boolean notificationsEnabled() {
+        return notificationsEnabled;
+    }
+
+    @Override
+    public void setNotificationsEnabled(boolean enabled) {
+        this.notificationsEnabled = enabled;
+    }
+
     public void setMiniJob(MiniJob miniJob) {
         this.miniJob = miniJob;
         if (miniJob == null) {
@@ -57,5 +74,16 @@ public class CoreVoidPlayer implements VoidPlayer {
             return;
         }
         getData().setVariable("job", miniJob.getName());
+    }
+
+    public void setAduty(boolean aduty) {
+        this.aduty = aduty;
+        if (aduty) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 0, true, false));
+
+        } else {
+            player.removePotionEffect(PotionEffectType.GLOWING);
+
+        }
     }
 }

@@ -8,11 +8,14 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import static de.polo.core.Main.adminService;
 
 public class GwdCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -55,7 +58,7 @@ public class GwdCommand implements CommandExecutor {
                 return false;
             }
             PlayerData targetData = playerManager.getPlayerData(target);
-            adminManager.send_message(player.getName() + " hat " + target.getName() + " GWD-Note " + grade + " gegeben.", ChatColor.DARK_AQUA);
+            adminService.send_message(player.getName() + " hat " + target.getName() + " GWD-Note " + grade + " gegeben.", Color.NAVY);
             factionManager.sendCustomLeaderMessageToFactions("§3HQ: " + player.getName() + " hat " + target.getName() + " GWD-Note " + grade + " gegeben.", "Polizei");
             target.sendMessage("§6Dir wurde GWD-Note " + grade + " gegeben.");
             targetData.setGwd(grade);

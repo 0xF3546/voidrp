@@ -8,12 +8,15 @@ import de.polo.core.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import static de.polo.core.Main.adminService;
 
 public class PermbanCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -55,7 +58,7 @@ public class PermbanCommand implements CommandExecutor {
             reason.append(" ").append(args[i]);
         }
         Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + target.getName() + " permanent gebannt. Grund: " + reason);
-        adminManager.send_message(player.getName() + " hat " + target.getName() + " Permanent gebannt.", ChatColor.RED);
+        adminService.send_message(player.getName() + " hat " + target.getName() + " Permanent gebannt.", Color.RED);
         if (target.isOnline()) {
             Player targetOnPlayer = Bukkit.getPlayer(target.getUniqueId());
             targetOnPlayer.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest Permanent vom Server gebannt.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoidRoleplay §8•");

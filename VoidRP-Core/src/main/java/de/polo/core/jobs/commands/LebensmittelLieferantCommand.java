@@ -27,7 +27,7 @@ import static de.polo.core.Main.playerService;
         usage = "/lebensmittellieferant"
 )
 public class LebensmittelLieferantCommand extends CommandBase implements TransportJob {
-    String prefix = "§8[§aLieferant§8] §7";
+    String prefix = "§aLieferant §8┃ ➜ §7";
 
     public LebensmittelLieferantCommand(@NotNull CommandMeta meta) {
         super(meta);

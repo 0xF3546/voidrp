@@ -11,6 +11,7 @@ import de.polo.core.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static de.polo.core.Main.adminService;
 
 public class LeadFrakCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -52,7 +55,7 @@ public class LeadFrakCommand implements CommandExecutor, TabCompleter {
         targetplayer.sendMessage(Prefix.FACTION + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
         factionManager.setPlayerInFrak(targetplayer, frak, 6);
         factionManager.setLeader(targetplayer, true);
-        adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " gesetzt.", ChatColor.DARK_PURPLE);
+        adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " gesetzt.", Color.PURPLE);
         return false;
     }
 

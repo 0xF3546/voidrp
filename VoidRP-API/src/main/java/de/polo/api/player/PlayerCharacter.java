@@ -24,4 +24,6 @@ public interface PlayerCharacter {
     void setCrew(Crew crew);
     CrewRank getCrewRank();
     void setCrewRank(CrewRank rank);
+    int getPermlevel();
+    boolean isLeader();
 }

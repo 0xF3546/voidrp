@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
@@ -62,10 +64,11 @@ public class CommandListener implements Listener {
             event.setCancelled(true);
             return;
         }
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
 
         // Check if the command starts with any blocked start
         for (String blockedStart : blockedStarts) {
-            if (command.startsWith(blockedStart) && !playerData.isAduty()) {
+            if (command.startsWith(blockedStart) && !voidPlayer.isAduty()) {
                 event.setCancelled(true);
                 player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;
@@ -74,7 +77,7 @@ public class CommandListener implements Listener {
 
         // Check if the command contains any blocked substring
         for (String blockedContain : blockedContains) {
-            if (msg.contains(blockedContain) && !playerData.isAduty()) {
+            if (msg.contains(blockedContain) && !voidPlayer.isAduty()) {
                 event.setCancelled(true);
                 player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;
@@ -106,7 +109,7 @@ public class CommandListener implements Listener {
             player.sendMessage(Prefix.ERROR + "Der Befehl " + msg + " wurde nicht gefunden.");
             return;
         }
-        if (playerData.isDead() && !playerData.isAduty()) {
+        if (playerData.isDead() && !voidPlayer.isAduty()) {
             if (!nonBlockedCommands.contains(command)) {
                 player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
                 event.setCancelled(true);

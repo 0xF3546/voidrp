@@ -7,12 +7,15 @@ import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+
+import static de.polo.core.Main.adminService;
 
 public class SetRankPayDayCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -49,7 +52,7 @@ public class SetRankPayDayCommand implements CommandExecutor {
         try {
             if (factionManager.changeRankPayDay(playerData.getFaction(), Integer.parseInt(args[0]), Integer.parseInt(args[1]))) {
                 player.sendMessage(Prefix.FACTION + "PayDay von Rang §l" + args[0] + "§7 zu §l" + args[1] + "§§7 geändert.");
-                adminManager.send_message(player.getName() + " den PayDay von Rang " + args[0] + " auf " + args[1] + "$ gesetzt (" + playerData.getFaction() + ").", ChatColor.DARK_PURPLE);
+                adminService.send_message(player.getName() + " den PayDay von Rang " + args[0] + " auf " + args[1] + "$ gesetzt (" + playerData.getFaction() + ").", Color.PURPLE);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

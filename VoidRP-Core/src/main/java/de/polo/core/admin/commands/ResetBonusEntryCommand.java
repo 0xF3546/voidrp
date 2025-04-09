@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
+
+import static de.polo.core.Main.adminService;
 
 public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -51,7 +54,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
             statement.execute();
             statement.close();
             connection.close();
-            adminManager.send_message(player.getName() + " hat die Bonis zurückgesetzt.", ChatColor.GOLD);
+            adminService.send_message(player.getName() + " hat die Bonis zurückgesetzt.", Color.ORANGE);
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
@@ -67,7 +70,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
         statement.execute();
         statement.close();
         connection.close();
-        adminManager.send_message(player.getName() + " hat die " + targetplayer.getName() + "'s Bonus zurückgesetzt.", ChatColor.GOLD);
+        adminService.send_message(player.getName() + " hat die " + targetplayer.getName() + "'s Bonus zurückgesetzt.", Color.ORANGE);
         targetplayer.sendMessage("§8[§cAdmin§8]§7 " + playerData.getRang() + " " + player.getName() + " hat deinen Bonus zurückgesetzt.");
         return false;
     }

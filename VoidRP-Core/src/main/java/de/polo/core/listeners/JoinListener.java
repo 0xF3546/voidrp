@@ -14,6 +14,7 @@ import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +22,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.UUID;
+
+import static de.polo.core.Main.adminService;
 
 public class JoinListener implements Listener {
     private final PlayerManager playerManager;
@@ -51,7 +54,7 @@ public class JoinListener implements Listener {
                 player.kick(Component.text("§cWir mussten deine Verbindung trennen, da deine Spielerdaten nicht geladen werden konnten."));
                 return;
             }
-            adminManager.send_message(player.getName() + " hat den Server betreten.", ChatColor.GRAY);
+            adminService.send_message(player.getName() + " hat den Server betreten.", Color.GRAY);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getFaction() != null) {
                 Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
@@ -80,7 +83,7 @@ public class JoinListener implements Listener {
             player.sendMessage("§6VoidRoleplay §8»§7 Herzlich willkommen auf VoidRoleplay, " + player.getName() + ".");
             player.sendMessage(" ");
             locationManager.useLocation(player, "Spawn");
-            adminManager.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", ChatColor.GREEN);
+            adminService.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", Color.GREEN);
         }
         if (player.getGameMode() == GameMode.CREATIVE) {
             Utils.Tablist.setTablist(player, "§8[§2GM§8]");

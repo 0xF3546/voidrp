@@ -1,7 +1,11 @@
 package de.polo.core.admin.services.impl;
 
+import de.polo.api.Utils.ApiUtils;
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
@@ -20,10 +24,9 @@ public class CoreAdminService implements AdminService {
         if (color == null) {
             color = Color.AQUA;
         }
-        for (Player player1 : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
-            if (playerData.isAduty() || playerData.isSendAdminMessages()) {
-                player1.sendMessage("§8[§c§l!§8] " + color + msg);
+        for (VoidPlayer player : VoidAPI.getPlayers()) {
+            if (player.isAduty() || player.notificationsEnabled()) {
+                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToTextColor(color) + msg);
             }
         }
     }
@@ -33,10 +36,9 @@ public class CoreAdminService implements AdminService {
         if (color == null) {
             color = Color.AQUA;
         }
-        for (Player player1 : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData = playerManager.getPlayerData(player1.getUniqueId());
-            if (playerData.getPermlevel() >= 40) {
-                player1.sendMessage("§8[§eGuide§8] " + color + msg);
+        for (VoidPlayer player : VoidAPI.getPlayers()) {
+            if (player.getData().getPermlevel() >= 40) {
+                player.sendMessage("§eGuide §8┃ " + color + msg);
             }
         }
     }
