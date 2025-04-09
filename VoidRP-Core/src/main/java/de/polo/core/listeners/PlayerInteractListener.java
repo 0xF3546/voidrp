@@ -3,6 +3,8 @@ package de.polo.core.listeners;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.game.base.extra.Storage;
 import de.polo.core.game.base.extra.drop.Drop;
@@ -106,6 +108,7 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
         playerData.setIntVariable("afk", 0);
         if (player.getGameMode().equals(GameMode.SPECTATOR)) return;
         if (event.getHand() != null && event.getHand().equals(org.bukkit.inventory.EquipmentSlot.OFF_HAND)) {
@@ -438,7 +441,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 });
                             }*/
-                                if (playerData.getVariable("job") == null) {
+                                if (voidPlayer.getActiveJob() == null) {
                                     if (playerData.getFaction() != null && (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) && playerData.isDuty()) {
                                         if (rammingPlayers.get(player) != null) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9§mRammen", "§8 ➥§7 Du bist bereits eine Tür am eintreten")) {
@@ -514,14 +517,14 @@ public class PlayerInteractListener implements Listener {
                                         });
                                     }
                                 } else {
-                                    if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                    if (!voidPlayer.getMiniJob().equals(MiniJob.POSTMAN) && !voidPlayer.getMiniJob().equals(MiniJob.WASTE_COLLECTOR)) {
                                         inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
                                             @Override
                                             public void onClick(InventoryClickEvent event) {
 
                                             }
                                         });
-                                    } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
+                                    } else if (voidPlayer.getMiniJob().equals(MiniJob.POSTMAN)) {
                                         if (Main.getInstance().getCommandInstance(PostboteCommand.class).canGive(houseData.getNumber())) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
                                                 @Override
@@ -538,7 +541,7 @@ public class PlayerInteractListener implements Listener {
                                                 }
                                             });
                                         }
-                                    } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                    } else if (voidPlayer.getMiniJob().equals(MiniJob.WASTE_COLLECTOR)) {
                                         if (Main.getInstance().getCommandInstance(MuellmannCommand.class).canGet(houseData.getNumber())) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
                                                 @Override
