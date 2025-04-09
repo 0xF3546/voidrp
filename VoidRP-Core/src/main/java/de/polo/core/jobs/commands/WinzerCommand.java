@@ -2,6 +2,8 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.jobs.MiningJob;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static de.polo.core.Main.*;
 
-public class WinzerCommand implements CommandExecutor {
+public class WinzerCommand implements CommandExecutor, MiningJob {
 
     public WinzerCommand() {
         Main.registerCommand("winzer", this);
@@ -44,7 +46,7 @@ public class WinzerCommand implements CommandExecutor {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aWinzer starten")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
-                            startJob(player);
+                            startJob(VoidAPI.getPlayer(player));
                             player.closeInventory();
                         }
                     });
@@ -84,7 +86,7 @@ public class WinzerCommand implements CommandExecutor {
                             @Override
                             public void onClick(InventoryClickEvent event) {
                                 player.closeInventory();
-                                quitJob(player, false);
+                                endJob(VoidAPI.getPlayer(player));
                             }
                         });
                     }
@@ -98,21 +100,21 @@ public class WinzerCommand implements CommandExecutor {
         return false;
     }
 
-    public void blockBroken(Player player, Block block, BlockBreakEvent event) {
+    @Override
+    public void handleBlockBreak(VoidPlayer player, BlockBreakEvent event) {
         event.setCancelled(true);
         if (event.getBlock().getType() != Material.JUNGLE_LEAVES) {
             return;
         }
-        PlayerData playerData = playerService.getPlayerData(player);
-        if (playerData.getIntVariable("winzer") <= 0) {
+        if ((int) player.getVariable("winzer") <= 0) {
             return;
         }
-        Block grapevine = playerData.getVariable("grapevine");
+        Block grapevine = (Block) player.getVariable("grapevine");
         if (grapevine.getLocation().getX() != event.getBlock().getLocation().getX() || grapevine.getLocation().getY() != event.getBlock().getLocation().getY() || grapevine.getLocation().getY() != event.getBlock().getY()) {
             player.sendMessage("§8[§5Winzer§8]§7 Das ist der falsche Rebstock.");
             return;
         }
-        InventoryManager inventoryManager = new InventoryManager(player, 54, Component.text("§5Rebstock"), true, true);
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§5Rebstock"), true, true);
         for (int i = 0; i < Utils.random(10, 15); i++) {
             inventoryManager.setItem(new CustomItem(Utils.random(0, 53), ItemManager.createItem(Material.PURPLE_DYE, 1, 0, "§5Weintraube")) {
                 @Override
@@ -132,23 +134,22 @@ public class WinzerCommand implements CommandExecutor {
                     if (amount > 0) {
                         return;
                     }
-                    player.closeInventory();
+                    player.getPlayer().closeInventory();
                     checked(player);
                 }
             });
         }
     }
 
-    private void checked(Player player) {
-        PlayerData playerData = playerService.getPlayerData(player);
-        Main.getInstance().seasonpass.didQuest(player, 9);
-        playerData.setIntVariable("winzer", playerData.getIntVariable("winzer") - 1);
-        playerData.setIntVariable("winzer_harvested", playerData.getIntVariable("winzer_harvested") + Utils.random(1, 3));
-        if (playerData.getIntVariable("winzer") == 0) {
+    private void checked(VoidPlayer player) {
+        Main.getInstance().seasonpass.didQuest(player.getPlayer(), 9);
+        player.setVariable("winzer", (int) player.getVariable("winzer") - 1);
+        player.setVariable("winzer_harvested", (int) player.getVariable("winzer_harvested") + Utils.random(1, 3));
+        if ((int) player.getVariable("winzer") == 0) {
             player.sendMessage("§8[§5Winzer§8]§7 Du hast alle Weinreben abgeerntet, kehre nun zum Winzer zurück.");
             return;
         }
-        findGrapevine(player);
+        findGrapevine(player.getPlayer());
     }
 
     private void findGrapevine(Player player) {
@@ -187,43 +188,36 @@ public class WinzerCommand implements CommandExecutor {
     }
 
 
-    private void startJob(Player player) {
-        if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "winzer")) {
-            VoidAPI.getPlayer(player).setMiniJob(MiniJob.WINZER);
-            PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
-            playerData.setVariable("job", "Winzer");
+    public void startJob(VoidPlayer player) {
+        if (!playerService.isInJobCooldown(player, MiniJob.WINZER)) {
+            player.setMiniJob(MiniJob.WINZER);
             player.sendMessage("§8[§5Winzer§8]§7 Du bist nun Winzer.");
             int trees = 6;
-            trees += (playerData.addonXP.getLumberjackLevel() / 2);
             player.sendMessage("§8[§5Winzer§8]§7 Begib dich zu den markierten Weinreben.");
             player.sendMessage(Prefix.infoPrefix + "Nutze \"/rebstock\" falls du deinen Rebstock verloren hast.");
-            playerData.setIntVariable("winzer", 12);
-            playerData.setIntVariable("winzer_harvested", 0);
+            player.setVariable("winzer", 12);
+            player.setVariable("winzer_harvested", 0);
             /*Scoreboard scoreboard = new Scoreboard(player);
             scoreboard.createWinzerScoreboard();
             playerData.setScoreboard("winzer", scoreboard);*/
-            player.getInventory().addItem(ItemManager.createItem(Material.SHEARS, 1, 0, "§5Werkzeug"));
-            findGrapevine(player);
+            player.getPlayer().getInventory().addItem(ItemManager.createItem(Material.SHEARS, 1, 0, "§5Werkzeug"));
+            findGrapevine(player.getPlayer());
         } else {
-            player.sendMessage("§8[§5Winzer§8]§7 Du kannst den Job erst in §f" + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "winzer")) + "§7 beginnen.");
+            player.sendMessage("§8[§5Winzer§8]§7 Du kannst den Job erst in §f" + Utils.getTime(playerService.getJobCooldown(player, MiniJob.WINZER)) + "§7 beginnen.");
         }
     }
 
     @SneakyThrows
-    public void quitJob(Player player, boolean silent) {
-        VoidAPI.getPlayer(player).setMiniJob(null);
-        Main.getInstance().beginnerpass.didQuest(player, 5);
-        PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
-        playerData.setVariable("job", null);
-        int payout = ServerManager.getPayout("winzer") * playerData.getIntVariable("winzer_harvested");
+    @Override
+    public void endJob(VoidPlayer player) {
+        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+        int payout = ServerManager.getPayout("winzer") * (int) player.getVariable("winzer_harvested");
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
-        SoundManager.successSound(player);
-        if (playerData.getIntVariable("winzer") <= 0) playerService.addExp(player, Utils.random(12, 20));
-        //playerData.getScoreboard("winzer").killScoreboard();
-        player.closeInventory();
-        playerService.addBankMoney(player, payout, "Auszahlung Winzer");
-        Main.getInstance().getCooldownManager().setCooldown(player, "winzer", 600);
-        Inventory inv = player.getInventory();
+        SoundManager.successSound(player.getPlayer());
+        player.getPlayer().closeInventory();
+        playerService.addBankMoney(player.getPlayer(), payout, "Auszahlung Winzer");
+        playerService.handleJobFinish(player, MiniJob.WINZER, 600, Utils.random(12, 20));
+        Inventory inv = player.getPlayer().getInventory();
         for (ItemStack item : inv.getContents()) {
             // ISSUE VPR-10003: Added null check for item
             if (item != null && item.getType() == Material.SHEARS) {
