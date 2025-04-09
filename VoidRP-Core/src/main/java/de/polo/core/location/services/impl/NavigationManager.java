@@ -34,14 +34,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class NavigationManager implements CommandExecutor, TabCompleter, Listener {
+import static de.polo.core.Main.locationManager;
+
+public class NavigationManager implements Listener {
     private final PlayerManager playerManager;
 
     public NavigationManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-        Main.registerCommand("navi", this);
-        Main.addTabCompleter("navi", this);
     }
 
     public static NaviData getNearestNaviPoint(Location location) {
@@ -50,7 +50,7 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
         for (NaviData data : LocationManager.naviDataMap.values()) {
             if (data.getLocation() == null) continue;
             if (data.isGroup()) continue;
-            Location dataLocation = Main.getInstance().locationManager.getLocation(data.getLocation());
+            Location dataLocation = locationManager.getLocation(data.getLocation());
             if (dataLocation == null) continue;
             System.out.println(dataLocation);
             double distance = dataLocation.distance(location);
@@ -64,102 +64,6 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
             nearest = LocationManager.naviDataMap.values().stream().findFirst().orElse(null);
         }
         return nearest;
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getVariable("navi") == null) {
-            if (args.length >= 1) {
-                if (args[0].contains("haus:")) {
-                    try {
-                        int number = Integer.parseInt(args[0].replace("haus:", "").replace(" ", ""));
-                        for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
-                            if (registeredBlock.getInfo() == null) {
-                                System.out.println("Info is null");
-                                continue;
-                            }
-                            if (!registeredBlock.getInfo().equalsIgnoreCase("house")) {
-                                continue;
-                            }
-                            if (registeredBlock.getInfoValue() == null) {
-                                System.out.println("InfoValue is null");
-                                continue;
-                            }
-                            try {
-                                if (Integer.parseInt(registeredBlock.getInfoValue()) != number) {
-                                    // ISSUE VRP-10004: fixed to much log spam
-                                    continue;
-                                }
-                            } catch (NumberFormatException e) {
-                                // ISSUE VRP-10004: fixed to much log spam
-                                continue;
-                            }
-                            createNaviByCord(player, (int) registeredBlock.getLocation().getX(), (int) registeredBlock.getLocation().getY(), (int) registeredBlock.getLocation().getZ());
-                            player.sendMessage("§8[§eGPS§8]§7 Du hast ein Navi zu Haus " + number + " gemacht");
-                            return false;
-                        }
-                        player.sendMessage(Prefix.ERROR + "Hausnummer nicht gefunden");
-                    } catch (NumberFormatException ex) {
-                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /navi haus:[NUMMER]");
-                    }
-                }
-
-                if (args[0].contains("atm")) {
-                    try {
-                        double closestDistance = Double.MAX_VALUE;  // Initialisiert mit einem sehr großen Wert
-                        RegisteredBlock closestAtm = null;
-
-                        for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
-                            if (registeredBlock.getInfo() == null) {
-                                continue;
-                            }
-                            if (!registeredBlock.getInfo().equalsIgnoreCase("atm")) {
-                                continue;
-                            }
-
-                            double distance = player.getLocation().distance(registeredBlock.getLocation());
-
-                            if (distance < closestDistance) {
-                                closestDistance = distance;
-                                closestAtm = registeredBlock;
-                            }
-                        }
-
-                        if (closestAtm != null) {
-                            createNaviByCord(player, (int) closestAtm.getLocation().getX(), (int) closestAtm.getLocation().getY(), (int) closestAtm.getLocation().getZ());
-                            player.sendMessage("§8[§eGPS§8]§7 Du hast den nächsten ATM markiert");
-                        } else {
-                            player.sendMessage(Prefix.ERROR + "Kein ATM gefunden.");
-                        }
-                    } catch (NumberFormatException ex) {
-                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /navi haus:[NUMMER]");
-                    }
-                }
-
-                if (args.length >= 3) {
-                    createNaviByCord(player, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-                } else {
-                    String nav = Utils.stringArrayToString(args);
-                    NaviData data = LocationManager.naviDataMap.values().stream()
-                            .filter(x -> !x.isGroup() && x.getClearName().equalsIgnoreCase(nav))
-                            .findFirst()
-                            .orElse(null);
-                    if (data == null) {
-                        player.sendMessage(Component.text(Prefix.ERROR + "Der Punkte wurde nicht gefunden."));
-                        return false;
-                    }
-                    createNavi(player, data.getLocation(), false);
-                }
-            } else {
-                openNavi(player, null);
-            }
-        } else {
-            playerData.setVariable("navi", null);
-            player.sendMessage("§8[§6GPS§8]§e Du hast deine Route gelöscht.");
-        }
-        return false;
     }
 
     public void openNavi(Player player, String search) {
@@ -369,15 +273,6 @@ public class NavigationManager implements CommandExecutor, TabCompleter, Listene
                 }.runTaskTimer(Main.getInstance(), 0L, 1L);
             }
         }
-    }
-
-    @Nullable
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return TabCompletion.getBuilder(args)
-                .addAtIndex(1, LocationManager.naviDataMap.values().stream().filter(x -> !x.isGroup())
-                        .map(NaviData::getClearName).toList())
-                .build();
     }
 
     @EventHandler

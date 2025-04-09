@@ -3,6 +3,7 @@ package de.polo.core.jobs.commands;
 import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.jobs.Job;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.game.events.MinuteTickEvent;
@@ -43,7 +44,7 @@ import static de.polo.core.Main.playerManager;
         usage = "/sewercleaner"
 )
 
-public class SewerCleanerCommand extends CommandBase implements Listener {
+public class SewerCleanerCommand extends CommandBase implements Listener, Job {
     private final String PREFIX = "§9 " + MiniJob.SEWER_CLEANER.getName() + " §8┃ §8➜ §7";
 
     private final Material sewerCleanerMaterial = Material.DIRT;
@@ -88,14 +89,14 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
         });
     }
 
-    private void startJob(VoidPlayer player) {
+    public void startJob(VoidPlayer player) {
         player.sendMessage(PREFIX + "Du hast den Job gestartet.");
         player.setMiniJob(MiniJob.SEWER_CLEANER);
         player.getData().setVariable("job::cleaning::blocks", Utils.random(3, 6));
         equip(player);
     }
 
-    private void endJob(VoidPlayer player) {
+    public void endJob(VoidPlayer player) {
         player.sendMessage(PREFIX + "Du hast den Job beendet.");
         player.sendMessage("Du hast deinen Minijob beendet.", Prefix.INFO);
         player.setMiniJob(null);
@@ -103,9 +104,14 @@ public class SewerCleanerCommand extends CommandBase implements Listener {
     }
 
     private void openCleaningInventory(VoidPlayer player, Block block) {
+        Material[] materials = {
+                Material.DIRT,
+                Material.STRING,
+                Material.DEAD_FIRE_CORAL
+        };
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§7Reinigung"), true, true);
         for (int i = 0; i < Utils.random(12, 20); i++) {
-            inventoryManager.setItem(new CustomItem(Utils.random(0, 53), new ItemBuilder(Material.DIRT).setName("§7Dreck").build()) {
+            inventoryManager.setItem(new CustomItem(Utils.random(0, 53), new ItemBuilder(materials[Utils.random(0, materials.length - 1)]).setName("§7Dreck").build()) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     ItemStack item = event.getCurrentItem();

@@ -49,6 +49,7 @@ import de.polo.core.housing.services.HouseService;
 import de.polo.core.housing.services.impl.CoreHouseService;
 import de.polo.core.jobs.commands.*;
 import de.polo.core.listeners.*;
+import de.polo.core.location.commands.NavigationCommand;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.location.services.impl.CoreLocationService;
@@ -183,15 +184,6 @@ public final class Main extends JavaPlugin implements Server {
 
         coreDatabase = new CoreDatabase();
         database = coreDatabase;
-        factionService = new CoreFactionService();
-        playerService = new CorePlayerService();
-        houseService = new CoreHouseService();
-        newsService = new CoreNewsService();
-        supportService = new CoreSupportService();
-        adminService = new CoreAdminService();
-        agreementService = new CoreAgreementService();
-        locationService = new CoreLocationService();
-        navigationService = new CoreNavigationService();
 
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
@@ -219,6 +211,17 @@ public final class Main extends JavaPlugin implements Server {
         commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
+
+        factionService = new CoreFactionService();
+        playerService = new CorePlayerService();
+        houseService = new CoreHouseService();
+        newsService = new CoreNewsService();
+        supportService = new CoreSupportService();
+        adminService = new CoreAdminService();
+        agreementService = new CoreAgreementService();
+        locationService = new CoreLocationService();
+        navigationService = new CoreNavigationService();
+
         InventoryApiRegister.register(this);
         GlobalStats.load();
 
@@ -349,7 +352,8 @@ public final class Main extends JavaPlugin implements Server {
                 MaklerCommand.class,
                 SellHouseCommand.class,
                 VertragCommand.class,
-                SewerCleanerCommand.class
+                SewerCleanerCommand.class,
+                NavigationCommand.class
         );
 
 

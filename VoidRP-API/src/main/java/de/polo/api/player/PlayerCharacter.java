@@ -8,4 +8,5 @@ package de.polo.api.player;
 public interface PlayerCharacter {
     <T> void setVariable(String key, T value);
     <T> T getVariable(String key);
+    void addMoney(int amount, String reason);
 }
