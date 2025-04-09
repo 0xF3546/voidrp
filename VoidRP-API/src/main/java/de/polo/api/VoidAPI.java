@@ -60,4 +60,8 @@ public final class VoidAPI {
         }
         return server.getBean(clazz);
     }
+
+    public static <T> T getService(@NotNull Class<T> clazz) {
+        return (T) server.getService(clazz);
+    }
 }

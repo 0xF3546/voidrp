@@ -1,8 +1,9 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -15,16 +16,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.core.Main.adminService;
-
 public class ZDCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final FactionManager factionManager;
 
-    public ZDCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+    public ZDCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.factionManager = factionManager;
 
         Main.registerCommand("zd", this);
@@ -57,6 +54,7 @@ public class ZDCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Die ZD-Note muss zwischen 1-15 sein.");
                 return false;
             }
+            AdminService adminService = VoidAPI.getService(AdminService.class);
             PlayerData targetData = playerManager.getPlayerData(target);
             adminService.send_message(player.getName() + " hat " + target.getName() + " ZD-Note " + grade + " gegeben.", Color.PURPLE);
             factionManager.sendCustomLeaderMessageToFactions("§cHQ: " + player.getName() + " hat " + target.getName() + " ZD-Note " + grade + " gegeben.", "Medic");

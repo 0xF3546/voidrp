@@ -2,10 +2,13 @@ package de.polo.core.listeners;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.game.base.housing.House;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.*;
 import de.polo.core.game.base.extra.Storage;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
@@ -14,7 +17,6 @@ import de.polo.core.game.faction.gangwar.Gangwar;
 import de.polo.core.game.faction.gangwar.GangwarUtils;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.enums.Weapon;
 import de.polo.core.utils.gameplay.MilitaryDrop;
@@ -22,6 +24,7 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.*;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -51,15 +54,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.polo.core.Main.navigationService;
+import static de.polo.core.Main.*;
 
+@Event
 public class PlayerSwapHandItemsListener implements Listener {
-    private final PlayerManager playerManager;
-    private final Utils utils;
 
-    public PlayerSwapHandItemsListener(PlayerManager playerManager, Utils utils) {
-        this.playerManager = playerManager;
-        this.utils = utils;
+    public PlayerSwapHandItemsListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -83,7 +83,8 @@ public class PlayerSwapHandItemsListener implements Listener {
         if (!player.isSneaking() || player.getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
-        if (playerManager.isCarrying(player)) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        if (playerService.isCarrying(player)) {
             InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §7Tragen"));
             inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.PAPER, 1, 0, "§cFrei lassen")) {
                 @Override
@@ -363,7 +364,7 @@ public class PlayerSwapHandItemsListener implements Listener {
 
         List<Integer> slots = Arrays.asList(11, 13, 15);
         int index = 0;
-
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         for (Dealer dealer : dealers.stream().limit(3).collect(Collectors.toList())) {
             int slot = slots.get(index);
             inventoryManager.setItem(new CustomItem(slot, ItemManager.createItem(Material.VILLAGER_SPAWN_EGG, 1, 0, "§cDealer-" + dealer.getGangzone(), "§8 ➥ §e" + (int) player.getLocation().distance(dealer.getLocation()) + "m")) {

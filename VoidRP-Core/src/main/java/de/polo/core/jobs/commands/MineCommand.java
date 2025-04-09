@@ -2,12 +2,14 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.MiningJob;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
@@ -28,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 
 import static de.polo.core.Main.locationManager;
-import static de.polo.core.Main.playerService;
 
 @CommandBase.CommandMeta(
         name = "minenarbeiter",
@@ -60,6 +61,7 @@ public class MineCommand extends CommandBase implements MiningJob {
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (ServerManager.canDoJobs()) {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             if (!playerData.canInteract()) {
                 player.sendMessage(Prefix.error_cantinteract);
                 return;
@@ -121,6 +123,7 @@ public class MineCommand extends CommandBase implements MiningJob {
 
     @Override
     public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.MINER)) {
             player.setMiniJob(MiniJob.MINER);
             player.setActiveJob(this);
@@ -184,7 +187,7 @@ public class MineCommand extends CommandBase implements MiningJob {
             earnings += diamond;
             exp += (int)(diamond * 1.25);
         }
-
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (earnings > 0) {
             player.sendMessage(prefix + "Du hast insgesamt §a+" + earnings + "$§7 verdient.");
             player.getData().addBankMoney(earnings, "Auszahlung Minenarbeiter");
@@ -211,6 +214,7 @@ public class MineCommand extends CommandBase implements MiningJob {
     @Override
     public void handleBlockBreak(VoidPlayer player, BlockBreakEvent event) {
         Block block = event.getBlock();
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         for (Material material : blocks) {
             if (block.getType() == material) {
                 event.setCancelled(true);

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/VoidRP-API/VoidRP-API.iml" filepath="$PROJECT_DIR$/VoidRP-API/VoidRP-API.iml" />
       <module fileurl="file://$PROJECT_DIR$/VoidRP-Core/VoidRP-Core.iml" filepath="$PROJECT_DIR$/VoidRP-Core/VoidRP-Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/voidroleplay.iml" filepath="$PROJECT_DIR$/voidroleplay.iml" />
     </modules>
   </component>
 </project>

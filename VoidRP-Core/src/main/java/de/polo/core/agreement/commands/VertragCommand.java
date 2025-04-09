@@ -1,6 +1,7 @@
 package de.polo.core.agreement.commands;
 
 import de.polo.api.VoidAPI;
+import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.storage.Agreement;
@@ -10,8 +11,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import static de.polo.core.Main.agreementService;
 
 /**
  * @author Mayson1337
@@ -58,6 +57,7 @@ public class VertragCommand extends CommandBase {
             player.sendMessage(Component.text("§6" + target.getName() + " hat den Vertrag abgelehnt."));
             target.sendMessage(Component.text("§cDu hast den Vertrag abgelehnt."));
         });
+        AgreementService agreementService = VoidAPI.getService(AgreementService.class);
         agreementService.setAgreement(player, targetVoidPlayer, agreement);
         agreementService.sendInfoMessage(targetVoidPlayer);
     }

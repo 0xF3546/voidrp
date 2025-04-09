@@ -3,8 +3,8 @@ package de.polo.core.admin.commands;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -15,15 +15,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.core.Main.adminService;
-
 public class FlyCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public FlyCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public FlyCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         Main.registerCommand("fly", this);
     }
 
@@ -49,6 +45,7 @@ public class FlyCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht gefunden.");
             return false;
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         PlayerData targetData = playerManager.getPlayerData(target);
         if (target.getAllowFlight()) {
             target.setFlying(false);

@@ -1,7 +1,7 @@
 package de.polo.core.listeners;
 
 import de.polo.core.Main;
-import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.utils.Event;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -9,12 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
+@Event
 public class FishingListener implements Listener {
-    private final PlayerManager playerManager;
 
-    public FishingListener(PlayerManager playerManager) {
+    public FishingListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-        this.playerManager = playerManager;
     }
 
     @EventHandler

@@ -1,6 +1,7 @@
 package de.polo.core.listeners;
 
 import de.polo.core.Main;
+import de.polo.core.utils.Event;
 import lombok.SneakyThrows;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -12,6 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+@Event
 public class BlockPlaceListener implements Listener {
     public BlockPlaceListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());

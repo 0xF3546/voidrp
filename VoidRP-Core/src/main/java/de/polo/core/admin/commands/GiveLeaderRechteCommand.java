@@ -3,8 +3,8 @@ package de.polo.core.admin.commands;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -20,8 +20,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.core.Main.adminService;
-
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -30,12 +28,10 @@ import static de.polo.core.Main.adminService;
 public class GiveLeaderRechteCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final AdminManager adminManager;
 
-    public GiveLeaderRechteCommand(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
+    public GiveLeaderRechteCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.adminManager = adminManager;
 
         Main.registerCommand("giveleaderrechte", this);
     }
@@ -63,6 +59,7 @@ public class GiveLeaderRechteCommand implements CommandExecutor {
             return false;
         }
         factionManager.setLeader(offlinePlayer, true);
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte gegeben.", Color.PURPLE);
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
             offlinePlayer.getPlayer().sendMessage(Component.text("§6" + player.getName() + " hat dir Leaderrechte gegeben!"));

@@ -1,9 +1,10 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.faction.entity.Faction;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -20,16 +21,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static de.polo.core.Main.adminService;
-
 public class SetFrakCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final FactionManager factionManager;
 
-    public SetFrakCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+    public SetFrakCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.factionManager = factionManager;
         Main.registerCommand("setfrak", this);
         Main.addTabCompleter("setfrak", this);
@@ -45,6 +42,7 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
                 String frak = args[1];
                 int rang = Integer.parseInt(args[2]);
                 if (rang >= 0 && rang <= 8) {
+                    AdminService adminService = VoidAPI.getService(AdminService.class);
                     factionManager.setPlayerInFrak(targetplayer, frak, rang);
                     adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " (Rang " + rang + ") gesetzt.", Color.PURPLE);
                 } else {

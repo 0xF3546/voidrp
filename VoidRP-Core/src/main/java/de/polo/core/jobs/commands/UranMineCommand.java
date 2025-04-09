@@ -8,8 +8,10 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
@@ -66,7 +68,7 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
                 player.sendMessage(Prefix.ERROR + "Du bist weder in der Nähe der Uranmine noch des Atomkraftwerks.");
                 return;
             }
-
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §cUranmine"), true, true);
 
             // Start Job Option
@@ -132,6 +134,7 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
 
     @Override
     public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.URANIUM_MINER)) {
             player.setMiniJob(MiniJob.URANIUM_MINER);
             player.setActiveJob(this);
@@ -149,6 +152,7 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
         if (uranCount > 0 && locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") <= 5) {
             handleDrop(player);
         } else {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             player.sendMessage(prefix + "Du hast den Job beendet.");
             removeEquip(player);
             playerService.handleJobFinish(player, MiniJob.URANIUM_MINER, 3600, Utils.random(12, 20));
@@ -185,6 +189,7 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
         }
 
         ItemManager.removeCustomItem(player.getPlayer(), RoleplayItem.URAN, 1);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         int payout = ServerManager.getPayout("uran");
         player.getData().addMoney(payout, "Urantransport");
         playerService.addExp(player.getPlayer(), Utils.random(12, 20));
@@ -228,6 +233,8 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
 
         event.setCancelled(true);
         ItemManager.addCustomItem(player.getPlayer(), RoleplayItem.URAN, 1);
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         player.sendMessage(prefix + "Du hast ein Uran abgebaut. Bringe es nun zum Atomkraftwerk");
         navigationService.createNavi(player.getPlayer(), "Atomkraftwerk", true);
         event.getBlock().setType(Material.STONE);

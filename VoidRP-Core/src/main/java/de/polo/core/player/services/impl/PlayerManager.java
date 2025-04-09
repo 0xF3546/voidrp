@@ -5,6 +5,8 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
+import de.polo.core.crew.services.CrewService;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
@@ -160,6 +162,7 @@ public class PlayerManager implements Listener {
     public void loadPlayer(Player player) {
         UUID uuid = player.getUniqueId();
         Statement statement = Main.getInstance().coreDatabase.getStatement();
+        CrewService crewService = VoidAPI.getService(CrewService.class);
         assert statement != null;
         String query = "SELECT players.*, player_addonxp.* " +
                 "FROM players " +
@@ -1317,6 +1320,7 @@ public class PlayerManager implements Listener {
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
+                            AdminService adminService = VoidAPI.getService(AdminService.class);
                             adminService.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", Color.ORANGE);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);

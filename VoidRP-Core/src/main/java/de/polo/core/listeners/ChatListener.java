@@ -2,14 +2,12 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.core.game.events.SubmitChatEvent;
-import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.manager.SupportManager;
 import de.polo.core.storage.PhoneCall;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.Ticket;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,15 +18,12 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.List;
 
-public class ChatListener implements Listener {
-    private final PlayerManager playerManager;
-    private final SupportManager supportManager;
-    private final Utils utils;
+import static de.polo.core.Main.*;
 
-    public ChatListener(PlayerManager playerManager, SupportManager supportManager, Utils utils) {
-        this.playerManager = playerManager;
-        this.supportManager = supportManager;
-        this.utils = utils;
+@Event
+public class ChatListener implements Listener {
+
+    public ChatListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

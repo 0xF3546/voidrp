@@ -2,6 +2,7 @@ package de.polo.core.faction.commands;
 
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.manager.ItemManager;
@@ -27,7 +28,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.polo.core.Main.agreementService;
 import static de.polo.core.Main.utils;
 
 @CommandBase.CommandMeta(name = "giveprescription", faction = "Medic", usage = "/giverezept [Spieler] [Rezept]")
@@ -95,6 +95,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
                     target.sendMessage(Component.text("§cDu hast das Angebot abgelehnt."));
                     player.sendMessage(Component.text("§c" + target.getName() + " hat das Angebot abgelehnt."));
                 });
+        AgreementService agreementService = VoidAPI.getService(AgreementService.class);
         agreementService.setAgreement(player, targetVoidPlayer, agreement);
     }
 

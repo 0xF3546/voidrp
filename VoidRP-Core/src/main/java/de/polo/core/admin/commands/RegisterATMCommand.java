@@ -1,8 +1,9 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import lombok.SneakyThrows;
@@ -16,16 +17,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-import static de.polo.core.Main.adminService;
 import static de.polo.core.Main.database;
 
 public class RegisterATMCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public RegisterATMCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public RegisterATMCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         Main.registerCommand("registeratm", this);
     }
 
@@ -47,6 +45,7 @@ public class RegisterATMCommand implements CommandExecutor {
         database.insertAndGetKeyAsync("INSERT INTO atm (blockId, name) VALUES (?, ?)", blockId, atmName)
                 .thenApply(key -> {
                     if (key.isPresent()) {
+                        AdminService adminService = VoidAPI.getService(AdminService.class);
                         player.sendMessage(Prefix.GAMEDESIGN + "Du hast einen ATM registriert #" + key.get());
                         adminService.send_message(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", Color.ORANGE);
                     }

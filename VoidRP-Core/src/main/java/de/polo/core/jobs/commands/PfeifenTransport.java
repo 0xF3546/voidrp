@@ -6,6 +6,7 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.faction.service.impl.FactionManager;
@@ -35,8 +36,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
-import static de.polo.core.Main.navigationService;
 
 /**
  * @author Mayson1337
@@ -124,6 +123,7 @@ public class PfeifenTransport implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Pfeifentransport.");
             return;
         }
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         lastTransport = Utils.getTime();
         player.sendMessage(Prefix.MAIN + "Du startest den Transport, begib dich zum Navipunkt!");
         playerData.setVariable("transport::amount", amount);

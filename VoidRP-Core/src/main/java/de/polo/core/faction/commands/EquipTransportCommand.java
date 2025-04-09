@@ -7,6 +7,7 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -51,6 +52,7 @@ public class EquipTransportCommand implements CommandExecutor, TransportJob {
 
     @Override
     public void endJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         playerService.handleJobFinish(player, MiniJob.EQUIP_TRANSPORT, 0, 0);
     }
 

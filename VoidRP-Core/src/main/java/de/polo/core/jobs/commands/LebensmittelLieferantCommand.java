@@ -8,6 +8,7 @@ import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -20,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 
 import static de.polo.core.Main.locationManager;
-import static de.polo.core.Main.playerService;
 
 @CommandBase.CommandMeta(
         name = "lebensmittellieferant",
@@ -58,6 +58,7 @@ public class LebensmittelLieferantCommand extends CommandBase implements Transpo
     public void handleDrop(VoidPlayer player) {
         int shop = locationManager.isNearShop(player.getPlayer());
         if (shop > 0) {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             int drinks = (int) player.getVariable("drinks");
             int snacks = (int) player.getVariable("snacks");
             int payout = (snacks * 4) + (drinks * 3);
@@ -83,6 +84,7 @@ public class LebensmittelLieferantCommand extends CommandBase implements Transpo
 
     @Override
     public void endJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
         playerService.handleJobFinish(player, MiniJob.FOOD_SUPPLIER, 3600, 10);
         //playerData.getScoreboard("lebensmittellieferant").killScoreboard();

@@ -10,7 +10,9 @@ import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.game.events.MinuteTickEvent;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.utils.Prefix;
@@ -54,6 +56,8 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (locationService.getDistanceBetweenCoords(player, "sewercleaner") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der Nähe des Abwasserkanals.");
             return;
@@ -112,6 +116,7 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
 
     @Override
     public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.SEWER_CLEANER)) {
             player.setMiniJob(MiniJob.SEWER_CLEANER);
             player.setActiveJob(this);
@@ -131,6 +136,7 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
     public void endJob(VoidPlayer player) {
         int cleanedCount = (int)player.getVariable("job::cleaning::blocks");
         boolean completed = cleanedCount <= 0;
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
 
         player.sendMessage(PREFIX + "Du hast den Job beendet.");
         SoundManager.successSound(player.getPlayer());

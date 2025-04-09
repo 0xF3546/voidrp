@@ -3,7 +3,6 @@ package de.polo.core.utils;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.game.base.housing.HouseManager;
@@ -58,9 +57,9 @@ public class Utils {
     @Getter
     public Tutorial tutorial;
 
-    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, CompanyManager companyManager) {
-        deathUtil = new DeathUtils(playerManager, adminManager, locationManager);
-        vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
+    public Utils(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, CompanyManager companyManager) {
+        deathUtil = new DeathUtils(playerManager, locationManager);
+        vertragUtil = new VertragUtil(playerManager, factionManager);
         staatUtil = new StaatUtil(playerManager, factionManager, locationManager, this);
         tutorial = new Tutorial(playerManager);
         this.houseManager = houseManager;

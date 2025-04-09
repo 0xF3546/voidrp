@@ -9,6 +9,7 @@ import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
@@ -36,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 
 import static de.polo.core.Main.locationManager;
-import static de.polo.core.Main.playerService;
 
 @CommandBase.CommandMeta(
         name = "holzfäller",
@@ -86,6 +86,7 @@ public class LumberjackCommand extends CommandBase implements MiningJob {
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData asd, @NotNull String[] args) throws Exception {
         if (ServerManager.canDoJobs()) {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             if (locationManager.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Holzfäller"), true, true);
                 if (!playerService.isInJobCooldown(player, MiniJob.LUMBERJACK) && player.getActiveJob() == null) {
@@ -182,6 +183,7 @@ public class LumberjackCommand extends CommandBase implements MiningJob {
             player.sendMessage("§8[§7Holzfäller§8]§7 Du hast den Job beendet.");
             return;
         }
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         player.setVariable("lumberjack::hasStripped", null);
         int payout = ServerManager.getPayout("holz") * (int) player.getVariable("holzkg");
         player.sendMessage("§8[§7Holzfäller§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
@@ -200,6 +202,7 @@ public class LumberjackCommand extends CommandBase implements MiningJob {
 
     @Override
     public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.LUMBERJACK)) {
             player.setMiniJob(MiniJob.LUMBERJACK);
             player.setActiveJob(this);
@@ -246,6 +249,8 @@ public class LumberjackCommand extends CommandBase implements MiningJob {
             }
             removeTree(event.getBlock().getLocation());
             scheduleTreeRespawn(event.getBlock().getLocation());
+
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             playerService.addExp(player.getPlayer(), EXPType.SKILL_LUMBERJACK, Utils.random(12, 20));
             /*Main.waitSeconds(120, () -> {
                 block.setType(Material.OAK_LOG);

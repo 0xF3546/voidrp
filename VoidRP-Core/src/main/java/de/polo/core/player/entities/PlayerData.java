@@ -277,7 +277,7 @@ public class PlayerData implements PlayerCharacter {
     private List<PlayerWorkstation> workstations = new ObjectArrayList<>();
 
     @Getter
-    private List<License> licenses = new ObjectArrayList<>();
+    private final List<License> licenses = new ObjectArrayList<>();
 
     @Getter
     @Setter

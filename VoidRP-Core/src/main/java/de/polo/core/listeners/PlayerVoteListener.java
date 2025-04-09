@@ -2,34 +2,31 @@ package de.polo.core.listeners;
 
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
-import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
+import de.polo.core.utils.Event;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.UUID;
 
 import static de.polo.core.Main.*;
 
+@Event
 public class PlayerVoteListener implements Listener {
-    private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final HashMap<UUID, Integer> votes = new HashMap<>();
 
-    public PlayerVoteListener(PlayerManager playerManager, AdminManager adminManager) {
-        this.playerManager = playerManager;
-        this.adminManager = adminManager;
+    public PlayerVoteListener() {
         Main.registerListener(this);
     }
 
@@ -39,6 +36,8 @@ public class PlayerVoteListener implements Listener {
         Vote vote = event.getVote();
         Player player = Bukkit.getPlayer(vote.getUsername());
         assert player != null;
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         adminService.send_message(vote.getUsername() + " hat über " + vote.getServiceName() + " gevotet.", Color.GRAY);
         if (player.isOnline()) {
             PlayerData playerData = playerService.getPlayerData(player);

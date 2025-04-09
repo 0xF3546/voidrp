@@ -3,8 +3,8 @@ package de.polo.core.admin.commands;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -16,17 +16,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static de.polo.core.Main.adminService;
-
 public class RespawnCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final Utils utils;
     private final LocationManager locationManager;
 
-    public RespawnCommand(PlayerManager playerManager, AdminManager adminManager, Utils utils, LocationManager locationManager) {
+    public RespawnCommand(PlayerManager playerManager, Utils utils, LocationManager locationManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.utils = utils;
         this.locationManager = locationManager;
         Main.registerCommand("respawn", this);
@@ -61,6 +57,7 @@ public class RespawnCommand implements CommandExecutor {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         targetplayer.sendMessage(Prefix.MAIN + "§a" + player.getName() + " hat dich Respawnt!");
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.", null);
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         if (targetplayerData.getFaction() != null) {

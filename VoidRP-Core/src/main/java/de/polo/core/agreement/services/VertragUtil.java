@@ -1,13 +1,14 @@
 package de.polo.core.agreement.services;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.storage.Agreement;
 import de.polo.core.storage.Company;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.SubGroup;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.game.base.housing.HouseManager;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.PhoneUtils;
@@ -33,22 +34,17 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static de.polo.core.Main.adminService;
-
 public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
     public static final HashMap<String, Object> current = new HashMap<>();
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final AdminManager adminManager;
-
     private final List<Agreement> agreements = new ObjectArrayList<>();
 
-    public VertragUtil(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
+    public VertragUtil(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.adminManager = adminManager;
     }
 
     public static boolean setVertrag(Player player, Player target, String type, Object vertrag) {
@@ -87,6 +83,7 @@ public class VertragUtil {
 
     public void acceptVertrag(Player player) throws SQLException {
         Agreement agreement = getActiveAgreement(player);
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         if (agreement != null) {
             agreement.accept();
             agreements.remove(agreement);

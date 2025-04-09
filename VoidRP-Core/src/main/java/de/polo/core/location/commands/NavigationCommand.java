@@ -1,9 +1,11 @@
 package de.polo.core.location.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.NaviData;
@@ -18,8 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-
-import static de.polo.core.Main.navigationService;
 
 /**
  * @author Mayson1337
@@ -38,6 +38,7 @@ public class NavigationCommand extends CommandBase implements TabCompleter {
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         if (player.getVariable("navi") == null) {
             if (args.length >= 1) {
                 if (args[0].contains("haus:")) {

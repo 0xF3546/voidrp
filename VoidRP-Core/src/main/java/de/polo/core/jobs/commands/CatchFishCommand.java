@@ -1,9 +1,11 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.player.VoidPlayer;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -16,9 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-
-import static de.polo.core.Main.navigationService;
-
 @CommandBase.CommandMeta(name = "catchfish")
 public class CatchFishCommand extends CommandBase implements Listener {
     private final HashMap<VoidPlayer, LocalDateTime> caughts = new HashMap<>();
@@ -92,6 +91,7 @@ public class CatchFishCommand extends CommandBase implements Listener {
             player.sendMessage(PREFIX + "Du bist fertig. Gehe nun zurück zum Hochseefischer.");
             return;
         }
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         navigationService.createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 

@@ -9,13 +9,13 @@ import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.game.events.BreakPersistentBlockEvent;
 import de.polo.core.game.events.MinuteTickEvent;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.Farmer;
 import de.polo.core.utils.enums.PickaxeType;
 import de.polo.core.utils.enums.RoleplayItem;
+import de.polo.core.utils.Event;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -34,15 +34,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static de.polo.core.Main.playerManager;
+
+@Event
 public class BlockBreakListener implements Listener {
-    private final PlayerManager playerManager;
-    private final Main.Commands commands;
 
     private final HashMap<LocalDateTime, Block> brokenBlocks = new HashMap<>();
 
-    public BlockBreakListener(PlayerManager playerManager, Main.Commands commands) {
-        this.playerManager = playerManager;
-        this.commands = commands;
+    public BlockBreakListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

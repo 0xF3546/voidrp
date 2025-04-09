@@ -1,9 +1,10 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.Ticket;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.SupportManager;
 import de.polo.core.utils.Prefix;
@@ -18,18 +19,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static de.polo.core.Main.adminService;
 import static de.polo.core.Main.database;
 
 public class AcceptTicketCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final SupportManager supportManager;
     private final Utils utils;
 
-    public AcceptTicketCommand(PlayerManager playerManager, AdminManager adminManager, SupportManager supportManager, Utils utils) {
+    public AcceptTicketCommand(PlayerManager playerManager, SupportManager supportManager, Utils utils) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.supportManager = supportManager;
         this.utils = utils;
         Main.registerCommand("acceptsupport", this);
@@ -61,6 +59,7 @@ public class AcceptTicketCommand implements CommandExecutor {
             player.sendMessage(Prefix.SUPPORT + "§c" + targetplayer.getName() + "§7 hat kein Ticket erstellt.");
             return false;
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         supportManager.createTicketConnection(targetplayer, player);
         targetplayer.sendMessage(Prefix.SUPPORT + "§c" + playerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
         player.sendMessage(Prefix.SUPPORT + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");

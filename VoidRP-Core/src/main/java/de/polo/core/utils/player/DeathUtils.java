@@ -1,10 +1,12 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.storage.Corpse;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -41,12 +43,10 @@ public class DeathUtils {
     private final List<Corpse> corpses = new ObjectArrayList<>();
 
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final LocationManager locationManager;
 
-    public DeathUtils(PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager) {
+    public DeathUtils(PlayerManager playerManager, LocationManager locationManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.locationManager = locationManager;
     }
 
@@ -107,6 +107,7 @@ public class DeathUtils {
         if (playerData.getVariable("inventory::base") != null) {
             player.getInventory().setContents(playerData.getVariable("inventory::base"));
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         playerData.setCanInteract(false);
         playerData.setDead(false);
         playerData.setCuffed(false);
@@ -282,6 +283,7 @@ public class DeathUtils {
             player.sendMessage(Prefix.ERROR + "Diese Leiche gehört nicht zu deinem Job!");
             return;
         }
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         corpse.getSkull().remove();
         playerData.setVariable("job::corpse::pickedup", true);
         navigationService.createNaviByLocation(player, "undertaker");

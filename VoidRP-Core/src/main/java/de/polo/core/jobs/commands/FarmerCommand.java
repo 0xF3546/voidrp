@@ -2,13 +2,16 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.MiningJob;
 import de.polo.api.jobs.TransportJob;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
@@ -27,7 +30,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import static de.polo.core.Main.locationManager;
-import static de.polo.core.Main.playerService;
 
 @CommandBase.CommandMeta(
         name = "farmer",
@@ -55,6 +57,7 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (ServerManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "farmer") <= 5) {
+                PlayerService playerService = VoidAPI.getService(PlayerService.class);
                 InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §eFarmer"), true, true);
 
                 // Start Job Option
@@ -134,6 +137,7 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
             return;
         }
 
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         int payout = ServerManager.getPayout("heuballen") * (int)player.getVariable("heuballen");
         player.sendMessage("§8[§eFarmer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player.getPlayer());
@@ -149,6 +153,7 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
 
     @Override
     public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.FARMER)) {
             player.setMiniJob(MiniJob.FARMER);
             player.setActiveJob(this);
@@ -165,13 +170,15 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
     }
 
     public void startTransport(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.FARMER)) {
             player.setMiniJob(MiniJob.WHEAT_TRANSPORT);
             player.setActiveJob(this);
             player.setVariable("weizen", Utils.random(2, 5));
             player.sendMessage("§8[§eLieferant§8]§7 Bringe das Weizen zur Mühle.");
             player.sendMessage("§8 ➥ §7Nutze §8/§edrop§7 um das Weizen abzugeben.");
-            Main.navigationService.createNavi(player.getPlayer(), "Mühle", true);
+            NavigationService navigationService = VoidAPI.getService(NavigationService.class);
+            navigationService.createNavi(player.getPlayer(), "Mühle", true);
         }
     }
 
@@ -199,6 +206,7 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
     @Override
     public void handleDrop(VoidPlayer player) {
         if (locationManager.getDistanceBetweenCoords(player, "Mühle") < 5) {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             int payout = Utils.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));
             player.sendMessage("§8[§eLieferant§8]§7 Danke für's abliefern. §a+" + payout + "$");
             SoundManager.successSound(player.getPlayer());

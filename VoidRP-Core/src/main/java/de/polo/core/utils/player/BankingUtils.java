@@ -2,7 +2,9 @@ package de.polo.core.utils.player;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.commands.GeldlieferantCommand;
 import de.polo.core.storage.ATM;
 import de.polo.core.faction.entity.Faction;
@@ -36,8 +38,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import static de.polo.core.Main.adminService;
 
 public class BankingUtils implements Listener {
     private final PlayerManager playerManager;
@@ -392,6 +392,7 @@ public class BankingUtils implements Listener {
                         playerManager.addBankMoney(target, amount, "Überweisung von " + player.getName());
                         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ an " + target.getName() + " überwiesen.");
                         target.sendMessage("§8[§6Bank§8]§a " + player.getName() + " hat dir " + amount + "$ überwiesen.");
+                        AdminService adminService = VoidAPI.getService(AdminService.class);
                         adminService.send_message("§6" + player.getName() + " hat " + target.getName() + " " + amount + "$ überwiesen.", Color.ORANGE);
                     }
                 });

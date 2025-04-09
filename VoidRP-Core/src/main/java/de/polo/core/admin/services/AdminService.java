@@ -23,10 +23,6 @@ public interface AdminService {
     /**
      * Inserts a note into the database
      */
-    void insertNote(String punisher, String target, String note) throws Exception;
+    void insertNote(String punisher, String target, String note);
 
-    /**
-     * Starts the memory usage updater for a player
-     */
-    void startMemoryUsageUpdater(Player player);
 }

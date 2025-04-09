@@ -4,6 +4,7 @@ import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,8 +17,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Objects;
-
-import static de.polo.core.Main.playerService;
 
 public abstract class CommandBase implements CommandExecutor {
 
@@ -60,6 +59,8 @@ public abstract class CommandBase implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
             return true;
         }
+
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         PlayerData playerData = playerService.getPlayerData(player.getUuid());
         if (!Objects.equals(meta.faction(), "")) {
 

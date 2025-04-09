@@ -1,6 +1,8 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.NaviReachEvent;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -10,8 +12,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import static de.polo.core.Main.navigationService;
 
 public class Tutorial implements Listener {
     private final PlayerManager playerManager;
@@ -31,6 +31,7 @@ public class Tutorial implements Listener {
         PlayerTutorial playerTutorial = PlayerTutorial.getPlayerTutorial(playerData);
         if (playerTutorial == null) return;
         playerTutorial.setStage(1);
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         Utils.waitSeconds(4, () -> {
             player.sendMessage("§8[§9Tutorial§8]§7 Als erstes musst du dir einen Personalausweis erstellen. Gehe dazu in die Stadthalle, folge dazu einfach der Route!");
             navigationService.createNaviByCord(player, 133, 72, 157);
@@ -60,6 +61,7 @@ public class Tutorial implements Listener {
         }
         playerTutorial.setStage(3);
         player.sendMessage("§8[§9Tutorial§8]§7 Ich denke es ist alles verständlich, außer die §eVisumstufe§7?");
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         Utils.waitSeconds(4, () -> {
             player.sendMessage("§8[§9Tutorial§8]§7 Dein §eVisum§7 gibt an wie lang du schon auf Void Roleplay bist.");
             Utils.waitSeconds(4, () -> {

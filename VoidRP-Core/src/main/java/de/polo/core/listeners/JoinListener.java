@@ -2,18 +2,15 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.CoreVoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.base.vehicle.Vehicles;
-import de.polo.core.admin.services.impl.AdminManager;
-import de.polo.core.location.services.impl.LocationManager;
-import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Utils;
+import de.polo.core.utils.Event;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -23,21 +20,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.UUID;
 
-import static de.polo.core.Main.adminService;
-
+import static de.polo.core.Main.*;
+@Event
 public class JoinListener implements Listener {
-    private final PlayerManager playerManager;
-    private final AdminManager adminManager;
-    private final Utils utils;
-    private final LocationManager locationManager;
-    private final ServerManager serverManager;
 
-    public JoinListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, LocationManager locationManager, ServerManager serverManager) {
-        this.playerManager = playerManager;
-        this.adminManager = adminManager;
-        this.utils = utils;
-        this.locationManager = locationManager;
-        this.serverManager = serverManager;
+    public JoinListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -47,6 +34,7 @@ public class JoinListener implements Listener {
         UUID uuid = player.getUniqueId();
         event.joinMessage(Component.text(""));
         player.setGameMode(GameMode.SURVIVAL);
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
             PlayerData playerData = playerManager.getPlayerData(uuid);

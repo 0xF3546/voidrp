@@ -2,6 +2,7 @@ package de.polo.core;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import com.github.retrooper.packetevents.protocol.world.states.enums.South;
 import de.polo.api.Server;
 import de.polo.api.Utils.inventorymanager.InventoryApiRegister;
 import de.polo.api.VoidAPI;
@@ -10,15 +11,10 @@ import de.polo.core.admin.commands.*;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.admin.services.InvSeeCommand;
 import de.polo.core.admin.services.SupportService;
-import de.polo.core.admin.services.impl.AdminManager;
-import de.polo.core.admin.services.impl.CoreAdminService;
-import de.polo.core.admin.services.impl.CoreSupportService;
 import de.polo.core.agreement.commands.AblehnenVertrag;
 import de.polo.core.agreement.commands.AnnehmenCommand;
-import de.polo.core.agreement.commands.VertragCommand;
 import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.agreement.services.VertragUtil;
-import de.polo.core.agreement.services.impl.CoreAgreementService;
 import de.polo.core.base.commands.*;
 import de.polo.core.commands.*;
 import de.polo.core.commands.BizInviteCommand;
@@ -26,18 +22,10 @@ import de.polo.core.commands.BusinessChatCommand;
 import de.polo.core.commands.BusinessCommand;
 import de.polo.core.commands.GeworbenCommand;
 import de.polo.core.commands.JailtimeCommand;
-import de.polo.core.crew.commands.CrewChatCommand;
-import de.polo.core.crew.commands.CrewCommand;
-import de.polo.core.crew.services.CrewService;
-import de.polo.core.crew.services.impl.CoreCrewService;
 import de.polo.core.database.Database;
 import de.polo.core.database.impl.CoreDatabase;
-import de.polo.core.events.christmas.commands.AdventskalenderCommand;
-import de.polo.core.events.collect.commands.WarpEventCommand;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.faction.commands.*;
-import de.polo.core.faction.service.FactionService;
-import de.polo.core.faction.service.impl.CoreFactionService;
 import de.polo.core.game.base.CustomTabAPI;
 import de.polo.core.game.base.extra.beginnerpass.Beginnerpass;
 import de.polo.core.game.base.extra.seasonpass.Seasonpass;
@@ -48,34 +36,20 @@ import de.polo.core.game.faction.streetwar.Streetwar;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.housing.commands.AusziehenCommand;
 import de.polo.core.housing.commands.RentCommand;
-import de.polo.core.housing.commands.SellHouseCommand;
-import de.polo.core.housing.services.HouseService;
-import de.polo.core.housing.services.impl.CoreHouseService;
 import de.polo.core.jobs.commands.*;
 import de.polo.core.listeners.*;
-import de.polo.core.location.commands.NavigationCommand;
-import de.polo.core.location.services.LocationService;
-import de.polo.core.location.services.NavigationService;
-import de.polo.core.location.services.impl.CoreLocationService;
-import de.polo.core.location.services.impl.CoreNavigationService;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.manager.*;
-import de.polo.core.news.services.NewsService;
-import de.polo.core.news.services.impl.CoreNewsService;
 import de.polo.core.news.services.impl.NewsManager;
 import de.polo.core.phone.commands.AuflegenCommand;
 import de.polo.core.phone.commands.CallCommand;
 import de.polo.core.player.commands.*;
-import de.polo.core.player.services.PlayerService;
-import de.polo.core.player.services.impl.CorePlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.*;
 import de.polo.core.utils.gameplay.GamePlay;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.player.ScoreboardAPI;
 import de.polo.core.utils.player.ScoreboardManager;
-import de.polo.core.zone.ZoneEvents;
-import de.polo.core.zone.services.ZoneService;
-import de.polo.core.zone.services.impl.CoreZoneService;
 import dev.vansen.singleline.SingleLineOptions;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
@@ -91,14 +65,19 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class Main extends JavaPlugin implements Server {
     private final Map<Class<? extends CommandBase>, CommandBase> commandInstances = new HashMap<>();
+    private final Map<Class<?>, Object> eventInstances = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Object> services = new ConcurrentHashMap<>();
 
     private ConfigurableApplicationContext springContext;
 
@@ -109,17 +88,6 @@ public final class Main extends JavaPlugin implements Server {
     public CoreDatabase coreDatabase;
 
     public static Database database;
-    public static PlayerService playerService;
-    public static AdminService adminService;
-    public static SupportService supportService;
-    public static FactionService factionService;
-    public static HouseService houseService;
-    public static NewsService newsService;
-    public static AgreementService agreementService;
-    public static LocationService locationService;
-    public static NavigationService navigationService;
-    public static ZoneService zoneService;
-    public static CrewService crewService;
 
     @Getter
     public CooldownManager cooldownManager;
@@ -128,7 +96,6 @@ public final class Main extends JavaPlugin implements Server {
     public static PlayerManager playerManager;
     @Getter
     public static Utils utils;
-    public static AdminManager adminManager;
     public Commands commands;
     public static FactionManager factionManager;
     public static ServerManager serverManager;
@@ -140,7 +107,7 @@ public final class Main extends JavaPlugin implements Server {
     public static HouseManager houseManager;
     public static BusinessManager businessManager;
     public static Vehicles vehicles;
-    public Streetwar streetwar;
+    public static Streetwar streetwar;
     @Getter
     public static WeaponManager weaponManager;
     public static BlockManager blockManager;
@@ -150,7 +117,7 @@ public final class Main extends JavaPlugin implements Server {
     public static Beginnerpass beginnerpass;
 
     @Getter
-    private ScoreboardAPI scoreboardAPI;
+    public static ScoreboardAPI scoreboardAPI;
 
     private ScoreboardManager scoreboardManager;
     public static INameTagProvider nameTagProvider;
@@ -206,13 +173,12 @@ public final class Main extends JavaPlugin implements Server {
         playerManager = new PlayerManager(coreDatabase);
         cooldownManager = new CooldownManager();
         locationManager = new LocationManager(coreDatabase);
-        adminManager = new AdminManager(playerManager, scoreboardAPI);
         factionManager = new FactionManager(playerManager);
         blockManager = new BlockManager(coreDatabase);
         houseManager = new HouseManager(playerManager, blockManager, locationManager);
-        utils = new Utils(playerManager, adminManager, factionManager, locationManager, houseManager, companyManager);
+        utils = new Utils(playerManager, factionManager, locationManager, houseManager, companyManager);
         vehicles = new Vehicles(playerManager, locationManager);
-        vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
+        vertragUtil = new VertragUtil(playerManager, factionManager);
         serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
         computerUtils = new ComputerUtils(playerManager, factionManager);
         businessManager = new BusinessManager(playerManager);
@@ -221,21 +187,11 @@ public final class Main extends JavaPlugin implements Server {
         newsManager = new NewsManager();
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
         gamePlay = new GamePlay(playerManager, utils, coreDatabase, factionManager, locationManager);
-        commands = new Commands(this, playerManager, adminManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
+        commands = new Commands(this, playerManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
 
-        factionService = new CoreFactionService();
-        playerService = new CorePlayerService();
-        houseService = new CoreHouseService();
-        newsService = new CoreNewsService();
-        supportService = new CoreSupportService();
-        adminService = new CoreAdminService();
-        agreementService = new CoreAgreementService();
-        locationService = new CoreLocationService();
-        navigationService = new CoreNavigationService();
-        zoneService = new CoreZoneService();
-        crewService = new CoreCrewService();
+        initServices("de.polo.core");
 
         InventoryApiRegister.register(this);
         GlobalStats.load();
@@ -247,6 +203,7 @@ public final class Main extends JavaPlugin implements Server {
             player.kick(Component.text("§cDer Server wurde reloaded."));
         }
         registerAnnotatedCommands();
+        registerAnnotatedEvents();
         getLogger().info("§VOIDROLEPLAY ROLEPLAY STARTED.");
         try {
             Statement statement = coreDatabase.getStatement();
@@ -266,54 +223,6 @@ public final class Main extends JavaPlugin implements Server {
         new Thread(() -> {
             springContext = SpringApplication.run(VoidSpringApplication.class);
         }).start();
-    }
-
-    private void registerListener(Commands commands) {
-
-        new JoinListener(playerManager, adminManager, utils, locationManager, serverManager);
-        new QuitListener(playerManager, adminManager, utils, commands, serverManager, supportManager, scoreboardAPI);
-        new DamageListener(playerManager);
-        new ChatListener(playerManager, supportManager, utils);
-        new BlockBreakListener(playerManager, commands);
-        new BlockPlaceListener();
-        new CommandListener(playerManager, utils);
-        new DeathListener(playerManager, adminManager, factionManager, utils, streetwar);
-        new ServerPingListener(factionManager);
-        new InventoryClickListener(playerManager, factionManager, utils, locationManager);
-        new HouseLockListener(playerManager, utils);
-        new InventoryCloseListener(playerManager);
-        new ItemDropListener(weaponManager, playerManager);
-        new PlayerPickUpArrowListener();
-        new PlayerVoteListener(playerManager, adminManager);
-        new RespawnListener(playerManager);
-        new PlayerMoveListener(playerManager, utils);
-        new PlayerLoginListener();
-        new PlayerInteractListener(playerManager, utils, commands, blockManager, factionManager);
-        new PlayerInteractWithPlayerListener(playerManager);
-        new ExpPickupListener();
-        new ItemPickUpListener();
-        new FishingListener(playerManager);
-        new ProjectileHitListener();
-        new WorldListener();
-        new InventoryOpenListener();
-        new HungerListener(playerManager);
-        new AntiCheat();
-        new PlayerSwapHandItemsListener(playerManager, utils);
-        new ArmorStandExitListener();
-        new PlayerSpawnpointListener();
-        new GameModeChangeEvent();
-        new EntitySpawnListener();
-        new EntityDamageByEntityListener(playerManager);
-        new ExplosionListener();
-        new ConsumeListener(playerManager);
-        new EntityToggleGlideListener();
-        new JumpListener(playerManager);
-        new ZoneEvents();
-
-    }
-
-    private void registerCommands() {
-        getCommand("aduty").setExecutor(adminManager);
     }
 
     @Override
@@ -337,71 +246,46 @@ public final class Main extends JavaPlugin implements Server {
     }
 
     private void registerAnnotatedCommands() {
-        Set<Class<? extends CommandBase>> commands = Set.of(
-                InvCommand.class,
-                HochseefischerCommand.class,
-                CatchFishCommand.class,
-                AdventskalenderCommand.class,
-                EquiplogCommand.class,
-                TreuebonusCommand.class,
-                SellDrugCommand.class,
-                GivePrescriptionCommand.class,
-                UnarrestCommand.class,
-                NeulingschatCommand.class,
-                SignBookCommand.class,
-                PremiumCommand.class,
-                UranMineCommand.class,
-                SellBookCommand.class,
-                BibliothekCommand.class,
-                MegaphoneCommand.class,
-                CheckResultCommand.class,
-                WarpEventCommand.class,
-                BottletransportCommand.class,
-                ModifyWantedsCommand.class,
-                GeldlieferantCommand.class,
-                HealthInsuranceCommand.class,
-                LicensesCommand.class,
-                GiveLicenseCommand.class,
-                FahrschuleCommand.class,
-                TakeLicenseCommand.class,
-                AnwaltCommand.class,
-                MaklerCommand.class,
-                SellHouseCommand.class,
-                VertragCommand.class,
-                SewerCleanerCommand.class,
-                NavigationCommand.class,
-                JobSkillsCommand.class,
-                LebensmittelLieferantCommand.class,
-                LumberjackCommand.class,
-                FarmerCommand.class,
-                MineCommand.class,
-                MuellmannCommand.class,
-                PostboteCommand.class,
-                CrewCommand.class,
-                CrewChatCommand.class
-        );
+        Set<Class<?>> allClasses = ClassScanner.findClassesWithAnnotation("de.polo.core", CommandBase.CommandMeta.class);
 
-        for (Class<? extends CommandBase> commandClass : commands) {
-            CommandBase.CommandMeta meta = commandClass.getAnnotation(CommandBase.CommandMeta.class);
+        // Nur die CommandBase-Klassen extrahieren
+        Set<Class<? extends CommandBase>> commandClasses = new HashSet<>();
+        for (Class<?> clazz : allClasses) {
+            if (CommandBase.class.isAssignableFrom(clazz)) {
+                // Typumwandlung in CommandBase
+                commandClasses.add((Class<? extends CommandBase>) clazz);
+            }
+        }
 
+        for (Class<? extends CommandBase> clazz : commandClasses) {
+            CommandBase.CommandMeta meta = clazz.getAnnotation(CommandBase.CommandMeta.class);
             if (meta == null) {
-                getLogger().warning("Command " + commandClass.getName() + " hat keine @CommandMeta Annotation.");
+                getLogger().warning("Command " + clazz.getName() + " hat keine @CommandMeta Annotation.");
                 continue;
             }
 
             try {
-                CommandBase command = commandClass.getDeclaredConstructor(CommandBase.CommandMeta.class)
-                        .newInstance(meta);
+                CommandBase command = clazz.getDeclaredConstructor(CommandBase.CommandMeta.class).newInstance(meta);
+                commandInstances.put(clazz, command);
 
-                commandInstances.put(commandClass, command); // Instanz speichern
+                // Befehl registrieren
+                getLogger().info("Command registriert: /" + meta.name());
 
-                getLogger().info("Befehl registriert: /" + meta.name());
+                if (TabCompleter.class.isAssignableFrom(clazz)) {
+                    TabCompleter tabCompleter = (TabCompleter) command;
+                    addTabCompleter(meta.name(), tabCompleter);
+                    getLogger().info("TabCompleter für Command " + meta.name() + " registriert.");
+                }
+
             } catch (Exception e) {
-                getLogger().severe("Fehler beim Registrieren des Befehls " + commandClass.getName() + ": " + e.getMessage());
+                getLogger().severe("Fehler beim Registrieren des Commands " + clazz.getName() + ": " + e.getMessage());
                 e.printStackTrace();
             }
         }
     }
+
+
+
 
     public <T extends CommandBase> T getCommandInstance(Class<T> commandClass) {
         return commandClass.cast(commandInstances.get(commandClass));
@@ -411,7 +295,6 @@ public final class Main extends JavaPlugin implements Server {
     public class Commands {
         private final Main voidAPI;
         private final PlayerManager playerManager;
-        private final AdminManager adminManager;
         private final LocationManager locationManager;
         private final SupportManager supportManager;
         private final Vehicles vehicles;
@@ -419,8 +302,6 @@ public final class Main extends JavaPlugin implements Server {
         private final BusinessManager businessManager;
         private final WeaponManager weaponManager;
         private final CompanyManager companyManager;
-        public SetTeamCommand setTeamCommand;
-        public GeldbeutelCommand geldbeutelCommand;
         public PersonalausweisCommand personalausweisCommand;
         public TeamChatCommand teamChatCommand;
         public LeadFrakCommand leadFrakCommand;
@@ -610,10 +491,9 @@ public final class Main extends JavaPlugin implements Server {
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
 
-        public Commands(Main voidAPI, PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
+        public Commands(Main voidAPI, PlayerManager playerManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
             this.voidAPI = voidAPI;
             this.playerManager = playerManager;
-            this.adminManager = adminManager;
             this.locationManager = locationManager;
             this.supportManager = supportManager;
             this.vehicles = vehicles;
@@ -635,21 +515,18 @@ public final class Main extends JavaPlugin implements Server {
             registerFactionBanner = new RegisterFactionBanner(playerManager, factionManager);
             bombeCommand = new BombeCommand(playerManager, utils, factionManager);
             sprengguertelCommand = new SprengguertelCommand(playerManager, utils);
-            setTeamCommand = new SetTeamCommand(playerManager, adminManager);
-            geldbeutelCommand = new GeldbeutelCommand(playerManager);
             personalausweisCommand = new PersonalausweisCommand(playerManager, utils);
             teamChatCommand = new TeamChatCommand(playerManager, utils);
-            leadFrakCommand = new LeadFrakCommand(playerManager, adminManager, factionManager);
             fraktionsChatCommand = new FraktionsChatCommand(playerManager, factionManager, utils);
-            uninviteCommand = new UninviteCommand(playerManager, adminManager, factionManager);
+            uninviteCommand = new UninviteCommand(playerManager, factionManager);
             locationCommand = new LocationCommand(locationManager);
-            setFrakCommand = new SetFrakCommand(playerManager, adminManager, factionManager);
-            adminUnInviteCommand = new AdminUnInviteCommand(playerManager, adminManager, factionManager, utils);
+            setFrakCommand = new SetFrakCommand(playerManager, factionManager);
+            adminUnInviteCommand = new AdminUnInviteCommand(playerManager, factionManager, utils);
             assistentchatCommand = new AssistentchatCommand(playerManager, utils);
             supportCommand = new SupportCommand(playerManager, supportManager);
             cancelSupportCommand = new CancelSupportCommand(supportManager);
-            acceptTicketCommand = new AcceptTicketCommand(playerManager, adminManager, supportManager, utils);
-            closeTicketCommand = new CloseTicketCommand(playerManager, supportManager, adminManager, utils);
+            acceptTicketCommand = new AcceptTicketCommand(playerManager, supportManager, utils);
+            closeTicketCommand = new CloseTicketCommand(playerManager, supportManager, utils);
             tpToCommand = new TPToCommand(playerManager, locationManager);
             adminReviveCommand = new AdminReviveCommand(playerManager, utils);
             playerInfoCommand = new PlayerInfoCommand(playerManager, factionManager);
@@ -664,23 +541,23 @@ public final class Main extends JavaPlugin implements Server {
             inviteCommand = new InviteCommand(playerManager, factionManager, utils, businessManager);
             rentCommand = new RentCommand(playerManager, locationManager, utils);
             arrestCommand = new ArrestCommand(playerManager, factionManager, utils);
-            tpCommand = new TPCommand(playerManager, adminManager);
-            tpHereCommand = new TPHereCommand(playerManager, adminManager);
+            tpCommand = new TPCommand(playerManager);
+            tpHereCommand = new TPHereCommand(playerManager);
             speedCommand = new SpeedCommand(playerManager);
             kickCommand = new KickCommand(playerManager);
             oocCommand = new OOCCommand();
             pluginCommand = new PluginCommand(playerManager);
             voteCommand = new VoteCommand();
-            setRankNameCommand = new SetRankNameCommand(playerManager, adminManager, factionManager);
-            setRankPayDayCommand = new SetRankPayDayCommand(playerManager, adminManager, factionManager);
+            setRankNameCommand = new SetRankNameCommand(playerManager, factionManager);
+            setRankPayDayCommand = new SetRankPayDayCommand(playerManager, factionManager);
             cpCommand = new CPCommand();
             smsCommand = new SMSCommand(playerManager, utils);
             callCommand = new CallCommand(playerManager, utils);
             auflegenCommand = new AuflegenCommand(utils);
             jailtimeCommand = new JailtimeCommand(playerManager);
             dropCommand = new DropCommand(playerManager, factionManager);
-            banCommand = new BanCommand(playerManager, adminManager);
-            unbanCommand = new UnbanCommand(playerManager, adminManager);
+            banCommand = new BanCommand(playerManager);
+            unbanCommand = new UnbanCommand(playerManager);
             getVehCommand = new GetVehCommand(playerManager);
             goToVehCommand = new GoToVehCommand(playerManager);
             einreiseCommand = new EinreiseCommand(playerManager, locationManager);
@@ -720,14 +597,14 @@ public final class Main extends JavaPlugin implements Server {
             trennenCommand = new TrennenCommand(playerManager);
             antragCommand = new AntragCommand(playerManager, utils);
             aktenCommand = new WantedCommand(playerManager, utils);
-            specCommand = new SpecCommand(playerManager, adminManager);
+            specCommand = new SpecCommand(playerManager);
             msgCommand = new MsgCommand(playerManager);
             leaderChatCommand = new LeaderChatCommand(playerManager, utils);
             frakStatsCommand = new FrakStatsCommand(playerManager, factionManager, utils);
             checkInvCommand = new CheckInvCommand(playerManager);
             bizInviteCommand = new BizInviteCommand(playerManager, utils, businessManager);
             shopRobCommand = new ShopRobCommand(playerManager, locationManager, factionManager);
-            respawnCommand = new RespawnCommand(playerManager, adminManager, utils, locationManager);
+            respawnCommand = new RespawnCommand(playerManager, utils, locationManager);
             //dealerCommand = new DealerCommand(playerManager, gamePlay, locationManager, factionManager);
             farming = new Farming(playerManager, locationManager, utils);
             getHeadCommand = new GetHeadCommand();
@@ -741,7 +618,7 @@ public final class Main extends JavaPlugin implements Server {
             gmCommand = new GMCommand(playerManager);
             noteCommand = new NoteCommand(playerManager, utils);
             registerblockCommand = new RegisterblockCommand(playerManager, blockManager);
-            registerATMCommand = new RegisterATMCommand(playerManager, adminManager);
+            registerATMCommand = new RegisterATMCommand(playerManager);
             apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
             businessCommand = new BusinessCommand(playerManager, businessManager);
@@ -761,14 +638,14 @@ public final class Main extends JavaPlugin implements Server {
             rebstockCommand = new RebstockCommand(playerManager);
             muschelSammlerCommand = new MuschelSammlerCommand(playerManager, locationManager);
             gasStationCommand = new GasStationCommand(playerManager, locationManager, companyManager);
-            resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager, adminManager);
+            resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager);
             dutyCommand = new DutyCommand(playerManager, factionManager, locationManager);
             deleteBrokenEntitiesCommand = new DeleteBrokenEntitiesCommand();
             adminGiveRankCommand = new AdminGiveRankCommand(playerManager);
             subGroupCommand = new SubGroupCommand(playerManager, factionManager, locationManager);
             subGroupChatCommand = new SubGroupChatCommand(playerManager, factionManager);
-            permbanCommand = new PermbanCommand(playerManager, adminManager);
-            flyCommand = new FlyCommand(playerManager, adminManager);
+            permbanCommand = new PermbanCommand(playerManager);
+            flyCommand = new FlyCommand(playerManager);
             workstationCommand = new WorkstationCommand(playerManager);
             weaponcrafterCommand = new WeaponcrafterCommand(locationManager, playerManager);
             sperrzoneCommand = new SperrzoneCommand();
@@ -809,15 +686,47 @@ public final class Main extends JavaPlugin implements Server {
             weaponInfoCommand = new WeaponInfoCommand(playerManager);
             wantedInfoCommand = new WantedInfoCommand(playerManager, utils);
             equipTransportCommand = new EquipTransportCommand(playerManager);
-            giveLeaderRechteCommand = new GiveLeaderRechteCommand(playerManager, factionManager, adminManager);
-            removeLeaderRechteCommand = new RemoveLeaderRechteCommand(playerManager, factionManager, adminManager);
-            gwdCommand = new GwdCommand(playerManager, adminManager, factionManager);
-            zdCommand = new ZDCommand(playerManager, adminManager, factionManager);
-
-            voidAPI.registerCommands();
-            voidAPI.registerListener(this);
+            giveLeaderRechteCommand = new GiveLeaderRechteCommand(playerManager, factionManager);
+            removeLeaderRechteCommand = new RemoveLeaderRechteCommand(playerManager, factionManager);
+            gwdCommand = new GwdCommand(playerManager, factionManager);
+            zdCommand = new ZDCommand(playerManager, factionManager);
         }
     }
+
+    private void registerAnnotatedEvents() {
+        // Suche nach Klassen mit der @Event Annotation
+        Set<Class<?>> eventClasses = ClassScanner.findClassesWithAnnotation("de.polo.core", Event.class);
+
+        for (Class<?> clazz : eventClasses) {
+            // Überprüfen, ob die Klasse von Listener erbt (und somit ein Event-Listener ist)
+            if (!Listener.class.isAssignableFrom(clazz)) {
+                getLogger().warning(clazz.getName() + " ist kein Listener.");
+                continue;
+            }
+
+            try {
+                // Instanziiere den Event-Listener
+                Object eventInstance = clazz.getDeclaredConstructor().newInstance();
+
+                // Wenn der Listener instanziiert ist, registriere ihn
+                if (eventInstance instanceof Listener) {
+                    Main.getInstance().getServer().getPluginManager().registerEvents((Listener) eventInstance, Main.getInstance());
+                    eventInstances.put(clazz, eventInstance);
+                    getLogger().info("Event registriert: " + clazz.getName());
+                }
+
+            } catch (Exception e) {
+                getLogger().severe("Fehler beim Registrieren des Events " + clazz.getName() + ": " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public <T> T getEvent(Class<T> eventClass) {
+        return (T) eventInstances.get(eventClass);
+    }
+
 
     @Override
     public @Nullable <T> T getBean(@NotNull final Class<T> clazz) {
@@ -825,5 +734,39 @@ public final class Main extends JavaPlugin implements Server {
             return null;
         }
         return springContext.getBean(clazz);
+    }
+
+    public void initServices(String basePackage) {
+        Set<Class<?>> classes = ClassScanner.findClassesWithAnnotation(basePackage, Service.class);
+
+        for (Class<?> implClass : classes) {
+            try {
+                if (!Modifier.isAbstract(implClass.getModifiers())) {
+                    Object instance = implClass.getDeclaredConstructor().newInstance();
+
+                    Class<?>[] interfaces = implClass.getInterfaces();
+                    if (interfaces.length == 0) {
+                        services.put(implClass, instance);
+                    } else {
+                        for (Class<?> iface : interfaces) {
+                            services.put(iface, instance);
+                        }
+                    }
+
+                    System.out.println("Service registriert: " + implClass.getName());
+
+                    services.put(implClass, instance);
+                }
+            } catch (Exception e) {
+                System.err.println("Fehler beim Instanziieren von Service: " + implClass.getName());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getService(@NotNull Class<T> clazz) {
+        return (T) services.get(clazz);
     }
 }

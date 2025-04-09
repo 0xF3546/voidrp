@@ -2,6 +2,7 @@ package de.polo.core.news.services.impl;
 
 import de.polo.core.news.services.NewsService;
 import de.polo.core.storage.ShopBook;
+import de.polo.core.utils.Service;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,6 +15,7 @@ import static de.polo.core.Main.newsManager;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CoreNewsService implements NewsService {
 
     @Override

@@ -15,6 +15,7 @@ import de.polo.core.crew.dto.CrewMemberDto;
 import de.polo.core.crew.entities.CoreCrew;
 import de.polo.core.crew.entities.CoreCrewRank;
 import de.polo.core.crew.services.CrewService;
+import de.polo.core.utils.Service;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.format.TextColor;
@@ -30,13 +31,13 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static de.polo.core.Main.database;
-import static de.polo.core.Main.playerService;
 
 /**
  * @author Mayson1337
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CoreCrewService implements CrewService {
     private final List<Crew> crews = new ObjectArrayList<>();
 

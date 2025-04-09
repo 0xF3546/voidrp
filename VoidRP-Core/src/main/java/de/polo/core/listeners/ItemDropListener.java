@@ -2,11 +2,10 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.manager.WeaponManager;
 import de.polo.core.utils.enums.PickaxeType;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.enums.Weapon;
+import de.polo.core.utils.Event;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -19,13 +18,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.List;
 
-public class ItemDropListener implements Listener {
-    private final WeaponManager weaponManager;
-    private final PlayerManager playerManager;
+import static de.polo.core.Main.playerManager;
+import static de.polo.core.Main.weaponManager;
 
-    public ItemDropListener(WeaponManager weaponManager, PlayerManager playerManager) {
-        this.weaponManager = weaponManager;
-        this.playerManager = playerManager;
+@Event
+public class ItemDropListener implements Listener {
+
+    public ItemDropListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

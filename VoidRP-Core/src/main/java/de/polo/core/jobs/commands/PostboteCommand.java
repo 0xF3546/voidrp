@@ -2,12 +2,14 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.Job;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
@@ -23,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static de.polo.core.Main.locationManager;
-import static de.polo.core.Main.playerService;
 
 @CommandBase.CommandMeta(
         name = "postbote",
@@ -39,6 +40,7 @@ public class PostboteCommand extends CommandBase implements Job {
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (ServerManager.canDoJobs()) {
             if (locationManager.getDistanceBetweenCoords(player, "postbote") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §ePostbote"), true, true);
@@ -104,6 +106,7 @@ public class PostboteCommand extends CommandBase implements Job {
 
     @Override
     public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.POSTMAN)) {
             player.setMiniJob(MiniJob.POSTMAN);
             player.setActiveJob(this);
@@ -120,6 +123,7 @@ public class PostboteCommand extends CommandBase implements Job {
 
     @Override
     public void endJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
 
         player.sendMessage(prefix + "Du hast den Job beendet.");
@@ -134,6 +138,7 @@ public class PostboteCommand extends CommandBase implements Job {
 
     public void handleDrop(VoidPlayer player, int house) {
         if (canGive(house)) {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             int remainingDeliveries = (int)player.getVariable("post");
             if (remainingDeliveries <= 0) {
                 player.sendMessage(prefix + "Du hast keine Post mehr zum Abgeben!");

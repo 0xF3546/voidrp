@@ -2,21 +2,20 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.utils.Utils;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class PlayerMoveListener implements Listener {
-    private final PlayerManager playerManager;
-    private final Utils utils;
+import static de.polo.core.Main.playerManager;
+import static de.polo.core.Main.utils;
 
-    public PlayerMoveListener(PlayerManager playerManager, Utils utils) {
-        this.playerManager = playerManager;
-        this.utils = utils;
+@Event
+public class PlayerMoveListener implements Listener {
+
+    public PlayerMoveListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

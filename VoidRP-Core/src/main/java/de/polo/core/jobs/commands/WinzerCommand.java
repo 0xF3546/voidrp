@@ -7,7 +7,10 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.*;
 import de.polo.core.utils.Prefix;
@@ -38,6 +41,8 @@ public class WinzerCommand implements CommandExecutor, MiningJob {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         if (ServerManager.canDoJobs()) {
             if (locationService.getDistanceBetweenCoords(player, "winzer") <= 5) {
@@ -178,9 +183,11 @@ public class WinzerCommand implements CommandExecutor, MiningJob {
         }
 
         if (targetBlock != null) {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
             PlayerData playerData = playerService.getPlayerData(player);
             player.sendMessage("§8[§5Winzer§8]§7 Hier ist ein neuer Rebstock.");
             playerData.setVariable("grapevine", targetBlock);
+            NavigationService navigationService = VoidAPI.getService(NavigationService.class);
             navigationService.createNaviByCord(player, targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
         } else {
             findGrapevine(player);
@@ -189,6 +196,7 @@ public class WinzerCommand implements CommandExecutor, MiningJob {
 
 
     public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (!playerService.isInJobCooldown(player, MiniJob.WINZER)) {
             player.setActiveJob(this);
             player.setMiniJob(MiniJob.WINZER);
@@ -211,6 +219,7 @@ public class WinzerCommand implements CommandExecutor, MiningJob {
     @SneakyThrows
     @Override
     public void endJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
         int payout = ServerManager.getPayout("winzer") * (int) player.getVariable("winzer_harvested");
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");

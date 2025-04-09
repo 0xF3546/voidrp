@@ -2,6 +2,8 @@ package de.polo.core.game.base.vehicle;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.storage.*;
@@ -36,8 +38,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import static de.polo.core.Main.navigationService;
 
 public class Vehicles implements Listener, CommandExecutor {
     public static final Map<String, VehicleData> vehicleDataMap = new HashMap<>();
@@ -523,6 +523,7 @@ public class Vehicles implements Listener, CommandExecutor {
             if (args[0].equalsIgnoreCase("find")) {
                 InventoryManager inventoryManager = new InventoryManager(player, 9, Component.text("§8 » §cFahrzeug suchen"), true, false);
                 int i = 0;
+                NavigationService navigationService = VoidAPI.getService(NavigationService.class);
                 for (PlayerVehicleData data : playerVehicleDataMap.values()) {
                     if (data.getUuid().equalsIgnoreCase(player.getUniqueId().toString())) {
                         inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.MINECART, 1, 0, "§c" + data.getType())) {

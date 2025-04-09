@@ -1,6 +1,8 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -12,8 +14,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import static de.polo.core.Main.navigationService;
 
 public class FindLaboratoryCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -40,6 +40,7 @@ public class FindLaboratoryCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion hat kein Labor.");
             return false;
         }
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         navigationService.createNaviByCord(player, (int) location.getX(), (int) location.getY(), (int) location.getZ());
         player.sendMessage("§aDein Labor wurde markiert.");
         return false;

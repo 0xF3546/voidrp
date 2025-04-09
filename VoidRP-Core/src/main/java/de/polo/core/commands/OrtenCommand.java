@@ -1,6 +1,8 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -11,8 +13,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import static de.polo.core.Main.navigationService;
 
 public class OrtenCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -72,6 +72,8 @@ public class OrtenCommand implements CommandExecutor {
                     cancel();
                     return;
                 }
+
+                NavigationService navigationService = VoidAPI.getService(NavigationService.class);
                 navigationService.createNaviByCord(player, (int) targetplayer.getLocation().getX(), (int) targetplayer.getLocation().getY(), (int) targetplayer.getLocation().getZ());
             }
         }.runTaskTimer(Main.getInstance(), 20 * 2, 20 * 60);

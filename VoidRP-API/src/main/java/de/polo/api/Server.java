@@ -25,4 +25,6 @@ public interface Server {
      * @return the Spring-managed bean of the specified type.
      */
     <T> T getBean(@NotNull final Class<T> clazz);
+
+    <T> T getService(@NotNull final Class<T> clazz);
 }

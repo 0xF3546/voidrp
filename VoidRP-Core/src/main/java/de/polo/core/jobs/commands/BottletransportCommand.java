@@ -1,9 +1,11 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.TransportJob;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ServerManager;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
@@ -57,6 +59,7 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
         player.setMiniJob(MiniJob.BOTTLE_TRANSPORT);
         int amount = Utils.random(2, 4);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + " erhalten, bringe diese in das Lager der Bar."));
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         navigationService.createNaviByLocation(player.getPlayer(), "bar_storage");
         player.setVariable("job::flaschentransport::amount", amount);
     }

@@ -4,6 +4,7 @@ import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.storage.Agreement;
+import de.polo.core.utils.Service;
 import lombok.SneakyThrows;
 
 import static de.polo.core.Main.utils;
@@ -13,6 +14,7 @@ import static de.polo.core.Main.utils;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CoreAgreementService implements AgreementService {
 
     @Override

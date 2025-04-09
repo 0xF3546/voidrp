@@ -3,9 +3,9 @@ package de.polo.core.faction.commands;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.storage.DBPlayerData;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
@@ -21,17 +21,13 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 
-import static de.polo.core.Main.adminService;
-
 public class AdminUnInviteCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final FactionManager factionManager;
     private final Utils utils;
 
-    public AdminUnInviteCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, Utils utils) {
+    public AdminUnInviteCommand(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.factionManager = factionManager;
         this.utils = utils;
         Main.registerCommand("adminuninvite", this);
@@ -65,6 +61,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
             return false;
         }
         if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
+            AdminService adminService = VoidAPI.getService(AdminService.class);
             adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", Color.PURPLE);
             if (offlinePlayer.isOnline()) {
                 try {

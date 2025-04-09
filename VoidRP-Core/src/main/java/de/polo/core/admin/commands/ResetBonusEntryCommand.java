@@ -1,8 +1,9 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -22,15 +23,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-import static de.polo.core.Main.adminService;
-
 public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public ResetBonusEntryCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public ResetBonusEntryCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
 
         Main.registerCommand("resetbonusentry", this);
         Main.addTabCompleter("resetbonusentry", this);
@@ -45,6 +42,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         if (args.length < 1) {
             for (PlayerData p : playerManager.getPlayers()) {
                 p.setReceivedBonus(false);

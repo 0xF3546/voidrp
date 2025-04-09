@@ -2,22 +2,17 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.storage.Ticket;
 import de.polo.core.game.base.vehicle.Vehicles;
-import de.polo.core.admin.services.impl.AdminManager;
-import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.manager.ServerManager;
-import de.polo.core.manager.SupportManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.StaatUtil;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.PlayerPed;
-import de.polo.core.utils.player.ScoreboardAPI;
+import de.polo.core.utils.Event;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
@@ -29,26 +24,12 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
 
-import static de.polo.core.Main.adminService;
+import static de.polo.core.Main.*;
 
-public class
-QuitListener implements Listener {
-    private final PlayerManager playerManager;
-    private final AdminManager adminManager;
-    private final Utils utils;
-    private final Main.Commands commands;
-    private final ServerManager serverManager;
-    private final SupportManager supportManager;
-    private final ScoreboardAPI scoreboardAPI;
+@Event
+public class QuitListener implements Listener {
 
-    public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager, ScoreboardAPI scoreboardAPI) {
-        this.playerManager = playerManager;
-        this.adminManager = adminManager;
-        this.utils = utils;
-        this.commands = commands;
-        this.serverManager = serverManager;
-        this.supportManager = supportManager;
-        this.scoreboardAPI = scoreboardAPI;
+    public QuitListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -59,6 +40,7 @@ QuitListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
         scoreboardAPI.clearScoreboards(player);
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         adminService.send_message(player.getName() + " hat den Server verlassen.", Color.GRAY);
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             player.setGameMode(GameMode.SURVIVAL);

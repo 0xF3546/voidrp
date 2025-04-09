@@ -4,7 +4,7 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.utils.Event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,15 +12,16 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 import java.util.Random;
 
+import static de.polo.core.Main.playerManager;
+
+@Event
 public class HungerListener implements Listener {
     /**
      * The odds of the player's food level being reduced
      */
     public static final double ODDS = 0.4;
-    private final PlayerManager playerManager;
 
-    public HungerListener(PlayerManager playerManager) {
-        this.playerManager = playerManager;
+    public HungerListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

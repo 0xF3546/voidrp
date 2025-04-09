@@ -1,7 +1,9 @@
 package de.polo.core.game.base.extra.drop;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.game.base.housing.House;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.storage.NaviData;
 import de.polo.core.player.entities.PlayerData;
@@ -18,8 +20,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.logging.Logger;
 
-import static de.polo.core.Main.navigationService;
-
 /**
  * drop class to handle drop events
  */
@@ -35,6 +35,7 @@ public class Drop {
     private ArmorStand hologram = null;
 
     public Drop(Location location) {
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         lastBlock = location.getBlock();
         this.location = location;
         NaviData naviData = navigationService.getNearestNaviPoint(location);

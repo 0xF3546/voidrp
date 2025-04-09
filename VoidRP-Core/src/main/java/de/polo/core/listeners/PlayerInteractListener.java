@@ -12,10 +12,7 @@ import de.polo.core.game.base.housing.House;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.jobs.commands.MuellmannCommand;
 import de.polo.core.jobs.commands.PostboteCommand;
-import de.polo.core.manager.BlockManager;
-import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.WeaponManager;
 import de.polo.core.storage.ATM;
 import de.polo.core.storage.ClickedEventBlock;
@@ -34,6 +31,7 @@ import de.polo.core.utils.enums.StorageType;
 import de.polo.core.utils.gameplay.Case;
 import de.polo.core.utils.gameplay.GamePlay;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;
 import de.polo.core.utils.player.Rubbellose;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -82,25 +80,18 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
+import static de.polo.core.Main.*;
+
+@Event
 public class PlayerInteractListener implements Listener {
     private static final Random RANDOM = new Random();
-    private final PlayerManager playerManager;
-    private final Utils utils;
-    private final FactionManager factionManager;
-    private final Main.Commands commands;
-    private final BlockManager blockManager;
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
     private final List<Molotov> molotovs = new ObjectArrayList<>();
     private final List<Block> sprungtuecher = new ObjectArrayList<>();
     private final List<Grenade> activeGrenades = new ObjectArrayList<>();
 
-    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager) {
-        this.playerManager = playerManager;
-        this.utils = utils;
-        this.commands = commands;
-        this.blockManager = blockManager;
-        this.factionManager = factionManager;
+    public PlayerInteractListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

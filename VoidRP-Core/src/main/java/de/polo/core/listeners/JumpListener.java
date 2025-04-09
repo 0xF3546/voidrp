@@ -2,16 +2,16 @@ package de.polo.core.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import de.polo.core.Main;
-import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.utils.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import static de.polo.core.Main.playerManager;
+
+@Event
 public class JumpListener implements Listener {
 
-    private final PlayerManager playerManager;
-
-    public JumpListener(PlayerManager playerManager){
-        this.playerManager = playerManager;
+    public JumpListener(){
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

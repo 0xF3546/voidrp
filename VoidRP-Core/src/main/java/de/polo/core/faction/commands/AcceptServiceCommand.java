@@ -1,6 +1,8 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -12,8 +14,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import static de.polo.core.Main.navigationService;
 
 public class AcceptServiceCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -37,6 +37,7 @@ public class AcceptServiceCommand implements CommandExecutor {
                     if (serviceData != null) {
                         if (serviceData.getAcceptedByUuid() == null) {
                             serviceData.setAcceptedByUuid(player.getUniqueId().toString());
+                            NavigationService navigationService = VoidAPI.getService(NavigationService.class);
                             navigationService.createNaviByCord(player, (int) serviceData.getLocation().getX(), (int) serviceData.getLocation().getY(), (int) serviceData.getLocation().getZ());
                             for (Player p : Bukkit.getOnlinePlayers()) {
                                 PlayerData playersData = playerManager.getPlayerData(p);

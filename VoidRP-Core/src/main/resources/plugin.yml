@@ -10,8 +10,6 @@ commands:
   aduty:
     aliases: ad
   setgroup:
-  geldbeutel:
-    aliases: gb
   personalausweis:
     aliases: perso
   teamchat:

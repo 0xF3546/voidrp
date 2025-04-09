@@ -9,13 +9,16 @@ import de.polo.api.crew.CrewRank;
 import de.polo.api.crew.enums.CrewPermission;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.crew.dto.CreateCrewDto;
 import de.polo.core.crew.dto.CreateCrewRankDto;
 import de.polo.core.crew.dto.CrewMemberDto;
+import de.polo.core.crew.services.CrewService;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.Agreement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -228,6 +231,7 @@ public class CrewCommand extends CommandBase implements Listener {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (name == null) return;
+                CrewService crewService = VoidAPI.getService(CrewService.class);
                 CreateCrewRankDto createCrewRankDto = new CreateCrewRankDto(name, TextColor.fromHexString("#ffffff"), grade, player.getData().getCrew().getId(), false, false);
                 crewService.addCrewRank(createCrewRankDto);
                 player.getData().setVariable("crewRankName", null);
@@ -295,7 +299,7 @@ public class CrewCommand extends CommandBase implements Listener {
 
     private void openCrewMembers(VoidPlayer player, int page, Runnable onBack) {
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§8 » §cCrew Mitglieder"));
-
+        CrewService crewService = VoidAPI.getService(CrewService.class);
         List<CrewMemberDto> crewMembers = crewService.getCrewMembers(player.getData().getCrew());
         int itemsPerPage = 45; // 5 Zeilen à 9 Slots
         int totalPages = (int) Math.ceil((double) crewMembers.size() / itemsPerPage);
@@ -452,6 +456,9 @@ public class CrewCommand extends CommandBase implements Listener {
 
     private void openInviteMenu(VoidPlayer voidPlayer, Runnable onBack) {
         InventoryManager inventoryManager = new InventoryManager(voidPlayer.getPlayer(), 27, Component.text("§8 » §cMitglied einladen"));
+        CrewService crewService = VoidAPI.getService(CrewService.class);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        AgreementService agreementService = VoidAPI.getService(AgreementService.class);
         int i = 0;
         for (VoidPlayer player : playerService.getPlayersInRange(voidPlayer.getLocation(), 10)) {
             if (player.getData().getCrew() != null) continue;
@@ -483,6 +490,7 @@ public class CrewCommand extends CommandBase implements Listener {
     }
 
     private void openKickPlayer(VoidPlayer voidPlayer, CrewMemberDto crewMember, Runnable onBack) {
+        CrewService crewService = VoidAPI.getService(CrewService.class);
         InventoryManager inventoryManager = new InventoryManager(voidPlayer.getPlayer(), 27, Component.text("§8 » §c" + crewMember.getName()));
         inventoryManager.setItem(new CustomItem(13, new ItemBuilder(Material.BARRIER)
                 .setName("§8» §cKick")
@@ -505,6 +513,7 @@ public class CrewCommand extends CommandBase implements Listener {
     }
 
     private void openEditPlayerRank(VoidPlayer voidPlayer, CrewMemberDto crewMember, int page, Runnable onBack) {
+        CrewService crewService = VoidAPI.getService(CrewService.class);
         InventoryManager inventoryManager = new InventoryManager(voidPlayer.getPlayer(), 27, Component.text("§8 » §c" + crewMember.getName()));
         Crew crew = voidPlayer.getData().getCrew();
         List<CrewRank> ranks = crew.getRanks();
@@ -596,6 +605,7 @@ public class CrewCommand extends CommandBase implements Listener {
 
 
     private void openCrewLeave(VoidPlayer player, Runnable onBack) {
+        CrewService crewService = VoidAPI.getService(CrewService.class);
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §cCrew verlassen"));
         inventoryManager.setItem(new CustomItem(13, new ItemBuilder(Material.SKELETON_SKULL)
                 .setName("§8» §cCrew verlassen")
@@ -619,6 +629,7 @@ public class CrewCommand extends CommandBase implements Listener {
     }
 
     private void openCreateCrew(VoidPlayer player) {
+        CrewService crewService = VoidAPI.getService(CrewService.class);
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §cCrew gründen"));
         String name = (String) player.getVariable("crewName");
         inventoryManager.setItem(new CustomItem(13, new ItemBuilder(Material.PAPER)

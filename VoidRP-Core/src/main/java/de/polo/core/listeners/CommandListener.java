@@ -3,11 +3,10 @@ package de.polo.core.listeners;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,16 +17,16 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.polo.core.Main.playerManager;
+import static de.polo.core.Main.utils;
+
+@Event
 public class CommandListener implements Listener {
-    private final PlayerManager playerManager;
-    private final Utils utils;
     private final List<String> nonBlockedCommands;
     private final List<String> blockedStarts;
     private final List<String> blockedContains;
 
-    public CommandListener(PlayerManager playerManager, Utils utils) {
-        this.playerManager = playerManager;
-        this.utils = utils;
+    public CommandListener() {
         this.nonBlockedCommands = Arrays.asList("support", "report", "help", "vote", "jailtime", "ad", "aduty");
         this.blockedStarts = Arrays.asList("/to", "//to", "minecraft:msg", "minecraft:advancement", "minecraft:attribute",
                 "minecraft:ban", "minecraft:ban-ip", "minecraft:banlist", "minecraft:bossbar",

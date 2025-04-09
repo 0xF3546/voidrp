@@ -2,11 +2,13 @@ package de.polo.core.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerSetSpawnEvent;
 import de.polo.core.utils.Prefix;
+import de.polo.core.utils.Event;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+@Event
 public class PlayerSpawnpointListener implements Listener {
 
     @EventHandler

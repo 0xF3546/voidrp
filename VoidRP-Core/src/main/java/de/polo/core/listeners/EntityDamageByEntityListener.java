@@ -4,8 +4,8 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.enums.Weapon;
+import de.polo.core.utils.Event;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -13,13 +13,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import static de.polo.core.Main.playerManager;
 import static de.polo.core.Main.supportManager;
 
+@Event
 public class EntityDamageByEntityListener implements Listener {
-    private final PlayerManager playerManager;
 
-    public EntityDamageByEntityListener(PlayerManager playerManager) {
-        this.playerManager = playerManager;
+    public EntityDamageByEntityListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

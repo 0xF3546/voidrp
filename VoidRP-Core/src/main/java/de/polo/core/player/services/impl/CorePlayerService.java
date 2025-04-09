@@ -10,6 +10,7 @@ import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.LoyaltyBonusTimer;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.utils.Service;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;
 import org.bukkit.Location;
@@ -26,6 +27,7 @@ import static de.polo.core.Main.playerManager;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CorePlayerService implements PlayerService {
 
     @Override

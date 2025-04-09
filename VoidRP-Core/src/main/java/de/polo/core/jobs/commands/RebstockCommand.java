@@ -1,6 +1,8 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -10,8 +12,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import static de.polo.core.Main.navigationService;
 
 public class RebstockCommand implements CommandExecutor {
     private final PlayerManager playerManager;
@@ -34,6 +34,8 @@ public class RebstockCommand implements CommandExecutor {
             return false;
         }
         Block block = playerData.getVariable("grapevine");
+
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         navigationService.createNaviByCord(player, block.getX(), block.getY(), block.getZ());
         player.sendMessage("§8[§5Winzer§8]§7 Dein Rebstock wurde markiert.");
         return false;

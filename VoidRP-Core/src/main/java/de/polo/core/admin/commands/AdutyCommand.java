@@ -1,21 +1,18 @@
-package de.polo.core.admin.services.impl;
+package de.polo.core.admin.commands;
 
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
+import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RankData;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.player.ScoreboardAPI;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
@@ -23,61 +20,61 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.List;
 
-import static de.polo.core.Main.adminService;
+import static de.polo.core.Main.scoreboardAPI;
 
-public class AdminManager implements CommandExecutor, TabCompleter {
-
-    private final PlayerManager playerManager;
-    private final ScoreboardAPI scoreboardAPI;
-
-    public AdminManager(PlayerManager playerManager, ScoreboardAPI scoreboardAPI) {
-        this.playerManager = playerManager;
-        this.scoreboardAPI = scoreboardAPI;
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+@CommandBase.CommandMeta(
+        name = "aduty",
+        usage = "/aduty [-v]"
+)
+public class AdutyCommand extends CommandBase implements TabCompleter {
+    public AdutyCommand(@NotNull CommandMeta meta) {
+        super(meta);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (playerData.getPermlevel() < 60) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
-            return false;
+            return;
         }
         RankData rankData = ServerManager.rankDataMap.get(playerData.getRang());
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         if (args.length == 0) {
-            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
-            if (voidPlayer.isAduty()) {
+            if (player.isAduty()) {
 
-                voidPlayer.setAduty(false);
+                player.setAduty(false);
                 adminService.send_message(player.getName() + " hat den Admindienst verlassen.", Color.RED);
                 player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §cverlassen§7.");
-                player.setFlying(false);
-                player.setAllowFlight(false);
-                scoreboardAPI.removeScoreboard(player, "admin");
-                player.setCollidable(true);
+                player.getPlayer().setFlying(false);
+                player.getPlayer().setAllowFlight(false);
+                scoreboardAPI.removeScoreboard(player.getPlayer(), "admin");
+                player.getPlayer().setCollidable(true);
             } else {
 
                 adminService.send_message(player.getName() + " hat den Admindienst betreten.", Color.RED);
-                voidPlayer.setAduty(true);
+                player.setAduty(true);
                 player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §abetreten§7.");
-                player.setAllowFlight(true);
+                player.getPlayer().setAllowFlight(true);
 
-                scoreboardAPI.createScoreboard(player, "admin", "§cAdmindienst", () -> {
+                scoreboardAPI.createScoreboard(player.getPlayer(), "admin", "§cAdmindienst", () -> {
                     // Set initial scores
-                    scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
+                    scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
                     Runtime r = Runtime.getRuntime();
-                    scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
-                    scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
+                    scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
+                    scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
                 });
 
-                startMemoryUsageUpdater(player); // Startet den Memory Usage Updater
+                startMemoryUsageUpdater(player.getPlayer()); // Startet den Memory Usage Updater
 
-                playerData.setScoreboard("admin", scoreboardAPI.getScoreboard(player, "admin"));
-                player.setCollidable(false);
+                playerData.setScoreboard("admin", scoreboardAPI.getScoreboard(player.getPlayer(), "admin"));
+                player.getPlayer().setCollidable(false);
             }
         }
         if (args.length >= 1) {
@@ -87,21 +84,20 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                         player.sendMessage(Prefix.ADMIN + "Du bist nun im Vanish.");
                         playerData.setVariable("isVanish", "D:");
                         for (Player players : Bukkit.getOnlinePlayers()) {
-                            players.hidePlayer(Main.getInstance(), player);
+                            players.hidePlayer(Main.getInstance(), player.getPlayer());
                         }
                         adminService.send_message(player.getName() + " hat den Vanish betreten.", null);
                     } else {
                         player.sendMessage(Prefix.ADMIN + "Du bist nun nicht mehr im Vanish.");
                         playerData.setVariable("isVanish", null);
                         for (Player players : Bukkit.getOnlinePlayers()) {
-                            players.showPlayer(Main.getInstance(), player);
+                            players.showPlayer(Main.getInstance(), player.getPlayer());
                         }
                         adminService.send_message(player.getName() + " hat den Vanish verlassen.", null);
                     }
                     break;
             }
         }
-        return false;
     }
 
     private void updateMemoryUsage(Player player) {
@@ -123,18 +119,6 @@ public class AdminManager implements CommandExecutor, TabCompleter {
                 }
             }
         }.runTaskTimer(Main.getInstance(), 0L, 20L * 60); // Aktualisiert jede Minute
-    }
-
-    @SneakyThrows
-    public void insertNote(String punisher, String target, String note) {
-        Connection connection = Main.getInstance().coreDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO notes (uuid, target, note) VALUES (?, ?, ?)");
-        statement.setString(1, punisher);
-        statement.setString(2, target);
-        statement.setString(3, note);
-        statement.execute();
-        statement.close();
-        connection.close();
     }
 
     @Nullable

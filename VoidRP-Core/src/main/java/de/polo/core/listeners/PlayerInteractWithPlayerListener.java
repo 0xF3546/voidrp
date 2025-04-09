@@ -6,12 +6,12 @@ import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponData;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.WeaponManager;
 import de.polo.core.utils.Prefix;
 import de.polo.api.player.enums.Gender;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -33,11 +33,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
-public class PlayerInteractWithPlayerListener implements Listener {
-    private final PlayerManager playerManager;
+import static de.polo.core.Main.playerManager;
 
-    public PlayerInteractWithPlayerListener(PlayerManager playerManager) {
-        this.playerManager = playerManager;
+@Event
+public class PlayerInteractWithPlayerListener implements Listener {
+
+    public PlayerInteractWithPlayerListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 

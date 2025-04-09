@@ -8,9 +8,11 @@ import de.polo.api.VoidAPI;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.api.player.VoidPlayer;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.storage.LocationData;
 import de.polo.core.player.entities.PlayerData;
@@ -132,6 +134,7 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
         player.setVariable("job", "hochseefischer");
         player.setVariable("hochseefischer_kg", 0);
         Location location = getNearstLocation(player.getPlayer());
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         navigationService.createNaviByCord(player.getPlayer(), (int) location.getX(), (int) location.getY(), (int) location.getZ());
     }
 
@@ -142,6 +145,7 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
         spawnedBoats.remove(player);
         // ISSUE VRP-10000: fixed by adding null check
         int amount = player.getVariable("hochseefischer_kg") == null ? 0 : (int) player.getVariable("hochseefischer_kg");
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         playerService.handleJobFinish(player, MiniJob.DEEP_SEA_FISHERMAN, 1200, amount * 2);
         player.getData().addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
     }

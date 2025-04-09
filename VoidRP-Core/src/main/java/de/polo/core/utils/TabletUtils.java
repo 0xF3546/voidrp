@@ -2,6 +2,8 @@ package de.polo.core.utils;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
@@ -33,8 +35,6 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
-
-import static de.polo.core.Main.navigationService;
 
 public class TabletUtils implements Listener {
     private final PlayerManager playerManager;
@@ -515,6 +515,7 @@ public class TabletUtils implements Listener {
                                 });
                             } else {
                                 player.closeInventory();
+                                NavigationService navigationService = VoidAPI.getService(NavigationService.class);
                                 navigationService.createNaviByCord(player, playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ());
                                 player.sendMessage("§8[§3Tablet§8]§7 Der Standort deines Fahrzeuges wurde dir markiert.");
                             }

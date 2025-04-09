@@ -1,17 +1,17 @@
 package de.polo.core.player.entities;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.Job;
 import de.polo.api.player.PlayerCharacter;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.player.services.PlayerService;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import static de.polo.core.Main.playerService;
 
 /**
  * @author Mayson1337
@@ -39,6 +39,7 @@ public class CoreVoidPlayer implements VoidPlayer {
 
     @Override
     public PlayerCharacter getData() {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         return (PlayerCharacter) playerService.getPlayerData(player);
     }
 
