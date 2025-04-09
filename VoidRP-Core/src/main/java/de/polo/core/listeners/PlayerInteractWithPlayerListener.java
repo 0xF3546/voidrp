@@ -38,10 +38,6 @@ import static de.polo.core.Main.playerManager;
 @Event
 public class PlayerInteractWithPlayerListener implements Listener {
 
-    public PlayerInteractWithPlayerListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onPlayerInteractWithPlayer(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();

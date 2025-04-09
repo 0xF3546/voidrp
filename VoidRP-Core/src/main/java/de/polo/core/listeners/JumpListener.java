@@ -11,10 +11,6 @@ import static de.polo.core.Main.playerManager;
 @Event
 public class JumpListener implements Listener {
 
-    public JumpListener(){
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onJump(PlayerJumpEvent event){
         if(playerManager.getPlayerData(event.getPlayer()).isCuffed()){

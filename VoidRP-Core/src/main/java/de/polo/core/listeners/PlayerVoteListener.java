@@ -26,10 +26,6 @@ import static de.polo.core.Main.*;
 public class PlayerVoteListener implements Listener {
     private final HashMap<UUID, Integer> votes = new HashMap<>();
 
-    public PlayerVoteListener() {
-        Main.registerListener(this);
-    }
-
     @SneakyThrows
     @EventHandler
     public void onVote(VotifierEvent event) {

@@ -11,9 +11,6 @@ import org.bukkit.event.entity.EntityDismountEvent;
 
 @Event
 public class ArmorStandExitListener implements Listener {
-    public ArmorStandExitListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
 
     @EventHandler
     public void onEntityDismount(EntityDismountEvent event) {

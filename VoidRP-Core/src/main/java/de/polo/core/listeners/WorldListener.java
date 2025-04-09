@@ -27,10 +27,6 @@ public class WorldListener implements Listener {
             Material.FURNACE, Material.TURTLE_EGG, Material.CANDLE, Material.FLOWER_POT
     );
 
-    public WorldListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @SneakyThrows
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {

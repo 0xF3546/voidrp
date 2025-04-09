@@ -24,10 +24,6 @@ import static de.polo.core.Main.*;
 @Event
 public class JoinListener implements Listener {
 
-    public JoinListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();

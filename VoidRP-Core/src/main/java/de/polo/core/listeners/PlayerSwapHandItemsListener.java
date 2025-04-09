@@ -59,10 +59,6 @@ import static de.polo.core.Main.*;
 @Event
 public class PlayerSwapHandItemsListener implements Listener {
 
-    public PlayerSwapHandItemsListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     private Block getTargetBlock(Player player) {
         BlockIterator iterator = new BlockIterator(player, 5);
         Block block = null;

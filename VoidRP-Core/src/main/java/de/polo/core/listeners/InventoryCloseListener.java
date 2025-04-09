@@ -13,10 +13,6 @@ import static de.polo.core.Main.playerManager;
 @Event
 public class InventoryCloseListener implements Listener {
 
-    public InventoryCloseListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();

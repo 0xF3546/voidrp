@@ -8,10 +8,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 @Event
 public class ExplosionListener implements Listener {
-    public ExplosionListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onExplode(EntityExplodeEvent event) {
         event.setCancelled(true);

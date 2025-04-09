@@ -18,11 +18,6 @@ import static de.polo.core.Main.supportManager;
 
 @Event
 public class EntityDamageByEntityListener implements Listener {
-
-    public EntityDamageByEntityListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player || event.getDamager() instanceof Projectile) {

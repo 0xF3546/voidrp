@@ -12,10 +12,6 @@ import org.bukkit.event.player.PlayerFishEvent;
 @Event
 public class FishingListener implements Listener {
 
-    public FishingListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();

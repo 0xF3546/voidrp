@@ -264,6 +264,11 @@ public final class Main extends JavaPlugin implements Server {
                 continue;
             }
 
+            if (commandInstances.containsKey(clazz)) {
+                getLogger().warning("Command " + clazz.getName() + " ist bereits registriert.");
+                continue;
+            }
+
             try {
                 CommandBase command = clazz.getDeclaredConstructor(CommandBase.CommandMeta.class).newInstance(meta);
                 commandInstances.put(clazz, command);
@@ -704,6 +709,11 @@ public final class Main extends JavaPlugin implements Server {
                 continue;
             }
 
+            if (eventInstances.containsKey(clazz)) {
+                getLogger().warning(clazz.getName() + " ist bereits registriert.");
+                continue;
+            }
+
             try {
                 // Instanziiere den Event-Listener
                 Object eventInstance = clazz.getDeclaredConstructor().newInstance();
@@ -742,6 +752,10 @@ public final class Main extends JavaPlugin implements Server {
         for (Class<?> implClass : classes) {
             try {
                 if (!Modifier.isAbstract(implClass.getModifiers())) {
+                    if (services.containsKey(implClass)) {
+                        System.out.println("Service " + implClass.getName() + " ist bereits registriert.");
+                        continue;
+                    }
                     Object instance = implClass.getDeclaredConstructor().newInstance();
 
                     Class<?>[] interfaces = implClass.getInterfaces();

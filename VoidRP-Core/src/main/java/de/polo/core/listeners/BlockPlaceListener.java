@@ -15,10 +15,6 @@ import java.sql.PreparedStatement;
 
 @Event
 public class BlockPlaceListener implements Listener {
-    public BlockPlaceListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onBlockBreak(BlockPlaceEvent event) {
         Player player = event.getPlayer();

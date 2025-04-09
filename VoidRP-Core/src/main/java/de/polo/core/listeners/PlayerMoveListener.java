@@ -15,10 +15,6 @@ import static de.polo.core.Main.utils;
 @Event
 public class PlayerMoveListener implements Listener {
 
-    public PlayerMoveListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();

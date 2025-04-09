@@ -23,10 +23,6 @@ import static de.polo.core.Main.*;
 @Event
 public class ChatListener implements Listener {
 
-    public ChatListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();

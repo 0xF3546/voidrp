@@ -21,10 +21,6 @@ public class HungerListener implements Listener {
      */
     public static final double ODDS = 0.4;
 
-    public HungerListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
         //event.setCancelled(true);

@@ -14,10 +14,6 @@ import static de.polo.core.Main.playerManager;
 @Event
 public class RespawnListener implements Listener {
 
-    public RespawnListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();

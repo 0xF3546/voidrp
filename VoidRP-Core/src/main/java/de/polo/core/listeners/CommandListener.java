@@ -47,8 +47,6 @@ public class CommandListener implements Listener {
                 "minecraft:whitelist", "minecraft:worldborder", "minecraft:w", "minecraft:xp", "minecraft:title",
                 "minecraft:tm");
         this.blockedContains = Arrays.asList("while", "targetoffset", "for(", "^(.", "*.", "@a", "@e", "@p", "@s", "@r");
-
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     @EventHandler

@@ -18,11 +18,6 @@ import static de.polo.core.Main.playerManager;
 @Event
 public class ConsumeListener implements Listener {
 
-
-    public ConsumeListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();

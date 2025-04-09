@@ -91,10 +91,6 @@ public class PlayerInteractListener implements Listener {
     private final List<Block> sprungtuecher = new ObjectArrayList<>();
     private final List<Grenade> activeGrenades = new ObjectArrayList<>();
 
-    public PlayerInteractListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();

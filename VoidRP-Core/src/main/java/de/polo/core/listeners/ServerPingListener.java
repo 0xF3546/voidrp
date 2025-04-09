@@ -13,9 +13,6 @@ import static de.polo.core.Main.factionManager;
 
 @Event
 public class ServerPingListener implements Listener {
-    public ServerPingListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
 
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {

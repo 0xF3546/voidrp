@@ -10,10 +10,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 
 @Event
 public class InventoryOpenListener implements Listener {
-    public InventoryOpenListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();

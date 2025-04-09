@@ -12,9 +12,6 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 
 @Event
 public class ItemPickUpListener implements Listener {
-    public ItemPickUpListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
 
     @EventHandler
     public void onItemPickup(EntityPickupItemEvent event) {

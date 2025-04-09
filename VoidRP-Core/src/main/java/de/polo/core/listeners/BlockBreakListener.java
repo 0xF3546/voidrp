@@ -41,10 +41,6 @@ public class BlockBreakListener implements Listener {
 
     private final HashMap<LocalDateTime, Block> brokenBlocks = new HashMap<>();
 
-    public BlockBreakListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();

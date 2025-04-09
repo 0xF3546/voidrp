@@ -12,10 +12,6 @@ import org.bukkit.inventory.ItemStack;
 @Event
 public class EntityToggleGlideListener implements Listener {
 
-    public EntityToggleGlideListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onPlayerLand(EntityToggleGlideEvent event) {
         if (!(event.getEntity() instanceof Player)) {
