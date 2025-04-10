@@ -53,7 +53,7 @@ public class CoreCrewService implements CrewService {
                 final int id = resultSet.getInt("id");
                 final String name = resultSet.getString("name");
                 final UUID uuid = UUID.fromString(resultSet.getString("owner"));
-                CoreCrew coreCrew = new CoreCrew(id, name, uuid);
+                CoreCrew coreCrew = new CoreCrew(id, name, uuid, resultSet.getInt("level"), resultSet.getInt("exp"));
                 coreCrew.setBossGroup(resultSet.getInt("bossGroup"));
                 coreCrew.setDefaultGroup(resultSet.getInt("defaultGroup"));
                 crews.add(coreCrew);
@@ -110,7 +110,7 @@ public class CoreCrewService implements CrewService {
         database.insertAndGetKeyAsync("INSERT INTO crews (owner, name) VALUES (?, ?)", createCrewDto.getOwner().toString(), createCrewDto.getName())
                 .thenCompose(key -> {
                     if (key.isPresent()) {
-                        final CoreCrew crew = new CoreCrew(key.get(), createCrewDto.getName(), createCrewDto.getOwner());
+                        final CoreCrew crew = new CoreCrew(key.get(), createCrewDto.getName(), createCrewDto.getOwner(), 0, 0);
                         crews.add(crew);
 
                         // Erstelle die Standard-Ränge asynchron

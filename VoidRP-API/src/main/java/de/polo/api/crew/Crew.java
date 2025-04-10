@@ -15,4 +15,7 @@ public interface Crew {
     void addRank(CrewRank rank);
     CrewRank getDefaultRank();
     CrewRank getBossRank();
+    int getLevel();
+    int getExp();
+    void addExp(int exp);
 }

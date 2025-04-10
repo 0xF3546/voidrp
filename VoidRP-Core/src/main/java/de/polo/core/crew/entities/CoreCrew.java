@@ -9,6 +9,8 @@ import lombok.Setter;
 import java.util.List;
 import java.util.UUID;
 
+import static de.polo.core.Main.database;
+
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -33,10 +35,18 @@ public class CoreCrew implements Crew {
     @Setter
     private int bossGroup;
 
-    public CoreCrew(final int id, final String name, final UUID owner) {
+    @Getter
+    private int level = 1;
+
+    @Getter
+    private int exp = 0;
+
+    public CoreCrew(final int id, final String name, final UUID owner, final int level, final int exp) {
         this.id = id;
         this.name = name;
         this.owner = owner;
+        this.level = level;
+        this.exp = exp;
     }
 
     @Override
@@ -66,5 +76,20 @@ public class CoreCrew implements Crew {
                 .filter(rank -> rank.getId() == bossGroup)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public void addExp(int exp) {
+        this.exp += exp;
+        if (this.exp >= level * 3500) {
+            this.level++;
+            this.exp = 0;
+        }
+        database.updateAsync(
+                "UPDATE crews SET level = ?, exp = ? WHERE id = ?",
+                this.level,
+                this.exp,
+                this.id
+        );
     }
 }
