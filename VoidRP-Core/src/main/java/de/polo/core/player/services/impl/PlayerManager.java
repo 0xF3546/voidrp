@@ -62,7 +62,6 @@ import org.json.JSONObject;
 import java.sql.Date;
 import java.sql.*;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1321,7 +1320,7 @@ public class PlayerManager implements Listener {
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
                             AdminService adminService = VoidAPI.getService(AdminService.class);
-                            adminService.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", Color.ORANGE);
+                            adminService.sendMessage(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", Color.ORANGE);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }

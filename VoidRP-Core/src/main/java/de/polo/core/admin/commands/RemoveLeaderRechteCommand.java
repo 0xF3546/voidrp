@@ -11,7 +11,6 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.TeamSpeak;
 import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -55,7 +54,7 @@ public class RemoveLeaderRechteCommand implements CommandExecutor {
         }
         factionManager.setLeader(offlinePlayer, false);
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte entzogen.", Color.PURPLE);
+        adminService.sendMessage(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte entzogen.", Color.PURPLE);
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
             offlinePlayer.getPlayer().sendMessage(Component.text("§6cDir wurden die Leaderrechte entzogen!"));
         }

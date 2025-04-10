@@ -11,7 +11,6 @@ import de.polo.core.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -66,7 +65,7 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
         }
 
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + targetData.getFaction() + "\" geworfen.", Color.PURPLE);
+        adminService.sendMessage(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + targetData.getFaction() + "\" geworfen.", Color.PURPLE);
         factionManager.removePlayerFromFrak(offlinePlayer.getUniqueId());
         factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
         if (offlinePlayer.isOnline()) {

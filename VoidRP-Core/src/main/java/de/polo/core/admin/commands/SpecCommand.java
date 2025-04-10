@@ -8,7 +8,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -41,7 +40,7 @@ public class SpecCommand implements CommandExecutor {
                         player.setSpectatorTarget(targetplayer);
                         playerData.setVariable("isSpec", targetplayer.getUniqueId().toString());
                         player.sendMessage(Prefix.ADMIN + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
-                        adminService.send_message(player.getName() + " beobachtet nun " + targetplayer.getName(), Color.RED);
+                        adminService.sendMessage(player.getName() + " beobachtet nun " + targetplayer.getName(), Color.RED);
                     } else {
                         player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /spec [Spieler]");
                     }
@@ -51,7 +50,7 @@ public class SpecCommand implements CommandExecutor {
                     player.sendMessage(Prefix.ADMIN + "Du hast den Spectator-Modus verlassen");
                     player.teleport(playerData.getLocationVariable("specLoc"));
                     playerData.setVariable("isSpec", null);
-                    adminService.send_message(player.getName() + " hat den Beobachter-Modus verlassen.", Color.RED);
+                    adminService.sendMessage(player.getName() + " hat den Beobachter-Modus verlassen.", Color.RED);
                 }
             } else {
                 player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");

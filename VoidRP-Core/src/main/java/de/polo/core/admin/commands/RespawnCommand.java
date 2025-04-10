@@ -58,7 +58,7 @@ public class RespawnCommand implements CommandExecutor {
         Player targetplayer = Bukkit.getPlayer(args[0]);
         targetplayer.sendMessage(Prefix.MAIN + "§a" + player.getName() + " hat dich Respawnt!");
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " respawnt.", null);
+        adminService.sendMessage(player.getName() + " hat " + targetplayer.getName() + " respawnt.", null);
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
         if (targetplayerData.getFaction() != null) {
             locationManager.useLocation(targetplayer, targetplayerData.getFaction());

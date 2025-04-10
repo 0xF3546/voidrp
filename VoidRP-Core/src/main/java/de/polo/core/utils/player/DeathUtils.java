@@ -113,7 +113,7 @@ public class DeathUtils {
         playerData.setCuffed(false);
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
-        adminService.send_message(player.getName() + " wurde wiederbelebt.", null);
+        adminService.sendMessage(player.getName() + " wurde wiederbelebt.", null);
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }

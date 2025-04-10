@@ -90,9 +90,9 @@ public class DeathListener implements Listener {
         } else {
             AdminService adminService = VoidAPI.getService(AdminService.class);
             if (!playerData.isDead()) {
-                adminService.send_message(player.getName() + " starb.", null);
+                adminService.sendMessage(player.getName() + " starb.", null);
             } else {
-                adminService.send_message(player.getName() + " starb. (Rejoin)", null);
+                adminService.sendMessage(player.getName() + " starb. (Rejoin)", null);
             }
             playerData.setVariable("inventory::base", player.getInventory().getContents());
             player.getInventory().clear();

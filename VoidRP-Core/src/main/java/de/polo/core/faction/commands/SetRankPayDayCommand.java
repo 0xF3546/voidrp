@@ -7,7 +7,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,7 +50,7 @@ public class SetRankPayDayCommand implements CommandExecutor {
                 player.sendMessage(Prefix.FACTION + "PayDay von Rang §l" + args[0] + "§7 zu §l" + args[1] + "§§7 geändert.");
 
                 AdminService adminService = VoidAPI.getService(AdminService.class);
-                adminService.send_message(player.getName() + " den PayDay von Rang " + args[0] + " auf " + args[1] + "$ gesetzt (" + playerData.getFaction() + ").", Color.PURPLE);
+                adminService.sendMessage(player.getName() + " den PayDay von Rang " + args[0] + " auf " + args[1] + "$ gesetzt (" + playerData.getFaction() + ").", Color.PURPLE);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

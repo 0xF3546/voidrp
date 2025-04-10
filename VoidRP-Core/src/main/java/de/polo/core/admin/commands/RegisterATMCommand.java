@@ -7,7 +7,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import lombok.SneakyThrows;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,7 +46,7 @@ public class RegisterATMCommand implements CommandExecutor {
                     if (key.isPresent()) {
                         AdminService adminService = VoidAPI.getService(AdminService.class);
                         player.sendMessage(Prefix.GAMEDESIGN + "Du hast einen ATM registriert #" + key.get());
-                        adminService.send_message(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", Color.ORANGE);
+                        adminService.sendMessage(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", Color.ORANGE);
                     }
                     return null;
                 });

@@ -57,7 +57,7 @@ public class PermbanCommand implements CommandExecutor {
         AdminService adminService = VoidAPI.getService(AdminService.class);
 
         Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + target.getName() + " permanent gebannt. Grund: " + reason);
-        adminService.send_message(player.getName() + " hat " + target.getName() + " Permanent gebannt.", Color.RED);
+        adminService.sendMessage(player.getName() + " hat " + target.getName() + " Permanent gebannt.", Color.RED);
         if (target.isOnline()) {
             Player targetOnPlayer = Bukkit.getPlayer(target.getUniqueId());
             targetOnPlayer.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest Permanent vom Server gebannt.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoidRoleplay §8•");

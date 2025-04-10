@@ -38,7 +38,7 @@ public class JoinListener implements Listener {
                 player.kick(Component.text("§cWir mussten deine Verbindung trennen, da deine Spielerdaten nicht geladen werden konnten."));
                 return;
             }
-            adminService.send_message(player.getName() + " hat den Server betreten.", Color.SILVER);
+            adminService.sendMessage(player.getName() + " hat den Server betreten.", Color.SILVER);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getFaction() != null) {
                 Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
@@ -68,7 +68,7 @@ public class JoinListener implements Listener {
             player.sendMessage("§6VoidRoleplay §8»§7 Herzlich willkommen auf VoidRoleplay, " + player.getName() + ".");
             player.sendMessage(" ");
             locationManager.useLocation(player, "Spawn");
-            adminService.send_message("§c" + player.getName() + "§7 hat sich gerade registriert.", Color.GREEN);
+            adminService.sendMessage("§c" + player.getName() + "§7 hat sich gerade registriert.", Color.GREEN);
         }
         if (player.getGameMode() == GameMode.CREATIVE) {
             Utils.Tablist.setTablist(player, "§8[§2GM§8]");

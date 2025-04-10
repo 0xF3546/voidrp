@@ -11,7 +11,6 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -62,7 +61,7 @@ public class AdminUnInviteCommand implements CommandExecutor {
         }
         if (offlinePlayer.getName().equalsIgnoreCase(args[0])) {
             AdminService adminService = VoidAPI.getService(AdminService.class);
-            adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", Color.PURPLE);
+            adminService.sendMessage(player.getName() + " hat " + offlinePlayer.getName() + " Administrativ aus der Fraktion \"" + dbPlayerData.getFaction() + "\" geworfen.", Color.PURPLE);
             if (offlinePlayer.isOnline()) {
                 try {
                     factionManager.removePlayerFromFrak(offlinePlayer.getPlayer());

@@ -393,7 +393,7 @@ public class BankingUtils implements Listener {
                         player.sendMessage("§8[§aATM§8]§a Du hast " + amount + "$ an " + target.getName() + " überwiesen.");
                         target.sendMessage("§8[§6Bank§8]§a " + player.getName() + " hat dir " + amount + "$ überwiesen.");
                         AdminService adminService = VoidAPI.getService(AdminService.class);
-                        adminService.send_message("§6" + player.getName() + " hat " + target.getName() + " " + amount + "$ überwiesen.", Color.ORANGE);
+                        adminService.sendMessage("§6" + player.getName() + " hat " + target.getName() + " " + amount + "$ überwiesen.", Color.ORANGE);
                     }
                 });
             } else {

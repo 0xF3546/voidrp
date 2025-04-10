@@ -8,7 +8,6 @@ import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -56,7 +55,7 @@ public class ZDCommand implements CommandExecutor {
             }
             AdminService adminService = VoidAPI.getService(AdminService.class);
             PlayerData targetData = playerManager.getPlayerData(target);
-            adminService.send_message(player.getName() + " hat " + target.getName() + " ZD-Note " + grade + " gegeben.", Color.PURPLE);
+            adminService.sendMessage(player.getName() + " hat " + target.getName() + " ZD-Note " + grade + " gegeben.", Color.PURPLE);
             factionManager.sendCustomLeaderMessageToFactions("§cHQ: " + player.getName() + " hat " + target.getName() + " ZD-Note " + grade + " gegeben.", "Medic");
             target.sendMessage("§6Dir wurde ZD-Note " + grade + " gegeben.");
             targetData.setZd(grade);

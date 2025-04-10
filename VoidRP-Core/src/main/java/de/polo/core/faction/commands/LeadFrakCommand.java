@@ -49,7 +49,7 @@ public class LeadFrakCommand extends CommandBase implements TabCompleter {
         FactionService factionService = VoidAPI.getService(FactionService.class);
         AdminService adminService = VoidAPI.getService(AdminService.class);
         factionService.setLeader(targetplayer, true);
-        adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " gesetzt.", Color.PURPLE);
+        adminService.sendMessage(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " gesetzt.", Color.PURPLE);
 
     }
 

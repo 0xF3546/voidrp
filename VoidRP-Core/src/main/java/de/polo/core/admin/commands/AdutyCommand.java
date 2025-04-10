@@ -50,7 +50,7 @@ public class AdutyCommand extends CommandBase implements TabCompleter {
             if (player.isAduty()) {
 
                 player.setAduty(false);
-                adminService.send_message(player.getName() + " hat den Admindienst verlassen.", Color.RED);
+                adminService.sendMessage(player.getName() + " hat den Admindienst verlassen.", Color.RED);
                 player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §cverlassen§7.");
                 player.getPlayer().setFlying(false);
                 player.getPlayer().setAllowFlight(false);
@@ -58,7 +58,7 @@ public class AdutyCommand extends CommandBase implements TabCompleter {
                 player.getPlayer().setCollidable(true);
             } else {
 
-                adminService.send_message(player.getName() + " hat den Admindienst betreten.", Color.RED);
+                adminService.sendMessage(player.getName() + " hat den Admindienst betreten.", Color.RED);
                 player.setAduty(true);
                 player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §abetreten§7.");
                 player.getPlayer().setAllowFlight(true);
@@ -86,14 +86,14 @@ public class AdutyCommand extends CommandBase implements TabCompleter {
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.hidePlayer(Main.getInstance(), player.getPlayer());
                         }
-                        adminService.send_message(player.getName() + " hat den Vanish betreten.", null);
+                        adminService.sendMessage(player.getName() + " hat den Vanish betreten.", null);
                     } else {
                         player.sendMessage(Prefix.ADMIN + "Du bist nun nicht mehr im Vanish.");
                         playerData.setVariable("isVanish", null);
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.showPlayer(Main.getInstance(), player.getPlayer());
                         }
-                        adminService.send_message(player.getName() + " hat den Vanish verlassen.", null);
+                        adminService.sendMessage(player.getName() + " hat den Vanish verlassen.", null);
                     }
                     break;
             }

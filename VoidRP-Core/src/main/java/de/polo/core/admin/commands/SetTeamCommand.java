@@ -7,17 +7,12 @@ import de.polo.core.admin.services.AdminService;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +49,7 @@ public class SetTeamCommand extends CommandBase {
                 PlayerService playerService = VoidAPI.getService(PlayerService.class);
                 AdminService adminService = VoidAPI.getService(AdminService.class);
                 playerService.setRang(offlinePlayer.getUniqueId(), rank);
-                adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", Color.RED);
+                adminService.sendMessage(player.getName() + " hat " + offlinePlayer.getName() + " den Rang " + rank + " gegeben.", Color.RED);
             } else {
                 player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /setgroup [Spieler] [Rang]");
             }

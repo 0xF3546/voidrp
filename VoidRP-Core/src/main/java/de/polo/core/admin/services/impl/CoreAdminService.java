@@ -26,7 +26,7 @@ import static de.polo.core.Main.playerManager;
 @Service
 public class CoreAdminService implements AdminService {
     @Override
-    public void send_message(String msg, Color color) {
+    public void sendMessage(String msg, Color color) {
         if (color == null) {
             color = Color.AQUA;
         }

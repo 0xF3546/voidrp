@@ -3,7 +3,6 @@ package de.polo.core.listeners;
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import de.polo.api.VoidAPI;
-import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
@@ -34,7 +33,7 @@ public class PlayerVoteListener implements Listener {
         assert player != null;
         AdminService adminService = VoidAPI.getService(AdminService.class);
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
-        adminService.send_message(vote.getUsername() + " hat über " + vote.getServiceName() + " gevotet.", Color.GRAY);
+        adminService.sendMessage(vote.getUsername() + " hat über " + vote.getServiceName() + " gevotet.", Color.GRAY);
         if (player.isOnline()) {
             PlayerData playerData = playerService.getPlayerData(player);
             player.sendMessage(Prefix.MAIN + "§6§lDanke§7 für deinen Vote!");

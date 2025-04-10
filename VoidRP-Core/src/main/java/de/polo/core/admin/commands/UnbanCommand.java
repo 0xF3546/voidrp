@@ -6,7 +6,6 @@ import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,7 +45,7 @@ public class UnbanCommand implements CommandExecutor {
                 return false;
             }
             AdminService adminService = VoidAPI.getService(AdminService.class);
-            adminService.send_message(player.getName() + " hat " + res.getString(3) + " entbannt.", Color.RED);
+            adminService.sendMessage(player.getName() + " hat " + res.getString(3) + " entbannt.", Color.RED);
             player.sendMessage(Prefix.ADMIN + "Du hast " + res.getString(3) + " entbannt.");
             Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM player_bans WHERE LOWER(name) = ?", args[0].toLowerCase());
         } catch (SQLException e) {

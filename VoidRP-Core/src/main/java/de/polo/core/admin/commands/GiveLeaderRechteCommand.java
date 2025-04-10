@@ -11,7 +11,6 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.TeamSpeak;
 import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -60,7 +59,7 @@ public class GiveLeaderRechteCommand implements CommandExecutor {
         }
         factionManager.setLeader(offlinePlayer, true);
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte gegeben.", Color.PURPLE);
+        adminService.sendMessage(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte gegeben.", Color.PURPLE);
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
             offlinePlayer.getPlayer().sendMessage(Component.text("§6" + player.getName() + " hat dir Leaderrechte gegeben!"));
         }

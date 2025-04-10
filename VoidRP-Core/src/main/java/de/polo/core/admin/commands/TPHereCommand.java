@@ -8,7 +8,6 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -49,7 +48,7 @@ public class TPHereCommand implements CommandExecutor {
         player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 zu dir teleportiert.");
         targetplayer.sendMessage(Prefix.MAIN + "§c" + playerData.getRang() + " " + player.getName() + "§7 hat dich zu sich teleportiert.");
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.send_message(player.getName() + " hat " + targetplayer.getName() + " zu sich teleportiert.", Color.RED);
+        adminService.sendMessage(player.getName() + " hat " + targetplayer.getName() + " zu sich teleportiert.", Color.RED);
         return false;
     }
 }

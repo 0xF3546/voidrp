@@ -51,12 +51,12 @@ public class FlyCommand implements CommandExecutor {
             target.setFlying(false);
             target.setAllowFlight(false);
             target.sendMessage(Prefix.ADMIN + player.getName() + " hat dir Fly entfernt.");
-            adminService.send_message(player.getName() + " hat " + target.getName() + " Fly entfernt.", null);
+            adminService.sendMessage(player.getName() + " hat " + target.getName() + " Fly entfernt.", null);
         } else {
             target.setAllowFlight(true);
             target.setFlying(true);
             target.sendMessage(Prefix.ADMIN + player.getName() + " hat dir Fly gegeben.");
-            adminService.send_message(player.getName() + " hat " + target.getName() + " Fly gegeben.", null);
+            adminService.sendMessage(player.getName() + " hat " + target.getName() + " Fly gegeben.", null);
         }
         Utils.Tablist.updatePlayer(target);
         return false;

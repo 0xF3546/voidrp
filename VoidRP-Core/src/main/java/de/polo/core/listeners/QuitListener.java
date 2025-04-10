@@ -42,7 +42,7 @@ public class QuitListener implements Listener {
         if (playerData == null) return;
         scoreboardAPI.clearScoreboards(player);
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.send_message(player.getName() + " hat den Server verlassen.", Color.SILVER);
+        adminService.sendMessage(player.getName() + " hat den Server verlassen.", Color.SILVER);
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             player.setGameMode(GameMode.SURVIVAL);
         }
