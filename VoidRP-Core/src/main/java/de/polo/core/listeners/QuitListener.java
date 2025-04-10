@@ -36,6 +36,7 @@ public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        VoidAPI.removePlayer(player);
         event.setQuitMessage("");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
@@ -97,7 +98,5 @@ public class QuitListener implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        VoidAPI.removePlayer(player);
     }
 }
