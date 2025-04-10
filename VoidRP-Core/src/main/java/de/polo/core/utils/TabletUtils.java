@@ -10,6 +10,7 @@ import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.shop.services.ShopService;
 import de.polo.core.storage.*;
 import de.polo.core.game.base.shops.ShopData;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
@@ -624,7 +625,8 @@ public class TabletUtils implements Listener {
             }
         });
         int i = 0;
-        for (ShopData shopData : ServerManager.shopDataMap.values()) {
+        ShopService shopService = VoidAPI.getService(ShopService.class);
+        for (ShopData shopData : shopService.getShops()) {
             if (shopData.getCompany() == null) continue;
             if (shopData.getCompany().equals(playerData.getCompany())) {
                 if (!isAddingPermission) {
@@ -845,11 +847,12 @@ public class TabletUtils implements Listener {
             }
         });
         int i = 9;
+        ShopService shopService = VoidAPI.getService(ShopService.class);
         for (String permission : role.getPermissions()) {
             if (permission.contains("manage_shop")) {
                 ShopData shop = null;
                 int shopId = Integer.parseInt(permission.replace("manage_shop_", ""));
-                for (ShopData shopData : ServerManager.shopDataMap.values()) {
+                for (ShopData shopData : shopService.getShops()) {
                     if (shopData.getId() == shopId) {
                         shop = shopData;
                     }

@@ -199,11 +199,6 @@ public class LocationManager {
         return distshop;
     }
 
-    public String getShopNameById(Integer id) {
-        ShopData shopData = ServerManager.shopDataMap.get(id);
-        return shopData.getName();
-    }
-
     public Integer isPlayerNearOwnHouse(Player player) {
         int centerX = player.getLocation().getBlockX();
         int centerY = player.getLocation().getBlockY();

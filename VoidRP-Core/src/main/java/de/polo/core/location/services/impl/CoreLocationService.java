@@ -49,11 +49,6 @@ public class CoreLocationService implements LocationService {
     }
 
     @Override
-    public String getShopNameById(Integer id) {
-        return locationManager.getShopNameById(id);
-    }
-
-    @Override
     public Integer isPlayerNearOwnHouse(Player player) {
         return locationManager.isPlayerNearOwnHouse(player);
     }

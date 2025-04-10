@@ -171,7 +171,7 @@ public class CoreVehicleService implements VehicleService {
         String uuidString = uuid.toString();
         Integer vehicleId = vehicleIDByUuid.get(uuidString);
         if (vehicleId == null) {
-            throw new VehicleServiceException("No vehicle found for UUID " + uuidString);
+            return;
         }
 
         World world = Bukkit.getWorld(WORLD_NAME);

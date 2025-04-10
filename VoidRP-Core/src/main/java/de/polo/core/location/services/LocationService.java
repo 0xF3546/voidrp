@@ -45,11 +45,6 @@ public interface LocationService {
     int isNearShop(Player player);
 
     /**
-     * Gets the shop name by its ID
-     */
-    String getShopNameById(Integer id);
-
-    /**
      * Checks if a player is near their own house and returns the house ID
      */
     Integer isPlayerNearOwnHouse(Player player);

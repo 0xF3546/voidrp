@@ -1,11 +1,17 @@
 package de.polo.core.game.base.shops;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.crew.Crew;
 import de.polo.core.Main;
+import de.polo.core.crew.services.CrewService;
 import de.polo.core.storage.Company;
 import de.polo.core.utils.enums.ShopType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,6 +27,8 @@ public class ShopData {
     private ShopType type;
     private int company;
     private int bank;
+    @Setter
+    private int crewHolder;
     private List<ShopItem> items = new ObjectArrayList<>();
 
     public int getId() {
@@ -130,5 +138,11 @@ public class ShopData {
 
     public void addItem(ShopItem shopItem) {
         items.add(shopItem);
+    }
+
+    @Nullable
+    public Crew getCrewHolder() {
+        CrewService crewService = VoidAPI.getService(CrewService.class);
+        return crewService.getCrew(crewHolder);
     }
 }

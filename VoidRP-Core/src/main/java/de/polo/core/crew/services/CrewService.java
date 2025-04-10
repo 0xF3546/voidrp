@@ -6,6 +6,7 @@ import de.polo.api.crew.enums.CrewPermission;
 import de.polo.core.crew.dto.CreateCrewDto;
 import de.polo.core.crew.dto.CreateCrewRankDto;
 import de.polo.core.crew.dto.CrewMemberDto;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public interface CrewService {
      * @param id the id of the crew
      * @return the crew with the given id
      */
+    @Nullable
     Crew getCrew(int id);
 
     /**

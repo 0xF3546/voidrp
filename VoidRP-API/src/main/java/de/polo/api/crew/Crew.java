@@ -10,7 +10,6 @@ import java.util.List;
 public interface Crew {
     int getId();
     String getName();
-
     List<CrewRank> getRanks();
     CrewRank getRank(int grade);
     void addRank(CrewRank rank);

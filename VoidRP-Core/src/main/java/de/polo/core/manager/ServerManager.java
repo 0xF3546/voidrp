@@ -48,7 +48,6 @@ public class ServerManager {
     public static final Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
     public static final Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
     public static final Map<String, ContractData> contractDataMap = new HashMap<>();
-    public static final Map<Integer, ShopData> shopDataMap = new HashMap<>();
     public static final Map<String, String> serverVariables = new HashMap<>();
     public static final List<UUID> factionStorageWeaponsTookout = new ObjectArrayList<>();
     private static final Map<String, PayoutData> payoutDataMap = new HashMap<>();
@@ -69,7 +68,6 @@ public class ServerManager {
             loadDBPlayer();
             startTabUpdateInterval();
             everySecond();
-            loadShops();
             loadContracts();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -166,59 +164,6 @@ public class ServerManager {
             contractData.setAmount(locs.getInt(3));
             contractData.setSetter(locs.getString(4));
             contractDataMap.put(locs.getString(2), contractData);
-        }
-        statement.close();
-    }
-
-    private void loadShops() throws SQLException {
-        Statement statement = Main.getInstance().coreDatabase.getStatement();
-        ResultSet locs = statement.executeQuery("SELECT * FROM shops");
-        while (locs.next()) {
-            ShopData shopData = new ShopData();
-            shopData.setId(locs.getInt(1));
-            shopData.setName(locs.getString(2));
-            shopData.setX(locs.getInt(3));
-            shopData.setY(locs.getInt(4));
-            shopData.setZ(locs.getInt(5));
-            shopData.setWelt(Bukkit.getWorld(locs.getString(6)));
-            shopData.setYaw(locs.getFloat(7));
-            shopData.setPitch(locs.getFloat(8));
-            shopData.setBank(locs.getInt("bank"));
-            if (locs.getInt("company") != 0) {
-                shopData.setCompany(locs.getInt("company"));
-            }
-
-            String typeString = locs.getString(9);
-            if (typeString != null) {
-                try {
-                    ShopType type = ShopType.valueOf(typeString.toUpperCase());
-                    shopData.setType(type);
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Invalid shop type: " + typeString);
-                    continue;
-                }
-            } else {
-                System.err.println("Null shop type retrieved from the database");
-                continue;
-            }
-            shopDataMap.put(locs.getInt(1), shopData);
-            try {
-                Statement nStatement = Main.getInstance().coreDatabase.getStatement();
-                ResultSet i = nStatement.executeQuery("SELECT * FROM shop_items WHERE shop = " + shopData.getId());
-                while (i.next()) {
-                    ShopItem item = new ShopItem();
-                    item.setId(i.getInt("id"));
-                    item.setShop(i.getInt("shop"));
-                    item.setMaterial(Material.valueOf(i.getString("material")));
-                    item.setDisplayName(i.getString("name"));
-                    item.setPrice(i.getInt("price"));
-                    item.setType(i.getString("type"));
-                    item.setSecondType(i.getString("type2"));
-                    shopData.addItem(item);
-                }
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
         }
         statement.close();
     }

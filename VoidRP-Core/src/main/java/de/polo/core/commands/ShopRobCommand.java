@@ -1,5 +1,6 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.base.shops.ShopData;
@@ -7,6 +8,7 @@ import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
+import de.polo.core.shop.services.ShopService;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.Progress;
@@ -66,7 +68,8 @@ public class ShopRobCommand implements CommandExecutor {
         player.sendMessage("§b   Info:§f Du bekommst dann jede Minute Geld, bis der Shop leer ist.");
         Main.getInstance().getCooldownManager().setGlobalCooldown("shop_" + shopId, "shoprob", 3600);
         ServerManager.setVariable("shoprob", "isRob");
-        for (ShopData shopData : ServerManager.shopDataMap.values()) {
+        ShopService service = VoidAPI.getService(ShopService.class);
+        for (ShopData shopData : service.getShops()) {
             if (shopData.getId() == shopId) {
                 factionManager.sendMessageToFaction("Polizei", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
                 factionManager.sendMessageToFaction("FBI", "Es wurde ein Shoprob bei \"" + shopData.getName() + "\" gemeldet!");
