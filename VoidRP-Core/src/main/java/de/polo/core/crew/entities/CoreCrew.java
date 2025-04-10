@@ -1,7 +1,9 @@
 package de.polo.core.crew.entities;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.crew.Crew;
 import de.polo.api.crew.CrewRank;
+import de.polo.core.crew.services.CrewService;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -79,12 +81,14 @@ public class CoreCrew implements Crew {
     }
 
     @Override
-    public void addExp(int exp) {
+    public void addExp(int exp, String reason) {
         this.exp += exp;
         if (this.exp >= level * 3500) {
             this.level++;
             this.exp = 0;
         }
+        CrewService crewService = VoidAPI.getService(CrewService.class);
+        crewService.sendMessageToMembers(this, "§c" + getName() + " §8┃ §8➜ §7Die Crew erhällt §a" + exp + " EXP§7 (" + this.exp + "/" + (level * 3500) + ") für §2" + reason + "§7.");
         database.updateAsync(
                 "UPDATE crews SET level = ?, exp = ? WHERE id = ?",
                 this.level,

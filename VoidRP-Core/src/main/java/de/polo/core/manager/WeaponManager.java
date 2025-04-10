@@ -1,5 +1,6 @@
 package de.polo.core.manager;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -9,6 +10,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.player.ChatUtils;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -408,7 +410,13 @@ public class WeaponManager implements Listener {
 
     private void updateWeaponLore(Weapon weapon, ItemStack stack) {
         ItemMeta meta = stack.getItemMeta();
-        meta.setLore(Arrays.asList("§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getType().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
+        WeaponData weaponData = weaponDataMap.get(weapon.getType().getMaterial());
+        meta.lore(Arrays.asList(
+                Component.text("§8▎ §eMagazin§8 » §7[" + ApiUtils.getProgressBar(weapon.getCurrentAmmo(), weaponData.getMaxAmmo(), 8) + ")"),
+                Component.text("§8▎ §eGesamt§8 » §7" + weapon.getAmmo()),
+                Component.text("§8▎ §eGeladen§8 » §7" + weapon.getCurrentAmmo()),
+                Component.text("§8▎ §eTyp§8 » §7" + weapon.getType().getName())
+        ));
         stack.setItemMeta(meta);
     }
 
@@ -422,10 +430,10 @@ public class WeaponManager implements Listener {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, weapon.getId());
 
-        meta.setLore(Arrays.asList("§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + playerWeapon.getWeapon().getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
         weaponList.put(weapon.getId(), weapon);
+        updateWeaponLore(weapon, item);
     }
 
     public void giveWeapon(Player player, de.polo.core.utils.enums.Weapon weapon, WeaponType weaponType) {

@@ -17,5 +17,5 @@ public interface Crew {
     CrewRank getBossRank();
     int getLevel();
     int getExp();
-    void addExp(int exp);
+    void addExp(int exp, String reason);
 }
