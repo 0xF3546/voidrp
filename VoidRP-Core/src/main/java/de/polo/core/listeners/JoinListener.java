@@ -38,7 +38,7 @@ public class JoinListener implements Listener {
                 player.kick(Component.text("§cWir mussten deine Verbindung trennen, da deine Spielerdaten nicht geladen werden konnten."));
                 return;
             }
-            adminService.send_message(player.getName() + " hat den Server betreten.", Color.GRAY);
+            adminService.send_message(player.getName() + " hat den Server betreten.", Color.SILVER);
             player.sendMessage("§6Willkommen zurück, " + player.getName() + "!");
             if (playerData.getFaction() != null) {
                 Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
