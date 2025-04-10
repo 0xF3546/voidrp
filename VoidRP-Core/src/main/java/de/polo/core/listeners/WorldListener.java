@@ -24,7 +24,9 @@ public class WorldListener implements Listener {
             Material.CHEST, Material.TRAPPED_CHEST, Material.ENDER_CHEST, Material.ANVIL,
             Material.DAYLIGHT_DETECTOR, Material.CRAFTING_TABLE, Material.SHULKER_BOX,
             Material.BARREL, Material.BREWING_STAND, Material.BEACON, Material.HOPPER,
-            Material.FURNACE, Material.TURTLE_EGG, Material.CANDLE, Material.FLOWER_POT
+            Material.FURNACE, Material.TURTLE_EGG, Material.CANDLE, Material.FLOWER_POT,
+            Material.COMPOSTER, Material.DISPENSER, Material.DROPPER, Material.LECTERN,
+            Material.JUKEBOX
     );
 
     @SneakyThrows
