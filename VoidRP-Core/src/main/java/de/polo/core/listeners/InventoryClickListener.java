@@ -3,7 +3,6 @@ package de.polo.core.listeners;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.utils.Event;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -345,15 +344,6 @@ public class InventoryClickListener implements Listener {
                         }
                         break;
                 }
-            }
-        }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "carlock")) {
-            event.setCancelled(true);
-            if (event.getCurrentItem().getType() == Material.MINECART) {
-                int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
-                Vehicles.toggleVehicleState(id, player);
-                player.closeInventory();
-                playerData.setVariable("current_inventory", null);
             }
         }
     }

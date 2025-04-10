@@ -6,12 +6,12 @@ import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.storage.Ticket;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.StaatUtil;
 import de.polo.core.utils.enums.PlayerPed;
 import de.polo.core.utils.Event;
+import de.polo.core.vehicles.services.VehicleService;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -72,11 +72,8 @@ public class QuitListener implements Listener {
         if (ped != null) {
             playerData.getPlayerPetManager().despawnPet(ped);
         }
-        try {
-            Vehicles.deleteVehicleByUUID(player.getUniqueId().toString());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+        vehicleService.deleteVehicleByUUID(player.getUniqueId());
         try {
             playerManager.savePlayer(player);
             Ticket ticket = supportManager.getTicket(player);

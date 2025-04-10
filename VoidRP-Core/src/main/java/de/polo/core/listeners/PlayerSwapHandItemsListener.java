@@ -12,7 +12,6 @@ import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.*;
 import de.polo.core.game.base.extra.Storage;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.game.faction.gangwar.Gangwar;
 import de.polo.core.game.faction.gangwar.GangwarUtils;
 import de.polo.core.faction.service.impl.FactionManager;
@@ -25,6 +24,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.*;
 import de.polo.core.utils.player.ChatUtils;
 import de.polo.core.utils.Event;
+import de.polo.core.vehicles.services.VehicleService;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -145,19 +145,22 @@ public class PlayerSwapHandItemsListener implements Listener {
                 return;
             }
         }
-        PlayerVehicleData playerVehicleData = Vehicles.getNearestVehicle(player.getLocation());
-        if (playerVehicleData != null) {
-            if (!playerVehicleData.isLocked()) {
-                if (player.getLocation().distance(playerVehicleData.getLocation()) < 2) {
-                    Storage s = Storage.getStorageByTypeAndPlayer(StorageType.VEHICLE, player, playerVehicleData.getId());
-                    if (s == null) {
-                        s = new Storage(StorageType.VEHICLE);
-                        s.setVehicleId(playerVehicleData.getId());
-                        s.setPlayer(player.getUniqueId().toString());
-                        s.create();
+        VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+        Optional<PlayerVehicleData> playerVehicleData = vehicleService.getNearestVehicle(player.getLocation());
+        if (playerVehicleData.isPresent()) {
+            if (playerVehicleData != null) {
+                if (!playerVehicleData.get().isLocked()) {
+                    if (player.getLocation().distance(playerVehicleData.get().getLocation()) < 2) {
+                        Storage s = Storage.getStorageByTypeAndPlayer(StorageType.VEHICLE, player, playerVehicleData.get().getId());
+                        if (s == null) {
+                            s = new Storage(StorageType.VEHICLE);
+                            s.setVehicleId(playerVehicleData.get().getId());
+                            s.setPlayer(player.getUniqueId().toString());
+                            s.create();
+                        }
+                        s.open(player);
+                        return;
                     }
-                    s.open(player);
-                    return;
                 }
             }
         }

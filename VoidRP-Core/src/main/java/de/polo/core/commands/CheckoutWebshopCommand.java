@@ -1,5 +1,6 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.entities.PlayerData;
@@ -8,6 +9,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.CaseType;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.enums.Weapon;
+import de.polo.core.vehicles.services.VehicleService;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -108,7 +110,8 @@ CheckoutWebshopCommand implements CommandExecutor {
                     ItemManager.addItem(target, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
                     playerManager.addEXPBoost(target, 6);
                     target.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.CHRISTMAS.getDisplayName()));
-                    Main.getInstance().vehicles.giveVehicle(target, "Algerari");
+                    VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+                    vehicleService.giveVehicle(target, "Algerari");
                     playerManager.redeemRank(target, "Premium", 7, "d");
                     return false;
                 }
@@ -198,8 +201,9 @@ CheckoutWebshopCommand implements CommandExecutor {
                                     ItemManager.addItem(player, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
                                     player.getInventory().addItem(ItemManager.createItem(Material.CHEST, 10, 0, CaseType.CHRISTMAS.getDisplayName()));
                                     playerManager.redeemRank(player, "Premium", 7, "d");
+                                    VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
                                     try {
-                                        Main.getInstance().vehicles.giveVehicle(player, "Algerari");
+                                        vehicleService.giveVehicle(player, "Algerari");
                                         playerManager.addEXPBoost(player, 6);
                                     } catch (SQLException e) {
                                         throw new RuntimeException(e);

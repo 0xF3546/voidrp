@@ -14,9 +14,9 @@ import de.polo.core.storage.*;
 import de.polo.core.game.base.shops.ShopData;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.game.base.vehicle.VehicleData;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.*;
+import de.polo.core.vehicles.services.VehicleService;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
@@ -476,10 +476,11 @@ public class TabletUtils implements Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §6Fahrzeuge §8- §6Seite§8:§7 " + page), true, false);
         int i = 0;
         int j = 0;
-        for (PlayerVehicleData playerVehicleData : Vehicles.playerVehicleDataMap.values()) {
+        VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+        for (PlayerVehicleData playerVehicleData : vehicleService.getPlayerVehicles().values()) {
             if (playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
                 if (i >= (18 * (page - 1)) && i < (18 * page)) {
-                    VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
+                    VehicleData vehicleData = vehicleService.getVehicles().get(playerVehicleData.getType());
                     int slotIndex = i % 9;
                     j++;
                     if (j > 9) {
@@ -496,15 +497,11 @@ public class TabletUtils implements Listener {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
                                         player.closeInventory();
-                                        try {
-                                            player.sendMessage(Prefix.MAIN + "Du hast dein " + vehicleData.getName() + " verkauft.");
-                                            playerData.addMoney(price, "Verkauf " + vehicleData.getName());
-                                            Vehicles.deleteVehicleById(vehicleData.getId());
-                                            Main.getInstance().vehicles.removeVehicleFromDatabase(playerVehicleData.getId());
-                                            player.sendMessage(Component.text(Prefix.MAIN + "Du hast dein Fahrzeug verkauft."));
-                                        } catch (SQLException e) {
-                                            throw new RuntimeException(e);
-                                        }
+                                        player.sendMessage(Prefix.MAIN + "Du hast dein " + vehicleData.getName() + " verkauft.");
+                                        playerData.addMoney(price, "Verkauf " + vehicleData.getName());
+                                        vehicleService.deleteVehicleById(vehicleData.getId());
+                                        vehicleService.removeVehicleFromDatabase(playerVehicleData.getId());
+                                        player.sendMessage(Component.text(Prefix.MAIN + "Du hast dein Fahrzeug verkauft."));
                                     }
                                 });
                                 sellInventory.setItem(new CustomItem(14, ItemManager.createItem(Material.RED_WOOL, 1, 0, "§cAbbrechen")) {

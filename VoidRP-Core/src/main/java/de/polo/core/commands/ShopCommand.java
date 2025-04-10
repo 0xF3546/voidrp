@@ -2,6 +2,7 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -14,6 +15,7 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.Paymethod;
 import de.polo.core.utils.enums.ShopType;
 import de.polo.core.utils.enums.Weapon;
+import de.polo.core.vehicles.services.VehicleService;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -26,7 +28,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.*;
 
-import static de.polo.core.Main.vehicles;
 import static de.polo.core.Main.weaponManager;
 
 public class ShopCommand implements CommandExecutor {
@@ -208,7 +209,8 @@ public class ShopCommand implements CommandExecutor {
                     }
                     weaponManager.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
                 } else if (Objects.equals(item.getType(), "car")) {
-                    vehicles.giveVehicle(player, item.getSecondType());
+                    VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+                    vehicleService.giveVehicle(player, item.getSecondType());
                 } else if (Objects.equals(item.getType(), "inventory")) {
                     playerData.getInventory().setSizeToDatabase(playerData.getInventory().getSize() + 25);
                 } else {

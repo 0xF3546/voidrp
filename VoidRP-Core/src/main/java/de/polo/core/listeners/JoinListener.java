@@ -6,9 +6,9 @@ import de.polo.core.admin.services.AdminService;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.CoreVoidPlayer;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.Event;
+import de.polo.core.vehicles.services.VehicleService;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -60,7 +60,8 @@ public class JoinListener implements Listener {
                     }
                 }
             }
-            Vehicles.spawnPlayerVehicles(player);
+            VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+            vehicleService.spawnPlayerVehicles(player);
             serverManager.updateTablist(null);
         } else {
             player.sendMessage(" ");

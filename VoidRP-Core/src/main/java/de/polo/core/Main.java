@@ -31,7 +31,6 @@ import de.polo.core.game.base.extra.beginnerpass.Beginnerpass;
 import de.polo.core.game.base.extra.seasonpass.Seasonpass;
 import de.polo.core.game.base.farming.Farming;
 import de.polo.core.game.base.housing.HouseManager;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.game.faction.streetwar.Streetwar;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.housing.commands.AusziehenCommand;
@@ -106,7 +105,6 @@ public final class Main extends JavaPlugin implements Server {
     @Getter
     public static HouseManager houseManager;
     public static BusinessManager businessManager;
-    public static Vehicles vehicles;
     public static Streetwar streetwar;
     @Getter
     public static WeaponManager weaponManager;
@@ -177,7 +175,6 @@ public final class Main extends JavaPlugin implements Server {
         blockManager = new BlockManager(coreDatabase);
         houseManager = new HouseManager(playerManager, blockManager, locationManager);
         utils = new Utils(playerManager, factionManager, locationManager, houseManager, companyManager);
-        vehicles = new Vehicles(playerManager, locationManager);
         vertragUtil = new VertragUtil(playerManager, factionManager);
         serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
         computerUtils = new ComputerUtils(playerManager, factionManager);
@@ -187,7 +184,7 @@ public final class Main extends JavaPlugin implements Server {
         newsManager = new NewsManager();
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
         gamePlay = new GamePlay(playerManager, utils, coreDatabase, factionManager, locationManager);
-        commands = new Commands(this, playerManager, locationManager, supportManager, vehicles, gamePlay, businessManager, weaponManager, companyManager);
+        commands = new Commands(this, playerManager, locationManager, supportManager, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
 
@@ -302,7 +299,6 @@ public final class Main extends JavaPlugin implements Server {
         private final PlayerManager playerManager;
         private final LocationManager locationManager;
         private final SupportManager supportManager;
-        private final Vehicles vehicles;
         private final GamePlay gamePlay;
         private final BusinessManager businessManager;
         private final WeaponManager weaponManager;
@@ -496,12 +492,11 @@ public final class Main extends JavaPlugin implements Server {
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
 
-        public Commands(Main voidAPI, PlayerManager playerManager, LocationManager locationManager, SupportManager supportManager, Vehicles vehicles, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
+        public Commands(Main voidAPI, PlayerManager playerManager, LocationManager locationManager, SupportManager supportManager, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
             this.voidAPI = voidAPI;
             this.playerManager = playerManager;
             this.locationManager = locationManager;
             this.supportManager = supportManager;
-            this.vehicles = vehicles;
             this.gamePlay = gamePlay;
             this.businessManager = businessManager;
             this.weaponManager = weaponManager;
