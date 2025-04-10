@@ -32,7 +32,7 @@ public class CoreAdminService implements AdminService {
         }
         for (VoidPlayer player : VoidAPI.getPlayers()) {
             if (player.isAduty() || player.notificationsEnabled()) {
-                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToTextColor(color) + msg);
+                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + msg);
             }
         }
     }

@@ -14,4 +14,6 @@ public interface Crew {
     List<CrewRank> getRanks();
     CrewRank getRank(int grade);
     void addRank(CrewRank rank);
+    CrewRank getDefaultRank();
+    CrewRank getBossRank();
 }

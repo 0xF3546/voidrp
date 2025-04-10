@@ -1,6 +1,7 @@
 package de.polo.core.agreement.services;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.storage.Agreement;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static de.polo.core.Main.database;
+
 public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
     public static final HashMap<String, Object> current = new HashMap<>();
@@ -66,15 +69,16 @@ public class VertragUtil {
         }
     }
 
-    private Agreement getActiveAgreement(Player player) {
+    private Agreement getActiveAgreement(VoidPlayer player) {
         return agreements.stream().filter(x -> x.getContractor() == player || x.getContracted() == player).findFirst().orElse(null);
     }
 
     public void setAgreement(Player player, Player target, Agreement agreement) {
-        agreements.remove(getActiveAgreement(player));
-        agreements.remove(getActiveAgreement(target));
+        System.out.println("setAgreement " + player.getName() + " " + target.getName());
+        agreements.remove(getActiveAgreement(VoidAPI.getPlayer(player)));
+        agreements.remove(getActiveAgreement(VoidAPI.getPlayer(target)));
         agreements.add(agreement);
-        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
+        database.insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
                 player.getUniqueId(),
                 target.getUniqueId(),
                 agreement.getType(),
@@ -82,9 +86,10 @@ public class VertragUtil {
     }
 
     public void acceptVertrag(Player player) throws SQLException {
-        Agreement agreement = getActiveAgreement(player);
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        Agreement agreement = getActiveAgreement(voidPlayer);
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        if (agreement != null) {
+        if (agreement != null && agreement.getContracted() == voidPlayer) {
             agreement.accept();
             agreements.remove(agreement);
             return;
@@ -225,8 +230,9 @@ public class VertragUtil {
     }
 
     public void denyVertrag(Player player) {
-        Agreement agreement = getActiveAgreement(player);
-        if (agreement != null) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        Agreement agreement = getActiveAgreement(voidPlayer);
+        if (agreement != null && agreement.getContracted() == voidPlayer) {
             agreement.deny();
             agreements.remove(agreement);
             return;

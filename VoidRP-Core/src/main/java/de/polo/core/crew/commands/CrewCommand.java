@@ -222,7 +222,6 @@ public class CrewCommand extends CommandBase implements Listener {
                     }
                     openCreateCrewRank(player, grade - 1, onBack);
                 }
-                player.getPlayer().closeInventory();
             }
         });
         inventoryManager.setItem(new CustomItem(26, new ItemBuilder(Material.EMERALD)
@@ -322,13 +321,16 @@ public class CrewCommand extends CommandBase implements Listener {
             CrewMemberDto member = crewMembers.get(i);
             int slot = i - startIndex;
 
+            int finalPage3 = page;
             inventoryManager.setItem(new CustomItem(slot, new ItemBuilder(Material.PLAYER_HEAD)
                     .setName("§a" + member.getName())
                     .setOwner(member.getUuid().toString())
                     .build()) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    openCrewMember(player, member);
+                    openCrewMember(player, member, () -> {
+                        openCrewMembers(player, finalPage3, onBack);
+                    });
                 }
             });
         }
@@ -368,7 +370,7 @@ public class CrewCommand extends CommandBase implements Listener {
             });
         }
 
-        inventoryManager.setItem(new CustomItem(46, new ItemBuilder(Material.BARRIER)
+        inventoryManager.setItem(new CustomItem(45, new ItemBuilder(Material.BARRIER)
                 .setName("§cZurück")
                 .build()) {
             @Override
@@ -376,9 +378,24 @@ public class CrewCommand extends CommandBase implements Listener {
                 onBack.run();
             }
         });
+        int finalPage2 = page;
+        inventoryManager.setItem(new CustomItem(46, new ItemBuilder(Material.PAPER)
+                .setName("§8» §cEinladen")
+                .build()) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                if (player.getData().getCrewRank().hasPermission(CrewPermission.INVITE)) {
+                    openInviteMenu(player, () -> {
+                        openCrewMembers(player, finalPage2, onBack);
+                    });
+                } else {
+                    player.sendMessage(Component.text("§cCrew §8┃ §c➜ §7Du hast keine Berechtigung dazu."));
+                }
+            }
+        });
     }
 
-    private void openCrewMember(VoidPlayer voidPlayer, CrewMemberDto crewMember) {
+    private void openCrewMember(VoidPlayer voidPlayer, CrewMemberDto crewMember, Runnable onBack) {
         InventoryManager inventoryManager = new InventoryManager(voidPlayer.getPlayer(), 27, Component.text("§8 » §c" + crewMember.getName()));
         inventoryManager.setItem(new CustomItem(4, new ItemBuilder(Material.PLAYER_HEAD)
                 .setName("§8» §c" + crewMember.getName())
@@ -400,12 +417,12 @@ public class CrewCommand extends CommandBase implements Listener {
                 }
                 openEditPlayerRank(voidPlayer, crewMember, 1, () -> {
                     openCrewMembers(voidPlayer, 1, () -> {
-                        openCrewMember(voidPlayer, crewMember);
+                        openCrewMember(voidPlayer, crewMember, onBack);
                     });
                 });
             }
         });
-        inventoryManager.setItem(new CustomItem(13, new ItemBuilder(Material.BARRIER)
+        inventoryManager.setItem(new CustomItem(14, new ItemBuilder(Material.BARRIER)
                 .setName("§8» §cKick")
                 .build()) {
             @Override
@@ -417,7 +434,7 @@ public class CrewCommand extends CommandBase implements Listener {
                 if (voidPlayer.getData().getCrewRank().hasPermission(CrewPermission.KICK)) {
                     openKickPlayer(voidPlayer, crewMember, () -> {
                         openCrewMembers(voidPlayer, 1, () -> {
-                            openCrewMember(voidPlayer, crewMember);
+                            openCrewMember(voidPlayer, crewMember, onBack);
                         });
                     });
                 } else {
@@ -431,25 +448,7 @@ public class CrewCommand extends CommandBase implements Listener {
                 .build()) {
             @Override
             public void onClick(InventoryClickEvent event) {
-                openCrewMembers(voidPlayer, 1, () -> {
-                    openCrewMember(voidPlayer, crewMember);
-                });
-            }
-        });
-        inventoryManager.setItem(new CustomItem(14, new ItemBuilder(Material.PAPER)
-                .setName("§8» §cEinladen")
-                .build()) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (voidPlayer.getData().getCrewRank().hasPermission(CrewPermission.INVITE)) {
-                    openInviteMenu(voidPlayer, () -> {
-                        openCrewMembers(voidPlayer, 1, () -> {
-                            openCrewMember(voidPlayer, crewMember);
-                        });
-                    });
-                } else {
-                    voidPlayer.sendMessage(Component.text("§cCrew §8┃ §c➜ §7Du hast keine Berechtigung dazu."));
-                }
+                onBack.run();
             }
         });
     }
@@ -473,6 +472,9 @@ public class CrewCommand extends CommandBase implements Listener {
                     Agreement agreement = new Agreement(voidPlayer, player, "CrewInvite",
                             () -> {
                                 crewService.setPlayerCrew(player.getUuid(), voidPlayer.getData().getCrew().getId());
+                                System.out.println("setPlayerCrew " + player.getName() + " " + voidPlayer.getData().getCrew().getId());
+                                crewService.setPlayerCrewRank(player.getUuid(), voidPlayer.getData().getCrew().getDefaultRank().getId());
+                                System.out.println("setPlayerCrewRank " + player.getName() + " " + voidPlayer.getData().getCrew().getDefaultRank().getId());
                                 crewService.sendMessageToMembers(voidPlayer.getData().getCrew(), player.getName() + " ist der Crew beigetreten.");
                                 voidPlayer.sendMessage(Component.text("§cCrew §8┃ §c➜ §7" + player.getName() + " ist der Crew beigetreten."));
                                 player.sendMessage(Component.text("§cCrew §8┃ §c➜ §7Du bist der Crew beigetreten."));

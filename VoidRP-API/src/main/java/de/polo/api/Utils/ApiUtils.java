@@ -25,4 +25,29 @@ public class ApiUtils {
     public static String colorToTextColor(Color color) {
         return TextColor.color(color.getRed(), color.getGreen(), color.getBlue()).toString();
     }
+
+    public static String colorToLegacyCode(Color color) {
+        if (color == null) return "§f"; // fallback
+
+        if (color.equals(Color.BLACK)) return "§0";
+        if (color.equals(Color.NAVY)) return "§1";          // Dark Blue
+        if (color.equals(Color.GREEN)) return "§2";         // Dark Green
+        if (color.equals(Color.TEAL)) return "§3";          // Dark Aqua
+        if (color.equals(Color.MAROON)) return "§4";        // Dark Red
+        if (color.equals(Color.PURPLE)) return "§5";        // Dark Purple
+        if (color.equals(Color.ORANGE)) return "§6";        // Gold
+        if (color.equals(Color.SILVER)) return "§7";          // Gray
+        if (color.equals(Color.GRAY)) return "§8";     // Optional custom if defined
+        if (color.equals(Color.BLUE)) return "§9";          // Blue
+        if (color.equals(Color.LIME)) return "§a";          // Green
+        if (color.equals(Color.AQUA)) return "§b";          // Aqua
+        if (color.equals(Color.RED)) return "§c";           // Red
+        if (color.equals(Color.FUCHSIA)) return "§d";       // Light Purple
+        if (color.equals(Color.YELLOW)) return "§e";        // Yellow
+        if (color.equals(Color.WHITE)) return "§f";         // White
+
+        if (color.equals(Color.OLIVE)) return "§2";
+
+        return "§f";
+    }
 }

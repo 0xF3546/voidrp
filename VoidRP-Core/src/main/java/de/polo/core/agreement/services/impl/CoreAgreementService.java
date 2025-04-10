@@ -29,6 +29,7 @@ public class CoreAgreementService implements AgreementService {
 
     @Override
     public void setAgreement(VoidPlayer player, VoidPlayer target, Agreement agreement) {
+        System.out.println("setAgreement " + player.getPlayer().getName() + " " + target.getPlayer().getName());
         utils.vertragUtil.setAgreement(player.getPlayer(), target.getPlayer(), agreement);
     }
 

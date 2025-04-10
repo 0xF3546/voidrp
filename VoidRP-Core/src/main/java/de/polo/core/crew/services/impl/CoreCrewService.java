@@ -53,7 +53,10 @@ public class CoreCrewService implements CrewService {
                 final int id = resultSet.getInt("id");
                 final String name = resultSet.getString("name");
                 final UUID uuid = UUID.fromString(resultSet.getString("owner"));
-                crews.add(new CoreCrew(id, name, uuid));
+                CoreCrew coreCrew = new CoreCrew(id, name, uuid);
+                coreCrew.setBossGroup(resultSet.getInt("bossGroup"));
+                coreCrew.setDefaultGroup(resultSet.getInt("defaultGroup"));
+                crews.add(coreCrew);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,7 +110,7 @@ public class CoreCrewService implements CrewService {
         database.insertAndGetKeyAsync("INSERT INTO crews (owner, name) VALUES (?, ?)", createCrewDto.getOwner().toString(), createCrewDto.getName())
                 .thenCompose(key -> {
                     if (key.isPresent()) {
-                        final Crew crew = new CoreCrew(key.get(), createCrewDto.getName(), createCrewDto.getOwner());
+                        final CoreCrew crew = new CoreCrew(key.get(), createCrewDto.getName(), createCrewDto.getOwner());
                         crews.add(crew);
 
                         // Erstelle die Standard-Ränge asynchron
@@ -126,6 +129,8 @@ public class CoreCrewService implements CrewService {
 
                                         database.updateAsync("UPDATE crews SET defaultGroup = ? WHERE id = ?", userRank.getId(), crew.getId());
                                         database.updateAsync("UPDATE crews SET bossGroup = ? WHERE id = ?", bossRank.getId(), crew.getId());
+                                        crew.setBossGroup(bossRank.getId());
+                                        crew.setDefaultGroup(userRank.getId());
                                         database.updateAsync("UPDATE players SET crew = ?, crewRank = ? WHERE uuid = ?", crew.getId(), bossRank.getId(), createCrewDto.getOwner().toString())
                                                 .thenRun(() -> {
                                                     VoidPlayer player = VoidAPI.getPlayer(createCrewDto.getOwner());
