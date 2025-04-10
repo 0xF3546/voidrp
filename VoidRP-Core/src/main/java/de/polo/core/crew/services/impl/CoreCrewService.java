@@ -238,7 +238,11 @@ public class CoreCrewService implements CrewService {
     public List<CrewMemberDto> getCrewMembers(final Crew crew) {
         List<CrewMemberDto> crewMembers = new ObjectArrayList<>();
 
-        String query = "SELECT * FROM players WHERE crew = ?";
+        String query = "SELECT p.uuid, p.player_name, p.crewRank " +
+                "FROM players AS p " +
+                "LEFT JOIN crew_ranks AS cr ON cr.id = p.crewRank " +
+                "WHERE p.crew = ? " +
+                "ORDER BY cr.rank DESC";
 
         try (Connection connection = database.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
