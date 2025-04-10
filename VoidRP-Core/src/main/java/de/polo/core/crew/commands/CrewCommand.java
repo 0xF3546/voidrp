@@ -126,7 +126,7 @@ public class CrewCommand extends CommandBase implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (player.getData().getCrewRank().hasPermission(CrewPermission.RANK)) {
-                        openCrewRank(player, rank, () -> {
+                        openCrewRank(player, rank, rank.getRank(), () -> {
                             openCrewRanks(player, finalPage2, onBack);
                         });
                     }
@@ -240,9 +240,10 @@ public class CrewCommand extends CommandBase implements Listener {
         });
     }
 
-    private void openCrewRank(VoidPlayer player, CrewRank crewRank, final Runnable onBack) {
+    private void openCrewRank(VoidPlayer player, CrewRank crewRank, int grade, final Runnable onBack) {
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §c" + crewRank.getName()));
-        int i = 13;
+        CrewService crewService = VoidAPI.getService(CrewService.class);
+        int i = 12;
         if (player.getData().getCrewRank().hasPermission(CrewPermission.PERMISSION)) {
             inventoryManager.setItem(new CustomItem(i, new ItemBuilder(Material.PAPER)
                     .setName("§8» §cBerechtigungen")
@@ -254,7 +255,7 @@ public class CrewCommand extends CommandBase implements Listener {
                         return;
                     }
                     openManagePermissions(player, crewRank, () -> {
-                        openCrewRank(player, crewRank, onBack);
+                        openCrewRank(player, crewRank, grade, onBack);
                     });
                 }
             });
@@ -265,6 +266,31 @@ public class CrewCommand extends CommandBase implements Listener {
                     .build()) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    player.getData().setVariable("chatblock", "editCrewRankName");
+                    player.sendMessage(Component.text("§cCrew §8┃ §c➜ §7Bitte gib den neuen Namen des Ranges ein."));
+                    player.getPlayer().closeInventory();
+                }
+            });
+            inventoryManager.setItem(new CustomItem(i + 2, new ItemBuilder(Material.PAPER)
+                    .setName("§8» §cRang bearbeiten")
+                    .setLore(Arrays.asList(
+                            "§8 ➥ §8[§6Rechtsklick§8]§7 -1",
+                            "§8 ➥ §8[§6Linksklick§8]§7 +1"))
+                    .build()) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    if (event.isLeftClick()) {
+                        openCrewRank(player, crewRank, grade + 1, onBack);
+                        crewService.setRankGrade(crewRank, grade + 1);
+                    } else if (event.isRightClick()) {
+                        if (grade <= 0) {
+                            player.sendMessage(Component.text("§cCrew §8┃ §c➜ §7Der Rang kann nicht niedriger als 0 sein."));
+                            return;
+                        }
+                        player.setVariable("crewRank", crewRank);
+                        crewService.setRankGrade(crewRank, grade - 1);
+                        openCrewRank(player, crewRank,grade - 1, onBack);
+                    }
                 }
             });
         }
@@ -692,6 +718,28 @@ public class CrewCommand extends CommandBase implements Listener {
             event.getPlayerData().setVariable("crewRankName", message);
             openCreateCrewRank(VoidAPI.getPlayer(player), 0, () -> {
                 openMain(VoidAPI.getPlayer(player));
+            });
+            event.end();
+        }
+        if (event.getSubmitTo().equalsIgnoreCase("editCrewRankName")) {
+            if (event.isCancel()) {
+                event.sendCancelMessage();
+                event.end();
+                return;
+            }
+            if (message.length() >= 20) {
+                event.getPlayer().sendMessage(Component.text("§cCrew §8┃ §c➜ §7Der Name deines Ranges ist zu lang!"));
+                event.end();
+                return;
+            }
+            CrewService crewService = VoidAPI.getService(CrewService.class);
+            event.getPlayerData().setVariable("crewRankName", message);
+            CrewRank crewRank = (CrewRank) event.getPlayerData().getVariable("crewRank");
+            crewService.setRankName(crewRank, message);
+            openCrewRank(VoidAPI.getPlayer(player), crewRank, crewRank.getRank(), () -> {
+                openCrewRanks(VoidAPI.getPlayer(player), 1, () -> {
+                    openMain(VoidAPI.getPlayer(player));
+                });
             });
             event.end();
         }

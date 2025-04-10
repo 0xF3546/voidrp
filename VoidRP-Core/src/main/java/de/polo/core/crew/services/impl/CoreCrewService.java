@@ -282,6 +282,22 @@ public class CoreCrewService implements CrewService {
         }
     }
 
+    @Override
+    public void setRankName(CrewRank crewRank, String name) {
+        if (crewRank instanceof CoreCrewRank coreCrewRank) {
+            coreCrewRank.setName(name);
+            database.updateAsync("UPDATE crew_ranks SET name = ? WHERE id = ?", name, crewRank.getId());
+        }
+    }
+
+    @Override
+    public void setRankGrade(CrewRank crewRank, int grade) {
+        if (crewRank instanceof CoreCrewRank coreCrewRank) {
+            coreCrewRank.setRank(grade);
+            database.updateAsync("UPDATE crew_ranks SET rank = ? WHERE id = ?", grade, crewRank.getId());
+        }
+    }
+
     private void updateCrewRankPermissions(CrewRank crewRank) {
         if (crewRank instanceof CoreCrewRank coreCrewRank) {
             String json = new Gson().toJson(coreCrewRank.getPermissions());

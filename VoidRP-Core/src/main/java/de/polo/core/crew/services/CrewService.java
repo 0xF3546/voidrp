@@ -57,4 +57,6 @@ public interface CrewService {
 
     void addRankPermission(CrewRank crewRank, CrewPermission permission);
     void removeRankPermission(CrewRank crewRank, CrewPermission permission);
+    void setRankName(CrewRank crewRank, String name);
+    void setRankGrade(CrewRank crewRank, int grade);
 }

@@ -29,7 +29,8 @@ public class CoreCrewRank implements CrewRank {
     private final TextColor color;
 
     @Getter
-    private final int rank;
+    @Setter
+    private int rank;
 
     @Getter
     private final boolean isDefault;
