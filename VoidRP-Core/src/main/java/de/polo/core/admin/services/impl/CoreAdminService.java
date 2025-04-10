@@ -32,7 +32,7 @@ public class CoreAdminService implements AdminService {
         }
         for (VoidPlayer player : VoidAPI.getPlayers()) {
             if (player.isAduty() || player.notificationsEnabled()) {
-                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + msg);
+                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
             }
         }
     }
@@ -44,7 +44,7 @@ public class CoreAdminService implements AdminService {
         }
         for (VoidPlayer player : VoidAPI.getPlayers()) {
             if (player.getData().getPermlevel() >= 40) {
-                player.sendMessage("§eGuide §8┃ " + color + msg);
+                player.sendMessage("§eGuide §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
             }
         }
     }
