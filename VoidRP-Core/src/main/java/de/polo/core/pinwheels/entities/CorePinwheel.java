@@ -21,7 +21,7 @@ public final class CorePinwheel implements Pinwheel {
     private final String name;
     @Getter
     @Setter
-    private boolean broken = false;
+    private boolean broken = true;
 
     /**
      *

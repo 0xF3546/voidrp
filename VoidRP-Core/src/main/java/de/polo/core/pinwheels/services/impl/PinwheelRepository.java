@@ -28,7 +28,7 @@ public class PinwheelRepository {
                 var resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     var id = resultSet.getInt("id");
-                    var location = resultSet.getString("location");
+                    int location = resultSet.getInt("locationId");
                     var name = resultSet.getString("name");
                     pinwheels.add(new CorePinwheel(id, locationService.getLocation(location), name));
                 }
