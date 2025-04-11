@@ -19,6 +19,8 @@ public interface LocationService {
      */
     void setLocation(String name, Player player);
 
+    int createLocation(String name, Location location);
+
     /**
      * Teleports a player to a named location
      */
@@ -28,6 +30,8 @@ public interface LocationService {
      * Gets a Location object by name
      */
     Location getLocation(String name);
+
+    Location getLocation(int databaseId);
 
     /**
      * Calculates the distance between a player and a named location
