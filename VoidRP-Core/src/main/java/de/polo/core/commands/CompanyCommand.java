@@ -2,14 +2,15 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.storage.Company;
 import de.polo.core.storage.CompanyRole;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.CompanyManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import net.kyori.adventure.text.Component;
@@ -26,12 +27,10 @@ import org.jetbrains.annotations.NotNull;
 public class CompanyCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final CompanyManager companyManager;
-    private final LocationManager locationManager;
 
-    public CompanyCommand(PlayerManager playerManager, CompanyManager companyManager, LocationManager locationManager) {
+    public CompanyCommand(PlayerManager playerManager, CompanyManager companyManager) {
         this.playerManager = playerManager;
         this.companyManager = companyManager;
-        this.locationManager = locationManager;
         Main.registerCommand("company", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
@@ -43,7 +42,8 @@ public class CompanyCommand implements CommandExecutor, Listener {
         Company company = playerData.getCompany();
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("manage")) {
-                if (locationManager.getDistanceBetweenCoords(player, "firmenverwaltung") > 5) {
+                LocationService locationService = VoidAPI.getService(LocationService.class);
+                if (locationService.getDistanceBetweenCoords(player, "firmenverwaltung") > 5) {
                     player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Firmenverwaltung.");
                     return false;
                 }

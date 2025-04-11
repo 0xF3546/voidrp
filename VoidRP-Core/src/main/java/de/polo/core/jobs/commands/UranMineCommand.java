@@ -8,8 +8,8 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.RegisteredBlock;
@@ -61,8 +61,9 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (ServerManager.canDoJobs()) {
-            boolean nearMine = locationManager.getDistanceBetweenCoords(player, "uranmine") <= 5;
-            boolean nearPowerPlant = locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") <= 5;
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            boolean nearMine = locationService.getDistanceBetweenCoords(player, "uranmine") <= 5;
+            boolean nearPowerPlant = locationService.getDistanceBetweenCoords(player, "atomkraftwerk") <= 5;
 
             if (!nearMine && !nearPowerPlant) {
                 player.sendMessage(Prefix.ERROR + "Du bist weder in der Nähe der Uranmine noch des Atomkraftwerks.");
@@ -149,7 +150,8 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
     @Override
     public void endJob(VoidPlayer player) {
         int uranCount = ItemManager.getCustomItemCount(player.getPlayer(), RoleplayItem.URAN);
-        if (uranCount > 0 && locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") <= 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (uranCount > 0 && locationService.getDistanceBetweenCoords(player, "atomkraftwerk") <= 5) {
             handleDrop(player);
         } else {
             PlayerService playerService = VoidAPI.getService(PlayerService.class);
@@ -177,7 +179,8 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
 
     @Override
     public void handleDrop(VoidPlayer player) {
-        if (locationManager.getDistanceBetweenCoords(player, "atomkraftwerk") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "atomkraftwerk") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der Nähe des Atomkraftwerks.");
             return;
         }
@@ -215,7 +218,8 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
     }
 
     private boolean isBlock(Block block) {
-        return rollOutLocations.stream().anyMatch(loc -> LocationManager.isLocationEqual(block.getLocation(), loc));
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        return rollOutLocations.stream().anyMatch(loc -> locationService.isLocationEqual(block.getLocation(), loc));
     }
 
     @EventHandler

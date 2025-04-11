@@ -1,9 +1,10 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Location;
@@ -16,12 +17,10 @@ import org.jetbrains.annotations.NotNull;
 public class DutyCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
 
-    public DutyCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
+    public DutyCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
         Main.registerCommand("duty", this);
     }
 
@@ -33,7 +32,8 @@ public class DutyCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion");
             return false;
         }
-        Location location = locationManager.getLocation("duty_" + playerData.getFaction());
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        Location location = locationService.getLocation("duty_" + playerData.getFaction());
         if (location == null) {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion hat kein Dienst-Punkt.");
             return false;

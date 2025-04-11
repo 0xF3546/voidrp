@@ -157,7 +157,6 @@ commands:
   bizinvite:
     aliases: businessinvite
   respawn:
-  farming:
   gethead:
   factions:
     aliases: fraktionen
@@ -311,3 +310,4 @@ commands:
   crew:
   crewchat:
     aliases: [c]
+  createpinwheel:

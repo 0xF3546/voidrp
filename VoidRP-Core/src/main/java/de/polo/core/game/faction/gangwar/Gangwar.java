@@ -1,7 +1,9 @@
 package de.polo.core.game.faction.gangwar;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +42,7 @@ public class Gangwar extends GangwarData {
 
 
     public void start() {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -52,7 +55,7 @@ public class Gangwar extends GangwarData {
                 }
                 captured.clear();
                 for (int i = 1; i <= 3; i++) {
-                    Location location = locationManager.getLocation("gangwar_capture_" + gangZone.getName().toLowerCase().replace(" ", "") + "-" + i);
+                    Location location = locationService.getLocation("gangwar_capture_" + gangZone.getName().toLowerCase().replace(" ", "") + "-" + i);
                     if (location != null) {
                         utils.summonCircle(location, 2, Particle.REDSTONE);
 

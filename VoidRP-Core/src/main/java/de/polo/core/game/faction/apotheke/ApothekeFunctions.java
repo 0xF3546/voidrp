@@ -2,9 +2,10 @@ package de.polo.core.game.faction.apotheke;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.ApothekeTakeOut;
 import de.polo.core.faction.entity.Faction;
@@ -46,15 +47,13 @@ public class ApothekeFunctions implements Listener {
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
     private final HashMap<Apotheke, Integer> rob = new HashMap<>();
-    private final LocationManager locationManager;
 
     @SneakyThrows
-    public ApothekeFunctions(CoreDatabase coreDatabase, Utils utils, FactionManager factionManager, PlayerManager playerManager, LocationManager locationManager) {
+    public ApothekeFunctions(CoreDatabase coreDatabase, Utils utils, FactionManager factionManager, PlayerManager playerManager) {
         this.coreDatabase = coreDatabase;
         this.utils = utils;
         this.factionManager = factionManager;
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         loadApotheken();
     }
@@ -276,8 +275,9 @@ public class ApothekeFunctions implements Listener {
     @SneakyThrows
     @EventHandler
     public void MinuteTick(MinuteTickEvent event) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         for (Apotheke apotheke : rob.keySet()) {
-            Location location = locationManager.getLocation("apotheke-" + apotheke.getId());
+            Location location = locationService.getLocation("apotheke-" + apotheke.getId());
             if (!factionManager.isFactionMemberInRange(apotheke.getAttackerFaction(), location, 30, false)) {
                 rob.remove(apotheke);
                 factionManager.sendCustomMessageToFaction(apotheke.getOwner(), "§8[§cApotheke-" + apotheke.getId() + "§8]§a Die Angreifer haben aufgehört die Apotheke einzuschüchtern.");

@@ -5,6 +5,7 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.handler.TabCompletion;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.LocationData;
@@ -34,8 +35,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static de.polo.core.Main.locationManager;
-
 public class NavigationManager implements Listener {
     private final PlayerManager playerManager;
 
@@ -47,10 +46,11 @@ public class NavigationManager implements Listener {
     public static NaviData getNearestNaviPoint(Location location) {
         NaviData nearest = null;
         double nearestDistance = Double.MAX_VALUE;
-        for (NaviData data : LocationManager.naviDataMap.values()) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        for (NaviData data : locationService.getNavis()) {
             if (data.getLocation() == null) continue;
             if (data.isGroup()) continue;
-            Location dataLocation = locationManager.getLocation(data.getLocation());
+            Location dataLocation = locationService.getLocation(data.getLocation());
             if (dataLocation == null) continue;
             System.out.println(dataLocation);
             double distance = dataLocation.distance(location);
@@ -61,7 +61,7 @@ public class NavigationManager implements Listener {
             }
         }
         if (nearest == null) {
-            nearest = LocationManager.naviDataMap.values().stream().findFirst().orElse(null);
+            nearest = locationService.getNavis().stream().findFirst().orElse(null);
         }
         return nearest;
     }
@@ -72,7 +72,8 @@ public class NavigationManager implements Listener {
         playerData.setVariable("originClass", this);
 
         int i = 10;
-        for (NaviData naviData : LocationManager.naviDataMap.values()) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        for (NaviData naviData : locationService.getNavis()) {
             if (search == null) {
                 if (naviData.isGroup()) {
                     ItemStack stack = ItemManager.createItem(naviData.getItem(), 1, 0, "§e▶ " + naviData.getName().replace("&", "§"));
@@ -90,15 +91,15 @@ public class NavigationManager implements Listener {
                             });
 
                             int j = 10;
-                            for (NaviData newNavi : LocationManager.naviDataMap.values()) {
+                            for (NaviData newNavi : locationService.getNavis()) {
                                 if (newNavi.getGroup().equalsIgnoreCase(naviData.getGroup()) && !newNavi.isGroup()) {
                                     ItemStack item = ItemManager.createItem(newNavi.getItem(), 1, 0, newNavi.getName().replace("&", "§"),
-                                            "§7 ➔ §e" + (int) Main.getInstance().locationManager.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m");
+                                            "§7 ➔ §e" + (int) locationService.getDistanceBetweenCoords(player, newNavi.getLocation()) + "m");
                                     naviInventory.setItem(new CustomItem(j, item) {
                                         @Override
                                         public void onClick(InventoryClickEvent event) {
                                             player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + newNavi.getName().replace("&", "§") + "§7 gesetzt.");
-                                            LocationData locationData = LocationManager.locationDataMap.get(newNavi.getLocation());
+                                            LocationData locationData = locationService.getLocations().stream().filter(x -> x.getName().equalsIgnoreCase(newNavi.getLocation())).findFirst().orElse(null);
                                             createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                                             player.closeInventory();
                                         }
@@ -119,7 +120,7 @@ public class NavigationManager implements Listener {
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             player.sendMessage("\u00a78[\u00a76GPS\u00a78]\u00a77 Route zu " + naviData.getName().replace("&", "§") + "§7 gesetzt.");
-                            LocationData locationData = LocationManager.locationDataMap.get(naviData.getLocation());
+                            LocationData locationData = locationService.getLocations().stream().filter(x -> x.getName().equalsIgnoreCase(naviData.getLocation())).findFirst().orElse(null);
                             createNaviByCord(player, locationData.getX(), locationData.getY(), locationData.getZ());
                             player.closeInventory();
                         }
@@ -185,10 +186,11 @@ public class NavigationManager implements Listener {
     }
 
     public void createNavi(Player player, String nav, boolean silent) {
-        for (LocationData locationData : LocationManager.locationDataMap.values()) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        for (LocationData locationData : locationService.getLocations()) {
             if (locationData.getName().equalsIgnoreCase(nav)) {
                 boolean isNavi = false;
-                for (NaviData naviData : LocationManager.naviDataMap.values()) {
+                for (NaviData naviData : locationService.getNavis()) {
                     if (naviData.getLocation() == null) continue;
                     if (naviData.getLocation().equalsIgnoreCase(locationData.getName())) {
                         isNavi = true;
@@ -237,7 +239,8 @@ public class NavigationManager implements Listener {
     }
 
     public void createNaviByLocation(Player player, String nav) {
-        for (LocationData locationData : LocationManager.locationDataMap.values()) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        for (LocationData locationData : locationService.getLocations()) {
             if (locationData.getName().equalsIgnoreCase(nav)) {
                 playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", nav);
                 final double length = 5.0;

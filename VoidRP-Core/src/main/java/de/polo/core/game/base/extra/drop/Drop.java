@@ -3,6 +3,7 @@ package de.polo.core.game.base.extra.drop;
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.game.base.housing.House;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.storage.NaviData;
@@ -36,10 +37,11 @@ public class Drop {
 
     public Drop(Location location) {
         NavigationService navigationService = VoidAPI.getService(NavigationService.class);
+        LocationService locationService = VoidAPI.getService(LocationService.class);;
         lastBlock = location.getBlock();
         this.location = location;
         NaviData naviData = navigationService.getNearestNaviPoint(location);
-        Location naviLocation = Main.getInstance().locationManager.getLocation(naviData.getLocation());
+        Location naviLocation = locationService.getLocation(naviData.getLocation());
         if (location.distance(naviLocation) > 100) {
             Bukkit.broadcastMessage("§cDrop §8┃ §cSchmuggler haben eine Kiste verloren. Informanten haben die Koordinaten X: " + location.getX() + " Y: " + location.getY() + " Z: " + location.getZ() + " übermittelt.");
         } else {

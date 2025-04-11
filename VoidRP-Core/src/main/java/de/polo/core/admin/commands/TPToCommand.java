@@ -4,9 +4,9 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.storage.LocationData;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Effect;
@@ -22,11 +22,9 @@ import java.util.List;
 
 public class TPToCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public TPToCommand(PlayerManager playerManager, LocationManager locationManager) {
+    public TPToCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.registerCommand("tpto", this);
     }
 
@@ -35,13 +33,14 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (voidPlayer.isAduty()) {
             if (args.length >= 1) {
                 StringBuilder message = new StringBuilder();
                 for (String arg : args) {
                     message.append(" ").append(arg);
                 }
-                locationManager.useLocation(player, String.valueOf(message).replace(" ", ""));
+                locationService.useLocation(player, String.valueOf(message).replace(" ", ""));
                 player.sendMessage(Prefix.ADMIN + "Du hast dich zu §c" + message + "§7 teleportiert.");
                 player.getWorld().playEffect(player.getLocation().add(0.0D, 0.0D, 0.0D), Effect.ENDER_SIGNAL, 1);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 2);
@@ -57,8 +56,9 @@ public class TPToCommand implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         return TabCompletion.getBuilder(args)
-                .addAtIndex(1, LocationManager.locationDataMap.values()
+                .addAtIndex(1, locationService.getLocations()
                         .stream()
                         .map(LocationData::getName)
                         .toList())

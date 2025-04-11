@@ -8,6 +8,7 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
@@ -28,8 +29,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-
-import static de.polo.core.Main.locationManager;
 
 @CommandBase.CommandMeta(
         name = "minenarbeiter",
@@ -66,8 +65,8 @@ public class MineCommand extends CommandBase implements MiningJob {
                 player.sendMessage(Prefix.error_cantinteract);
                 return;
             }
-
-            if (locationManager.getDistanceBetweenCoords(player, "mine") <= 5) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            if (locationService.getDistanceBetweenCoords(player, "mine") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Minenarbeiter"), true, true);
 
                 // Start Job Option

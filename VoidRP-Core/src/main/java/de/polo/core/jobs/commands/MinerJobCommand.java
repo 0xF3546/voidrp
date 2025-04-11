@@ -2,10 +2,11 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
@@ -39,15 +40,13 @@ public class MinerJobCommand implements CommandExecutor {
 
     private final PlayerManager playerManager;
     private final GamePlay gamePlay;
-    private final LocationManager locationManager;
     private final FactionManager factionManager;
 
     private final List<RegisteredBlock> registeredBlocks;
 
-    public MinerJobCommand(PlayerManager playerManager, GamePlay gamePlay, LocationManager locationManager, FactionManager factionManager) {
+    public MinerJobCommand(PlayerManager playerManager, GamePlay gamePlay, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.gamePlay = gamePlay;
-        this.locationManager = locationManager;
         this.factionManager = factionManager;
 
 
@@ -59,7 +58,8 @@ public class MinerJobCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (locationManager.getDistanceBetweenCoords(player, "Miner") < 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "Miner") < 5) {
             open(player);
         }
         return false;

@@ -25,7 +25,6 @@ import de.polo.core.faction.commands.*;
 import de.polo.core.game.base.CustomTabAPI;
 import de.polo.core.game.base.extra.beginnerpass.Beginnerpass;
 import de.polo.core.game.base.extra.seasonpass.Seasonpass;
-import de.polo.core.game.base.farming.Farming;
 import de.polo.core.game.base.housing.HouseManager;
 import de.polo.core.game.faction.streetwar.Streetwar;
 import de.polo.core.handler.CommandBase;
@@ -33,7 +32,6 @@ import de.polo.core.housing.commands.AusziehenCommand;
 import de.polo.core.housing.commands.RentCommand;
 import de.polo.core.jobs.commands.*;
 import de.polo.core.listeners.*;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.manager.*;
 import de.polo.core.news.services.impl.NewsManager;
 import de.polo.core.phone.commands.AuflegenCommand;
@@ -94,7 +92,6 @@ public final class Main extends JavaPlugin implements Server {
     public Commands commands;
     public static FactionManager factionManager;
     public static ServerManager serverManager;
-    public static LocationManager locationManager;
     public static VertragUtil vertragUtil;
     public static SupportManager supportManager;
     public static ComputerUtils computerUtils;
@@ -166,21 +163,20 @@ public final class Main extends JavaPlugin implements Server {
         supportManager = new SupportManager(coreDatabase);
         playerManager = new PlayerManager(coreDatabase);
         cooldownManager = new CooldownManager();
-        locationManager = new LocationManager(coreDatabase);
         factionManager = new FactionManager(playerManager);
         blockManager = new BlockManager(coreDatabase);
-        houseManager = new HouseManager(playerManager, blockManager, locationManager);
-        utils = new Utils(playerManager, factionManager, locationManager, houseManager, companyManager);
+        houseManager = new HouseManager(playerManager, blockManager);
+        utils = new Utils(playerManager, factionManager, houseManager, companyManager);
         vertragUtil = new VertragUtil(playerManager, factionManager);
-        serverManager = new ServerManager(playerManager, factionManager, utils, locationManager);
+        serverManager = new ServerManager(playerManager, factionManager, utils);
         computerUtils = new ComputerUtils(playerManager, factionManager);
         businessManager = new BusinessManager(playerManager);
         streetwar = new Streetwar(playerManager, factionManager, utils);
         weaponManager = new WeaponManager(utils, playerManager);
         newsManager = new NewsManager();
         //laboratory = new Laboratory(playerManager, factionManager, locationManager);
-        gamePlay = new GamePlay(playerManager, utils, coreDatabase, factionManager, locationManager);
-        commands = new Commands(this, playerManager, locationManager, supportManager, gamePlay, businessManager, weaponManager, companyManager);
+        gamePlay = new GamePlay(playerManager, utils, coreDatabase, factionManager);
+        commands = new Commands(this, playerManager, supportManager, gamePlay, businessManager, weaponManager, companyManager);
         seasonpass = new Seasonpass(playerManager, factionManager);
         beginnerpass = new Beginnerpass(playerManager, factionManager);
 
@@ -293,7 +289,6 @@ public final class Main extends JavaPlugin implements Server {
     public class Commands {
         private final Main voidAPI;
         private final PlayerManager playerManager;
-        private final LocationManager locationManager;
         private final SupportManager supportManager;
         private final GamePlay gamePlay;
         private final BusinessManager businessManager;
@@ -390,7 +385,6 @@ public final class Main extends JavaPlugin implements Server {
         public BizInviteCommand bizInviteCommand;
         public RespawnCommand respawnCommand;
         //public DealerCommand dealerCommand;
-        public Farming farming;
         public GetHeadCommand getHeadCommand;
         public FactionsCommand factionsCommand;
         public ServerReloadCommand serverReloadCommand;
@@ -487,10 +481,9 @@ public final class Main extends JavaPlugin implements Server {
         public GwdCommand gwdCommand;
         public ZDCommand zdCommand;
 
-        public Commands(Main voidAPI, PlayerManager playerManager, LocationManager locationManager, SupportManager supportManager, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
+        public Commands(Main voidAPI, PlayerManager playerManager, SupportManager supportManager, GamePlay gamePlay, BusinessManager businessManager, WeaponManager weaponManager, CompanyManager companyManager) {
             this.voidAPI = voidAPI;
             this.playerManager = playerManager;
-            this.locationManager = locationManager;
             this.supportManager = supportManager;
             this.gamePlay = gamePlay;
             this.businessManager = businessManager;
@@ -500,8 +493,8 @@ public final class Main extends JavaPlugin implements Server {
         }
 
         private void Init() {
-            minerJobCommand = new MinerJobCommand(playerManager, gamePlay, locationManager, factionManager);
-            undertakerCommand = new UndertakerCommand(playerManager, locationManager);
+            minerJobCommand = new MinerJobCommand(playerManager, gamePlay, factionManager);
+            undertakerCommand = new UndertakerCommand(playerManager);
             checkoutWebshopCommand = new CheckoutWebshopCommand(playerManager);
             setFactionChatColorCommand = new SetFactionChatColorCommand(playerManager, factionManager);
             roadBlockCommand = new RoadBlockCommand(factionManager, playerManager);
@@ -514,7 +507,7 @@ public final class Main extends JavaPlugin implements Server {
             teamChatCommand = new TeamChatCommand(playerManager, utils);
             fraktionsChatCommand = new FraktionsChatCommand(playerManager, factionManager, utils);
             uninviteCommand = new UninviteCommand(playerManager, factionManager);
-            locationCommand = new LocationCommand(locationManager);
+            locationCommand = new LocationCommand();
             setFrakCommand = new SetFrakCommand(playerManager, factionManager);
             adminUnInviteCommand = new AdminUnInviteCommand(playerManager, factionManager, utils);
             assistentchatCommand = new AssistentchatCommand(playerManager, utils);
@@ -522,7 +515,7 @@ public final class Main extends JavaPlugin implements Server {
             cancelSupportCommand = new CancelSupportCommand(supportManager);
             acceptTicketCommand = new AcceptTicketCommand(playerManager, supportManager, utils);
             closeTicketCommand = new CloseTicketCommand(playerManager, supportManager, utils);
-            tpToCommand = new TPToCommand(playerManager, locationManager);
+            tpToCommand = new TPToCommand(playerManager);
             adminReviveCommand = new AdminReviveCommand(playerManager, utils);
             playerInfoCommand = new PlayerInfoCommand(playerManager, factionManager);
             meCommand = new MeCommand();
@@ -530,11 +523,11 @@ public final class Main extends JavaPlugin implements Server {
             govCommand = new GovCommand(playerManager, factionManager, utils);
             ticketsCommand = new TicketsCommand(playerManager, supportManager);
             teamCommand = new TeamCommand(playerManager);
-            shopCommand = new ShopCommand(playerManager, locationManager, companyManager);
+            shopCommand = new ShopCommand(playerManager, companyManager);
             annehmenCommand = new AnnehmenCommand(utils);
             ablehnenVertrag = new AblehnenVertrag(utils);
             inviteCommand = new InviteCommand(playerManager, factionManager, utils, businessManager);
-            rentCommand = new RentCommand(playerManager, locationManager, utils);
+            rentCommand = new RentCommand(playerManager, utils);
             arrestCommand = new ArrestCommand(playerManager, factionManager, utils);
             tpCommand = new TPCommand(playerManager);
             tpHereCommand = new TPHereCommand(playerManager);
@@ -555,7 +548,7 @@ public final class Main extends JavaPlugin implements Server {
             unbanCommand = new UnbanCommand(playerManager);
             getVehCommand = new GetVehCommand(playerManager);
             goToVehCommand = new GoToVehCommand(playerManager);
-            einreiseCommand = new EinreiseCommand(playerManager, locationManager);
+            einreiseCommand = new EinreiseCommand(playerManager);
             registerHouseCommand = new RegisterHouseCommand(playerManager);
             reinforcementCommand = new ReinforcementCommand(playerManager, factionManager);
             buyHouseCommand = new BuyHouseCommand(playerManager, blockManager);
@@ -584,7 +577,7 @@ public final class Main extends JavaPlugin implements Server {
             memberCommand = new MemberCommand(playerManager, factionManager);
             contractsCommand = new ContractsCommand(playerManager, factionManager);
             contractCommand = new ContractCommand(playerManager, factionManager);
-            nachrichtenCommand = new NachrichtenCommand(playerManager, locationManager);
+            nachrichtenCommand = new NachrichtenCommand(playerManager);
             businessChatCommand = new BusinessChatCommand(playerManager, businessManager);
             leadBusinessCommand = new LeadBusinessCommand(playerManager, businessManager);
             frakInfoCommand = new FrakInfoCommand(factionManager);
@@ -598,9 +591,8 @@ public final class Main extends JavaPlugin implements Server {
             frakStatsCommand = new FrakStatsCommand(playerManager, factionManager, utils);
             checkInvCommand = new CheckInvCommand(playerManager);
             bizInviteCommand = new BizInviteCommand(playerManager, utils, businessManager);
-            respawnCommand = new RespawnCommand(playerManager, utils, locationManager);
+            respawnCommand = new RespawnCommand(playerManager, utils);
             //dealerCommand = new DealerCommand(playerManager, gamePlay, locationManager, factionManager);
-            farming = new Farming(playerManager, locationManager, utils);
             getHeadCommand = new GetHeadCommand();
             factionsCommand = new FactionsCommand(playerManager, factionManager);
             serverReloadCommand = new ServerReloadCommand();
@@ -613,35 +605,35 @@ public final class Main extends JavaPlugin implements Server {
             noteCommand = new NoteCommand(playerManager, utils);
             registerblockCommand = new RegisterblockCommand(playerManager, blockManager);
             registerATMCommand = new RegisterATMCommand(playerManager);
-            apothekeCommand = new ApothekeCommand(playerManager, locationManager, gamePlay);
+            apothekeCommand = new ApothekeCommand(playerManager, gamePlay);
             apothekenCommand = new ApothekenCommand(playerManager, gamePlay, factionManager);
             businessCommand = new BusinessCommand(playerManager, businessManager);
-            equipCommand = new EquipCommand(playerManager, factionManager, locationManager, weaponManager);
+            equipCommand = new EquipCommand(playerManager, factionManager, weaponManager);
             tsLinkCommand = new TSLinkCommand(playerManager);
             tsUnlinkCommand = new TSUnlinkCommand(playerManager);
             //teamSpeak = new TeamSpeak(playerManager, factionManager, utils);
-            fDoorCommand = new FDoorCommand(playerManager, blockManager, locationManager);
+            fDoorCommand = new FDoorCommand(playerManager, blockManager);
             changeSpawnCommand = new ChangeSpawnCommand(playerManager, utils);
             //findLaboratoryCommand = new FindLaboratoryCommand(playerManager, utils, locationManager);
             invSeeCommand = new InvSeeCommand(playerManager);
             useCommand = new UseCommand(gamePlay);
             ausziehenCommand = new AusziehenCommand(utils);
-            companyCommand = new CompanyCommand(playerManager, companyManager, locationManager);
-            dailyBonusCommand = new DailyBonusCommand(playerManager, locationManager);
+            companyCommand = new CompanyCommand(playerManager, companyManager);
+            dailyBonusCommand = new DailyBonusCommand(playerManager);
             winzerCommand = new WinzerCommand();
             rebstockCommand = new RebstockCommand(playerManager);
-            muschelSammlerCommand = new MuschelSammlerCommand(playerManager, locationManager);
-            gasStationCommand = new GasStationCommand(playerManager, locationManager, companyManager);
+            muschelSammlerCommand = new MuschelSammlerCommand(playerManager);
+            gasStationCommand = new GasStationCommand(playerManager, companyManager);
             resetBonusEntryCommand = new ResetBonusEntryCommand(playerManager);
-            dutyCommand = new DutyCommand(playerManager, factionManager, locationManager);
+            dutyCommand = new DutyCommand(playerManager, factionManager);
             deleteBrokenEntitiesCommand = new DeleteBrokenEntitiesCommand();
             adminGiveRankCommand = new AdminGiveRankCommand(playerManager);
-            subGroupCommand = new SubGroupCommand(playerManager, factionManager, locationManager);
+            subGroupCommand = new SubGroupCommand(playerManager, factionManager);
             subGroupChatCommand = new SubGroupChatCommand(playerManager, factionManager);
             permbanCommand = new PermbanCommand(playerManager);
             flyCommand = new FlyCommand(playerManager);
             workstationCommand = new WorkstationCommand(playerManager);
-            weaponcrafterCommand = new WeaponcrafterCommand(locationManager, playerManager);
+            weaponcrafterCommand = new WeaponcrafterCommand(playerManager);
             sperrzoneCommand = new SperrzoneCommand();
             sperrzonenCommand = new SperrzonenCommand(playerManager);
             faqCommand = new FAQCommand();
@@ -662,9 +654,9 @@ public final class Main extends JavaPlugin implements Server {
             openInvCommand = new OpenInvCommand(playerManager);
             geworbenCommand = new GeworbenCommand();
             kickSecondaryTeam = new KickSecondaryTeam(playerManager);
-            auktionCommand = new AuktionCommand(playerManager, factionManager, locationManager);
+            auktionCommand = new AuktionCommand(playerManager, factionManager);
             fixBlockCommand = new FixBlockCommand(playerManager, blockManager);
-            pfeifenTransport = new PfeifenTransport(playerManager, factionManager, locationManager);
+            pfeifenTransport = new PfeifenTransport(playerManager, factionManager);
             blacklistReasonsCommand = new BlacklistReasonsCommand(playerManager, factionManager);
             modifyBlacklistCommand = new ModifyBlacklistCommand(playerManager, factionManager);
             autoBlacklistCommand = new AutoBlacklistCommand(playerManager, factionManager);

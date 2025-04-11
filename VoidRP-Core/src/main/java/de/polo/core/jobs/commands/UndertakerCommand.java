@@ -5,11 +5,11 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.storage.Corpse;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -29,11 +29,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class UndertakerCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public UndertakerCommand(PlayerManager playerManager, LocationManager locationManager) {
+    public UndertakerCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
 
         Main.registerCommand("undertaker", this);
     }
@@ -42,7 +40,8 @@ public class UndertakerCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (locationManager.getDistanceBetweenCoords(player, "undertaker") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "undertaker") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Bestatters.");
             return false;
         }

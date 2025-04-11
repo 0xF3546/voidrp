@@ -3,6 +3,7 @@ package de.polo.core.listeners;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
@@ -147,6 +148,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         }
         VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
         Optional<PlayerVehicleData> playerVehicleData = vehicleService.getNearestVehicle(player.getLocation());
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (playerVehicleData.isPresent()) {
             if (playerVehicleData != null) {
                 if (!playerVehicleData.get().isLocked()) {
@@ -164,7 +166,7 @@ public class PlayerSwapHandItemsListener implements Listener {
                 }
             }
         }
-        if (Main.getInstance().locationManager.getDistanceBetweenCoords(player, "staatsbank") < 5) {
+        if (locationService.getDistanceBetweenCoords(player, "staatsbank") < 5) {
             Main.getInstance().gamePlay.openStaatsbankRaub(player);
             return;
         }
@@ -187,7 +189,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         }
         playerData.setVariable("current_inventory", null);
         if (nearestSkull == null) {
-            for (LocationData locationData : Main.getInstance().locationManager.getLocations()) {
+            for (LocationData locationData : locationService.getLocations()) {
                 if (locationData.getType() == null) continue;
                 if (locationData.getInfo() == null) continue;
                 if (!locationData.getType().equalsIgnoreCase("storage")) {

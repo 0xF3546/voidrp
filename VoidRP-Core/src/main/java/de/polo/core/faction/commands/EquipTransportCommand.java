@@ -6,6 +6,7 @@ import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -60,7 +61,8 @@ public class EquipTransportCommand implements CommandExecutor, TransportJob {
     public void handleDrop(VoidPlayer player) {
         PlayerData playerData = playerManager.getPlayerData(player.getPlayer());
         if (playerData == null) return;
-        if (locationManager.getDistanceBetweenCoords(player, "equip_" + playerData.getFaction()) > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "equip_" + playerData.getFaction()) > 5) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe deiner Fraktion."));
             return;
         }

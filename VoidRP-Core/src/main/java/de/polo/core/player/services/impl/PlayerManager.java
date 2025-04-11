@@ -8,6 +8,7 @@ import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.crew.services.CrewService;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.api.player.VoidPlayer;
@@ -273,7 +274,8 @@ public class PlayerManager implements Listener {
             playerData.setRewardId(result.getInt("rewardId"));
             playerData.getInventory().setSize(result.getInt("inventorySize"));
             if (!result.getBoolean("tpNewmap")) {
-                locationManager.useLocation(player, "stadthalle");
+                LocationService locationService = VoidAPI.getService(LocationService.class);
+                locationService.useLocation(player, "stadthalle");
                 coreDatabase.updateAsync("UPDATE players SET tpNewmap = true WHERE uuid = ?", player.getUniqueId().toString());
             }
 

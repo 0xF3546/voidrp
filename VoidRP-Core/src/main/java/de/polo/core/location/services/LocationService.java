@@ -3,10 +3,12 @@ package de.polo.core.location.services;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.storage.GasStationData;
 import de.polo.core.storage.LocationData;
+import de.polo.core.storage.NaviData;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Mayson1337
@@ -19,6 +21,8 @@ public interface LocationService {
      */
     void setLocation(String name, Player player);
 
+    int createLocation(String name, Location location);
+
     /**
      * Teleports a player to a named location
      */
@@ -28,6 +32,8 @@ public interface LocationService {
      * Gets a Location object by name
      */
     Location getLocation(String name);
+
+    Location getLocation(int databaseId);
 
     /**
      * Calculates the distance between a player and a named location
@@ -83,4 +89,6 @@ public interface LocationService {
      * Checks if two locations are equal based on coordinates
      */
     boolean isLocationEqual(Location first, Location second);
+    List<GasStationData> getGasStations();
+    List<NaviData> getNavis();
 }

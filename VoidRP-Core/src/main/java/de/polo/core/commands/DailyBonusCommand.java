@@ -2,10 +2,11 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.CaseType;
@@ -25,11 +26,9 @@ import java.util.Arrays;
 
 public class DailyBonusCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public DailyBonusCommand(PlayerManager playerManager, LocationManager locationManager) {
+    public DailyBonusCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.registerCommand("dailybonus", this);
     }
 
@@ -38,7 +37,8 @@ public class DailyBonusCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (locationManager.getDistanceBetweenCoords(player, "dailybonus") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "dailybonus") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Bonus-Händlers.");
             return false;
         }

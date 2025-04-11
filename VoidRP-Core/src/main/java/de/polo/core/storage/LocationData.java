@@ -15,6 +15,19 @@ public class LocationData {
     private float pitch;
     private String type;
     private String info;
+    public LocationData() {}
+    public LocationData(int id, String name, int x, int y, int z, String welt, float yaw, float pitch, String type, String info) {
+        this.id = id;
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.welt = welt;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.type = type;
+        this.info = info;
+    }
 
     public int getId() {
         return id;

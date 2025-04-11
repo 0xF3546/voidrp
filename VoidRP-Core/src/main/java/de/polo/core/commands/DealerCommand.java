@@ -5,7 +5,6 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.Dealer;
 import de.polo.core.faction.entity.Faction;
@@ -31,13 +30,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class DealerCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final GamePlay gamePlay;
-    private final LocationManager locationManager;
     private final FactionManager factionManager;
 
-    public DealerCommand(PlayerManager playerManager, GamePlay gamePlay, LocationManager locationManager, FactionManager factionManager) {
+    public DealerCommand(PlayerManager playerManager, GamePlay gamePlay, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.gamePlay = gamePlay;
-        this.locationManager = locationManager;
         this.factionManager = factionManager;
         Main.registerCommand("dealer", this);
     }

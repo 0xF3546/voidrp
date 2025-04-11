@@ -8,11 +8,11 @@ import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
@@ -33,10 +33,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-
-import java.sql.SQLException;
-
-import static de.polo.core.Main.locationManager;
 
 @CommandBase.CommandMeta(
         name = "holzfäller",
@@ -87,7 +83,8 @@ public class LumberjackCommand extends CommandBase implements MiningJob {
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData asd, @NotNull String[] args) throws Exception {
         if (ServerManager.canDoJobs()) {
             PlayerService playerService = VoidAPI.getService(PlayerService.class);
-            if (locationManager.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            if (locationService.getDistanceBetweenCoords(player, "holzfaeller") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Holzfäller"), true, true);
                 if (!playerService.isInJobCooldown(player, MiniJob.LUMBERJACK) && player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aHolzfäller starten")) {

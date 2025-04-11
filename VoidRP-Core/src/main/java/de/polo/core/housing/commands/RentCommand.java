@@ -1,8 +1,9 @@
 package de.polo.core.housing.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.game.base.housing.House;
-import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -16,12 +17,10 @@ import org.bukkit.entity.Player;
 
 public class RentCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
     private final Utils utils;
 
-    public RentCommand(PlayerManager playerManager, LocationManager locationManager, Utils utils) {
+    public RentCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         this.utils = utils;
         Main.registerCommand("rent", this);
     }
@@ -35,7 +34,8 @@ public class RentCommand implements CommandExecutor {
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
         if (!targetplayer.isOnline()) player.sendMessage(Prefix.ERROR + "Spieler ist nicht online.");
-        Integer haus = locationManager.isPlayerNearOwnHouse(player);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        Integer haus = locationService.isPlayerNearOwnHouse(player);
         if (haus == 0) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deines Hauses.");
             return false;

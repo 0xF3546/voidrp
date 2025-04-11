@@ -6,7 +6,7 @@ import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.game.base.vehicle.VehicleData;
-import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
@@ -201,8 +201,9 @@ public class VehicleListener implements Listener {
         event.setCancelled(true);
         Player player = event.getPlayer();
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
 
-        GasStationData gasStationData = LocationManager.gasStationDataMap.get(stationId);
+        GasStationData gasStationData = locationService.getGasStations().stream().filter(x -> x.getId() == stationId).findFirst().orElse(null);
         PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
 
         InventoryManager inventoryManager = buildGasStationInventory(player, gasStationData, playerData);

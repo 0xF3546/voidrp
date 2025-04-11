@@ -5,6 +5,7 @@ import de.polo.api.jobs.TransportJob;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ServerManager;
 import de.polo.api.player.VoidPlayer;
@@ -30,8 +31,9 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (args.length > 0) {
-            if (locationManager.getDistanceBetweenCoords(player, "bar_storage") < 5
+            if (locationService.getDistanceBetweenCoords(player, "bar_storage") < 5
                     && playerData.getVariable("job") != null
                     && playerData.getVariable("job") == "flaschentransport"
                     && args[0].equalsIgnoreCase("drop")) {
@@ -39,7 +41,7 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
                 return;
             }
         }
-        if (locationManager.getDistanceBetweenCoords(player, "flaschenlieferant") > 5) {
+        if (locationService.getDistanceBetweenCoords(player, "flaschenlieferant") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Flaschenlieferants.");
             return;
         }
