@@ -9,5 +9,5 @@ import org.bukkit.Location;
  * @version 1.0.0
  * @since 1.0.0
  */
-public record CorePinwheel(@Getter Location location, @Getter String name) implements Pinwheel {
+public record CorePinwheel(@Getter int id, @Getter Location location, @Getter String name) implements Pinwheel {
 }
