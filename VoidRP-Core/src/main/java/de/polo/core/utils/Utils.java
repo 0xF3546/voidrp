@@ -7,7 +7,6 @@ import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.game.base.housing.HouseManager;
 import de.polo.core.game.faction.gangwar.GangwarUtils;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.manager.*;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
@@ -57,10 +56,10 @@ public class Utils {
     @Getter
     public Tutorial tutorial;
 
-    public Utils(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, CompanyManager companyManager) {
-        deathUtil = new DeathUtils(playerManager, locationManager);
+    public Utils(PlayerManager playerManager, FactionManager factionManager, HouseManager houseManager, CompanyManager companyManager) {
+        deathUtil = new DeathUtils(playerManager);
         vertragUtil = new VertragUtil(playerManager, factionManager);
-        staatUtil = new StaatUtil(playerManager, factionManager, locationManager, this);
+        staatUtil = new StaatUtil(playerManager, factionManager, this);
         tutorial = new Tutorial(playerManager);
         this.houseManager = houseManager;
         payDayUtils = new PayDayUtils(playerManager, factionManager);
@@ -68,7 +67,7 @@ public class Utils {
         this.companyManager = companyManager;
         tabletUtils = new TabletUtils(playerManager, factionManager, this, companyManager);
         phoneUtils = new PhoneUtils(playerManager, this);
-        gangwarUtils = new GangwarUtils(playerManager, factionManager, locationManager);
+        gangwarUtils = new GangwarUtils(playerManager, factionManager);
     }
 
     public static String stringArrayToString(String[] args) {

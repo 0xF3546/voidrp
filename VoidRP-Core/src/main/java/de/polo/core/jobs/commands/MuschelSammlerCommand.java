@@ -2,10 +2,11 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
@@ -29,12 +30,10 @@ import java.util.HashMap;
 
 public class MuschelSammlerCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
     private final HashMap<Block, LocalDateTime> blocksBroken = new HashMap<>();
 
-    public MuschelSammlerCommand(PlayerManager playerManager, LocationManager locationManager) {
+    public MuschelSammlerCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.registerCommand("muschelsammler", this);
     }
 
@@ -42,7 +41,8 @@ public class MuschelSammlerCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (locationManager.getDistanceBetweenCoords(player, "muschelsammler") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "muschelsammler") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Muschelsammlers.");
             return false;
         }

@@ -2,11 +2,12 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
@@ -25,11 +26,9 @@ import java.sql.SQLException;
 
 public class NachrichtenCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public NachrichtenCommand(PlayerManager playerManager, LocationManager locationManager) {
+    public NachrichtenCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         Main.registerCommand("nachrichten", this);
     }
@@ -37,7 +36,8 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
-        if (locationManager.getDistanceBetweenCoords(player, "nachrichten") < 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "nachrichten") < 5) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Nachrichtengebäude"), true, true);
             inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GREEN_DYE, 1, 0, "§2Werbung schalten", "§8 ➥ §7" + ServerManager.getPayout("werbung") + "$/Zeichen")) {

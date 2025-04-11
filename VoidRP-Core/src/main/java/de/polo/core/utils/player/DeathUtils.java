@@ -3,12 +3,12 @@ package de.polo.core.utils.player;
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.storage.Corpse;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -43,11 +43,9 @@ public class DeathUtils {
     private final List<Corpse> corpses = new ObjectArrayList<>();
 
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public DeathUtils(PlayerManager playerManager, LocationManager locationManager) {
+    public DeathUtils(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
     }
 
     public static boolean isDead(Player player) throws SQLException {
@@ -127,7 +125,10 @@ public class DeathUtils {
         playerData.setDeathLocation(null);
         playerData.setHitmanDead(false);
         playerData.setStabilized(false);
-        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
+        if (playerData.isJailed()) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            locationService.useLocation(player, "gefaengnis");
+        }
         try {
             Statement statement = Main.getInstance().coreDatabase.getStatement();
             assert statement != null;
@@ -210,8 +211,9 @@ public class DeathUtils {
                 }
             }
             playerData.removeBankMoney(despawnPrice, "Krankenhauskosten");
+            LocationService locationService = VoidAPI.getService(LocationService.class);
             if (playerData.getSpawn() == null) {
-                locationManager.useLocation(player, "Krankenhaus");
+                locationService.useLocation(player, "Krankenhaus");
             } else {
                 try {
                     int id = Integer.parseInt(playerData.getSpawn());
@@ -225,7 +227,7 @@ public class DeathUtils {
                         }
                     }
                 } catch (Exception e) {
-                    locationManager.useLocation(player, playerData.getSpawn());
+                    locationService.useLocation(player, playerData.getSpawn());
                 }
             }
             player.sendMessage(Prefix.MAIN + "Du bist im Krankenhaus aufgewacht.");
@@ -239,8 +241,11 @@ public class DeathUtils {
         playerManager.setPlayerMove(player, true);
         playerData.save();
         ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
-        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
-        if (playerData.isJailed()) removeWeapons(player);
+        if (playerData.isJailed()) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            locationService.useLocation(player, "gefaengnis");
+            removeWeapons(player);
+        }
     }
 
     private void spawnCorpse(Player player) {

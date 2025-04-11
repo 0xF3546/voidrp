@@ -6,8 +6,8 @@ import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -19,8 +19,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
-
-import static de.polo.core.Main.locationManager;
 
 @CommandBase.CommandMeta(
         name = "lebensmittellieferant",
@@ -35,15 +33,16 @@ public class LebensmittelLieferantCommand extends CommandBase implements Transpo
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (player.getActiveJob() == null) {
-            if (locationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
+            if (locationService.getDistanceBetweenCoords(player, "lieferant") <= 5) {
                 startJob(player);
             } else {
                 player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe des §aLebensmittel-Lieferanten§7 Jobs!");
             }
         } else {
             if (playerData.getVariable("job").equals("lieferant")) {
-                if (locationManager.getDistanceBetweenCoords(player, "lieferant") <= 5) {
+                if (locationService.getDistanceBetweenCoords(player, "lieferant") <= 5) {
                     player.sendMessage(prefix + "Du hast den Job Lebensmittel-Lieferant beendet.");
                     playerData.setVariable("job", null);
                     endJob(player);
@@ -56,7 +55,8 @@ public class LebensmittelLieferantCommand extends CommandBase implements Transpo
 
     @Override
     public void handleDrop(VoidPlayer player) {
-        int shop = locationManager.isNearShop(player.getPlayer());
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        int shop = locationService.isNearShop(player.getPlayer());
         if (shop > 0) {
             PlayerService playerService = VoidAPI.getService(PlayerService.class);
             int drinks = (int) player.getVariable("drinks");

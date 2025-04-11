@@ -2,11 +2,12 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.api.player.enums.Gender;
@@ -28,11 +29,9 @@ import java.util.Date;
 
 public class EinreiseCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public EinreiseCommand(PlayerManager playerManager, LocationManager locationManager) {
+    public EinreiseCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.registerCommand("einreise", this);
     }
 
@@ -58,7 +57,8 @@ public class EinreiseCommand implements CommandExecutor {
 
     public void openEinrese(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (locationManager.getDistanceBetweenCoords(player, "einreise") > 10) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "einreise") > 10) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Einreise.");
             return;
         }

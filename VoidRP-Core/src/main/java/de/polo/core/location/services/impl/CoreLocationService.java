@@ -461,4 +461,14 @@ public class CoreLocationService implements LocationService {
                 first.getBlockY() == second.getBlockY() &&
                 first.getBlockZ() == second.getBlockZ();
     }
+
+    @Override
+    public List<GasStationData> getGasStations() {
+        return gasStations;
+    }
+
+    @Override
+    public List<NaviData> getNavis() {
+        return naviData;
+    }
 }

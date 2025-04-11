@@ -2,6 +2,8 @@ package de.polo.core.utils.gameplay;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.database.impl.CoreDatabase;
@@ -18,7 +20,6 @@ import de.polo.core.game.faction.houseban.Houseban;
 import de.polo.core.game.faction.plants.PlantFunctions;
 import de.polo.core.game.faction.staat.GOVRaid;
 import de.polo.core.game.faction.staat.StaatsbankRob;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.manager.*;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.*;
@@ -66,7 +67,6 @@ public class GamePlay implements Listener {
     private final Utils utils;
     private final CoreDatabase coreDatabase;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
     private final List<Dealer> dealers = new ObjectArrayList<>();
     @Getter
     private final FFA ffa;
@@ -84,21 +84,20 @@ public class GamePlay implements Listener {
     private boolean isStaatsbankRobBlocked = false;
 
     @SneakyThrows
-    public GamePlay(PlayerManager playerManager, Utils utils, CoreDatabase coreDatabase, FactionManager factionManager, LocationManager locationManager) {
+    public GamePlay(PlayerManager playerManager, Utils utils, CoreDatabase coreDatabase, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.utils = utils;
         this.coreDatabase = coreDatabase;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
         drugstorage = new Drugstorage(playerManager, factionManager);
-        apotheke = new ApothekeFunctions(coreDatabase, utils, factionManager, playerManager, locationManager);
-        plant = new PlantFunctions(coreDatabase, utils, factionManager, playerManager, locationManager);
+        apotheke = new ApothekeFunctions(coreDatabase, utils, factionManager, playerManager);
+        plant = new PlantFunctions(coreDatabase, utils, factionManager, playerManager);
         factionUpgradeGUI = new FactionUpgradeGUI(factionManager, playerManager, utils);
         houseban = new Houseban(playerManager, factionManager);
         displayNameManager = new DisplayNameManager(playerManager, factionManager, Main.getInstance().getScoreboardAPI());
         alliance = new Alliance(playerManager, factionManager, utils);
-        militaryDrop = new MilitaryDrop(playerManager, factionManager, locationManager);
-        ffa = new FFA(playerManager, locationManager);
+        militaryDrop = new MilitaryDrop(playerManager, factionManager);
+        ffa = new FFA(playerManager);
         crypto = new Crypto();
 
         /*
@@ -434,7 +433,8 @@ public class GamePlay implements Listener {
         lastDrop = Utils.getTime();
         if (activeDrop != null) activeDrop.cleanup();
         List<LocationData> dropLocations = new ObjectArrayList<>();
-        for (LocationData locationData : locationManager.getLocations()) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        for (LocationData locationData : locationService.getLocations()) {
             if (locationData.getType() == null) continue;
             if (locationData.getType().equalsIgnoreCase("drop")) {
                 dropLocations.add(locationData);
@@ -632,6 +632,7 @@ public class GamePlay implements Listener {
     }
 
     public void openGOVRaidGUI(Faction factionData, Player attacker) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         InventoryManager inventoryManager = new InventoryManager(attacker, 27, Component.text("§8 » §cRazzia"));
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItem(Material.DIAMOND_HORSE_ARMOR, 1, 0, "§" + factionData.getPrimaryColor() + factionData.getFullname() + " raiden")) {
             @Override
@@ -660,7 +661,7 @@ public class GamePlay implements Listener {
                         attacker.sendMessage(Component.text(Prefix.ERROR + "Du musst mindestens Rang 3 sein."));
                         return;
                     }
-                    if (locationManager.getDistanceBetweenCoords(attacker, "fdoor_" + factionData.getName()) > 5) {
+                    if (locationService.getDistanceBetweenCoords(attacker, "fdoor_" + factionData.getName()) > 5) {
                         attacker.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Fraktionstür.");
                         return;
                     }

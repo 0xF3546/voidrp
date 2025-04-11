@@ -1,21 +1,19 @@
 package de.polo.core.manager;
 
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.game.base.shops.ShopData;
-import de.polo.core.game.base.shops.ShopItem;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.game.faction.gangwar.Gangwar;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.*;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.FFAStatsType;
-import de.polo.core.utils.enums.ShopType;
 import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.player.ScoreboardAPI;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -56,13 +54,11 @@ public class ServerManager {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
-    private final LocationManager locationManager;
 
-    public ServerManager(PlayerManager playerManager, FactionManager factionManager, Utils utils, LocationManager locationManager) {
+    public ServerManager(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.utils = utils;
-        this.locationManager = locationManager;
         try {
             loadRanks();
             loadDBPlayer();
@@ -222,7 +218,8 @@ public class ServerManager {
                     Bukkit.spigot().restart();
                     return;
                 }
-                for (LocationData locationData : locationManager.getLocations()) {
+                LocationService locationService = VoidAPI.getService(LocationService.class);
+                for (LocationData locationData : locationService.getLocations()) {
                     if (locationData.getType() == null) continue;
                     if (locationData.getInfo() == null) continue;
                     if (!locationData.getType().equalsIgnoreCase("storage")) {

@@ -5,8 +5,8 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.NaviData;
 import de.polo.core.storage.RegisteredBlock;
@@ -39,6 +39,7 @@ public class NavigationCommand extends CommandBase implements TabCompleter {
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         NavigationService navigationService = VoidAPI.getService(NavigationService.class);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (player.getVariable("navi") == null) {
             if (args.length >= 1) {
                 if (args[0].contains("haus:")) {
@@ -111,7 +112,7 @@ public class NavigationCommand extends CommandBase implements TabCompleter {
                     navigationService.createNaviByCord(player.getPlayer(), Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
                 } else {
                     String nav = Utils.stringArrayToString(args);
-                    NaviData data = LocationManager.naviDataMap.values().stream()
+                    NaviData data = locationService.getNavis().stream()
                             .filter(x -> !x.isGroup() && x.getClearName().equalsIgnoreCase(nav))
                             .findFirst()
                             .orElse(null);
@@ -133,8 +134,9 @@ public class NavigationCommand extends CommandBase implements TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         return TabCompletion.getBuilder(args)
-                .addAtIndex(1, LocationManager.naviDataMap.values().stream().filter(x -> !x.isGroup())
+                .addAtIndex(1, locationService.getNavis().stream().filter(x -> !x.isGroup())
                         .map(NaviData::getClearName).toList())
                 .build();
     }

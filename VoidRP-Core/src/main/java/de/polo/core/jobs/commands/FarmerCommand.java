@@ -9,6 +9,7 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
@@ -28,8 +29,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-
-import static de.polo.core.Main.locationManager;
 
 @CommandBase.CommandMeta(
         name = "farmer",
@@ -56,7 +55,8 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         if (ServerManager.canDoJobs()) {
-            if (locationManager.getDistanceBetweenCoords(player, "farmer") <= 5) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            if (locationService.getDistanceBetweenCoords(player, "farmer") <= 5) {
                 PlayerService playerService = VoidAPI.getService(PlayerService.class);
                 InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §eFarmer"), true, true);
 
@@ -205,7 +205,8 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
 
     @Override
     public void handleDrop(VoidPlayer player) {
-        if (locationManager.getDistanceBetweenCoords(player, "Mühle") < 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "Mühle") < 5) {
             PlayerService playerService = VoidAPI.getService(PlayerService.class);
             int payout = Utils.random(ServerManager.getPayout("weizenlieferant"), ServerManager.getPayout("weizenlieferant2"));
             player.sendMessage("§8[§eLieferant§8]§7 Danke für's abliefern. §a+" + payout + "$");

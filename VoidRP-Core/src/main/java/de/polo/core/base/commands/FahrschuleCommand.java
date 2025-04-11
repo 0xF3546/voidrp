@@ -2,7 +2,9 @@ package de.polo.core.base.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
@@ -12,8 +14,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
-
-import static de.polo.core.Main.locationManager;
 
 /**
  * @author Mayson1337
@@ -28,7 +28,8 @@ public class FahrschuleCommand extends CommandBase {
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        if (locationManager.getDistanceBetweenCoords(player, "fahrschule_access") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "fahrschule_access") > 5) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe der Fahrschule."));
             return;
         }

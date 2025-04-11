@@ -16,7 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import static de.polo.api.Utils.enums.Prefix.ERROR;
-import static de.polo.core.Main.locationManager;
 
 public class DropCommand implements CommandExecutor {
     private final PlayerManager playerManager;

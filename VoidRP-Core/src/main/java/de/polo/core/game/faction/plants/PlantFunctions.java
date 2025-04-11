@@ -2,14 +2,15 @@ package de.polo.core.game.faction.plants;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.game.events.MinuteTickEvent;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -41,21 +42,20 @@ public class PlantFunctions implements Listener {
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
     private final HashMap<Plant, Integer> rob = new HashMap<>();
-    private final LocationManager locationManager;
 
     @SneakyThrows
-    public PlantFunctions(CoreDatabase coreDatabase, Utils utils, FactionManager factionManager, PlayerManager playerManager, LocationManager locationManager) {
+    public PlantFunctions(CoreDatabase coreDatabase, Utils utils, FactionManager factionManager, PlayerManager playerManager) {
         this.coreDatabase = coreDatabase;
         this.utils = utils;
         this.factionManager = factionManager;
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     private Plant getPlantByBlock(Block block) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         for (Plant plant : getPlants()) {
-            if (LocationManager.isLocationEqual(plant.getBlock().getLocation(), block.getLocation())) return plant;
+            if (locationService.isLocationEqual(plant.getBlock().getLocation(), block.getLocation())) return plant;
         }
         return null;
     }

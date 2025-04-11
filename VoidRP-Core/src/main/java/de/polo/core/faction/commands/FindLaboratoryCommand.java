@@ -2,9 +2,9 @@ package de.polo.core.faction.commands;
 
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -18,12 +18,10 @@ import org.jetbrains.annotations.NotNull;
 public class FindLaboratoryCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
-    private final LocationManager locationManager;
 
-    public FindLaboratoryCommand(PlayerManager playerManager, Utils utils, LocationManager locationManager) {
+    public FindLaboratoryCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
-        this.locationManager = locationManager;
         Main.registerCommand("findlaboratory", this);
     }
 
@@ -35,7 +33,8 @@ public class FindLaboratoryCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        Location location = locationManager.getLocation(playerData.getFaction() + "_laboratory");
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        Location location = locationService.getLocation(playerData.getFaction() + "_laboratory");
         if (location == null) {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion hat kein Labor.");
             return false;

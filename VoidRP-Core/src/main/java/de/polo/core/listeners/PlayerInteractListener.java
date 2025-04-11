@@ -12,6 +12,7 @@ import de.polo.core.game.base.housing.House;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.jobs.commands.MuellmannCommand;
 import de.polo.core.jobs.commands.PostboteCommand;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.WeaponManager;
 import de.polo.core.storage.ATM;
@@ -271,7 +272,8 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
-                        if (Main.getInstance().locationManager.getDistanceBetweenCoords(player, "asservatenkammer") < 20) {
+                        LocationService locationService = VoidAPI.getService(LocationService.class);
+                        if (locationService.getDistanceBetweenCoords(player, "asservatenkammer") < 20) {
                             Main.getInstance().gamePlay.drugstorage.openEvidence(player);
                         }
                     }

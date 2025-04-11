@@ -1,11 +1,12 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.manager.BlockManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -22,12 +23,10 @@ import java.util.List;
 public class FDoorCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final BlockManager blockManager;
-    private final LocationManager locationManager;
 
-    public FDoorCommand(PlayerManager playerManager, BlockManager blockManager, LocationManager locationManager) {
+    public FDoorCommand(PlayerManager playerManager, BlockManager blockManager) {
         this.playerManager = playerManager;
         this.blockManager = blockManager;
-        this.locationManager = locationManager;
         Main.registerCommand("fdoor", this);
     }
 
@@ -54,11 +53,12 @@ public class FDoorCommand implements CommandExecutor {
                 return false;
             }
         }
-        if (locationManager.getLocation("fdoor_" + faction) == null) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getLocation("fdoor_" + faction) == null) {
             player.sendMessage(Prefix.ERROR + "Deine Fraktion hat keine Fraktionstür.");
             return false;
         }
-        if (locationManager.getDistanceBetweenCoords(player, "fdoor_" + faction) > 5) {
+        if (locationService.getDistanceBetweenCoords(player, "fdoor_" + faction) > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deine Fraktionstür.");
             return false;
         }

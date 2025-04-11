@@ -3,12 +3,12 @@ package de.polo.core.utils;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.shop.services.ShopService;
 import de.polo.core.storage.*;
@@ -650,7 +650,8 @@ public class TabletUtils implements Listener {
                 i++;
             }
         }
-        for (GasStationData gasStationData : LocationManager.gasStationDataMap.values()) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        for (GasStationData gasStationData : locationService.getGasStations()) {
             if (gasStationData.getCompany() == null) continue;
             if (gasStationData.getCompany().equals(playerData.getCompany())) {
                 if (!isAddingPermission) {

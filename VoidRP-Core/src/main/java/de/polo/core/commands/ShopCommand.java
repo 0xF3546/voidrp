@@ -5,7 +5,7 @@ import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
-import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.shop.services.ShopService;
@@ -34,13 +34,11 @@ import static de.polo.core.Main.weaponManager;
 
 public class ShopCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
     private final CompanyManager companyManager;
     private final Map<UUID, List<ShopItem>> shoppingCarts = new HashMap<>();
 
-    public ShopCommand(PlayerManager playerManager, LocationManager locationManager, CompanyManager companyManager) {
+    public ShopCommand(PlayerManager playerManager, CompanyManager companyManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         this.companyManager = companyManager;
         Main.registerCommand("shop", this);
     }
@@ -53,7 +51,8 @@ public class ShopCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        int shop = locationManager.isNearShop(player);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        int shop = locationService.isNearShop(player);
         if (shop > 0) {
             ShopService service = VoidAPI.getService(ShopService.class);
             ShopData shopData = service.getShop(shop);

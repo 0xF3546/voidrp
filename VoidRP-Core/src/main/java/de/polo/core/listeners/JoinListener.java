@@ -4,6 +4,7 @@ import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.CoreVoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
@@ -31,6 +32,7 @@ public class JoinListener implements Listener {
         event.joinMessage(Component.text(""));
         player.setGameMode(GameMode.SURVIVAL);
         AdminService adminService = VoidAPI.getService(AdminService.class);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
             PlayerData playerData = playerManager.getPlayerData(uuid);
@@ -67,7 +69,7 @@ public class JoinListener implements Listener {
             player.sendMessage(" ");
             player.sendMessage("§6VoidRoleplay §8»§7 Herzlich willkommen auf VoidRoleplay, " + player.getName() + ".");
             player.sendMessage(" ");
-            locationManager.useLocation(player, "Spawn");
+            locationService.useLocation(player, "Spawn");
             adminService.sendMessage("§c" + player.getName() + "§7 hat sich gerade registriert.", Color.GREEN);
         }
         if (player.getGameMode() == GameMode.CREATIVE) {

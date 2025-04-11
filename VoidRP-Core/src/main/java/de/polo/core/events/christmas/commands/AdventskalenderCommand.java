@@ -2,8 +2,10 @@ package de.polo.core.events.christmas.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
@@ -27,9 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.concurrent.CompletableFuture;
-
-import static de.polo.core.Main.locationManager;
 
 @CommandBase.CommandMeta(name = "adventskalender")
 public class AdventskalenderCommand extends CommandBase {
@@ -56,7 +57,12 @@ public class AdventskalenderCommand extends CommandBase {
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§cAdventskalender"), true, false);
-        if (locationManager.getDistanceBetweenCoords(player, "adventskalender") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (Utils.getTime().getMonth() != Month.DECEMBER) {
+            player.sendMessage(Prefix.ERROR + "Der Adventskalender ist nur im Dezember verfügbar.");
+            return;
+        }
+        if (locationService.getDistanceBetweenCoords(player, "adventskalender") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe vom Weihnachtsmann.");
             return;
         }

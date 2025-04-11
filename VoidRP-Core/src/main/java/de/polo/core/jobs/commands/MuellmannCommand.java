@@ -8,6 +8,7 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
@@ -22,8 +23,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import static de.polo.core.Main.locationManager;
 
 @CommandBase.CommandMeta(
         name = "müllmann",
@@ -41,7 +40,8 @@ public class MuellmannCommand extends CommandBase implements Job {
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (ServerManager.canDoJobs()) {
-            if (locationManager.getDistanceBetweenCoords(player, "muellmann") <= 5) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            if (locationService.getDistanceBetweenCoords(player, "muellmann") <= 5) {
                 InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §9Müllmann"), true, true);
 
                 // Start Job Option

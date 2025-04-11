@@ -4,8 +4,8 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -19,12 +19,9 @@ import org.bukkit.entity.Player;
 public class RespawnCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
-    private final LocationManager locationManager;
-
-    public RespawnCommand(PlayerManager playerManager, Utils utils, LocationManager locationManager) {
+    public RespawnCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;
-        this.locationManager = locationManager;
         Main.registerCommand("respawn", this);
     }
 
@@ -60,10 +57,11 @@ public class RespawnCommand implements CommandExecutor {
         AdminService adminService = VoidAPI.getService(AdminService.class);
         adminService.sendMessage(player.getName() + " hat " + targetplayer.getName() + " respawnt.", null);
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (targetplayerData.getFaction() != null) {
-            locationManager.useLocation(targetplayer, targetplayerData.getFaction());
+            locationService.useLocation(targetplayer, targetplayerData.getFaction());
         } else {
-            locationManager.useLocation(targetplayer, "Stadthalle");
+            locationService.useLocation(targetplayer, "Stadthalle");
         }
         utils.deathUtil.revivePlayer(targetplayer, false);
         return false;

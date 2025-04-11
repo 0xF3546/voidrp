@@ -1,11 +1,12 @@
 package de.polo.core.utils;
 
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.game.faction.laboratory.EvidenceChamber;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.storage.*;
@@ -34,13 +35,11 @@ public class StaatUtil {
     private final List<WantedReason> wantedReasons = new ObjectArrayList<>();
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
     private final Utils utils;
 
-    public StaatUtil(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager, Utils utils) {
+    public StaatUtil(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
         this.utils = utils;
         try {
             Connection connection = Main.getInstance().coreDatabase.getConnection();
@@ -156,7 +155,10 @@ public class StaatUtil {
             for (WantedVariation variation : playerData.getWanted().getVariations()) {
                 wanteds += variation.getWantedAmount();
             }
-            if (!deathArrest) locationManager.useLocation(player, "gefaengnis");
+            if (!deathArrest) {
+                LocationService locationService = VoidAPI.getService(LocationService.class);
+                locationService.useLocation(player, "gefaengnis");
+            }
             if (deathArrest) {
                 player.sendMessage("§8[§6Gefängnis§8] §7Du wurdest für " + wanteds / 3 + " Minuten inhaftiert.");
             } else {
@@ -199,8 +201,9 @@ public class StaatUtil {
     @SneakyThrows
     public void unarrestPlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (locationManager.getDistanceBetweenCoords(player, "gefaengnis") < 200) {
-            locationManager.useLocation(player, "gefaengnis_out");
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "gefaengnis") < 200) {
+            locationService.useLocation(player, "gefaengnis_out");
         }
         playerData.setJailed(false);
         playerData.setHafteinheiten(0);

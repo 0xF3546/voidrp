@@ -2,10 +2,11 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.RoleplayItem;
@@ -24,11 +25,9 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0.0
  */
 public class WeaponcrafterCommand implements CommandExecutor {
-    private final LocationManager locationManager;
     private final PlayerManager playerManager;
 
-    public WeaponcrafterCommand(LocationManager locationManager, PlayerManager playerManager) {
-        this.locationManager = locationManager;
+    public WeaponcrafterCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.registerCommand("waffenhersteller", this);
     }
@@ -36,7 +35,8 @@ public class WeaponcrafterCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        if (locationManager.getDistanceBetweenCoords(player, "weaponcrafter") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "weaponcrafter") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Waffenherstellers.");
             return false;
         }

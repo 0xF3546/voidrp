@@ -1,11 +1,12 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.storage.*;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.WeaponManager;
 import de.polo.core.utils.Prefix;
@@ -38,11 +39,9 @@ public class FFAUtils implements CommandExecutor, Listener {
     public static final Map<Integer, FFALobbyData> FFAlobbyDataMap = new HashMap<>();
     public static final Map<String, FFASpawnPoints> FFAspawnpointDataMap = new HashMap<>();
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
-    public FFAUtils(PlayerManager playerManager, LocationManager locationManager) {
+    public FFAUtils(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         try {
             loadFFALobbys();
@@ -152,8 +151,9 @@ public class FFAUtils implements CommandExecutor, Listener {
     public void leaveFFA(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         FFALobbyData lobbyData = FFAlobbyDataMap.get(playerData.getIntVariable("current_lobby"));
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         lobbyData.setPlayers(lobbyData.getPlayers() - 1);
-        locationManager.useLocation(player, "ffa");
+        locationService.useLocation(player, "ffa");
         playerData.setIntVariable("current_lobby", null);
         playerData.setVariable("current_lobby", null);
         for (ItemStack item : player.getInventory().getContents()) {

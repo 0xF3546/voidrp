@@ -8,6 +8,7 @@ import de.polo.api.VoidAPI;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
@@ -53,19 +54,22 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
     public HochseefischerCommand(@NotNull CommandMeta meta) {
         super(meta);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-        for (LocationData locationData : locationManager.getLocations().stream().filter(x -> x.getType() != null && x.getType().equalsIgnoreCase("hochseefischer")).toList()) {
-            spawnLocations.add(locationData.getLocation());
-        }
 
     }
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (spawnLocations.isEmpty()) {
+            for (LocationData locationData : locationService.getLocations().stream().filter(x -> x.getType() != null && x.getType().equalsIgnoreCase("hochseefischer")).toList()) {
+                spawnLocations.add(locationData.getLocation());
+            }
+        }
         if (!ServerManager.canDoJobs()) {
             player.sendMessage(Component.text(ServerManager.error_cantDoJobs));
             return;
         }
-        if (locationManager.getDistanceBetweenCoords(player, "hochseefischer") > 5) {
+        if (locationService.getDistanceBetweenCoords(player, "hochseefischer") > 5) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du bist nicht in der nähe des Hochseefischers."));
             return;
         }
@@ -123,9 +127,10 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
 
     @Override
     public void startJob(VoidPlayer player) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         player.setMiniJob(MiniJob.DEEP_SEA_FISHERMAN);
         if (player.getData() == null) return;
-        Boat boat = (Boat) player.getPlayer().getWorld().spawnEntity(locationManager.getLocation("hochseefischer_boat_out"), EntityType.BOAT);
+        Boat boat = (Boat) player.getPlayer().getWorld().spawnEntity(locationService.getLocation("hochseefischer_boat_out"), EntityType.BOAT);
         boat.addPassenger(player.getPlayer());
         spawnedBoats.put(player.getPlayer(), boat);
         player.sendMessage(Component.text("§8[§bHochseefischer§8] §7Du bist nun Hochseefischer!"));
