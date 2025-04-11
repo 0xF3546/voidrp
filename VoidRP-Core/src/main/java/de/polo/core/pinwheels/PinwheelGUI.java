@@ -11,7 +11,10 @@ import de.polo.core.player.services.PlayerService;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
 
 /**
  * @author Mayson1337
@@ -63,7 +66,25 @@ public class PinwheelGUI {
     public void openJob() {
         player.setVariable("inventory::base", player.getPlayer().getInventory().getContents());
         player.getPlayer().getInventory().clear();
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§8 » §aWindrad " + pinwheel.getName()));
+        Material[] materials = {
+                Material.RED_STAINED_GLASS_PANE,
+                Material.GREEN_STAINED_GLASS_PANE,
+                Material.ORANGE_STAINED_GLASS_PANE,
+                Material.YELLOW_STAINED_GLASS_PANE,
+                Material.LIGHT_BLUE_STAINED_GLASS_PANE,
+        };
+        for (var material : materials) {
+            for (int i = 0; i < 9; i++) {
+                player.getPlayer().getInventory().addItem(new ItemBuilder(material)
+                        .setName(Component.text("§2Kabel"))
+                        .setLore(Arrays.asList(
+                                "§8▎ §aVerwendung §8» §7Lege alle Kabel in eine Reihe (horizontal)",
+                                "§8▎ §aVerwendung §8» §7Pro Reihe muss ein Kabel (9x gleichfarbige Scheiben) liegen"
+                        ))
+                        .build());
+            }
+        }
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§8 » §aWindrad " + pinwheel.getName()), false, false);
         inventoryManager.setOnClose(() -> {
             player.getPlayer().getInventory().clear();
             player.getPlayer().getInventory().setContents((ItemStack[]) player.getVariable("inventory::base"));
@@ -72,24 +93,53 @@ public class PinwheelGUI {
         inventoryManager.setOnDrop(event -> {
             event.setCancelled(true);
         });
-        for (int i = 0; i < 54; i++) {
-            inventoryManager.setItem(new CustomItem(i, new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                    .setName(Component.text("§8 » §cWindrad reparieren"))
-                    .build()) {
-                @Override
-                public void onClick(InventoryClickEvent event) {
-                    if (pinwheel.isBroken()) {
-                        pinwheel.setBroken(false);
-                        player.getPlayer().sendMessage(Component.text("§8 » §aWindrad repariert"));
-                        player.getPlayer().closeInventory();
-                        player.sendMessage(PREFIX + "Du hast das Windrad repariert.");
-                        PlayerService playerService = VoidAPI.getService(PlayerService.class);
-                        playerService.handleJobFinish(player, MiniJob.ELECTRITION, 1200, 20);
-                    } else {
-                        player.getPlayer().sendMessage(Component.text("§8 » §cWindrad ist bereits repariert"));
+
+        inventoryManager.setItem(new CustomItem(53, new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
+                .setName(Component.text("§8 » §cWindrad reparieren"))
+                .build()) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                event.setCancelled(true);
+                if (!checkInventory(inventoryManager.getInventory())) return;
+                if (pinwheel.isBroken()) {
+                    pinwheel.setBroken(false);
+                    player.getPlayer().closeInventory();
+                    player.sendMessage(PREFIX + "Du hast das Windrad repariert.");
+                    PlayerService playerService = VoidAPI.getService(PlayerService.class);
+                    playerService.handleJobFinish(player, MiniJob.ELECTRITION, 1200, 20);
+                } else {
+                    player.getPlayer().sendMessage(Component.text("§8 » §cWindrad ist bereits repariert"));
+                }
+            }
+        });
+    }
+
+    private boolean checkInventory(Inventory inventory) {
+        for (int row = 0; row < 5; row++) {
+            Material currentMaterial = null;
+
+            for (int i = row * 9; i < (row + 1) * 9; i++) {
+                ItemStack item = inventory.getItem(i);
+
+                if (item == null || item.getType() == Material.AIR) {
+                    return false;
+                }
+
+                if (!item.getType().name().endsWith("_STAINED_GLASS_PANE")) {
+                    return false;
+                }
+
+                if (currentMaterial == null) {
+                    currentMaterial = item.getType();
+                } else {
+                    if (!item.getType().equals(currentMaterial)) {
+                        return false;
                     }
                 }
-            });
+            }
         }
+
+        return true;
     }
+
 }
