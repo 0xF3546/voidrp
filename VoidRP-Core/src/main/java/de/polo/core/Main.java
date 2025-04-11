@@ -2,18 +2,14 @@ package de.polo.core;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
-import com.github.retrooper.packetevents.protocol.world.states.enums.South;
 import de.polo.api.Server;
 import de.polo.api.Utils.inventorymanager.InventoryApiRegister;
 import de.polo.api.VoidAPI;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.core.admin.commands.*;
-import de.polo.core.admin.services.AdminService;
 import de.polo.core.admin.services.InvSeeCommand;
-import de.polo.core.admin.services.SupportService;
 import de.polo.core.agreement.commands.AblehnenVertrag;
 import de.polo.core.agreement.commands.AnnehmenCommand;
-import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.base.commands.*;
 import de.polo.core.commands.*;
@@ -392,7 +388,6 @@ public final class Main extends JavaPlugin implements Server {
         public FrakStatsCommand frakStatsCommand;
         public CheckInvCommand checkInvCommand;
         public BizInviteCommand bizInviteCommand;
-        public ShopRobCommand shopRobCommand;
         public RespawnCommand respawnCommand;
         //public DealerCommand dealerCommand;
         public Farming farming;
@@ -603,7 +598,6 @@ public final class Main extends JavaPlugin implements Server {
             frakStatsCommand = new FrakStatsCommand(playerManager, factionManager, utils);
             checkInvCommand = new CheckInvCommand(playerManager);
             bizInviteCommand = new BizInviteCommand(playerManager, utils, businessManager);
-            shopRobCommand = new ShopRobCommand(playerManager, locationManager, factionManager);
             respawnCommand = new RespawnCommand(playerManager, utils, locationManager);
             //dealerCommand = new DealerCommand(playerManager, gamePlay, locationManager, factionManager);
             farming = new Farming(playerManager, locationManager, utils);

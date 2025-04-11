@@ -156,7 +156,6 @@ commands:
   checkinv:
   bizinvite:
     aliases: businessinvite
-  shoprob:
   respawn:
   farming:
   gethead:
