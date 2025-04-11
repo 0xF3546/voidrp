@@ -2,6 +2,7 @@ package de.polo.core.pinwheels.services;
 
 import de.polo.api.pinwheels.Pinwheel;
 import de.polo.core.pinwheels.dto.CreatePinwheelDto;
+import org.bukkit.Location;
 
 import java.util.List;
 
@@ -12,5 +13,6 @@ import java.util.List;
  */
 public interface PinwheelService {
     List<Pinwheel> getPinwheels();
+    Pinwheel getNearestPinwheel(Location location, int range);
     int addPinwheel(CreatePinwheelDto pinwheel);
 }

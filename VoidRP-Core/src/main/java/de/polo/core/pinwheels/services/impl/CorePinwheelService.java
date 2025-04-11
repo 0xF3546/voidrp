@@ -5,6 +5,7 @@ import de.polo.core.pinwheels.dto.CreatePinwheelDto;
 import de.polo.core.pinwheels.services.PinwheelService;
 import de.polo.core.utils.Service;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.bukkit.Location;
 
 import java.util.List;
 
@@ -22,6 +23,15 @@ public class CorePinwheelService implements PinwheelService {
     @Override
     public List<Pinwheel> getPinwheels() {
         return pinwheelRepository.getPinwheels();
+    }
+
+    @Override
+    public Pinwheel getNearestPinwheel(Location location, int range) {
+        return getPinwheels().stream()
+                .filter(pinwheel -> pinwheel.getLocation().getWorld().equals(location.getWorld()))
+                .filter(pinwheel -> pinwheel.getLocation().distance(location) <= range)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

@@ -8,6 +8,8 @@ import org.bukkit.Location;
  * @since 1.0.0
  */
 public interface Pinwheel {
-    Location location();
-    String name();
+    Location getLocation();
+    String getName();
+    void setBroken(boolean broken);
+    boolean isBroken();
 }
