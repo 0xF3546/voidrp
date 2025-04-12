@@ -1,21 +1,19 @@
 package de.polo.core.manager;
 
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.game.base.shops.ShopData;
-import de.polo.core.game.base.shops.ShopItem;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.game.faction.gangwar.Gangwar;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.*;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.FFAStatsType;
-import de.polo.core.utils.enums.ShopType;
 import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.player.ScoreboardAPI;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -48,7 +46,6 @@ public class ServerManager {
     public static final Map<String, DBPlayerData> dbPlayerDataMap = new HashMap<>();
     public static final Map<String, FactionPlayerData> factionPlayerDataMap = new HashMap<>();
     public static final Map<String, ContractData> contractDataMap = new HashMap<>();
-    public static final Map<Integer, ShopData> shopDataMap = new HashMap<>();
     public static final Map<String, String> serverVariables = new HashMap<>();
     public static final List<UUID> factionStorageWeaponsTookout = new ObjectArrayList<>();
     private static final Map<String, PayoutData> payoutDataMap = new HashMap<>();
@@ -57,19 +54,16 @@ public class ServerManager {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
     private final Utils utils;
-    private final LocationManager locationManager;
 
-    public ServerManager(PlayerManager playerManager, FactionManager factionManager, Utils utils, LocationManager locationManager) {
+    public ServerManager(PlayerManager playerManager, FactionManager factionManager, Utils utils) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
         this.utils = utils;
-        this.locationManager = locationManager;
         try {
             loadRanks();
             loadDBPlayer();
             startTabUpdateInterval();
             everySecond();
-            loadShops();
             loadContracts();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -170,59 +164,6 @@ public class ServerManager {
         statement.close();
     }
 
-    private void loadShops() throws SQLException {
-        Statement statement = Main.getInstance().coreDatabase.getStatement();
-        ResultSet locs = statement.executeQuery("SELECT * FROM shops");
-        while (locs.next()) {
-            ShopData shopData = new ShopData();
-            shopData.setId(locs.getInt(1));
-            shopData.setName(locs.getString(2));
-            shopData.setX(locs.getInt(3));
-            shopData.setY(locs.getInt(4));
-            shopData.setZ(locs.getInt(5));
-            shopData.setWelt(Bukkit.getWorld(locs.getString(6)));
-            shopData.setYaw(locs.getFloat(7));
-            shopData.setPitch(locs.getFloat(8));
-            shopData.setBank(locs.getInt("bank"));
-            if (locs.getInt("company") != 0) {
-                shopData.setCompany(locs.getInt("company"));
-            }
-
-            String typeString = locs.getString(9);
-            if (typeString != null) {
-                try {
-                    ShopType type = ShopType.valueOf(typeString.toUpperCase());
-                    shopData.setType(type);
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Invalid shop type: " + typeString);
-                    continue;
-                }
-            } else {
-                System.err.println("Null shop type retrieved from the database");
-                continue;
-            }
-            shopDataMap.put(locs.getInt(1), shopData);
-            try {
-                Statement nStatement = Main.getInstance().coreDatabase.getStatement();
-                ResultSet i = nStatement.executeQuery("SELECT * FROM shop_items WHERE shop = " + shopData.getId());
-                while (i.next()) {
-                    ShopItem item = new ShopItem();
-                    item.setId(i.getInt("id"));
-                    item.setShop(i.getInt("shop"));
-                    item.setMaterial(Material.valueOf(i.getString("material")));
-                    item.setDisplayName(i.getString("name"));
-                    item.setPrice(i.getInt("price"));
-                    item.setType(i.getString("type"));
-                    item.setSecondType(i.getString("type2"));
-                    shopData.addItem(item);
-                }
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        }
-        statement.close();
-    }
-
     private void everySecond() {
         new BukkitRunnable() {
             @SneakyThrows
@@ -242,7 +183,7 @@ public class ServerManager {
                         playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.WEEKLY);
                         Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.WEEKLY);
                     }
-                    Bukkit.broadcastMessage("§8[§6Seasonpass§8]§7 Der seasonpass wurde zurückgesetzt!");
+                    Bukkit.broadcastMessage("§6Seasonpass §8┃§7 Der seasonpass wurde zurückgesetzt!");
 
                     PreparedStatement ffaStatement = Main.getInstance().coreDatabase.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
                     ffaStatement.setString(1, FFAStatsType.WEEKLY.name());
@@ -262,22 +203,23 @@ public class ServerManager {
                     }
                 }
                 if (now.getMinute() == 45 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 15 Minuten neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart§8 ┃§c Der Server startet in 15 Minuten neu!");
                 }
                 if (now.getMinute() == 55 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 5 Minuten neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart §8┃§c Der Server startet in 5 Minuten neu!");
                 }
                 if (now.getMinute() == 57 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 3 Minuten neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart §8┃§c Der Server startet in 3 Minuten neu!");
                 }
                 if (now.getMinute() == 59 && now.getHour() == 1 && now.getSecond() == 0) {
-                    Bukkit.broadcastMessage("§8[§cAuto-Restart§8]§c Der Server startet in 1 Minute neu!");
+                    Bukkit.broadcastMessage("§cAuto-Restart §8┃§c Der Server startet in 1 Minute neu!");
                 }
                 if (now.getMinute() == 0 && now.getHour() == 2) {
                     Bukkit.spigot().restart();
                     return;
                 }
-                for (LocationData locationData : locationManager.getLocations()) {
+                LocationService locationService = VoidAPI.getService(LocationService.class);
+                for (LocationData locationData : locationService.getLocations()) {
                     if (locationData.getType() == null) continue;
                     if (locationData.getInfo() == null) continue;
                     if (!locationData.getType().equalsIgnoreCase("storage")) {
@@ -446,7 +388,7 @@ public class ServerManager {
                     announceTick = 5;
                     switch (announceType) {
                         case 1:
-                            TextComponent text = new TextComponent("§8[§6Regelwerk§8]§e Unwissenheit schützt vor Strafe nicht!");
+                            TextComponent text = new TextComponent("§6Regelwerk§8 ┃§e Unwissenheit schützt vor Strafe nicht!");
                             text.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://voidroleplay.de/rules"));
                             text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§6§l§oRegelwerk öffnen")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -454,11 +396,11 @@ public class ServerManager {
                             }
                             break;
                         case 2:
-                            TextComponent forum = new TextComponent("§8[§9Discord§8]§3 Bist du schon auf unserem Discord?");
+                            TextComponent forum = new TextComponent("§9Discord§8 ┃§3 Bist du schon auf unserem Discord?");
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             Bukkit.spigot().broadcast(forum);
-                            TextComponent forum2 = new TextComponent("§8[§9Discord§8]§3 Fraktionen, Ankündigungen, Changelogs uvm.!");
+                            TextComponent forum2 = new TextComponent("§9Discord §8┃§3 Fraktionen, Ankündigungen, Changelogs uvm.!");
                             forum.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/void-roleplay"));
                             forum.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§9§l§oDiscord beitreten")));
                             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -466,8 +408,7 @@ public class ServerManager {
                             }
                             break;
                         case 3:
-                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Warst du bereits auf unserem TeamSpeak?");
-                            Bukkit.broadcastMessage("§8[§9TeamSpeak§8]§3 Betritt noch heute unseren TeamSpeak unter §lvoidroleplay.de§3!");
+                            Bukkit.broadcastMessage("§9Control-Panel §8┃§3 Verwalte deine Spielerdaten im Control-Panel!");
                             break;
                     }
                     announceType++;

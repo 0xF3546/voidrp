@@ -2,20 +2,17 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
-import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.utils.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import java.sql.*;
 
-public class ServerPingListener implements Listener {
-    private final FactionManager factionManager;
+import static de.polo.core.Main.factionManager;
 
-    public ServerPingListener(FactionManager factionManager) {
-        this.factionManager = factionManager;
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
+@Event
+public class ServerPingListener implements Listener {
 
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {

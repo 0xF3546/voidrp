@@ -2,13 +2,16 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -34,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static de.polo.core.Main.navigationService;
-
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -44,15 +45,13 @@ import static de.polo.core.Main.navigationService;
 public class PfeifenTransport implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
     private final HashMap<String, Integer> transports = new HashMap<>();
     private final List<UUID> cooldownUser = new ObjectArrayList<>();
     private LocalDateTime lastTransport = Utils.getTime();
 
-    public PfeifenTransport(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
+    public PfeifenTransport(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
 
         Main.registerCommand("pfeifentransport", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
@@ -66,7 +65,8 @@ public class PfeifenTransport implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Diesen Transport können nur Zivilisten machen!");
             return false;
         }
-        if (locationManager.getDistanceBetweenCoords(player, "drugtransport") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "drugtransport") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Pfeifentransport.");
             return false;
         }
@@ -74,7 +74,8 @@ public class PfeifenTransport implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du kannst den Job nur alle 2 Stunden machen.");
             return false;
         }
-        if (!Utils.getTime().plusMinutes(15).isAfter(lastTransport) && !playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!Utils.getTime().plusMinutes(15).isAfter(lastTransport) && !voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Der Transport wurde in den letzten 15 Minuten bereits ausgeführt! (" + Duration.between(lastTransport, Utils.getTime()) + "min noch)");
             return false;
         }
@@ -117,10 +118,12 @@ public class PfeifenTransport implements CommandExecutor, Listener {
 
     private void startTransport(Player player, Faction factionData, int amount) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        if (locationManager.getDistanceBetweenCoords(player, "drugtransport") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "drugtransport") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Pfeifentransport.");
             return;
         }
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         lastTransport = Utils.getTime();
         player.sendMessage(Prefix.MAIN + "Du startest den Transport, begib dich zum Navipunkt!");
         playerData.setVariable("transport::amount", amount);
@@ -144,7 +147,8 @@ public class PfeifenTransport implements CommandExecutor, Listener {
     public void dropTransport(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         Faction factionData = playerData.getVariable("transport:faction");
-        if (locationManager.getDistanceBetweenCoords(player, factionData.getName()) > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, factionData.getName()) > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe von " + factionData.getName());
             return;
         }

@@ -3,11 +3,7 @@ package de.polo.core.listeners;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.game.base.vehicle.Vehicles;
-import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
-import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.utils.Utils;
+import de.polo.core.utils.Event;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -26,17 +22,12 @@ import java.sql.Statement;
 import java.util.Objects;
 import java.util.UUID;
 
-public class InventoryClickListener implements Listener {
-    private final PlayerManager playerManager;
-    private final FactionManager factionManager;
-    private final Utils utils;
-    private final LocationManager locationManager;
+import static de.polo.core.Main.*;
 
-    public InventoryClickListener(PlayerManager playerManager, FactionManager factionManager, Utils utils, LocationManager locationManager) {
-        this.playerManager = playerManager;
-        this.factionManager = factionManager;
-        this.utils = utils;
-        this.locationManager = locationManager;
+@Event
+public class InventoryClickListener implements Listener {
+
+    public InventoryClickListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -353,15 +344,6 @@ public class InventoryClickListener implements Listener {
                         }
                         break;
                 }
-            }
-        }
-        if (Objects.equals(playerData.getVariable("current_inventory"), "carlock")) {
-            event.setCancelled(true);
-            if (event.getCurrentItem().getType() == Material.MINECART) {
-                int id = event.getCurrentItem().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
-                Vehicles.toggleVehicleState(id, player);
-                player.closeInventory();
-                playerData.setVariable("current_inventory", null);
             }
         }
     }

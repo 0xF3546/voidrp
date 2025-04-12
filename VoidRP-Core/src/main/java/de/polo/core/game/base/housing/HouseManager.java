@@ -2,8 +2,9 @@ package de.polo.core.game.base.housing;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
-import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.PlayerWeapon;
@@ -48,12 +49,10 @@ public class HouseManager implements CommandExecutor, Listener {
     public static final Map<Integer, House> houseDataMap = new HashMap<>();
     private final PlayerManager playerManager;
     private final BlockManager blockManager;
-    private final LocationManager locationManager;
 
-    public HouseManager(PlayerManager playerManager, BlockManager blockManager, LocationManager locationManager) {
+    public HouseManager(PlayerManager playerManager, BlockManager blockManager) {
         this.playerManager = playerManager;
         this.blockManager = blockManager;
-        this.locationManager = locationManager;
         Main.registerCommand("houseaddon", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
         try {
@@ -260,7 +259,8 @@ public class HouseManager implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         Player player = (Player) commandSender;
-        if (locationManager.getDistanceBetweenCoords(player, "houseaddon") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "houseaddon") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Hausaddon-Shops.");
             return false;
         }

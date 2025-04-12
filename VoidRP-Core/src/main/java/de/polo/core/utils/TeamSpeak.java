@@ -1,8 +1,10 @@
 package de.polo.core.utils;
 
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,11 +20,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static de.polo.core.Main.playerService;
-
 public class TeamSpeak {
     @SneakyThrows
     public static void reloadPlayer(UUID uuid) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         PlayerData playerData = playerService.getPlayerData(uuid);
         System.out.println("RELOADING " + uuid);
         Connection connection = Main.getInstance().coreDatabase.getConnection();
@@ -66,6 +67,7 @@ public class TeamSpeak {
 
     @SneakyThrows
     public static void unlinkPlayer(UUID uuid) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         PlayerData playerData = playerService.getPlayerData(uuid);
         System.out.println("RELOADING " + uuid);
         Connection connection = Main.getInstance().coreDatabase.getConnection();
@@ -113,6 +115,7 @@ public class TeamSpeak {
     }
 
     public static void verifyUser(Player player, String uid) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             String token = String.valueOf(Utils.random(43258, 213478234));

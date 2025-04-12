@@ -1,13 +1,15 @@
 package de.polo.core.agreement.services;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.storage.Agreement;
 import de.polo.core.storage.Company;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.SubGroup;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.game.base.housing.HouseManager;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.PhoneUtils;
@@ -20,7 +22,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
@@ -32,20 +34,19 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static de.polo.core.Main.database;
+
 public class VertragUtil {
     public static final HashMap<String, String> vertrag_type = new HashMap<>();
     public static final HashMap<String, Object> current = new HashMap<>();
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final AdminManager adminManager;
-
     private final List<Agreement> agreements = new ObjectArrayList<>();
 
-    public VertragUtil(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
+    public VertragUtil(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.adminManager = adminManager;
     }
 
     public static boolean setVertrag(Player player, Player target, String type, Object vertrag) {
@@ -67,15 +68,16 @@ public class VertragUtil {
         }
     }
 
-    private Agreement getActiveAgreement(Player player) {
+    private Agreement getActiveAgreement(VoidPlayer player) {
         return agreements.stream().filter(x -> x.getContractor() == player || x.getContracted() == player).findFirst().orElse(null);
     }
 
     public void setAgreement(Player player, Player target, Agreement agreement) {
-        agreements.remove(getActiveAgreement(player));
-        agreements.remove(getActiveAgreement(target));
+        System.out.println("setAgreement " + player.getName() + " " + target.getName());
+        agreements.remove(getActiveAgreement(VoidAPI.getPlayer(player)));
+        agreements.remove(getActiveAgreement(VoidAPI.getPlayer(target)));
         agreements.add(agreement);
-        Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
+        database.insertAsync("INSERT INTO player_agreements (contractor, contracted, type, agreement) VALUES (?, ?, ?, ?)",
                 player.getUniqueId(),
                 target.getUniqueId(),
                 agreement.getType(),
@@ -83,8 +85,10 @@ public class VertragUtil {
     }
 
     public void acceptVertrag(Player player) throws SQLException {
-        Agreement agreement = getActiveAgreement(player);
-        if (agreement != null) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        Agreement agreement = getActiveAgreement(voidPlayer);
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        if (agreement != null && agreement.getContracted() == voidPlayer) {
             agreement.accept();
             agreements.remove(agreement);
             return;
@@ -101,7 +105,7 @@ public class VertragUtil {
                 case "faction_invite":
                     factionManager.setPlayerInFrak(player, curr.toString(), 0, true);
                     factionManager.sendMessageToFaction(curr.toString(), player.getName() + " ist der Fraktion beigetreten");
-                    adminManager.send_message(player.getName() + " ist der Fraktion " + curr + " beigetreten.", ChatColor.DARK_PURPLE);
+                    adminService.sendMessage(player.getName() + " ist der Fraktion " + curr + " beigetreten.", Color.PURPLE);
                     Main.getInstance().beginnerpass.didQuest(player, 1);
                     break;
                 case "business_invite":
@@ -225,8 +229,9 @@ public class VertragUtil {
     }
 
     public void denyVertrag(Player player) {
-        Agreement agreement = getActiveAgreement(player);
-        if (agreement != null) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        Agreement agreement = getActiveAgreement(voidPlayer);
+        if (agreement != null && agreement.getContracted() == voidPlayer) {
             agreement.deny();
             agreements.remove(agreement);
             return;

@@ -1,14 +1,15 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,11 +24,9 @@ import java.util.List;
 
 public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public ResetBonusEntryCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public ResetBonusEntryCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
 
         Main.registerCommand("resetbonusentry", this);
         Main.addTabCompleter("resetbonusentry", this);
@@ -42,6 +41,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         if (args.length < 1) {
             for (PlayerData p : playerManager.getPlayers()) {
                 p.setReceivedBonus(false);
@@ -51,7 +51,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
             statement.execute();
             statement.close();
             connection.close();
-            adminManager.send_message(player.getName() + " hat die Bonis zurückgesetzt.", ChatColor.GOLD);
+            adminService.sendMessage(player.getName() + " hat die Bonis zurückgesetzt.", Color.ORANGE);
             return false;
         }
         Player targetplayer = Bukkit.getPlayer(args[0]);
@@ -67,7 +67,7 @@ public class ResetBonusEntryCommand implements CommandExecutor, TabCompleter {
         statement.execute();
         statement.close();
         connection.close();
-        adminManager.send_message(player.getName() + " hat die " + targetplayer.getName() + "'s Bonus zurückgesetzt.", ChatColor.GOLD);
+        adminService.sendMessage(player.getName() + " hat die " + targetplayer.getName() + "'s Bonus zurückgesetzt.", Color.ORANGE);
         targetplayer.sendMessage("§8[§cAdmin§8]§7 " + playerData.getRang() + " " + player.getName() + " hat deinen Bonus zurückgesetzt.");
         return false;
     }

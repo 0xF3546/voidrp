@@ -39,6 +39,10 @@ public final class VoidAPI {
                 .orElse(null);
     }
 
+    public static List<VoidPlayer> getPlayers() {
+        return players;
+    }
+
     /**
      * Retrieves a Spring-managed bean from the application context by its type.
      *
@@ -55,5 +59,9 @@ public final class VoidAPI {
             throw new IllegalStateException("Server has not been initialized");
         }
         return server.getBean(clazz);
+    }
+
+    public static <T> T getService(@NotNull Class<T> clazz) {
+        return (T) server.getService(clazz);
     }
 }

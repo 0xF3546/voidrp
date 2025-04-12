@@ -6,10 +6,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
+@Event
 public class AntiCheat implements Listener, PluginMessageListener {
-    public AntiCheat() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
 
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {

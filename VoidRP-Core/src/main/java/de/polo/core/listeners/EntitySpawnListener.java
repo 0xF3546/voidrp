@@ -1,16 +1,14 @@
 package de.polo.core.listeners;
 
 import de.polo.core.Main;
+import de.polo.core.utils.Event;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
+@Event
 public class EntitySpawnListener implements Listener {
-    public EntitySpawnListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event) {
         if (event.getEntity().getType() == EntityType.VILLAGER || event.getEntity().getType() == EntityType.MINECART) {

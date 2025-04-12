@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0.0
  */
 abstract class ZoneEvent extends Event {
+
     private static final HandlerList handlers = new HandlerList();
 
     @Getter
@@ -25,6 +26,9 @@ abstract class ZoneEvent extends Event {
 
     @Override
     public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

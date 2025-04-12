@@ -2,19 +2,16 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.utils.Event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-public class InventoryCloseListener implements Listener {
-    private final PlayerManager playerManager;
+import static de.polo.core.Main.playerManager;
 
-    public InventoryCloseListener(PlayerManager playerManager) {
-        this.playerManager = playerManager;
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
+@Event
+public class InventoryCloseListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {

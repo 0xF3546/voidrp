@@ -6,6 +6,8 @@ import de.polo.api.zone.EnterZoneEvent;
 import de.polo.api.zone.ExitZoneEvent;
 import de.polo.api.zone.Zone;
 import de.polo.core.Main;
+import de.polo.core.utils.Event;
+import de.polo.core.zone.services.ZoneService;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -18,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static de.polo.core.Main.zoneService;
-
+@Event
 public class ZoneEvents implements Listener {
 
     private final Map<VoidPlayer, Zone> playerZoneMap = new WeakHashMap<>();
@@ -56,6 +57,7 @@ public class ZoneEvents implements Listener {
     private void handleZoneCheck(Location location, VoidPlayer player) {
         Zone currentZone = playerZoneMap.get(player);
         Zone newZone = null;
+        ZoneService zoneService = VoidAPI.getService(ZoneService.class);
 
         List<Zone> zones = zoneService.getZones();
         for (Zone zone : zones) {

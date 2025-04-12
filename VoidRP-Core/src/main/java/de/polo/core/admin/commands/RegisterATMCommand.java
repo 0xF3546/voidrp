@@ -1,12 +1,13 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import lombok.SneakyThrows;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,11 +20,9 @@ import static de.polo.core.Main.database;
 
 public class RegisterATMCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public RegisterATMCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public RegisterATMCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         Main.registerCommand("registeratm", this);
     }
 
@@ -45,8 +44,9 @@ public class RegisterATMCommand implements CommandExecutor {
         database.insertAndGetKeyAsync("INSERT INTO atm (blockId, name) VALUES (?, ?)", blockId, atmName)
                 .thenApply(key -> {
                     if (key.isPresent()) {
+                        AdminService adminService = VoidAPI.getService(AdminService.class);
                         player.sendMessage(Prefix.GAMEDESIGN + "Du hast einen ATM registriert #" + key.get());
-                        adminManager.send_message(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", ChatColor.GOLD);
+                        adminService.sendMessage(player.getName() + " hat einen ATM registriert (ATM #" + key.get() + ").", Color.ORANGE);
                     }
                     return null;
                 });

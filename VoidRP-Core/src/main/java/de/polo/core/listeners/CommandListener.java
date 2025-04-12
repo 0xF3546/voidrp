@@ -1,11 +1,12 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,16 +17,16 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.polo.core.Main.playerManager;
+import static de.polo.core.Main.utils;
+
+@Event
 public class CommandListener implements Listener {
-    private final PlayerManager playerManager;
-    private final Utils utils;
     private final List<String> nonBlockedCommands;
     private final List<String> blockedStarts;
     private final List<String> blockedContains;
 
-    public CommandListener(PlayerManager playerManager, Utils utils) {
-        this.playerManager = playerManager;
-        this.utils = utils;
+    public CommandListener() {
         this.nonBlockedCommands = Arrays.asList("support", "report", "help", "vote", "jailtime", "ad", "aduty");
         this.blockedStarts = Arrays.asList("/to", "//to", "minecraft:msg", "minecraft:advancement", "minecraft:attribute",
                 "minecraft:ban", "minecraft:ban-ip", "minecraft:banlist", "minecraft:bossbar",
@@ -46,8 +47,6 @@ public class CommandListener implements Listener {
                 "minecraft:whitelist", "minecraft:worldborder", "minecraft:w", "minecraft:xp", "minecraft:title",
                 "minecraft:tm");
         this.blockedContains = Arrays.asList("while", "targetoffset", "for(", "^(.", "*.", "@a", "@e", "@p", "@s", "@r");
-
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     @EventHandler
@@ -62,10 +61,11 @@ public class CommandListener implements Listener {
             event.setCancelled(true);
             return;
         }
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
 
         // Check if the command starts with any blocked start
         for (String blockedStart : blockedStarts) {
-            if (command.startsWith(blockedStart) && !playerData.isAduty()) {
+            if (command.startsWith(blockedStart) && !voidPlayer.isAduty()) {
                 event.setCancelled(true);
                 player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;
@@ -74,7 +74,7 @@ public class CommandListener implements Listener {
 
         // Check if the command contains any blocked substring
         for (String blockedContain : blockedContains) {
-            if (msg.contains(blockedContain) && !playerData.isAduty()) {
+            if (msg.contains(blockedContain) && !voidPlayer.isAduty()) {
                 event.setCancelled(true);
                 player.sendMessage(Prefix.ERROR + "Der Befehl \"" + msg + "\" ist nicht erlaubt.");
                 return;
@@ -106,7 +106,7 @@ public class CommandListener implements Listener {
             player.sendMessage(Prefix.ERROR + "Der Befehl " + msg + " wurde nicht gefunden.");
             return;
         }
-        if (playerData.isDead() && !playerData.isAduty()) {
+        if (playerData.isDead() && !voidPlayer.isAduty()) {
             if (!nonBlockedCommands.contains(command)) {
                 player.sendMessage("§7Du kannst diesen Befehl aktuell nicht nutzen.");
                 event.setCancelled(true);

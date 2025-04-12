@@ -2,6 +2,7 @@ package de.polo.core.admin.services.impl;
 
 import de.polo.core.admin.services.SupportService;
 import de.polo.core.storage.Ticket;
+import de.polo.core.utils.Service;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -15,6 +16,7 @@ import static de.polo.core.Main.supportManager;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CoreSupportService implements SupportService {
 
     @Override

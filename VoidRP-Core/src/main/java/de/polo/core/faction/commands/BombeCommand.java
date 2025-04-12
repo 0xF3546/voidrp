@@ -1,6 +1,8 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.storage.Bomb;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.MinuteTickEvent;
@@ -25,8 +27,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-
-import static de.polo.core.Main.navigationService;
 
 public class BombeCommand implements CommandExecutor, Listener {
 
@@ -100,6 +100,7 @@ public class BombeCommand implements CommandExecutor, Listener {
         player.getLocation().getBlock().setType(Material.TNT);
         ItemManager.removeCustomItem(player, RoleplayItem.SPRENGSTOFF, 1);
         bomb = new Bomb(Utils.getTime(), block, 15);
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.DRAHT.getMaterial(), 1, 0, RoleplayItem.DRAHT.getDisplayName(), bomb.getColor()));
         Bukkit.broadcastMessage("§8[§6News§8] §6Achtung! es wurde eine bombe gefunden, in der nähe von: " + navigationService.getNearestNaviPoint(bomb.getBlock().getLocation()).getName().replace("&", "§"));
         ACTIVE = true;

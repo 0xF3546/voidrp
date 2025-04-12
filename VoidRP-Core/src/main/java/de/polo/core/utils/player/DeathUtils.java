@@ -1,12 +1,14 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.storage.Corpse;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -32,8 +34,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import static de.polo.core.Main.navigationService;
-import static de.polo.core.Main.utils;
+import static de.polo.core.Main.*;
 
 public class DeathUtils {
     private final HashMap<String, Boolean> deathPlayer = new HashMap<>();
@@ -42,13 +43,9 @@ public class DeathUtils {
     private final List<Corpse> corpses = new ObjectArrayList<>();
 
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
-    private final LocationManager locationManager;
 
-    public DeathUtils(PlayerManager playerManager, AdminManager adminManager, LocationManager locationManager) {
+    public DeathUtils(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
-        this.locationManager = locationManager;
     }
 
     public static boolean isDead(Player player) throws SQLException {
@@ -108,12 +105,13 @@ public class DeathUtils {
         if (playerData.getVariable("inventory::base") != null) {
             player.getInventory().setContents(playerData.getVariable("inventory::base"));
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         playerData.setCanInteract(false);
         playerData.setDead(false);
         playerData.setCuffed(false);
         playerData.setDeathTime(300);
         deathPlayer.remove(player.getUniqueId().toString());
-        adminManager.send_message(player.getName() + " wurde wiederbelebt.", null);
+        adminService.sendMessage(player.getName() + " wurde wiederbelebt.", null);
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }
@@ -127,7 +125,10 @@ public class DeathUtils {
         playerData.setDeathLocation(null);
         playerData.setHitmanDead(false);
         playerData.setStabilized(false);
-        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
+        if (playerData.isJailed()) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            locationService.useLocation(player, "gefaengnis");
+        }
         try {
             Statement statement = Main.getInstance().coreDatabase.getStatement();
             assert statement != null;
@@ -210,8 +211,9 @@ public class DeathUtils {
                 }
             }
             playerData.removeBankMoney(despawnPrice, "Krankenhauskosten");
+            LocationService locationService = VoidAPI.getService(LocationService.class);
             if (playerData.getSpawn() == null) {
-                locationManager.useLocation(player, "Krankenhaus");
+                locationService.useLocation(player, "Krankenhaus");
             } else {
                 try {
                     int id = Integer.parseInt(playerData.getSpawn());
@@ -225,7 +227,7 @@ public class DeathUtils {
                         }
                     }
                 } catch (Exception e) {
-                    locationManager.useLocation(player, playerData.getSpawn());
+                    locationService.useLocation(player, playerData.getSpawn());
                 }
             }
             player.sendMessage(Prefix.MAIN + "Du bist im Krankenhaus aufgewacht.");
@@ -239,8 +241,11 @@ public class DeathUtils {
         playerManager.setPlayerMove(player, true);
         playerData.save();
         ItemManager.addCustomItem(player, RoleplayItem.SMARTPHONE, 1);
-        if (playerData.isJailed()) locationManager.useLocation(player, "gefaengnis");
-        if (playerData.isJailed()) removeWeapons(player);
+        if (playerData.isJailed()) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            locationService.useLocation(player, "gefaengnis");
+            removeWeapons(player);
+        }
     }
 
     private void spawnCorpse(Player player) {
@@ -283,6 +288,7 @@ public class DeathUtils {
             player.sendMessage(Prefix.ERROR + "Diese Leiche gehört nicht zu deinem Job!");
             return;
         }
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         corpse.getSkull().remove();
         playerData.setVariable("job::corpse::pickedup", true);
         navigationService.createNaviByLocation(player, "undertaker");

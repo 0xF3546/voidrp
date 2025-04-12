@@ -3,6 +3,7 @@ package de.polo.core.housing.services.impl;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.housing.services.HouseService;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.utils.Service;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -16,6 +17,7 @@ import static de.polo.core.Main.houseManager;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CoreHouseService implements HouseService {
 
     @Override

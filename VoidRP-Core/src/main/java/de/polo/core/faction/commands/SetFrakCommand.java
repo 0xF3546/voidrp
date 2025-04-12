@@ -1,14 +1,15 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.faction.entity.Faction;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,12 +22,10 @@ import java.util.List;
 
 public class SetFrakCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final FactionManager factionManager;
 
-    public SetFrakCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+    public SetFrakCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.factionManager = factionManager;
         Main.registerCommand("setfrak", this);
         Main.addTabCompleter("setfrak", this);
@@ -42,8 +41,9 @@ public class SetFrakCommand implements CommandExecutor, TabCompleter {
                 String frak = args[1];
                 int rang = Integer.parseInt(args[2]);
                 if (rang >= 0 && rang <= 8) {
+                    AdminService adminService = VoidAPI.getService(AdminService.class);
                     factionManager.setPlayerInFrak(targetplayer, frak, rang);
-                    adminManager.send_message(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " (Rang " + rang + ") gesetzt.", ChatColor.DARK_PURPLE);
+                    adminService.sendMessage(player.getName() + " hat " + targetplayer.getName() + " in die Fraktion " + frak + " (Rang " + rang + ") gesetzt.", Color.PURPLE);
                 } else {
                     player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /setfraktion [Spieler] [Fraktion] [Rang(1-8)]");
                     return false;

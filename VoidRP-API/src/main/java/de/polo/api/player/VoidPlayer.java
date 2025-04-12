@@ -1,6 +1,8 @@
 package de.polo.api.player;
 
 import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.crew.Crew;
+import de.polo.api.jobs.Job;
 import de.polo.api.jobs.enums.MiniJob;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -17,6 +19,8 @@ public interface VoidPlayer {
     Player getPlayer();
     PlayerCharacter getData();
     MiniJob getMiniJob();
+    Job getActiveJob();
+    void setActiveJob(Job job);
     void setMiniJob(MiniJob miniJob);
     default UUID getUuid() {
         return getPlayer().getUniqueId();
@@ -40,4 +44,8 @@ public interface VoidPlayer {
 
     void setVariable(String key, Object value);
     Object getVariable(String key);
+    boolean isAduty();
+    void setAduty(boolean aduty);
+    boolean notificationsEnabled();
+    void setNotificationsEnabled(boolean enabled);
 }

@@ -1,5 +1,7 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
@@ -31,8 +33,8 @@ public class PlayerInfoCommand implements CommandExecutor {
             Player targetplayer = Bukkit.getPlayer(args[0]);
             if (targetplayer != null) {
                 PlayerData targetplayerdata = playerManager.getPlayerData(targetplayer.getUniqueId());
-
-                if (playerManager.getPlayerData(player.getUniqueId()).isAduty()) {
+                VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                if (voidPlayer.isAduty()) {
                     player.sendMessage("§4§lSpielerinformation§8:");
                     player.sendMessage("§8 ➥ §6Name§8: §7" + targetplayer.getName());
                     player.sendMessage("§8 ➥ §6Visum§8: §7" + playerManager.visum(targetplayer));
@@ -68,7 +70,8 @@ public class PlayerInfoCommand implements CommandExecutor {
                         Faction factionData = factionManager.getFactionData(targetplayerdata.getFaction());
                         faction = factionData.getFullname();
                     }
-                    if (targetplayerdata.isAduty()) {
+                    VoidPlayer targetVoidPLayer = VoidAPI.getPlayer(targetplayer);
+                    if (targetVoidPLayer.isAduty()) {
                         player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7Level: " + targetplayerdata.getLevel() + "§8 | §7Fraktion: " + faction + " (Rang " + targetplayerdata.getFactionGrade() + ")§8 | §7Ping: " + targetplayer.getPing() + "ms §8 | §7§oAdmindienst");
                     } else {
                         player.sendMessage("§8 » §7" + targetplayer.getName() + "§8 | §7Level: " + targetplayerdata.getLevel() + "§8 | §7Fraktion: " + faction + " (Rang " + targetplayerdata.getFactionGrade() + ")§8 | §7Ping: " + targetplayer.getPing() + "ms");

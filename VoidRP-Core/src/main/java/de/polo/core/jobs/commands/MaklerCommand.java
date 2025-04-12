@@ -2,7 +2,9 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
@@ -14,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.core.Main.locationManager;
 import static de.polo.core.Main.playerManager;
 
 /**
@@ -32,7 +33,8 @@ public class MaklerCommand extends CommandBase {
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        if (locationManager.getDistanceBetweenCoords(player, "makler_access") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "makler_access") > 5) {
             player.sendMessage(Component.text("§7   ===§8[§6Makler§8]§7==="));
             for (PlayerData targetData : playerManager.getPlayers()) {
                 if (targetData.getLongTermJob() == LongTermJob.REAL_ESTATE_BROKER) {

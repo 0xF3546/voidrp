@@ -2,156 +2,167 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.api.jobs.Job;
+import de.polo.api.player.VoidPlayer;
+import de.polo.core.Main;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.handler.CommandBase;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
+import de.polo.core.utils.enums.EXPType;
 import de.polo.core.utils.player.SoundManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
-public class PostboteCommand implements CommandExecutor {
+@CommandBase.CommandMeta(
+        name = "postbote",
+        usage = "/postbote"
+)
+public class PostboteCommand extends CommandBase implements Job {
     private final List<Integer> array = new ObjectArrayList<>();
-    private final PlayerManager playerManager;
-    private final LocationManager locationManager;
+    public final String prefix = "§8[§ePostbote§8] §7";
 
-    public PostboteCommand(PlayerManager playerManager, LocationManager locationManager) {
-        this.playerManager = playerManager;
-        this.locationManager = locationManager;
-        Main.registerCommand("postbote", this);
+    public PostboteCommand(@NotNull CommandMeta meta) {
+        super(meta);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (ServerManager.canDoJobs()) {
-            if (locationManager.getDistanceBetweenCoords(player, "postbote") <= 5) {
-                InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §ePostbote"));
-                if (!Main.getInstance().getCooldownManager().isOnCooldown(player, "postbote") && playerData.getVariable("job") == null) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            if (locationService.getDistanceBetweenCoords(player, "postbote") <= 5) {
+                InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §ePostbote"), true, true);
+
+                // Start Job Option
+                if (!playerService.isInJobCooldown(player, MiniJob.POSTMAN) && player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.LIME_DYE, 1, 0, "§aPostbote starten")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
-                            startTransport(player);
-                            player.closeInventory();
+                            startJob(player);
+                            player.getPlayer().closeInventory();
                         }
                     });
                 } else {
-                    if (playerData.getVariable("job") == null) {
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player, "postbote")) + "§7.")) {
+                    if (player.getActiveJob() == null) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.POSTMAN)) + "§7.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {
-
-                            }
+                            public void onClick(InventoryClickEvent event) {}
                         });
                     } else {
-                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + playerData.getVariable("job") + "§7 Job angenommen.")) {
+                        inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {
-
-                            }
+                            public void onClick(InventoryClickEvent event) {}
                         });
                     }
                 }
-                if (playerData.getVariable("job") == null) {
+
+                // Quit Job Option
+                if (player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {
-
-                        }
+                        public void onClick(InventoryClickEvent event) {}
+                    });
+                } else if (!player.getMiniJob().equals(MiniJob.POSTMAN)) {
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {}
                     });
                 } else {
-                    if (!playerData.getVariable("job").equals("Postbote")) {
-                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-
-                            }
-                        });
-                    } else {
-                        inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Postbote beenden")) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                quitJob(player, false);
-                                player.closeInventory();
-                            }
-                        });
-                    }
+                    int remainingDeliveries = (int)player.getVariable("post");
+                    String payoutText = remainingDeliveries > 0 ?
+                            "§8 ➥ §7Noch " + remainingDeliveries + " Briefe abzugeben" :
+                            "§8 ➥ §7Alle Briefe abgegeben";
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", payoutText)) {
+                        @Override
+                        public void onClick(InventoryClickEvent event) {
+                            endJob(player);
+                            player.getPlayer().closeInventory();
+                        }
+                    });
                 }
             } else {
-                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der nähe des Nachrichtengebäudes§7!");
+                player.sendMessage(Prefix.ERROR + "Du bist §cnicht§7 in der Nähe des Nachrichtengebäudes§7!");
             }
         } else {
             player.sendMessage(ServerManager.error_cantDoJobs);
         }
-        return false;
     }
 
     public boolean canGive(int number) {
         return !array.contains(number);
     }
 
-    public void quitJob(Player player, boolean silent) {
-        Main.getInstance().beginnerpass.didQuest(player, 5);
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setVariable("job", null);
-        if (!silent) player.sendMessage("§8[§ePostbote§8]§7 Vielen Dank für die geleistete Arbeit.");
-        SoundManager.successSound(player);
-        //playerData.getScoreboard("postbote").killScoreboard();
-        Main.getInstance().getCooldownManager().setCooldown(player, "postbote", 600);
-        player.closeInventory();
+    @Override
+    public void startJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        if (!playerService.isInJobCooldown(player, MiniJob.POSTMAN)) {
+            player.setMiniJob(MiniJob.POSTMAN);
+            player.setActiveJob(this);
+
+            int deliveries = Utils.random(2, 5);
+            player.setVariable("post", deliveries);
+            player.sendMessage(prefix + "Bringe die Post zu verschiedenen Häusern.");
+            player.sendMessage("§8 ➥ §7Nutze §8[§6Rechtsklick§8]§7 auf die Hausschilder.");
+            player.sendMessage(prefix + "Du hast §e" + deliveries + " Briefe§7 abzugeben.");
+        } else {
+            player.sendMessage(prefix + "Du kannst den Job erst in §f" + Utils.getTime(playerService.getJobCooldown(player, MiniJob.POSTMAN)) + "§7 beginnen.");
+        }
     }
 
-    public void startTransport(Player player) {
-        VoidAPI.getPlayer(player).setMiniJob(MiniJob.POSTMAN);
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        playerData.setIntVariable("post", Utils.random(2, 5));
-        playerData.setVariable("job", "Postbote");
-        /*Scoreboard scoreboard = new Scoreboard(player);
-        scoreboard.createPostboteScoreboard();*/
-        //playerData.setScoreboard("postbote", scoreboard);
-        player.sendMessage("§8[§ePostbote§8]§7 Bringe die Post zu verschiedenen Häusern.");
-        player.sendMessage("§8 ➥ §7Nutze §8[§6Rechtsklick§8]§7 auf die Hausschilder.");
+    @Override
+    public void endJob(VoidPlayer player) {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+
+        player.sendMessage(prefix + "Du hast den Job beendet.");
+        SoundManager.successSound(player.getPlayer());
+
+        playerService.handleJobFinish(player, MiniJob.POSTMAN, 3600, Utils.random(12, 20));
+        player.setMiniJob(null);
+        player.setActiveJob(null);
+        player.setVariable("post", null);
+        array.clear();
     }
 
-    public void dropTransport(Player player, int house) {
-        VoidAPI.getPlayer(player).setMiniJob(null);
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        int payout = Utils.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
-        player.sendMessage("§8[§ePostbote§8]§7 Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");
-        SoundManager.successSound(player);
-        playerManager.addExp(player, Utils.random(1, 3));
-        playerData.setIntVariable("post", playerData.getIntVariable("post") - 1);
-        Main.getInstance().seasonpass.didQuest(player, 3);
-        //playerData.getScoreboard("postbote").updatePostboteScoreboard();
-        try {
-            playerManager.addBankMoney(player, payout, "Auszahlung Postbote");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    public void handleDrop(VoidPlayer player, int house) {
+        if (canGive(house)) {
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
+            int remainingDeliveries = (int)player.getVariable("post");
+            if (remainingDeliveries <= 0) {
+                player.sendMessage(prefix + "Du hast keine Post mehr zum Abgeben!");
+                return;
+            }
+
+            int payout = Utils.random(ServerManager.getPayout("postbote"), ServerManager.getPayout("postbote2"));
+            player.sendMessage(prefix + "Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");
+            SoundManager.successSound(player.getPlayer());
+            playerService.addExp(player.getPlayer(), Utils.random(1, 3));
+            Main.getInstance().seasonpass.didQuest(player.getPlayer(), 3);
+
+            player.getData().addBankMoney(payout, "Auszahlung Postbote");
+            player.setVariable("post", remainingDeliveries - 1);
+
+            array.add(house);
+            Utils.waitSeconds(1800, () -> array.removeIf(number -> number == house));
+
+            if (remainingDeliveries - 1 <= 0) {
+                player.sendMessage(prefix + "Du hast alles abgegeben. Danke!");
+                endJob(player);
+            }
+        } else {
+            player.sendMessage(prefix + "Dieses Haus hat bereits Post erhalten!");
         }
-        if (playerData.getIntVariable("post") <= 0) {
-            player.sendMessage("§8[§ePostbote§8]§7 Du hast alles abgegeben. Danke!");
-            playerData.setVariable("job", null);
-            quitJob(player, true);
-            //playerData.getScoreboard("postbote").killScoreboard();
-        }
-        array.add(house);
-        player.closeInventory();
-        Utils.waitSeconds(1800, () -> array.removeIf(number -> number == house));
     }
 }

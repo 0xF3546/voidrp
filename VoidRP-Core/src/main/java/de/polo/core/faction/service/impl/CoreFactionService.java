@@ -7,6 +7,7 @@ import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
+import de.polo.core.utils.Service;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -22,6 +23,7 @@ import static de.polo.core.Main.factionManager;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CoreFactionService implements FactionService {
     public CoreFactionService() {
     }

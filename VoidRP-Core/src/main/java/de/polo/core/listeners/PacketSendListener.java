@@ -52,11 +52,11 @@ public class PacketSendListener implements PacketListener {
             PlayerData senderData = playerManager.getPlayerData(sender.getUniqueId());
             if (targetData == null || senderData == null) continue;
 
-            Faction factionData = factionManager.getFactionData(senderData.getFaction());
 
             entry.setDisplayName(null);
 
-            if(factionData != null) {
+            if(senderData.getFaction() != null) {
+                Faction factionData = factionManager.getFactionData(senderData.getFaction());
                 processGoodFaction(target, sender, entry, targetData, senderData);
                 processBadFaction(entry, senderData, targetData, sender);
                 processSameFaction(entry, sender, targetData, factionData);
@@ -71,6 +71,7 @@ public class PacketSendListener implements PacketListener {
     }
 
     private void processGoodFaction(Player target, Player sender, WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, PlayerData targetData, PlayerData senderData) {
+        if (targetData.getFaction() == null) return;
         if (factionManager.isPlayerInGoodFaction(target) && !"Medic".equalsIgnoreCase(targetData.getFaction())) {
             if (senderData.getWanted() != null) {
                 WantedReason wantedReason = utils.staatUtil.getWantedReason(senderData.getWanted().getWantedId());
@@ -149,6 +150,7 @@ public class PacketSendListener implements PacketListener {
     public void processNoneNameTag(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData senderData){
         if(entry.getDisplayName() == null){
             if(Objects.requireNonNull(senderData).isDuty()){
+                if (senderData.getFaction() == null) return;
                 if (senderData.getFaction().equalsIgnoreCase("Polizei")){
                     entry.setDisplayName(Component.text(sender.getName()).color(NamedTextColor.BLUE));
                 }

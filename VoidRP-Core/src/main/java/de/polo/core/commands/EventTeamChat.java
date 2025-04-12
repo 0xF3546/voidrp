@@ -1,5 +1,7 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -29,13 +31,15 @@ public class EventTeamChat implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        if (playerData.getSecondaryTeam().equals("Event-Team") || playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (playerData.getSecondaryTeam().equals("Event-Team") || voidPlayer.isAduty()) {
             for (Player players : Bukkit.getOnlinePlayers()) {
+                VoidPlayer voidPlayers = VoidAPI.getPlayer(players);
                 PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
                     if (playersData.getSecondaryTeam().equalsIgnoreCase("Event-Team") || playersData.getPermlevel() >= 70) {
-                        if (playersData.getSecondaryTeam().equals("Event-Team") || playersData.isAduty() || playersData.getPermlevel() >= 70) {
-                            players.sendMessage("§8[§6Event-Team§8]§e " + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
+                        if (playersData.getSecondaryTeam().equals("Event-Team") || voidPlayers.isAduty() || playersData.getPermlevel() >= 70) {
+                            players.sendMessage("§6Event-Team §8┃§e " + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
                         }
                     }
                 }

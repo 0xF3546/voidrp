@@ -2,14 +2,15 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.SubGroup;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import net.kyori.adventure.text.Component;
@@ -26,12 +27,10 @@ import org.jetbrains.annotations.NotNull;
 public class SubGroupCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
 
-    public SubGroupCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
+    public SubGroupCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
         Main.registerCommand("subgroup", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
@@ -44,7 +43,8 @@ public class SubGroupCommand implements CommandExecutor, Listener {
             return false;
         }
         if (args[0].equalsIgnoreCase("manage")) {
-            if (locationManager.getDistanceBetweenCoords(player, "subgroup_manage") > 5) {
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            if (locationService.getDistanceBetweenCoords(player, "subgroup_manage") > 5) {
                 player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Gruppierungsverwaltung");
                 return false;
             }

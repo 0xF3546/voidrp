@@ -1,8 +1,9 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
@@ -28,11 +29,9 @@ import java.util.UUID;
 public class BanCommand implements CommandExecutor, TabCompleter {
 
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public BanCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public BanCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         Main.registerCommand("ban", this);
         Main.addTabCompleter("ban", this);
     }
@@ -180,7 +179,8 @@ public class BanCommand implements CommandExecutor, TabCompleter {
 
     private void broadcastBanMessage(Player punisher, String targetName, String reason) {
         Bukkit.broadcastMessage(ChatColor.RED + punisher.getName() + " hat " + targetName + " gebannt. Grund: " + reason);
-        adminManager.insertNote("System", targetName, "Spieler wurde gebannt (" + reason + ")");
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        adminService.insertNote("System", targetName, "Spieler wurde gebannt (" + reason + ")");
     }
 
     private LocalDateTime parseBanDuration(String duration) {

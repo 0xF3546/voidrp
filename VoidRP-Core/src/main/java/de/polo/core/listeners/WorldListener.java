@@ -1,6 +1,7 @@
 package de.polo.core.listeners;
 
 import de.polo.core.Main;
+import de.polo.core.utils.Event;
 import lombok.SneakyThrows;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -17,17 +18,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.EnumSet;
 
+@Event
 public class WorldListener implements Listener {
     private static final EnumSet<Material> BLOCK_INTERACT_RESTRICTED = EnumSet.of(
             Material.CHEST, Material.TRAPPED_CHEST, Material.ENDER_CHEST, Material.ANVIL,
             Material.DAYLIGHT_DETECTOR, Material.CRAFTING_TABLE, Material.SHULKER_BOX,
             Material.BARREL, Material.BREWING_STAND, Material.BEACON, Material.HOPPER,
-            Material.FURNACE, Material.TURTLE_EGG, Material.CANDLE, Material.FLOWER_POT
+            Material.FURNACE, Material.TURTLE_EGG, Material.CANDLE, Material.FLOWER_POT,
+            Material.COMPOSTER, Material.DISPENSER, Material.DROPPER, Material.LECTERN,
+            Material.JUKEBOX
     );
-
-    public WorldListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
 
     @SneakyThrows
     @EventHandler

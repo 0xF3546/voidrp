@@ -2,11 +2,12 @@ package de.polo.core.game.base.ffa;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponType;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.FFALobbyType;
@@ -44,16 +45,14 @@ import java.util.stream.Collectors;
  */
 public class FFA implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
 
     private final List<FFALobby> lobbies = new ObjectArrayList<>();
 
     private final List<Player> joinedPlayers = new ObjectArrayList<>();
     private final List<PlayerFFAStats> playerFFAStats = new ObjectArrayList<>();
 
-    public FFA(PlayerManager playerManager, LocationManager locationManager) {
+    public FFA(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
 
         load();
 
@@ -125,12 +124,13 @@ public class FFA implements CommandExecutor {
             return false;
         }
         PlayerData playerData = playerManager.getPlayerData(player);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (args[0].equalsIgnoreCase("join")) {
             if (playerData.getVariable("ffa") != null) {
                 player.sendMessage(Prefix.ERROR + "Du bist bereits in einem FFA.");
                 return false;
             }
-            if (locationManager.getDistanceBetweenCoords(player, "ffa") < 5) {
+            if (locationService.getDistanceBetweenCoords(player, "ffa") < 5) {
                 openFFAMenu(player);
             } else {
                 player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der FFA-Arena!");
@@ -309,7 +309,8 @@ public class FFA implements CommandExecutor {
         if (playerData.getVariable("ffa") == null) {
             return;
         }
-        locationManager.useLocation(player, "ffa");
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        locationService.useLocation(player, "ffa");
         playerData.setVariable("ffa", null);
         for (ItemStack item : player.getInventory().getContents()) {
             for (Weapon weaponData : Weapon.values()) {

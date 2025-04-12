@@ -2,13 +2,14 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.storage.GasStationData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.CompanyManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -27,12 +28,10 @@ import java.util.Arrays;
 
 public class GasStationCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
     private final CompanyManager companyManager;
 
-    public GasStationCommand(PlayerManager playerManager, LocationManager locationManager, CompanyManager companyManager) {
+    public GasStationCommand(PlayerManager playerManager, CompanyManager companyManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         this.companyManager = companyManager;
 
         Main.registerCommand("gasstation", this);
@@ -43,7 +42,8 @@ public class GasStationCommand implements CommandExecutor, Listener {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        GasStationData gasStationData = locationManager.getGasStationInRadius(player);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        GasStationData gasStationData = locationService.getGasStationInRadius(player);
         if (gasStationData == null) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe einer Tankstelle.");
             return false;

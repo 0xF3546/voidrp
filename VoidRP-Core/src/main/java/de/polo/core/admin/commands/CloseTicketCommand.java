@@ -1,8 +1,9 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.SupportManager;
 import de.polo.core.utils.Prefix;
@@ -10,6 +11,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,13 +20,11 @@ import org.bukkit.entity.Player;
 public class CloseTicketCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final SupportManager supportManager;
-    private final AdminManager adminManager;
     private final Utils utils;
 
-    public CloseTicketCommand(PlayerManager playerManager, SupportManager supportManager, AdminManager adminManager, Utils utils) {
+    public CloseTicketCommand(PlayerManager playerManager, SupportManager supportManager, Utils utils) {
         this.playerManager = playerManager;
         this.supportManager = supportManager;
-        this.adminManager = adminManager;
         this.utils = utils;
         Main.registerCommand("closesupport", this);
     }
@@ -57,7 +57,9 @@ public class CloseTicketCommand implements CommandExecutor {
             playerPacket.renewPacket();
             PlayerPacket targetPacket = new PlayerPacket(targetplayer);
             targetPacket.renewPacket();
-            adminManager.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", ChatColor.YELLOW);
+
+            AdminService adminService = VoidAPI.getService(AdminService.class);
+            adminService.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", Color.YELLOW);
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }

@@ -1,9 +1,12 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.TransportJob;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ServerManager;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
@@ -21,15 +24,16 @@ import static de.polo.core.Main.*;
  */
 @CommandBase.CommandMeta(name = "bottletransport")
 public class BottletransportCommand extends CommandBase implements TransportJob {
-    private final String PREFIX = "§8[§2Flaschenlieferant§8]§7 ";
+    private final String PREFIX = "§2Flaschenlieferant §8┃ ➜§7 ";
     public BottletransportCommand(@NotNull CommandMeta meta) {
         super(meta);
     }
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (args.length > 0) {
-            if (locationManager.getDistanceBetweenCoords(player, "bar_storage") < 5
+            if (locationService.getDistanceBetweenCoords(player, "bar_storage") < 5
                     && playerData.getVariable("job") != null
                     && playerData.getVariable("job") == "flaschentransport"
                     && args[0].equalsIgnoreCase("drop")) {
@@ -37,7 +41,7 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
                 return;
             }
         }
-        if (locationManager.getDistanceBetweenCoords(player, "flaschenlieferant") > 5) {
+        if (locationService.getDistanceBetweenCoords(player, "flaschenlieferant") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Flaschenlieferants.");
             return;
         }
@@ -55,8 +59,10 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
     public void startJob(VoidPlayer player) {
         player.setVariable("job", "flaschentransport");
         player.setMiniJob(MiniJob.BOTTLE_TRANSPORT);
+        player.setActiveJob(this);
         int amount = Utils.random(2, 4);
         player.sendMessage(Component.text(PREFIX + "Du hast " + amount + " erhalten, bringe diese in das Lager der Bar."));
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
         navigationService.createNaviByLocation(player.getPlayer(), "bar_storage");
         player.setVariable("job::flaschentransport::amount", amount);
     }
@@ -72,6 +78,7 @@ public class BottletransportCommand extends CommandBase implements TransportJob 
     @Override
     public void handleDrop(VoidPlayer player) {
         player.setMiniJob(null);
+        player.setActiveJob(this);
         int boxPrice = Utils.random(ServerManager.getPayout("flaschenlieferant_kiste_from"), ServerManager.getPayout("flaschenlieferant_kiste_to"));
         int amount = (int) player.getVariable("job::flaschentransport::amount");
         if (amount <= 0) return;

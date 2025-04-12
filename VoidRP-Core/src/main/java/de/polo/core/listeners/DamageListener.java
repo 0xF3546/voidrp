@@ -1,9 +1,11 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.enums.RoleplayItem;
+import de.polo.core.utils.Event;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -15,14 +17,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import static de.polo.core.Main.playerManager;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.ENTITY_ATTACK;
 import static org.bukkit.event.entity.EntityDamageEvent.DamageCause.PROJECTILE;
 
+@Event
 public class DamageListener implements Listener {
-    private final PlayerManager playerManager;
 
-    public DamageListener(PlayerManager playerManager) {
-        this.playerManager = playerManager;
+    public DamageListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -42,7 +44,8 @@ public class DamageListener implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         // ISSUE VRP-10000: fixed by adding null check
         if (playerData != null) {
-            if (playerData.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.isInAcceptedTicket(player) || playerData.isDead() || playerData.isCuffed()) {
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+            if (voidPlayer.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.isInAcceptedTicket(player) || playerData.isDead() || playerData.isCuffed()) {
                 event.setCancelled(true);
                 return;
             }

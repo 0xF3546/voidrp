@@ -1,12 +1,12 @@
 package de.polo.core.utils;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.game.base.housing.HouseManager;
 import de.polo.core.game.faction.gangwar.GangwarUtils;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.manager.*;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
@@ -56,10 +56,10 @@ public class Utils {
     @Getter
     public Tutorial tutorial;
 
-    public Utils(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, LocationManager locationManager, HouseManager houseManager, CompanyManager companyManager) {
-        deathUtil = new DeathUtils(playerManager, adminManager, locationManager);
-        vertragUtil = new VertragUtil(playerManager, factionManager, adminManager);
-        staatUtil = new StaatUtil(playerManager, factionManager, locationManager, this);
+    public Utils(PlayerManager playerManager, FactionManager factionManager, HouseManager houseManager, CompanyManager companyManager) {
+        deathUtil = new DeathUtils(playerManager);
+        vertragUtil = new VertragUtil(playerManager, factionManager);
+        staatUtil = new StaatUtil(playerManager, factionManager, this);
         tutorial = new Tutorial(playerManager);
         this.houseManager = houseManager;
         payDayUtils = new PayDayUtils(playerManager, factionManager);
@@ -67,7 +67,7 @@ public class Utils {
         this.companyManager = companyManager;
         tabletUtils = new TabletUtils(playerManager, factionManager, this, companyManager);
         phoneUtils = new PhoneUtils(playerManager, this);
-        gangwarUtils = new GangwarUtils(playerManager, factionManager, locationManager);
+        gangwarUtils = new GangwarUtils(playerManager, factionManager);
     }
 
     public static String stringArrayToString(String[] args) {
@@ -204,7 +204,8 @@ public class Utils {
             player.sendMessage("§5Du bist nicht mehr abwesend.");
             playerData.setAFK(false);
             playerData.setIntVariable("afk", 0);
-            if (!playerData.isAduty()) {
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+            if (!voidPlayer.isAduty()) {
                 player.setCollidable(true);
             }
         }
@@ -264,11 +265,12 @@ public class Utils {
             PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
             String suffix = "";
             String prefix = "";
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
             if (playerData.isAFK()) {
                 prefix = "§8[§5AFK§8]";
             } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
                 prefix = "§8[§2GM§8]";
-            } else if (player.getAllowFlight() && !player.getGameMode().equals(GameMode.SPECTATOR) && !playerData.isAduty()) {
+            } else if (player.getAllowFlight() && !player.getGameMode().equals(GameMode.SPECTATOR) && !voidPlayer.isAduty()) {
                 prefix = "§8[§5Fly§8]";
             }
 

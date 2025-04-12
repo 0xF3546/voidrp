@@ -2,22 +2,18 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.storage.Ticket;
-import de.polo.core.game.base.vehicle.Vehicles;
-import de.polo.core.admin.services.impl.AdminManager;
-import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.manager.ServerManager;
-import de.polo.core.manager.SupportManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.StaatUtil;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.PlayerPed;
-import de.polo.core.utils.player.ScoreboardAPI;
+import de.polo.core.utils.Event;
+import de.polo.core.vehicles.services.VehicleService;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -28,35 +24,25 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
 
-public class
-QuitListener implements Listener {
-    private final PlayerManager playerManager;
-    private final AdminManager adminManager;
-    private final Utils utils;
-    private final Main.Commands commands;
-    private final ServerManager serverManager;
-    private final SupportManager supportManager;
-    private final ScoreboardAPI scoreboardAPI;
+import static de.polo.core.Main.*;
 
-    public QuitListener(PlayerManager playerManager, AdminManager adminManager, Utils utils, Main.Commands commands, ServerManager serverManager, SupportManager supportManager, ScoreboardAPI scoreboardAPI) {
-        this.playerManager = playerManager;
-        this.adminManager = adminManager;
-        this.utils = utils;
-        this.commands = commands;
-        this.serverManager = serverManager;
-        this.supportManager = supportManager;
-        this.scoreboardAPI = scoreboardAPI;
+@Event
+public class QuitListener implements Listener {
+
+    public QuitListener() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        VoidAPI.removePlayer(player);
         event.setQuitMessage("");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
         scoreboardAPI.clearScoreboards(player);
-        adminManager.send_message(player.getName() + " hat den Server verlassen.", ChatColor.GRAY);
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        adminService.sendMessage(player.getName() + " hat den Server verlassen.", Color.SILVER);
         if (player.getGameMode().equals(GameMode.CREATIVE)) {
             player.setGameMode(GameMode.SURVIVAL);
         }
@@ -87,34 +73,9 @@ QuitListener implements Listener {
         if (ped != null) {
             playerData.getPlayerPetManager().despawnPet(ped);
         }
+        VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+        vehicleService.deleteVehicleByUUID(player.getUniqueId());
         try {
-            Vehicles.deleteVehicleByUUID(player.getUniqueId().toString());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            if (playerData.getVariable("job") != null) {
-                switch (playerData.getVariable("job").toString()) {
-                    case "lumberjack":
-                        commands.lumberjackCommand.quitJob(player, true);
-                        break;
-                    case "mine":
-                        commands.mineCommand.quitJob(player);
-                        break;
-                    case "lieferant":
-                        commands.lebensmittelLieferantCommand.quitJob(player);
-                        break;
-                    case "farmer":
-                        commands.farmerCommand.quitJob(player);
-                        break;
-                    case "Postbote":
-                        commands.postboteCommand.quitJob(player, true);
-                        break;
-                    case "Müllmann":
-                        commands.muellmannCommand.quitJob(player, true);
-                        break;
-                }
-            }
             playerManager.savePlayer(player);
             Ticket ticket = supportManager.getTicket(player);
             if (ticket != null) {
@@ -137,7 +98,5 @@ QuitListener implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        VoidAPI.removePlayer(player);
     }
 }

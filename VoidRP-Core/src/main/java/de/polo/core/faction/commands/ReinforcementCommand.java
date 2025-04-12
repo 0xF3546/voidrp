@@ -1,8 +1,10 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -22,8 +24,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
-
-import static de.polo.core.Main.navigationService;
 
 public class ReinforcementCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -76,6 +76,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         if (args.length >= 3) {
                             Location loc = new Location(player.getWorld(), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                             String type = args[5];
+                            NavigationService navigationService = VoidAPI.getService(NavigationService.class);
                             navigationService.createNaviByCord(player, (int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
                             if (!type.equals("dep")) {
                                 for (Player players : Bukkit.getOnlinePlayers()) {

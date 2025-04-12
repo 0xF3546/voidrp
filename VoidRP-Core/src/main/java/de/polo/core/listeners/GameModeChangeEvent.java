@@ -3,12 +3,14 @@ package de.polo.core.listeners;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
+import de.polo.core.utils.Event;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
+@Event
 public class GameModeChangeEvent implements Listener {
     public GameModeChangeEvent() {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());

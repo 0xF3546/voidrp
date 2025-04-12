@@ -4,6 +4,7 @@ import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,35 +44,37 @@ public abstract class CommandBase implements CommandExecutor {
             return true;
         }
 
-        Player player = (Player) sender;
-        PlayerData playerData = Main.getInstance().getPlayerManager().getPlayerData(player);
+        VoidPlayer player = VoidAPI.getPlayer((Player) sender);
 
-        if (playerData == null) {
+        if (player.getData() == null) {
             player.sendMessage(Prefix.ERROR + "Spielerdaten konnten nicht geladen werden.");
             return true;
         }
 
-        if (playerData.getPermlevel() < meta.permissionLevel()) {
+        if (player.getData().getPermlevel() < meta.permissionLevel()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
         }
-        if (meta.adminDuty() && !playerData.isAduty()) {
+        if (meta.adminDuty() && !player.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
             return true;
         }
+
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        PlayerData playerData = playerService.getPlayerData(player.getUuid());
         if (!Objects.equals(meta.faction(), "")) {
+
             if (playerData.getFaction() == null || !playerData.getFaction().equalsIgnoreCase(meta.faction())) {
                 player.sendMessage(Prefix.ERROR_NOPERMISSION);
                 return true;
             }
         }
-        if (meta.leader() && !playerData.isLeader()) {
+        if (meta.leader() && !player.getData().isLeader()) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return true;
         }
         try {
-            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
-            execute(voidPlayer, playerData, args);
+            execute(player, playerData, args);
         } catch (Exception e) {
             player.sendMessage(Prefix.ERROR + "Ein Fehler ist aufgetreten: " + e.getMessage());
             e.printStackTrace();

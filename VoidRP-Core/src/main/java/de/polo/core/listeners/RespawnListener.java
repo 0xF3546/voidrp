@@ -1,21 +1,20 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.gameplay.MilitaryDrop;
+import de.polo.core.utils.Event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class RespawnListener implements Listener {
-    private final PlayerManager playerManager;
+import static de.polo.core.Main.playerManager;
 
-    public RespawnListener(PlayerManager playerManager) {
-        this.playerManager = playerManager;
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
+@Event
+public class RespawnListener implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
@@ -42,15 +41,16 @@ public class RespawnListener implements Listener {
         player.sendTitle("§cDu bist gestorben.", null, 1, 12, 1);
         // player.setGameMode(GameMode.SPECTATOR);
         player.setFlySpeed(flySpeed);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (playerData.getKarma() < -50) {
-            event.setRespawnLocation(Main.getInstance().locationManager.getLocation("hell"));
-            Main.getInstance().locationManager.useLocation(player,"hell");
+            event.setRespawnLocation(locationService.getLocation("hell"));
+            locationService.useLocation(player,"hell");
         } else if (playerData.getKarma() >= 50) {
-            event.setRespawnLocation(Main.getInstance().locationManager.getLocation("heaven"));
-            Main.getInstance().locationManager.useLocation(player,"heaven");
+            event.setRespawnLocation(locationService.getLocation("heaven"));
+            locationService.useLocation(player,"heaven");
         } else {
-            event.setRespawnLocation(Main.getInstance().locationManager.getLocation("cemetery"));
-            Main.getInstance().locationManager.useLocation(player, "cemetery");
+            event.setRespawnLocation(locationService.getLocation("cemetery"));
+            locationService.useLocation(player, "cemetery");
         }
     }
 }

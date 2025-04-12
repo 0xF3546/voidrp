@@ -1,6 +1,10 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.location.services.NavigationService;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.NaviData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
@@ -33,6 +37,9 @@ public class SperrzoneCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         PlayerData playerData = playerService.getPlayerData(player);
         if (!playerData.getFaction().equalsIgnoreCase("FBI") && !playerData.getFaction().equalsIgnoreCase("Polizei")) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);

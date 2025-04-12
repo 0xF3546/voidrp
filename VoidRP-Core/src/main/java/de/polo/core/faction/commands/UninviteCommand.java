@@ -1,8 +1,9 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
@@ -10,7 +11,7 @@ import de.polo.core.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,12 +28,10 @@ import java.util.List;
 
 public class UninviteCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final FactionManager factionManager;
 
-    public UninviteCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+    public UninviteCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.factionManager = factionManager;
         Main.registerCommand("uninvite", this);
         Main.addTabCompleter("uninvite", this);
@@ -64,7 +63,9 @@ public class UninviteCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + targetData.getFaction() + "\" geworfen.", ChatColor.DARK_PURPLE);
+
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        adminService.sendMessage(player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion \"" + targetData.getFaction() + "\" geworfen.", Color.PURPLE);
         factionManager.removePlayerFromFrak(offlinePlayer.getUniqueId());
         factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat " + offlinePlayer.getName() + " aus der Fraktion geworfen!");
         if (offlinePlayer.isOnline()) {

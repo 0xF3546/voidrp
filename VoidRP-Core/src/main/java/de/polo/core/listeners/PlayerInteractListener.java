@@ -2,15 +2,18 @@ package de.polo.core.listeners;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.game.base.extra.Storage;
 import de.polo.core.game.base.extra.drop.Drop;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.game.events.SecondTickEvent;
-import de.polo.core.manager.BlockManager;
-import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.jobs.commands.MuellmannCommand;
+import de.polo.core.jobs.commands.PostboteCommand;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.WeaponManager;
 import de.polo.core.storage.ATM;
 import de.polo.core.storage.ClickedEventBlock;
@@ -29,6 +32,7 @@ import de.polo.core.utils.enums.StorageType;
 import de.polo.core.utils.gameplay.Case;
 import de.polo.core.utils.gameplay.GamePlay;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;
 import de.polo.core.utils.player.Rubbellose;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -77,32 +81,22 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
+import static de.polo.core.Main.*;
+
+@Event
 public class PlayerInteractListener implements Listener {
     private static final Random RANDOM = new Random();
-    private final PlayerManager playerManager;
-    private final Utils utils;
-    private final FactionManager factionManager;
-    private final Main.Commands commands;
-    private final BlockManager blockManager;
     private final HashMap<Player, LocalDateTime> rammingPlayers = new HashMap<>();
 
     private final List<Molotov> molotovs = new ObjectArrayList<>();
     private final List<Block> sprungtuecher = new ObjectArrayList<>();
     private final List<Grenade> activeGrenades = new ObjectArrayList<>();
 
-    public PlayerInteractListener(PlayerManager playerManager, Utils utils, Main.Commands commands, BlockManager blockManager, FactionManager factionManager) {
-        this.playerManager = playerManager;
-        this.utils = utils;
-        this.commands = commands;
-        this.blockManager = blockManager;
-        this.factionManager = factionManager;
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
         playerData.setIntVariable("afk", 0);
         if (player.getGameMode().equals(GameMode.SPECTATOR)) return;
         if (event.getHand() != null && event.getHand().equals(org.bukkit.inventory.EquipmentSlot.OFF_HAND)) {
@@ -221,7 +215,7 @@ public class PlayerInteractListener implements Listener {
                             String playerFaction = playerData.getFaction().toLowerCase();
                             String blockFaction = rBlock.getInfoValue().toLowerCase();
 
-                            if (!playerData.isAduty() && !playerFaction.equals(blockFaction)) {
+                            if (!voidPlayer.isAduty() && !playerFaction.equals(blockFaction)) {
                                 if (!((blockFaction.equals("fbi") && playerFaction.equals("polizei")) ||
                                         (blockFaction.equals("polizei") && playerFaction.equals("fbi")))) {
                                     event.setCancelled(true);
@@ -246,7 +240,7 @@ public class PlayerInteractListener implements Listener {
                                 if (block.getType().toString().contains("SIGN")) {
                                     RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(block.getLocation());
                                     if (registeredBlock.getInfoValue() == null) continue;
-                                    if (!playerData.isAduty() && !utils.houseManager.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
+                                    if (!voidPlayer.isAduty() && !utils.houseManager.canPlayerInteract(player, Integer.parseInt(registeredBlock.getInfoValue()))) {
                                         event.setCancelled(true);
                                     }
                                 }
@@ -278,7 +272,8 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     if (playerData.getFaction().equalsIgnoreCase("Polizei") || playerData.getFaction().equalsIgnoreCase("FBI")) {
-                        if (Main.getInstance().locationManager.getDistanceBetweenCoords(player, "asservatenkammer") < 20) {
+                        LocationService locationService = VoidAPI.getService(LocationService.class);
+                        if (locationService.getDistanceBetweenCoords(player, "asservatenkammer") < 20) {
                             Main.getInstance().gamePlay.drugstorage.openEvidence(player);
                         }
                     }
@@ -435,7 +430,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 });
                             }*/
-                                if (playerData.getVariable("job") == null) {
+                                if (voidPlayer.getActiveJob() == null) {
                                     if (playerData.getFaction() != null && (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) && playerData.isDuty()) {
                                         if (rammingPlayers.get(player) != null) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§9§mRammen", "§8 ➥§7 Du bist bereits eine Tür am eintreten")) {
@@ -511,19 +506,19 @@ public class PlayerInteractListener implements Listener {
                                         });
                                     }
                                 } else {
-                                    if (!playerData.getVariable("job").toString().equalsIgnoreCase("postbote") && !playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
+                                    if (!voidPlayer.getMiniJob().equals(MiniJob.POSTMAN) && !voidPlayer.getMiniJob().equals(MiniJob.WASTE_COLLECTOR)) {
                                         inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§7Kein Job", "§8 ➥§7 Du hast keinen passenden Job angenommen")) {
                                             @Override
                                             public void onClick(InventoryClickEvent event) {
 
                                             }
                                         });
-                                    } else if (playerData.getVariable("job").toString().equalsIgnoreCase("postbote")) {
-                                        if (commands.postboteCommand.canGive(houseData.getNumber())) {
+                                    } else if (voidPlayer.getMiniJob().equals(MiniJob.POSTMAN)) {
+                                        if (Main.getInstance().getCommandInstance(PostboteCommand.class).canGive(houseData.getNumber())) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.BOOK, 1, 0, "§ePost abgeben")) {
                                                 @Override
                                                 public void onClick(InventoryClickEvent event) {
-                                                    Main.getInstance().commands.postboteCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                    Main.getInstance().getCommandInstance(PostboteCommand.class).handleDrop(VoidAPI.getPlayer(player), playerData.getIntVariable("current_house"));
                                                     player.closeInventory();
                                                 }
                                             });
@@ -535,12 +530,12 @@ public class PlayerInteractListener implements Listener {
                                                 }
                                             });
                                         }
-                                    } else if (playerData.getVariable("job").toString().equalsIgnoreCase("müllmann")) {
-                                        if (commands.muellmannCommand.canGet(houseData.getNumber())) {
+                                    } else if (voidPlayer.getMiniJob().equals(MiniJob.WASTE_COLLECTOR)) {
+                                        if (Main.getInstance().getCommandInstance(MuellmannCommand.class).canGet(houseData.getNumber())) {
                                             inventoryManager.setItem(new CustomItem(31, ItemManager.createItem(Material.CAULDRON, 1, 0, "§bMüll einsammeln")) {
                                                 @Override
                                                 public void onClick(InventoryClickEvent event) {
-                                                    Main.getInstance().commands.muellmannCommand.dropTransport(player, playerData.getIntVariable("current_house"));
+                                                    Main.getInstance().getCommandInstance(MuellmannCommand.class).handleDrop(VoidAPI.getPlayer(player), playerData.getIntVariable("current_house"));
                                                     player.closeInventory();
                                                 }
                                             });

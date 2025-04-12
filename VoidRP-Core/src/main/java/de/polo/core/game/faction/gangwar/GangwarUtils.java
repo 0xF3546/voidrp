@@ -2,15 +2,17 @@ package de.polo.core.game.faction.gangwar;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.api.gangwar.IGangzone;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponType;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -48,12 +50,10 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
 
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
 
-    public GangwarUtils(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
+    public GangwarUtils(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
         Main.registerCommand("gangwar", this);
         Main.addTabCompleter("gangwar", this);
         try {
@@ -140,7 +140,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                         for (int i = 2; i < args.length; i++) {
                             msg.append(" ").append(args[i]);
                         }
-                        if (locationManager.getDistanceBetweenCoords(player, "gangwar_attack_" + msg.toString().replace(" ", "")) < 5) {
+                        LocationService locationService = VoidAPI.getService(LocationService.class);
+                        if (locationService.getDistanceBetweenCoords(player, "gangwar_attack_" + msg.toString().replace(" ", "")) < 5) {
                             IGangzone gangwarData = getGangzoneByName(msg.toString());
                             InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §c" + gangwarData.getName()), true, true);
 
@@ -206,10 +207,11 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         playerData.setBossBar("gangwar", bossBar);
         player.getInventory().clear();
         playerData.setVariable("gangwar", zone);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (gangwarData.getAttacker().equals(playerData.getFaction())) {
-            locationManager.useLocation(player, "attacker_spawn_" + zone.replace(" ", ""));
+            locationService.useLocation(player, "attacker_spawn_" + zone.replace(" ", ""));
         } else {
-            locationManager.useLocation(player, "defender_spawn_" + zone.replace(" ", ""));
+            locationService.useLocation(player, "defender_spawn_" + zone.replace(" ", ""));
         }
         equipPlayer(player);
         return true;
@@ -227,7 +229,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         playerData.removeBossBar("gangwar");
         Main.getInstance().utils.deathUtil.revivePlayer(player, false);
         if (playerData.getVariable("gangwar") != null) {
-            locationManager.useLocation(player, playerData.getFaction());
+            LocationService locationService = VoidAPI.getService(LocationService.class);
+            locationService.useLocation(player, playerData.getFaction());
             playerData.setVariable("gangwar", null);
             for (ItemStack item : player.getInventory().getContents()) {
                 for (Weapon weaponData : Weapon.values()) {
@@ -253,10 +256,11 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     public void respawnPlayer(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Gangwar gangwarData = getGangwarByZone(playerData.getVariable("gangwar"));
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         if (gangwarData.getAttacker().equals(playerData.getFaction())) {
-            locationManager.useLocation(player, "attacker_spawn_" + playerData.getVariable("gangwar").toString().replace(" ", ""));
+            locationService.useLocation(player, "attacker_spawn_" + playerData.getVariable("gangwar").toString().replace(" ", ""));
         } else {
-            locationManager.useLocation(player, "defender_spawn_" + playerData.getVariable("gangwar").toString().replace(" ", ""));
+            locationService.useLocation(player, "defender_spawn_" + playerData.getVariable("gangwar").toString().replace(" ", ""));
         }
         for (ItemStack item : player.getInventory().getContents()) {
             for (Weapon weaponData : Weapon.values()) {
@@ -285,7 +289,8 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR + "Gangwar kann an Sonntagen bespielt werden!");
             return;
         }
-        if ((Utils.getTime().getHour() >= 19 && Utils.getTime().getHour() < 21 || (playerData.isAduty() && playerData.getPermlevel() >= 80))) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if ((Utils.getTime().getHour() >= 19 && Utils.getTime().getHour() < 21 || (voidPlayer.isAduty() && playerData.getPermlevel() >= 80))) {
             IGangzone gangzone = getGangzoneByName(zone);
             Faction factionData = factionManager.getFactionData(playerData.getFaction());
             if (!factionData.canDoGangwar()) {

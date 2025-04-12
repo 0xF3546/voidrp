@@ -2,6 +2,7 @@ package de.polo.core.database;
 
 import de.polo.core.database.utility.Result;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +33,8 @@ public interface Database {
     CompletableFuture<Integer> updateAsync(String query, Object... args);
 
     CompletableFuture<Integer> deleteAsync(String query, Object... args);
+
+    Connection getConnection();
 
     void close();
 }

@@ -1,7 +1,6 @@
 package de.polo.core.admin.services;
 
 import org.bukkit.Color;
-import org.bukkit.entity.Player;
 
 /**
  * @author Mayson1337
@@ -13,7 +12,7 @@ public interface AdminService {
     /**
      * Sends a message to all admins
      */
-    void send_message(String msg, Color color);
+    void sendMessage(String msg, Color color);
 
     /**
      * Sends a message to all guides
@@ -23,10 +22,6 @@ public interface AdminService {
     /**
      * Inserts a note into the database
      */
-    void insertNote(String punisher, String target, String note) throws Exception;
+    void insertNote(String punisher, String target, String note);
 
-    /**
-     * Starts the memory usage updater for a player
-     */
-    void startMemoryUsageUpdater(Player player);
 }

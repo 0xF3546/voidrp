@@ -1,10 +1,11 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.GlobalStats;
 import de.polo.core.utils.Prefix;
@@ -35,12 +36,10 @@ import java.util.Map;
 public class AuktionCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
 
-    public AuktionCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
+    public AuktionCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
 
         Main.registerCommand("auktion", this);
     }
@@ -75,7 +74,8 @@ public class AuktionCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         Faction factionData = factionManager.getFactionData(playerData.getFaction());
-        if (locationManager.getDistanceBetweenCoords(player, "bank") > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "bank") > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Bank.");
             return false;
         }

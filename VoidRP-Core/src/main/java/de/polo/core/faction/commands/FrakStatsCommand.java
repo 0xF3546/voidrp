@@ -1,5 +1,7 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.entity.FactionPlayerData;
@@ -36,7 +38,8 @@ public class FrakStatsCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
         }
         Faction factionData = null;
-        if (!playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!voidPlayer.isAduty()) {
             factionData = factionManager.getFactionData(playerData.getFaction());
         } else {
             if (args.length >= 1) {
@@ -48,7 +51,7 @@ public class FrakStatsCommand implements CommandExecutor {
         player.sendMessage("§7   ===§8[§" + factionData.getPrimaryColor() + "Statistiken§8]§7===");
         player.sendMessage("§8 - §6Name§8:§c " + factionData.getName());
         player.sendMessage("§8 - §6Voller Name§8:§c " + factionData.getFullname());
-        if (playerData.getFactionGrade() >= 4 || playerData.isAduty()) {
+        if (playerData.getFactionGrade() >= 4 || voidPlayer.isAduty()) {
             player.sendMessage("§8 - §6Bank§8:§c " + factionData.getBank() + "$");
         }
         player.sendMessage("§8 - §6Equip§8:§c " + factionData.getEquipPoints() + " Punkte");

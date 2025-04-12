@@ -1,6 +1,8 @@
 package de.polo.core.player.entities;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.crew.Crew;
+import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
 import de.polo.api.player.PlayerCharacter;
@@ -275,7 +277,7 @@ public class PlayerData implements PlayerCharacter {
     private List<PlayerWorkstation> workstations = new ObjectArrayList<>();
 
     @Getter
-    private List<License> licenses = new ObjectArrayList<>();
+    private final List<License> licenses = new ObjectArrayList<>();
 
     @Getter
     @Setter
@@ -311,6 +313,14 @@ public class PlayerData implements PlayerCharacter {
     @Getter
     @Setter
     private LocalDateTime factionJoin;
+
+    @Getter
+    @Setter
+    private Crew crew;
+
+    @Getter
+    @Setter
+    private CrewRank crewRank;
 
     public PlayerData(Player player) {
         this.player = player;
@@ -563,21 +573,6 @@ public class PlayerData implements PlayerCharacter {
         this.isJailed = isJailed;
     }
 
-    public boolean isAduty() {
-        return isAduty;
-    }
-
-    public void setAduty(boolean aduty) {
-        isAduty = aduty;
-        if (aduty) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 0, true, false));
-
-        } else {
-            player.removePotionEffect(PotionEffectType.GLOWING);
-
-        }
-    }
-
     public void setIntVariable(String variable, Integer value) {
         if (this.integer_variables.get(variable) != null) {
             this.integer_variables.replace(variable, value);
@@ -727,11 +722,11 @@ public class PlayerData implements PlayerCharacter {
     }
 
     @SneakyThrows
-    public void removeMoney(int amount, String reason) {
+    public boolean removeMoney(int amount, String reason) {
         setBargeld(getBargeld() - amount);
         Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
-
+        return true;
     }
 
     @SneakyThrows
@@ -744,10 +739,11 @@ public class PlayerData implements PlayerCharacter {
     }
 
     @SneakyThrows
-    public void removeBankMoney(int amount, String reason) {
+    public boolean removeBankMoney(int amount, String reason) {
         setBank(getBank() - amount);
         Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
+        return true;
     }
 
     @SneakyThrows

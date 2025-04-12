@@ -1,8 +1,10 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -15,11 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class FlyCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public FlyCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public FlyCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         Main.registerCommand("fly", this);
     }
 
@@ -31,7 +31,8 @@ public class FlyCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        if (!playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }
@@ -44,17 +45,18 @@ public class FlyCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht gefunden.");
             return false;
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
         PlayerData targetData = playerManager.getPlayerData(target);
         if (target.getAllowFlight()) {
             target.setFlying(false);
             target.setAllowFlight(false);
             target.sendMessage(Prefix.ADMIN + player.getName() + " hat dir Fly entfernt.");
-            adminManager.send_message(player.getName() + " hat " + target.getName() + " Fly entfernt.", null);
+            adminService.sendMessage(player.getName() + " hat " + target.getName() + " Fly entfernt.", null);
         } else {
             target.setAllowFlight(true);
             target.setFlying(true);
             target.sendMessage(Prefix.ADMIN + player.getName() + " hat dir Fly gegeben.");
-            adminManager.send_message(player.getName() + " hat " + target.getName() + " Fly gegeben.", null);
+            adminService.sendMessage(player.getName() + " hat " + target.getName() + " Fly gegeben.", null);
         }
         Utils.Tablist.updatePlayer(target);
         return false;

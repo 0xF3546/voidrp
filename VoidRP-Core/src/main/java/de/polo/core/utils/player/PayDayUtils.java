@@ -1,5 +1,6 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.base.crypto.Miner;
@@ -7,12 +8,12 @@ import de.polo.core.game.base.housing.House;
 import de.polo.core.game.base.housing.HouseManager;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.game.base.vehicle.VehicleData;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Utils;
 import de.polo.api.player.enums.HealthInsurance;
+import de.polo.core.vehicles.services.VehicleService;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -120,9 +121,10 @@ public class PayDayUtils {
             player.sendMessage("§7 » §9Team-Gehalt§8: §a+" + ServerManager.getPayout("secondaryteam") + "$");
             plus += ServerManager.getPayout("secondaryteam");
         }
-        for (PlayerVehicleData vehicleData : Vehicles.playerVehicleDataMap.values()) {
+        VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+        for (PlayerVehicleData vehicleData : vehicleService.getPlayerVehicles().values()) {
             if (vehicleData.getUuid().equals(player.getUniqueId().toString())) {
-                VehicleData vehicleData1 = Vehicles.vehicleDataMap.get(vehicleData.getType());
+                VehicleData vehicleData1 = vehicleService.getVehicles().get(vehicleData.getType());
                 player.sendMessage("§7 » §9KFZ-Steuer (" + vehicleData.getType() + ")§8:§c -" + vehicleData1.getTax() + "$");
                 plus -= vehicleData1.getTax();
             }

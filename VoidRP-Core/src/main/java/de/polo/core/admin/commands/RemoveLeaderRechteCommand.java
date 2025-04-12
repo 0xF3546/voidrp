@@ -1,15 +1,17 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.TeamSpeak;
 import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,12 +22,10 @@ import org.jetbrains.annotations.NotNull;
 public class RemoveLeaderRechteCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final AdminManager adminManager;
 
-    public RemoveLeaderRechteCommand(PlayerManager playerManager, FactionManager factionManager, AdminManager adminManager) {
+    public RemoveLeaderRechteCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.adminManager = adminManager;
 
         Main.registerCommand("removeleaderrechte", this);
     }
@@ -38,7 +38,8 @@ public class RemoveLeaderRechteCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        if (!playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
             return false;
         }
@@ -52,7 +53,8 @@ public class RemoveLeaderRechteCommand implements CommandExecutor {
             return false;
         }
         factionManager.setLeader(offlinePlayer, false);
-        adminManager.send_message(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte entzogen.", ChatColor.DARK_PURPLE);
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        adminService.sendMessage(player.getName() + " hat " + offlinePlayer.getName() + " Leaderrechte entzogen.", Color.PURPLE);
         if (offlinePlayer.isOnline() && offlinePlayer.getPlayer() != null) {
             offlinePlayer.getPlayer().sendMessage(Component.text("§6cDir wurden die Leaderrechte entzogen!"));
         }

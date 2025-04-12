@@ -1,12 +1,11 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.commands.BombeCommand;
 import de.polo.core.faction.entity.Faction;
-import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.*;
 import de.polo.core.game.faction.gangwar.Gangwar;
 import de.polo.core.game.faction.streetwar.Streetwar;
@@ -16,6 +15,7 @@ import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.player.ChatUtils;
+import de.polo.core.utils.Event;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,22 +40,15 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
+import static de.polo.core.Main.*;
+
+@Event
 public class DeathListener implements Listener {
-    private final PlayerManager playerManager;
-    private final AdminManager adminManager;
-    private final FactionManager factionManager;
-    private final Utils utils;
-    private final Streetwar streetwar;
 
     private final HashMap<UUID, Long> playerKillTimestamps = new HashMap<>();
     private final HashMap<UUID, Integer> killStreak = new HashMap<>();
 
-    public DeathListener(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager, Utils utils, Streetwar streetwar) {
-        this.playerManager = playerManager;
-        this.adminManager = adminManager;
-        this.factionManager = factionManager;
-        this.utils = utils;
-        this.streetwar = streetwar;
+    public DeathListener( ) {
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
@@ -95,10 +88,11 @@ public class DeathListener implements Listener {
             Main.getInstance().gamePlay.getFfa().handleDeath(player);
             return;
         } else {
+            AdminService adminService = VoidAPI.getService(AdminService.class);
             if (!playerData.isDead()) {
-                adminManager.send_message(player.getName() + " starb.", null);
+                adminService.sendMessage(player.getName() + " starb.", null);
             } else {
-                adminManager.send_message(player.getName() + " starb. (Rejoin)", null);
+                adminService.sendMessage(player.getName() + " starb. (Rejoin)", null);
             }
             playerData.setVariable("inventory::base", player.getInventory().getContents());
             player.getInventory().clear();

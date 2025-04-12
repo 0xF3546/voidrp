@@ -1,11 +1,14 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
-import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.shop.services.ShopService;
 import de.polo.core.storage.PlayerWeapon;
 import de.polo.core.game.base.shops.ShopData;
 import de.polo.core.game.base.shops.ShopItem;
@@ -14,6 +17,7 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.Paymethod;
 import de.polo.core.utils.enums.ShopType;
 import de.polo.core.utils.enums.Weapon;
+import de.polo.core.vehicles.services.VehicleService;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -26,18 +30,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.*;
 
-import static de.polo.core.Main.vehicles;
 import static de.polo.core.Main.weaponManager;
 
 public class ShopCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final LocationManager locationManager;
     private final CompanyManager companyManager;
     private final Map<UUID, List<ShopItem>> shoppingCarts = new HashMap<>();
 
-    public ShopCommand(PlayerManager playerManager, LocationManager locationManager, CompanyManager companyManager) {
+    public ShopCommand(PlayerManager playerManager, CompanyManager companyManager) {
         this.playerManager = playerManager;
-        this.locationManager = locationManager;
         this.companyManager = companyManager;
         Main.registerCommand("shop", this);
     }
@@ -50,9 +51,11 @@ public class ShopCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        int shop = locationManager.isNearShop(player);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        int shop = locationService.isNearShop(player);
         if (shop > 0) {
-            ShopData shopData = ServerManager.shopDataMap.get(shop);
+            ShopService service = VoidAPI.getService(ShopService.class);
+            ShopData shopData = service.getShop(shop);
             openShop(player, shopData);
         } else {
             player.sendMessage(Prefix.ERROR + "Du befindest dich in der Nähe von keinem Shop.");
@@ -64,6 +67,7 @@ public class ShopCommand implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventory = new InventoryManager(player, 54, Component.text("§8» §c" + shopData.getName()), true, false);
 
+        // Rahmen mit schwarzen Glasscheiben füllen
         for (int i = 0; i < 54; i++) {
             if (i % 9 == 0 || i % 9 == 8 || i < 9 || i > 44) {
                 inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.BLACK_STAINED_GLASS_PANE, 1, 0, "§8")) {
@@ -71,29 +75,57 @@ public class ShopCommand implements CommandExecutor {
                     public void onClick(InventoryClickEvent event) {
                     }
                 });
-
-                if (i == 45 && playerData.getCompany() != null && shopData.getType() != ShopType.BLACKMARKET) {
-                    if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId()))) {
-                        inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eBusiness-Übersicht")) {
-                            @Override
-                            public void onClick(InventoryClickEvent event) {
-                                openBusinessOverview(player, shopData);
-                            }
-                        });
-                    }
-                }
-
-                if (i == 53) {
-                    inventory.setItem(new CustomItem(i, ItemManager.createItem(Material.CHEST, 1, 0, "§6Warenkorb anzeigen")) {
-                        @Override
-                        public void onClick(InventoryClickEvent event) {
-                            openShoppingCart(player, shopData);
-                        }
-                    });
-                }
             }
         }
 
+        // Positionen unten links für spezielle Items (45, 46, 47, ...)
+        int y = 45;
+
+        // Business-Übersicht
+        if (playerData.getCompany() != null && shopData.getType().isBuyable()) {
+            if (playerData.getCompanyRole() != null && (playerData.getCompanyRole().hasPermission("*") || playerData.getCompanyRole().hasPermission("manage_shop_" + shopData.getId()))) {
+                inventory.setItem(new CustomItem(y, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eBusiness-Übersicht")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        openBusinessOverview(player, shopData);
+                    }
+                });
+                y++;
+            }
+        }
+
+        // Einnehmen (Crew)
+        if (playerData.getCrew() != null && shopData.getType().isTakeable()) {
+            inventory.setItem(new CustomItem(y, new ItemBuilder(Material.RED_DYE)
+                    .setName("§cEinnehmen (Crew)")
+                    .setLore(shopData.getCrewHolder() != null ? "§7" + shopData.getCrewHolder().getName() : "§7Keine Crew")
+                    .build()) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                }
+            });
+            y++;
+        }
+
+        // Ausrauben
+        if (shopData.getType().isRobable()) {
+            inventory.setItem(new CustomItem(y, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cAusrauben")) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                }
+            });
+            y++;
+        }
+
+        // Warenkorb anzeigen (Slot 53)
+        inventory.setItem(new CustomItem(53, ItemManager.createItem(Material.CHEST, 1, 0, "§6Warenkorb anzeigen")) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                openShoppingCart(player, shopData);
+            }
+        });
+
+        // Shop-Items im Hauptbereich platzieren
         int j = 10;
         for (ShopItem item : shopData.getItems()) {
             if (item.getShop() == shopData.getId()) {
@@ -208,7 +240,8 @@ public class ShopCommand implements CommandExecutor {
                     }
                     weaponManager.giveAmmoToCabinet(playerWeapon, weapon.getMaxAmmo());
                 } else if (Objects.equals(item.getType(), "car")) {
-                    vehicles.giveVehicle(player, item.getSecondType());
+                    VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+                    vehicleService.giveVehicle(player, item.getSecondType());
                 } else if (Objects.equals(item.getType(), "inventory")) {
                     playerData.getInventory().setSizeToDatabase(playerData.getInventory().getSize() + 25);
                 } else {

@@ -25,7 +25,7 @@ public class WeaponInfoCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        player.sendMessage(Component.text("§7   ===§8[§2Waffenschrank§8]===§7"));
+        player.sendMessage(Component.text("§7   ===§8[§3Waffenschrank§8]===§7"));
         for (PlayerWeapon playerWeapon : playerData.getWeapons()) {
             Weapon weapon = playerWeapon.getWeapon();
             player.sendMessage("§8 - §b" + weapon.getClearName() + "§8:§7 A: " + playerWeapon.getAmmo() + " V: " + playerWeapon.getWear());

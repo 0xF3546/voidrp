@@ -1,6 +1,7 @@
 package de.polo.core.listeners;
 
 import de.polo.core.Main;
+import de.polo.core.utils.Event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,12 +9,9 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
+@Event
 public class PlayerLoginListener implements Listener {
-    public PlayerLoginListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {

@@ -2,19 +2,22 @@ package de.polo.core.utils;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.shop.services.ShopService;
 import de.polo.core.storage.*;
 import de.polo.core.game.base.shops.ShopData;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.game.base.vehicle.VehicleData;
-import de.polo.core.game.base.vehicle.Vehicles;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.*;
+import de.polo.core.vehicles.services.VehicleService;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
@@ -33,8 +36,6 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
-
-import static de.polo.core.Main.navigationService;
 
 public class TabletUtils implements Listener {
     private final PlayerManager playerManager;
@@ -476,10 +477,11 @@ public class TabletUtils implements Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §6Fahrzeuge §8- §6Seite§8:§7 " + page), true, false);
         int i = 0;
         int j = 0;
-        for (PlayerVehicleData playerVehicleData : Vehicles.playerVehicleDataMap.values()) {
+        VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+        for (PlayerVehicleData playerVehicleData : vehicleService.getPlayerVehicles().values()) {
             if (playerVehicleData.getUuid().equals(player.getUniqueId().toString())) {
                 if (i >= (18 * (page - 1)) && i < (18 * page)) {
-                    VehicleData vehicleData = Vehicles.vehicleDataMap.get(playerVehicleData.getType());
+                    VehicleData vehicleData = vehicleService.getVehicles().get(playerVehicleData.getType());
                     int slotIndex = i % 9;
                     j++;
                     if (j > 9) {
@@ -496,15 +498,11 @@ public class TabletUtils implements Listener {
                                     @Override
                                     public void onClick(InventoryClickEvent event) {
                                         player.closeInventory();
-                                        try {
-                                            player.sendMessage(Prefix.MAIN + "Du hast dein " + vehicleData.getName() + " verkauft.");
-                                            playerData.addMoney(price, "Verkauf " + vehicleData.getName());
-                                            Vehicles.deleteVehicleById(vehicleData.getId());
-                                            Main.getInstance().vehicles.removeVehicleFromDatabase(playerVehicleData.getId());
-                                            player.sendMessage(Component.text(Prefix.MAIN + "Du hast dein Fahrzeug verkauft."));
-                                        } catch (SQLException e) {
-                                            throw new RuntimeException(e);
-                                        }
+                                        player.sendMessage(Prefix.MAIN + "Du hast dein " + vehicleData.getName() + " verkauft.");
+                                        playerData.addMoney(price, "Verkauf " + vehicleData.getName());
+                                        vehicleService.deleteVehicleById(vehicleData.getId());
+                                        vehicleService.removeVehicleFromDatabase(playerVehicleData.getId());
+                                        player.sendMessage(Component.text(Prefix.MAIN + "Du hast dein Fahrzeug verkauft."));
                                     }
                                 });
                                 sellInventory.setItem(new CustomItem(14, ItemManager.createItem(Material.RED_WOOL, 1, 0, "§cAbbrechen")) {
@@ -515,6 +513,7 @@ public class TabletUtils implements Listener {
                                 });
                             } else {
                                 player.closeInventory();
+                                NavigationService navigationService = VoidAPI.getService(NavigationService.class);
                                 navigationService.createNaviByCord(player, playerVehicleData.getX(), playerVehicleData.getY(), playerVehicleData.getZ());
                                 player.sendMessage("§8[§3Tablet§8]§7 Der Standort deines Fahrzeuges wurde dir markiert.");
                             }
@@ -626,7 +625,8 @@ public class TabletUtils implements Listener {
             }
         });
         int i = 0;
-        for (ShopData shopData : ServerManager.shopDataMap.values()) {
+        ShopService shopService = VoidAPI.getService(ShopService.class);
+        for (ShopData shopData : shopService.getShops()) {
             if (shopData.getCompany() == null) continue;
             if (shopData.getCompany().equals(playerData.getCompany())) {
                 if (!isAddingPermission) {
@@ -650,7 +650,8 @@ public class TabletUtils implements Listener {
                 i++;
             }
         }
-        for (GasStationData gasStationData : LocationManager.gasStationDataMap.values()) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        for (GasStationData gasStationData : locationService.getGasStations()) {
             if (gasStationData.getCompany() == null) continue;
             if (gasStationData.getCompany().equals(playerData.getCompany())) {
                 if (!isAddingPermission) {
@@ -847,11 +848,12 @@ public class TabletUtils implements Listener {
             }
         });
         int i = 9;
+        ShopService shopService = VoidAPI.getService(ShopService.class);
         for (String permission : role.getPermissions()) {
             if (permission.contains("manage_shop")) {
                 ShopData shop = null;
                 int shopId = Integer.parseInt(permission.replace("manage_shop_", ""));
-                for (ShopData shopData : ServerManager.shopDataMap.values()) {
+                for (ShopData shopData : shopService.getShops()) {
                     if (shopData.getId() == shopId) {
                         shop = shopData;
                     }

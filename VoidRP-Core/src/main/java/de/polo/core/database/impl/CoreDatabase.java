@@ -72,7 +72,8 @@ public class CoreDatabase implements Database {
         dataSource.close();
     }
 
-    public Connection getConnection() throws SQLException {
+    @SneakyThrows
+    public Connection getConnection()  {
         return dataSource.getConnection();
     }
 

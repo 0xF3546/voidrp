@@ -1,5 +1,7 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -25,7 +27,8 @@ public class AdminReviveCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (voidPlayer.isAduty()) {
             if (args.length >= 1) {
                 Player targetplayer = Bukkit.getPlayer(args[0]);
                 if (targetplayer != null) {

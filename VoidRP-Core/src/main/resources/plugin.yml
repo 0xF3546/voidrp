@@ -10,8 +10,6 @@ commands:
   aduty:
     aliases: ad
   setgroup:
-  geldbeutel:
-    aliases: gb
   personalausweis:
     aliases: perso
   teamchat:
@@ -158,9 +156,7 @@ commands:
   checkinv:
   bizinvite:
     aliases: businessinvite
-  shoprob:
   respawn:
-  farming:
   gethead:
   factions:
     aliases: fraktionen
@@ -311,3 +307,9 @@ commands:
   sellhouse:
   sewercleaner:
   jobskills:
+  crew:
+  crewchat:
+    aliases: [c]
+  createpinwheel:
+  createelevatorfloor:
+  createelevator:

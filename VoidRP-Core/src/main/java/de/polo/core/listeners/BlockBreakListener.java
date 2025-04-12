@@ -1,18 +1,21 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.jobs.MiningJob;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.game.events.BreakPersistentBlockEvent;
 import de.polo.core.game.events.MinuteTickEvent;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.Farmer;
 import de.polo.core.utils.enums.PickaxeType;
 import de.polo.core.utils.enums.RoleplayItem;
+import de.polo.core.utils.Event;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -31,17 +34,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static de.polo.core.Main.playerManager;
+
+@Event
 public class BlockBreakListener implements Listener {
-    private final PlayerManager playerManager;
-    private final Main.Commands commands;
 
     private final HashMap<LocalDateTime, Block> brokenBlocks = new HashMap<>();
-
-    public BlockBreakListener(PlayerManager playerManager, Main.Commands commands) {
-        this.playerManager = playerManager;
-        this.commands = commands;
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
@@ -63,26 +61,11 @@ public class BlockBreakListener implements Listener {
                         brokenBlocks.put(Utils.getTime(), event.getBlock());
                     }
                 }
-                if (playerData.getVariable("job") != null) {
-                    switch (playerData.getVariable("job").toString().toLowerCase()) {
-                        case "holzfäller":
-                            commands.lumberjackCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "mine":
-                            commands.mineCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "farmer":
-                            commands.farmerCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "winzer":
-                            commands.winzerCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        case "muschelsammler":
-                            commands.muschelSammlerCommand.blockBroken(player, event.getBlock(), event);
-                            break;
-                        default:
-                            event.setCancelled(true);
-                            break;
+                VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                if (voidPlayer.getMiniJob() != null) {
+                    event.setCancelled(true);
+                    if (voidPlayer.getActiveJob() instanceof MiningJob) {
+                        ((MiningJob) voidPlayer.getActiveJob()).handleBlockBreak(voidPlayer, event);
                     }
                     Bukkit.getPluginManager().callEvent(new BreakPersistentBlockEvent(player, event.getBlock()));
                 } else {

@@ -1,5 +1,6 @@
 package de.polo.core.manager;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -9,6 +10,7 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.player.ChatUtils;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -69,27 +71,6 @@ public class WeaponManager implements Listener {
     }
 
     private void loadWeapons() throws SQLException {
-        /*
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM weapons");
-        while (result.next()) {
-            WeaponData weaponData = new WeaponData();
-            weaponData.setId(result.getInt("id"));
-            weaponData.setMaterial(Material.valueOf(result.getString("material")));
-            weaponData.setName(result.getString("name").replace("&", "§"));
-            weaponData.setMaxAmmo(result.getInt("maxAmmo"));
-            weaponData.setReloadDuration(result.getFloat("reloadDuration"));
-            weaponData.setDamage(result.getFloat("damage"));
-            weaponData.setWeaponSound(Sound.valueOf(result.getString("weaponSound")));
-            weaponData.setArrowVelocity(result.getFloat("velocity"));
-            weaponData.setShootDuration(result.getFloat("shootDuration"));
-            weaponData.setType(result.getString("type"));
-            weaponData.setSoundPitch(result.getFloat("soundPitch"));
-            weaponData.setKnockback(result.getInt("knockback"));
-            weaponData.setMeele(result.getBoolean("isMelee"));
-            weaponDataMap.put(Material.valueOf(result.getString("material")), weaponData);
-        }
-        */
         Main.getInstance()
                 .getCoreDatabase()
                 .queryThreaded("SELECT * FROM weapons")
@@ -122,20 +103,6 @@ public class WeaponManager implements Listener {
 
     @SneakyThrows
     private void loadPlayerWeapons() {
-        /*
-        Statement statement = Main.getInstance().mySQL.getStatement();
-        ResultSet result = statement.executeQuery("SELECT * FROM player_weapons");
-        while (result.next()) {
-            Weapon weapon = new Weapon();
-            weapon.setAmmo(result.getInt("ammo"));
-            weapon.setCurrentAmmo(result.getInt("current_ammo"));
-            weapon.setWeaponType(WeaponType.valueOf(result.getString("weaponType")));
-            weapon.setId(result.getInt("id"));
-            weapon.setOwner(UUID.fromString(result.getString("uuid")));
-            weapon.setType(de.polo.voidroleplay.utils.enums.Weapon.valueOf(result.getString("weapon")));
-            weaponList.put(weapon.getId(), weapon);
-        }
-        */
         Main.getInstance()
                 .getCoreDatabase()
                 .queryThreaded("SELECT * FROM player_weapons")
@@ -276,7 +243,6 @@ public class WeaponManager implements Listener {
             return;
         }
 
-        ItemMeta meta = event.getItem().getItemMeta();
         // Shooting logic
         if (weaponData == de.polo.core.utils.enums.Weapon.SHOTGUN) {
             double spread = 10.0;
@@ -335,11 +301,8 @@ public class WeaponManager implements Listener {
 
         int newAmmo = weapon.getCurrentAmmo() - 1;
         weapon.setCurrentAmmo(newAmmo);
-        meta.setLore(Arrays.asList("§8➥ §e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo()));
         String actionBarText = "§e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo();
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
-
-        event.getItem().setItemMeta(meta);
 
         long shootDuration = (long) weaponData.getShootDuration(); // In Sekunden
         long delayTicks = shootDuration * 2; // In Ticks
@@ -408,7 +371,13 @@ public class WeaponManager implements Listener {
 
     private void updateWeaponLore(Weapon weapon, ItemStack stack) {
         ItemMeta meta = stack.getItemMeta();
-        meta.setLore(Arrays.asList("§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + weapon.getType().getMaxAmmo() + " §7(" + weapon.getAmmo() + "§7)"));
+        WeaponData weaponData = weaponDataMap.get(weapon.getType().getMaterial());
+        meta.lore(Arrays.asList(
+                Component.text("§8▎ §eMagazin§8 » §7[" + ApiUtils.getProgressBar(weapon.getCurrentAmmo(), weaponData.getMaxAmmo(), 8) + ")"),
+                Component.text("§8▎ §eGesamt§8 » §7" + weapon.getAmmo()),
+                Component.text("§8▎ §eGeladen§8 » §7" + weapon.getCurrentAmmo()),
+                Component.text("§8▎ §eTyp§8 » §7" + weapon.getType().getName())
+        ));
         stack.setItemMeta(meta);
     }
 
@@ -422,10 +391,10 @@ public class WeaponManager implements Listener {
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
         meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, weapon.getId());
 
-        meta.setLore(Arrays.asList("§8➥ §e" + weapon.getCurrentAmmo() + "§8/§6" + playerWeapon.getWeapon().getMaxAmmo()));
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
         weaponList.put(weapon.getId(), weapon);
+        updateWeaponLore(weapon, item);
     }
 
     public void giveWeapon(Player player, de.polo.core.utils.enums.Weapon weapon, WeaponType weaponType) {
@@ -493,8 +462,7 @@ public class WeaponManager implements Listener {
         int newAmmo = weapon.getAmmo() + ammo;
         weapon.setAmmo(newAmmo);
 
-        meta.setLore(Arrays.asList("§8➥ §e" + w.getCurrentAmmo() + "§8/§6" + newAmmo));
-        item.setItemMeta(meta);
+        updateWeaponLore(w, item);
     }
 
     public void giveAmmo(Player player, de.polo.core.utils.enums.Weapon weapon, int amount) {

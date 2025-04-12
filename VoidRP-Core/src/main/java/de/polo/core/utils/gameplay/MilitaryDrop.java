@@ -1,11 +1,12 @@
 package de.polo.core.utils.gameplay;
 
+import de.polo.api.VoidAPI;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.enums.FactionType;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.location.services.impl.LocationManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.*;
 import de.polo.core.manager.*;
@@ -34,7 +35,6 @@ public class MilitaryDrop implements Listener {
     public static boolean ACTIVE = false;
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
 
     private final List<Player> joinedPlayers = new ObjectArrayList<>();
     private final List<Player> alivePlayers = new ObjectArrayList<>();
@@ -43,24 +43,23 @@ public class MilitaryDrop implements Listener {
     private final HashMap<String, Location> factionSpawns = new HashMap<>();
     private final List<Location> spawns = new ObjectArrayList<>();
     private final List<Location> chestSpawns = new ObjectArrayList<>();
-    private final Location middleArena;
+    private Location middleArena;
     private boolean freezePlayers = false;
     private boolean isRoundActive = false;
     private int currentRound = 0;
     private Faction staat = null;
     private int arenaSize = 200;
 
-    public MilitaryDrop(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager) {
+    public MilitaryDrop(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
-
-        middleArena = locationManager.getLocation("middleArena");
 
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     public void start() {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        middleArena = locationService.getLocation("middleArena");
         ACTIVE = true;
         staat = new Faction(FactionType.GOVERNMENT);
         staat.setFullname("Staat");
@@ -68,7 +67,7 @@ public class MilitaryDrop implements Listener {
         staat.setPrimaryColor("9");
         staat.setId(-1);
 
-        for (LocationData location : locationManager.getLocations()) {
+        for (LocationData location : locationService.getLocations()) {
             if (location.getType() == null) continue;
             if (location.getType().equalsIgnoreCase("militarydrop"))
                 spawns.add(new Location(Bukkit.getWorld("world"), location.getX(), location.getY(), location.getZ()));
@@ -172,7 +171,8 @@ public class MilitaryDrop implements Listener {
         player.setGameMode(GameMode.SURVIVAL);
         if (playerData.getFaction() == null) return;
         Main.getInstance().utils.deathUtil.revivePlayer(player, false);
-        locationManager.useLocation(player, playerData.getFaction());
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        locationService.useLocation(player, playerData.getFaction());
         for (ItemStack item : player.getInventory().getContents()) {
             for (WeaponData weaponData : WeaponManager.weaponDataMap.values()) {
                 if (weaponData.getMaterial() != null && item != null) {

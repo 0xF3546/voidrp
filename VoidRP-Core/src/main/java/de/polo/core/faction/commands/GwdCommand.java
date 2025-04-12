@@ -1,27 +1,27 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+
 public class GwdCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
     private final FactionManager factionManager;
 
-    public GwdCommand(PlayerManager playerManager, AdminManager adminManager, FactionManager factionManager) {
+    public GwdCommand(PlayerManager playerManager, FactionManager factionManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         this.factionManager = factionManager;
 
         Main.registerCommand("gwd", this);
@@ -55,7 +55,8 @@ public class GwdCommand implements CommandExecutor {
                 return false;
             }
             PlayerData targetData = playerManager.getPlayerData(target);
-            adminManager.send_message(player.getName() + " hat " + target.getName() + " GWD-Note " + grade + " gegeben.", ChatColor.DARK_AQUA);
+            AdminService adminService = VoidAPI.getService(AdminService.class);
+            adminService.sendMessage(player.getName() + " hat " + target.getName() + " GWD-Note " + grade + " gegeben.", Color.NAVY);
             factionManager.sendCustomLeaderMessageToFactions("§3HQ: " + player.getName() + " hat " + target.getName() + " GWD-Note " + grade + " gegeben.", "Polizei");
             target.sendMessage("§6Dir wurde GWD-Note " + grade + " gegeben.");
             targetData.setGwd(grade);

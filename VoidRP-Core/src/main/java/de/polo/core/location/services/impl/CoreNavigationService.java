@@ -2,6 +2,7 @@ package de.polo.core.location.services.impl;
 
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.storage.NaviData;
+import de.polo.core.utils.Service;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -12,6 +13,7 @@ import static de.polo.core.Main.playerManager;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CoreNavigationService implements NavigationService {
     private final NavigationManager navigationManager;
 

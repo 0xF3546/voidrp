@@ -1,13 +1,15 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.admin.services.impl.AdminManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,11 +19,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class PermbanCommand implements CommandExecutor {
     private final PlayerManager playerManager;
-    private final AdminManager adminManager;
 
-    public PermbanCommand(PlayerManager playerManager, AdminManager adminManager) {
+    public PermbanCommand(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.adminManager = adminManager;
         Main.registerCommand("permban", this);
     }
 
@@ -54,8 +54,10 @@ public class PermbanCommand implements CommandExecutor {
         for (int i = 2; i < args.length; i++) {
             reason.append(" ").append(args[i]);
         }
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+
         Bukkit.broadcastMessage(ChatColor.RED + playerData.getRang() + " " + player.getName() + " hat " + target.getName() + " permanent gebannt. Grund: " + reason);
-        adminManager.send_message(player.getName() + " hat " + target.getName() + " Permanent gebannt.", ChatColor.RED);
+        adminService.sendMessage(player.getName() + " hat " + target.getName() + " Permanent gebannt.", Color.RED);
         if (target.isOnline()) {
             Player targetOnPlayer = Bukkit.getPlayer(target.getUniqueId());
             targetOnPlayer.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest Permanent vom Server gebannt.\nGrund§8:§7 " + reason + "\n\n§8• §6§lVoidRoleplay §8•");
@@ -67,7 +69,7 @@ public class PermbanCommand implements CommandExecutor {
                 player.getName(),
                 1);
 
-        adminManager.insertNote("System", target.getUniqueId().toString(), "Spieler wurde gebannt (" + reason + ")");
+        adminService.insertNote("System", target.getUniqueId().toString(), "Spieler wurde gebannt (" + reason + ")");
         return false;
     }
 }

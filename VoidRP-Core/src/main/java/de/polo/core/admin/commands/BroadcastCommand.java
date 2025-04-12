@@ -1,5 +1,7 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -29,7 +31,8 @@ public class BroadcastCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
         }
-        if (!playerData.isAduty()) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+        if (!voidPlayer.isAduty()) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst!");
             return false;
         }

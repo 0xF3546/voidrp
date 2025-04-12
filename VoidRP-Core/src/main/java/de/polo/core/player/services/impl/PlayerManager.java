@@ -2,9 +2,13 @@ package de.polo.core.player.services.impl;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
+import de.polo.core.crew.services.CrewService;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.api.player.VoidPlayer;
@@ -59,7 +63,6 @@ import org.json.JSONObject;
 import java.sql.Date;
 import java.sql.*;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -159,6 +162,7 @@ public class PlayerManager implements Listener {
     public void loadPlayer(Player player) {
         UUID uuid = player.getUniqueId();
         Statement statement = Main.getInstance().coreDatabase.getStatement();
+        CrewService crewService = VoidAPI.getService(CrewService.class);
         assert statement != null;
         String query = "SELECT players.*, player_addonxp.* " +
                 "FROM players " +
@@ -205,7 +209,6 @@ public class PlayerManager implements Listener {
             playerData.setVisum(result.getInt("visum"));
             playerData.setPermlevel(result.getInt("player_permlevel"));
             playerData.setRang(result.getString("player_rank"));
-            playerData.setAduty(false);
             playerData.setLevel(result.getInt("level"));
             playerData.setExp(result.getInt("exp"));
             playerData.setDead(result.getBoolean("isDead"));
@@ -271,7 +274,8 @@ public class PlayerManager implements Listener {
             playerData.setRewardId(result.getInt("rewardId"));
             playerData.getInventory().setSize(result.getInt("inventorySize"));
             if (!result.getBoolean("tpNewmap")) {
-                locationManager.useLocation(player, "stadthalle");
+                LocationService locationService = VoidAPI.getService(LocationService.class);
+                locationService.useLocation(player, "stadthalle");
                 coreDatabase.updateAsync("UPDATE players SET tpNewmap = true WHERE uuid = ?", player.getUniqueId().toString());
             }
 
@@ -368,6 +372,8 @@ public class PlayerManager implements Listener {
                     }
                 }
             }
+            playerData.setCrew(crewService.getCrew(result.getInt("crew")));
+            playerData.setCrewRank(crewService.getCrewRank(result.getInt("crewRank")));
 
                 /*for (PlayerWorkstation workstation : PlayerWorkstation.getPlayerWorkstationsFromDatabase(uuid)) {
                     playerData.addWorkstation(workstation);
@@ -626,7 +632,8 @@ public class PlayerManager implements Listener {
                     return;
                 }
                 Utils.Tablist.setTablist(player, null);
-                playerData.setAduty(false);
+                VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                voidPlayer.setAduty(false);
             }
         }
     }
@@ -1314,7 +1321,8 @@ public class PlayerManager implements Listener {
                             event.getPlayer().sendMessage("§2Du hast " + targetplayer.getName() + " " + amount + "$ zugesteckt.");
                             targetplayer.sendMessage("§2" + event.getPlayer().getName() + " hat dir " + amount + "$ zugesteckt.");
                             ChatUtils.sendMeMessageAtPlayer(event.getPlayer(), "§o" + event.getPlayer().getName() + " gibt " + targetplayer.getName() + " Bargeld.");
-                            adminManager.send_message(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", ChatColor.GOLD);
+                            AdminService adminService = VoidAPI.getService(AdminService.class);
+                            adminService.sendMessage(event.getPlayer().getName() + " hat " + targetplayer.getName() + " " + amount + "$ gegeben.", Color.ORANGE);
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }

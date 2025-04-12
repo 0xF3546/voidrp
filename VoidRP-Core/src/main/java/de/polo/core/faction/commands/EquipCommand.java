@@ -2,10 +2,11 @@ package de.polo.core.faction.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.faction.entity.Faction;
-import de.polo.core.location.services.impl.LocationManager;
+import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.WeaponType;
@@ -32,13 +33,11 @@ import java.sql.PreparedStatement;
 public class EquipCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
     private final FactionManager factionManager;
-    private final LocationManager locationManager;
     private final WeaponManager weaponManager;
 
-    public EquipCommand(PlayerManager playerManager, FactionManager factionManager, LocationManager locationManager, WeaponManager weaponManager) {
+    public EquipCommand(PlayerManager playerManager, FactionManager factionManager, WeaponManager weaponManager) {
         this.playerManager = playerManager;
         this.factionManager = factionManager;
-        this.locationManager = locationManager;
         this.weaponManager = weaponManager;
         Main.registerCommand("equip", this);
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
@@ -52,7 +51,8 @@ public class EquipCommand implements CommandExecutor, Listener {
             player.sendMessage(Prefix.ERROR + "Du bist in keiner Fraktion.");
             return false;
         }
-        if (locationManager.getDistanceBetweenCoords(player, "equip_" + playerData.getFaction()) > 5) {
+        LocationService locationService = VoidAPI.getService(LocationService.class);
+        if (locationService.getDistanceBetweenCoords(player, "equip_" + playerData.getFaction()) > 5) {
             player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe deines Equip-Punktes.");
             return false;
         }

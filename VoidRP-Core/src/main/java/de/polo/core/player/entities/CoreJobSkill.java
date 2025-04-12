@@ -34,16 +34,6 @@ public class CoreJobSkill implements JobSkill {
     }
 
     @Override
-    public int getLevel() {
-        return 0;
-    }
-
-    @Override
-    public int getExp() {
-        return 0;
-    }
-
-    @Override
     public void addExp(int exp) {
         this.exp += exp;
         if (this.exp >= getLevel() * 2250) {
@@ -51,7 +41,7 @@ public class CoreJobSkill implements JobSkill {
             this.exp = 0;
             player.getPlayer().sendActionBar(Component.text("§6§lDu bist im Job auf Level " + level + "aufgestiegen!"));
         } else {
-            player.getPlayer().sendActionBar(Component.text("§3+" + exp + " §7Job Erfahrung! §8[§7" + this.exp + "§8/§7" + (getLevel() * 2250) + "§8]"));
+            player.getPlayer().sendActionBar(Component.text("§3+" + exp + " Job Erfahrung! §8[§7" + this.exp + "§8/§7" + (getLevel() * 2250) + "§8]"));
         }
         database.updateAsync(
                 "UPDATE player_jobskills SET level = ?, exp = ? WHERE uuid = ? AND job = ?",

@@ -1,5 +1,6 @@
 package de.polo.core.player.services.impl;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
 import de.polo.core.Main;
@@ -9,11 +10,14 @@ import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.LoyaltyBonusTimer;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.utils.Service;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import static de.polo.core.Main.playerManager;
@@ -23,6 +27,7 @@ import static de.polo.core.Main.playerManager;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Service
 public class CorePlayerService implements PlayerService {
 
     @Override
@@ -253,6 +258,7 @@ public class CorePlayerService implements PlayerService {
     @Override
     public void handleJobFinish(VoidPlayer player, MiniJob job, int cooldown, int exp) {
         player.setMiniJob(null);
+        player.setActiveJob(null);
         Main.getInstance().getCooldownManager().setCooldown(player.getPlayer(), job.name(), cooldown);
         addExp(player.getPlayer(), exp);
         JobSkill skill = player.getData().getJobSkill(job);
@@ -267,5 +273,13 @@ public class CorePlayerService implements PlayerService {
     @Override
     public int getJobCooldown(VoidPlayer player, MiniJob job) {
         return Main.getInstance().getCooldownManager().getRemainingTime(player.getPlayer(), job.name());
+    }
+
+    @Override
+    public List<VoidPlayer> getPlayersInRange(Location location, int range) {
+        return VoidAPI.getPlayers()
+                .stream()
+                .filter(voidPlayer -> voidPlayer.getPlayer().getLocation().distance(location) <= range)
+                .toList();
     }
 }

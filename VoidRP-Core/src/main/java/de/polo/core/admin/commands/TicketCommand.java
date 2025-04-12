@@ -2,7 +2,11 @@ package de.polo.core.admin.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.admin.services.AdminService;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.location.services.NavigationService;
 import de.polo.core.storage.NaviData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.Ticket;
@@ -67,6 +71,9 @@ public class TicketCommand implements CommandExecutor {
         }
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §e" + target.getName() + "'s Ticket"));
         Player finalTarget = target;
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        NavigationService navigationService = VoidAPI.getService(NavigationService.class);
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         inventoryManager.setItem(new CustomItem(0, ItemManager.createItemHead(finalTarget.getUniqueId().toString(), 1, 0, "§6" + finalTarget.getName(), Arrays.asList("§8 ➥ §eTicket-Ersteller", "§8 ➥ §7[§6Linksklick§7]§e Zum Spieler teleportieren", "§8 ➥ §7[§6Rechtsklick§7]§e Spieler zum nächsten Navi teleportieren"))) {
             @Override
             public void onClick(InventoryClickEvent event) {

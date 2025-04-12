@@ -1,15 +1,19 @@
 package de.polo.api.Utils.inventorymanager;
 
 import de.polo.api.Utils.ItemBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * This class is the heart of the InventoryManager API.
@@ -28,6 +32,13 @@ public class InventoryManager {
     public boolean canceled;
     private Inventory inv;
     private boolean fillRest;
+    @Getter
+    @Setter
+    private Runnable onClose;
+
+    @Getter
+    @Setter
+    private Consumer<PlayerDropItemEvent> onDrop;
 
     /**
      * This constructor is used to create a new inventory for a player.
