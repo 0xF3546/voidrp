@@ -12,7 +12,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum WantedVariation {
-    STELLUNG("Stellung", -5);
+    STELLUNG("Stellung", -5),
+    GUTE_FUEHRUNG("Gute Führung", -5),
+    SCHLECHTE_FUEHRUNG("Schlechte Führung", 5),
+    FUEHRERSCHEIN_ABNAHME("Führerscheinabnahme", 0),;
 
     private final String name;
     private final int wantedAmount;
