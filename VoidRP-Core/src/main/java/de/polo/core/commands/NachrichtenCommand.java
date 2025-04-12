@@ -5,6 +5,8 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.location.services.LocationService;
+import de.polo.core.news.entities.CoreAdvertisement;
+import de.polo.core.news.services.NewsService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.manager.ItemManager;
@@ -107,8 +109,9 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
                 return;
             }
             if (event.getPlayerData().getFaction().equals("News")) {
-                player.sendMessage("§8[§6News§8]§a News erfolgreich geschalten.");
-                Bukkit.broadcastMessage("§8[§6News§8] §7" + player.getName() + "§8:§f " + event.getMessage());
+                player.sendMessage("§8[§6News§8]§a Die Nachricht wird nun geprüft.");
+                NewsService newsService = VoidAPI.getService(NewsService.class);
+                newsService.addAdvertisementQueue(new CoreAdvertisement(VoidAPI.getPlayer(event.getPlayer()), event.getMessage()));
             }
             event.end();
         }

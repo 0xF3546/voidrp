@@ -1,10 +1,12 @@
 package de.polo.core.news.services;
 
+import de.polo.api.news.Advertisement;
 import de.polo.core.storage.ShopBook;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mayson1337
@@ -31,4 +33,11 @@ public interface NewsService {
      * Removes a book from the store
      */
     void removeBook(ShopBook shopBook);
+
+    void QueueAdvertisement(Advertisement advertisement);
+    void addAdvertisementQueue(Advertisement advertisement);
+    void acceptAdvertisement(Advertisement advertisement);
+    void denyAdvertisement(Advertisement advertisement);
+
+    Advertisement getAdvertisement(UUID uuid);
 }

@@ -8,6 +8,7 @@ import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Service;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.List;
 
 import static de.polo.core.Main.playerManager;
 
@@ -27,14 +29,7 @@ import static de.polo.core.Main.playerManager;
 public class CoreAdminService implements AdminService {
     @Override
     public void sendMessage(String msg, Color color) {
-        if (color == null) {
-            color = Color.AQUA;
-        }
-        for (VoidPlayer player : VoidAPI.getPlayers()) {
-            if (player.isAduty() || player.notificationsEnabled()) {
-                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
-            }
-        }
+        sendGuideMessage(Component.text(msg), color);
     }
 
     @Override
@@ -45,6 +40,18 @@ public class CoreAdminService implements AdminService {
         for (VoidPlayer player : VoidAPI.getPlayers()) {
             if (player.getData().getPermlevel() >= 40) {
                 player.sendMessage("§eGuide §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
+            }
+        }
+    }
+
+    @Override
+    public void sendGuideMessage(Component msg, Color color) {
+        if (color == null) {
+            color = Color.AQUA;
+        }
+        for (VoidPlayer player : VoidAPI.getPlayers()) {
+            if (player.getData().getPermlevel() >= 40) {
+                player.sendMessage(Component.text("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg));
             }
         }
     }
@@ -60,6 +67,22 @@ public class CoreAdminService implements AdminService {
         statement.execute();
         statement.close();
         connection.close();
+    }
+
+    @Override
+    public List<VoidPlayer> getActiveGuides() {
+        return VoidAPI.getPlayers()
+                .stream()
+                .filter(player -> player.getData().getPermlevel() >= 50)
+                .toList();
+    }
+
+    @Override
+    public List<VoidPlayer> getActiveAdmins() {
+        return VoidAPI.getPlayers()
+                .stream()
+                .filter(player -> player.getData().getPermlevel() >= 40 && player.getData().getPermlevel() < 50)
+                .toList();
     }
 
 

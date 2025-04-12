@@ -1,6 +1,10 @@
 package de.polo.core.admin.services;
 
+import de.polo.api.player.VoidPlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
+
+import java.util.List;
 
 /**
  * @author Mayson1337
@@ -19,9 +23,13 @@ public interface AdminService {
      */
     void sendGuideMessage(String msg, Color color);
 
+    void sendGuideMessage(Component msg, Color color);
+
     /**
      * Inserts a note into the database
      */
     void insertNote(String punisher, String target, String note);
 
+    List<VoidPlayer> getActiveGuides();
+    List<VoidPlayer> getActiveAdmins();
 }
