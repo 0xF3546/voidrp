@@ -1,0 +1,7 @@
+package de.polo.api.player.enums;
+
+public enum PlayerSkillBoostType {
+    EXTRA_XP, EXTRA_MONEY, DOUBLE_XP_CHANCE, REDUCED_COOLDOWN,
+    PAYBACK, INTEREST, INTEREST_LIMIT,
+    REDUCED_SPREAD, INCREASED_SPEED, DECREASE_RELOAD
+}

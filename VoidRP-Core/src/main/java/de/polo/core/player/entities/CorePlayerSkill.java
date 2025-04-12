@@ -82,21 +82,26 @@ public class CorePlayerSkill implements PlayerSkill{
         );//Skillpoint Update für Alle Skills
     }
 
+    @Override
+    public double getBoost(PlayerSkillBoostType type) {
+        return boosts.get(type);
+    }
+
     private void updateSkillBoosts(int from, int to) {
         if (to == 0) {
             if (skill == UniversalSkill.JOB) {
-                boosts.put(PlayerSkillBoostType.EXTRA_XP, 0.0);
-                boosts.put(PlayerSkillBoostType.EXTRA_MONEY, 0.0);
-                boosts.put(PlayerSkillBoostType.DOUBLE_XP_CHANCE, 0.0);
-                boosts.put(PlayerSkillBoostType.REDUCED_COOLDOWN, 0.0);
+                checkEnumList(PlayerSkillBoostType.EXTRA_XP, 0.0);
+                checkEnumList(PlayerSkillBoostType.EXTRA_MONEY, 0.0);
+                checkEnumList(PlayerSkillBoostType.DOUBLE_XP_CHANCE, 0.0);
+                checkEnumList(PlayerSkillBoostType.REDUCED_COOLDOWN, 0.0);
             } else if (skill == UniversalSkill.FINANZEN) {
-                boosts.put(PlayerSkillBoostType.PAYBACK, 0.0);
-                boosts.put(PlayerSkillBoostType.INTEREST, 0.0);
-                boosts.put(PlayerSkillBoostType.INTEREST_LIMIT, 0.0);
+                checkEnumList(PlayerSkillBoostType.PAYBACK, 0.0);
+                checkEnumList(PlayerSkillBoostType.INTEREST, 0.0);
+                checkEnumList(PlayerSkillBoostType.INTEREST_LIMIT, 0.0);
             } else if (skill == UniversalSkill.WAFFEN) {
-                boosts.put(PlayerSkillBoostType.REDUCED_SPREAD, 0.0);
-                boosts.put(PlayerSkillBoostType.INCREASED_SPEED, 0.0);
-                boosts.put(PlayerSkillBoostType.DECREASE_RELOAD, 0.0);
+                checkEnumList(PlayerSkillBoostType.REDUCED_SPREAD, 0.0);
+                checkEnumList(PlayerSkillBoostType.INCREASED_SPEED, 0.0);
+                checkEnumList(PlayerSkillBoostType.DECREASE_RELOAD, 0.0);
             }
             return;
         }
@@ -124,20 +129,29 @@ public class CorePlayerSkill implements PlayerSkill{
             }
         }
         if(skill == UniversalSkill.JOB){
-            boosts.put(PlayerSkillBoostType.EXTRA_XP, end1 * 0.005);
-            boosts.put(PlayerSkillBoostType.EXTRA_MONEY, end2 * 0.005);
-            boosts.put(PlayerSkillBoostType.DOUBLE_XP_CHANCE, end5 * 0.02);
-            boosts.put(PlayerSkillBoostType.REDUCED_COOLDOWN, end10 * 0.05);
+            checkEnumList(PlayerSkillBoostType.EXTRA_XP, end1 * 0.005);
+            checkEnumList(PlayerSkillBoostType.EXTRA_MONEY, end2 * 0.005);
+            checkEnumList(PlayerSkillBoostType.DOUBLE_XP_CHANCE, end5 * 0.02);
+            checkEnumList(PlayerSkillBoostType.REDUCED_COOLDOWN, end10 * 0.05);
         }
         else if(skill == UniversalSkill.FINANZEN){
-            boosts.put(PlayerSkillBoostType.PAYBACK, (end1 + end2) * 0.002);
-            boosts.put(PlayerSkillBoostType.INTEREST, end5 * 0.02);
-            boosts.put(PlayerSkillBoostType.INTEREST_LIMIT, end10 * 5000);
+            checkEnumList(PlayerSkillBoostType.PAYBACK, (end1 + end2) * 0.002);
+            checkEnumList(PlayerSkillBoostType.INTEREST, end5 * 0.02);
+            checkEnumList(PlayerSkillBoostType.INTEREST_LIMIT, end10 * 5000);
         }
         else if(skill == UniversalSkill.WAFFEN){
-            boosts.put(PlayerSkillBoostType.REDUCED_SPREAD, end1 + end2 * 0.0125);
-            boosts.put(PlayerSkillBoostType.INCREASED_SPEED, end5 * 0.02);
-            boosts.put(PlayerSkillBoostType.DECREASE_RELOAD, end10 * 3);
+            checkEnumList(PlayerSkillBoostType.REDUCED_SPREAD, end1 + end2 * 0.0125);
+            checkEnumList(PlayerSkillBoostType.INCREASED_SPEED, end5 * 0.02);
+            checkEnumList(PlayerSkillBoostType.DECREASE_RELOAD, end10 * 3);
+        }
+    }
+
+    private void checkEnumList(PlayerSkillBoostType type, double value){
+        if(boosts.containsKey(type)){
+            boosts.replace(type, value);
+        }
+        else{
+            boosts.put(type, value);
         }
     }
 }
