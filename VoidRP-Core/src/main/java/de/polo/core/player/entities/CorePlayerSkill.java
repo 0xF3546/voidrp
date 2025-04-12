@@ -2,9 +2,12 @@ package de.polo.core.player.entities;
 
 import de.polo.api.player.PlayerSkill;
 import de.polo.api.player.VoidPlayer;
+import de.polo.api.player.enums.PlayerSkillBoostType;
 import de.polo.api.player.enums.UniversalSkill;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+
+import java.util.EnumMap;
 
 import static de.polo.core.Main.database;
 
@@ -20,34 +23,7 @@ public class CorePlayerSkill implements PlayerSkill{
     private int skillPoints;
 
     @Getter
-    private double jobExtraXPPercentage;
-
-    @Getter
-    private double jobExtraMoneyPercentage;
-
-    @Getter
-    private double jobDoubleXPChance;
-
-    @Getter
-    private double jobReducedCooldownPercentage;
-
-    @Getter
-    private double finPaybackPercentage;
-
-    @Getter
-    private  double finInterestPercentage;
-
-    @Getter
-    private int finIntrestLimitInc;
-
-    @Getter
-    private double weapReducedSpreadPercentage;
-
-    @Getter
-    private double weapIncreasedSpeedPercentage;
-
-    @Getter
-    private double weapDecreaseReloadPercentage;
+    private final EnumMap<PlayerSkillBoostType, Double> boosts = new EnumMap<>(PlayerSkillBoostType.class);
 
     @Getter
     private final VoidPlayer player;
@@ -108,68 +84,60 @@ public class CorePlayerSkill implements PlayerSkill{
 
     private void updateSkillBoosts(int from, int to) {
         if (to == 0) {
-            if (skill.name().equalsIgnoreCase("Job")) {
-                jobExtraXPPercentage = 0;
-                jobExtraMoneyPercentage = 0;
-                jobDoubleXPChance = 0;
-                jobReducedCooldownPercentage = 0;
-            } else if (skill.name().equalsIgnoreCase("Finanzen")) {
-                finPaybackPercentage = 0;
-                finInterestPercentage = 0;
-                finIntrestLimitInc = 0;
-            } else if (skill.name().equalsIgnoreCase("Waffen")) {
-                weapReducedSpreadPercentage = 0;
-                weapIncreasedSpeedPercentage = 0;
-                weapDecreaseReloadPercentage = 0;
+            if (skill == UniversalSkill.JOB) {
+                boosts.put(PlayerSkillBoostType.EXTRA_XP, 0.0);
+                boosts.put(PlayerSkillBoostType.EXTRA_MONEY, 0.0);
+                boosts.put(PlayerSkillBoostType.DOUBLE_XP_CHANCE, 0.0);
+                boosts.put(PlayerSkillBoostType.REDUCED_COOLDOWN, 0.0);
+            } else if (skill == UniversalSkill.FINANZEN) {
+                boosts.put(PlayerSkillBoostType.PAYBACK, 0.0);
+                boosts.put(PlayerSkillBoostType.INTEREST, 0.0);
+                boosts.put(PlayerSkillBoostType.INTEREST_LIMIT, 0.0);
+            } else if (skill == UniversalSkill.WAFFEN) {
+                boosts.put(PlayerSkillBoostType.REDUCED_SPREAD, 0.0);
+                boosts.put(PlayerSkillBoostType.INCREASED_SPEED, 0.0);
+                boosts.put(PlayerSkillBoostType.DECREASE_RELOAD, 0.0);
             }
             return;
         }
-        if (skill.name().equalsIgnoreCase("Job")) {
-            SkillBoostBase(from, to, 0.005, 0.005, 0.02, 0.05);
-        } else if (skill.name().equalsIgnoreCase("Finanzen")) {
-            SkillBoostBase(from, to, 0.002, 0.002, 0.02, 5000);
-        } else if (skill.name().equalsIgnoreCase("Waffen")) {
-            SkillBoostBase(from, to, 0.0125, 0.0125, 0.02, 1);
-        }
-
+        SkillBoostBase(from, to);
     }
 
-    private void SkillBoostBase(int from, int to, double step1, double step2, double step5, double step10) {
-        if(step2 == 0){step2 = step1;}
+    private void SkillBoostBase(int from, int to) {
         double end1 = 0, end2 = 0, end5 = 0, end10 = 0;
         for(int i = from; i <= to; i++){
             if(i%10 == 0){
-                end10 += step10;
+                end10++;
             }
             else if(i%5 == 0){
-                end5 += step5;
+                end5++;
             }
             else{
                 int tmp = i;
                 if(tmp%10 > 5){tmp -= 5;}
                 if(tmp%2 == 1){
-                    end1 += step1;
+                    end1++;
                 }
                 else{
-                    end2 += step2;
+                    end2++;
                 }
             }
         }
-        if(skill.name().equalsIgnoreCase("Job")){
-            jobExtraXPPercentage = end1;
-            jobExtraMoneyPercentage = end2;
-            jobDoubleXPChance = end5;
-            jobReducedCooldownPercentage = end10;
+        if(skill == UniversalSkill.JOB){
+            boosts.put(PlayerSkillBoostType.EXTRA_XP, end1 * 0.005);
+            boosts.put(PlayerSkillBoostType.EXTRA_MONEY, end2 * 0.005);
+            boosts.put(PlayerSkillBoostType.DOUBLE_XP_CHANCE, end5 * 0.02);
+            boosts.put(PlayerSkillBoostType.REDUCED_COOLDOWN, end10 * 0.05);
         }
-        else if(skill.name().equalsIgnoreCase("Finanzen")){
-            finPaybackPercentage = end1 + end2;
-            finInterestPercentage = end5;
-            finIntrestLimitInc = (int)end5;
+        else if(skill == UniversalSkill.FINANZEN){
+            boosts.put(PlayerSkillBoostType.PAYBACK, (end1 + end2) * 0.002);
+            boosts.put(PlayerSkillBoostType.INTEREST, end5 * 0.02);
+            boosts.put(PlayerSkillBoostType.INTEREST_LIMIT, end10 * 5000);
         }
-        else if(skill.name().equalsIgnoreCase("Waffen")){
-            weapReducedSpreadPercentage = end1 + end2;
-            weapIncreasedSpeedPercentage = end5;
-            weapDecreaseReloadPercentage = end5;
+        else if(skill == UniversalSkill.WAFFEN){
+            boosts.put(PlayerSkillBoostType.REDUCED_SPREAD, end1 + end2 * 0.0125);
+            boosts.put(PlayerSkillBoostType.INCREASED_SPEED, end5 * 0.02);
+            boosts.put(PlayerSkillBoostType.DECREASE_RELOAD, end10 * 3);
         }
     }
 }
