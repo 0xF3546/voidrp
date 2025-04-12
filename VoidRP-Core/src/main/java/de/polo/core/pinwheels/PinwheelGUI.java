@@ -85,33 +85,32 @@ public class PinwheelGUI {
             }
         }
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 54, Component.text("§8 » §aWindrad " + pinwheel.getName()), false, false);
-        inventoryManager.setOnClose(() -> {
-            player.getPlayer().getInventory().clear();
-            player.getPlayer().getInventory().setContents((ItemStack[]) player.getVariable("inventory::base"));
-            player.setVariable("inventory::base", null);
-        });
+        inventoryManager.setOnClose(this::onClose);
         inventoryManager.setOnDrop(event -> {
             event.setCancelled(true);
         });
 
-        inventoryManager.setItem(new CustomItem(53, new ItemBuilder(Material.RED_STAINED_GLASS_PANE)
-                .setName(Component.text("§8 » §cWindrad reparieren"))
-                .build()) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                event.setCancelled(true);
-                if (!checkInventory(inventoryManager.getInventory())) return;
-                if (pinwheel.isBroken()) {
-                    pinwheel.setBroken(false);
-                    player.getPlayer().closeInventory();
-                    player.sendMessage(PREFIX + "Du hast das Windrad repariert.");
-                    PlayerService playerService = VoidAPI.getService(PlayerService.class);
-                    playerService.handleJobFinish(player, MiniJob.ELECTRITION, 600, 20);
-                } else {
-                    player.getPlayer().sendMessage(Component.text("§8 » §cWindrad ist bereits repariert"));
+        for (int i = 44; i < 54; i++) {
+            inventoryManager.setItem(new CustomItem(i, new ItemBuilder(Material.REDSTONE)
+                    .setName(Component.text("§8 » §cWindrad reparieren"))
+                    .build()) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    event.setCancelled(true);
+                    if (!checkInventory(inventoryManager.getInventory())) return;
+                    if (pinwheel.isBroken()) {
+                        pinwheel.setBroken(false);
+                        player.getPlayer().closeInventory();
+                        player.sendMessage(PREFIX + "Du hast das Windrad repariert.");
+                        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+                        playerService.handleJobFinish(player, MiniJob.ELECTRITION, 600, 20);
+                        onClose();
+                    } else {
+                        player.getPlayer().sendMessage(Component.text("§8 » §cWindrad ist bereits repariert"));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private boolean checkInventory(Inventory inventory) {
@@ -140,6 +139,12 @@ public class PinwheelGUI {
         }
 
         return true;
+    }
+
+    private void onClose() {
+        player.getPlayer().getInventory().clear();
+        player.getPlayer().getInventory().setContents((ItemStack[]) player.getVariable("inventory::base"));
+        player.setVariable("inventory::base", null);
     }
 
 }
