@@ -1,5 +1,6 @@
 package de.polo.core.elevators;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
@@ -28,7 +29,7 @@ public class ElevatorGUI {
     }
 
     public void open() {
-        InventoryManager inventoryManager = new InventoryManager(voidPlayer.getPlayer(), 9, Component.text("§8 » §aAufzug " + floor.elevator().name()));
+        InventoryManager inventoryManager = new InventoryManager(voidPlayer.getPlayer(), ApiUtils.getMatchingInventorySize(floor.elevator().floors().size()), Component.text("§8 » §aAufzug " + floor.elevator().name()));
         int i = 0;
         for (Floor floors : floor.elevator().floors()) {
             if (floors == floor) {

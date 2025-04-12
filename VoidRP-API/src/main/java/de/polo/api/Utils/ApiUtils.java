@@ -50,4 +50,13 @@ public class ApiUtils {
 
         return "§f";
     }
+
+    public static int getMatchingInventorySize(int entries) {
+        if (entries > 54) {
+            return 54;
+        }
+        int size = ((entries + 8) / 9) * 9;
+        return Math.min(size, 54);
+    }
+
 }
