@@ -311,3 +311,5 @@ commands:
   crewchat:
     aliases: [c]
   createpinwheel:
+  createelevatorfloor:
+  createelevator:

@@ -106,7 +106,7 @@ public class PinwheelGUI {
                     player.getPlayer().closeInventory();
                     player.sendMessage(PREFIX + "Du hast das Windrad repariert.");
                     PlayerService playerService = VoidAPI.getService(PlayerService.class);
-                    playerService.handleJobFinish(player, MiniJob.ELECTRITION, 1200, 20);
+                    playerService.handleJobFinish(player, MiniJob.ELECTRITION, 600, 20);
                 } else {
                     player.getPlayer().sendMessage(Component.text("§8 » §cWindrad ist bereits repariert"));
                 }

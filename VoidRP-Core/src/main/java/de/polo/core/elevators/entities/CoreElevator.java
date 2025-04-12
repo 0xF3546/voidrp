@@ -11,7 +11,7 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
-public record CoreElevator(@Getter List<Floor> floors, @Getter String name) implements Elevator {
+public record CoreElevator(@Getter int id, @Getter List<Floor> floors, @Getter String name) implements Elevator {
 
     @Override
     public Floor getFloor(int floorNumber) {

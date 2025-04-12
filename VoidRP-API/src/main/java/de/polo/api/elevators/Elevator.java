@@ -8,6 +8,7 @@ import java.util.List;
  * @since 1.0.0
  */
 public interface Elevator {
+    int id();
     List<Floor> floors();
     Floor getFloor(int floorNumber);
     String name();
