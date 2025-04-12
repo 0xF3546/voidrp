@@ -6,11 +6,9 @@ import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
 import de.polo.api.player.PlayerCharacter;
+import de.polo.api.player.PlayerSkill;
 import de.polo.api.player.VoidPlayer;
-import de.polo.api.player.enums.Gender;
-import de.polo.api.player.enums.HealthInsurance;
-import de.polo.api.player.enums.IllnessType;
-import de.polo.api.player.enums.License;
+import de.polo.api.player.enums.*;
 import de.polo.core.Main;
 import de.polo.core.game.base.extra.PlayerIllness;
 import de.polo.core.game.base.extra.seasonpass.PlayerQuest;
@@ -58,6 +56,7 @@ public class PlayerData implements PlayerCharacter {
     private final List<de.polo.core.game.base.extra.beginnerpass.PlayerQuest> beginnerQuests = new ObjectArrayList<>();
     private final List<PlayerIllness> illnesses = new ObjectArrayList<>();
     private final List<JobSkill> jobSkills = new ObjectArrayList<>();
+    private final List<PlayerSkill> playerSkills = new ObjectArrayList<>();
     private final List<PlayerWeapon> weapons = new ObjectArrayList<>();
     private final List<ClickedEventBlock> clickedEventBlocks = new ObjectArrayList<>();
     private final HashMap<String, Object> variables = new HashMap<>();
@@ -719,6 +718,22 @@ public class PlayerData implements PlayerCharacter {
             jobSkills.add(skill);
         }
         return skill;
+    }
+
+    @Override
+    public List<PlayerSkill> getPlayerSkills() {
+        return playerSkills;
+    }
+
+    @Override
+    public PlayerSkill getPlayerSkill(UniversalSkill skill) {
+        PlayerSkill playerSkill = playerSkills.stream().filter(ps -> ps.getSkill().equals(skill)).findFirst().orElse(null);
+        if (playerSkill == null) {
+            playerSkill = new CorePlayerSkill(getVoidPlayer(), skill, 0, 0);
+            database.insertAsync("INSERT INTO player_skills (uuid, skill_type, level, exp) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), skill.name(), 1, 0);
+            playerSkills.add(playerSkill);
+        }
+        return playerSkill;
     }
 
     @SneakyThrows
