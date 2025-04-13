@@ -45,7 +45,6 @@ public class ElevatorRepository {
                         var floorResultSet = floorStatement.executeQuery();
                         while (floorResultSet.next()) {
                             int stage = floorResultSet.getInt("stage");
-                            String floorName = floorResultSet.getString("name");
                             Location floorLocation = locationService.getLocation(floorResultSet.getInt("locationId"));
                             elevator.floors().add(new CoreFloor(elevator, stage, floorLocation));
                         }
