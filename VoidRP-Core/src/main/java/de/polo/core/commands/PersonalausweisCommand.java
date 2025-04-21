@@ -8,18 +8,13 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.Sound;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
     private final PlayerManager playerManager;
@@ -33,88 +28,90 @@ public class PersonalausweisCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        Locale locale = new Locale("de", "DE");
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
-        String formattedDate = dateFormat.format(playerData.getBirthday());
-        if (playerManager.firstname(player) != null && playerManager.lastname(player) != null) {
-            if (args.length >= 1) {
-                if (args[0].equalsIgnoreCase("show")) {
-                    Player targetplayer = Bukkit.getPlayer(args[1]);
-                    if (targetplayer != null) {
-                        if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
-                            player.sendMessage(Prefix.MAIN + "Du hast §c" + targetplayer.getName() + "§7 deinen Personalausweis gezeigt.");
-                            targetplayer.sendMessage("");
-                            targetplayer.sendMessage("§7     ===§8[§6FREMDER PERSONALAUSWEIS§8]§7===");
-                            targetplayer.sendMessage(" ");
-                            targetplayer.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
-                            targetplayer.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
-                            targetplayer.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation());
-                            targetplayer.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
-                            targetplayer.sendMessage(" ");
-                            targetplayer.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(playerData));
-                            if (!playerData.getRelationShip().isEmpty()) {
-                                for (Map.Entry<String, String> entry : playerData.getRelationShip().entrySet()) {
-                                    if (entry.getValue().equalsIgnoreCase("beziehung")) {
-                                        OfflinePlayer tplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
-                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Beziehung: " + tplayer.getName() + ")");
-                                    } else if (entry.getValue().equalsIgnoreCase("verlobt")) {
-                                        OfflinePlayer tplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
-                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Verlobt: " + tplayer.getName() + ")");
-                                    } else if (entry.getValue().equalsIgnoreCase("verheiratet")) {
-                                        OfflinePlayer tplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
-                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Verheiratet (" + tplayer.getName() + ")");
-                                    } else {
-                                        targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
-                                    }
-                                }
-                            } else {
-                                targetplayer.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
-                            }
-                            targetplayer.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + playerManager.visum(player));
-                        } else {
-                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe.");
-                        }
-                    } else {
-                        player.sendMessage(Prefix.ERROR + "Es wurde kein Spieler mit diesem Namen gefunden.");
-                    }
-                }
-            } else {
-                player.sendMessage("");
-                player.sendMessage("§7     ===§8[§6PERSONALAUSWEIS§8]§7===");
-                player.sendMessage(" ");
-                player.sendMessage("§8 ➥ §eVorname§8:§7 " + playerManager.firstname(player));
-                player.sendMessage("§8 ➥ §eNachname§8:§7 " + playerManager.lastname(player));
-                player.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + playerData.getGender().getTranslation());
-                player.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + formattedDate);
-                player.sendMessage(" ");
-                player.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(playerData));
-                if (!playerData.getRelationShip().isEmpty()) {
-                    for (Map.Entry<String, String> entry : playerData.getRelationShip().entrySet()) {
-                        if (entry.getValue().equalsIgnoreCase("beziehung")) {
-                            OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
-                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Beziehung: " + targetplayer.getName() + ")");
-                        } else if (entry.getValue().equalsIgnoreCase("verlobt")) {
-                            OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
-                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig §o(Verlobt: " + targetplayer.getName() + ")");
-                        } else if (entry.getValue().equalsIgnoreCase("verheiratet")) {
-                            OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
-                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Verheiratet (" + targetplayer.getName() + ")");
-                        } else {
-                            player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
-                        }
-                    }
-                } else {
-                    player.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 Ledig");
-                }
-                player.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + playerManager.visum(player));
-                utils.tutorial.usedAusweis(player);
-            }
-        } else {
-            player.sendMessage(Prefix.ERROR + "Du besitzt noch keinen Personalausweis.");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("Nur Spieler können diesen Befehl verwenden.");
+            return true;
         }
-        return false;
+
+        if (playerManager.firstname(player) == null || playerManager.lastname(player) == null) {
+            player.sendMessage(Prefix.ERROR + "Du besitzt noch keinen Personalausweis.");
+            return true;
+        }
+
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+
+        if (args.length >= 1 && args[0].equalsIgnoreCase("show")) {
+            if (args.length < 2) {
+                player.sendMessage(Prefix.ERROR + "Bitte gib einen Spielernamen an.");
+                return true;
+            }
+
+            Player target = Bukkit.getPlayer(args[1]);
+            if (target == null) {
+                player.sendMessage(Prefix.ERROR + "Es wurde kein Spieler mit diesem Namen gefunden.");
+                return true;
+            }
+
+            if (player.getLocation().distance(target.getLocation()) > 5) {
+                player.sendMessage(Prefix.ERROR + target.getName() + " ist nicht in der Nähe.");
+                return true;
+            }
+
+            player.sendMessage(Prefix.MAIN + "Du hast §c" + target.getName() + "§7 deinen Personalausweis gezeigt.");
+            sendIDCardToOther(player, target, playerData);
+        } else {
+            sendIDCardToSelf(player, playerData);
+            utils.tutorial.usedAusweis(player);
+        }
+
+        return true;
+    }
+
+    private void sendIDCardToSelf(Player player, PlayerData data) {
+        player.sendMessage("§8§m----------------------");
+        player.sendMessage("§7     ===§8[§6PERSONALAUSWEIS§8]§7===");
+        sendBasicData(player, data, player);
+    }
+
+    private void sendIDCardToOther(Player owner, Player target, PlayerData data) {
+        target.sendMessage("§8§m----------------------");
+        target.sendMessage("§7     ===§8[§6FREMDER PERSONALAUSWEIS§8]§7===");
+        sendBasicData(target, data, owner);
+    }
+
+    private void sendBasicData(Player receiver, PlayerData data, Player owner) {
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.GERMANY);
+        String birthDate = dateFormat.format(data.getBirthday());
+
+        receiver.sendMessage("§8 ➥ §eVorname§8:§7 " + data.getFirstname());
+        receiver.sendMessage("§8 ➥ §eNachname§8:§7 " + data.getLastname());
+        receiver.sendMessage("§8 ➥ §eGeschlecht§8:§7 " + data.getGender().getTranslation());
+        receiver.sendMessage("§8 ➥ §eGeburtsdatum§8:§7 " + birthDate);
+        receiver.sendMessage("§8§m----------------------");
+        receiver.sendMessage("§8 ➥ §eWohnort§8:§7 " + utils.houseManager.getHouseAccessAsString(data));
+        receiver.sendMessage("§8 ➥ §eBeziehungsstatus§8:§7 " + formatRelationship(data));
+        receiver.sendMessage("§8 ➥ §eVisumstufe§8:§7 " + data.getVisum());
+        receiver.sendMessage("§8§m----------------------");
+
+        receiver.playSound(receiver.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+    }
+
+    private String formatRelationship(PlayerData data) {
+        if (data.getRelationShip().isEmpty()) return "Ledig";
+
+        for (Map.Entry<String, String> entry : data.getRelationShip().entrySet()) {
+            OfflinePlayer partner = Bukkit.getOfflinePlayer(UUID.fromString(entry.getKey()));
+            String status = entry.getValue().toLowerCase(Locale.ROOT);
+
+            return switch (status) {
+                case "beziehung" -> "Ledig §o(Beziehung: " + partner.getName() + ")";
+                case "verlobt" -> "Ledig §o(Verlobt: " + partner.getName() + ")";
+                case "verheiratet" -> "Verheiratet (" + partner.getName() + ")";
+                default -> "Ledig";
+            };
+        }
+
+        return "Ledig";
     }
 
     @Nullable
