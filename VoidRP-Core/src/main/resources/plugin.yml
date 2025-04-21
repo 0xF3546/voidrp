@@ -4,7 +4,7 @@ main: de.polo.core.Main
 api-version: 1.20
 authors: [ Polo66 ]
 description: VoidRoleplay Script
-depend: [Votifier, Citizens, ProtocolLib, packetevents]
+depend: [Votifier, Citizens, ProtocolLib, packetevents, LabyModServerAPI]
 
 commands:
   aduty:

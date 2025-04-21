@@ -47,6 +47,7 @@ import dev.vansen.singleline.SingleLineOptions;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.labymod.serverapi.server.bukkit.LabyModProtocolService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
@@ -152,6 +153,8 @@ public final class Main extends JavaPlugin implements Server {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        LabyModProtocolService.initialize(this);
 
         coreDatabase = new CoreDatabase();
         database = coreDatabase;

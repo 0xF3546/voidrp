@@ -86,6 +86,10 @@
       <id>codemc-snapshots</id>
       <url>https://repo.codemc.io/repository/maven-snapshots/</url>
     </repository>
+    <repository>
+      <id>labymod</id>
+      <url>https://dist.labymod.net/api/v1/maven/release/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -112,5 +116,10 @@
           <version>6.1.8</version>
           <scope>compile</scope>
       </dependency>
+    <dependency>
+      <groupId>net.labymod.serverapi</groupId>
+      <artifactId>server-bukkit</artifactId>
+      <version>1.0.6</version>
+    </dependency>
   </dependencies>
 </project>

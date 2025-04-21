@@ -9,9 +9,14 @@ import de.polo.core.player.services.PlayerService;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.labymod.serverapi.core.model.feature.DiscordRPC;
+import net.labymod.serverapi.server.bukkit.LabyModPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mayson1337
@@ -35,6 +40,22 @@ public class CoreVoidPlayer implements VoidPlayer {
 
     public CoreVoidPlayer(Player player) {
         this.player = player;
+
+        List<String> addonsToRequest = new ArrayList<>();
+        addonsToRequest.add("damageindicator");
+        addonsToRequest.add("clearwater");
+        addonsToRequest.add("voicechat");
+
+        LabyModPlayer labyModPlayer = VoidAPI.getLabyModPlayer(player);
+        labyModPlayer.disableAddons("damageindicator", "clearwater");
+
+        labyModPlayer.requestInstalledAddons(addonsToRequest, response -> {
+            if (response.isEnabled("voicechat")) {
+                player.sendMessage(Component.text("§cDu hast VoiceChat aktiviert. Bitte beachte, das diese modifikation nicht genutzt werden soll."));
+            }
+        });
+        DiscordRPC discordRPC = DiscordRPC.createWithStart("Reallife & Roleplay", System.currentTimeMillis());
+        labyModPlayer.sendDiscordRPC(discordRPC);
     }
 
     @Override

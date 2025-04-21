@@ -2,6 +2,8 @@ package de.polo.api;
 
 import de.polo.api.player.VoidPlayer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.labymod.serverapi.server.bukkit.LabyModPlayer;
+import net.labymod.serverapi.server.bukkit.LabyModProtocolService;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,5 +65,9 @@ public final class VoidAPI {
 
     public static <T> T getService(@NotNull Class<T> clazz) {
         return (T) server.getService(clazz);
+    }
+
+    public static LabyModPlayer getLabyModPlayer(Player player) {
+        return LabyModProtocolService.get().getPlayer(player.getUniqueId());
     }
 }

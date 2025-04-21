@@ -43,6 +43,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
+import net.labymod.serverapi.server.bukkit.LabyModPlayer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -469,7 +470,6 @@ public class PlayerManager implements Listener {
             }
             Main.getInstance().commands.checkoutWebshopCommand.loadShopBuys(player);
         }
-
     }
 
     public LoyaltyBonusTimer getLoyaltyTimer(UUID uuid) {
