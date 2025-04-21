@@ -1,9 +1,11 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
+import de.polo.core.admin.services.SupportService;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.manager.ServerManager;
@@ -62,12 +64,12 @@ public class AdutyCommand extends CommandBase implements TabCompleter {
                 player.setAduty(true);
                 player.sendMessage(Prefix.ADMIN + "Du hast den Admindienst §abetreten§7.");
                 player.getPlayer().setAllowFlight(true);
-
-                scoreboardAPI.createScoreboard(player.getPlayer(), "admin", "§cAdmindienst", () -> {
+                SupportService supportService = VoidAPI.getService(SupportService.class);
+                scoreboardAPI.createScoreboard(player.getPlayer(), "admin", rankData.getColor() + rankData.getRang(), () -> {
                     // Set initial scores
-                    scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
+                    scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Tickets offen§8:", supportService.getTickets().size());
                     Runtime r = Runtime.getRuntime();
-                    scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
+                    scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Auslastung§8:", (int) ((r.totalMemory() - r.freeMemory()) / 1048576));
                     scoreboardAPI.setScore(player.getPlayer(), "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
                 });
 
