@@ -379,7 +379,6 @@ public final class Main extends JavaPlugin implements Server {
         public WantedCommand aktenCommand;
         public SpecCommand specCommand;
         public MsgCommand msgCommand;
-        public LeaderChatCommand leaderChatCommand;
         public FrakStatsCommand frakStatsCommand;
         public CheckInvCommand checkInvCommand;
         public BizInviteCommand bizInviteCommand;
@@ -587,7 +586,6 @@ public final class Main extends JavaPlugin implements Server {
             aktenCommand = new WantedCommand(playerManager, utils);
             specCommand = new SpecCommand(playerManager);
             msgCommand = new MsgCommand(playerManager);
-            leaderChatCommand = new LeaderChatCommand(playerManager, utils);
             frakStatsCommand = new FrakStatsCommand(playerManager, factionManager, utils);
             checkInvCommand = new CheckInvCommand(playerManager);
             bizInviteCommand = new BizInviteCommand(playerManager, utils, businessManager);
