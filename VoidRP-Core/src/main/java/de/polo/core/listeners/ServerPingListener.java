@@ -16,7 +16,7 @@ public class ServerPingListener implements Listener {
 
     @EventHandler
     public void onServerPing(ServerListPingEvent event) {
-        String firstline = "§6§lVoidRoleplay V2 §8| §eReallife & Roleplay §8[§e1.16.5§8]";
+        String firstline = "§6§lVoidRoleplay V2 §8| §eReallife & Roleplay";
         String secondline = "§8➥ §cRoleplay mit Stil. §8 × §bⓘ §adiscord.gg/void-roleplay";
 
         String sql = "SELECT level, visum, faction FROM players WHERE adress = ?";
