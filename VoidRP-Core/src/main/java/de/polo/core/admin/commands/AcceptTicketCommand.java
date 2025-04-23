@@ -12,7 +12,6 @@ import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.PlayerPacket;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -63,7 +62,7 @@ public class AcceptTicketCommand implements CommandExecutor {
         supportManager.createTicketConnection(targetplayer, player);
         targetplayer.sendMessage(Prefix.SUPPORT + "§c" + playerManager.rang(player) + " " + player.getName() + "§7 bearbeitet nun dein Ticket!");
         player.sendMessage(Prefix.SUPPORT + "Du bearbeitest nun das Ticket von §c" + targetplayer.getName() + "§7.");
-        adminService.sendGuideMessage(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName() + ".", Color.YELLOW);
+        adminService.sendAdminMessage(player.getName() + " bearbeitet nun das Ticket von " + targetplayer.getName() + ".", Color.YELLOW);
         utils.sendActionBar(targetplayer, "§a§lDein Ticket wurde angenommen!");
         Utils.Tablist.setTablist(player, "§8[§6R§8]");
         Utils.Tablist.setTablist(targetplayer, "§8[§6R§8]");

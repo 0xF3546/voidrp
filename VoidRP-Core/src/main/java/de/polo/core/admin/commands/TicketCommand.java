@@ -30,8 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static de.polo.core.Main.*;
-
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -80,12 +78,12 @@ public class TicketCommand implements CommandExecutor {
                 if (event.isLeftClick()) {
                     player.teleport(finalTarget.getLocation());
                     player.sendMessage(Prefix.SUPPORT + "Du hast dich zu " + finalTarget.getName() + " teleportiert.");
-                    adminService.sendGuideMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", Color.AQUA);
+                    adminService.sendAdminMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", Color.AQUA);
                 } else {
                     NaviData nearest = navigationService.getNearestNaviPoint(finalTarget.getLocation());
                     finalTarget.teleport(locationService.getLocation(nearest.getLocation()));
                     player.sendMessage(Prefix.SUPPORT + "Du hast " + finalTarget.getName() + " zu " + nearest.getName() + "§7 teleportiert.");
-                    adminService.sendGuideMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), Color.AQUA);
+                    adminService.sendAdminMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), Color.AQUA);
                 }
             }
         });

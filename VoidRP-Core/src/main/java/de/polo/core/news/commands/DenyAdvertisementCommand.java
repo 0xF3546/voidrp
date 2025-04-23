@@ -50,6 +50,6 @@ public class DenyAdvertisementCommand extends CommandBase {
         newsService.denyAdvertisement(advertisement);
         player.sendMessage("Werbung abgelehnt.", Prefix.ADMIN);
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.sendGuideMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " abgelehnt.", Color.RED);
+        adminService.sendAdminMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " abgelehnt.", Color.RED);
     }
 }

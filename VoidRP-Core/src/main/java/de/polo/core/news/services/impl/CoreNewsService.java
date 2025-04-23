@@ -4,7 +4,6 @@ import de.polo.api.VoidAPI;
 import de.polo.api.news.Advertisement;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.news.services.NewsService;
-import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.ShopBook;
 import de.polo.core.utils.Service;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -64,8 +63,8 @@ public class CoreNewsService implements NewsService {
             return;
         }
         advertisementQueue.add(advertisement);
-        adminService.sendGuideMessage(advertisement.getPublisher().getName() + " möchte folgende Werbung schalten:" , Color.ORANGE);
-        adminService.sendGuideMessage(advertisement.getContent(), Color.ORANGE);
+        adminService.sendAdminMessage(advertisement.getPublisher().getName() + " möchte folgende Werbung schalten:" , Color.ORANGE);
+        adminService.sendAdminMessage(advertisement.getContent(), Color.ORANGE);
         Component acceptButton = text("[Annehmen]")
                 .color(NamedTextColor.GREEN)
                 .decorate(TextDecoration.BOLD)
@@ -83,7 +82,7 @@ public class CoreNewsService implements NewsService {
                 .append(text(" "))
                 .append(denyButton);
 
-        adminService.sendGuideMessage(combined, Color.ORANGE);
+        adminService.sendAdminMessage(combined, Color.ORANGE);
 
     }
 

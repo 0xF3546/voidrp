@@ -26,8 +26,8 @@ public class GameModeChangeEvent implements Listener {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
         // ISSUE VRP-10004: fixed by adding null check
         if (playerData == null) return;
+        playerData.removeBossBar("buildMode");
         if (event.getNewGameMode() == GameMode.SURVIVAL) {
-            playerData.removeBossBar("buildMode");
             if (playerData.getVariable("inventory::build") == null) return;
             player.getInventory().setContents(playerData.getVariable("inventory::build"));
             playerData.setVariable("inventory::build", null);

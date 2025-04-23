@@ -5,20 +5,14 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
-import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Service;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
-
-import static de.polo.core.Main.playerManager;
 
 /**
  * @author Mayson1337
@@ -29,11 +23,11 @@ import static de.polo.core.Main.playerManager;
 public class CoreAdminService implements AdminService {
     @Override
     public void sendMessage(String msg, Color color) {
-        sendGuideMessage(Component.text(msg), color);
+        sendAdminMessage(Component.text(msg), color);
     }
 
     @Override
-    public void sendGuideMessage(String msg, Color color) {
+    public void sendAdminMessage(String msg, Color color) {
         if (color == null) {
             color = Color.AQUA;
         }
@@ -45,13 +39,13 @@ public class CoreAdminService implements AdminService {
     }
 
     @Override
-    public void sendGuideMessage(Component msg, Color color) {
+    public void sendAdminMessage(Component msg, Color color) {
         if (color == null) {
             color = Color.AQUA;
         }
         for (VoidPlayer player : VoidAPI.getPlayers()) {
-            if (player.getData().getPermlevel() >= 40) {
-                player.sendMessage(Component.text("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg));
+            if (player.getData().getPermlevel() >= 60) {
+                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
             }
         }
     }

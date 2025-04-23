@@ -47,6 +47,7 @@ public class CoreVoidPlayer implements VoidPlayer {
         addonsToRequest.add("voicechat");
 
         LabyModPlayer labyModPlayer = VoidAPI.getLabyModPlayer(player);
+        if (labyModPlayer == null) return;
         labyModPlayer.disableAddons("damageindicator", "clearwater");
 
         labyModPlayer.requestInstalledAddons(addonsToRequest, response -> {

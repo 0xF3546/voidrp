@@ -592,9 +592,12 @@ public class PlayerData implements PlayerCharacter {
     public void setBossBar(String identifier, BossBar bossBar) {
         if (this.bossBars.get(identifier) != null) {
             this.bossBars.replace(identifier, bossBar);
+            bossBar.removePlayer(player);
+            bossBar.addPlayer(player);
+        } else {
+            this.bossBars.put(identifier, bossBar);
+            bossBar.addPlayer(player);
         }
-        this.bossBars.put(identifier, bossBar);
-        bossBar.addPlayer(player);
     }
 
     public void removeBossBar(String identifier) {

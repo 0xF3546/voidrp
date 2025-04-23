@@ -10,7 +10,6 @@ import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -59,7 +58,7 @@ public class CloseTicketCommand implements CommandExecutor {
             targetPacket.renewPacket();
 
             AdminService adminService = VoidAPI.getService(AdminService.class);
-            adminService.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", Color.YELLOW);
+            adminService.sendAdminMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", Color.YELLOW);
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }
