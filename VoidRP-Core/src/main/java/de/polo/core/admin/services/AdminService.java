@@ -21,9 +21,9 @@ public interface AdminService {
     /**
      * Sends a message to all guides
      */
-    void sendAdminMessage(String msg, Color color);
+    void sendGuideMessage(String msg, Color color);
 
-    void sendAdminMessage(Component msg, Color color);
+    void sendMessage(Component msg, Color color);
 
     /**
      * Inserts a note into the database

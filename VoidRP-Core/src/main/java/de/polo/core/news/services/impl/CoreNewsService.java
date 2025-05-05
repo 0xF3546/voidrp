@@ -63,8 +63,8 @@ public class CoreNewsService implements NewsService {
             return;
         }
         advertisementQueue.add(advertisement);
-        adminService.sendAdminMessage(advertisement.getPublisher().getName() + " möchte folgende Werbung schalten:" , Color.ORANGE);
-        adminService.sendAdminMessage(advertisement.getContent(), Color.ORANGE);
+        adminService.sendGuideMessage(advertisement.getPublisher().getName() + " möchte folgende Werbung schalten:" , Color.ORANGE);
+        adminService.sendGuideMessage(advertisement.getContent(), Color.ORANGE);
         Component acceptButton = text("[Annehmen]")
                 .color(NamedTextColor.GREEN)
                 .decorate(TextDecoration.BOLD)
@@ -82,7 +82,7 @@ public class CoreNewsService implements NewsService {
                 .append(text(" "))
                 .append(denyButton);
 
-        adminService.sendAdminMessage(combined, Color.ORANGE);
+        adminService.sendMessage(combined, Color.ORANGE);
 
     }
 

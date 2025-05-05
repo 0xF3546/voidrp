@@ -50,6 +50,6 @@ public class AcceptAdvertisementCommand extends CommandBase {
         newsService.acceptAdvertisement(advertisement);
         player.sendMessage("Werbung akzeptiert.", Prefix.ADMIN);
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.sendAdminMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " angenommen.", Color.GREEN);
+        adminService.sendGuideMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " angenommen.", Color.GREEN);
     }
 }

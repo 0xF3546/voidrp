@@ -23,6 +23,6 @@ public class SupportListener implements Listener {
         int ticketsOpen = supportService.getTickets().size();
         if (ticketsOpen == 0) return;
         AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.sendAdminMessage("Es gibt " + ticketsOpen + " Tickets die noch nicht bearbeitet wurden.", Color.RED);
+        adminService.sendGuideMessage("Es gibt " + ticketsOpen + " Tickets die noch nicht bearbeitet wurden.", Color.RED);
     }
 }

@@ -23,11 +23,17 @@ import java.util.List;
 public class CoreAdminService implements AdminService {
     @Override
     public void sendMessage(String msg, Color color) {
-        sendAdminMessage(Component.text(msg), color);
-    }
+        if (color == null) {
+            color = Color.AQUA;
+        }
+        for (VoidPlayer player : VoidAPI.getPlayers()) {
+            if (player.getData().getPermlevel() >= 60) {
+                player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
+            }
+        }    }
 
     @Override
-    public void sendAdminMessage(String msg, Color color) {
+    public void sendGuideMessage(String msg, Color color) {
         if (color == null) {
             color = Color.AQUA;
         }
@@ -39,7 +45,7 @@ public class CoreAdminService implements AdminService {
     }
 
     @Override
-    public void sendAdminMessage(Component msg, Color color) {
+    public void sendMessage(Component msg, Color color) {
         if (color == null) {
             color = Color.AQUA;
         }

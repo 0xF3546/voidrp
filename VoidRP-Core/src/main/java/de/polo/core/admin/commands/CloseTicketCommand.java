@@ -58,7 +58,7 @@ public class CloseTicketCommand implements CommandExecutor {
             targetPacket.renewPacket();
 
             AdminService adminService = VoidAPI.getService(AdminService.class);
-            adminService.sendAdminMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", Color.YELLOW);
+            adminService.sendGuideMessage(player.getName() + " hat das Ticket von " + targetplayer.getName() + " geschlossen.", Color.YELLOW);
         } else {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
         }

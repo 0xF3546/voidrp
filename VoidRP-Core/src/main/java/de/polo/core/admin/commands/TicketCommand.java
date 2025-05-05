@@ -78,12 +78,12 @@ public class TicketCommand implements CommandExecutor {
                 if (event.isLeftClick()) {
                     player.teleport(finalTarget.getLocation());
                     player.sendMessage(Prefix.SUPPORT + "Du hast dich zu " + finalTarget.getName() + " teleportiert.");
-                    adminService.sendAdminMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", Color.AQUA);
+                    adminService.sendGuideMessage(player.getName() + " hat sich zu " + finalTarget.getName() + " teleportiert.", Color.AQUA);
                 } else {
                     NaviData nearest = navigationService.getNearestNaviPoint(finalTarget.getLocation());
                     finalTarget.teleport(locationService.getLocation(nearest.getLocation()));
                     player.sendMessage(Prefix.SUPPORT + "Du hast " + finalTarget.getName() + " zu " + nearest.getName() + "§7 teleportiert.");
-                    adminService.sendAdminMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), Color.AQUA);
+                    adminService.sendGuideMessage(player.getName() + " hat " + finalTarget.getName() + " teleportiert. - " + nearest.getName().replace("&", "§"), Color.AQUA);
                 }
             }
         });
