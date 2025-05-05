@@ -325,7 +325,6 @@ public final class Main extends JavaPlugin implements Server {
         public RentCommand rentCommand;
         public ArrestCommand arrestCommand;
         public TPCommand tpCommand;
-        public TPHereCommand tpHereCommand;
         public SpeedCommand speedCommand;
         public KickCommand kickCommand;
         public OOCCommand oocCommand;
@@ -532,7 +531,6 @@ public final class Main extends JavaPlugin implements Server {
             rentCommand = new RentCommand(playerManager, utils);
             arrestCommand = new ArrestCommand(playerManager, factionManager, utils);
             tpCommand = new TPCommand(playerManager);
-            tpHereCommand = new TPHereCommand(playerManager);
             speedCommand = new SpeedCommand(playerManager);
             kickCommand = new KickCommand(playerManager);
             oocCommand = new OOCCommand();
