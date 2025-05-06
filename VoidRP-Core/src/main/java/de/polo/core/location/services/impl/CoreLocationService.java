@@ -471,4 +471,12 @@ public class CoreLocationService implements LocationService {
     public List<NaviData> getNavis() {
         return naviData;
     }
+
+    @Override
+    public void removeLocation(String location) {
+        LocationData locationData = getLocations().stream().filter(x -> x.getName().equalsIgnoreCase(location)).findFirst().orElse(null);
+        if (locationData == null) return;
+        locations.remove(locationData);
+        database.deleteAsync("DELETE FROM locations WHERE id = ?", locationData.getId());
+    }
 }

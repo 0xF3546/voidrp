@@ -91,4 +91,5 @@ public interface LocationService {
     boolean isLocationEqual(Location first, Location second);
     List<GasStationData> getGasStations();
     List<NaviData> getNavis();
+    void removeLocation(String location);
 }

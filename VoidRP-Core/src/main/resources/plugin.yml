@@ -315,3 +315,4 @@ commands:
   createelevator:
   denyadvertisement:
   acceptadvertisement:
+  removelocation:
