@@ -1,3 +1,7 @@
+env:
+  ACTIONS_STEP_DEBUG: true
+  ACTIONS_RUNNER_DEBUG: true
+
 name: Build and Upload VoidRP Plugin
 
 on:
