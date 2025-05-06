@@ -41,7 +41,7 @@ public class UnbanCommand implements CommandExecutor {
             Statement statement = Main.getInstance().coreDatabase.getStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM player_bans WHERE LOWER(name) = '" + args[0].toLowerCase() + "'");
             if (!res.next()) {
-                player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht in der Banlist gefudnen.");
+                player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht in der Banlist gefunden.");
                 return false;
             }
             AdminService adminService = VoidAPI.getService(AdminService.class);
