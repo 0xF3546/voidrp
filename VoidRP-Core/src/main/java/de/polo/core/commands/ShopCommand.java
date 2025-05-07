@@ -4,10 +4,12 @@ import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.shop.entities.ShopRob;
 import de.polo.core.shop.services.ShopService;
 import de.polo.core.storage.PlayerWeapon;
 import de.polo.core.game.base.shops.ShopData;
@@ -93,6 +95,7 @@ public class ShopCommand implements CommandExecutor {
                 y++;
             }
         }
+        ShopService shopService = VoidAPI.getService(ShopService.class);
 
         // Einnehmen (Crew)
         if (playerData.getCrew() != null && shopData.getType().isTakeable()) {
@@ -112,6 +115,14 @@ public class ShopCommand implements CommandExecutor {
             inventory.setItem(new CustomItem(y, ItemManager.createItem(Material.RED_DYE, 1, 0, "§cAusrauben")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (shopService.getActiveRobberies().stream().anyMatch(x -> x.getShop() == shopData)) {
+                        player.sendMessage("Der Shop wird bereits ausgeraubt.", Prefix.ERROR);
+                        return;
+                    }
+                    VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                    ShopRob shopRob = new ShopRob(shopData, voidPlayer);
+                    shopService.addRobbery(shopRob);
+                    player.sendMessage("Du hast den begonnen den Shop §c" + shopData.getName() + " §7 auszurauben.");
                 }
             });
             y++;
