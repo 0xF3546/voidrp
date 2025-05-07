@@ -1,5 +1,6 @@
 name: Build and Upload VoidRP Plugin
 
+
 on:
   push:
     branches:
@@ -21,6 +22,10 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
+
+      - name: Check JAR output
+        run: ls -la VoidRP-Core/target
+
 
       - name: Upload JAR to Minecraft server
         uses: appleboy/scp-action@v0.1.7
