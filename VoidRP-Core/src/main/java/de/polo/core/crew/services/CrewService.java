@@ -3,6 +3,7 @@ package de.polo.core.crew.services;
 import de.polo.api.crew.Crew;
 import de.polo.api.crew.CrewRank;
 import de.polo.api.crew.enums.CrewPermission;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.crew.dto.CreateCrewDto;
 import de.polo.core.crew.dto.CreateCrewRankDto;
 import de.polo.core.crew.dto.CrewMemberDto;
@@ -54,6 +55,7 @@ public interface CrewService {
     CrewRank getCrewRank(int id);
     void sendMessageToMembers(Crew crew, String message);
     List<CrewMemberDto> getCrewMembers(Crew crew);
+    List<VoidPlayer> getOnlineMembers(Crew crew);
 
     void addRankPermission(CrewRank crewRank, CrewPermission permission);
     void removeRankPermission(CrewRank crewRank, CrewPermission permission);

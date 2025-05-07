@@ -6,9 +6,11 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.crew.services.CrewService;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.shop.entities.CrewTakeShop;
 import de.polo.core.shop.entities.ShopRob;
 import de.polo.core.shop.services.ShopService;
 import de.polo.core.storage.PlayerWeapon;
@@ -105,6 +107,19 @@ public class ShopCommand implements CommandExecutor {
                     .build()) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
+                    if (shopService.getActiveCrewTakes().stream().anyMatch(x -> x.shop() == shopData)) {
+                        player.sendMessage("Der Shop wird bereits eingenommen.", Prefix.ERROR);
+                        return;
+                    }
+                    if (shopData.getCrewHolder() != null) {
+                        player.sendMessage("Der Shop wird bereits von einer Crew gehalten.", Prefix.ERROR);
+                        return;
+                    }
+                    VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                    CrewTakeShop crewTakeShop = new CrewTakeShop(voidPlayer.getData().getCrew(), shopData);
+                    shopService.addCrewTake(crewTakeShop);
+                    CrewService crewService = VoidAPI.getService(CrewService.class);
+                    crewService.sendMessageToMembers(voidPlayer.getData().getCrew(), "Eure Crew hat begonnen den Shop " + shopData.getName() + "  einzunehmen.");
                 }
             });
             y++;

@@ -271,6 +271,13 @@ public class CoreCrewService implements CrewService {
     }
 
     @Override
+    public List<VoidPlayer> getOnlineMembers(Crew crew) {
+        return VoidAPI.getPlayers().stream()
+                .filter(player -> player.getData().getCrew() == crew)
+                .toList();
+    }
+
+    @Override
     public void addRankPermission(CrewRank crewRank, CrewPermission permission) {
         if (crewRank instanceof CoreCrewRank coreCrewRank) {
             coreCrewRank.addPermission(permission);

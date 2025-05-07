@@ -16,8 +16,14 @@ public class ShopRobTickListener implements Listener {
     public void onMinuteTick(MinuteTickEvent event) {
         ShopService shopService = VoidAPI.getService(ShopService.class);
         shopService.getActiveRobberies().forEach(shopRob -> {
+            if (shopRob.getShop().getLocation().distance(shopRob.getRobber().getLocation()) > 5) {
+                shopRob.getRobber().sendMessage("§cDu bist zu weit vom Shop entfernt, um den Raub erfolgreich abzuschließen.", Prefix.MAIN);
+                shopService.removeRobbery(shopRob);
+                return;
+            }
             if (shopRob.getStartTime().plusMinutes(5).isAfter(Utils.getTime())) {
                 VoidPlayer robber = shopRob.getRobber();
+
                 robber.sendMessage("Du hast den Shop erfolgreich ausgeraubt.", Prefix.MAIN);
                 shopService.removeRobbery(shopRob);
             } else {
