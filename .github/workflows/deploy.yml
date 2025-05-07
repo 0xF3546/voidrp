@@ -33,5 +33,5 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "VoidRP-Core/target/VoidRoleplay-1.0.0.jar"
+          source: "VoidRoleplay-1.0.0.jar"
           target: "/home/minecraft/plugins/"
