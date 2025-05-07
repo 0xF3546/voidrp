@@ -30,12 +30,13 @@ jobs:
         run: ls -la VoidRP-Core/target
 
 
-      - name: Upload JAR to Minecraft server
+      - name: Deploy Jar to Minecraft Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
+          port: 22
           source: "VoidRP-Core/target/VoidRoleplay-1.0.0.jar"
           target: "/home/minecraft/plugins/"
           debug: true
