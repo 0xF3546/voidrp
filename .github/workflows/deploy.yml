@@ -23,6 +23,9 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - name: List files in workspace
+        run: ls -lh
+
       - name: Check JAR output
         run: ls -la VoidRP-Core/target
 
@@ -33,5 +36,6 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "VoidRoleplay-1.0.0.jar"
+          source: "VoidRP-Core/target/VoidRoleplay-1.0.0.jar"
           target: "/home/minecraft/plugins/"
+          debug: true
