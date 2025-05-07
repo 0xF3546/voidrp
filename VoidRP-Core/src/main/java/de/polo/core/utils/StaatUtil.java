@@ -61,17 +61,6 @@ public class StaatUtil {
 
     @SneakyThrows
     private void loadWantedReasons() {
-        /*
-        Connection connection = Main.getInstance().getMySQL().getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM wantedreasons");
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            WantedReason reason = new WantedReason(resultSet.getInt("id"), resultSet.getString("reason"), resultSet.getInt("wanted"));
-            wantedReasons.add(reason);
-        }
-        statement.close();
-        connection.close();
-        */
         Main.getInstance().getCoreDatabase().queryThreaded("SELECT * FROM wantedreasons")
                 .thenAccept(result -> {
                     try {
