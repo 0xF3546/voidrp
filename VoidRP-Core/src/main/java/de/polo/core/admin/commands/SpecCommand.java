@@ -1,71 +1,65 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.Utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
+import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class SpecCommand implements CommandExecutor {
-    private final PlayerManager playerManager;
+@CommandBase.CommandMeta(
+        name = "spec",
+        usage = "/spec [Spieler]",
+        adminDuty = true
+)
+public class SpecCommand extends CommandBase {
 
-    public SpecCommand(PlayerManager playerManager) {
-        this.playerManager = playerManager;
-        Main.registerCommand("spec", this);
+    public SpecCommand(@NotNull CommandMeta meta) {
+        super(meta);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        if (playerData.getPermlevel() >= 60) {
-            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
-            if (voidPlayer.isAduty()) {
-                AdminService adminService = VoidAPI.getService(AdminService.class);
-                if (playerData.getVariable("isSpec") == null) {
-                    if (args.length >= 1) {
-                        Player targetplayer = Bukkit.getPlayer(args[0]);
-                        playerData.setLocationVariable("specLoc", player.getLocation());
-                        player.teleport(targetplayer.getLocation());
-                        player.setGameMode(GameMode.SPECTATOR);
-                        player.setSpectatorTarget(targetplayer);
-                        playerData.setVariable("isSpec", targetplayer.getUniqueId().toString());
-                        player.sendMessage(Prefix.ADMIN + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
-                        adminService.sendMessage(player.getName() + " beobachtet nun " + targetplayer.getName(), Color.RED);
-                    } else {
-                        player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /spec [Spieler]");
-                    }
-                } else {
-                    player.setGameMode(GameMode.SURVIVAL);
-                    player.setAllowFlight(true);
-                    player.sendMessage(Prefix.ADMIN + "Du hast den Spectator-Modus verlassen");
-                    player.teleport(playerData.getLocationVariable("specLoc"));
-                    playerData.setVariable("isSpec", null);
-                    adminService.sendMessage(player.getName() + " hat den Beobachter-Modus verlassen.", Color.RED);
-                }
-            } else {
-                player.sendMessage(Prefix.ERROR + "Du bist nicht im Admindienst.");
-            }
-        } else {
-            player.sendMessage(Prefix.ERROR_NOPERMISSION);
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        AdminService adminService = VoidAPI.getService(AdminService.class);
+        boolean isSpec = playerData.getVariable("isSpec") != null;
+        if (isSpec) {
+            leaveSpec(player);
+            return;
         }
-        return false;
+        if (args.length < 1) {
+            showSyntax(player);
+            return;
+        }
+        Player targetplayer = Bukkit.getPlayer(args[0]);
+        if (targetplayer == null) {
+            player.sendMessage("Der Spieler ist nicht online.", Prefix.ERROR);
+            return;
+        }
+        player.setVariable("specLoc", player.getLocation());
+        player.getPlayer().teleport(targetplayer.getLocation());
+        player.getPlayer().setGameMode(GameMode.SPECTATOR);
+        player.getPlayer().setSpectatorTarget(targetplayer);
+        player.setVariable("isSpec", targetplayer.getUniqueId().toString());
+        player.sendMessage(Prefix.ADMIN + "§cDu Spectatest nun §7" + targetplayer.getName() + "§c.");
+        adminService.sendMessage(player.getName() + " beobachtet nun " + targetplayer.getName(), Color.RED);
+
     }
 
-    public void leaveSpec(Player player) {
-        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        player.setGameMode(GameMode.SURVIVAL);
-        player.setAllowFlight(true);
-        player.teleport(playerData.getLocationVariable("specLoc"));
-        playerData.setVariable("isSpec", null);
+    public void leaveSpec(VoidPlayer player) {
+        player.getPlayer().setGameMode(GameMode.SURVIVAL);
+        player.getPlayer().setAllowFlight(true);
+        player.getPlayer().teleport((Location) player.getVariable("specLoc"));
+        player.setVariable("isSpec", null);
     }
 }
