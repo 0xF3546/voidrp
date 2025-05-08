@@ -6,6 +6,7 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
+import de.polo.core.housing.enums.HouseType;
 import de.polo.core.housing.services.HouseService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
@@ -96,6 +97,18 @@ public class EditHouseCommand extends CommandBase implements TabCompleter {
         } else if (args[1].equalsIgnoreCase("Refund")) {
             houseService.refundHouse(house.getNumber());
             player.sendMessage("Du hast das Haus " + house.getNumber() + " zurückerstattet!", Prefix.ADMIN);
+        } else if (args[1].equalsIgnoreCase("Typ")) {
+            if (args.length < 3) {
+                showSyntax(player);
+                return;
+            }
+            HouseType type = Arrays.stream(HouseType.values()).toList().stream().filter(x -> x.getName().equalsIgnoreCase(args[2])).findFirst().orElse(null);
+            if (type == null) {
+                player.sendMessage("Der Typ " + args[2] + " existiert nicht!", Prefix.ERROR);
+                return;
+            }
+            houseService.updateType(house, type);
+            player.sendMessage("Du hast den Typ des Hauses " + house.getNumber() + " zu " + type.getName() + " geändert!", Prefix.GAMEDESIGN);
         } else {
             showSyntax(player);
         }
@@ -106,7 +119,8 @@ public class EditHouseCommand extends CommandBase implements TabCompleter {
         HouseService houseService = VoidAPI.getService(HouseService.class);
         return TabCompletion.getBuilder(strings)
                 .addAtIndex(0, houseService.getHouses().stream().map(house -> String.valueOf(house.getNumber())).toList())
-                .addAtIndex(1, Arrays.asList("Location", "Price", "Delete", "Refund"))
+                .addAtIndex(1, Arrays.asList("Location", "Price", "Delete", "Refund", "Typ"))
+                .addAtIndexIf(2, 1, "Typ", Arrays.stream(HouseType.values()).map(HouseType::getName).toList())
                 .build();
     }
 }

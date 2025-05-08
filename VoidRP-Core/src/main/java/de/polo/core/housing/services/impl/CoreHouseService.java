@@ -4,6 +4,7 @@ import de.polo.api.Utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.game.base.housing.House;
+import de.polo.core.housing.enums.HouseType;
 import de.polo.core.housing.services.HouseService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
@@ -174,5 +175,11 @@ public class CoreHouseService implements HouseService {
             sign.setLine(2, "§8" + offlinePlayer.getName());
         }
         sign.update();
+    }
+
+    @Override
+    public void updateType(House house, HouseType houseType) {
+        house.setHouseType(houseType);
+        database.updateAsync("UPDATE houses SET type = ? WHERE number = ?", houseType.name(), house.getNumber());
     }
 }

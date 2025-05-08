@@ -1,6 +1,7 @@
 package de.polo.core.housing.services;
 
 import de.polo.core.game.base.housing.House;
+import de.polo.core.housing.enums.HouseType;
 import de.polo.core.player.entities.PlayerData;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -105,4 +106,5 @@ public interface HouseService {
     void refundHouse(int houseNumber);
     void setHousePrice(int houseNumber, int price);
     void updateSign(House house);
+    void updateType(House house, HouseType houseType);
 }
