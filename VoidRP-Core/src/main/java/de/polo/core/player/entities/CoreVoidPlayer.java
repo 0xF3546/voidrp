@@ -87,6 +87,7 @@ public class CoreVoidPlayer implements VoidPlayer {
         if (settings.stream().anyMatch(playerSetting1 -> playerSetting1.getSetting() == setting)) {
             return;
         }
+        settings.add(playerSetting);
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         playerService.addPlayerSetting(this, playerSetting);
     }
