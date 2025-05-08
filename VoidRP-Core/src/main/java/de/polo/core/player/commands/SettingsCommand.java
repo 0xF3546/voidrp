@@ -14,6 +14,8 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 @CommandBase.CommandMeta(
         name = "settings"
 )
@@ -25,6 +27,7 @@ public class SettingsCommand extends CommandBase {
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §7Einstellungen"));
+        List<Setting> toggleableSettings = List.of(Setting.HIT_SOUNDS);
         int i = 0;
         if (playerData.getTeamSpeakUID() == null) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§7§mTeamSpeak neu synchronisieren", "§8 ➥ §cDu hast dein TeamSpeak nicht verbunden")) {
@@ -43,6 +46,20 @@ public class SettingsCommand extends CommandBase {
             });
         }
         i++;
+        for (Setting setting : toggleableSettings) {
+            inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§7" + setting.getName(), "§8 ➥ " + (player.hasSetting(setting) ? "§cDeaktivieren" : "§aAktivieren"))) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    player.getPlayer().closeInventory();
+                    if (player.hasSetting(setting)) {
+                        player.removeSetting(setting);
+                    } else {
+                        player.addSetting(setting);
+                    }
+                }
+            });
+            i++;
+        }
         if (playerData.getPermlevel() >= 60) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§cAdmin-Nachrichten", "§8 ➥ " + (player.hasSetting(Setting.TOGGLE_ADMIN_MESSAGES) ? "§cDeaktivieren" : "§aAktivieren"))) {
                 @Override

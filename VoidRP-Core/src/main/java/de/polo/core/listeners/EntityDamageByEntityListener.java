@@ -2,11 +2,13 @@ package de.polo.core.listeners;
 
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
+import de.polo.api.player.enums.Setting;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.enums.Weapon;
 import de.polo.core.utils.Event;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,6 +47,10 @@ public class EntityDamageByEntityListener implements Listener {
 
                 if (isProtectedEntity(event.getEntity(), voidDamager)) {
                     event.setCancelled(true);
+                }
+
+                if (voidDamager.hasSetting(Setting.HIT_SOUNDS)) {
+                    event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
                 }
             }
         }

@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Setting {
-    TOGGLE_ADMIN_MESSAGES("Admin-Nachrichten");
+    TOGGLE_ADMIN_MESSAGES("Admin-Nachrichten"),
+    HIT_SOUNDS("Hit-Sounds");
     private final String name;
 }
