@@ -150,7 +150,7 @@ public class BlockManager {
         if (block != null) {
             block.getLocation().getBlock().setType(Material.AIR);
             registeredBlocks.remove(block);
-            database.deleteAsync("DELETE FROM blocks WHERE id = ?", blockId)
+            database.deleteAsync("DELETE FROM blocks WHERE id = ?", blockId);
         }
     }
 
