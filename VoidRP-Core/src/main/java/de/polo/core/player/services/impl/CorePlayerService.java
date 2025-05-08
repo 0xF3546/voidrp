@@ -3,23 +3,32 @@ package de.polo.core.player.services.impl;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
+import de.polo.api.player.PlayerSetting;
+import de.polo.api.player.enums.IllnessType;
+import de.polo.api.player.enums.Setting;
 import de.polo.core.Main;
+import de.polo.core.game.base.extra.PlayerIllness;
 import de.polo.core.game.base.extra.PlaytimeReward;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.LongTermJob;
+import de.polo.core.player.entities.CorePlayerSetting;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.LoyaltyBonusTimer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Service;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
+import static de.polo.core.Main.database;
 import static de.polo.core.Main.playerManager;
 
 /**
@@ -281,5 +290,34 @@ public class CorePlayerService implements PlayerService {
                 .stream()
                 .filter(voidPlayer -> voidPlayer.getPlayer().getLocation().distance(location) <= range)
                 .toList();
+    }
+
+    @Override
+    public CompletableFuture<List<PlayerSetting>> getPlayerSettings(Player player) {
+        return database.executeQueryAsync("SELECT * FROM player_settings WHERE uuid = ?", player.getUniqueId().toString())
+                .thenApply(result -> {
+                    List<PlayerSetting> settings = new ObjectArrayList<>();
+                    for (Map<String, Object> row : result) {
+                        PlayerSetting playerSetting = new CorePlayerSetting(
+                                Setting.valueOf((String) row.get("setting")),
+                                (String) row.get("value")
+                        );
+                        settings.add(playerSetting);
+                    }
+                    return settings;
+                });
+    }
+
+
+    @Override
+    public void addPlayerSetting(VoidPlayer player, PlayerSetting setting) {
+        database.insertAsync("INSERT INTO player_settings (uuid, setting, value) VALUES (?, ?, ?)",
+                player.getUuid().toString(), setting.getSetting().name(), setting.getValue());
+    }
+
+    @Override
+    public void removePlayerSetting(VoidPlayer player, PlayerSetting setting) {
+        database.deleteAsync("DELETE FROM player_settings WHERE uuid = ? AND setting = ?",
+                player.getUuid().toString(), setting.getSetting().name());
     }
 }

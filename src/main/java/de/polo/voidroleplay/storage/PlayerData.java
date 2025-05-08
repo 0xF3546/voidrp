@@ -74,9 +74,6 @@ public class PlayerData {
     private String spawn;
     @Getter
     @Setter
-    private boolean sendAdminMessages = false;
-    @Getter
-    @Setter
     private int rewardId;
     @Getter
     @Setter

@@ -456,7 +456,6 @@ public final class Main extends JavaPlugin implements Server {
         public ModifyBlacklistCommand modifyBlacklistCommand;
         public AutoBlacklistCommand autoBlacklistCommand;
         public AFKCommand afkCommand;
-        public SettingsCommand settingsCommand;
         public SecondaryTeamInfoCommand secondaryTeamInfoCommand;
         public SubTeamCommand subTeamCommand;
         public SubTeamChat subTeamChat;
@@ -660,7 +659,6 @@ public final class Main extends JavaPlugin implements Server {
             modifyBlacklistCommand = new ModifyBlacklistCommand(playerManager, factionManager);
             autoBlacklistCommand = new AutoBlacklistCommand(playerManager, factionManager);
             afkCommand = new AFKCommand(utils);
-            settingsCommand = new SettingsCommand(playerManager);
             secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
             subTeamCommand = new SubTeamCommand(playerManager, factionManager);
             subTeamChat = new SubTeamChat(playerManager);

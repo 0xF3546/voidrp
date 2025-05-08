@@ -1,6 +1,7 @@
 package de.polo.core.player.services;
 
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.PlayerSetting;
 import de.polo.core.game.base.extra.PlaytimeReward;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.LongTermJob;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Mayson1337
@@ -69,4 +71,7 @@ public interface PlayerService {
     boolean isInJobCooldown(VoidPlayer player, MiniJob job);
     int getJobCooldown(VoidPlayer player, MiniJob job);
     List<VoidPlayer> getPlayersInRange(Location location, int range);
+    CompletableFuture<List<PlayerSetting>> getPlayerSettings(Player player);
+    void addPlayerSetting(VoidPlayer player, PlayerSetting setting);
+    void removePlayerSetting(VoidPlayer player, PlayerSetting setting);
 }
