@@ -1,8 +1,13 @@
 package de.polo.core.utils;
 
+import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.faction.CharacterRecord;
+import de.polo.api.player.VoidPlayer;
+import de.polo.core.faction.gui.CriminalRecordGUI;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
@@ -271,6 +276,18 @@ public class TabletUtils implements Listener {
             public void onClick(InventoryClickEvent event) {
                 playerData.setVariable("targetakte", targetplayer.getUniqueId());
                 openAktenList(player, 1, null);
+            }
+        });
+        inventoryManager.setItem(new CustomItem(12, new ItemBuilder(Material.PAPER)
+                .setName("§9Record öffnen")
+                .build()) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                CharacterRecord characterRecord = lawEnforcementService.getCharacterRecord(targetplayer.getUniqueId());
+                new CriminalRecordGUI(player, targetplayer.getUniqueId(), characterRecord, () -> {
+                    editPlayerAkte(player, targetplayer.getUniqueId());
+                }).open();
             }
         });
         PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());

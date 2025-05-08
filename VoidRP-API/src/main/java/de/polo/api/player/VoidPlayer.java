@@ -1,6 +1,8 @@
 package de.polo.api.player;
 
+import de.polo.api.Utils.GUI;
 import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.crew.Crew;
 import de.polo.api.jobs.Job;
 import de.polo.api.jobs.enums.MiniJob;
@@ -60,4 +62,6 @@ public interface VoidPlayer {
     void setAduty(boolean aduty);
     boolean notificationsEnabled();
     void setNotificationsEnabled(boolean enabled);
+    GUI getLastGUI();
+    void setLastGUI(GUI gui);
 }
