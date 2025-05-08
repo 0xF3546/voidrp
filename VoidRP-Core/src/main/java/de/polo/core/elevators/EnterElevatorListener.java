@@ -20,7 +20,6 @@ public class EnterElevatorListener implements Listener {
     @EventHandler
     public void onElevatorEnter(EnterZoneEvent event) {
         if (event.getZone().getName().equalsIgnoreCase("elevator")) {
-            event.getPlayer().getPlayer().teleport(event.getZone().getLocation());
             ElevatorService elevatorService = VoidAPI.getService(ElevatorService.class);
             Floor elevator = elevatorService.getNearestFloor(event.getPlayer().getPlayer().getLocation(), 10);
             if (elevator == null) return;

@@ -1,6 +1,7 @@
 package de.polo.core.zone.entities;
 
 import de.polo.api.player.VoidPlayer;
+import de.polo.api.zone.Region;
 import de.polo.api.zone.Zone;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -22,14 +23,14 @@ public class CoreZone implements Zone {
     private final int range;
 
     @Getter
-    private final Location location;
+    private final Region region;
 
     private final List<VoidPlayer> playersInZone = new ObjectArrayList<>();
 
-    public CoreZone(String name, int range, Location location) {
+    public CoreZone(String name, int range, Region region) {
         this.name = name;
         this.range = range;
-        this.location = location;
+        this.region = region;
     }
 
     @Override

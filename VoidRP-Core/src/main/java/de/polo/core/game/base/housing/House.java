@@ -1,5 +1,6 @@
 package de.polo.core.game.base.housing;
 
+import de.polo.api.zone.Region;
 import de.polo.core.Main;
 import de.polo.core.game.base.crypto.Miner;
 import de.polo.core.housing.enums.HouseType;
@@ -30,6 +31,11 @@ public class House {
     private int number;
     @Setter
     private int price;
+
+    @Getter
+    @Setter
+    private Region region;
+
     @Setter
     private HashMap<String, Integer> renter = new HashMap<>();
     @Setter

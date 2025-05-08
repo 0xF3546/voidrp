@@ -318,3 +318,4 @@ commands:
   removelocation:
   edithouse:
   registerbeerpongcup:
+  createregion:
