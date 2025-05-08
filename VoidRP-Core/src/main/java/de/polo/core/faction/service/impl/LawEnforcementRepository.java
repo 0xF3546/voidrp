@@ -2,6 +2,7 @@ package de.polo.core.faction.service.impl;
 
 import de.polo.api.faction.CharacterRecord;
 import de.polo.core.faction.entity.CoreCharacterRecord;
+import de.polo.core.storage.PlayerWanted;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -54,5 +55,10 @@ public class LawEnforcementRepository {
         characterRecords.add(record);
         database.insertAsync("INSERT INTO player_records (uuid, info_text, lastEditor, lastEdit) VALUES (?, ?, ?, ?)",
                 target.toString(), record.getInfoText(), record.getLastEditor().toString(), record.getLastEdit().toString());
+    }
+
+    public void addWantedLog(UUID criminal, PlayerWanted playerWanted) {
+        database.insertAsync("INSERT INTO player_wanted_logs (uuid, wantedId, issuer) VALUES (?, ?, ?)",
+                criminal.toString(), playerWanted.getWantedId(), playerWanted.getIssuer().toString());
     }
 }
