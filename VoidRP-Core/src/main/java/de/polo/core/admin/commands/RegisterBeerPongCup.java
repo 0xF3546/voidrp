@@ -34,6 +34,11 @@ public class RegisterBeerPongCup extends CommandBase {
             showSyntax(player);
             return;
         }
+        boolean isRegistered = blockManager.getBlockAtLocation(facing.getLocation()) != null;
+        if (isRegistered) {
+            player.sendMessage("Dieser BeerPong-Cup ist bereits registriert!", Prefix.ERROR);
+            return;
+        }
         String name = String.join(" ", args);
         RegisteredBlock registeredBlock = new RegisteredBlock();
         registeredBlock.setLocation(facing.getLocation());
