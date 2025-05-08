@@ -11,8 +11,8 @@ import java.util.UUID;
 public class CoreLawEnforcementService implements LawEnforcementService {
     private final LawEnforcementRepository repository;
 
-    public CoreLawEnforcementService(LawEnforcementRepository repository) {
-        this.repository = repository;
+    public CoreLawEnforcementService() {
+        this.repository = new LawEnforcementRepository();
     }
     @Override
     public CharacterRecord getCharacterRecord(UUID target) {
