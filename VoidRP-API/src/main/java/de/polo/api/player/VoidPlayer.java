@@ -26,7 +26,10 @@ public interface VoidPlayer {
     }
     void addSetting(Setting setting, String value);
     void removeSetting(Setting setting);
-    boolean hasSetting(Setting setting);
+    default boolean hasSetting(Setting setting) {
+        return this.getSetting(setting) != null;
+    }
+    PlayerSetting getSetting(Setting setting);
     MiniJob getMiniJob();
     Job getActiveJob();
     void setActiveJob(Job job);

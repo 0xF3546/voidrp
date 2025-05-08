@@ -106,8 +106,11 @@ public class CoreVoidPlayer implements VoidPlayer {
     }
 
     @Override
-    public boolean hasSetting(Setting setting) {
-        return settings.stream().anyMatch(playerSetting -> playerSetting.getSetting() == setting);
+    public PlayerSetting getSetting(Setting setting) {
+        return settings.stream()
+                .filter(playerSetting -> playerSetting.getSetting() == setting)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
