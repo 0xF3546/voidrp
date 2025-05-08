@@ -285,7 +285,7 @@ public class TabletUtils implements Listener {
             public void onClick(InventoryClickEvent event) {
                 LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
                 CharacterRecord characterRecord = lawEnforcementService.getCharacterRecord(targetplayer.getUniqueId());
-                new CriminalRecordGUI(player, targetplayer.getUniqueId(), characterRecord, () -> {
+                new CriminalRecordGUI(playerData.getVoidPlayer(), targetplayer.getUniqueId(), characterRecord, () -> {
                     editPlayerAkte(player, targetplayer.getUniqueId());
                 }).open();
             }

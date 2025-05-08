@@ -1,5 +1,6 @@
 package de.polo.core.player.entities;
 
+import de.polo.api.Utils.GUI;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.Job;
@@ -33,7 +34,7 @@ public class CoreVoidPlayer implements VoidPlayer {
 
     @Getter
     @Setter
-    private InventoryManager lastInventory;
+    private GUI lastGUI;
 
     @Getter
     private MiniJob miniJob;
