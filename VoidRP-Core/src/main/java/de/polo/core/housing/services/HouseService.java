@@ -3,6 +3,7 @@ package de.polo.core.housing.services;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.player.entities.PlayerData;
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -58,6 +59,7 @@ public interface HouseService {
      * Gets all houses owned by a player
      */
     Collection<House> getHouses(Player player);
+    Collection<House> getHouses();
 
     /**
      * Adds a house slot to a player's capacity
@@ -67,7 +69,7 @@ public interface HouseService {
     /**
      * Resets a house (removes owner)
      */
-    boolean resetHouse(Player player, int house) throws Exception;
+    boolean resetHouse(int house) throws Exception;
 
     /**
      * Opens the house server room menu for a player
@@ -98,4 +100,9 @@ public interface HouseService {
      * Sets the number of renter slots for a house
      */
     void setMieterSlot(int houseNumber, int mieter);
+
+    void deleteHouse(int houseNumber);
+    void refundHouse(int houseNumber);
+    void setHousePrice(int houseNumber, int price);
+    void updateSign(House house);
 }

@@ -92,6 +92,9 @@ public class HouseManager implements CommandExecutor, Listener {
     public House getHouse(int houseNumber) {
         return houseDataMap.get(houseNumber);
     }
+    public Collection<House> getHouses() {
+        return houseDataMap.values();
+    }
 
     public void addHouse(House house) {
         houseDataMap.put(house.getNumber(), house);
@@ -223,7 +226,7 @@ public class HouseManager implements CommandExecutor, Listener {
         statement.executeUpdate("UPDATE `players` SET `houseSlot` = " + playerData.getHouseSlot() + " WHERE `uuid` = '" + player.getUniqueId() + "'");
     }
 
-    public boolean resetHouse(Player player, int house) {
+    public boolean resetHouse(int house) {
         for (RegisteredBlock rBlock : blockManager.getBlocks()) {
             if (rBlock.getInfo() == null) continue;
             if (rBlock.getInfoValue() == null) continue;

@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.polo.core.Main.database;
+
 public class BlockManager {
     private final CoreDatabase coreDatabase;
     private final List<RegisteredBlock> registeredBlocks = new ObjectArrayList<>();
@@ -141,5 +143,25 @@ public class BlockManager {
                 state.update();
             }
         }
+    }
+
+    public void deleteBlock(int blockId) {
+        RegisteredBlock block = getBlockById(blockId);
+        if (block != null) {
+            block.getLocation().getBlock().setType(Material.AIR);
+            registeredBlocks.remove(block);
+            database.deleteAsync("DELETE FROM blocks WHERE id = ?", blockId)
+        }
+    }
+
+    public void updateBlock(RegisteredBlock registeredBlock) {
+        database.updateAsync("UPDATE blocks SET info = ?, infoValue = ?, x = ?, y = ?, z = ?, world = ? WHERE id = ?",
+                registeredBlock.getInfo(),
+                registeredBlock.getInfoValue(),
+                registeredBlock.getLocation().getX(),
+                registeredBlock.getLocation().getY(),
+                registeredBlock.getLocation().getZ(),
+                registeredBlock.getLocation().getWorld().getName(),
+                registeredBlock.getId());
     }
 }
