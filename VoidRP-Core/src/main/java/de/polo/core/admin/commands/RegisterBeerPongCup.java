@@ -3,12 +3,19 @@ package de.polo.core.admin.commands;
 import de.polo.api.Utils.enums.Prefix;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.handler.CommandBase;
+import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import static de.polo.core.Main.blockManager;
 
@@ -16,9 +23,9 @@ import static de.polo.core.Main.blockManager;
         name = "registerbeerpongcup",
         permissionLevel = 100,
         adminDuty = true,
-        usage = "/registerbeerpongcup [Name/Location]"
+        usage = "/registerbeerpongcup [Name/Location] [Team(1/2)]"
 )
-public class RegisterBeerPongCup extends CommandBase {
+public class RegisterBeerPongCup extends CommandBase implements TabCompleter {
     public RegisterBeerPongCup(@NotNull CommandMeta meta) {
         super(meta);
     }
@@ -39,13 +46,22 @@ public class RegisterBeerPongCup extends CommandBase {
             player.sendMessage("Dieser BeerPong-Cup ist bereits registriert!", Prefix.ERROR);
             return;
         }
-        String name = String.join(" ", args);
+        String name = args[0];
         RegisteredBlock registeredBlock = new RegisteredBlock();
         registeredBlock.setLocation(facing.getLocation());
         registeredBlock.setMaterial(facing.getType());
         registeredBlock.setInfo("beerpongcup");
-        registeredBlock.setInfoValue(name);
+        registeredBlock.setInfoValue(name + "_" + args[1]);
         blockManager.addBlock(registeredBlock);
         player.sendMessage("Du hast den BeerPong-Cup " + name + " registriert!", Prefix.ADMIN);
+    }
+
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        return TabCompletion.getBuilder(strings)
+                .addAtIndex(1, "[Name]")
+                .addAtIndex(2, "2")
+                .build();
     }
 }
