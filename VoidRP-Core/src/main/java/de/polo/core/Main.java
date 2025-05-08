@@ -379,7 +379,6 @@ public final class Main extends JavaPlugin implements Server {
         public TrennenCommand trennenCommand;
         public AntragCommand antragCommand;
         public WantedCommand aktenCommand;
-        public SpecCommand specCommand;
         public MsgCommand msgCommand;
         public FrakStatsCommand frakStatsCommand;
         public CheckInvCommand checkInvCommand;
@@ -584,7 +583,6 @@ public final class Main extends JavaPlugin implements Server {
             trennenCommand = new TrennenCommand(playerManager);
             antragCommand = new AntragCommand(playerManager, utils);
             aktenCommand = new WantedCommand(playerManager, utils);
-            specCommand = new SpecCommand(playerManager);
             msgCommand = new MsgCommand(playerManager);
             frakStatsCommand = new FrakStatsCommand(playerManager, factionManager, utils);
             checkInvCommand = new CheckInvCommand(playerManager);
