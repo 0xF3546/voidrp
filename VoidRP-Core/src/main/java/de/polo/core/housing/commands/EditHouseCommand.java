@@ -118,9 +118,9 @@ public class EditHouseCommand extends CommandBase implements TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         HouseService houseService = VoidAPI.getService(HouseService.class);
         return TabCompletion.getBuilder(strings)
-                .addAtIndex(0, houseService.getHouses().stream().map(house -> String.valueOf(house.getNumber())).toList())
-                .addAtIndex(1, Arrays.asList("Location", "Price", "Delete", "Refund", "Typ"))
-                .addAtIndexIf(2, 1, "Typ", Arrays.stream(HouseType.values()).map(HouseType::getName).toList())
+                .addAtIndex(1, houseService.getHouses().stream().map(house -> String.valueOf(house.getNumber())).toList())
+                .addAtIndex(2, Arrays.asList("Location", "Price", "Delete", "Refund", "Typ"))
+                .addAtIndexIf(3, 2, "Typ", Arrays.stream(HouseType.values()).map(HouseType::getName).toList())
                 .build();
     }
 }
