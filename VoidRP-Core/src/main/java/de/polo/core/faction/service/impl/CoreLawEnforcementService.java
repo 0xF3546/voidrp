@@ -3,9 +3,11 @@ package de.polo.core.faction.service.impl;
 import de.polo.api.faction.CharacterRecord;
 import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.storage.PlayerWanted;
+import de.polo.core.utils.Service;
 
 import java.util.UUID;
 
+@Service
 public class CoreLawEnforcementService implements LawEnforcementService {
     private final LawEnforcementRepository repository;
 
