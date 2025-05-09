@@ -21,6 +21,7 @@ import java.util.UUID;
  */
 public interface FactionService {
     Collection<Faction> getFactions();
+    Faction getById(int id);
 
     String getPlayerFaction(Player player);
 

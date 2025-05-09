@@ -1,5 +1,6 @@
 package de.polo.core.faction.entity;
 
+import de.polo.api.faction.IFaction;
 import de.polo.core.Main;
 import de.polo.core.faction.enums.FactionType;
 import de.polo.core.game.faction.blacklist.BlacklistReason;
@@ -21,7 +22,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Faction {
+public class Faction implements IFaction {
     @Getter
     private final FactionType factionType;
     public Storage storage = new Storage(this);
