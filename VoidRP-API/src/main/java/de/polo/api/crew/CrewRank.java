@@ -42,11 +42,14 @@ public interface CrewRank {
     int getRank();
 
     boolean isDefault();
+
     boolean isBoss();
 
     List<CrewPermission> getPermissions();
 
     void addPermission(CrewPermission permission);
+
     void removePermission(CrewPermission permission);
+
     boolean hasPermission(CrewPermission permission);
 }

@@ -29,8 +29,8 @@ import java.util.List;
         usage = "/müllmann"
 )
 public class MuellmannCommand extends CommandBase implements Job {
-    private final List<Integer> array = new ObjectArrayList<>();
     public final String prefix = "§8[§9Müllmann§8] §7";
+    private final List<Integer> array = new ObjectArrayList<>();
 
     public MuellmannCommand(@NotNull CommandMeta meta) {
         super(meta);
@@ -57,12 +57,14 @@ public class MuellmannCommand extends CommandBase implements Job {
                     if (player.getActiveJob() == null) {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.WASTE_COLLECTOR)) + "§7.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     } else {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMüllmann starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     }
                 }
@@ -71,16 +73,18 @@ public class MuellmannCommand extends CommandBase implements Job {
                 if (player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else if (!player.getMiniJob().equals(MiniJob.WASTE_COLLECTOR)) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" +
-                            (Utils.random(ServerManager.getPayout("muellmann"), ServerManager.getPayout("muellmann2")) * (int)player.getVariable("muellkg")) + "$")) {
+                            (Utils.random(ServerManager.getPayout("muellmann"), ServerManager.getPayout("muellmann2")) * (int) player.getVariable("muellkg")) + "$")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             endJob(player);
@@ -122,7 +126,7 @@ public class MuellmannCommand extends CommandBase implements Job {
         Main.beginnerpass.didQuest(player.getPlayer(), 5);
         Main.seasonpass.didQuest(player.getPlayer(), 2);
 
-        int collectedTrash = (int)player.getVariable("muellkg");
+        int collectedTrash = (int) player.getVariable("muellkg");
         int payout = Utils.random(ServerManager.getPayout("muellmann"), ServerManager.getPayout("muellmann2")) * collectedTrash;
 
         if (collectedTrash > 0) {
@@ -144,8 +148,8 @@ public class MuellmannCommand extends CommandBase implements Job {
     public void handleDrop(VoidPlayer player, int house) {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (canGet(house)) {
-            int remainingTrash = (int)player.getVariable("muell");
-            int collectedTrash = (int)player.getVariable("muellkg");
+            int remainingTrash = (int) player.getVariable("muell");
+            int collectedTrash = (int) player.getVariable("muellkg");
             int trashAmount = Utils.random(1, 4);
 
             player.sendMessage(prefix + "Du hast den Müll von §6Haus " + house + "§7 entleert.");

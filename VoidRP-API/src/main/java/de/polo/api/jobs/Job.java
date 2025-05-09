@@ -9,5 +9,6 @@ import de.polo.api.player.VoidPlayer;
  */
 public interface Job {
     void startJob(VoidPlayer player);
+
     void endJob(VoidPlayer player);
 }

@@ -23,6 +23,7 @@ import static de.polo.voidroleplay.Main.navigationService;
 public class CatchFishCommand extends CommandBase implements Listener {
     private final HashMap<VoidPlayer, LocalDateTime> caughts = new HashMap<>();
     private final String PREFIX = "§8[§bHochseefischer§8]§7 ";
+
     public CatchFishCommand(@NotNull CommandMeta meta) {
         super(meta);
 

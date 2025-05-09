@@ -88,12 +88,6 @@ import java.util.Set;
 
 public final class Main extends JavaPlugin {
 
-    @Getter
-    private static Main instance;
-
-    @Getter
-    public CoreDatabase coreDatabase;
-
     public static Database database;
     public static PlayerService playerService;
     public static AdminService adminService;
@@ -104,16 +98,11 @@ public final class Main extends JavaPlugin {
     public static AgreementService agreementService;
     public static LocationService locationService;
     public static NavigationService navigationService;
-
-    @Getter
-    public CooldownManager cooldownManager;
-    public TeamSpeak teamSpeak;
     @Getter
     public static PlayerManager playerManager;
     @Getter
     public static Utils utils;
     public static AdminManager adminManager;
-    public Commands commands;
     public static FactionManager factionManager;
     public static ServerManager serverManager;
     public static LocationManager locationManager;
@@ -124,7 +113,6 @@ public final class Main extends JavaPlugin {
     public static HouseManager houseManager;
     public static BusinessManager businessManager;
     public static Vehicles vehicles;
-    public Streetwar streetwar;
     @Getter
     public static WeaponManager weaponManager;
     public static BlockManager blockManager;
@@ -132,15 +120,21 @@ public final class Main extends JavaPlugin {
     public static CompanyManager companyManager;
     public static Seasonpass seasonpass;
     public static Beginnerpass beginnerpass;
-
-    @Getter
-    private ScoreboardAPI scoreboardAPI;
-
-    private ScoreboardManager scoreboardManager;
     public static INameTagProvider nameTagProvider;
     public static CustomTabAPI customTabAPI;
-
     public static NewsManager newsManager;
+    @Getter
+    private static Main instance;
+    @Getter
+    public CoreDatabase coreDatabase;
+    @Getter
+    public CooldownManager cooldownManager;
+    public TeamSpeak teamSpeak;
+    public Commands commands;
+    public Streetwar streetwar;
+    @Getter
+    private ScoreboardAPI scoreboardAPI;
+    private ScoreboardManager scoreboardManager;
 
     public static void registerCommand(String command, CommandExecutor c) {
         org.bukkit.command.PluginCommand cmd = instance.getCommand(command);

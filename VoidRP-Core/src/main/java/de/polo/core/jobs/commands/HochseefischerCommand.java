@@ -57,6 +57,30 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
 
     }
 
+    public static Collection<Location> getLocations() {
+        return spawnLocations;
+    }
+
+    public static Collection<Player> getPlayers() {
+        return spawnedBoats.keySet();
+    }
+
+    public static Location getNearstLocation(Player player) {
+        PlayerData playerData = playerManager.getPlayerData(player);
+        System.out.println(getLocations().size());
+        List<Location> playerLocations = playerData.getVariable("job::hochseefischer::locations");
+        Location nearestLocation = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (Location location : HochseefischerCommand.getLocations()) {
+            double distance = player.getLocation().distance(location);
+            if (distance < nearestDistance && !playerLocations.contains(location)) {
+                nearestDistance = distance;
+                nearestLocation = location;
+            }
+        }
+        return nearestLocation;
+    }
+
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         LocationService locationService = VoidAPI.getService(LocationService.class);
@@ -153,30 +177,6 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         playerService.handleJobFinish(player, MiniJob.DEEP_SEA_FISHERMAN, 1200, amount * 2);
         player.getData().addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
-    }
-
-    public static Collection<Location> getLocations() {
-        return spawnLocations;
-    }
-
-    public static Collection<Player> getPlayers() {
-        return spawnedBoats.keySet();
-    }
-
-    public static Location getNearstLocation(Player player) {
-        PlayerData playerData = playerManager.getPlayerData(player);
-        System.out.println(getLocations().size());
-        List<Location> playerLocations = playerData.getVariable("job::hochseefischer::locations");
-        Location nearestLocation = null;
-        double nearestDistance = Double.MAX_VALUE;
-        for (Location location : HochseefischerCommand.getLocations()) {
-            double distance = player.getLocation().distance(location);
-            if (distance < nearestDistance && !playerLocations.contains(location)) {
-                nearestDistance = distance;
-                nearestLocation = location;
-            }
-        }
-        return nearestLocation;
     }
 
     @EventHandler

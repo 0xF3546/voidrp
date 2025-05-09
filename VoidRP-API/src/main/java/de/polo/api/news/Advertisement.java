@@ -11,6 +11,8 @@ import java.util.UUID;
  */
 public interface Advertisement {
     VoidPlayer getPublisher();
+
     String getContent();
+
     UUID getUuid();
 }

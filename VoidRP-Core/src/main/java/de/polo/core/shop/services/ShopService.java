@@ -15,15 +15,22 @@ import java.util.List;
  */
 public interface ShopService {
     List<ShopData> getShops();
+
     ShopData getShop(int id);
+
     void setHolder(ShopData shop, Crew holder);
+
     void setOwner(ShopData shop, Company owner);
 
     List<ShopRob> getActiveRobberies();
+
     void addRobbery(ShopRob shopRob);
+
     void removeRobbery(ShopRob shopRob);
 
     List<CrewTakeShop> getActiveCrewTakes();
+
     void addCrewTake(CrewTakeShop crewTake);
+
     void removeCrewTake(CrewTakeShop crewTake);
 }

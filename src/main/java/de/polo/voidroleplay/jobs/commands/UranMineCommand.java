@@ -119,7 +119,7 @@ public class UranMineCommand extends CommandBase implements Listener {
         playerData.setVariable("job", null);
         playerData.addMoney(ServerManager.getPayout("uran"), "Urantransport");
         playerManager.addExp(player.getPlayer(), Utils.random(12, 20));
-        player.sendMessage(Component.text("§8[§cAKW§8]§7 Danke für das Uran! §a+" + ServerManager.getPayout("uran")  + "$"));
+        player.sendMessage(Component.text("§8[§cAKW§8]§7 Danke für das Uran! §a+" + ServerManager.getPayout("uran") + "$"));
     }
 
     private boolean isBlock(Block block) {
@@ -134,7 +134,7 @@ public class UranMineCommand extends CommandBase implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData == null) return;
-        if (playerData.getVariable("job") == null || playerData.getVariable("job") != "Urantransport")return;
+        if (playerData.getVariable("job") == null || playerData.getVariable("job") != "Urantransport") return;
 
         if (ItemManager.getCustomItemCount(player, RoleplayItem.URAN) >= 1) {
             player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits ein Uran dabei."));

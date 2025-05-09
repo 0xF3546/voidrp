@@ -14,6 +14,7 @@ public class CoreLawEnforcementService implements LawEnforcementService {
     public CoreLawEnforcementService() {
         this.repository = new LawEnforcementRepository();
     }
+
     @Override
     public CharacterRecord getCharacterRecord(UUID target) {
         return repository.getCharacterRecord(target);

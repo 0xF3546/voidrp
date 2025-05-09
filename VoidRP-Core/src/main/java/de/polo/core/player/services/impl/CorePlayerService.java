@@ -1,20 +1,18 @@
 package de.polo.core.player.services.impl;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
 import de.polo.api.player.PlayerSetting;
-import de.polo.api.player.enums.IllnessType;
+import de.polo.api.player.VoidPlayer;
 import de.polo.api.player.enums.Setting;
 import de.polo.core.Main;
-import de.polo.core.game.base.extra.PlayerIllness;
 import de.polo.core.game.base.extra.PlaytimeReward;
-import de.polo.api.player.VoidPlayer;
-import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.core.player.entities.CorePlayerSetting;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.LoyaltyBonusTimer;
-import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Service;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;

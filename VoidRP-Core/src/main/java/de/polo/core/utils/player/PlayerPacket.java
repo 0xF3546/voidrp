@@ -12,12 +12,12 @@ public class PlayerPacket {
 
     private final Player sender;
 
-    public PlayerPacket(Player sender){
+    public PlayerPacket(Player sender) {
         this.sender = sender;
     }
 
-    public void renewPacket(){
-        for(Player viewer : Bukkit.getOnlinePlayers()){
+    public void renewPacket() {
+        for (Player viewer : Bukkit.getOnlinePlayers()) {
             WrapperPlayServerPlayerInfoUpdate.PlayerInfo data = new WrapperPlayServerPlayerInfoUpdate.PlayerInfo(sender.getUniqueId());
             List datalist = new ArrayList<>();
             datalist.add(data);

@@ -26,21 +26,11 @@ public class CustomTabAPI {
         // Nothing special needed in constructor now
     }
 
-    private static class RankData {
-        String prefix;
-        int priority;
-
-        RankData(String prefix, int priority) {
-            this.prefix = prefix;
-            this.priority = priority;
-        }
-    }
-
     /**
      * Adds or updates a rank.
      *
      * @param rankName The name of the rank (unique identifier)
-     * @param prefix The prefix for the rank, use § for color codes
+     * @param prefix   The prefix for the rank, use § for color codes
      * @param priority Lower number means higher priority in the tab list
      */
     public void setRank(String rankName, String prefix, int priority) {
@@ -54,7 +44,7 @@ public class CustomTabAPI {
     /**
      * Assigns a previously defined rank to a player.
      *
-     * @param player The player
+     * @param player   The player
      * @param rankName The rank name (must have been added via setRank before)
      */
     public void setPlayerRank(Player player, String rankName) {
@@ -114,11 +104,11 @@ public class CustomTabAPI {
 
     /**
      * Determines the prefix for a target player based on who is viewing.
-     *
+     * <p>
      * Example logic:
      * If the viewer is in the special viewers set, they see "X" prefix for the target,
      * else they see the normal prefix defined by the target's rank.
-     *
+     * <p>
      * You can customize this logic further as needed.
      */
     private String getPrefixFor(Player viewer, Player target) {
@@ -218,5 +208,15 @@ public class CustomTabAPI {
     public boolean isPlayerOnline(UUID playerUUID) {
         Player p = Bukkit.getPlayer(playerUUID);
         return p != null && p.isOnline();
+    }
+
+    private static class RankData {
+        String prefix;
+        int priority;
+
+        RankData(String prefix, int priority) {
+            this.prefix = prefix;
+            this.priority = priority;
+        }
     }
 }

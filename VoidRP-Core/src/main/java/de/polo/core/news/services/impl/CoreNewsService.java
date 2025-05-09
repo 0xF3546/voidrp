@@ -63,7 +63,7 @@ public class CoreNewsService implements NewsService {
             return;
         }
         advertisementQueue.add(advertisement);
-        adminService.sendGuideMessage(advertisement.getPublisher().getName() + " möchte folgende Werbung schalten:" , Color.ORANGE);
+        adminService.sendGuideMessage(advertisement.getPublisher().getName() + " möchte folgende Werbung schalten:", Color.ORANGE);
         adminService.sendGuideMessage(advertisement.getContent(), Color.ORANGE);
         Component acceptButton = text("[Annehmen]")
                 .color(NamedTextColor.GREEN)

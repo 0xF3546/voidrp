@@ -6,7 +6,6 @@ import de.polo.api.player.VoidPlayer;
 import de.polo.api.player.enums.Setting;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.manager.ItemManager;
-import de.polo.core.player.entities.CorePlayerSetting;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.TeamSpeak;
 import net.kyori.adventure.text.Component;

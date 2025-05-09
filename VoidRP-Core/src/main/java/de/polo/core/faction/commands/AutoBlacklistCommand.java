@@ -2,9 +2,9 @@ package de.polo.core.faction.commands;
 
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
-import de.polo.core.player.entities.PlayerData;
-import de.polo.core.game.faction.blacklist.BlacklistReason;
 import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.game.faction.blacklist.BlacklistReason;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;

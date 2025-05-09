@@ -1,9 +1,9 @@
 package de.polo.core.faction.commands;
 
 import de.polo.core.Main;
-import de.polo.core.storage.BlacklistData;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.storage.BlacklistData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;

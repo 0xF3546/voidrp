@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 public class RespawnCommand implements CommandExecutor {
     private final PlayerManager playerManager;
     private final Utils utils;
+
     public RespawnCommand(PlayerManager playerManager, Utils utils) {
         this.playerManager = playerManager;
         this.utils = utils;

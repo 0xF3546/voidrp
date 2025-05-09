@@ -10,15 +10,15 @@ public class JumpListener implements Listener {
 
     private final PlayerManager playerManager;
 
-    public JumpListener(PlayerManager playerManager){
+    public JumpListener(PlayerManager playerManager) {
         this.playerManager = playerManager;
         Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     @EventHandler
-    public void onJump(PlayerJumpEvent event){
-        if(playerManager.getPlayerData(event.getPlayer()).isCuffed()){
-        event.getPlayer().teleport(event.getFrom().setDirection(event.getTo().getDirection()));
+    public void onJump(PlayerJumpEvent event) {
+        if (playerManager.getPlayerData(event.getPlayer()).isCuffed()) {
+            event.getPlayer().teleport(event.getFrom().setDirection(event.getTo().getDirection()));
         }
     }
 }

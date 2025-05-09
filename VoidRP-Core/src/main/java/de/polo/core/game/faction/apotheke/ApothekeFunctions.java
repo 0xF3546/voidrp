@@ -126,7 +126,7 @@ public class ApothekeFunctions implements Listener {
         }
 
         if (apotheke.isStaat() && playerFactionData != null
-                ) {
+        ) {
             canAttack = true;
         }
 
@@ -138,7 +138,7 @@ public class ApothekeFunctions implements Listener {
                 26,
                 ItemManager.createItem(Material.PAPER, 1, 0, "§bInformation",
                         Arrays.asList("§8 ➥ §7Besitzer§8: " + owner,
-                                finalCanAttack ? (getMinuteDifference(apotheke) >= 60 || getMinuteDifference(apotheke) <= 0 ? "§8 » §cKlicke zum attackieren": "§8 ➥ §7Attackierbar§8: §e" + getMinuteDifference(apotheke) + "min") : ""))) {
+                                finalCanAttack ? (getMinuteDifference(apotheke) >= 60 || getMinuteDifference(apotheke) <= 0 ? "§8 » §cKlicke zum attackieren" : "§8 ➥ §7Attackierbar§8: §e" + getMinuteDifference(apotheke) + "min") : ""))) {
             @Override
             public void onClick(InventoryClickEvent event) {
                 if (canAttack(apotheke) && finalCanAttack) {

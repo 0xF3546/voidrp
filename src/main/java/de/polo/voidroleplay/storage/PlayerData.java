@@ -39,9 +39,6 @@ import static de.polo.voidroleplay.Main.playerManager;
 
 public class PlayerData {
     public final AddonXP addonXP = new AddonXP();
-
-    @Getter
-    private PlayerInventoryManager inventory;
     private final List<PlayerQuest> quests = new ObjectArrayList<>();
     private final List<de.polo.voidroleplay.game.base.extra.beginnerpass.PlayerQuest> beginnerQuests = new ObjectArrayList<>();
     private final List<PlayerIllness> illnesses = new ObjectArrayList<>();
@@ -55,6 +52,8 @@ public class PlayerData {
     private final HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
     private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
     private final HashMap<String, BossBar> bossBars = new HashMap<>();
+    @Getter
+    private PlayerInventoryManager inventory;
     @Getter
     private PlayerPetManager playerPetManager;
     @Getter

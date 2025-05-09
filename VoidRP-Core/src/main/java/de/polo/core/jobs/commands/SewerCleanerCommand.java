@@ -76,12 +76,14 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
             if (player.getActiveJob() == null) {
                 inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.SEWER_CLEANER)) + "§7.")) {
                     @Override
-                    public void onClick(InventoryClickEvent event) {}
+                    public void onClick(InventoryClickEvent event) {
+                    }
                 });
             } else {
                 inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mJob starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                     @Override
-                    public void onClick(InventoryClickEvent event) {}
+                    public void onClick(InventoryClickEvent event) {
+                    }
                 });
             }
         }
@@ -90,15 +92,17 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
         if (player.getActiveJob() == null) {
             inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                 @Override
-                public void onClick(InventoryClickEvent event) {}
+                public void onClick(InventoryClickEvent event) {
+                }
             });
         } else if (!player.getMiniJob().equals(MiniJob.SEWER_CLEANER)) {
             inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                 @Override
-                public void onClick(InventoryClickEvent event) {}
+                public void onClick(InventoryClickEvent event) {
+                }
             });
         } else {
-            int remainingBlocks = player.getVariable("job::cleaning::blocks") != null ? (int)player.getVariable("job::cleaning::blocks") : 0;
+            int remainingBlocks = player.getVariable("job::cleaning::blocks") != null ? (int) player.getVariable("job::cleaning::blocks") : 0;
             String payoutText = remainingBlocks > 0 ?
                     "§8 ➥ §7Noch " + remainingBlocks + " Blöcke zu reinigen" :
                     "§8 ➥ §7Alle Blöcke gereinigt";
@@ -132,7 +136,7 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
 
     @Override
     public void endJob(VoidPlayer player) {
-        int cleanedCount = (int)player.getVariable("job::cleaning::blocks");
+        int cleanedCount = (int) player.getVariable("job::cleaning::blocks");
         boolean completed = cleanedCount <= 0;
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
 
@@ -184,7 +188,7 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
 
                     block.setType(Material.STONE);
                     cleanedBlocks.add(block);
-                    int newAmount = (int)player.getVariable("job::cleaning::blocks") - 1;
+                    int newAmount = (int) player.getVariable("job::cleaning::blocks") - 1;
                     player.setVariable("job::cleaning::blocks", newAmount);
 
                     player.sendMessage(PREFIX + "Block gereinigt! Noch §e" + newAmount + " Blöcke§7 übrig.");

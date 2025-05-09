@@ -9,7 +9,10 @@ import java.util.List;
  */
 public interface Elevator {
     int id();
+
     List<Floor> floors();
+
     Floor getFloor(int floorNumber);
+
     String name();
 }

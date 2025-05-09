@@ -282,7 +282,7 @@ public class CrewCommand extends CommandBase implements Listener {
                         }
                         player.setVariable("crewRank", crewRank);
                         crewService.setRankGrade(crewRank, grade - 1);
-                        openCrewRank(player, crewRank,grade - 1, onBack);
+                        openCrewRank(player, crewRank, grade - 1, onBack);
                     }
                 }
             });
@@ -624,7 +624,6 @@ public class CrewCommand extends CommandBase implements Listener {
     }
 
 
-
     private void openCrewLeave(VoidPlayer player, Runnable onBack) {
         CrewService crewService = VoidAPI.getService(CrewService.class);
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §cCrew verlassen"));
@@ -663,7 +662,7 @@ public class CrewCommand extends CommandBase implements Listener {
                 player.getPlayer().closeInventory();
             }
         });
-        inventoryManager.setItem(new CustomItem(26,new ItemBuilder(Material.EMERALD)
+        inventoryManager.setItem(new CustomItem(26, new ItemBuilder(Material.EMERALD)
                 .setName("§8» §aErstellen")
                 .build()) {
             @Override

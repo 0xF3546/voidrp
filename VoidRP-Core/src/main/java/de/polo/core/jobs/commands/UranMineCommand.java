@@ -45,8 +45,8 @@ import static de.polo.core.Main.blockManager;
         usage = "/uranmine"
 )
 public class UranMineCommand extends CommandBase implements TransportJob, Listener {
-    private List<Location> rollOutLocations = new ObjectArrayList<>();
     public final String prefix = "§8[§cAKW§8] §7";
+    private List<Location> rollOutLocations = new ObjectArrayList<>();
 
     public UranMineCommand(@NotNull CommandMeta meta) {
         super(meta);
@@ -85,12 +85,14 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
                 if (player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mUrantransport starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.URANIUM_MINER)) + "§7.")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else {
                     inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mUrantransport starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 }
             }
@@ -99,12 +101,14 @@ public class UranMineCommand extends CommandBase implements TransportJob, Listen
             if (player.getActiveJob() == null) {
                 inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                     @Override
-                    public void onClick(InventoryClickEvent event) {}
+                    public void onClick(InventoryClickEvent event) {
+                    }
                 });
             } else if (!player.getMiniJob().equals(MiniJob.URANIUM_MINER)) {
                 inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                     @Override
-                    public void onClick(InventoryClickEvent event) {}
+                    public void onClick(InventoryClickEvent event) {
+                    }
                 });
             } else {
                 int uranCount = ItemManager.getCustomItemCount(player.getPlayer(), RoleplayItem.URAN);

@@ -2,9 +2,9 @@ package de.polo.core.faction.commands;
 
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Location;

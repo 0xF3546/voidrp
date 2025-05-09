@@ -4,8 +4,6 @@ import de.polo.api.faction.CharacterRecord;
 import de.polo.core.faction.entity.CoreCharacterRecord;
 import de.polo.core.storage.PlayerWanted;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 
 import java.sql.Timestamp;
 import java.util.List;

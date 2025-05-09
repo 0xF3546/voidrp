@@ -25,7 +25,7 @@ public class InvCommand extends CommandBase {
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §bInventar");
         int i = 0;
-        ChatUtils.sendGrayMessageAtPlayer(player.getPlayer(), player.getName() +  " öffnet sein Inventar.");
+        ChatUtils.sendGrayMessageAtPlayer(player.getPlayer(), player.getName() + " öffnet sein Inventar.");
         for (Drug drug : Drug.values()) {
             PlayerInventoryItem item = playerData.getInventory().getByTypeOrEmpty(drug.getItem());
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(item.getItem().getMaterial(), 1, 0, item.getItem().getDisplayName(), "§8 ➥ §7" + item.getAmount() + " Stück")) {

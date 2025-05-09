@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 public class CoreZoneService implements ZoneService {
     private final List<Zone> zones = new ObjectArrayList<>();
+
     @Override
     public List<Zone> getZones() {
         return zones;

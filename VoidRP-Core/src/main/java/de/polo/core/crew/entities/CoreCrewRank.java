@@ -16,31 +16,24 @@ import java.util.List;
 public class CoreCrewRank implements CrewRank {
     @Getter
     private final int id;
-
+    @Getter
+    private final int crewId;
+    @Getter
+    private final TextColor color;
+    @Getter
+    private final boolean isDefault;
+    @Getter
+    private final boolean isBoss;
+    @Getter
+    private final List<CrewPermission> permissions;
     @Getter
     @Setter
     private String name;
-
-    @Getter
-    private final int crewId;
-
-    @Getter
-    private final TextColor color;
-
     @Getter
     @Setter
     private int rank;
 
-    @Getter
-    private final boolean isDefault;
-
-    @Getter
-    private final boolean isBoss;
-
-    @Getter
-    private final List<CrewPermission> permissions;
-
-    public CoreCrewRank(int id, String name, int crewId, TextColor color, int rank , boolean isDefault, boolean isBoss, List<CrewPermission> permissions) {
+    public CoreCrewRank(int id, String name, int crewId, TextColor color, int rank, boolean isDefault, boolean isBoss, List<CrewPermission> permissions) {
         this.id = id;
         this.name = name;
         this.crewId = crewId;

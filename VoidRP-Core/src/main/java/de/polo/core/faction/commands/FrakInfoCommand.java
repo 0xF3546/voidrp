@@ -1,10 +1,10 @@
 package de.polo.core.faction.commands;
 
 import de.polo.core.Main;
-import de.polo.core.handler.TabCompletion;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.handler.TabCompletion;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.utils.Prefix;
 import org.bukkit.Bukkit;

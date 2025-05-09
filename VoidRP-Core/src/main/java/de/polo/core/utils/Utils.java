@@ -162,6 +162,10 @@ public class Utils {
         }.runTaskLater(Main.getInstance(), seconds * 20L);
     }
 
+    public static Block getPlayerFacingBlock(Player player, int range) {
+        return player.getTargetBlock(null, range);
+    }
+
     public void sendActionBar(Player player, String message) {
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(message));
     }
@@ -202,7 +206,6 @@ public class Utils {
 
         Tablist.updatePlayer(player);
     }
-
 
     public LocalDateTime sqlDateToLocalDateTime(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -291,9 +294,5 @@ public class Utils {
                 player.setDisplayName("§k" + player.getName());
             }
         }
-    }
-
-    public static Block getPlayerFacingBlock(Player player, int range) {
-        return player.getTargetBlock(null, range);
     }
 }

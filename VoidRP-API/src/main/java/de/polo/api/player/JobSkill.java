@@ -9,8 +9,12 @@ import de.polo.api.jobs.enums.MiniJob;
  */
 public interface JobSkill {
     MiniJob getJob();
+
     int getLevel();
+
     int getExp();
+
     void addExp(int exp);
+
     VoidPlayer getPlayer();
 }

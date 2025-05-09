@@ -28,15 +28,15 @@ public class PlayerInventoryManager {
     private void load() {
         // ISSUE VRP-10000: SQL race condition
         try {
-        Main.getInstance().getCoreDatabase().executeQueryAsync("SELECT * FROM player_inventory_items WHERE uuid = ?", playerData.getPlayer().getUniqueId().toString())
-                .thenAccept(result -> {
-                    if (result != null && !result.isEmpty()) {
-                        for (Map<String, Object> itemValue : result) {
-                            PlayerInventoryItem item = new PlayerInventoryItem((Integer) itemValue.get("id"), RoleplayItem.valueOf((String) itemValue.get("item")), (Integer) itemValue.get("amount"));
-                            items.add(item);
+            Main.getInstance().getCoreDatabase().executeQueryAsync("SELECT * FROM player_inventory_items WHERE uuid = ?", playerData.getPlayer().getUniqueId().toString())
+                    .thenAccept(result -> {
+                        if (result != null && !result.isEmpty()) {
+                            for (Map<String, Object> itemValue : result) {
+                                PlayerInventoryItem item = new PlayerInventoryItem((Integer) itemValue.get("id"), RoleplayItem.valueOf((String) itemValue.get("item")), (Integer) itemValue.get("amount"));
+                                items.add(item);
+                            }
                         }
-                    }
-                });
+                    });
         } catch (Exception e) {
             // Stacktrace:
             // [13:26:28] [pool-24-thread-1/INFO]: [VoidRoleplay] [STDOUT] Executing query: SELECT * FROM player_inventory_items WHERE uuid = ? with args: [2aa52162-8631-4d2c-9989-3132c719e5ac]

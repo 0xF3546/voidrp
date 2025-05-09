@@ -71,7 +71,8 @@ public class CoreCrewService implements CrewService {
                 final boolean isDefault = resultSet.getBoolean("isDefault");
                 final boolean isBoss = resultSet.getBoolean("isBoss");
 
-                Type type = new TypeToken<List<CrewPermission>>() {}.getType();
+                Type type = new TypeToken<List<CrewPermission>>() {
+                }.getType();
                 List<CrewPermission> permissions = new Gson().fromJson(resultSet.getString("permissions"), type);
 
 

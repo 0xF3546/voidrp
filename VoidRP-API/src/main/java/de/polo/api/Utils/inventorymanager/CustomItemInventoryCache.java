@@ -10,14 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class is used to prevent {@link CustomItem}s from being duplicated in {@link InventoryManager}s.
  *
  * @author Erik Pförtner
+ * @version 1.0.0
  * @see InventoryManager
  * @see CustomItem
- * @version 1.0.0
  */
 public class CustomItemInventoryCache {
 
-    private final ConcurrentHashMap<InventoryManager, Set<CustomItem>> customItemHashMap;
     private static CustomItemInventoryCache instance;
+    private final ConcurrentHashMap<InventoryManager, Set<CustomItem>> customItemHashMap;
 
     /**
      * Creates a new {@link CustomItemInventoryCache} instance.
@@ -32,6 +32,16 @@ public class CustomItemInventoryCache {
     }
 
     /**
+     * Returns the {@link CustomItemInventoryCache} instance.
+     *
+     * @return the {@link CustomItemInventoryCache} instance
+     * @since 1.0.0
+     */
+    public static CustomItemInventoryCache getInstance() {
+        return instance;
+    }
+
+    /**
      * Returns the {@link ConcurrentHashMap} that contains the {@link CustomItem}s.
      *
      * @return the {@link ConcurrentHashMap} that contains the {@link CustomItem}s
@@ -40,16 +50,6 @@ public class CustomItemInventoryCache {
      */
     public ConcurrentHashMap<InventoryManager, Set<CustomItem>> getCustomItemHashMap() {
         return customItemHashMap;
-    }
-
-    /**
-     * Returns the {@link CustomItemInventoryCache} instance.
-     *
-     * @return the {@link CustomItemInventoryCache} instance
-     * @since 1.0.0
-     */
-    public static CustomItemInventoryCache getInstance() {
-        return instance;
     }
 
     /**

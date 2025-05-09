@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface RegionService {
     List<Region> getRegions();
+
     Region getRegion(String name);
+
     Region getRegionById(int id);
+
     int createRegion(CreateRegionDto regionDto);
 }

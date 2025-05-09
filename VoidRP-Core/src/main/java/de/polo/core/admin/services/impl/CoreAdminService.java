@@ -31,7 +31,8 @@ public class CoreAdminService implements AdminService {
             if (player.getData().getPermlevel() >= 60 && (player.isAduty()) || player.hasSetting(Setting.TOGGLE_ADMIN_MESSAGES)) {
                 player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
             }
-        }    }
+        }
+    }
 
     @Override
     public void sendGuideMessage(String msg, Color color) {

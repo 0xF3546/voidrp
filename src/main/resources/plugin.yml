@@ -4,7 +4,7 @@ main: de.polo.voidroleplay.Main
 api-version: 1.20
 authors: [ Polo66 ]
 description: VoidRoleplay Script
-depend: [Votifier, Citizens, ProtocolLib, packetevents]
+depend: [ Votifier, Citizens, ProtocolLib, packetevents ]
 
 commands:
   aduty:
@@ -28,7 +28,7 @@ commands:
   guidechat:
     aliases: gc
   support:
-    aliases: [report, help]
+    aliases: [ report, help ]
   cancelsupport:
   acceptsupport:
     aliases: asupport
@@ -41,7 +41,7 @@ commands:
     aliases: arevive
   registeratm:
   playerinfo:
-    aliases: [pi, id]
+    aliases: [ pi, id ]
   me:
   announce:
     aliases: ac
@@ -80,31 +80,31 @@ commands:
   ban:
   unban:
   car:
-    aliases: [vehicle, auto]
+    aliases: [ vehicle, auto ]
   getveh:
     aliases: getvehicle
   gotoveh:
     aliases: gotovehicle
   navi:
-    aliases: [navigation, nav, route, gps]
+    aliases: [ navigation, nav, route, gps ]
   einreise:
   registerhouse:
   reinforcement:
-    aliases: [reinf, r]
+    aliases: [ reinf, r ]
   buyhouse:
   mieters:
   unrent:
   frisk:
-    aliases: [search, durchsuchen]
+    aliases: [ search, durchsuchen ]
   blacklist:
     aliases: bl
   ffa:
   npc:
   redeem:
   whistle:
-    aliases: [w, flüstern]
+    aliases: [ w, flüstern ]
   shout:
-    aliases: [s, schreien]
+    aliases: [ s, schreien ]
   prteamchat:
     aliases: pr
   eventteamchat:
@@ -141,7 +141,7 @@ commands:
     aliases: bc
   leadbusiness:
   fraktionsinfo:
-    aliases: [finfo, frakinfo]
+    aliases: [ finfo, frakinfo ]
   beziehung:
   trennen:
   antrag:
@@ -152,9 +152,9 @@ commands:
     aliases: spectator
   msg:
   leaderchat:
-    aliases: [lchat, lc]
+    aliases: [ lchat, lc ]
   frakstats:
-    aliases: [fstats, fraktionsstats]
+    aliases: [ fstats, fraktionsstats ]
   checkinv:
   bizinvite:
     aliases: businessinvite
@@ -240,7 +240,7 @@ commands:
   modifyblacklist:
     aliases: mbl
   autoblacklist:
-    aliases: [abl, ablacklist]
+    aliases: [ abl, ablacklist ]
   afk:
   secondaryteaminfo:
     aliases: stinfo
@@ -248,7 +248,7 @@ commands:
   settings:
   subteam:
   subteamchat:
-    aliases: [stc]
+    aliases: [ stc ]
   setmotd:
   voteshop:
   anwalt:
@@ -282,7 +282,7 @@ commands:
   treuebonus:
   selldrug:
   giveprescription:
-    aliases: [giverezept, rezept]
+    aliases: [ giverezept, rezept ]
   unarrest:
   neulingschat:
     aliases: nc

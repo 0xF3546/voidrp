@@ -12,7 +12,10 @@ import java.util.List;
  */
 public interface ZoneService {
     List<Zone> getZones();
+
     Zone getZone(String name);
+
     Zone getZoneOfPlayer(VoidPlayer player);
+
     void addZone(Zone zone);
 }

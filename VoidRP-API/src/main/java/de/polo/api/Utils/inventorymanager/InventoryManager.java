@@ -26,10 +26,10 @@ import java.util.function.Consumer;
  */
 public class InventoryManager {
 
+    public boolean canceled;
     private Component name;
     private int size;
     private UUID uuid;
-    public boolean canceled;
     private Inventory inv;
     private boolean fillRest;
     @Getter
@@ -61,9 +61,10 @@ public class InventoryManager {
 
     /**
      * This constructor is used to create a new inventory for a player.
+     *
      * @param player The player who should get the inventory.
-     * @param size The size of the inventory.
-     * @param name The name of the inventory.
+     * @param size   The size of the inventory.
+     * @param name   The name of the inventory.
      */
     public InventoryManager(Player player, int size, Component name) {
         create(player, size, name, true, true);

@@ -1,8 +1,8 @@
 package de.polo.core.handler;
 
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
+import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Prefix;
@@ -97,8 +97,11 @@ public abstract class CommandBase implements CommandExecutor {
         int permissionLevel() default 0;
 
         String usage() default "/<command>";
+
         boolean adminDuty() default false;
+
         boolean leader() default false;
+
         String faction() default "";
     }
 }

@@ -69,7 +69,6 @@ public class Crypto implements Listener {
     }
 
 
-
     @EventHandler
     public void onMinute(MinuteTickEvent event) {
         if (Utils.random(0, 60) == event.getMinute()) updatePrice();

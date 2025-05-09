@@ -29,8 +29,8 @@ import java.util.List;
         usage = "/postbote"
 )
 public class PostboteCommand extends CommandBase implements Job {
-    private final List<Integer> array = new ObjectArrayList<>();
     public final String prefix = "§8[§ePostbote§8] §7";
+    private final List<Integer> array = new ObjectArrayList<>();
 
     public PostboteCommand(@NotNull CommandMeta meta) {
         super(meta);
@@ -57,12 +57,14 @@ public class PostboteCommand extends CommandBase implements Job {
                     if (player.getActiveJob() == null) {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.POSTMAN)) + "§7.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     } else {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mPostbote starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     }
                 }
@@ -71,15 +73,17 @@ public class PostboteCommand extends CommandBase implements Job {
                 if (player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else if (!player.getMiniJob().equals(MiniJob.POSTMAN)) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else {
-                    int remainingDeliveries = (int)player.getVariable("post");
+                    int remainingDeliveries = (int) player.getVariable("post");
                     String payoutText = remainingDeliveries > 0 ?
                             "§8 ➥ §7Noch " + remainingDeliveries + " Briefe abzugeben" :
                             "§8 ➥ §7Alle Briefe abgegeben";
@@ -138,7 +142,7 @@ public class PostboteCommand extends CommandBase implements Job {
     public void handleDrop(VoidPlayer player, int house) {
         if (canGive(house)) {
             PlayerService playerService = VoidAPI.getService(PlayerService.class);
-            int remainingDeliveries = (int)player.getVariable("post");
+            int remainingDeliveries = (int) player.getVariable("post");
             if (remainingDeliveries <= 0) {
                 player.sendMessage(prefix + "Du hast keine Post mehr zum Abgeben!");
                 return;

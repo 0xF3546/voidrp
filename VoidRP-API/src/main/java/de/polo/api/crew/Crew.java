@@ -9,13 +9,22 @@ import java.util.List;
  */
 public interface Crew {
     int getId();
+
     String getName();
+
     List<CrewRank> getRanks();
+
     CrewRank getRank(int grade);
+
     void addRank(CrewRank rank);
+
     CrewRank getDefaultRank();
+
     CrewRank getBossRank();
+
     int getLevel();
+
     int getExp();
+
     void addExp(int exp, String reason);
 }

@@ -11,9 +11,7 @@ import de.polo.core.housing.services.HouseService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
@@ -25,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static de.polo.core.Main.blockManager;
 

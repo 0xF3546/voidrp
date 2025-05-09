@@ -22,6 +22,7 @@ import static de.polo.voidroleplay.Main.*;
 @CommandBase.CommandMeta(name = "bottletransport")
 public class BottletransportCommand extends CommandBase {
     private final String PREFIX = "§8[§2Flaschenlieferant§8]§7 ";
+
     public BottletransportCommand(@NotNull CommandMeta meta) {
         super(meta);
     }

@@ -3,6 +3,7 @@ package de.polo.core.player.entities;
 import de.polo.api.VoidAPI;
 import de.polo.api.crew.Crew;
 import de.polo.api.crew.CrewRank;
+import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
 import de.polo.api.player.PlayerCharacter;
@@ -16,12 +17,12 @@ import de.polo.core.game.base.extra.PlayerIllness;
 import de.polo.core.game.base.extra.seasonpass.PlayerQuest;
 import de.polo.core.game.base.farming.PlayerWorkstation;
 import de.polo.core.game.faction.staat.SubTeam;
-import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.core.manager.PlayerPetManager;
 import de.polo.core.storage.*;
 import de.polo.core.utils.Utils;
+import de.polo.core.utils.enums.EXPType;
 import de.polo.core.utils.enums.Weapon;
-import de.polo.core.utils.enums.*;
+import de.polo.core.utils.enums.Workstation;
 import de.polo.core.utils.player.PlayerFFAStatsManager;
 import de.polo.core.utils.player.PlayerInventoryManager;
 import de.polo.core.utils.player.PlayerPowerUpManager;
@@ -51,9 +52,6 @@ import static de.polo.core.Main.playerManager;
 
 public class PlayerData implements PlayerCharacter {
     public final AddonXP addonXP = new AddonXP();
-
-    @Getter
-    private PlayerInventoryManager inventory;
     private final List<PlayerQuest> quests = new ObjectArrayList<>();
     private final List<de.polo.core.game.base.extra.beginnerpass.PlayerQuest> beginnerQuests = new ObjectArrayList<>();
     private final List<PlayerIllness> illnesses = new ObjectArrayList<>();
@@ -68,6 +66,11 @@ public class PlayerData implements PlayerCharacter {
     private final HashMap<String, Integer> skillNeeded_Exp = new HashMap<>();
     private final HashMap<String, Scoreboard> scoreboards = new HashMap<>();
     private final HashMap<String, BossBar> bossBars = new HashMap<>();
+    private final boolean isAduty = false;
+    @Getter
+    private final List<License> licenses = new ObjectArrayList<>();
+    @Getter
+    private PlayerInventoryManager inventory;
     @Getter
     private PlayerPetManager playerPetManager;
     @Getter
@@ -135,7 +138,6 @@ public class PlayerData implements PlayerCharacter {
     @Getter
     @Setter
     private int jailParole = 0;
-    private final boolean isAduty = false;
     @Setter
     @Getter
     private int level;
@@ -178,7 +180,6 @@ public class PlayerData implements PlayerCharacter {
     @Getter
     @Setter
     private LocalDateTime lastPremiumBonus;
-
     @Setter
     @Getter
     private Location deathLocation;
@@ -221,7 +222,6 @@ public class PlayerData implements PlayerCharacter {
     @Setter
     @Getter
     private int Coins = 0;
-
     @Getter
     private boolean cuffed;
     @Setter
@@ -239,18 +239,15 @@ public class PlayerData implements PlayerCharacter {
     @Setter
     @Getter
     private LocalDateTime lastPayDay;
-
     @Getter
     @Setter
     private int payday;
-
     @Setter
     @Getter
     private int currentHours;
     @Setter
     @Getter
     private int atmBlown;
-
     @Setter
     private boolean receivedBonus;
     @Setter
@@ -262,20 +259,14 @@ public class PlayerData implements PlayerCharacter {
     @Getter
     @Setter
     private boolean isChurch;
-
     @Getter
     @Setter
     private boolean isBaptized;
-
     @Getter
     @Setter
     private int karma;
     @Setter
     private List<PlayerWorkstation> workstations = new ObjectArrayList<>();
-
-    @Getter
-    private final List<License> licenses = new ObjectArrayList<>();
-
     @Getter
     @Setter
     private LocalDateTime factionCooldown;

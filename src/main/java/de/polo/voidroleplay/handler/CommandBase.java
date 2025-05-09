@@ -94,8 +94,11 @@ public abstract class CommandBase implements CommandExecutor {
         int permissionLevel() default 0;
 
         String usage() default "/<command>";
+
         boolean adminDuty() default false;
+
         boolean leader() default false;
+
         String faction() default "";
     }
 }

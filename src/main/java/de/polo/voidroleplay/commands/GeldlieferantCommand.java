@@ -27,30 +27,6 @@ public class GeldlieferantCommand extends CommandBase {
         super(meta);
     }
 
-    @Override
-    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        if (locationManager.getDistanceBetweenCoords(player, "geldlieferant") > 5) {
-            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Geldlieferants.");
-            return;
-        }
-        if (Main.getInstance().getCooldownManager().isOnCooldown(player.getPlayer(), "job_geldlieferant")) {
-            player.sendMessage(Component.text(PREFIX + "Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player.getPlayer(), "job_geldlieferant"))));
-            return;
-        }
-        if (playerData.getVariable("job") != null) {
-            player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits einen Job angenommen."));
-            return;
-        }
-        startJob(player);
-    }
-
-    private void startJob(VoidPlayer player) {
-        player.getData().setVariable("job", "geldlieferant");
-        int amount = Utils.random(6000, 8000);
-        player.sendMessage(Component.text(PREFIX + "Du hast " + amount + "$ erhalten, fülle damit Geldautomaten auf."));
-        player.getData().setVariable("job::geldlieferant::amount", amount);
-    }
-
     public static void drop(Player player, ATM atm) {
         PlayerData playerData = playerManager.getPlayerData(player);
         int amount = playerData.getVariable("job::geldlieferant::amount");
@@ -86,11 +62,34 @@ public class GeldlieferantCommand extends CommandBase {
         }
     }
 
-
     private static void finishJob(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         playerData.setVariable("job", null);
         playerManager.addExp(player, Utils.random(12, 24));
         Main.getInstance().getCooldownManager().setJobCooldown(player, "geldlieferant", 360);
+    }
+
+    @Override
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        if (locationManager.getDistanceBetweenCoords(player, "geldlieferant") > 5) {
+            player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe des Geldlieferants.");
+            return;
+        }
+        if (Main.getInstance().getCooldownManager().isOnCooldown(player.getPlayer(), "job_geldlieferant")) {
+            player.sendMessage(Component.text(PREFIX + "Warte noch " + Utils.getTime(Main.getInstance().getCooldownManager().getRemainingTime(player.getPlayer(), "job_geldlieferant"))));
+            return;
+        }
+        if (playerData.getVariable("job") != null) {
+            player.sendMessage(Component.text(Prefix.ERROR + "Du hast bereits einen Job angenommen."));
+            return;
+        }
+        startJob(player);
+    }
+
+    private void startJob(VoidPlayer player) {
+        player.getData().setVariable("job", "geldlieferant");
+        int amount = Utils.random(6000, 8000);
+        player.sendMessage(Component.text(PREFIX + "Du hast " + amount + "$ erhalten, fülle damit Geldautomaten auf."));
+        player.getData().setVariable("job::geldlieferant::amount", amount);
     }
 }

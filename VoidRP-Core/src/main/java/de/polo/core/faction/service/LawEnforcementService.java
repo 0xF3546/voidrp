@@ -9,5 +9,6 @@ public interface LawEnforcementService {
     CharacterRecord getCharacterRecord(UUID target);
 
     void setCharacterRecord(UUID target, CharacterRecord record);
+
     void addWantedLog(UUID criminal, PlayerWanted playerWanted);
 }

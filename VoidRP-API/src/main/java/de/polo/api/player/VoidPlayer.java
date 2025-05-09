@@ -19,46 +19,72 @@ import java.util.UUID;
  */
 public interface VoidPlayer {
     Player getPlayer();
+
     PlayerCharacter getData();
+
     List<PlayerSetting> getSettings();
+
     PlayerRuntimeStatistic getRuntimeStatistic();
+
     default void addSetting(Setting setting) {
         this.addSetting(setting, "");
     }
+
     void addSetting(Setting setting, String value);
+
     void removeSetting(Setting setting);
+
     default boolean hasSetting(Setting setting) {
         return this.getSetting(setting) != null;
     }
+
     PlayerSetting getSetting(Setting setting);
+
     MiniJob getMiniJob();
-    Job getActiveJob();
-    void setActiveJob(Job job);
+
     void setMiniJob(MiniJob miniJob);
+
+    Job getActiveJob();
+
+    void setActiveJob(Job job);
+
     UUID getUuid();
+
     default String getName() {
         return getPlayer().getName();
     }
+
     default Location getLocation() {
         return getPlayer().getLocation();
     }
+
     default void sendMessage(String message) {
         this.sendMessage(Component.text(message));
     }
+
     default void sendMessage(String message, Prefix prefix) {
         this.sendMessage(Component.text(prefix.getPrefix() + message));
     }
+
     default void sendMessage(final Component component, final Prefix prefix) {
         this.sendMessage(Component.text(prefix.getPrefix() + component));
     }
+
     void sendMessage(Component component);
 
     void setVariable(String key, Object value);
+
     Object getVariable(String key);
+
     boolean isAduty();
+
     void setAduty(boolean aduty);
+
     boolean notificationsEnabled();
+
     void setNotificationsEnabled(boolean enabled);
+
     GUI getLastGUI();
+
     void setLastGUI(GUI gui);
 }

@@ -35,8 +35,11 @@ public interface NewsService {
     void removeBook(ShopBook shopBook);
 
     void QueueAdvertisement(Advertisement advertisement);
+
     void addAdvertisementQueue(Advertisement advertisement);
+
     void acceptAdvertisement(Advertisement advertisement);
+
     void denyAdvertisement(Advertisement advertisement);
 
     Advertisement getAdvertisement(UUID uuid);

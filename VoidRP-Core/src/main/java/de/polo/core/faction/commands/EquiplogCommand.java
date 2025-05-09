@@ -1,10 +1,10 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.faction.entity.Faction;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
-import de.polo.core.faction.entity.Faction;
-import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

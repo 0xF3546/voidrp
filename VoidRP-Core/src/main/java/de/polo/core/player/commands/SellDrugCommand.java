@@ -1,12 +1,12 @@
 package de.polo.core.player.commands;
 
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
+import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
-import de.polo.api.player.VoidPlayer;
-import de.polo.core.storage.Agreement;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.storage.Agreement;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.Drug;
 import de.polo.core.utils.player.ChatUtils;
@@ -93,7 +93,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
                     ChatUtils.sendGrayMessageAtPlayer(player.getPlayer(), player.getName() + " handelt mit " + target.getName());
                 } else {
                     player.sendMessage(Prefix.ERROR + target.getName() + " hat nicht genug Inventarplatz.");
-                    target.sendMessage(Prefix.ERROR +"Du hast nicht genug Inventarplatz.");
+                    target.sendMessage(Prefix.ERROR + "Du hast nicht genug Inventarplatz.");
                 }
             }, () -> {
                 player.sendMessage(Prefix.MAIN + target.getName() + " hat das Angebot abgelehnt.");

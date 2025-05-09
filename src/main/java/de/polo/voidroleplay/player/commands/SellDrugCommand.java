@@ -93,7 +93,7 @@ public class SellDrugCommand extends CommandBase implements TabCompleter {
                     ChatUtils.sendGrayMessageAtPlayer(player.getPlayer(), player.getName() + " handelt mit " + target.getName());
                 } else {
                     player.sendMessage(Prefix.ERROR + target.getName() + " hat nicht genug Inventarplatz.");
-                    target.sendMessage(Prefix.ERROR +"Du hast nicht genug Inventarplatz.");
+                    target.sendMessage(Prefix.ERROR + "Du hast nicht genug Inventarplatz.");
                 }
             }, () -> {
                 player.sendMessage(Prefix.MAIN + target.getName() + " hat das Angebot abgelehnt.");

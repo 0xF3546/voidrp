@@ -26,7 +26,8 @@ public enum MiniJob {
     URANIUM_MINER("Uranbergbauer", Material.EMERALD),
     WINZER("Winzer", Material.MAGENTA_DYE),
     EQUIP_TRANSPORT("Ausrüstungsfahrer", Material.IRON_SWORD),
-    ELECTRITION("Elektriker", Material.REDSTONE),;
+    ELECTRITION("Elektriker", Material.REDSTONE),
+    ;
     private final String name;
     private final Material icon;
 }

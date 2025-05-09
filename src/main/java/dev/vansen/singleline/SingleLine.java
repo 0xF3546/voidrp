@@ -22,9 +22,9 @@ import java.util.logging.Logger;
  */
 @SuppressWarnings("unused")
 public class SingleLine<T> {
+    private final AtomicInteger counter = new AtomicInteger(1);
     private T value;
     private boolean conditionMet = true;
-    private final AtomicInteger counter = new AtomicInteger(1);
 
     /**
      * Creates a new SingleLine instance with the given initial value.

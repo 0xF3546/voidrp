@@ -19,7 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.core.Main.*;
+import static de.polo.core.Main.factionManager;
 
 public class EquipTransportCommand implements CommandExecutor, TransportJob {
     private final PlayerManager playerManager;

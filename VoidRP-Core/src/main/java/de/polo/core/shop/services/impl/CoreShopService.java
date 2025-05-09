@@ -23,10 +23,12 @@ public class CoreShopService implements ShopService {
     private final List<ShopRob> activeRobberies = new ObjectArrayList<>();
     private final List<CrewTakeShop> activeCrewTakes = new ObjectArrayList<>();
     private final ShopRepository shopRepository;
+
     public CoreShopService() {
         this.shopRepository = new ShopRepository();
         this.shops = shopRepository.loadShops();
     }
+
     @Override
     public List<ShopData> getShops() {
         return shops;

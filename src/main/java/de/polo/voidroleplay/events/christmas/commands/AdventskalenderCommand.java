@@ -95,7 +95,8 @@ public class AdventskalenderCommand extends CommandBase {
                     });
                 });
             });
-        }}
+        }
+    }
 
     @SneakyThrows
     private void checkedDate(Player player, int day) {

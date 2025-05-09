@@ -16,26 +16,36 @@ import java.util.UUID;
  */
 public interface VoidPlayer {
     Player getPlayer();
+
     PlayerData getData();
+
     MiniJob getMiniJob();
+
     void setMiniJob(MiniJob miniJob);
+
     default UUID getUuid() {
         return getPlayer().getUniqueId();
     }
+
     default String getName() {
         return getPlayer().getName();
     }
+
     default Location getLocation() {
         return getPlayer().getLocation();
     }
+
     default void sendMessage(String message) {
         this.sendMessage(Component.text(message));
     }
+
     default void sendMessage(String message, Prefix prefix) {
         this.sendMessage(Component.text(prefix.getPrefix() + message));
     }
+
     default void sendMessage(final Component component, final Prefix prefix) {
         this.sendMessage(Component.text(prefix.getPrefix() + component));
     }
+
     void sendMessage(Component component);
 }

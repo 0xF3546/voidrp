@@ -16,15 +16,12 @@ import static de.polo.core.Main.database;
 public class CoreJobSkill implements JobSkill {
     @Getter
     private final MiniJob job;
-
-    @Getter
-    private int level;
-
-    @Getter
-    private int exp;
-
     @Getter
     private final VoidPlayer player;
+    @Getter
+    private int level;
+    @Getter
+    private int exp;
 
     public CoreJobSkill(VoidPlayer player, MiniJob job, int level, int exp) {
         this.player = player;

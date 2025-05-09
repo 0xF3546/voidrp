@@ -1,17 +1,17 @@
 package de.polo.core.housing.commands;
 
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.api.jobs.enums.LongTermJob;
+import de.polo.api.player.VoidPlayer;
+import de.polo.core.Main;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.game.base.housing.HouseManager;
 import de.polo.core.handler.CommandBase;
-import de.polo.api.player.VoidPlayer;
-import de.polo.core.storage.Agreement;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.storage.Agreement;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
-import de.polo.api.jobs.enums.LongTermJob;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

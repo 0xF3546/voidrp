@@ -25,6 +25,7 @@ import static de.polo.core.Main.playerManager;
 @CommandBase.CommandMeta(name = "bottletransport")
 public class BottletransportCommand extends CommandBase implements TransportJob {
     private final String PREFIX = "§2Flaschenlieferant §8┃ ➜§7 ";
+
     public BottletransportCommand(@NotNull CommandMeta meta) {
         super(meta);
     }

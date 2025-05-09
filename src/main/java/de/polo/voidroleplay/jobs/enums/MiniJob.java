@@ -22,6 +22,7 @@ public enum MiniJob {
     POSTMAN("Postbote"),
     UNDERTAKER("Bestatter"),
     URANIUM_MINER("Uranbergbauer"),
-    WINZER("Winzer"),;
+    WINZER("Winzer"),
+    ;
     private final String name;
 }

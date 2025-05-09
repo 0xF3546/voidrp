@@ -11,9 +11,14 @@ import java.util.List;
  */
 public interface Zone {
     String getName();
+
     int getRange();
+
     Region getRegion();
+
     List<VoidPlayer> getPlayersInZone();
+
     void addPlayer(VoidPlayer player);
+
     void removePlayer(VoidPlayer player);
 }

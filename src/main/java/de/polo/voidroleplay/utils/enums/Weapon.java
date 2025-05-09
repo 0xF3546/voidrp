@@ -13,7 +13,7 @@ public enum Weapon {
     PISTOL("§aShorty", "Shorty", Material.IRON_HORSE_ARMOR, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 12, 18, 2, 3, 7, 0, false, 300),
     MARKSMAN("§cVortex-10", "Vortex-10", Material.LEATHER_HORSE_ARMOR, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.9f, 4, 24, 3, 5, 8, 0, false, 5),
     SNIPER("§7Scharfschützengewehr", "Scharfschützengewehr", Material.STONE_HOE, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.2f, 4, 60, 4, 4, 50, 0, false, 5),
-    SHOTGUN("§eXF119", "XF119", Material.IRON_HOE, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.2f, 4, 60, 4, 4 , 50, 0, false, 25);
+    SHOTGUN("§eXF119", "XF119", Material.IRON_HOE, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 0.2f, 4, 60, 4, 4, 50, 0, false, 25);
 
 
     private final String name;

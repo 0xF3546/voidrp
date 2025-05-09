@@ -22,10 +22,10 @@ public interface INameTagProvider {
      * Sets a player's nametag with a custom prefix and suffix,
      * but makes it visible only to certain players.
      *
-     * @param player the player whose nametag is to be set.
+     * @param player  the player whose nametag is to be set.
      * @param viewers the players who can see the nametag.
-     * @param prefix the prefix to display before the player's name.
-     * @param suffix the suffix to display after the player's name.
+     * @param prefix  the prefix to display before the player's name.
+     * @param suffix  the suffix to display after the player's name.
      */
     void setNametagForViewers(Player player, Collection<Player> viewers, String prefix, String suffix);
 

@@ -17,9 +17,9 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public final class VoidAPI {
-    private static Server server;
     @Getter
     private static final List<VoidPlayer> players = new ObjectArrayList<>();
+    private static Server server;
 
     public static void setPlugin(Server p) {
         server = p;
@@ -37,6 +37,7 @@ public final class VoidAPI {
     public static VoidPlayer getPlayer(Player player) {
         return getPlayer(player.getUniqueId());
     }
+
     public static VoidPlayer getPlayer(UUID uuid) {
         return players.stream()
                 .filter(voidPlayer -> voidPlayer.getUuid().equals(uuid))

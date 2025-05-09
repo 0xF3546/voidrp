@@ -246,7 +246,8 @@ public class PlayerManager implements Listener {
                 playerData.setVotes(result.getInt("votes"));
                 playerData.setChurch(result.getBoolean("isChurch"));
                 playerData.setBaptized(result.getBoolean("isBaptized"));
-                if (result.getDate("factionCooldown") != null) playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
+                if (result.getDate("factionCooldown") != null)
+                    playerData.setFactionCooldown(Utils.toLocalDateTime(result.getDate("factionCooldown")));
                 playerData.setFactionJoin(Utils.toLocalDateTime(result.getDate("factionJoin")));
                 playerData.setEventPoints(result.getInt("eventPoints"));
                 playerData.setCrypto(result.getFloat("crypto"));
@@ -328,7 +329,8 @@ public class PlayerManager implements Listener {
                 playerData.setForumID(result.getInt("forumID"));
                 playerData.setHasAnwalt(result.getBoolean("hasAnwalt"));
                 playerData.setLoyaltyBonus(result.getInt("loyaltyBonus"));
-                if (result.getString("longTermJob") != null) playerData.setLongTermJob(LongTermJob.valueOf(result.getString("longTermJob")));
+                if (result.getString("longTermJob") != null)
+                    playerData.setLongTermJob(LongTermJob.valueOf(result.getString("longTermJob")));
 
                 playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
 

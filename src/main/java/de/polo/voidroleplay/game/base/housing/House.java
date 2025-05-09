@@ -99,7 +99,7 @@ public class House {
     @SneakyThrows
     public void addMiner(Miner miner) {
         Main.getInstance().getCoreDatabase().insertAndGetKeyAsync("INSERT INTO crypto_miner (houseNumber) VALUE (?)",
-                number)
+                        number)
                 .thenApply(key -> {
                     key.ifPresent(miner::setId);
                     return null;

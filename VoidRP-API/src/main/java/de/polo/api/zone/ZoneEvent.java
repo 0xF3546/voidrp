@@ -19,16 +19,18 @@ abstract class ZoneEvent extends Event {
     private final VoidPlayer player;
     @Getter
     private final Zone zone;
+
     protected ZoneEvent(VoidPlayer player, Zone zone) {
         this.player = player;
         this.zone = zone;
     }
 
-    @Override
-    public @NotNull HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
-    public static HandlerList getHandlerList() {
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 }

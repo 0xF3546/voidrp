@@ -31,5 +31,6 @@ public interface AdminService {
     void insertNote(String punisher, String target, String note);
 
     List<VoidPlayer> getActiveGuides();
+
     List<VoidPlayer> getActiveAdmins();
 }

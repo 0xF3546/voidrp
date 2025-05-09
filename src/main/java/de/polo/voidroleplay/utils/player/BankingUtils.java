@@ -420,7 +420,7 @@ public class BankingUtils implements Listener {
             int amount = Integer.parseInt(event.getMessage());
             if (amount >= 1) {
                 if (playerManager.money(player) >= amount) {
-                    ATM atm  = event.getPlayerData().getVariable("atm");
+                    ATM atm = event.getPlayerData().getVariable("atm");
                     atm.setMoneyAmount(atm.getMoneyAmount() + amount);
                     if (atm.getMoneyAmount() > 100000) {
                         atm.setMoneyAmount(100000);

@@ -3,10 +3,10 @@ package de.polo.core.faction.commands;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.admin.services.AdminService;
+import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.FactionService;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
-import de.polo.core.faction.entity.Faction;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static de.polo.core.Main.*;
+import static de.polo.core.Main.factionManager;
 
 @CommandBase.CommandMeta(
         name = "leadfrak",

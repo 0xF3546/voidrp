@@ -14,7 +14,7 @@ import static de.polo.voidroleplay.Main.playerService;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class CoreVoidPlayer implements VoidPlayer{
+public class CoreVoidPlayer implements VoidPlayer {
     @Getter
     private final Player player;
 

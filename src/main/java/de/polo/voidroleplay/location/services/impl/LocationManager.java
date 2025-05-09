@@ -41,6 +41,10 @@ public class LocationManager {
         }
     }
 
+    public static boolean isLocationEqual(Location first, Location second) {
+        return (first.getX() == second.getX() && first.getY() == second.getY() && first.getZ() == second.getZ());
+    }
+
     private void loadLocations() throws SQLException {
         Statement statement = coreDatabase.getStatement();
         ResultSet locs = statement.executeQuery("SELECT * FROM locations");
@@ -279,9 +283,5 @@ public class LocationManager {
 
     public Collection<LocationData> getLocations() {
         return locationDataMap.values();
-    }
-
-    public static boolean isLocationEqual(Location first, Location second) {
-        return (first.getX() == second.getX() && first.getY() == second.getY() && first.getZ() == second.getZ());
     }
 }

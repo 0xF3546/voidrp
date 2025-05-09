@@ -213,6 +213,7 @@ public class Seasonpass implements CommandExecutor {
             slot++;
         }
     }
+
     public Quest getQuestById(int id) {
         for (Quest quest : quests) {
             if (quest.getId() == id) return quest;

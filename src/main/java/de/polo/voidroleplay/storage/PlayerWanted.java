@@ -20,11 +20,11 @@ public class PlayerWanted {
     @Getter
     private final int wantedId;
     @Getter
-    private List<WantedVariation> variations;
-    @Getter
     private final UUID issuer;
     @Getter
     private final LocalDateTime issued;
+    @Getter
+    private List<WantedVariation> variations;
     @Getter
     @Setter
     private int id;
@@ -36,7 +36,8 @@ public class PlayerWanted {
         this.issued = issued;
 
         try {
-            this.variations = GSON.fromJson(variationsJson, new TypeToken<List<WantedVariation>>() {}.getType());
+            this.variations = GSON.fromJson(variationsJson, new TypeToken<List<WantedVariation>>() {
+            }.getType());
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
             this.variations = new ArrayList<>();

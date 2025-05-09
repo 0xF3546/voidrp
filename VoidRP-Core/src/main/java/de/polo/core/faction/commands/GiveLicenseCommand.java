@@ -3,14 +3,14 @@ package de.polo.core.faction.commands;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
+import de.polo.api.player.enums.License;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.manager.ItemManager;
-import de.polo.api.player.VoidPlayer;
-import de.polo.core.storage.Agreement;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.storage.Agreement;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
-import de.polo.api.player.enums.License;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import static de.polo.core.Main.*;
-import static de.polo.core.Main.factionManager;
 
 /**
  * @author Mayson1337
@@ -52,7 +51,7 @@ public class GiveLicenseCommand extends CommandBase {
             return;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27,Component.text("§8 » §6Lizenzvergabe"));
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("§8 » §6Lizenzvergabe"));
         int i = 0;
         if (playerData.getFactionGrade() >= 4 && !targetData.hasLicense(License.WEAPON)) {
             int price = 12500;

@@ -5,7 +5,9 @@ import org.bukkit.entity.Player;
 
 public interface Region {
     int getId();
+
     String getName();
+
     Location getLowerCorner();
 
     Location getUpperCorner();

@@ -1,14 +1,13 @@
 package de.polo.core.player.entities;
 
 import de.polo.api.Utils.GUI;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.Job;
+import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.PlayerCharacter;
 import de.polo.api.player.PlayerRuntimeStatistic;
 import de.polo.api.player.PlayerSetting;
 import de.polo.api.player.VoidPlayer;
-import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.enums.Setting;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Utils;
@@ -34,30 +33,23 @@ import java.util.UUID;
 public class CoreVoidPlayer implements VoidPlayer {
     @Getter
     private final Player player;
-
+    @Getter
+    private final List<PlayerSetting> settings = new ObjectArrayList<>();
+    @Getter
+    private final PlayerRuntimeStatistic runtimeStatistic;
+    @Getter
+    private final UUID uuid;
     @Getter
     @Setter
     private GUI lastGUI;
-
     @Getter
     private MiniJob miniJob;
     @Getter
     @Setter
     private Job activeJob;
-
-    @Getter
-    private final List<PlayerSetting> settings = new ObjectArrayList<>();
-
     private boolean notificationsEnabled;
-
     @Getter
     private boolean aduty;
-
-    @Getter
-    private final PlayerRuntimeStatistic runtimeStatistic;
-
-    @Getter
-    private final UUID uuid;
 
     public CoreVoidPlayer(Player player) {
         this.player = player;

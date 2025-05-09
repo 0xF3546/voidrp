@@ -14,6 +14,7 @@ public class CoreRegionService implements RegionService {
     public CoreRegionService() {
         this.repository = new RegionRepository();
     }
+
     @Override
     public List<Region> getRegions() {
         return repository.getRegions();

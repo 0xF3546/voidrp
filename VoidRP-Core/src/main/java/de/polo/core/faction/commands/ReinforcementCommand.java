@@ -2,11 +2,11 @@ package de.polo.core.faction.commands;
 
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
-import de.polo.core.handler.TabCompletion;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.handler.TabCompletion;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.PhoneUtils;
 import net.md_5.bungee.api.chat.ClickEvent;

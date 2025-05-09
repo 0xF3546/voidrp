@@ -80,12 +80,14 @@ public class MineCommand extends CommandBase implements MiningJob {
                     if (player.getActiveJob() == null) {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMinensarbeiter starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.MINER)) + "§7.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     } else {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mMinensarbeiter starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     }
                 }
@@ -94,12 +96,14 @@ public class MineCommand extends CommandBase implements MiningJob {
                 if (player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else if (!player.getMiniJob().equals(MiniJob.MINER)) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Erze verkaufen")) {
@@ -157,22 +161,22 @@ public class MineCommand extends CommandBase implements MiningJob {
         if (iron > 0) {
             player.sendMessage(prefix + "Verdienst durch §7Eisenerz§8: §a+" + iron + "$");
             earnings += iron;
-            exp += (int)(iron * 0.35);
+            exp += (int) (iron * 0.35);
         }
         if (redstone > 0) {
             player.sendMessage(prefix + "Verdienst durch §cRedstonerz§8: §a+" + redstone + "$");
             earnings += redstone;
-            exp += (int)(redstone * 0.47);
+            exp += (int) (redstone * 0.47);
         }
         if (lapis > 0) {
             player.sendMessage(prefix + "Verdienst durch §9Lapislazulierz§8: §a+" + lapis + "$");
             earnings += lapis;
-            exp += (int)(lapis * 0.60);
+            exp += (int) (lapis * 0.60);
         }
         if (gold > 0) {
             player.sendMessage(prefix + "Verdienst durch §6Golderz§8: §a+" + gold + "$");
             earnings += gold;
-            exp += (int)(gold * 0.8);
+            exp += (int) (gold * 0.8);
         }
         if (emerald > 0) {
             player.sendMessage(prefix + "Verdienst durch §aSmaragderz§8: §a+" + emerald + "$");
@@ -182,7 +186,7 @@ public class MineCommand extends CommandBase implements MiningJob {
         if (diamond > 0) {
             player.sendMessage(prefix + "Verdienst durch §bDiamanterz§8: §a+" + diamond + "$");
             earnings += diamond;
-            exp += (int)(diamond * 1.25);
+            exp += (int) (diamond * 1.25);
         }
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         if (earnings > 0) {

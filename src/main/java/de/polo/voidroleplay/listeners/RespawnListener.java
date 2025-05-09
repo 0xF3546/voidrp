@@ -44,10 +44,10 @@ public class RespawnListener implements Listener {
         player.setFlySpeed(flySpeed);
         if (playerData.getKarma() < -50) {
             event.setRespawnLocation(Main.getInstance().locationManager.getLocation("hell"));
-            Main.getInstance().locationManager.useLocation(player,"hell");
+            Main.getInstance().locationManager.useLocation(player, "hell");
         } else if (playerData.getKarma() >= 50) {
             event.setRespawnLocation(Main.getInstance().locationManager.getLocation("heaven"));
-            Main.getInstance().locationManager.useLocation(player,"heaven");
+            Main.getInstance().locationManager.useLocation(player, "heaven");
         } else {
             event.setRespawnLocation(Main.getInstance().locationManager.getLocation("cemetery"));
             Main.getInstance().locationManager.useLocation(player, "cemetery");

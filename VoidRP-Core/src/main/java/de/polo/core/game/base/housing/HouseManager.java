@@ -94,6 +94,7 @@ public class HouseManager implements CommandExecutor, Listener {
     public House getHouse(int houseNumber) {
         return houseDataMap.get(houseNumber);
     }
+
     public Collection<House> getHouses() {
         return houseDataMap.values();
     }

@@ -1,9 +1,9 @@
 package de.polo.core.faction.commands;
 
 import de.polo.core.Main;
-import de.polo.core.player.entities.PlayerData;
 import de.polo.core.game.base.extra.ExplosionBelt;
 import de.polo.core.game.events.SecondTickEvent;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;

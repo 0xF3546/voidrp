@@ -125,7 +125,7 @@ public class EinreiseCommand implements CommandExecutor {
                         sqlDate,
                         playerData.getGender().name(),
                         player.getUniqueId().toString()
-                        );
+                );
 
                 player.sendMessage(Prefix.MAIN + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                 playerManager.addExp(player, Utils.random(100, 200));

@@ -38,12 +38,12 @@ public class NaviData {
         return name;
     }
 
-    public String getClearName() {
-        return name.substring(2);
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getClearName() {
+        return name.substring(2);
     }
 
     public String getLocation() {

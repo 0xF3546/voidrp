@@ -177,7 +177,8 @@ public class DeathUtils {
         player.setGameMode(GameMode.SURVIVAL);
         playerData.setDeathTime(300);
         playerData.setDead(false);
-        if (!playerData.isFFADead() && playerData.getVariable("gangwar") != null) playerData.setFFADead(playerData.getVariable("ffa") != null);
+        if (!playerData.isFFADead() && playerData.getVariable("gangwar") != null)
+            playerData.setFFADead(playerData.getVariable("ffa") != null);
         playerData.removeMoney(playerData.getBargeld(), "Despawn");
         if (playerData.isFFADead()) {
             Main.getInstance().gamePlay.getFfa().respawnPlayer(player);

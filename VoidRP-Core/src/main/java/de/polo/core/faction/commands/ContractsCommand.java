@@ -1,11 +1,11 @@
 package de.polo.core.faction.commands;
 
 import de.polo.core.Main;
-import de.polo.core.storage.ContractData;
-import de.polo.core.player.entities.PlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.manager.ServerManager;
+import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.storage.ContractData;
 import de.polo.core.utils.Prefix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;

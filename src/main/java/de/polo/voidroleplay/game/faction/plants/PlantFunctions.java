@@ -115,7 +115,7 @@ public class PlantFunctions implements Listener {
                         factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + player.getName() + " hat eine " + plant.getType().getName() + " Plantage geernet. §8(§6" + plant.getYield() + "g§8)", factionData.getName());
                     }
                     player.closeInventory();
-                    if ((plant.getYield() >= 10 || diff >= 10 )&& !plant.isReceivedXP()) {
+                    if ((plant.getYield() >= 10 || diff >= 10) && !plant.isReceivedXP()) {
                         plant.setReceivedXP(true);
                         playerManager.addExp(player, Utils.random(5, 20));
                     }
@@ -207,7 +207,7 @@ public class PlantFunctions implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if ((player.getInventory().getItemInMainHand().getType().equals(Material.WATER_BUCKET)
-            || player.getInventory().getItemInMainHand().getType().equals(Material.BONE_MEAL)) && player.getGameMode() != GameMode.CREATIVE) {
+                || player.getInventory().getItemInMainHand().getType().equals(Material.BONE_MEAL)) && player.getGameMode() != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
         PlayerData playerData = playerManager.getPlayerData(player);
@@ -270,9 +270,12 @@ public class PlantFunctions implements Listener {
                 int wateredFertilized = (int) plants.stream().filter(x -> (x.getPlanter() == factionData) && x.getWater() < 5 && x.getFertilizer() < 5).count();
                 int inProgress = (int) plants.stream().filter(x -> x.getPlanter() == factionData).count() - wateredFertilized;
                 int degenerate = (int) plants.stream().filter(x -> x.getPlanter() == factionData && x.getTime() < 1).count();
-                if (inProgress >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + inProgress + " Plantagen befinden sich im Reifeprozess.", factionData.getName());
-                if (wateredFertilized >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + wateredFertilized + " Plantagen müssen gewässert/gedüngt werden.", factionData.getName());
-                if (degenerate >= 1) factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + degenerate + " Plantagen verkommen.", factionData.getName());
+                if (inProgress >= 1)
+                    factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + inProgress + " Plantagen befinden sich im Reifeprozess.", factionData.getName());
+                if (wateredFertilized >= 1)
+                    factionManager.sendCustomMessageToFactions("§8[§6Plantage§8]§2 " + wateredFertilized + " Plantagen müssen gewässert/gedüngt werden.", factionData.getName());
+                if (degenerate >= 1)
+                    factionManager.sendCustomMessageToFactions("§8[§6Plantage§2]§2 " + degenerate + " Plantagen verkommen.", factionData.getName());
             }
         }
     }

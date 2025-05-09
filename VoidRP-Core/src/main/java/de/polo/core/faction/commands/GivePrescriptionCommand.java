@@ -1,14 +1,14 @@
 package de.polo.core.faction.commands;
 
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
+import de.polo.core.Main;
 import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.manager.ItemManager;
-import de.polo.api.player.VoidPlayer;
-import de.polo.core.storage.Agreement;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.storage.Agreement;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.Prescription;
 import de.polo.core.utils.player.ChatUtils;

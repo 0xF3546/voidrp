@@ -46,6 +46,7 @@ public interface CrewService {
      * @param uuid the uuid of the player
      */
     void setPlayerCrew(UUID uuid, int crewId);
+
     void removePlayerFromCrew(UUID uuid);
 
     void setPlayerCrewRank(UUID uuid, int crewRankId);
@@ -53,12 +54,18 @@ public interface CrewService {
     CompletableFuture<CrewRank> addCrewRank(CreateCrewRankDto createCrewRankDto);
 
     CrewRank getCrewRank(int id);
+
     void sendMessageToMembers(Crew crew, String message);
+
     List<CrewMemberDto> getCrewMembers(Crew crew);
+
     List<VoidPlayer> getOnlineMembers(Crew crew);
 
     void addRankPermission(CrewRank crewRank, CrewPermission permission);
+
     void removeRankPermission(CrewRank crewRank, CrewPermission permission);
+
     void setRankName(CrewRank crewRank, String name);
+
     void setRankGrade(CrewRank crewRank, int grade);
 }

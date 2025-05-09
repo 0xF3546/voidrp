@@ -37,8 +37,8 @@ public class BauteamChat implements CommandExecutor {
                 PlayerData playersData = playerManager.getPlayerData(players.getUniqueId());
                 if (playersData.getSecondaryTeam() != null) {
                     VoidPlayer voidPlayers = VoidAPI.getPlayer(players);
-                        if (playersData.getSecondaryTeam().equals("Bau-Team") || voidPlayers.isAduty() || playersData.getPermlevel() >= 70) {
-                            players.sendMessage("§6BauTeam §8┃ §e" + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
+                    if (playersData.getSecondaryTeam().equals("Bau-Team") || voidPlayers.isAduty() || playersData.getPermlevel() >= 70) {
+                        players.sendMessage("§6BauTeam §8┃ §e" + player.getName() + "§8:§7 " + Utils.stringArrayToString(args));
                     }
                 }
             }

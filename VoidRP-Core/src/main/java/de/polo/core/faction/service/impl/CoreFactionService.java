@@ -1,10 +1,10 @@
 package de.polo.core.faction.service.impl;
 
+import de.polo.core.faction.entity.Faction;
+import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.faction.service.FactionService;
 import de.polo.core.game.faction.SprayableBanner;
 import de.polo.core.game.faction.staat.SubTeam;
-import de.polo.core.faction.entity.Faction;
-import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
 import de.polo.core.utils.Service;
@@ -14,7 +14,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import static de.polo.core.Main.factionManager;

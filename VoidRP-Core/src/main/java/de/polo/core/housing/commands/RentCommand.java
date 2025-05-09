@@ -2,12 +2,12 @@ package de.polo.core.housing.commands;
 
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.game.base.housing.House;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
-import de.polo.core.agreement.services.VertragUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

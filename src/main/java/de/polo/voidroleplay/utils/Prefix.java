@@ -14,8 +14,8 @@ public class Prefix {
     public static final String FACTION = "§8[§9Fraktion§8] §7";
     public static final String SUPPORT = "§8[§3Support§8] §7";
     public static final String GAMEDESIGN = "§8[§9Gamedesign§8] §7";
-    public static final String ERROR_NOPERMISSION = Prefix.ERROR + "Für den ausgeführten Befehl hast du keine Rechte.";
     public static final String ERROR = "§cFehler: ";
+    public static final String ERROR_NOPERMISSION = Prefix.ERROR + "Für den ausgeführten Befehl hast du keine Rechte.";
     public static final String ADMIN_ERROR = "§8[§c§lADMIN§8] §cFehler§8 » §7";
     public static final String business_prefix = "§8[§6Business§8]§7 ";
     public static String MAIN = "§8 » §7";

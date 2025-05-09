@@ -52,7 +52,7 @@ public class GiveLicenseCommand extends CommandBase {
             return;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27,"§8 » §6Lizenzvergabe");
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, "§8 » §6Lizenzvergabe");
         int i = 0;
         if (playerData.getFactionGrade() >= 4 && !targetData.hasLicense(License.WEAPON)) {
             int price = 12500;

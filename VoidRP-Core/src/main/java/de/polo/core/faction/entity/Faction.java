@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Faction {
+    @Getter
+    private final FactionType factionType;
     public Storage storage = new Storage(this);
     public Upgrades upgrades = new Upgrades(this);
     public factionEquip equip = new factionEquip(this);
@@ -46,10 +48,6 @@ public class Faction {
     private boolean isBadFrak;
     private int subGroupId;
     private int cooperationPartner;
-
-    @Getter
-    private final FactionType factionType;
-
     @Getter
     @Setter
     private int tookOut;

@@ -9,7 +9,10 @@ import org.bukkit.Location;
  */
 public interface Pinwheel {
     Location getLocation();
+
     String getName();
-    void setBroken(boolean broken);
+
     boolean isBroken();
+
+    void setBroken(boolean broken);
 }

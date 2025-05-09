@@ -5,10 +5,14 @@ import java.util.UUID;
 
 public interface CharacterRecord {
     LocalDateTime getLastEdit();
-    UUID getLastEditor();
-    String getInfoText();
 
     void setLastEdit(LocalDateTime lastEdit);
+
+    UUID getLastEditor();
+
     void setLastEditor(UUID lastEditor);
+
+    String getInfoText();
+
     void setInfoText(String infoText);
 }

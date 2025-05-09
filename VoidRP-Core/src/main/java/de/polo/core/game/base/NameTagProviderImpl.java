@@ -121,7 +121,6 @@ public class NameTagProviderImpl implements INameTagProvider {
     }
 
 
-
     @Override
     public void clearAllNametags() {
         for (Player player : Bukkit.getOnlinePlayers()) {

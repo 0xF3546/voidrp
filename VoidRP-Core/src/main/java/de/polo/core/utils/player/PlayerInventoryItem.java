@@ -7,12 +7,10 @@ import lombok.Setter;
 public class PlayerInventoryItem {
 
     @Getter
+    private final RoleplayItem item;
+    @Getter
     @Setter
     private int id;
-
-    @Getter
-    private final RoleplayItem item;
-
     @Getter
     @Setter
     private int amount;

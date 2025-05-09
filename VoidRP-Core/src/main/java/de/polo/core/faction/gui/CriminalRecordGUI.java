@@ -1,12 +1,12 @@
 package de.polo.core.faction.gui;
 
+import de.polo.api.Utils.GUI;
 import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.faction.CharacterRecord;
 import de.polo.api.player.VoidPlayer;
-import de.polo.api.Utils.GUI;
 import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;

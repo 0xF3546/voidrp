@@ -16,19 +16,16 @@ import static de.polo.voidroleplay.Main.*;
 public class Gangwar extends GangwarData {
 
     @Getter
+    private final int maxMember;
+    @Getter
     @Setter
     private String attacker;
-
     @Getter
     @Setter
     private String defender;
-
     @Getter
     @Setter
     private IGangzone gangZone;
-
-    @Getter
-    private final int maxMember;
 
     public Gangwar(int maxMember) {
         this.maxMember = maxMember;
@@ -43,7 +40,7 @@ public class Gangwar extends GangwarData {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if ((getMinutes() <= 0 && getSeconds() <= 1 ) || Math.abs(getDiff()) >= 200) {
+                if ((getMinutes() <= 0 && getSeconds() <= 1) || Math.abs(getDiff()) >= 200) {
                     Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
                         utils.gangwarUtils.endGangwar(gangZone.getName());
                         cancel();

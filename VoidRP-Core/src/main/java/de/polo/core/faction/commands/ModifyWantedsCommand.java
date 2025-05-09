@@ -1,8 +1,8 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
-import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.enums.WantedVariation;
@@ -53,7 +53,8 @@ public class ModifyWantedsCommand extends CommandBase implements TabCompleter {
             inputVariation.append(" ").append(args[i]);
         }
         for (WantedVariation v : WantedVariation.values()) {
-            if (v.name().equalsIgnoreCase(inputVariation.toString()) || v.getName().equalsIgnoreCase(inputVariation.toString())) variation = v;
+            if (v.name().equalsIgnoreCase(inputVariation.toString()) || v.getName().equalsIgnoreCase(inputVariation.toString()))
+                variation = v;
         }
         if (variation == null) {
             player.sendMessage(Component.text(Prefix.ERROR + "Die Variation wurde nicht gefunden."));

@@ -18,6 +18,7 @@ public class LoyaltyBonusTimer {
     @Getter
     @Setter
     private LocalDateTime stopped;
+
     public LoyaltyBonusTimer(UUID uuid) {
         this.uuid = uuid;
         started = Utils.getTime();

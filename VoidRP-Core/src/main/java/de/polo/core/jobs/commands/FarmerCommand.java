@@ -79,20 +79,24 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
                     if (player.getActiveJob() == null) {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.FARMER)) + "§7.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Warte noch " + Utils.getTime(playerService.getJobCooldown(player, MiniJob.FARMER)) + "§7.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     } else {
                         inventoryManager.setItem(new CustomItem(11, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§a§mFarmer starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                         inventoryManager.setItem(new CustomItem(22, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mWeizenlieferant starten", "§8 ➥§7 Du hast bereits den §f" + player.getMiniJob().getName() + "§7 Job angenommen.")) {
                             @Override
-                            public void onClick(InventoryClickEvent event) {}
+                            public void onClick(InventoryClickEvent event) {
+                            }
                         });
                     }
                 }
@@ -101,15 +105,17 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
                 if (player.getActiveJob() == null) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else if (!player.getMiniJob().equals(MiniJob.FARMER)) {
                     inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.GRAY_DYE, 1, 0, "§e§mJob beenden", "§8 ➥§7 Du hast den Job nicht angenommen")) {
                         @Override
-                        public void onClick(InventoryClickEvent event) {}
+                        public void onClick(InventoryClickEvent event) {
+                        }
                     });
                 } else {
-                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + ServerManager.getPayout("heuballen") * (int)player.getVariable("heuballen") + "$")) {
+                    inventoryManager.setItem(new CustomItem(15, ItemManager.createItem(Material.YELLOW_DYE, 1, 0, "§eJob beenden", "§8 ➥ §7Du erhälst §a" + ServerManager.getPayout("heuballen") * (int) player.getVariable("heuballen") + "$")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             endJob(player);
@@ -137,7 +143,7 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
         }
 
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
-        int payout = ServerManager.getPayout("heuballen") * (int)player.getVariable("heuballen");
+        int payout = ServerManager.getPayout("heuballen") * (int) player.getVariable("heuballen");
         player.sendMessage("§8[§eFarmer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player.getPlayer());
         playerService.handleJobFinish(player, MiniJob.FARMER, 3600, Utils.random(12, 20));
@@ -184,18 +190,18 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
     @Override
     public void handleBlockBreak(VoidPlayer player, BlockBreakEvent event) {
         if (event.getBlock().getType() == Material.HAY_BLOCK) {
-            if ((int)player.getVariable("heuballen_remaining") <= 0) {
+            if ((int) player.getVariable("heuballen_remaining") <= 0) {
                 player.sendMessage("§8[§eFarmer§8]§7 Du hast alle Heuballen abgebaut.");
                 return;
             }
 
             event.getBlock().setType(Material.AIR);
-            player.setVariable("heuballen_remaining", (int)player.getVariable("heuballen_remaining") - 1);
+            player.setVariable("heuballen_remaining", (int) player.getVariable("heuballen_remaining") - 1);
             int amount = Utils.random(2, 4);
-            player.setVariable("heuballen", (int)player.getVariable("heuballen") + amount);
+            player.setVariable("heuballen", (int) player.getVariable("heuballen") + amount);
             player.sendMessage("§8[§eFarmer§8]§7 +" + amount + " Heuballen");
 
-            if ((int)player.getVariable("heuballen_remaining") <= 0) {
+            if ((int) player.getVariable("heuballen_remaining") <= 0) {
                 player.sendMessage("§8[§eFarmer§8]§7 Du hast alle Heuballen abgebaut, begib dich wieder zum Farmer.");
             }
             scheduleHayRespawn(event.getBlock().getLocation());
@@ -212,7 +218,7 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
             SoundManager.successSound(player.getPlayer());
             playerService.addExp(player.getPlayer(), Utils.random(1, 3));
 
-            int remainingWheat = (int)player.getVariable("weizen") - 1;
+            int remainingWheat = (int) player.getVariable("weizen") - 1;
             player.setVariable("weizen", remainingWheat);
             player.getData().addBankMoney(payout, "Auszahlung Weizentransport");
 
