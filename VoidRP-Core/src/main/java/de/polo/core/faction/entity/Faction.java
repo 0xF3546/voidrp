@@ -286,7 +286,7 @@ public class Faction {
     }
 
     public SubGroup getSubGroup() {
-        return Main.getInstance().factionManager.subGroups.getSubGroup(subGroupId);
+        return Main.factionManager.subGroups.getSubGroup(subGroupId);
     }
 
     @SneakyThrows

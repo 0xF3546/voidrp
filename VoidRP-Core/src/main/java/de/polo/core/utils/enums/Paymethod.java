@@ -11,5 +11,5 @@ import lombok.Getter;
 
 public enum Paymethod {
     CASH,
-    CARD;
+    CARD
 }

@@ -304,7 +304,7 @@ public class WeaponManager implements Listener {
         String actionBarText = "§e" + newAmmo + "§8/§6" + weapon.getType().getMaxAmmo();
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(actionBarText));
 
-        long shootDuration = (long) weaponData.getShootDuration(); // In Sekunden
+        long shootDuration = weaponData.getShootDuration(); // In Sekunden
         long delayTicks = shootDuration * 2; // In Ticks
         long delayMillis = delayTicks * 30; // In Millisekunden
 

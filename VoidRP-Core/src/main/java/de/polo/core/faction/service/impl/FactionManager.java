@@ -215,7 +215,7 @@ public class FactionManager {
             Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET faction = ?, faction_grade = ? WHERE uuid = ?", frak, rang, player.getUniqueId().toString());
         }
         boolean found = false;
-        Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
+        Main.gamePlay.displayNameManager.reloadDisplayNames(player);
         for (FactionPlayerData factionPlayerData : ServerManager.factionPlayerDataMap.values()) {
             if (factionPlayerData.getUuid().equals(player.getUniqueId().toString())) {
                 found = true;
@@ -323,7 +323,7 @@ public class FactionManager {
         playerData.setFaction(null);
         playerData.setFactionGrade(0);
         playerData.setDuty(false);
-        Main.getInstance().gamePlay.displayNameManager.reloadDisplayNames(player);
+        Main.gamePlay.displayNameManager.reloadDisplayNames(player);
         if (playerData.getPermlevel() >= 60) {
             Utils.Tablist.updatePlayer(player);
             player.setCustomNameVisible(true);
@@ -513,12 +513,12 @@ public class FactionManager {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) return false;
         if (playerManager.isInStaatsFrak(player)) return true;
-        return Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction()) != null;
+        return Main.gamePlay.alliance.getAlliance(playerData.getFaction()) != null;
     }
 
     public boolean isInBündnisWith(Player player, String faction) {
         PlayerData playerData = playerManager.getPlayerData(player);
-        Faction factionData = Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction());
+        Faction factionData = Main.gamePlay.alliance.getAlliance(playerData.getFaction());
         if (factionData == null) return false;
         Faction val = getFactionData(faction);
         System.out.println("VAL: " + val.getName());

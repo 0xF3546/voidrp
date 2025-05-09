@@ -135,7 +135,7 @@ public class ReinforcementCommand implements CommandExecutor, TabCompleter {
                         continue;
                     }
                 }
-                Faction alliance = Main.getInstance().gamePlay.alliance.getAlliance(pData.getFaction());
+                Faction alliance = Main.gamePlay.alliance.getAlliance(pData.getFaction());
                 if (alliance == null) continue;
                 System.out.println(alliance.getName());
                 if (playerData.getFaction().equalsIgnoreCase(alliance.getName()) || playerData.getFaction().equalsIgnoreCase(pData.getFaction())) {

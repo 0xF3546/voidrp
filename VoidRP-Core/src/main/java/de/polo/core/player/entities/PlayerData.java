@@ -135,7 +135,7 @@ public class PlayerData implements PlayerCharacter {
     @Getter
     @Setter
     private int jailParole = 0;
-    private boolean isAduty = false;
+    private final boolean isAduty = false;
     @Setter
     @Getter
     private int level;
@@ -695,7 +695,7 @@ public class PlayerData implements PlayerCharacter {
 
     @SneakyThrows
     public void addMoney(int amount, String reason) {
-        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
+        Main.beginnerpass.didQuest(player, 2, amount);
         setBargeld(getBargeld() + amount);
         Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
@@ -731,7 +731,7 @@ public class PlayerData implements PlayerCharacter {
 
     @SneakyThrows
     public void addBankMoney(int amount, String reason) {
-        Main.getInstance().beginnerpass.didQuest(player, 2, amount);
+        Main.beginnerpass.didQuest(player, 2, amount);
         setBank(getBank() + amount);
         Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
@@ -816,7 +816,7 @@ public class PlayerData implements PlayerCharacter {
     }
 
     public SubGroup getSubGroup() {
-        return Main.getInstance().factionManager.subGroups.getSubGroup(subGroupId);
+        return Main.factionManager.subGroups.getSubGroup(subGroupId);
     }
 
     public Collection<PlayerWorkstation> getWorkstations() {
@@ -887,8 +887,8 @@ public class PlayerData implements PlayerCharacter {
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("www");
             if (getWanted() != null) {
-                WantedReason reason = Main.getInstance().utils.getStaatUtil().getWantedReason(getWanted().getWantedId());
-                WantedReason newReason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
+                WantedReason reason = Main.utils.getStaatUtil().getWantedReason(getWanted().getWantedId());
+                WantedReason newReason = Main.utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
                 return reason.getWanted() <= newReason.getWanted();
             }
             System.out.println("yo");
@@ -897,7 +897,7 @@ public class PlayerData implements PlayerCharacter {
             System.out.println("hhh");
             if (!result) return CompletableFuture.completedFuture(false);
             System.out.println("h#ä");
-            WantedReason wantedReason = Main.getInstance().utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
+            WantedReason wantedReason = Main.utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
 
             System.out.println("Executing DELETE query...");
             String deleteQuery = "DELETE FROM player_wanteds WHERE uuid = ?";

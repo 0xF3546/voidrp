@@ -25,7 +25,7 @@ public class PlayerFFAStatsManager {
 
     public PlayerFFAStatsManager(Player player) {
         this.player = player;
-        for (PlayerFFAStats playerFFAStats : Main.getInstance().gamePlay.getFfa().getStats()) {
+        for (PlayerFFAStats playerFFAStats : Main.gamePlay.getFfa().getStats()) {
             if (!playerFFAStats.getUuid().equals(player.getUniqueId().toString())) continue;
             stats.add(playerFFAStats);
         }
@@ -34,7 +34,7 @@ public class PlayerFFAStatsManager {
     @SneakyThrows
     public void addStats(PlayerFFAStats stats, boolean save) {
         this.stats.add(stats);
-        Main.getInstance().gamePlay.getFfa().addPlayerStats(stats);
+        Main.gamePlay.getFfa().addPlayerStats(stats);
         if (save) {
             Connection connection = Main.getInstance().coreDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement("INSERT INTO player_ffa_stats (uuid, statsType) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);

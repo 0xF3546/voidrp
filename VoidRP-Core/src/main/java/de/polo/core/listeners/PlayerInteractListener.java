@@ -481,8 +481,7 @@ public class PlayerInteractListener implements Listener {
                                                     }
 
                                                     BlockState state = nearestDoorBlock.getState();
-                                                    if (state.getBlockData() instanceof Openable) {
-                                                        Openable openable = (Openable) state.getBlockData();
+                                                    if (state.getBlockData() instanceof Openable openable) {
                                                         if (openable.isOpen()) {
                                                             player.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
                                                         } else {
@@ -567,7 +566,7 @@ public class PlayerInteractListener implements Listener {
                 }
             }
             if (event.getItem().getItemMeta().getDisplayName().equals("§6§lRubbellos") && event.getItem().getType().equals(Material.PAPER)) {
-                Rubbellose rubbellose = new Rubbellose(Main.getInstance().playerManager);
+                Rubbellose rubbellose = new Rubbellose(playerManager);
                 rubbellose.startGame(player);
                 ItemStack itemStack = event.getItem();
                 itemStack.setAmount(itemStack.getAmount() - 1);
@@ -674,7 +673,7 @@ public class PlayerInteractListener implements Listener {
                 return;
             }
             ItemManager.removeCustomItem(player, RoleplayItem.MASK, 1);
-            Main.getInstance().gamePlay.setMaskState(player, Utils.getTime().plusMinutes(20));
+            gamePlay.setMaskState(player, Utils.getTime().plusMinutes(20));
         }
 
         Action action = event.getAction();
@@ -724,8 +723,7 @@ public class PlayerInteractListener implements Listener {
                     player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, particleCount, offsetX, offsetY, offsetZ, 0.0, dustOptions);
 
                     for (Entity entity : player.getWorld().getNearbyEntities(particleLocation, 0.5, 0.5, 0.5)) {
-                        if (entity instanceof Player && entity != player) {
-                            Player hitPlayer = (Player) entity;
+                        if (entity instanceof Player hitPlayer && entity != player) {
                             hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1));
                             hitPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 2));
                             break;
@@ -778,7 +776,7 @@ public class PlayerInteractListener implements Listener {
                 if (playerData.getFaction().equalsIgnoreCase("FBI") || playerData.getFaction().equalsIgnoreCase("Polizei")) {
                     Block clickedBlock = event.getClickedBlock();
                     if (clickedBlock.getType().equals(RoleplayItem.SPRENGSTOFF.getMaterial())) {
-                        Main.getInstance().gamePlay.openBombGUI(player);
+                        gamePlay.openBombGUI(player);
                     }
                 }
             }

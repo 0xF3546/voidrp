@@ -49,12 +49,11 @@ public class ShopCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Prefix.ERROR + "Dieser Befehl kann nur von einem Spieler ausgeführt werden.");
             return true;
         }
 
-        Player player = (Player) sender;
         LocationService locationService = VoidAPI.getService(LocationService.class);
         int shop = locationService.isNearShop(player);
         if (shop > 0) {

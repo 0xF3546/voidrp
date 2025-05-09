@@ -173,7 +173,7 @@ public class ServerManager {
             @Override
             public void run() {
                 LocalDateTime now = Utils.getTime();
-                ScoreboardAPI scoreboardAPI = Main.getInstance().getScoreboardAPI();
+                ScoreboardAPI scoreboardAPI = Main.getScoreboardAPI();
                 Bukkit.getPluginManager().callEvent(new SecondTickEvent(now.getSecond()));
                 if (scoreboardAPI != null) scoreboardAPI.everySecond();
                 if (now.getHour() == 0 && now.getMinute() == 1 && now.getSecond() == 0 && now.getDayOfWeek() == DayOfWeek.MONDAY) {
@@ -184,7 +184,7 @@ public class ServerManager {
                         playerData.clearQuests();
                         if (playerData.getPlayerFFAStatsManager().getStats(FFAStatsType.WEEKLY) == null) continue;
                         playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.WEEKLY);
-                        Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.WEEKLY);
+                        Main.gamePlay.getFfa().clearStats(FFAStatsType.WEEKLY);
                     }
                     Bukkit.broadcastMessage("§6Seasonpass §8┃§7 Der seasonpass wurde zurückgesetzt!");
 
@@ -197,7 +197,7 @@ public class ServerManager {
                         for (PlayerData playerData : playerManager.getPlayers()) {
                             if (playerData.getPlayerFFAStatsManager().getStats(FFAStatsType.MONTHLY) == null) continue;
                             playerData.getPlayerFFAStatsManager().clearStats(FFAStatsType.MONTHLY);
-                            Main.getInstance().gamePlay.getFfa().clearStats(FFAStatsType.MONTHLY);
+                            Main.gamePlay.getFfa().clearStats(FFAStatsType.MONTHLY);
                         }
                         PreparedStatement ffaMonStatement = Main.getInstance().coreDatabase.getConnection().prepareStatement("DELETE FROM player_ffa_stats WHERE statsType = ?");
                         ffaMonStatement.setString(1, FFAStatsType.MONTHLY.name());
@@ -243,7 +243,7 @@ public class ServerManager {
                 }
                 ApiUtils.getTime();
                 if (ApiUtils.getTime().getHour() < 22) {
-                    for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {
+                    for (Gangwar gangwarData : Main.utils.gangwarUtils.getGangwars()) {
                         if (gangwarData.getAttacker() != null) {
                             Faction attackerData = factionManager.getFactionData(gangwarData.getAttacker());
                             Faction defenderData = factionManager.getFactionData(gangwarData.getGangZone().getOwner());
@@ -263,7 +263,7 @@ public class ServerManager {
                 }
 
                 if (MilitaryDrop.ACTIVE) {
-                    Main.getInstance().gamePlay.militaryDrop.everySecond();
+                    Main.gamePlay.militaryDrop.everySecond();
                 }
                 for (Player players : Bukkit.getOnlinePlayers()) {
                     PlayerData playerData = playerManager.getPlayerData(players.getUniqueId());
@@ -272,7 +272,7 @@ public class ServerManager {
                         playerData.setDeathTime(playerData.getDeathTime() - 1);
                         utils.sendActionBar(players, "§cDu bist noch " + Utils.getTime(playerData.getDeathTime()) + " bewusstlos.");
                         if (playerData.getDeathTime() <= 0) {
-                            Main.getInstance().utils.deathUtil.despawnPlayer(players);
+                            Main.utils.deathUtil.despawnPlayer(players);
                         }
                     }
                     playerData.getPlayerPetManager().everySecond();

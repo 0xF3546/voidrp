@@ -90,7 +90,7 @@ public class VehicleListener implements Listener {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
 
         PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
-        String job = (String) playerData.getVariable("job");
+        String job = playerData.getVariable("job");
         if ("pfeifentransport".equals(job)) {
             event.setCancelled(true);
             player.sendMessage(Prefix.ERROR + "Du kannst kein Auto fahren, während du den Pfeifentransport machst!");
@@ -109,14 +109,12 @@ public class VehicleListener implements Listener {
      */
     @EventHandler
     public void onVehicleExit(VehicleExitEvent event) {
-        if (!(event.getVehicle() instanceof Minecart) || !(event.getExited() instanceof Player)) {
+        if (!(event.getVehicle() instanceof Minecart vehicle) || !(event.getExited() instanceof Player player)) {
             return;
         }
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
 
-        Minecart vehicle = (Minecart) event.getVehicle();
-        Player player = (Player) event.getExited();
         PlayerData playerData = playerService.getPlayerData(player.getUniqueId());
         Integer vehicleId = vehicle.getPersistentDataContainer().get(keyId, PersistentDataType.INTEGER);
 
@@ -144,12 +142,11 @@ public class VehicleListener implements Listener {
      */
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
-        if (!(event.getVehicle() instanceof Minecart) || event.getVehicle().getPassengers().isEmpty()) {
+        if (!(event.getVehicle() instanceof Minecart vehicle) || event.getVehicle().getPassengers().isEmpty()) {
             return;
         }
         VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
 
-        Minecart vehicle = (Minecart) event.getVehicle();
         Player player = (Player) vehicle.getPassengers().get(0);
         String type = vehicle.getPersistentDataContainer().get(keyType, PersistentDataType.STRING);
 
@@ -188,7 +185,7 @@ public class VehicleListener implements Listener {
             return;
         }
 
-        RegisteredBlock registeredBlock = Main.getInstance().blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
+        RegisteredBlock registeredBlock = Main.blockManager.getBlockAtLocation(event.getClickedBlock().getLocation());
         if (registeredBlock == null || !"gas".equalsIgnoreCase(registeredBlock.getInfo())) {
             return;
         }

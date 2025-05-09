@@ -115,7 +115,7 @@ public class DealerCommand implements CommandExecutor {
                 player.closeInventory();
                 soldAtDealer(dealer);
 
-                IGangzone gangzone = Main.getInstance().utils.gangwarUtils.getGangzoneByName(dealer.getGangzone());
+                IGangzone gangzone = Main.utils.gangwarUtils.getGangzoneByName(dealer.getGangzone());
                 double ownerPercentages = 0.005;
                 if (!gangzone.getOwner().equalsIgnoreCase(dealer.getOwner())) {
                     ownerPercentages = 0.002;

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PlayerPacket {
 
-    private Player sender;
+    private final Player sender;
 
     public PlayerPacket(Player sender){
         this.sender = sender;

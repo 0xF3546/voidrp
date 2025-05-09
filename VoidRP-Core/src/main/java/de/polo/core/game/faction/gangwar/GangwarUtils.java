@@ -218,7 +218,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
     }
 
     public void equipPlayer(Player player) {
-        Main.getInstance().weaponManager.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.GANGWAR, 500);
+        Main.weaponManager.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.GANGWAR, 500);
         player.getInventory().addItem(ItemManager.createItem(Material.COOKED_BEEF, 16, 0, "§6Nahrung"));
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
     }
@@ -227,7 +227,7 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData.getFaction() == null) return;
         playerData.removeBossBar("gangwar");
-        Main.getInstance().utils.deathUtil.revivePlayer(player, false);
+        Main.utils.deathUtil.revivePlayer(player, false);
         if (playerData.getVariable("gangwar") != null) {
             LocationService locationService = VoidAPI.getService(LocationService.class);
             locationService.useLocation(player, playerData.getFaction());
@@ -237,9 +237,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     if (weaponData.getMaterial() != null && item != null) {
                         if (item.getType() == weaponData.getMaterial()) {
                             ItemMeta meta = item.getItemMeta();
-                            de.polo.core.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                            de.polo.core.storage.Weapon weapon = Main.weaponManager.getWeaponFromItemStack(item);
                             if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                                Main.getInstance().weaponManager.removeWeapon(player, item);
+                                Main.weaponManager.removeWeapon(player, item);
                             }
                         }
                     }
@@ -267,9 +267,9 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.core.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.core.storage.Weapon weapon = Main.weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                            Main.getInstance().weaponManager.removeWeapon(player, item);
+                            Main.weaponManager.removeWeapon(player, item);
                         }
                     }
                 }
@@ -410,13 +410,13 @@ public class GangwarUtils implements CommandExecutor, TabCompleter {
                     }
                     if (playersFaction.equals(attackerData.getName())) {
                         players.sendMessage("§8[§cGangwar§8]§a Ihr habt den Angriff des Gebietes §l§n" + gangwarData.getGangZone().getName() + "§a gegen §l" + defenderData.getName() + "§a gewonnen!");
-                        Main.getInstance().seasonpass.didQuest(players, 19);
+                        Main.seasonpass.didQuest(players, 19);
                         leaveGangwar(players);
                     }
                 }
             }
             gangwarData.getGangZone().setOwner(attackerData.getName());
-            Main.getInstance().blockManager.updateBlocksAtScenario("gangwar-" + gangwarData.getGangZone().getName(), attackerData);
+            Main.blockManager.updateBlocksAtScenario("gangwar-" + gangwarData.getGangZone().getName(), attackerData);
             Main.getInstance().getCoreDatabase().updateAsync("UPDATE gangwar SET lastAttack = NOW(), owner = ? WHERE zone = ?", attackerData.getName(), gangwarData.getGangZone().getName());
         }
         gangwarData.setAttacker(null);

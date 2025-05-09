@@ -45,7 +45,7 @@ public class AkteCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Spieler wurde nicht gefunden.");
             return false;
         }
-        Main.getInstance().utils.tabletUtils.editPlayerAkte(player, target.getUniqueId());
+        Main.utils.tabletUtils.editPlayerAkte(player, target.getUniqueId());
         return false;
     }
 }

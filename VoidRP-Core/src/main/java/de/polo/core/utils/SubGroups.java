@@ -54,7 +54,7 @@ public class SubGroups {
 
     public void sendMessage(String message, SubGroup... subGroups) {
         for (SubGroup subGroup : subGroups) {
-            for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+            for (PlayerData playerData : Main.playerManager.getPlayers()) {
                 if (playerData.getSubGroupId() == subGroup.getId()) {
                     playerData.getPlayer().sendMessage(message);
                 }

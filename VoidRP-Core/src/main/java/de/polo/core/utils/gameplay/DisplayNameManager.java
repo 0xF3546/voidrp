@@ -17,7 +17,7 @@ public class DisplayNameManager {
     private final FactionManager factionManager;
     private final Map<String, BlacklistData> blacklistMap = new HashMap<>();
     private final ScoreboardAPI scoreboardAPI;
-    private FactionDisplayNameManager factionDisplayNameManager;
+    private final FactionDisplayNameManager factionDisplayNameManager;
 
     public DisplayNameManager(PlayerManager playerManager, FactionManager factionManager, ScoreboardAPI scoreboardAPI) {
         this.playerManager = playerManager;
@@ -36,7 +36,6 @@ public class DisplayNameManager {
     public void reloadDisplayNames(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         if (playerData.getFaction() == null) {
-            return;
         }
         //factionDisplayNameManager.updateForFaction(playerData.getFaction());
         /*clearPlayerScoreboard(player);

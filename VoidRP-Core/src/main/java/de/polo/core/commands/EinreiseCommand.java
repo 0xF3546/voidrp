@@ -130,7 +130,7 @@ public class EinreiseCommand implements CommandExecutor {
 
                 player.sendMessage(Prefix.MAIN + "Du bist nun §6Staatsbürger§7, nutze §l/perso§7 um dir deinen Personalausweis anzuschauen!");
                 playerManager.addExp(player, Utils.random(100, 200));
-                Main.getInstance().utils.tutorial.createdAusweis(player);
+                Main.utils.tutorial.createdAusweis(player);
                 player.playSound(player.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 0);
             }
         });

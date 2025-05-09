@@ -126,12 +126,11 @@ public class Seasonpass implements CommandExecutor {
     @Override
     @SneakyThrows
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Prefix.ERROR + "Dieser Befehl kann nur von Spielern ausgeführt werden.");
             return false;
         }
 
-        Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
 
         if (playerData == null) {
@@ -280,7 +279,7 @@ public class Seasonpass implements CommandExecutor {
             if (playerQuest.getState() >= quest.getReachedAt()) {
                 Reward reward = getRewardById(quest.getRewardId());
                 player.sendMessage("§8[§6Seasonpass§8]§a Du hast die Aufgabe " + quest.getName().replace("&", "§") + " §aabgeschlossen!");
-                Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
+                Main.gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
                 SoundManager.successSound(player);
             }
             Connection connection = Main.getInstance().coreDatabase.getConnection();

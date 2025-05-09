@@ -54,8 +54,7 @@ public class ReviveCommand implements CommandExecutor {
             Item nearestSkull = null;
             double nearestDistance = Double.MAX_VALUE;
             for (Entity entity : entities) {
-                if (entity instanceof Item && entity.getType() == EntityType.DROPPED_ITEM) {
-                    Item item = (Item) entity;
+                if (entity instanceof Item item && entity.getType() == EntityType.DROPPED_ITEM) {
                     if (item.getItemStack().getType() == Material.PLAYER_HEAD) {
                         double distance = item.getLocation().distance(player.getLocation());
                         if (distance < nearestDistance) {

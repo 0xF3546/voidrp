@@ -89,12 +89,11 @@ public class Beginnerpass implements CommandExecutor {
     @SneakyThrows
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(Prefix.ERROR + "Dieser Befehl kann nur von Spielern ausgeführt werden.");
             return false;
         }
 
-        Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
 
         // Sicherstellen, dass der Spieler alle Quests hat
@@ -178,7 +177,7 @@ public class Beginnerpass implements CommandExecutor {
             if (playerQuest.getState() >= quest.getReachedAt()) {
                 Reward reward = getRewardById(quest.getRewardId());
                 player.sendMessage("§8[§6Beginnerpass§8]§a Du hast die Aufgabe " + quest.getName().replace("&", "§") + " §aabgeschlossen!");
-                Main.getInstance().gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
+                Main.gamePlay.addQuestReward(player, reward.getType(), reward.getAmount(), reward.getInfo());
                 SoundManager.successSound(player);
             }
 

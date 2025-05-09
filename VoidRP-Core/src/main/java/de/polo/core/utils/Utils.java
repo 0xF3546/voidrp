@@ -177,7 +177,7 @@ public class Utils {
     }
 
     public void setAFK(Player player, boolean state) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = Main.playerManager.getPlayerData(player.getUniqueId());
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         Team afkTeam = scoreboard.getTeam("afk");
 
@@ -222,8 +222,8 @@ public class Utils {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
         static void setTablist(Player player, String prefix) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
-            RankData rankData = Main.getInstance().serverManager.getRankData(playerData.getRang());
+            PlayerData playerData = Main.playerManager.getPlayerData(player.getUniqueId());
+            RankData rankData = Main.serverManager.getRankData(playerData.getRang());
             player.setDisplayName(Color.GRAY + player.getName());
             String suffix = "";
             if (rankData.getPermlevel() >= 40) {
@@ -253,7 +253,7 @@ public class Utils {
         }
 
         static void updatePlayer(Player player) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+            PlayerData playerData = Main.playerManager.getPlayerData(player.getUniqueId());
             String suffix = "";
             String prefix = "";
             VoidPlayer voidPlayer = VoidAPI.getPlayer(player);

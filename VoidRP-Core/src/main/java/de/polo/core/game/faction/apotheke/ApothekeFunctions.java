@@ -296,7 +296,7 @@ public class ApothekeFunctions implements Listener {
                 } else {
                     apotheke.setOwner(apotheke.getAttackerFaction());
                 }
-                Main.getInstance().blockManager.updateBlocksAtScenario("apotheke-" + apotheke.getId(), factionManager.getFactionData(apotheke.getAttackerFaction()));
+                Main.blockManager.updateBlocksAtScenario("apotheke-" + apotheke.getId(), factionManager.getFactionData(apotheke.getAttackerFaction()));
                 apotheke.save();
                 rob.remove(apotheke);
             } else {

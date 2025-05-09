@@ -37,12 +37,10 @@ public class SprengguertelCommand implements CommandExecutor, Listener {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§cDieser Befehl kann nur von einem Spieler ausgeführt werden.");
             return false;
         }
-
-        Player player = (Player) sender;
 
         if (args.length < 1) {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /sprenggürtel [Zeit (in Sekunden)]");

@@ -26,7 +26,7 @@ public class EquiplogCommand extends CommandBase implements TabCompleter {
 
     @Override
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
-        Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
+        Faction factionData = Main.factionManager.getFactionData(playerData.getFaction());
         if (args.length < 1) {
             Main.getInstance().getCoreDatabase().executeQueryAsync("SELECT * FROM faction_equip_logs WHERE factionId = ?", factionData.getId())
                     .thenAccept(result -> {
@@ -49,7 +49,7 @@ public class EquiplogCommand extends CommandBase implements TabCompleter {
                 }
             });
         } else if (args[0].equalsIgnoreCase("reset")) {
-            Main.getInstance().factionManager.sendCustomLeaderMessageToFactions("§8[§6Equip§8]§c " + player.getName() + " hat den Equiplog geleert.");
+            Main.factionManager.sendCustomLeaderMessageToFactions("§8[§6Equip§8]§c " + player.getName() + " hat den Equiplog geleert.");
             Main.getInstance().getCoreDatabase().deleteAsync("DELETE FROM faction_equip_logs WHERE factionId = ?", factionData.getId());
         }
     }

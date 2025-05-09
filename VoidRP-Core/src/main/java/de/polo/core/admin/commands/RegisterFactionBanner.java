@@ -47,12 +47,11 @@ public class RegisterFactionBanner implements CommandExecutor {
         }
         Block block = player.getTargetBlock(null, 10);
         BlockState state = block.getState();
-        if (!(state instanceof Banner)) {
+        if (!(state instanceof Banner banner)) {
             player.sendMessage(Prefix.ERROR + "Der Angeschaute Block ist kein Banner.");
             return false;
         }
 
-        Banner banner = (Banner) state;
         List<Pattern> patterns = banner.getPatterns();
         JSONArray jsonArray = new JSONArray();
 

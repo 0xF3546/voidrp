@@ -74,7 +74,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
         VoidPlayer targetVoidPlayer = VoidAPI.getPlayer(target);
         Agreement agreement = new Agreement(player, targetVoidPlayer, "rezept",
                 () -> {
-                    PlayerData targetData = Main.getInstance().playerManager.getPlayerData(target);
+                    PlayerData targetData = Main.playerManager.getPlayerData(target);
                     if (targetData.getBargeld() < 200) {
                         player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                         return;
@@ -86,7 +86,7 @@ public class GivePrescriptionCommand extends CommandBase implements TabCompleter
                     target.sendMessage(Component.text("§eDu hast ein " + finalPrescription.getName() + " Rezept gekauft."));
                     player.sendMessage(Component.text("§c" + target.getName() + " hat das Angebot angenommen."));
                     try {
-                        Main.getInstance().factionManager.addFactionMoney("Medic", 100, "Rezept verkauf");
+                        Main.factionManager.addFactionMoney("Medic", 100, "Rezept verkauf");
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

@@ -50,7 +50,7 @@ public class MinerJobCommand implements CommandExecutor {
         this.factionManager = factionManager;
 
 
-        registeredBlocks = Main.getInstance().blockManager.getBlocks().stream().filter(x -> x.getInfo() != null && x.getInfo().equalsIgnoreCase("mine")).collect(Collectors.toList());
+        registeredBlocks = Main.blockManager.getBlocks().stream().filter(x -> x.getInfo() != null && x.getInfo().equalsIgnoreCase("mine")).collect(Collectors.toList());
         Main.registerCommand("miner", this);
     }
 

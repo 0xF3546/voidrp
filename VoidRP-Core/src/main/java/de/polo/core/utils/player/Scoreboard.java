@@ -80,13 +80,13 @@ public class Scoreboard {
     private void updateAdminScoreboard() {
         Runtime r = Runtime.getRuntime();
         scoreboardAPI.updateScoreboardTitle(player, "admin", "§cAdministration");
-        scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.getInstance().supportManager.getTickets().size());
+        scoreboardAPI.setScore(player, "admin", "§6Tickets offen§8:", Main.supportManager.getTickets().size());
         scoreboardAPI.setScore(player, "admin", "§6Auslastung§8:", (int) (r.totalMemory() - r.freeMemory()) / 1048576);
         scoreboardAPI.setScore(player, "admin", "§6Spieler Online§8:", Bukkit.getOnlinePlayers().size());
     }
 
     private void updateMineScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = Main.playerManager.getPlayerData(player.getUniqueId());
         scoreboardAPI.updateScoreboardTitle(player, "mine", "§8» §7§lMine §8«");
         scoreboardAPI.setScore(player, "mine", "§bDiamanterz§8:", ItemManager.getItem(player, Material.DIAMOND_ORE));
         scoreboardAPI.setScore(player, "mine", "§aSmaragderz§8:", ItemManager.getItem(player, Material.EMERALD_ORE));
@@ -97,20 +97,20 @@ public class Scoreboard {
     }
 
     private void updateFarmerScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = Main.playerManager.getPlayerData(player.getUniqueId());
         scoreboardAPI.updateScoreboardTitle(player, "farmer", "§8» §eFarmer §8«");
         scoreboardAPI.setScore(player, "farmer", "§eHeuballen abgebaut§8:", playerData.getIntVariable("heuballen"));
         scoreboardAPI.setScore(player, "farmer", "§eHeuballen abzubauen§8:", playerData.getIntVariable("heuballen_remaining"));
     }
 
     private void updatePostboteScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = Main.playerManager.getPlayerData(player.getUniqueId());
         scoreboardAPI.updateScoreboardTitle(player, "postbote", "§8» §ePostbote §8«");
         scoreboardAPI.setScore(player, "postbote", "§ePost verbleibend§8:", playerData.getIntVariable("post"));
     }
 
     private void updateMuellmannScoreboard() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        PlayerData playerData = Main.playerManager.getPlayerData(player.getUniqueId());
         scoreboardAPI.updateScoreboardTitle(player, "muellmann", "§8» §9Müllmann §8«");
         scoreboardAPI.setScore(player, "muellmann", "§3Müll gesammelt§8:", playerData.getIntVariable("muellkg"));
         scoreboardAPI.setScore(player, "muellmann", "§3Häuser verbleibend§8:", playerData.getIntVariable("muell"));

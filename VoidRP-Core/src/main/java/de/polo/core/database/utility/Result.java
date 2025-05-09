@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Result {
-    private ResultSet resultSet;
-    private Statement statement;
+    private final ResultSet resultSet;
+    private final Statement statement;
 
     public Result(ResultSet resultSet, Statement statement) {
         this.resultSet = resultSet;

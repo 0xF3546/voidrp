@@ -12,15 +12,15 @@ import net.kyori.adventure.text.Component;
 public class CustomTabAPI {
 
     // Rank storage
-    private Map<String, RankData> ranks = new HashMap<>();
+    private final Map<String, RankData> ranks = new HashMap<>();
     // Player to rank mapping
-    private Map<UUID, String> playerRanks = new HashMap<>();
+    private final Map<UUID, String> playerRanks = new HashMap<>();
     // Tab header & footer lines
     private List<String> tabHeaderLines = new ArrayList<>();
     private List<String> tabFooterLines = new ArrayList<>();
 
     // A special set of viewers who will see different prefixes
-    private Set<UUID> specialViewers = new HashSet<>();
+    private final Set<UUID> specialViewers = new HashSet<>();
 
     public CustomTabAPI() {
         // Nothing special needed in constructor now

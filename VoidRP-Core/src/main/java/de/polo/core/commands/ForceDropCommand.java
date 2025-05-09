@@ -33,7 +33,7 @@ public class ForceDropCommand implements CommandExecutor {
             return false;
         }
 
-        Drop drop = Main.getInstance().gamePlay.spawnDrop();
+        Drop drop = Main.gamePlay.spawnDrop();
         if (drop == null) {
             player.sendMessage(Prefix.ERROR + "drop konnte nicht gespawnt werden.");
             return false;

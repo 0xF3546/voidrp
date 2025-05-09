@@ -48,11 +48,10 @@ public class BombeCommand implements CommandExecutor, Listener {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             return false;
         }
 
-        Player player = (Player) sender;
         Location location = player.getLocation();
         PlayerData playerData = playerManager.getPlayerData(player);
 

@@ -158,11 +158,11 @@ public class NameTagProviderImpl implements INameTagProvider {
     }
 
     public void updateForFaction(String faction) {
-        Faction factionData = Main.getInstance().factionManager.getFactionData(faction);
+        Faction factionData = Main.factionManager.getFactionData(faction);
         if (factionData == null) return;
         List<Player> viewers = new ObjectArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+            PlayerData playerData = Main.playerManager.getPlayerData(player);
             if (playerData == null) continue;
             if (playerData.getFaction() == null) continue;
             if (!playerData.getFaction().equalsIgnoreCase(faction)) continue;

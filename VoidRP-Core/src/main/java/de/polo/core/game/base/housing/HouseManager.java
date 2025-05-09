@@ -486,7 +486,7 @@ public class HouseManager implements CommandExecutor, Listener {
                             player.sendMessage(Component.text(Prefix.ERROR + "Die Waffe hat nicht genug Verschleiss."));
                             return;
                         }
-                        Main.getInstance().getWeaponManager().takeOutWeapon(player, playerWeapon);
+                        Main.getWeaponManager().takeOutWeapon(player, playerWeapon);
                     } else {
                         playerData.setVariable("chatblock", "weaponammo");
                         playerData.setVariable("playerWeapon", playerWeapon);
@@ -596,9 +596,9 @@ public class HouseManager implements CommandExecutor, Listener {
                     System.out.println(item.getItemMeta().displayName());
                     if (item.getType() == playerWeapon.getWeapon().getMaterial()
                             && item.getItemMeta().getDisplayName().equalsIgnoreCase(playerWeapon.getWeapon().getName())) {
-                        Weapon weapon = Main.getInstance().getWeaponManager().getWeaponFromItemStack(item);
+                        Weapon weapon = Main.getWeaponManager().getWeaponFromItemStack(item);
                         if (weapon == null) continue;
-                        if (Main.getInstance().getWeaponManager().takeOutAmmo(event.getPlayer(), playerWeapon, weapon, amount)) {
+                        if (Main.getWeaponManager().takeOutAmmo(event.getPlayer(), playerWeapon, weapon, amount)) {
                             event.getPlayer().sendMessage(Prefix.MAIN + "Du hast deine Waffe mit " + amount + " beladen.");
                         } else {
                             event.getPlayer().sendMessage(Prefix.MAIN + "Deine Waffe hat nicht genug Schuss.");

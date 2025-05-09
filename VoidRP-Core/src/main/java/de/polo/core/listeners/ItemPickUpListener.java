@@ -18,8 +18,7 @@ public class ItemPickUpListener implements Listener {
         if (event.getItem().getItemStack().getType().equals(Material.SKELETON_SKULL) || event.getItem().getItemStack().getType().equals(Material.WITHER_SKELETON_SKULL) || event.getItem().getItemStack().getType().equals(Material.PLAYER_HEAD)) {
             event.setCancelled(true);
         }
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
             if (ItemManager.getCustomItemCount(player, RoleplayItem.SWAT_SHIELD) >= 1 && event.getItem().getItemStack().getType().equals(RoleplayItem.SWAT_SHIELD.getMaterial())) {
                 event.setCancelled(true);
             }

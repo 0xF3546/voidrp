@@ -43,7 +43,7 @@ public class Dealer {
 
     public String getOwner() {
         if (owner == null) {
-            IGangzone gz = Main.getInstance().utils.gangwarUtils.getGangzoneByName(gangzone);
+            IGangzone gz = Main.utils.gangwarUtils.getGangzoneByName(gangzone);
             owner = gz.getOwner();
         }
 

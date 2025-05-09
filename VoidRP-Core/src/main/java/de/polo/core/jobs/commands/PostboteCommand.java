@@ -124,7 +124,7 @@ public class PostboteCommand extends CommandBase implements Job {
     @Override
     public void endJob(VoidPlayer player) {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
-        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+        Main.beginnerpass.didQuest(player.getPlayer(), 5);
 
         player.sendMessage(prefix + "Du hast den Job beendet.");
         SoundManager.successSound(player.getPlayer());
@@ -149,7 +149,7 @@ public class PostboteCommand extends CommandBase implements Job {
             player.sendMessage(prefix + "Du hast Post bei §6Haus " + house + "§7 abgeliefert. §a+" + payout + "$");
             SoundManager.successSound(player.getPlayer());
             playerService.addExp(player.getPlayer(), Utils.random(1, 3));
-            Main.getInstance().seasonpass.didQuest(player.getPlayer(), 3);
+            Main.seasonpass.didQuest(player.getPlayer(), 3);
 
             player.getData().addBankMoney(payout, "Auszahlung Postbote");
             player.setVariable("post", remainingDeliveries - 1);

@@ -31,7 +31,7 @@ public class WhistleCommand implements CommandExecutor {
             return false;
         }
         String playerName = player.getName();
-        if (Main.getInstance().gamePlay.getMaskState(player) != null) {
+        if (Main.gamePlay.getMaskState(player) != null) {
             playerName = "Maskierter";
         }
         for (Player players : Bukkit.getOnlinePlayers()) {

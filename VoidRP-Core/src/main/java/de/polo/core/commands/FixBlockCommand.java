@@ -48,8 +48,7 @@ public class FixBlockCommand implements CommandExecutor {
         RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(block.getLocation());
         if (registeredBlock.getInfo().equalsIgnoreCase("atm")) {
             TileState state = (TileState) block.getState();
-            if (state instanceof Sign) {
-                Sign sign = (Sign) state;
+            if (state instanceof Sign sign) {
                 sign.setEditable(false);
                 sign.setLine(1, "");
                 sign.setLine(2, "Bankautomat");
@@ -58,11 +57,10 @@ public class FixBlockCommand implements CommandExecutor {
             }
         }
         if (registeredBlock.getInfo().equalsIgnoreCase("house")) {
-            House house = Main.getInstance().houseManager.getHouse(Integer.parseInt(registeredBlock.getInfoValue()));
+            House house = Main.houseManager.getHouse(Integer.parseInt(registeredBlock.getInfoValue()));
             if (house.getOwner() == null) {
                 TileState state = (TileState) block.getState();
-                if (state instanceof Sign) {
-                    Sign sign = (Sign) state;
+                if (state instanceof Sign sign) {
                     sign.setEditable(false);
                     sign.setLine(1, "== §6Haus " + house.getNumber() + " §0==");
                     sign.setLine(2, "§2Zu Verkaufen");
@@ -74,8 +72,7 @@ public class FixBlockCommand implements CommandExecutor {
                 OfflinePlayer offlinePlayer = Utils.getOfflinePlayer(house.getOwner());
                 if (offlinePlayer == null) return false;
                 if (offlinePlayer.getName() == null) return false;
-                if (state instanceof Sign) {
-                    Sign sign = (Sign) state;
+                if (state instanceof Sign sign) {
                     sign.setEditable(false);
                     sign.setLine(1, "== §6Haus " + house.getNumber() + " §0==");
                     sign.setLine(2, offlinePlayer.getName());

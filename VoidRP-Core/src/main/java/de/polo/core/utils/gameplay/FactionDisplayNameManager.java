@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class FactionDisplayNameManager {
 
     public void updateForFaction(String faction) {
-        Faction factionData = Main.getInstance().factionManager.getFactionData(faction);
+        Faction factionData = Main.factionManager.getFactionData(faction);
         if (factionData == null) return;
 
         // Legen Sie einen Rang für diese Fraktion fest. Der Prefix wird aus der Fraktionsfarbe abgeleitet.
@@ -18,7 +18,7 @@ public class FactionDisplayNameManager {
         Main.customTabAPI.setRank(faction.toLowerCase(), "§" + factionData.getPrimaryColor(), 10);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+            PlayerData playerData = Main.playerManager.getPlayerData(player);
             if (playerData == null) continue;
             if (playerData.getFaction() == null) {
                 // optional: remove the rank for the player

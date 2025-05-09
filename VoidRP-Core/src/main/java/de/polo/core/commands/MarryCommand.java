@@ -100,8 +100,8 @@ public class MarryCommand implements CommandExecutor {
 
                 HashMap<String, String> hmap2 = new HashMap<>();
                 hmap2.put(secondplayer.getUniqueId().toString(), "verheiratet");
-                Main.getInstance().beginnerpass.didQuest(firstplayer, 20);
-                Main.getInstance().beginnerpass.didQuest(secondplayer, 20);
+                Main.beginnerpass.didQuest(firstplayer, 20);
+                Main.beginnerpass.didQuest(secondplayer, 20);
                 firstplayerData.getRelationShip().clear();
                 firstplayerData.setRelationShip(hmap2);
                 if (firstplayerData.getGender().equals(Gender.MALE)) {

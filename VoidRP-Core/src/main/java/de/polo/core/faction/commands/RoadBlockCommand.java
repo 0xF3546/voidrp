@@ -19,7 +19,7 @@ public class RoadBlockCommand implements CommandExecutor {
 
     private final FactionManager factionManager;
     private final PlayerManager playerManager;
-    List<Block> roadblocks = Main.getInstance().gamePlay.roadblocks;
+    List<Block> roadblocks = Main.gamePlay.roadblocks;
 
     public RoadBlockCommand(FactionManager factionManager, PlayerManager playerManager) {
         this.factionManager = factionManager;
@@ -30,15 +30,13 @@ public class RoadBlockCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             return false;
         }
 
         for (Block block : roadblocks) {
             block.setType(Material.AIR);
         }
-
-        Player player = (Player) sender;
 
         PlayerData playerData = playerManager.getPlayerData(player);
 

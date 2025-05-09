@@ -283,18 +283,18 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.core.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.core.storage.Weapon weapon = Main.weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                            Main.getInstance().weaponManager.removeWeapon(player, item);
+                            Main.weaponManager.removeWeapon(player, item);
                         }
                     }
                 }
             }
         }
         player.getInventory().clear();
-        Main.getInstance().weaponManager.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.FFA, 300);
+        Main.weaponManager.giveWeapon(player, Weapon.ASSAULT_RIFLE, WeaponType.FFA, 300);
         // Main.getInstance().weapons.giveWeapon(player, Weapon.HUNTING_RIFLE.getMaterial(), WeaponType.FFA);
-        Main.getInstance().weaponManager.giveWeapon(player, Weapon.PISTOL, WeaponType.FFA, 300);
+        Main.weaponManager.giveWeapon(player, Weapon.PISTOL, WeaponType.FFA, 300);
         player.getInventory().addItem(ItemManager.createItem(RoleplayItem.SMARTPHONE.getMaterial(), 1, 0, RoleplayItem.SMARTPHONE.getDisplayName()));
     }
 
@@ -303,7 +303,7 @@ public class FFA implements CommandExecutor {
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         // if (playerData.getFaction() == null) return;
         // playerData.removeBossBar("ffa");
-        Main.getInstance().utils.deathUtil.revivePlayer(player, false);
+        Main.utils.deathUtil.revivePlayer(player, false);
         FFALobby lobby = playerData.getVariable("ffa");
         sendMessageToLobby(lobby, "§8[§cFFA§8]§7 " + player.getName() + " hat die Lobby verlassen.");
         if (playerData.getVariable("ffa") == null) {
@@ -317,9 +317,9 @@ public class FFA implements CommandExecutor {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        de.polo.core.storage.Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        de.polo.core.storage.Weapon weapon = Main.weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.GANGWAR) {
-                            Main.getInstance().weaponManager.removeWeapon(player, item);
+                            Main.weaponManager.removeWeapon(player, item);
                         }
                     }
                 }

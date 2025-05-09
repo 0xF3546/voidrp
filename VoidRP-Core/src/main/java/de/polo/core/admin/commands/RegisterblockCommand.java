@@ -52,8 +52,7 @@ public class RegisterblockCommand implements CommandExecutor {
         }
         try {
             TileState state = (TileState) block.getState();
-            if (state instanceof Sign) {
-                Sign sign = (Sign) state;
+            if (state instanceof Sign sign) {
                 sign.setEditable(false);
                 if (!args[0].equalsIgnoreCase("atm")) {
                     sign.setLine(1, "== §6Haus " + args[0] + " §0==");

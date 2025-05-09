@@ -40,12 +40,11 @@ public class BanCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("This command can only be executed by a player.");
             return false;
         }
 
-        Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
 
         if (playerData.getPermlevel() < 70) {

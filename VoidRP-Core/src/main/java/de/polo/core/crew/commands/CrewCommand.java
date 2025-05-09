@@ -734,7 +734,7 @@ public class CrewCommand extends CommandBase implements Listener {
             }
             CrewService crewService = VoidAPI.getService(CrewService.class);
             event.getPlayerData().setVariable("crewRankName", message);
-            CrewRank crewRank = (CrewRank) event.getPlayerData().getVariable("crewRank");
+            CrewRank crewRank = event.getPlayerData().getVariable("crewRank");
             crewService.setRankName(crewRank, message);
             openCrewRank(VoidAPI.getPlayer(player), crewRank, crewRank.getRank(), () -> {
                 openCrewRanks(VoidAPI.getPlayer(player), 1, () -> {

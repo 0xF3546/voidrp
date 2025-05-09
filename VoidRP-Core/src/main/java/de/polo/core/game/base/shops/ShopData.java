@@ -105,7 +105,7 @@ public class ShopData {
     }
 
     public Company getCompany() {
-        return Main.getInstance().companyManager.getCompanyById(company);
+        return Main.companyManager.getCompanyById(company);
     }
 
     public void setCompany(int company) {

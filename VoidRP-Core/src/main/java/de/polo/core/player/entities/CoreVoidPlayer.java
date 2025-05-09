@@ -95,7 +95,7 @@ public class CoreVoidPlayer implements VoidPlayer {
     @Override
     public PlayerCharacter getData() {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
-        return (PlayerCharacter) playerService.getPlayerData(player);
+        return playerService.getPlayerData(player);
     }
 
     @Override

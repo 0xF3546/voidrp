@@ -82,7 +82,7 @@ public class CatchFishCommand extends CommandBase implements Listener {
     }
 
     private void caughtFish(Player player) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = Main.playerManager.getPlayerData(player);
         int random = Utils.random(10, 20);
         playerData.setVariable("hochseefischer_kg", (int) playerData.getVariable("hochseefischer_kg") + random);
         player.sendMessage(PREFIX + "Du hast §6" + random + "kg§7 Fisch gefangen.");
@@ -98,7 +98,7 @@ public class CatchFishCommand extends CommandBase implements Listener {
     @EventHandler
     public void onSecond(SecondTickEvent event) {
         for (Player player : HochseefischerCommand.getPlayers()) {
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+            PlayerData playerData = Main.playerManager.getPlayerData(player);
             player.sendActionBar(Component.text("§3Es befinden sich " + playerData.getVariable("hochseefischer_kg") + "kg Fisch im Boot."));
             if (caughts.get(player) == null) continue;
             if (!caughts.get(player).plusSeconds(20).isBefore(Utils.getTime())) continue;

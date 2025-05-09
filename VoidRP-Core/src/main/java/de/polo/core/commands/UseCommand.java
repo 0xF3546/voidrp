@@ -32,7 +32,7 @@ public class UseCommand implements CommandExecutor, TabCompleter {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /use [Droge]");
             return false;
         }
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = Main.playerManager.getPlayerData(player);
         String errorMsg = "§cDu hast nicht genug Drogen.";
         Drug drug = null;
         for (Drug d : Drug.values()) {

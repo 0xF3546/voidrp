@@ -103,8 +103,8 @@ CheckoutWebshopCommand implements CommandExecutor {
                     PlayerData playerData = playerManager.getPlayerData(target);
                     target.sendMessage("§8[§eShop§8]§a Du hast Pack-Starter erhalten!");
                     playerData.addMoney(25000, "Starterpack");
-                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.ASSAULT_RIFLE, 0, 250);
-                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 0, 10);
+                    Main.getWeaponManager().giveWeaponToCabinet(target, Weapon.ASSAULT_RIFLE, 0, 250);
+                    Main.getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 0, 10);
                     ItemManager.addCustomItem(target, RoleplayItem.DRINK_WATER, 20);
                     ItemManager.addItem(target, Material.BREAD, "§7Brot", 128);
                     ItemManager.addItem(target, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
@@ -125,7 +125,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     target.sendMessage("§8[§eShop§8]§a Du hast Pack-Vortex erhalten!");
                     PlayerData playerData = playerManager.getPlayerData(target);
                     playerData.addMoney(6666, "Vortexpack");
-                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 120, 10);
+                    Main.getWeaponManager().giveWeaponToCabinet(target, Weapon.MARKSMAN, 120, 10);
                     ItemManager.addItem(target, Material.IRON_HELMET, "§fEisenhelm", 1);
                     return false;
                 }
@@ -194,8 +194,8 @@ CheckoutWebshopCommand implements CommandExecutor {
                                 case "pack-starter": {
                                     playerData.addMoney(25000, "Starterpack");
                                     player.sendMessage("§8[§eShop§8]§a Du hast Pack-Starter erhalten!");
-                                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 250);
-                                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 0, 10);
+                                    Main.getWeaponManager().giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 250);
+                                    Main.getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 0, 10);
                                     ItemManager.addCustomItem(player, RoleplayItem.DRINK_WATER, 20);
                                     ItemManager.addItem(player, Material.BREAD, "§7Brot", 128);
                                     ItemManager.addItem(player, Material.GOLDEN_HELMET, "§6Goldener Helm", 1);
@@ -213,7 +213,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                                 case "pack-vortex":
                                     playerData.addMoney(6666, "Vortexpack");
                                     player.sendMessage("§8[§eShop§8]§a Du hast Pack-Vortex erhalten!");
-                                    Main.getInstance().getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 120, 10);
+                                    Main.getWeaponManager().giveWeaponToCabinet(player, Weapon.MARKSMAN, 120, 10);
                                     ItemManager.addItem(player, Material.IRON_HELMET, "§fEisenhelm", 1);
                                     return false;
                                 case "pack-christmas":

@@ -288,8 +288,8 @@ public class PlayerManager implements Listener {
             }
 
             if (result.getInt("subTeam") != -1 && playerData.getFaction() != null) {
-                Faction factionData = Main.getInstance().factionManager.getFactionData(playerData.getFaction());
-                for (SubTeam subTeam : Main.getInstance().factionManager.getSubTeams(factionData.getId())) {
+                Faction factionData = factionManager.getFactionData(playerData.getFaction());
+                for (SubTeam subTeam : factionManager.getSubTeams(factionData.getId())) {
                     if (!(subTeam.getId() == result.getInt("subTeam"))) continue;
                     playerData.setSubTeam(subTeam);
                 }
@@ -574,7 +574,7 @@ public class PlayerManager implements Listener {
                 coreDatabase.updateAsync("UPDATE players SET playtime_hours = ?, playtime_minutes = 1, current_hours = 0, needed_hours = ?, visum = ? WHERE uuid = ?", hours, needed_hours, visum, uuid.toString());
                 player.sendMessage(Prefix.MAIN + "Aufgrund deiner Spielzeit bist du nun Visumstufe §c" + visum + "§7!");
                 playerData.setVisum(visum);
-                Main.getInstance().beginnerpass.didQuest(player, 4);
+                beginnerpass.didQuest(player, 4);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 0);
                 playerData.setCurrentHours(0);
                 if (visum == 2) {
@@ -807,7 +807,7 @@ public class PlayerManager implements Listener {
                     Bukkit.getPluginManager().callEvent(new HourTickEvent(currentHour));
 
                     // Batch-Operation für Fraktionsdaten-Update
-                    for (Faction factionData : Main.getInstance().factionManager.getFactions()) {
+                    for (Faction factionData : factionManager.getFactions()) {
                         double zinsen = Math.round(factionData.getBank() * 0.00075);
                         double steuern = Math.round(factionData.getBank() * 0.00035);
                         if (factionData.getBank() >= factionData.upgrades.getTax()) {
@@ -871,7 +871,7 @@ public class PlayerManager implements Listener {
 
                         // Datenbank- und Fraktionsaktualisierungen
                         try {
-                            Main.getInstance().factionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
+                            factionManager.addFactionMoney(factionData.getName(), (int) plus, "Fraktionspayday");
                             coreDatabase.updateAsync("UPDATE factions SET jointsMade = 0 WHERE id = ?", factionData.getId());
                             factionData.setJointsMade(0);
                         } catch (SQLException e) {
@@ -1419,8 +1419,7 @@ public class PlayerManager implements Listener {
 
     private ArmorStand getArmorStand(Player player) {
         for (Entity entity : player.getWorld().getEntities()) {
-            if (entity instanceof ArmorStand) {
-                ArmorStand armorStand = (ArmorStand) entity;
+            if (entity instanceof ArmorStand armorStand) {
                 if (armorStand.getCustomName() != null && armorStand.getCustomName().equals("CarryStand_" + player.getUniqueId())) {
                     return armorStand;
                 }

@@ -106,7 +106,7 @@ public class VertragUtil {
                     factionManager.setPlayerInFrak(player, curr.toString(), 0, true);
                     factionManager.sendMessageToFaction(curr.toString(), player.getName() + " ist der Fraktion beigetreten");
                     adminService.sendMessage(player.getName() + " ist der Fraktion " + curr + " beigetreten.", Color.PURPLE);
-                    Main.getInstance().beginnerpass.didQuest(player, 1);
+                    Main.beginnerpass.didQuest(player, 1);
                     break;
                 case "business_invite":
                     playerData.setBusiness(Integer.parseInt(curr.toString()));
@@ -114,13 +114,13 @@ public class VertragUtil {
                     playerData.save();
                     break;
                 case "company_invite":
-                    Company company = Main.getInstance().companyManager.getCompanyById(Integer.parseInt(curr.toString()));
+                    Company company = Main.companyManager.getCompanyById(Integer.parseInt(curr.toString()));
                     playerData.setCompany(company);
                     playerData.save();
                     player.sendMessage("§6Du bist " + company.getName() + " beigetreten.");
                     break;
                 case "subgroup_invite":
-                    SubGroup group = Main.getInstance().factionManager.subGroups.getSubGroup(Integer.parseInt(curr.toString()));
+                    SubGroup group = Main.factionManager.subGroups.getSubGroup(Integer.parseInt(curr.toString()));
                     playerData.setSubGroupId(group.getId());
                     playerData.save();
                     player.sendMessage("§6Du bist " + group.getName() + " beigetreten.");
@@ -131,11 +131,11 @@ public class VertragUtil {
                     int preis = Integer.parseInt(args[1]);
                     House houseData = HouseManager.houseDataMap.get(haus);
                     houseData.addRenter(player.getUniqueId().toString(), preis);
-                    Main.getInstance().utils.houseManager.updateRenter(haus);
+                    Main.utils.houseManager.updateRenter(haus);
                     Player player1 = Bukkit.getPlayer(UUID.fromString(houseData.getOwner()));
                     player1.sendMessage("§8[§6Haus§8]§a " + player.getName() + " Mietet nun in Haus " + houseData.getNumber() + " für " + preis + "$.");
                     player.sendMessage("§8[§6Haus§8]§a Du mietest nun in Haus " + houseData.getNumber() + " für " + preis + "$/PayDay.");
-                    Main.getInstance().beginnerpass.didQuest(player, 10);
+                    Main.beginnerpass.didQuest(player, 10);
                     break;
                 case "phonecall":
                     PhoneUtils.acceptCall(player, curr.toString());
@@ -198,7 +198,7 @@ public class VertragUtil {
                             finalTargetplayer.sendMessage("§8[§cLabor§8]§e Die Blutgruppe ist " + random + "!");
                             player.sendMessage("§eDeine Blutgruppe ist " + random + "!");
                             playerData.setBloodType(random);
-                            Main.getInstance().beginnerpass.didQuest(player, 21);
+                            Main.beginnerpass.didQuest(player, 21);
                             Main.getInstance().getCoreDatabase().updateAsync("UPDATE players SET bloodtype = ? WHERE uuid = ?", random, player.getUniqueId().toString());
                             try {
                                 playerManager.removeMoney(player, 200, "Untersuchung (Blutgruppe)");
@@ -212,10 +212,10 @@ public class VertragUtil {
                     }
                     break;
                 case "streetwar":
-                    Main.getInstance().streetwar.acceptStreetwar(player, curr.toString());
+                    Main.streetwar.acceptStreetwar(player, curr.toString());
                     break;
                 case "alliance":
-                    Main.getInstance().gamePlay.alliance.accept(player, curr.toString());
+                    Main.gamePlay.alliance.accept(player, curr.toString());
                     break;
                 case "vertrag":
                     player.sendMessage(Prefix.MAIN + "Du hast den Vertrag angenommen!");
@@ -252,11 +252,11 @@ public class VertragUtil {
                     player.sendMessage("§6Du hast die einladung zu abgelehnt.");
                     break;
                 case "company_invite":
-                    Company company = Main.getInstance().companyManager.getCompanyById(Integer.parseInt(curr));
+                    Company company = Main.companyManager.getCompanyById(Integer.parseInt(curr));
                     player.sendMessage("§6Du hast die einladung zu " + company.getName() + " abgelehnt.");
                     break;
                 case "subgroup_invite":
-                    SubGroup subGroup = Main.getInstance().factionManager.subGroups.getSubGroup(Integer.parseInt(curr));
+                    SubGroup subGroup = Main.factionManager.subGroups.getSubGroup(Integer.parseInt(curr));
                     player.sendMessage("§6Du hast die einladung zu " + subGroup.getName() + " abgelehnt.");
                     break;
                 case "phonecall":
@@ -288,10 +288,10 @@ public class VertragUtil {
                         player.sendMessage(Prefix.ERROR + "Spieler konnte nicht gefunden werden.");
                     }
                 case "streetwar":
-                    Main.getInstance().streetwar.denyStreetwar(player, curr);
+                    Main.streetwar.denyStreetwar(player, curr);
                     break;
                 case "alliance":
-                    Main.getInstance().gamePlay.alliance.deny(player, curr);
+                    Main.gamePlay.alliance.deny(player, curr);
                     break;
                 case "vertrag":
                     player.sendMessage(Prefix.MAIN + "Du hast den Vertrag abgelehnt!");

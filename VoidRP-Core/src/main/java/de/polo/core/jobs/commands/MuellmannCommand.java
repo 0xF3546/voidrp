@@ -119,8 +119,8 @@ public class MuellmannCommand extends CommandBase implements Job {
     @Override
     public void endJob(VoidPlayer player) {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
-        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
-        Main.getInstance().seasonpass.didQuest(player.getPlayer(), 2);
+        Main.beginnerpass.didQuest(player.getPlayer(), 5);
+        Main.seasonpass.didQuest(player.getPlayer(), 2);
 
         int collectedTrash = (int)player.getVariable("muellkg");
         int payout = Utils.random(ServerManager.getPayout("muellmann"), ServerManager.getPayout("muellmann2")) * collectedTrash;

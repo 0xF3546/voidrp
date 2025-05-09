@@ -147,7 +147,7 @@ public class WinzerCommand implements CommandExecutor, MiningJob {
     }
 
     private void checked(VoidPlayer player) {
-        Main.getInstance().seasonpass.didQuest(player.getPlayer(), 9);
+        seasonpass.didQuest(player.getPlayer(), 9);
         player.setVariable("winzer", (int) player.getVariable("winzer") - 1);
         player.setVariable("winzer_harvested", (int) player.getVariable("winzer_harvested") + Utils.random(1, 3));
         if ((int) player.getVariable("winzer") == 0) {
@@ -220,7 +220,7 @@ public class WinzerCommand implements CommandExecutor, MiningJob {
     @Override
     public void endJob(VoidPlayer player) {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
-        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+        beginnerpass.didQuest(player.getPlayer(), 5);
         int payout = ServerManager.getPayout("winzer") * (int) player.getVariable("winzer_harvested");
         player.sendMessage("§8[§5Winzer§8]§7 Vielen Dank für die geleistete Arbeit. §a+" + payout + "$");
         SoundManager.successSound(player.getPlayer());

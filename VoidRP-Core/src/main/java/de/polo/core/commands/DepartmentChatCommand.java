@@ -55,7 +55,7 @@ public class DepartmentChatCommand implements CommandExecutor {
                     }
                 }
             }
-            Faction alliance = Main.getInstance().gamePlay.alliance.getAlliance(playerData.getFaction());
+            Faction alliance = Main.gamePlay.alliance.getAlliance(playerData.getFaction());
             if (alliance == null) return false;
             factionManager.sendCustomMessageToFactions("§c" + playerData.getFaction() + " " + player.getName() + "§8:§7 " + msg, alliance.getName(), playerData.getFaction());
         } else {

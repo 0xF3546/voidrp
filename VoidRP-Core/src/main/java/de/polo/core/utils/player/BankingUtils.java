@@ -221,7 +221,7 @@ public class BankingUtils implements Listener {
             @Override
             public void onClick(InventoryClickEvent event) {
                 player.sendMessage("§8[§aATM§8]§a Du hast " + playerData.getBargeld() + "$ eingezahlt.");
-                Main.getInstance().companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getBargeld()) + "$ auf das Firmenkonto eingezahlt.");
+                Main.companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getBargeld()) + "$ auf das Firmenkonto eingezahlt.");
                 playerData.getCompany().addBank(playerData.getBargeld());
                 playerData.removeMoney(playerData.getBargeld(), "Bankeinzahlung auf " + playerData.getCompany().getName());
                 player.closeInventory();
@@ -242,7 +242,7 @@ public class BankingUtils implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     if (playerData.isLeader()) {
-                        Main.getInstance().companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getCompany().getBank()) + "$ vom Firmenkonto ausgezahlt.");
+                        Main.companyManager.sendCompanyMessage(playerData.getCompany(), "§8[§6" + playerData.getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(playerData.getCompany().getBank()) + "$ vom Firmenkonto ausgezahlt.");
                         playerData.addMoney(playerData.getCompany().getBank(), "Company-Auszwahlung - " + playerData.getCompany().getId());
                         playerData.getCompany().removeBank(playerData.getCompany().getBank());
                         player.closeInventory();
@@ -541,7 +541,7 @@ public class BankingUtils implements Listener {
                     playerManager.removeMoney(player, amount, "Bankauszahlung");
                     event.getPlayerData().getCompany().addBank(amount);
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ eingezahlt.");
-                    Main.getInstance().companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Firmenkonto eingezahlt.");
+                    Main.companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ auf das Firmenkonto eingezahlt.");
                 } else {
                     player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld dabei.");
                 }
@@ -560,7 +560,7 @@ public class BankingUtils implements Listener {
                     event.getPlayerData().getCompany().removeBank(amount);
                     playerManager.addMoney(player, amount, "Bankauszahlung (Company-" + event.getPlayerData().getCompany().getId() + ")");
                     player.sendMessage("§8[§aATM§8]§a Du hast " + Utils.toDecimalFormat(amount) + "$ ausgezahlt.");
-                    Main.getInstance().companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Firmenkonto ausgezahlt.");
+                    Main.companyManager.sendCompanyMessage(event.getPlayerData().getCompany(), "§8[§6" + event.getPlayerData().getCompany().getName() + "§8]§e " + player.getName() + " hat " + Utils.toDecimalFormat(amount) + "$ vom Firmenkonto ausgezahlt.");
                 } else {
                     player.sendMessage(Prefix.ERROR + "Du hast nicht genug Geld auf der Bank.");
                 }

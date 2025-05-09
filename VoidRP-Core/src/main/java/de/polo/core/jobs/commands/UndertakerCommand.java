@@ -78,7 +78,7 @@ public class UndertakerCommand implements CommandExecutor {
             }
         } else {
             int i = 0;
-            for (Corpse corpse : Main.getInstance().utils.deathUtil.getCorbses()) {
+            for (Corpse corpse : Main.utils.deathUtil.getCorbses()) {
                 if (corpse.isJobActive()) continue;
                 int price = (int) (corpse.getSkull().getLocation().distance(player.getLocation()) / 2);
                 if (corpse.getPrice() == 0) corpse.setPrice(price);
@@ -111,6 +111,6 @@ public class UndertakerCommand implements CommandExecutor {
         Corpse corpse = playerData.getVariable("job::corpse");
         playerData.addMoney(corpse.getPrice(), "Bestatter");
         player.sendMessage("§8[§7Bestatter§8]§7 Danke für deine Arbeit. Hier hast du §a" + Utils.toDecimalFormat(corpse.getPrice()) + "$§7!");
-        Main.getInstance().utils.deathUtil.removeCorpse(corpse);
+        Main.utils.deathUtil.removeCorpse(corpse);
     }
 }

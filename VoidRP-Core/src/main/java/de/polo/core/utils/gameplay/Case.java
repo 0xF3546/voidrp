@@ -86,23 +86,23 @@ public class Case {
     }
 
     private void endSpin() {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = Main.playerManager.getPlayerData(player);
         ItemStack winningItem = inventoryManager.getInventory().getItem(13);
         if (winningItem != null && winningItem.getType() != Material.AIR) {
             player.sendMessage("§8 » §bDu hast " + winningItem.getAmount() + "x " + winningItem.getItemMeta().getDisplayName() + "§b gewonnen!");
             switch (winningItem.getType()) {
                 case SUNFLOWER:
-                    Main.getInstance().playerManager.addCoins(player, 100);
+                    Main.playerManager.addCoins(player, 100);
                     break;
                 case DIAMOND_HORSE_ARMOR:
-                    Main.getInstance().weaponManager.giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 25);
+                    Main.weaponManager.giveWeaponToCabinet(player, Weapon.ASSAULT_RIFLE, 0, 25);
                     break;
                 case GOLD_INGOT:
                     if (playerData.getPermlevel() >= 40) {
                         player.sendMessage(Prefix.MAIN + "Da du bereits einen höheren Rang hast, erhälst du 125 Coins.");
-                        Main.getInstance().playerManager.addCoins(player, 125);
+                        Main.playerManager.addCoins(player, 125);
                     } else {
-                        Main.getInstance().playerManager.redeemRank(player, "premium", 1, "d");
+                        Main.playerManager.redeemRank(player, "premium", 1, "d");
                     }
                     break;
                 case GOLD_NUGGET:
@@ -115,7 +115,7 @@ public class Case {
                     }
                     break;
                 case LEATHER_HORSE_ARMOR:
-                    Main.getInstance().weaponManager.giveWeaponToCabinet(player, Weapon.MARKSMAN, 0, 1);
+                    Main.weaponManager.giveWeaponToCabinet(player, Weapon.MARKSMAN, 0, 1);
                     break;
                 default:
                     player.getInventory().addItem(winningItem);

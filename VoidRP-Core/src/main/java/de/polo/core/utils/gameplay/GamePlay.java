@@ -94,7 +94,7 @@ public class GamePlay implements Listener {
         plant = new PlantFunctions(coreDatabase, utils, factionManager, playerManager);
         factionUpgradeGUI = new FactionUpgradeGUI(factionManager, playerManager, utils);
         houseban = new Houseban(playerManager, factionManager);
-        displayNameManager = new DisplayNameManager(playerManager, factionManager, Main.getInstance().getScoreboardAPI());
+        displayNameManager = new DisplayNameManager(playerManager, factionManager, Main.getScoreboardAPI());
         alliance = new Alliance(playerManager, factionManager, utils);
         militaryDrop = new MilitaryDrop(playerManager, factionManager);
         ffa = new FFA(playerManager);
@@ -644,7 +644,7 @@ public class GamePlay implements Listener {
                 double nearestDistance = radius;
                 Location playerLocation = attacker.getLocation();
 
-                for (Block block : Main.getInstance().blockManager.getNearbyBlocks(playerLocation, radius)) {
+                for (Block block : Main.blockManager.getNearbyBlocks(playerLocation, radius)) {
                     Material type = block.getType();
                     if (type == Material.IRON_DOOR || type == Material.OAK_DOOR) {
                         double distance = playerLocation.distance(block.getLocation());
@@ -666,7 +666,7 @@ public class GamePlay implements Listener {
                         return;
                     }
                     List<RegisteredBlock> blocks = new ObjectArrayList<>();
-                    for (RegisteredBlock block : Main.getInstance().blockManager.getBlocks()) {
+                    for (RegisteredBlock block : Main.blockManager.getBlocks()) {
                         if (block.getInfo().equalsIgnoreCase("adoor_" + factionData.getName())) {
                             blocks.add(block);
                         }
@@ -686,14 +686,13 @@ public class GamePlay implements Listener {
                 }
 
                 BlockState state = nearestDoorBlock.getState();
-                if (state.getBlockData() instanceof Openable) {
+                if (state.getBlockData() instanceof Openable openable) {
                     PlayerData playerData = playerManager.getPlayerData(attacker);
                     if (playerData == null) return;
                     if (playerData.getFactionGrade() < 3) {
                         attacker.sendMessage(Component.text(Prefix.ERROR + "Du musst mindestens Rang 3 sein."));
                         return;
                     }
-                    Openable openable = (Openable) state.getBlockData();
                     if (openable.isOpen()) {
                         attacker.sendMessage(Prefix.ERROR + "Die Tür ist bereits geöffnet.");
                     } else {

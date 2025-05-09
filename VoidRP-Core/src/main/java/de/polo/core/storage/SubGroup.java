@@ -26,7 +26,7 @@ public class SubGroup {
     }
 
     public Faction getFaction() {
-        return Main.getInstance().factionManager.getFactionData(factionId);
+        return Main.factionManager.getFactionData(factionId);
     }
 
     public String getName() {

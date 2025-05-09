@@ -37,7 +37,7 @@ public class Drop {
 
     public Drop(Location location) {
         NavigationService navigationService = VoidAPI.getService(NavigationService.class);
-        LocationService locationService = VoidAPI.getService(LocationService.class);;
+        LocationService locationService = VoidAPI.getService(LocationService.class);
         lastBlock = location.getBlock();
         this.location = location;
         NaviData naviData = navigationService.getNearestNaviPoint(location);
@@ -45,9 +45,9 @@ public class Drop {
         if (location.distance(naviLocation) > 100) {
             Bukkit.broadcastMessage("§cDrop §8┃ §cSchmuggler haben eine Kiste verloren. Informanten haben die Koordinaten X: " + location.getX() + " Y: " + location.getY() + " Z: " + location.getZ() + " übermittelt.");
         } else {
-            RegisteredBlock block = Main.getInstance().blockManager.getNearestBlockOfType(location, "house");
+            RegisteredBlock block = Main.blockManager.getNearestBlockOfType(location, "house");
             if (block.getLocation().distance(location) < 30) {
-                House house = Main.getInstance().houseManager.getHouse(Integer.parseInt(block.getInfoValue()));
+                House house = Main.houseManager.getHouse(Integer.parseInt(block.getInfoValue()));
                 Bukkit.broadcastMessage("§cDrop §8┃ §cSchmuggler haben eine Kiste in der Nähe von Haus " + house.getNumber() + " verloren.");
             } else {
                 Bukkit.broadcastMessage("§cDrop §8┃ §cSchmuggler haben eine Kiste in der Nähe von " + naviData.getName().replace("&", "§") + " §cverloren.");
@@ -109,7 +109,7 @@ public class Drop {
     public void open(Player player) {
         cleanup();
         player.sendMessage("§7   ===§8[§cDrop§8]§7===");
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = Main.playerManager.getPlayerData(player);
         int snuff = Utils.random(0, 20);
         if (snuff > 0) {
             playerData.getInventory().addItem(RoleplayItem.SNUFF, snuff);

@@ -63,7 +63,7 @@ public final class VoidAPI {
     }
 
     public static <T> T getService(@NotNull Class<T> clazz) {
-        return (T) server.getService(clazz);
+        return server.getService(clazz);
     }
 
     public static LabyModPlayer getLabyModPlayer(Player player) {

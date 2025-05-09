@@ -144,7 +144,7 @@ public class MineCommand extends CommandBase implements MiningJob {
     }
 
     public void quitJob(VoidPlayer player) {
-        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+        Main.beginnerpass.didQuest(player.getPlayer(), 5);
 
         int iron = ItemManager.getItem(player.getPlayer(), Material.IRON_ORE);
         int redstone = ItemManager.getItem(player.getPlayer(), Material.REDSTONE_ORE);

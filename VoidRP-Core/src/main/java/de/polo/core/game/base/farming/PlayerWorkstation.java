@@ -60,7 +60,7 @@ public class PlayerWorkstation {
     }
 
     public static boolean hasWorkstation(Player player, Workstation workstation) {
-        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+        for (PlayerData playerData : Main.playerManager.getPlayers()) {
             if (playerData.getPlayer() == player) {
                 for (PlayerWorkstation playerWorkstation : playerData.getWorkstations()) {
                     if (playerWorkstation.Workstation.equals(workstation)) {
@@ -208,6 +208,6 @@ public class PlayerWorkstation {
         PreparedStatement statement = connection.prepareStatement("DELETE FROM workstations WHERE id = ?");
         statement.setInt(1, id);
         statement.execute();
-        Main.getInstance().playerManager.getPlayerData(uuid).removeWorkstation(this);
+        Main.playerManager.getPlayerData(uuid).removeWorkstation(this);
     }
 }

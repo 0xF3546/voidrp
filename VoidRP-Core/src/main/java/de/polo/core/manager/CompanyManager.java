@@ -134,7 +134,7 @@ public class CompanyManager {
     }
 
     public void sendCompanyMessage(Company company, String message) {
-        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+        for (PlayerData playerData : Main.playerManager.getPlayers()) {
             if (playerData.getCompany().equals(company)) {
                 playerData.getPlayer().sendMessage(message);
             }

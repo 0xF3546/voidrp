@@ -14,11 +14,9 @@ public class EntityToggleGlideListener implements Listener {
 
     @EventHandler
     public void onPlayerLand(EntityToggleGlideEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
+        if (!(event.getEntity() instanceof Player player)) {
             return;
         }
-
-        Player player = (Player) event.getEntity();
 
         if (!event.isGliding()) {
             ItemStack chestplate = player.getInventory().getChestplate();

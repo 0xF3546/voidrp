@@ -151,7 +151,7 @@ public class DeathUtils {
             return;
         }
         if (effects) {
-            Main.getInstance().weaponManager.weaponUsages.put(player.getUniqueId(), Utils.getTime().plusMinutes(3));
+            weaponManager.weaponUsages.put(player.getUniqueId(), Utils.getTime().plusMinutes(3));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 6, 2, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 6, -10, true, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 6, 0, true, false));
@@ -181,7 +181,7 @@ public class DeathUtils {
         if (!playerData.isFFADead() && playerData.getVariable("gangwar") != null) playerData.setFFADead(playerData.getVariable("ffa") != null);
         playerData.removeMoney(playerData.getBargeld(), "Despawn");
         if (playerData.isFFADead()) {
-            Main.getInstance().gamePlay.getFfa().respawnPlayer(player);
+            gamePlay.getFfa().respawnPlayer(player);
             playerData.setFFADead(false);
             return;
         }
@@ -194,7 +194,7 @@ public class DeathUtils {
             throw new RuntimeException(e);
         }
         if (playerData.getVariable("gangwar") != null) {
-            Main.getInstance().utils.gangwarUtils.respawnPlayer(player);
+            utils.gangwarUtils.respawnPlayer(player);
         } else {
             spawnCorpse(player);
             int despawnPrice = (int) (playerData.getBank() * 0.01);
@@ -217,7 +217,7 @@ public class DeathUtils {
             } else {
                 try {
                     int id = Integer.parseInt(playerData.getSpawn());
-                    for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                    for (RegisteredBlock registeredBlock : blockManager.getBlocks()) {
                         if (registeredBlock.getInfo() == null) continue;
                         if (registeredBlock.getInfoValue() == null) continue;
                         if (registeredBlock.getInfo().equalsIgnoreCase("house")) {

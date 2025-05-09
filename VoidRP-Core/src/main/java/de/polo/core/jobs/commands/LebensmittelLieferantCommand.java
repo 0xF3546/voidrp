@@ -85,7 +85,7 @@ public class LebensmittelLieferantCommand extends CommandBase implements Transpo
     @Override
     public void endJob(VoidPlayer player) {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
-        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+        Main.beginnerpass.didQuest(player.getPlayer(), 5);
         playerService.handleJobFinish(player, MiniJob.FOOD_SUPPLIER, 3600, 10);
         //playerData.getScoreboard("lebensmittellieferant").killScoreboard();
     }

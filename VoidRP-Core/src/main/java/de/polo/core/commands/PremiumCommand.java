@@ -30,9 +30,9 @@ public class PremiumCommand extends CommandBase {
             return;
         }
 
-        Main.getInstance().getWeaponManager().giveWeaponToCabinet(player.getPlayer(), Weapon.MARKSMAN, 20, 1);
+        Main.getWeaponManager().giveWeaponToCabinet(player.getPlayer(), Weapon.MARKSMAN, 20, 1);
         playerData.addBankMoney(1000, "Premium-Belohnung");
-        Main.getInstance().playerManager.addEXPBoost(player.getPlayer(), 1);
+        Main.playerManager.addEXPBoost(player.getPlayer(), 1);
 
         playerData.setLastPremiumBonus(Utils.getTime());
         Main.getInstance().getCoreDatabase().updateAsync(

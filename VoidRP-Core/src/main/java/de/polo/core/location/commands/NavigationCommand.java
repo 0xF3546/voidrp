@@ -45,7 +45,7 @@ public class NavigationCommand extends CommandBase implements TabCompleter {
                 if (args[0].contains("haus:")) {
                     try {
                         int number = Integer.parseInt(args[0].replace("haus:", "").replace(" ", ""));
-                        for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                        for (RegisteredBlock registeredBlock : Main.blockManager.getBlocks()) {
                             if (registeredBlock.getInfo() == null) {
                                 System.out.println("Info is null");
                                 continue;
@@ -81,7 +81,7 @@ public class NavigationCommand extends CommandBase implements TabCompleter {
                         double closestDistance = Double.MAX_VALUE;  // Initialisiert mit einem sehr großen Wert
                         RegisteredBlock closestAtm = null;
 
-                        for (RegisteredBlock registeredBlock : Main.getInstance().blockManager.getBlocks()) {
+                        for (RegisteredBlock registeredBlock : Main.blockManager.getBlocks()) {
                             if (registeredBlock.getInfo() == null) {
                                 continue;
                             }

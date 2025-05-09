@@ -41,8 +41,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
     @EventHandler
     public void onPlayerInteractWithPlayer(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        if (event.getRightClicked() instanceof Player) {
-            Player targetplayer = (Player) event.getRightClicked();
+        if (event.getRightClicked() instanceof Player targetplayer) {
             PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
             if (player.getGameMode().equals(GameMode.SPECTATOR)) return;
             if (playerData.isDead()) {
@@ -123,8 +122,8 @@ public class PlayerInteractWithPlayerListener implements Listener {
 
                                 HashMap<String, String> hmap2 = new HashMap<>();
                                 hmap2.put(targetplayer.getUniqueId().toString(), "verheiratet");
-                                Main.getInstance().beginnerpass.didQuest(player, 20);
-                                Main.getInstance().beginnerpass.didQuest(targetplayer, 20);
+                                Main.beginnerpass.didQuest(player, 20);
+                                Main.beginnerpass.didQuest(targetplayer, 20);
                                 playerData.getRelationShip().clear();
                                 playerData.setRelationShip(hmap2);
                                 if (playerData.getGender().equals(Gender.MALE)) {
@@ -189,8 +188,7 @@ public class PlayerInteractWithPlayerListener implements Listener {
         if ((event.getRightClicked().getType() == EntityType.ARMOR_STAND || event.getRightClicked().getType() == EntityType.ITEM_FRAME || event.getRightClicked().getType() == EntityType.PAINTING) && !voidPlayer.isAduty()) {
             event.setCancelled(true);
         }
-        if (event.getRightClicked() instanceof Villager) {
-            Villager villager = (Villager) event.getRightClicked();
+        if (event.getRightClicked() instanceof Villager villager) {
             String command = villager.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "command"), PersistentDataType.STRING);
             if (command == null) return;
             if (voidPlayer.isAduty()) {

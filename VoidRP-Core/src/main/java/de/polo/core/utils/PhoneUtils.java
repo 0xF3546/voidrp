@@ -51,7 +51,7 @@ public class PhoneUtils implements Listener {
 
     public static void acceptCall(Player player, String targetuuid) {
         player.stopSound(Sound.MUSIC_CREATIVE);
-        if (!Main.getInstance().playerManager.getPlayerData(player).isDead()) {
+        if (!Main.playerManager.getPlayerData(player).isDead()) {
             PhoneCall phoneCall = new PhoneCall();
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
@@ -62,7 +62,7 @@ public class PhoneUtils implements Listener {
             player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + targetplayer.getName() + " angenommen");
             player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
             targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 0);
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
+            PlayerData playerData = Main.playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
             player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
@@ -71,14 +71,14 @@ public class PhoneUtils implements Listener {
 
     public static void denyCall(Player player, String targetuuid) {
         player.stopSound(Sound.MUSIC_CREATIVE);
-        if (!Main.getInstance().playerManager.getPlayerData(player).isDead()) {
+        if (!Main.playerManager.getPlayerData(player).isDead()) {
             Player targetplayer = Bukkit.getPlayer(UUID.fromString(targetuuid));
             assert targetplayer != null;
             targetplayer.sendMessage("§8[§6Handy§8] §7" + player.getName() + " hat dein Anruf abgelehnt");
             player.sendMessage("§8[§6Handy§8] §7Du hast den Anruf von " + targetplayer.getName() + " abgelehnt");
             player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
             targetplayer.playSound(targetplayer.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1, 0);
-            PlayerData playerData = Main.getInstance().playerManager.getPlayerData(targetplayer);
+            PlayerData playerData = Main.playerManager.getPlayerData(targetplayer);
             playerData.setVariable("calling", null);
         } else {
             player.sendMessage(PhoneUtils.ERROR_NO_PHONE);
@@ -527,8 +527,7 @@ public class PhoneUtils implements Listener {
         if (!newContact) {
             ItemStack tempItemStack = new ItemStack(stack.getType());
             tempItemStack.setItemMeta(stack.getItemMeta());
-            if (tempItemStack.getItemMeta() instanceof SkullMeta) {
-                SkullMeta skullMeta = (SkullMeta) tempItemStack.getItemMeta();
+            if (tempItemStack.getItemMeta() instanceof SkullMeta skullMeta) {
                 UUID uuid = Objects.requireNonNull(skullMeta.getOwningPlayer()).getUniqueId();
                 OfflinePlayer targetplayer = Bukkit.getOfflinePlayer(uuid);
                 playerData.setVariable("current_contact", targetplayer.getUniqueId().toString());
@@ -904,7 +903,7 @@ public class PhoneUtils implements Listener {
     private void openCryptoWallet(Player player) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §eCrypto Wallet"));
-        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Arrays.asList("§8 ➥ §a" + playerData.getCrypto() + " Coins", "§8 ➥ §ePreis§8:§7 " + Main.getInstance().gamePlay.getCrypto().getPrice() + "$"))) {
+        inventoryManager.setItem(new CustomItem(4, ItemManager.createCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWNkNzBjZTQ4MTg1ODFjYTQ3YWRmNmI4MTY3OWZkMTY0NmZkNjg3YzcxMjdmZGFhZTk0ZmVkNjQwMTU1ZSJ9fX0=", 1, 0, "§eCrypto Wallet", Arrays.asList("§8 ➥ §a" + playerData.getCrypto() + " Coins", "§8 ➥ §ePreis§8:§7 " + Main.gamePlay.getCrypto().getPrice() + "$"))) {
             @Override
             public void onClick(InventoryClickEvent event) {
 
@@ -981,7 +980,7 @@ public class PhoneUtils implements Listener {
     private void openFarmManager(Player player) {
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §eFarmen"));
         int i = 0;
-        for (House house : Main.getInstance().houseManager.getHouses(player)) {
+        for (House house : Main.houseManager.getHouses(player)) {
             if (!house.isServerRoom()) return;
             for (Miner miner : house.getActiveMiner()) {
                 inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Miner #" + miner.getId(), "§8 ➥ §7Haus " + house.getNumber())) {

@@ -54,7 +54,7 @@ public class RentCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Betrag muss numerisch sein.");
             return false;
         }
-        House house = Main.getInstance().getHouseManager().getHouse(haus);
+        House house = Main.getHouseManager().getHouse(haus);
         if (house.getRenter().size() >= house.getMieterSlots()) {
             player.sendMessage(Component.text(Prefix.ERROR + "Dein Haus hat nicht genug Mieterslots."));
             return false;

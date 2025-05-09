@@ -20,7 +20,7 @@ public class SubTeam {
     }
 
     public void sendMessage(String message) {
-        for (PlayerData playerData : Main.getInstance().playerManager.getPlayers()) {
+        for (PlayerData playerData : Main.playerManager.getPlayers()) {
             if (playerData.getSubTeam() == null) continue;
             if (playerData.getSubTeam() != this) continue;
             playerData.getPlayer().sendMessage(message);

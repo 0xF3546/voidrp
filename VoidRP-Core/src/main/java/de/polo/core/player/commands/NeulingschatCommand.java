@@ -32,7 +32,7 @@ public class NeulingschatCommand extends CommandBase {
             return;
         }
         String message = Utils.stringArrayToString(args);
-        for (PlayerData p : Main.getInstance().getPlayerManager().getPlayers()) {
+        for (PlayerData p : Main.getPlayerManager().getPlayers()) {
             if (p == null) continue;
             if (p.getLevel() > 5 && p.getPermlevel() < 40) continue;
             p.getPlayer().sendMessage(PREFIX + (playerData.getPermlevel() >= 40 ? "§b" + player.getName() : player.getName()) + "§7: " + message);

@@ -44,7 +44,7 @@ public class FDoorCommand implements CommandExecutor {
                 player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /fdoor [Fraktion]");
                 return false;
             }
-            for (Faction factionData : Main.getInstance().factionManager.getFactions()) {
+            for (Faction factionData : Main.factionManager.getFactions()) {
                 if (!factionData.getName().equalsIgnoreCase(args[0])) continue;
                 faction = factionData.getName();
             }
@@ -63,7 +63,7 @@ public class FDoorCommand implements CommandExecutor {
             return false;
         }
         if (playerManager.isInStaatsFrak(player)) {
-            Main.getInstance().gamePlay.openGOVRaidGUI(Main.getInstance().factionManager.getFactionData(faction), player);
+            Main.gamePlay.openGOVRaidGUI(Main.factionManager.getFactionData(faction), player);
             return false;
         }
         List<RegisteredBlock> blocks = new ObjectArrayList<>();

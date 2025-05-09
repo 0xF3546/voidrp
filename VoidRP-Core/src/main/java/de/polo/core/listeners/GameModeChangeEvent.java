@@ -19,7 +19,7 @@ public class GameModeChangeEvent implements Listener {
     @EventHandler
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = Main.playerManager.getPlayerData(player);
         // ISSUE VRP-10004: fixed by adding null check
         if (playerData == null) return;
         playerData.removeBossBar("buildMode");

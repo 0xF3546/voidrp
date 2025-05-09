@@ -46,7 +46,7 @@ public class DutyCommand implements CommandExecutor {
             factionManager.setDuty(player, false);
             factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst verlassen.");
         } else {
-            Main.getInstance().beginnerpass.didQuest(player, 9);
+            Main.beginnerpass.didQuest(player, 9);
             factionManager.setDuty(player, true);
             factionManager.sendMessageToFaction(playerData.getFaction(), player.getName() + " hat den Dienst betreten.");
         }

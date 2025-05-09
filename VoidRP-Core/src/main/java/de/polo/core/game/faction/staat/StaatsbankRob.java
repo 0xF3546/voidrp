@@ -36,7 +36,7 @@ public class StaatsbankRob {
     }
 
     public void sendMessage(String message, ChatColor color, String... factions) {
-        Main.getInstance().factionManager.sendCustomMessageToFactions("§8[§3Staatsbank§8] " + color + message, factions);
+        Main.factionManager.sendCustomMessageToFactions("§8[§3Staatsbank§8] " + color + message, factions);
     }
 
     public boolean openVault(int vault) {

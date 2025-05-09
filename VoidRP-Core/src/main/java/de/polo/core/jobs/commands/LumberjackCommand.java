@@ -174,7 +174,7 @@ public class LumberjackCommand extends CommandBase implements MiningJob {
     }
 
     public void quitJob(VoidPlayer player) {
-        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+        Main.beginnerpass.didQuest(player.getPlayer(), 5);
         boolean hasStripped = (boolean) player.getVariable("lumberjack::hasStripped");
         if (!hasStripped) {
             player.sendMessage("§8[§7Holzfäller§8]§7 Du hast den Job beendet.");

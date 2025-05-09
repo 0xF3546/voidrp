@@ -128,7 +128,7 @@ public class FarmerCommand extends CommandBase implements MiningJob, TransportJo
 
     @Override
     public void endJob(VoidPlayer player) {
-        Main.getInstance().beginnerpass.didQuest(player.getPlayer(), 5);
+        Main.beginnerpass.didQuest(player.getPlayer(), 5);
 
         if (player.getMiniJob() == MiniJob.WHEAT_TRANSPORT) {
             player.setMiniJob(null);

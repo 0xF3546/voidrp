@@ -37,16 +37,16 @@ public class UnarrestCommand extends CommandBase {
             player.sendMessage(Component.text(Prefix.ERROR + "Der Spieler wurde nicht gefunden."));
             return;
         }
-        PlayerData targetData = Main.getInstance().playerManager.getPlayerData(target);
+        PlayerData targetData = Main.playerManager.getPlayerData(target);
         if (!targetData.isJailed()) {
             player.sendMessage(Component.text(Prefix.ERROR + "Der Spieler ist nicht im Gefängnis."));
             return;
         }
         utils.staatUtil.unarrestPlayer(target);
         for (Player players : Bukkit.getOnlinePlayers()) {
-            PlayerData playerData1 = Main.getInstance().getPlayerManager().getPlayerData(players.getUniqueId());
+            PlayerData playerData1 = Main.getPlayerManager().getPlayerData(players.getUniqueId());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
-                players.sendMessage("§8[§cGefängnis§8] §6" + Main.getInstance().factionManager.getTitle(player.getPlayer()) + " " + player.getName() + " hat " + target.getName() + " entlassen.");
+                players.sendMessage("§8[§cGefängnis§8] §6" + Main.factionManager.getTitle(player.getPlayer()) + " " + player.getName() + " hat " + target.getName() + " entlassen.");
             }
         }
         player.getPlayer().closeInventory();

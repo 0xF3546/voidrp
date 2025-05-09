@@ -164,7 +164,7 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
     }
 
     public static Location getNearstLocation(Player player) {
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player);
+        PlayerData playerData = playerManager.getPlayerData(player);
         System.out.println(getLocations().size());
         List<Location> playerLocations = playerData.getVariable("job::hochseefischer::locations");
         Location nearestLocation = null;

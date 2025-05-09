@@ -81,12 +81,11 @@ public class VehicleCommand extends CommandBase {
      */
     private void handleStartCommand(Player player) {
         Entity vehicle = player.getVehicle();
-        if (!(vehicle instanceof Minecart)) {
+        if (!(vehicle instanceof Minecart minecart)) {
             player.sendMessage(PREFIX + "Du sitzt in keinem Fahrzeug.");
             return;
         }
 
-        Minecart minecart = (Minecart) vehicle;
         if (!minecart.isValid()) {
             player.sendMessage(PREFIX + "Das Fahrzeug ist nicht verfügbar.");
             return;

@@ -204,7 +204,7 @@ public class Storage implements Listener {
                 name = "§7Hauslager";
                 break;
         }
-        PlayerData playerData = Main.getInstance().playerManager.getPlayerData(p);
+        PlayerData playerData = Main.playerManager.getPlayerData(p);
         if (playerData.getPlayerPowerUpManager().getPowerUp(Powerup.STORAGE).getAmount() > inventory.getSize()) {
             setSize(playerData.getPlayerPowerUpManager().getPowerUp(Powerup.STORAGE).getAmount());
         }

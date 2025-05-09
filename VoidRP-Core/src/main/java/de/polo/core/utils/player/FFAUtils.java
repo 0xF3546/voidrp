@@ -141,7 +141,7 @@ public class FFAUtils implements CommandExecutor, Listener {
             lobbyData.setPlayers(lobbyData.getPlayers() + 1);
             player.sendMessage("§8[§6FFA§8]§e Du betrittst: " + lobbyData.getDisplayname().replace("&", "§"));
             player.sendMessage("§8 ➥ §7Nutze §8/§effa leave §7um die Arena zu verlassen.");
-            Main.getInstance().weaponManager.giveWeapon(player, de.polo.core.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.FFA);
+            Main.weaponManager.giveWeapon(player, de.polo.core.utils.enums.Weapon.ASSAULT_RIFLE, WeaponType.FFA);
             useSpawn(player, id);
         } else {
             player.sendMessage("§8[§6FFA§8]§c Diese Lobby ist voll!");
@@ -161,9 +161,9 @@ public class FFAUtils implements CommandExecutor, Listener {
                 if (weaponData.getMaterial() != null && item != null) {
                     if (item.getType() == weaponData.getMaterial()) {
                         ItemMeta meta = item.getItemMeta();
-                        Weapon weapon = Main.getInstance().weaponManager.getWeaponFromItemStack(item);
+                        Weapon weapon = Main.weaponManager.getWeaponFromItemStack(item);
                         if (weapon.getWeaponType() == WeaponType.FFA) {
-                            Main.getInstance().weaponManager.removeWeapon(player, item);
+                            Main.weaponManager.removeWeapon(player, item);
                         }
                     }
                 }

@@ -151,7 +151,7 @@ public class PayDayUtils {
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
             player.sendMessage("§8[§6Bonus§8]§7 Du kannst nun deine Daily-Case beim Bonushändler abholen.");
-            Main.getInstance().seasonpass.didQuest(player, 6);
+            Main.seasonpass.didQuest(player, 6);
         }
         playerData.setLastPayDay(LocalDateTime.now());
         Connection connection = Main.getInstance().coreDatabase.getConnection();
@@ -161,6 +161,6 @@ public class PayDayUtils {
         statement.close();
         connection.close();
 
-        Main.getInstance().beginnerpass.didQuest(player, 6);
+        Main.beginnerpass.didQuest(player, 6);
     }
 }
