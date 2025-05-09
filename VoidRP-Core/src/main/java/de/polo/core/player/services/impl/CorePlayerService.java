@@ -22,6 +22,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +53,23 @@ public class CorePlayerService implements PlayerService {
 
     @Override
     public void loadPlayer(Player player) {
+        database.deleteAsync("DELETE FROM player_playtime_daily WHERE date < CURDATE() - INTERVAL 7 DAY");
         playerManager.loadPlayer(player);
     }
 
     @Override
-    public void savePlayer(Player player) throws Exception {
-        playerManager.savePlayer(player);
+    public void savePlayer(VoidPlayer player) {
+        long playtime = Duration.between(player.getRuntimeStatistic().joinTime(), Utils.getTime()).toMinutes();
+        database.queryThreaded("INSERT INTO daily_playtime (uuid, date, playtime_seconds)\n" +
+                "SELECT ?, CURDATE(), ?\n" +
+                "WHERE NOT EXISTS (\n" +
+                "    SELECT 1 FROM daily_playtime WHERE uuid = ? AND date = CURDATE()\n" +
+                ");", player.getUuid().toString(), playtime, player.getUuid().toString());
+        try {
+            playerManager.savePlayer(player.getPlayer());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import de.polo.core.Main;
 import de.polo.api.VoidAPI;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.storage.Ticket;
 import de.polo.core.utils.Prefix;
@@ -12,6 +13,7 @@ import de.polo.core.utils.StaatUtil;
 import de.polo.core.utils.enums.PlayerPed;
 import de.polo.core.utils.Event;
 import de.polo.core.vehicles.services.VehicleService;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -29,6 +31,7 @@ import static de.polo.core.Main.*;
 @Event
 public class QuitListener implements Listener {
 
+    @SneakyThrows
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
@@ -48,7 +51,8 @@ public class QuitListener implements Listener {
             playerData.setVariable("inventory::build", player.getInventory().getContents());
         }
         if (playerData.isDead()) {
-            if (playerData.getVariable("inventory::base") != null) player.getInventory().setContents(playerData.getVariable("inventory::base"));
+            if (playerData.getVariable("inventory::base") != null)
+                player.getInventory().setContents(playerData.getVariable("inventory::base"));
         }
         if (playerData.getVariable("ffa") != null) {
             Main.getInstance().gamePlay.getFfa().leaveFFA(player);
@@ -71,28 +75,25 @@ public class QuitListener implements Listener {
         }
         VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
         vehicleService.deleteVehicleByUUID(player.getUniqueId());
-        try {
-            playerManager.savePlayer(player);
-            Ticket ticket = supportManager.getTicket(player);
-            if (ticket != null) {
-                for (Player p : supportManager.getPlayersInTicket(ticket)) {
-                    if (p.isOnline()) {
-                        p.sendMessage(Prefix.SUPPORT + player.getName() + " hat den Server verlassen, das Ticket wurde geschlossen.");
-                    }
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        playerService.savePlayer(VoidAPI.getPlayer(player));
+        Ticket ticket = supportManager.getTicket(player);
+        if (ticket != null) {
+            for (Player p : supportManager.getPlayersInTicket(ticket)) {
+                if (p.isOnline()) {
+                    p.sendMessage(Prefix.SUPPORT + player.getName() + " hat den Server verlassen, das Ticket wurde geschlossen.");
                 }
-                supportManager.removeTicket(ticket);
             }
-            ServiceData serviceData = StaatUtil.serviceDataMap.get(player.getUniqueId().toString());
-            if (serviceData != null) {
-                utils.staatUtil.cancelService(player);
-            }
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (player.getWorld() != p.getWorld()) continue;
-                if (p.getLocation().distance(player.getLocation()) > 10) continue;
-                p.sendMessage("§8 ➥ §7" + player.getName() + " hat den Server verlassen (" + (float) p.getLocation().distance(player.getLocation()) + "m)");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            supportManager.removeTicket(ticket);
+        }
+        ServiceData serviceData = StaatUtil.serviceDataMap.get(player.getUniqueId().toString());
+        if (serviceData != null) {
+            utils.staatUtil.cancelService(player);
+        }
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (player.getWorld() != p.getWorld()) continue;
+            if (p.getLocation().distance(player.getLocation()) > 10) continue;
+            p.sendMessage("§8 ➥ §7" + player.getName() + " hat den Server verlassen (" + (float) p.getLocation().distance(player.getLocation()) + "m)");
         }
     }
 }

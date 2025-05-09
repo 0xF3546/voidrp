@@ -1,6 +1,7 @@
 package de.polo.core.manager;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
@@ -9,6 +10,7 @@ import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.game.faction.gangwar.Gangwar;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.*;
 import de.polo.core.utils.Prefix;
@@ -278,8 +280,9 @@ public class ServerManager {
     }
 
     public void savePlayers() throws SQLException {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            playerManager.savePlayer(player);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        for (VoidPlayer player : VoidAPI.getPlayers()) {
+            playerService.savePlayer(player);
         }
     }
 

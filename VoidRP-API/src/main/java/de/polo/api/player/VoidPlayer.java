@@ -23,6 +23,7 @@ public interface VoidPlayer {
     Player getPlayer();
     PlayerCharacter getData();
     List<PlayerSetting> getSettings();
+    PlayerRuntimeStatistic getRuntimeStatistic();
     default void addSetting(Setting setting) {
         this.addSetting(setting, "");
     }

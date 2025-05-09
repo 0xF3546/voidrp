@@ -25,7 +25,7 @@ public interface PlayerService {
     boolean isCreated(UUID uuid);
     void updatePlayer(String uuid, String name, String adress);
     void loadPlayer(Player player);
-    void savePlayer(Player player) throws Exception;
+    void savePlayer(VoidPlayer player);
     PlaytimeReward getPlaytimeReward(int id);
     LoyaltyBonusTimer getLoyaltyTimer(UUID uuid);
     void add1MinutePlaytime(Player player) throws Exception;

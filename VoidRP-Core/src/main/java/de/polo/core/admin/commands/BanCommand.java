@@ -4,8 +4,10 @@ import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -147,14 +149,12 @@ public class BanCommand implements CommandExecutor, TabCompleter {
         }
     }
 
+    @SneakyThrows
     private void kickAndSavePlayer(Player player, String reason) {
-        try {
-            playerManager.savePlayer(player);
-            player.closeInventory();
-            player.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server gebannt.\nGrund§8:§7 " + reason);
-        } catch (SQLException e) {
-            throw new RuntimeException("Fehler beim Speichern des Spielers", e);
-        }
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        playerService.savePlayer(VoidAPI.getPlayer(player.getUniqueId()));
+        player.closeInventory();
+        player.kickPlayer("§8• §6§lVoidRoleplay §8•\n\n§cDu wurdest vom Server gebannt.\nGrund§8:§7 " + reason);
     }
 
     private void applyBan(UUID uuid, String name, String punisher, String reason, LocalDateTime endDate) {

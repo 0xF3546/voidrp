@@ -5,11 +5,13 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.Job;
 import de.polo.api.player.PlayerCharacter;
+import de.polo.api.player.PlayerRuntimeStatistic;
 import de.polo.api.player.PlayerSetting;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.enums.Setting;
 import de.polo.core.player.services.PlayerService;
+import de.polo.core.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,8 +52,12 @@ public class CoreVoidPlayer implements VoidPlayer {
     @Getter
     private boolean aduty;
 
+    @Getter
+    private final PlayerRuntimeStatistic runtimeStatistic;
+
     public CoreVoidPlayer(Player player) {
         this.player = player;
+        this.runtimeStatistic = new PlayerRuntimeStatistic(Utils.getTime());
 
         List<String> addonsToRequest = new ArrayList<>();
         addonsToRequest.add("damageindicator");
