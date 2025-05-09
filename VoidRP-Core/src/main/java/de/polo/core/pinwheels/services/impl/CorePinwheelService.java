@@ -4,7 +4,6 @@ import de.polo.api.pinwheels.Pinwheel;
 import de.polo.core.pinwheels.dto.CreatePinwheelDto;
 import de.polo.core.pinwheels.services.PinwheelService;
 import de.polo.core.utils.Service;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -17,9 +16,11 @@ import java.util.List;
 @Service
 public class CorePinwheelService implements PinwheelService {
     private final PinwheelRepository pinwheelRepository;
+
     public CorePinwheelService() {
         this.pinwheelRepository = new PinwheelRepository();
     }
+
     @Override
     public List<Pinwheel> getPinwheels() {
         return pinwheelRepository.getPinwheels();

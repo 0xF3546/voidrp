@@ -1,8 +1,7 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
-import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.Event;
+import de.polo.core.utils.enums.RoleplayItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

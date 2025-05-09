@@ -7,7 +7,6 @@ import de.polo.core.pinwheels.dto.CreatePinwheelDto;
 import de.polo.core.pinwheels.entities.CorePinwheel;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
 
