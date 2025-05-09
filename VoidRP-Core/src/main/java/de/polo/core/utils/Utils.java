@@ -32,6 +32,8 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static de.polo.core.Main.gamePlay;
+
 public class Utils {
     static Scoreboard sb;
     @Getter
@@ -73,16 +75,6 @@ public class Utils {
     }
 
     public static String stringArrayToString(String[] args) {
-        /*
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < args.length; i++) {
-            stringBuilder.append(args[i]);
-            if (i != args.length - 1) {
-                stringBuilder.append(" ");
-            }
-        }
-        return stringBuilder.toString();
-        */
         return String.join(" ", args);
     }
 
@@ -98,8 +90,7 @@ public class Utils {
         long newDate = date.getTime();
         java.util.Date utilDate = new java.util.Date(newDate);
 
-        LocalDateTime localDateTime = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return localDateTime;
+        return utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public static int roundUpToMultipleOfNine(int num) {
@@ -225,8 +216,7 @@ public class Utils {
 
 
     public LocalDateTime sqlDateToLocalDateTime(Date date) {
-        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return localDateTime;
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public void summonCircle(Location location, int size, Particle particle) {
@@ -293,22 +283,15 @@ public class Utils {
             }
             String color = "§7";
             if (playerData.isDuty() && playerData.getFaction() != null) {
-                switch (playerData.getFaction().toLowerCase()) {
-                    case "polizei":
-                        color = "§9";
-                        break;
-                    case "fbi":
-                        color = "§1";
-                        break;
-                    case "medic":
-                        color = "§c";
-                        break;
-                    case "news":
-                        color = "§6";
-                        break;
-                }
+                color = switch (playerData.getFaction().toLowerCase()) {
+                    case "polizei" -> "§9";
+                    case "fbi" -> "§1";
+                    case "medic" -> "§c";
+                    case "news" -> "§6";
+                    default -> color;
+                };
             }
-            if (Main.getInstance().gamePlay.getMaskState(player) == null) {
+            if (gamePlay.getMaskState(player) == null) {
                 player.setDisplayName(prefix + color + player.getName());
                 player.setPlayerListName(prefix + color + player.getName() + " " + suffix);
                 player.setCustomName(prefix + color + player.getName());
