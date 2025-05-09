@@ -36,7 +36,6 @@ public class QuitListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        VoidAPI.removePlayer(player);
         event.setQuitMessage("");
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         if (playerData == null) return;
@@ -96,5 +95,6 @@ public class QuitListener implements Listener {
             if (p.getLocation().distance(player.getLocation()) > 10) continue;
             p.sendMessage("§8 ➥ §7" + player.getName() + " hat den Server verlassen (" + (float) p.getLocation().distance(player.getLocation()) + "m)");
         }
+        VoidAPI.removePlayer(player);
     }
 }

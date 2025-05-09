@@ -24,6 +24,7 @@ public final class VoidAPI {
     }
 
     public static void addPlayer(VoidPlayer player) {
+        players.removeIf(voidPlayer -> voidPlayer.getUuid().equals(player.getUuid()));
         players.add(player);
     }
 
