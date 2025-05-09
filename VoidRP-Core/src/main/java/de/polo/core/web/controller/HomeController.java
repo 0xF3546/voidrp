@@ -23,12 +23,6 @@ import static de.polo.core.Main.database;
 @RestController
 @RequestMapping("/api")
 public class HomeController {
-    private final PlayerService playerService;
-    @Autowired
-    public HomeController(final PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
     @GetMapping("/statistics")
     public CompletableFuture<ResponseEntity<StatsDto>> home() {
         CompletableFuture<Result> playerCountFuture = database.queryThreaded("SELECT COUNT(*) FROM players");

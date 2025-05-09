@@ -6,12 +6,14 @@ import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.RegisteredBlock;
+import de.polo.core.web.dto.FactionDto;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,6 +22,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public interface FactionService {
+    Collection<Faction> getFactions();
     String getPlayerFaction(Player player);
     Integer getPlayerFactionGrade(Player player);
     void assignPlayerToFaction(Player player, String faction, Integer rank) throws Exception;

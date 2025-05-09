@@ -14,6 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import static de.polo.core.Main.factionManager;
@@ -26,6 +27,11 @@ import static de.polo.core.Main.factionManager;
 @Service
 public class CoreFactionService implements FactionService {
     public CoreFactionService() {
+    }
+
+    @Override
+    public Collection<Faction> getFactions() {
+        return factionManager.getFactions();
     }
 
     @Override
