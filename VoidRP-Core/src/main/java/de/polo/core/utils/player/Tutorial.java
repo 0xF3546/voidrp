@@ -2,9 +2,9 @@ package de.polo.core.utils.player;
 
 import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.game.events.NaviReachEvent;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.game.events.NaviReachEvent;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;

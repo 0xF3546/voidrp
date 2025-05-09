@@ -1,13 +1,14 @@
 package de.polo.core.game.base;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
-import net.kyori.adventure.text.Component;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CustomTabAPI {
 

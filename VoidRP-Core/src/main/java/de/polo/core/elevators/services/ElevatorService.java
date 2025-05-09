@@ -15,9 +15,14 @@ import java.util.List;
  */
 public interface ElevatorService {
     List<Elevator> getElevators();
+
     Elevator getNearestElevator(Location location, int range);
+
     Floor getNearestFloor(Location location, int range);
+
     int addElevator(CreateElevatorDto elevatorDto);
+
     int addFloor(CreateFloorDto elevatorDto);
+
     Elevator getElevator(int id);
 }

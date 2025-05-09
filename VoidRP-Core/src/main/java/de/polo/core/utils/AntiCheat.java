@@ -1,6 +1,5 @@
 package de.polo.core.utils;
 
-import de.polo.core.Main;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.messaging.PluginMessageListener;

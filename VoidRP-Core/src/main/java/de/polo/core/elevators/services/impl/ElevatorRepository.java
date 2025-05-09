@@ -3,14 +3,11 @@ package de.polo.core.elevators.services.impl;
 import de.polo.api.VoidAPI;
 import de.polo.api.elevators.Elevator;
 import de.polo.api.elevators.Floor;
-import de.polo.api.pinwheels.Pinwheel;
 import de.polo.core.elevators.dto.CreateElevatorDto;
 import de.polo.core.elevators.dto.CreateFloorDto;
 import de.polo.core.elevators.entities.CoreElevator;
 import de.polo.core.elevators.entities.CoreFloor;
 import de.polo.core.location.services.LocationService;
-import de.polo.core.pinwheels.dto.CreatePinwheelDto;
-import de.polo.core.pinwheels.entities.CorePinwheel;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
@@ -48,7 +45,7 @@ public class ElevatorRepository {
                             Location floorLocation = locationService.getLocation(floorResultSet.getInt("locationId"));
                             elevator.floors().add(new CoreFloor(elevator, stage, floorLocation));
                         }
-                } catch (SQLException e) {
+                    } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -67,7 +64,7 @@ public class ElevatorRepository {
                 id = key.get();
                 Elevator elevator = new CoreElevator(id, new ObjectArrayList<>(), createElevatorDto.name());
                 elevators.add(elevator);
-                addFloor(new CreateFloorDto(elevator, createElevatorDto.firstFloorLocation(),0));
+                addFloor(new CreateFloorDto(elevator, createElevatorDto.firstFloorLocation(), 0));
             }
             return id;
         }).exceptionally(throwable -> {

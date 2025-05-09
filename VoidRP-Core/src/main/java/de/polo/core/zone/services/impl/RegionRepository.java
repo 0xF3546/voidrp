@@ -1,20 +1,14 @@
 package de.polo.core.zone.services.impl;
 
-import de.polo.api.faction.CharacterRecord;
-import de.polo.api.pinwheels.Pinwheel;
 import de.polo.api.zone.Region;
-import de.polo.core.faction.entity.CoreCharacterRecord;
-import de.polo.core.pinwheels.entities.CorePinwheel;
 import de.polo.core.utils.Utils;
 import de.polo.core.zone.dto.CreateRegionDto;
 import de.polo.core.zone.entities.CoreRegion;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static de.polo.core.Main.database;
 

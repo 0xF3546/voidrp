@@ -4,17 +4,17 @@ import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.MiningJob;
+import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.location.services.LocationService;
-import de.polo.core.player.entities.PlayerData;
-import de.polo.core.player.services.PlayerService;
-import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
+import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Prefix;
+import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;
 import de.polo.core.utils.player.SoundManager;
 import net.kyori.adventure.text.Component;
@@ -27,8 +27,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-
-import java.sql.SQLException;
 
 @CommandBase.CommandMeta(
         name = "minenarbeiter",

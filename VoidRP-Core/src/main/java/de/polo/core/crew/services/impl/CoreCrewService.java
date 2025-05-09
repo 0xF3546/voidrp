@@ -6,7 +6,6 @@ import de.polo.api.VoidAPI;
 import de.polo.api.crew.Crew;
 import de.polo.api.crew.CrewRank;
 import de.polo.api.crew.enums.CrewPermission;
-import de.polo.api.player.PlayerCharacter;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.crew.dto.CreateCrewDto;
@@ -17,9 +16,7 @@ import de.polo.core.crew.entities.CoreCrewRank;
 import de.polo.core.crew.services.CrewService;
 import de.polo.core.utils.Service;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.SneakyThrows;
 import net.kyori.adventure.text.format.TextColor;
-import org.json.simple.JSONArray;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;

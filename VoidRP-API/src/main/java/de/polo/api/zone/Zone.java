@@ -1,7 +1,6 @@
 package de.polo.api.zone;
 
 import de.polo.api.player.VoidPlayer;
-import org.bukkit.Location;
 
 import java.util.List;
 

@@ -7,7 +7,6 @@ import de.polo.core.crew.services.CrewService;
 import de.polo.core.storage.Company;
 import de.polo.core.utils.enums.ShopType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Location;

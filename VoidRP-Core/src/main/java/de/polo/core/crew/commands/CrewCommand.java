@@ -16,27 +16,20 @@ import de.polo.core.crew.dto.CrewMemberDto;
 import de.polo.core.crew.services.CrewService;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.handler.CommandBase;
-import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.Agreement;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static de.polo.core.Main.*;
 
 /**
  * @author Mayson1337

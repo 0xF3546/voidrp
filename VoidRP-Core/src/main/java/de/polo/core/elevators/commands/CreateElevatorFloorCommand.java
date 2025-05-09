@@ -4,7 +4,6 @@ import de.polo.api.Utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.elevators.Elevator;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.elevators.dto.CreateElevatorDto;
 import de.polo.core.elevators.dto.CreateFloorDto;
 import de.polo.core.elevators.services.ElevatorService;
 import de.polo.core.handler.CommandBase;

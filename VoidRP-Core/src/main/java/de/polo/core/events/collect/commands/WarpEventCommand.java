@@ -1,8 +1,8 @@
 package de.polo.core.events.collect.commands;
 
 import de.polo.api.VoidAPI;
-import de.polo.core.handler.CommandBase;
 import de.polo.api.player.VoidPlayer;
+import de.polo.core.handler.CommandBase;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import org.jetbrains.annotations.NotNull;

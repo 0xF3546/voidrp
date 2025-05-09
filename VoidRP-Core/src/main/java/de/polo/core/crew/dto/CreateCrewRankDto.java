@@ -2,7 +2,6 @@ package de.polo.core.crew.dto;
 
 import lombok.Getter;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Color;
 
 /**
  * @author Mayson1337

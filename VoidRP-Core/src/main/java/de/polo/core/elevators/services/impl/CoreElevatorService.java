@@ -6,7 +6,6 @@ import de.polo.core.elevators.dto.CreateElevatorDto;
 import de.polo.core.elevators.dto.CreateFloorDto;
 import de.polo.core.elevators.services.ElevatorService;
 import de.polo.core.utils.Service;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -19,9 +18,11 @@ import java.util.List;
 @Service
 public class CoreElevatorService implements ElevatorService {
     private final ElevatorRepository elevatorRepository;
+
     public CoreElevatorService() {
         this.elevatorRepository = new ElevatorRepository();
     }
+
     @Override
     public List<Elevator> getElevators() {
         return elevatorRepository.getElevators();

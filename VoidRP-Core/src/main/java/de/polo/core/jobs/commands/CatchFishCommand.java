@@ -1,10 +1,10 @@
 package de.polo.core.jobs.commands;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.handler.CommandBase;
-import de.polo.api.player.VoidPlayer;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;

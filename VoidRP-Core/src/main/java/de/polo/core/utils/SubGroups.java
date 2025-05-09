@@ -1,9 +1,9 @@
 package de.polo.core.utils;
 
 import de.polo.core.Main;
+import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.SubGroup;
-import de.polo.core.faction.service.impl.FactionManager;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 

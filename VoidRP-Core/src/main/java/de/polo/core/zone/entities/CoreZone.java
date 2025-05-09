@@ -5,7 +5,6 @@ import de.polo.api.zone.Region;
 import de.polo.api.zone.Zone;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
-import org.bukkit.Location;
 
 import java.util.List;
 

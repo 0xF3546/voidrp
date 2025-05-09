@@ -1,24 +1,17 @@
 package de.polo.core.jobs.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.jobs.TransportJob;
+import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
-import de.polo.api.VoidAPI;
-import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
-import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.sql.SQLException;
 
 @CommandBase.CommandMeta(
         name = "lebensmittellieferant",

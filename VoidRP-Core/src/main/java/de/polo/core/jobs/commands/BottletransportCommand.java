@@ -2,20 +2,20 @@ package de.polo.core.jobs.commands;
 
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.TransportJob;
+import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
-import de.polo.api.jobs.enums.MiniJob;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ServerManager;
-import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.core.Main.*;
+import static de.polo.core.Main.playerManager;
 
 /**
  * @author Mayson1337

@@ -4,7 +4,6 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.crew.services.CrewService;
 import de.polo.core.game.events.MinuteTickEvent;
-import de.polo.core.shop.entities.CrewTakeShop;
 import de.polo.core.shop.services.ShopService;
 import de.polo.core.utils.Event;
 import de.polo.core.utils.Utils;

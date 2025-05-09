@@ -4,14 +4,12 @@ import de.polo.api.Utils.ApiUtils;
 import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
-import de.polo.api.elevators.Elevator;
 import de.polo.api.elevators.Floor;
 import de.polo.api.player.VoidPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -5,7 +5,7 @@ package de.polo.core.utils;
  * @version 1.0.0
  * @since 1.0.0
  */
-import de.polo.core.handler.CommandBase;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 

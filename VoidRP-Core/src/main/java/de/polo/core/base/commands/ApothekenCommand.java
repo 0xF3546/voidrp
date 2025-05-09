@@ -2,8 +2,8 @@ package de.polo.core.base.commands;
 
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
-import de.polo.core.game.faction.apotheke.Apotheke;
 import de.polo.core.faction.service.impl.FactionManager;
+import de.polo.core.game.faction.apotheke.Apotheke;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.gameplay.GamePlay;
 import org.bukkit.command.Command;

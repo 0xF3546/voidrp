@@ -5,7 +5,6 @@ import de.polo.api.crew.enums.CrewPermission;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Color;
 
 import java.util.List;
 

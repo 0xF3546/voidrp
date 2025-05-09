@@ -1,7 +1,6 @@
 package de.polo.core.web.controller;
 
 import de.polo.api.VoidAPI;
-import de.polo.core.VoidSpringApplication;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.FactionService;
 import de.polo.core.web.dto.FactionDto;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

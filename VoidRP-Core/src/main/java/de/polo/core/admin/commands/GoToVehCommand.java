@@ -8,15 +8,10 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
 import de.polo.core.vehicles.services.VehicleService;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
 
 public class GoToVehCommand implements CommandExecutor {
     private final PlayerManager playerManager;

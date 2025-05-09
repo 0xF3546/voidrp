@@ -13,7 +13,8 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static de.polo.core.Main.*;
+import static de.polo.core.Main.playerManager;
+import static de.polo.core.Main.utils;
 
 public class Gangwar extends GangwarData {
 

@@ -2,10 +2,10 @@ package de.polo.core.utils.player;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
-import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.Utils;
 import de.polo.core.manager.ItemManager;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;

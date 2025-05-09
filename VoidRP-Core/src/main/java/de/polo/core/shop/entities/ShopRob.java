@@ -1,6 +1,5 @@
 package de.polo.core.shop.entities;
 
-import de.polo.api.Utils.enums.Prefix;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.game.base.shops.ShopData;
 import de.polo.core.utils.Utils;
