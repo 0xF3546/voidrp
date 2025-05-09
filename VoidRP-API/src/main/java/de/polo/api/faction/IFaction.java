@@ -7,4 +7,6 @@ package de.polo.api.faction;
  */
 public interface IFaction {
     int getId();
+    String getName();
+    String getFullname();
 }
