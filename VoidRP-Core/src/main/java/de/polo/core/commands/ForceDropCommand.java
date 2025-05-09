@@ -38,7 +38,7 @@ public class ForceDropCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "drop konnte nicht gespawnt werden.");
             return false;
         }
-        player.teleport(drop.location);
+        player.teleport(drop.getLocation());
         return false;
     }
 }

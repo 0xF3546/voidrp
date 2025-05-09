@@ -233,7 +233,7 @@ public class PlayerInteractListener implements Listener {
                     }
                     if (Main.getInstance().gamePlay.activeDrop != null) {
                         Drop drop = Main.getInstance().gamePlay.activeDrop;
-                        if (drop.location.distance(event.getClickedBlock().getLocation()) < 1) {
+                        if (drop.getLocation().distance(event.getClickedBlock().getLocation()) < 1) {
                             if (!drop.isDropOpen) {
                                 player.sendMessage("§8[§cDrop§8]§7 Der drop ist noch nicht offen!");
                                 event.setCancelled(true);
