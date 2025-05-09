@@ -93,7 +93,7 @@ public class QuitListener implements Listener {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (player.getWorld() != p.getWorld()) continue;
                 if (p.getLocation().distance(player.getLocation()) > 10) continue;
-                p.sendMessage("§8 ➥ §7" + player.getName() + " hat den Server verlassen (" + p.getLocation().distance(player.getLocation()) + "m)");
+                p.sendMessage("§8 ➥ §7" + player.getName() + " hat den Server verlassen (" + (float) p.getLocation().distance(player.getLocation()) + "m)");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
