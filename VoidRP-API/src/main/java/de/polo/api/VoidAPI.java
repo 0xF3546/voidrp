@@ -2,6 +2,7 @@ package de.polo.api;
 
 import de.polo.api.player.VoidPlayer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
 import net.labymod.serverapi.server.bukkit.LabyModPlayer;
 import net.labymod.serverapi.server.bukkit.LabyModProtocolService;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import java.util.UUID;
  */
 public final class VoidAPI {
     private static Server server;
+    @Getter
     private static final List<VoidPlayer> players = new ObjectArrayList<>();
 
     public static void setPlugin(Server p) {
@@ -40,10 +42,6 @@ public final class VoidAPI {
                 .filter(voidPlayer -> voidPlayer.getUuid().equals(uuid))
                 .findFirst()
                 .orElse(null);
-    }
-
-    public static List<VoidPlayer> getPlayers() {
-        return players;
     }
 
     /**
