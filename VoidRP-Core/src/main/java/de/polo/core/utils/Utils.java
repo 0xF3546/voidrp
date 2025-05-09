@@ -21,6 +21,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.sql.Date;
 import java.text.DecimalFormat;
@@ -197,21 +198,31 @@ public class Utils {
 
     public void setAFK(Player player, boolean state) {
         PlayerData playerData = Main.getInstance().playerManager.getPlayerData(player.getUniqueId());
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        Team afkTeam = scoreboard.getTeam("afk");
+
+        if (afkTeam == null) {
+            afkTeam = scoreboard.registerNewTeam("afk");
+            afkTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+        }
+
         if (state) {
             player.sendMessage("§5Du bist nun abwesend.");
             playerData.setAFK(true);
-            player.setCollidable(false);
+
+            afkTeam.addPlayer(player);
+
         } else {
-            player.sendMessage("§5Du bist nicht mehr abwesend.");
+            player.sendMessage("§5Du bist nun wieder anwesend.");
             playerData.setAFK(false);
             playerData.setIntVariable("afk", 0);
-            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
-            if (!voidPlayer.isAduty()) {
-                player.setCollidable(true);
-            }
+
+            afkTeam.removePlayer(player);
         }
+
         Tablist.updatePlayer(player);
     }
+
 
     public LocalDateTime sqlDateToLocalDateTime(Date date) {
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
