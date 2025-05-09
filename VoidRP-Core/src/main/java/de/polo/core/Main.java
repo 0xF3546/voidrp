@@ -153,9 +153,7 @@ public final class Main extends JavaPlugin implements Server {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-
-        LabyModProtocolService.initialize(this);
-
+        
         coreDatabase = new CoreDatabase();
         database = coreDatabase;
 
