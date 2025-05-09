@@ -29,10 +29,6 @@ import static de.polo.core.Main.*;
 @Event
 public class QuitListener implements Listener {
 
-    public QuitListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
