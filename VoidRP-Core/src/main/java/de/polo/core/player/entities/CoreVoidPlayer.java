@@ -1,11 +1,16 @@
 package de.polo.core.player.entities;
 
+import de.polo.api.Utils.GUI;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.Job;
 import de.polo.api.player.PlayerCharacter;
+import de.polo.api.player.PlayerSetting;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.enums.Setting;
 import de.polo.core.player.services.PlayerService;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -28,10 +33,17 @@ public class CoreVoidPlayer implements VoidPlayer {
     private final Player player;
 
     @Getter
+    @Setter
+    private GUI lastGUI;
+
+    @Getter
     private MiniJob miniJob;
     @Getter
     @Setter
     private Job activeJob;
+
+    @Getter
+    private final List<PlayerSetting> settings = new ObjectArrayList<>();
 
     private boolean notificationsEnabled;
 
@@ -46,6 +58,7 @@ public class CoreVoidPlayer implements VoidPlayer {
         addonsToRequest.add("clearwater");
         addonsToRequest.add("voicechat");
 
+        loadSettings();
         LabyModPlayer labyModPlayer = VoidAPI.getLabyModPlayer(player);
         if (labyModPlayer == null) return;
         labyModPlayer.disableAddons("damageindicator", "clearwater");
@@ -59,10 +72,52 @@ public class CoreVoidPlayer implements VoidPlayer {
         labyModPlayer.sendDiscordRPC(discordRPC);
     }
 
+    private void loadSettings() {
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        playerService.getPlayerSettings(player)
+                .thenAccept(playerSettings -> {
+                    if (playerSettings == null) return;
+                    this.settings.addAll(playerSettings);
+                });
+    }
+
     @Override
     public PlayerCharacter getData() {
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         return (PlayerCharacter) playerService.getPlayerData(player);
+    }
+
+    @Override
+    public void addSetting(Setting setting, String value) {
+        PlayerSetting playerSetting = new CorePlayerSetting(setting, value);
+        if (settings.stream().anyMatch(playerSetting1 -> playerSetting1.getSetting() == setting)) {
+            return;
+        }
+        settings.add(playerSetting);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        playerService.addPlayerSetting(this, playerSetting);
+    }
+
+    @Override
+    public void removeSetting(Setting setting) {
+        PlayerSetting playerSetting = settings.stream()
+                .filter(playerSetting1 -> playerSetting1.getSetting() == setting)
+                .findFirst()
+                .orElse(null);
+        if (playerSetting == null) {
+            return;
+        }
+        settings.remove(playerSetting);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        playerService.removePlayerSetting(this, playerSetting);
+    }
+
+    @Override
+    public PlayerSetting getSetting(Setting setting) {
+        return settings.stream()
+                .filter(playerSetting -> playerSetting.getSetting() == setting)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

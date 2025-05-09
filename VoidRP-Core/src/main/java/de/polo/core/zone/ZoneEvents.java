@@ -61,8 +61,7 @@ public class ZoneEvents implements Listener {
 
         List<Zone> zones = zoneService.getZones();
         for (Zone zone : zones) {
-            if (zone.getLocation().getWorld().equals(location.getWorld())
-                    && zone.getLocation().distance(location) <= zone.getRange()) {
+            if (zone.getRegion().isInside(player.getPlayer())) {
                 newZone = zone;
                 break;
             }

@@ -3,6 +3,7 @@ package de.polo.core.admin.services.impl;
 import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
+import de.polo.api.player.enums.Setting;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.utils.Service;
@@ -27,7 +28,7 @@ public class CoreAdminService implements AdminService {
             color = Color.AQUA;
         }
         for (VoidPlayer player : VoidAPI.getPlayers()) {
-            if (player.getData().getPermlevel() >= 60) {
+            if (player.getData().getPermlevel() >= 60 && (player.isAduty()) || player.hasSetting(Setting.TOGGLE_ADMIN_MESSAGES)) {
                 player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
             }
         }    }
@@ -50,7 +51,7 @@ public class CoreAdminService implements AdminService {
             color = Color.AQUA;
         }
         for (VoidPlayer player : VoidAPI.getPlayers()) {
-            if (player.getData().getPermlevel() >= 60) {
+            if (player.getData().getPermlevel() >= 60 && (player.isAduty()) || player.hasSetting(Setting.TOGGLE_ADMIN_MESSAGES)) {
                 player.sendMessage("§b§lNotify §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
             }
         }

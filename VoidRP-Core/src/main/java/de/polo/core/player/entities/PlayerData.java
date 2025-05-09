@@ -87,9 +87,6 @@ public class PlayerData implements PlayerCharacter {
     private String spawn;
     @Getter
     @Setter
-    private boolean sendAdminMessages = false;
-    @Getter
-    @Setter
     private int rewardId;
     @Getter
     @Setter

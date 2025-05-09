@@ -52,6 +52,15 @@ public class DamageListener implements Listener {
         }
         player.getWorld().playEffect(player.getLocation().add(0, 0.5, 0), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
         if (event.getCause() == PROJECTILE) {
+            if (player.getInventory().getItemInMainHand().getType() == RoleplayItem.SWAT_SHIELD.getMaterial()) {
+                if (!player.isBlocking()) return;
+                ItemStack shield = player.getInventory().getItemInMainHand();
+                ItemMeta meta = shield.getItemMeta();
+                if (meta instanceof Damageable damageable) {
+                    damageable.setDamage(damageable.getDamage() + 15);
+                    shield.setItemMeta(meta);
+                }
+            }
             for (ItemStack armor : player.getInventory().getArmorContents()) {
                 if (armor == null || armor.getType() == Material.AIR) continue;
                 event.setDamage(0.5);
@@ -63,15 +72,6 @@ public class DamageListener implements Listener {
                         damageable.setDamage(damageable.getDamage() + 15);
                     }
                     armor.setItemMeta(meta);
-                }
-            }
-            if (player.getInventory().getItemInMainHand().getType() == RoleplayItem.SWAT_SHIELD.getMaterial()) {
-                if (!player.isBlocking()) return;
-                ItemStack shield = player.getInventory().getItemInMainHand();
-                ItemMeta meta = shield.getItemMeta();
-                if (meta instanceof Damageable damageable) {
-                    damageable.setDamage(damageable.getDamage() + 15);
-                    shield.setItemMeta(meta);
                 }
             }
         }

@@ -1,7 +1,7 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
 import de.polo.core.utils.Event;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,6 +9,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+
+import static de.polo.core.Main.database;
 
 @Event
 public class PlayerLoginListener implements Listener {
@@ -18,7 +20,7 @@ public class PlayerLoginListener implements Listener {
         Player player = event.getPlayer();
         String sql = "SELECT *, DATE_FORMAT(date, '%d.%m.%Y | %H:%i:%s') AS formatted_timestamp FROM player_bans WHERE uuid = ?";
 
-        try (Connection connection = Main.getInstance().coreDatabase.getConnection();
+        try (Connection connection = database.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, player.getUniqueId().toString());
@@ -57,13 +59,12 @@ public class PlayerLoginListener implements Listener {
                                 "Ban läuft ab: " + formattedDate + "\n\n§8 • §6VoidRoleplay§8 •";
                     }
 
-                    event.setKickMessage(kickMessage);
+                    event.kickMessage(Component.text(kickMessage));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             event.setResult(PlayerLoginEvent.Result.KICK_OTHER);
-            event.setKickMessage("§cFehler beim Überprüfen des Ban-Status.");
+            event.kickMessage(Component.text("§cFehler beim Überprüfen des Ban-Status."));
         }
     }
 }

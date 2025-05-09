@@ -17,6 +17,7 @@ import de.polo.core.utils.player.PayDayUtils;
 import de.polo.core.utils.player.Tutorial;
 import lombok.Getter;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -318,5 +319,9 @@ public class Utils {
                 player.setDisplayName("§k" + player.getName());
             }
         }
+    }
+
+    public static Block getPlayerFacingBlock(Player player, int range) {
+        return player.getTargetBlock(null, range);
     }
 }

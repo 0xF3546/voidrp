@@ -13,7 +13,7 @@ import java.util.List;
 public interface Zone {
     String getName();
     int getRange();
-    Location getLocation();
+    Region getRegion();
     List<VoidPlayer> getPlayersInZone();
     void addPlayer(VoidPlayer player);
     void removePlayer(VoidPlayer player);

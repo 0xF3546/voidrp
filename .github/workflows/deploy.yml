@@ -1,0 +1,43 @@
+name: Build and Upload VoidRP Plugin
+
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: List files in workspace
+        run: ls -lh
+
+      - name: Check JAR output
+        run: ls -la VoidRP-Core/target
+
+
+      - name: Deploy Jar to Minecraft Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: "VoidRP-Core/target/VoidRoleplay-1.0.0.jar"
+          target: "/home/minecraft/plugins/"
+          overwrite: true
+          strip_components: 2

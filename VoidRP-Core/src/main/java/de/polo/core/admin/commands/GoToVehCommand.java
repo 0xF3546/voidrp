@@ -3,9 +3,11 @@ package de.polo.core.admin.commands;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Prefix;
+import de.polo.core.vehicles.services.VehicleService;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -41,21 +43,14 @@ public class GoToVehCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /gotovehicle [ID]");
             return false;
         }
-        for (Entity entity : Bukkit.getWorld(player.getWorld().getName()).getEntities()) {
-            if (entity.getType() == EntityType.MINECART) {
-                try {
-                    if (entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER) != null) {
-                        int id = entity.getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "id"), PersistentDataType.INTEGER);
-                        if (Integer.parseInt(args[0]) == id) {
-                            player.teleport(entity.getLocation());
-                            player.sendMessage(Prefix.ADMIN + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");
-                        }
-                    }
-                } catch (Exception ex) {
-                    continue;
-                }
-            }
+        VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
+        PlayerVehicleData playerVehicleData = vehicleService.getPlayerVehicleById(Integer.parseInt(args[0])).orElse(null);
+        if (playerVehicleData == null) {
+            player.sendMessage(Prefix.ERROR + "Das Fahrzeug mit der ID §l" + args[0] + "§7 existiert nicht.");
+            return false;
         }
+        player.teleport(playerVehicleData.getLocation());
+        player.sendMessage(Prefix.ADMIN + "Du hast dich zum Fahrzeug mit der ID §l" + args[0] + "§7 teleportiert.");
         return false;
     }
 }

@@ -1,13 +1,17 @@
 package de.polo.api.player;
 
+import de.polo.api.Utils.GUI;
 import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.crew.Crew;
 import de.polo.api.jobs.Job;
 import de.polo.api.jobs.enums.MiniJob;
+import de.polo.api.player.enums.Setting;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,6 +22,16 @@ import java.util.UUID;
 public interface VoidPlayer {
     Player getPlayer();
     PlayerCharacter getData();
+    List<PlayerSetting> getSettings();
+    default void addSetting(Setting setting) {
+        this.addSetting(setting, "");
+    }
+    void addSetting(Setting setting, String value);
+    void removeSetting(Setting setting);
+    default boolean hasSetting(Setting setting) {
+        return this.getSetting(setting) != null;
+    }
+    PlayerSetting getSetting(Setting setting);
     MiniJob getMiniJob();
     Job getActiveJob();
     void setActiveJob(Job job);
@@ -48,4 +62,6 @@ public interface VoidPlayer {
     void setAduty(boolean aduty);
     boolean notificationsEnabled();
     void setNotificationsEnabled(boolean enabled);
+    GUI getLastGUI();
+    void setLastGUI(GUI gui);
 }

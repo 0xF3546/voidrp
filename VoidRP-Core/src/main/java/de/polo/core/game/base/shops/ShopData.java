@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -144,5 +145,9 @@ public class ShopData {
     public Crew getCrewHolder() {
         CrewService crewService = VoidAPI.getService(CrewService.class);
         return crewService.getCrew(crewHolder);
+    }
+
+    public Location getLocation() {
+        return new Location(welt, x, y, z, yaw, pitch);
     }
 }

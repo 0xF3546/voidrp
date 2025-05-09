@@ -1,6 +1,7 @@
 package de.polo.core.utils;
 
 import de.polo.api.VoidAPI;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
@@ -61,17 +62,6 @@ public class StaatUtil {
 
     @SneakyThrows
     private void loadWantedReasons() {
-        /*
-        Connection connection = Main.getInstance().getMySQL().getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM wantedreasons");
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            WantedReason reason = new WantedReason(resultSet.getInt("id"), resultSet.getString("reason"), resultSet.getInt("wanted"));
-            wantedReasons.add(reason);
-        }
-        statement.close();
-        connection.close();
-        */
         Main.getInstance().getCoreDatabase().queryThreaded("SELECT * FROM wantedreasons")
                 .thenAccept(result -> {
                     try {
@@ -152,6 +142,8 @@ public class StaatUtil {
         if (playerData.getWanted() != null) {
             JailData jailData = new JailData();
             int wanteds = wantedReason.getWanted();
+            LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+            lawEnforcementService.addWantedLog(player.getUniqueId(), playerData.getWanted());
             for (WantedVariation variation : playerData.getWanted().getVariations()) {
                 wanteds += variation.getWantedAmount();
             }

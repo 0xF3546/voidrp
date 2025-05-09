@@ -16,12 +16,6 @@ import java.util.List;
 @Service
 public class CoreZoneService implements ZoneService {
     private final List<Zone> zones = new ObjectArrayList<>();
-
-    public CoreZoneService() {
-        // Initialize the zones list with some default zones if needed
-        // Example: zones.add(new CoreZone("Spawn", 10, new Location(...)));
-    }
-
     @Override
     public List<Zone> getZones() {
         return zones;
@@ -41,5 +35,12 @@ public class CoreZoneService implements ZoneService {
                 .filter(zone -> zone.getPlayersInZone().contains(player))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public void addZone(Zone zone) {
+        if (!zones.contains(zone)) {
+            zones.add(zone);
+        }
     }
 }

@@ -379,7 +379,6 @@ public final class Main extends JavaPlugin implements Server {
         public TrennenCommand trennenCommand;
         public AntragCommand antragCommand;
         public WantedCommand aktenCommand;
-        public SpecCommand specCommand;
         public MsgCommand msgCommand;
         public FrakStatsCommand frakStatsCommand;
         public CheckInvCommand checkInvCommand;
@@ -456,7 +455,6 @@ public final class Main extends JavaPlugin implements Server {
         public ModifyBlacklistCommand modifyBlacklistCommand;
         public AutoBlacklistCommand autoBlacklistCommand;
         public AFKCommand afkCommand;
-        public SettingsCommand settingsCommand;
         public SecondaryTeamInfoCommand secondaryTeamInfoCommand;
         public SubTeamCommand subTeamCommand;
         public SubTeamChat subTeamChat;
@@ -585,7 +583,6 @@ public final class Main extends JavaPlugin implements Server {
             trennenCommand = new TrennenCommand(playerManager);
             antragCommand = new AntragCommand(playerManager, utils);
             aktenCommand = new WantedCommand(playerManager, utils);
-            specCommand = new SpecCommand(playerManager);
             msgCommand = new MsgCommand(playerManager);
             frakStatsCommand = new FrakStatsCommand(playerManager, factionManager, utils);
             checkInvCommand = new CheckInvCommand(playerManager);
@@ -660,7 +657,6 @@ public final class Main extends JavaPlugin implements Server {
             modifyBlacklistCommand = new ModifyBlacklistCommand(playerManager, factionManager);
             autoBlacklistCommand = new AutoBlacklistCommand(playerManager, factionManager);
             afkCommand = new AFKCommand(utils);
-            settingsCommand = new SettingsCommand(playerManager);
             secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
             subTeamCommand = new SubTeamCommand(playerManager, factionManager);
             subTeamChat = new SubTeamChat(playerManager);

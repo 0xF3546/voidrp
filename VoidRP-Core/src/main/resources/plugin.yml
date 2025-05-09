@@ -316,3 +316,6 @@ commands:
   denyadvertisement:
   acceptadvertisement:
   removelocation:
+  edithouse:
+  registerbeerpongcup:
+  createregion:
