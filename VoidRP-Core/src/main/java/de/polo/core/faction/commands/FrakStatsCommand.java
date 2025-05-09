@@ -1,5 +1,6 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
@@ -63,7 +64,7 @@ public class FrakStatsCommand implements CommandExecutor {
         }
         player.sendMessage(Component.text("§8 - §6Typ§8:§c " + factionData.getFactionType().getName()));
         player.sendMessage("§8 - §6Mitglieder§8:§c " + member + "/" + factionData.getMaxMember());
-        player.sendMessage("§8 - §6PayDay§8:§c " + utils.getCurrentMinute() + "/60");
+        player.sendMessage("§8 - §6PayDay§8:§c " + ApiUtils.getTime().getMinute() + "/60");
         return false;
     }
 }

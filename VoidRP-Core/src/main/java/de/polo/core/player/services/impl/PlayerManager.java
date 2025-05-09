@@ -1,5 +1,6 @@
 package de.polo.core.player.services.impl;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
@@ -802,7 +803,7 @@ public class PlayerManager implements Listener {
                 }
 
                 if (currentMinute == 0) {
-                    int currentHour = utils.getCurrentHour();
+                    int currentHour = ApiUtils.getTime().getHour();
                     Bukkit.getPluginManager().callEvent(new HourTickEvent(currentHour));
 
                     // Batch-Operation für Fraktionsdaten-Update

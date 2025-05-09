@@ -1,5 +1,6 @@
 package de.polo.core.manager;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.location.services.LocationService;
@@ -240,7 +241,8 @@ public class ServerManager {
                         }
                     }
                 }
-                if (utils.getCurrentHour() >= 0 && utils.getCurrentHour() < 22) {
+                ApiUtils.getTime();
+                if (ApiUtils.getTime().getHour() < 22) {
                     for (Gangwar gangwarData : Main.getInstance().utils.gangwarUtils.getGangwars()) {
                         if (gangwarData.getAttacker() != null) {
                             Faction attackerData = factionManager.getFactionData(gangwarData.getAttacker());

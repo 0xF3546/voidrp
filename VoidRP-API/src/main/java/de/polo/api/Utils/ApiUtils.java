@@ -3,6 +3,9 @@ package de.polo.api.Utils;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 /**
  * @author Mayson1337
  * @version 1.0.0
@@ -57,6 +60,10 @@ public class ApiUtils {
         }
         int size = ((entries + 8) / 9) * 9;
         return Math.min(size, 54);
+    }
+
+    public static LocalDateTime getTime() {
+        return LocalDateTime.now(ZoneId.of("Europe/Berlin"));
     }
 
 }

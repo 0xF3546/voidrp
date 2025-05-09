@@ -166,17 +166,6 @@ public class Utils {
         player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(message));
     }
 
-    public void sendBossBar(Player player, String text) {
-    }
-
-    public int getCurrentMinute() {
-        return Calendar.getInstance().get(Calendar.MINUTE);
-    }
-
-    public int getCurrentHour() {
-        return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-    }
-
     public void loadTeams() {
         sb = Bukkit.getScoreboardManager().getMainScoreboard();
         for (RankData rankData : ServerManager.rankDataMap.values()) {
