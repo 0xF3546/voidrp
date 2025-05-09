@@ -38,7 +38,6 @@ public class EntityDamageByEntityListener implements Listener {
             }
 
             if (damager != null) {
-                PlayerData damagerData = playerManager.getPlayerData(damager.getUniqueId());
                 VoidPlayer voidDamager = VoidAPI.getPlayer(damager);
 
                 if (isInSupportOrJail(damager)) {
@@ -53,15 +52,8 @@ public class EntityDamageByEntityListener implements Listener {
                 }
 
                 if (voidDamager.hasSetting(Setting.HIT_SOUNDS)) {
-                    event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
+                    voidDamager.getPlayer().getWorld().playSound(event.getEntity().getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
                 }
-            }
-        }
-
-        if (event.getEntity().getType() == EntityType.VILLAGER) {
-            String command = event.getEntity().getPersistentDataContainer().get(new NamespacedKey(Main.getInstance(), "command"), PersistentDataType.STRING);
-            if (command != null) {
-                event.setCancelled(true);
             }
         }
     }
