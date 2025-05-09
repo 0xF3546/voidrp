@@ -2,27 +2,20 @@ package de.polo.core.location.services.impl;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
-import de.polo.core.handler.TabCompletion;
+import de.polo.core.Main;
+import de.polo.core.game.events.NaviReachEvent;
+import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ItemManager;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.LocationData;
 import de.polo.core.storage.NaviData;
-import de.polo.core.player.entities.PlayerData;
-import de.polo.core.storage.RegisteredBlock;
-import de.polo.core.game.events.NaviReachEvent;
-import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.SoundManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,9 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class NavigationManager implements Listener {
     private final PlayerManager playerManager;

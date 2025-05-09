@@ -4,8 +4,8 @@ import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.gameplay.GamePlay;
 import de.polo.core.utils.enums.Drug;
+import de.polo.core.utils.gameplay.GamePlay;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -50,7 +50,8 @@ public class UseCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         GamePlay.useDrug(player, drug);
-        if (playerData.getVariable("gangwar") == null && playerData.getVariable("ffa") == null) playerData.getInventory().removeItem(drug.getItem(), 1);
+        if (playerData.getVariable("gangwar") == null && playerData.getVariable("ffa") == null)
+            playerData.getInventory().removeItem(drug.getItem(), 1);
         return false;
     }
 

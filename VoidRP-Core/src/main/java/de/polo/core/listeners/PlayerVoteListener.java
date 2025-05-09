@@ -6,9 +6,9 @@ import de.polo.api.VoidAPI;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
-import de.polo.core.utils.Event;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -19,7 +19,8 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static de.polo.core.Main.*;
+import static de.polo.core.Main.database;
+import static de.polo.core.Main.playerManager;
 
 @Event
 public class PlayerVoteListener implements Listener {

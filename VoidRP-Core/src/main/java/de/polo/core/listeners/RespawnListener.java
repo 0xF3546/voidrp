@@ -4,8 +4,8 @@ import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.Event;
+import de.polo.core.utils.gameplay.MilitaryDrop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,10 +44,10 @@ public class RespawnListener implements Listener {
         LocationService locationService = VoidAPI.getService(LocationService.class);
         if (playerData.getKarma() < -50) {
             event.setRespawnLocation(locationService.getLocation("hell"));
-            locationService.useLocation(player,"hell");
+            locationService.useLocation(player, "hell");
         } else if (playerData.getKarma() >= 50) {
             event.setRespawnLocation(locationService.getLocation("heaven"));
-            locationService.useLocation(player,"heaven");
+            locationService.useLocation(player, "heaven");
         } else {
             event.setRespawnLocation(locationService.getLocation("cemetery"));
             locationService.useLocation(player, "cemetery");

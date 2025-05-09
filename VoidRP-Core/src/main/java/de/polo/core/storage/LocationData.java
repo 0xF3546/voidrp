@@ -15,7 +15,10 @@ public class LocationData {
     private float pitch;
     private String type;
     private String info;
-    public LocationData() {}
+
+    public LocationData() {
+    }
+
     public LocationData(int id, String name, int x, int y, int z, String welt, float yaw, float pitch, String type, String info) {
         this.id = id;
         this.name = name;

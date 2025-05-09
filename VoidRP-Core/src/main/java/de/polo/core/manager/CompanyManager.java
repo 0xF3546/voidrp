@@ -3,10 +3,10 @@ package de.polo.core.manager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.core.Main;
+import de.polo.core.database.impl.CoreDatabase;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.Company;
 import de.polo.core.storage.CompanyRole;
-import de.polo.core.player.entities.PlayerData;
-import de.polo.core.database.impl.CoreDatabase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 
@@ -51,7 +51,8 @@ public class CompanyManager {
                             String permissionsJson = roleResult.getString("permissions");
                             ObjectMapper mapper = new ObjectMapper();
                             try {
-                                List<String> permissions = mapper.readValue(permissionsJson, new TypeReference<List<String>>() {});
+                                List<String> permissions = mapper.readValue(permissionsJson, new TypeReference<List<String>>() {
+                                });
                                 role.setPermissions(permissions);
                             } catch (IOException e) {
                                 e.printStackTrace();

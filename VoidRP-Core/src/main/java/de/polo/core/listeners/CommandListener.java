@@ -2,11 +2,10 @@ package de.polo.core.listeners;
 
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.player.ChatUtils;
-import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

@@ -2,8 +2,8 @@ package de.polo.core.commands;
 
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.storage.PlayerWeapon;
 import de.polo.core.player.services.impl.PlayerManager;
+import de.polo.core.storage.PlayerWeapon;
 import de.polo.core.utils.enums.Weapon;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;

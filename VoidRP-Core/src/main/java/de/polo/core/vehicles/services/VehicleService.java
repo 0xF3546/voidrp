@@ -2,10 +2,10 @@ package de.polo.core.vehicles.services;
 
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.game.base.vehicle.VehicleData;
+import org.bukkit.Location;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
-import org.bukkit.Location;
 
 import java.util.Map;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public interface VehicleService {
     /**
      * Spawns a vehicle for a player at its stored location.
      *
-     * @param player           the player who owns the vehicle
+     * @param player            the player who owns the vehicle
      * @param playerVehicleData the player's vehicle data
      * @return the spawned Minecart entity
      * @throws de.polo.core.vehicles.services.exceptions.VehicleServiceException if spawning fails
@@ -91,8 +91,8 @@ public interface VehicleService {
     /**
      * Refuels a vehicle with a specified amount or to its maximum capacity.
      *
-     * @param vehicle  the vehicle to refuel
-     * @param newFuel  the amount of fuel to add, or null to fill to max
+     * @param vehicle the vehicle to refuel
+     * @param newFuel the amount of fuel to add, or null to fill to max
      */
     void fillVehicle(Vehicle vehicle, Integer newFuel);
 
@@ -107,7 +107,7 @@ public interface VehicleService {
     /**
      * Assigns a vehicle to a player and spawns it.
      *
-     * @param player  the player receiving the vehicle
+     * @param player      the player receiving the vehicle
      * @param vehicleName the name of the vehicle type
      * @throws VehicleServiceException if assignment fails
      */

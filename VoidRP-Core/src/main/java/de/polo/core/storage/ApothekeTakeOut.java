@@ -16,14 +16,12 @@ import java.util.UUID;
  */
 public class ApothekeTakeOut {
 
-    @Getter
-    private final Apotheke apotheke;
-
-    @Getter
-    private final UUID uuid;
-
     // Static list to store takeout records
     private static final List<ApothekeTakeOut> takeouts = new ObjectArrayList<>();
+    @Getter
+    private final Apotheke apotheke;
+    @Getter
+    private final UUID uuid;
 
     /**
      * Constructor for creating a takeout record.

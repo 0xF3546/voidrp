@@ -139,7 +139,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                     PlayerData playerData = playerManager.getPlayerData(target);
                     target.sendMessage("§8[§eShop§8]§a Du hast Pack-Christmas erhalten!");
                     playerData.addMoney(14444, "Weihnachtspack");
-                    ItemStack helmet = new ItemStack (Material.LEATHER_HELMET);
+                    ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
                     LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
                     meta.setColor(Color.RED);
                     meta.setDisplayName("§9Blaue Wollmütze");
@@ -153,7 +153,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                         uuid,
                         args[1].toLowerCase(),
                         amount);
-                    break;
+                break;
         }
 
         return false;
@@ -219,7 +219,7 @@ CheckoutWebshopCommand implements CommandExecutor {
                                 case "pack-christmas":
                                     playerData.addMoney(14444, "Weihnachtspack");
                                     player.sendMessage("§8[§eShop§8]§a Du hast Pack-Christmas erhalten!");
-                                    ItemStack helmet = new ItemStack (Material.LEATHER_HELMET);
+                                    ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
                                     LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
                                     meta.setColor(Color.RED);
                                     meta.setDisplayName("§9Blaue Wollmütze");

@@ -1,7 +1,6 @@
 package de.polo.core.location.services.impl;
 
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.storage.GasStationData;
 import de.polo.core.storage.LocationData;
@@ -17,11 +16,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static de.polo.core.Main.database;
 

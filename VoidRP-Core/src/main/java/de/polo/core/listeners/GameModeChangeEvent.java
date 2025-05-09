@@ -2,8 +2,8 @@ package de.polo.core.listeners;
 
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.Event;
+import de.polo.core.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.boss.BarColor;

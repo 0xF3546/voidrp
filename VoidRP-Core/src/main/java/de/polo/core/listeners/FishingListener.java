@@ -1,6 +1,5 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
 import de.polo.core.utils.Event;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;

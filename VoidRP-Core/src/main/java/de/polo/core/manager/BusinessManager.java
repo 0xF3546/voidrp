@@ -1,10 +1,10 @@
 package de.polo.core.manager;
 
 import de.polo.core.Main;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.BusinessData;
 import de.polo.core.storage.DBPlayerData;
-import de.polo.core.player.entities.PlayerData;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

@@ -1,11 +1,11 @@
 package de.polo.core.agreement.commands;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.handler.CommandBase;
-import de.polo.api.player.VoidPlayer;
-import de.polo.core.storage.Agreement;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.storage.Agreement;
 import de.polo.core.utils.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

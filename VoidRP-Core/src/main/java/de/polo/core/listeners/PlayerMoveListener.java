@@ -1,6 +1,5 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Event;
 import de.polo.core.utils.player.PlayerPacket;

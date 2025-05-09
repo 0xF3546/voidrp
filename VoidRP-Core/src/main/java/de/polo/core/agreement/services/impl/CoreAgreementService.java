@@ -1,8 +1,8 @@
 package de.polo.core.agreement.services.impl;
 
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.agreement.services.VertragUtil;
-import de.polo.api.player.VoidPlayer;
 import de.polo.core.storage.Agreement;
 import de.polo.core.utils.Service;
 import lombok.SneakyThrows;

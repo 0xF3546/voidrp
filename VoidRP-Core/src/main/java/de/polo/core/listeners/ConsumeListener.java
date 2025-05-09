@@ -1,11 +1,10 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
-import de.polo.core.player.entities.PlayerData;
-import de.polo.core.game.base.extra.PlayerIllness;
 import de.polo.api.player.enums.IllnessType;
-import de.polo.core.utils.Utils;
+import de.polo.core.game.base.extra.PlayerIllness;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Event;
+import de.polo.core.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.polo.core.database.Database;
 import de.polo.core.database.utility.Result;
 import de.polo.core.utils.BetterExecutor;
-import dev.vansen.singleline.SingleLine;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -73,7 +72,7 @@ public class CoreDatabase implements Database {
     }
 
     @SneakyThrows
-    public Connection getConnection()  {
+    public Connection getConnection() {
         return dataSource.getConnection();
     }
 

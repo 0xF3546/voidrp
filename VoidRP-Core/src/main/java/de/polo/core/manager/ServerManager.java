@@ -3,14 +3,14 @@ package de.polo.core.manager;
 import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.location.services.LocationService;
-import de.polo.core.player.entities.PlayerData;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.game.events.SecondTickEvent;
 import de.polo.core.game.faction.gangwar.Gangwar;
+import de.polo.core.location.services.LocationService;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.*;
@@ -322,7 +322,7 @@ public class ServerManager {
     /**
      * Erstellt einen Farbverlauf über einen Text hinweg.
      *
-     * @param text Der Text, auf den der Verlauf angewendet werden soll.
+     * @param text   Der Text, auf den der Verlauf angewendet werden soll.
      * @param colors Array der Hex-Farben als Strings (z.B. {"#FF4500", "#FFD700"}).
      * @return Der Text mit angewendetem Farbverlauf in Minecraft-Format.
      */
@@ -342,7 +342,7 @@ public class ServerManager {
      * Interpoliert eine Farbe basierend auf einem Verhältnis zwischen mehreren Farben.
      *
      * @param colors Array der Hex-Farben als Strings (z.B. {"#FF4500", "#FFD700"}).
-     * @param ratio Verhältnis zwischen 0.0 (Anfang) und 1.0 (Ende).
+     * @param ratio  Verhältnis zwischen 0.0 (Anfang) und 1.0 (Ende).
      * @return Die interpolierte Minecraft-Farbsequenz (z.B. §x§R§R§G§G§B§B).
      */
     private String interpolateColor(String[] colors, float ratio) {
@@ -375,7 +375,6 @@ public class ServerManager {
         int b = Integer.parseInt(hex.substring(4, 6), 16);
         return new int[]{r, g, b};
     }
-
 
 
     private void startTabUpdateInterval() {

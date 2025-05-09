@@ -1,17 +1,17 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.storage.Ticket;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.utils.StaatUtil;
 import de.polo.core.utils.enums.PlayerPed;
-import de.polo.core.utils.Event;
+import de.polo.core.utils.gameplay.MilitaryDrop;
 import de.polo.core.vehicles.services.VehicleService;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -24,8 +24,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffectType;
-
-import java.sql.SQLException;
 
 import static de.polo.core.Main.*;
 

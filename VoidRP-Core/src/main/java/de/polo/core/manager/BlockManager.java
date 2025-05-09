@@ -2,9 +2,9 @@ package de.polo.core.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.core.Main;
+import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.storage.RegisteredBlock;
-import de.polo.core.database.impl.CoreDatabase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

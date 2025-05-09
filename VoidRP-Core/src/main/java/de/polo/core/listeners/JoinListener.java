@@ -1,14 +1,14 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.CoreVoidPlayer;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.utils.Utils;
 import de.polo.core.utils.Event;
+import de.polo.core.utils.Utils;
 import de.polo.core.vehicles.services.VehicleService;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -21,7 +21,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.UUID;
 
-import static de.polo.core.Main.*;
+import static de.polo.core.Main.playerManager;
+import static de.polo.core.Main.serverManager;
+
 @Event
 public class JoinListener implements Listener {
 

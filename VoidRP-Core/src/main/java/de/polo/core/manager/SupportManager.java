@@ -1,8 +1,8 @@
 package de.polo.core.manager;
 
 import de.polo.core.Main;
-import de.polo.core.storage.Ticket;
 import de.polo.core.database.impl.CoreDatabase;
+import de.polo.core.storage.Ticket;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;

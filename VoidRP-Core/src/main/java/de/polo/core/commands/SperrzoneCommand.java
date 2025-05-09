@@ -4,9 +4,9 @@ import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.location.services.NavigationService;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.NaviData;
-import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -19,8 +19,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import static de.polo.core.Main.*;
 
 /**
  * @author Mayson1337

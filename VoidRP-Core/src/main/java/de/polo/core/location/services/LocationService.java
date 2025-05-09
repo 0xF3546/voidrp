@@ -89,7 +89,10 @@ public interface LocationService {
      * Checks if two locations are equal based on coordinates
      */
     boolean isLocationEqual(Location first, Location second);
+
     List<GasStationData> getGasStations();
+
     List<NaviData> getNavis();
+
     void removeLocation(String location);
 }

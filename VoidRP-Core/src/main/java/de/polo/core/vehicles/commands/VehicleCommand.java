@@ -44,7 +44,7 @@ public class VehicleCommand extends CommandBase {
     /**
      * Constructs a new VehicleCommand with the given metadata and services.
      *
-     * @param meta             the command metadata
+     * @param meta the command metadata
      */
     public VehicleCommand(@NotNull CommandMeta meta) {
         super(meta);

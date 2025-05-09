@@ -1,9 +1,9 @@
 package de.polo.core.commands;
 
-import de.polo.core.handler.CommandBase;
 import de.polo.api.player.VoidPlayer;
-import de.polo.core.player.entities.PlayerData;
 import de.polo.api.player.enums.License;
+import de.polo.core.handler.CommandBase;
+import de.polo.core.player.entities.PlayerData;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 

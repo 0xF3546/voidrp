@@ -2,12 +2,12 @@ package de.polo.core.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.player.VoidPlayer;
+import de.polo.api.player.enums.License;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.manager.ItemManager;
-import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
-import de.polo.api.player.enums.License;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,7 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static de.polo.core.Main.*;
+import static de.polo.core.Main.factionManager;
+import static de.polo.core.Main.playerManager;
 
 /**
  * @author Mayson1337

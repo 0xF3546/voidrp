@@ -3,7 +3,6 @@ package de.polo.core.vehicles.repository;
 import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.game.base.vehicle.VehicleData;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -80,7 +79,7 @@ public class VehicleRepository {
     /**
      * Saves a new player vehicle to the database and returns its ID.
      *
-     * @param uuid       the UUID of the player
+     * @param uuid        the UUID of the player
      * @param vehicleName the name of the vehicle type
      * @return the ID of the newly created vehicle
      * @throws SQLException if the operation fails

@@ -1,7 +1,7 @@
 package de.polo.core.agreement.commands;
 
-import de.polo.core.Main;
 import de.polo.api.VoidAPI;
+import de.polo.core.Main;
 import de.polo.core.agreement.services.AgreementService;
 import de.polo.core.utils.Utils;
 import org.bukkit.command.Command;

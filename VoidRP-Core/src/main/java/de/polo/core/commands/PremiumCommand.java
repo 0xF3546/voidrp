@@ -1,8 +1,8 @@
 package de.polo.core.commands;
 
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.handler.CommandBase;
-import de.polo.api.player.VoidPlayer;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;

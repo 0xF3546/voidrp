@@ -4,7 +4,6 @@ import de.polo.core.game.base.housing.House;
 import de.polo.core.housing.enums.HouseType;
 import de.polo.core.player.entities.PlayerData;
 import org.bukkit.Location;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -60,6 +59,7 @@ public interface HouseService {
      * Gets all houses owned by a player
      */
     Collection<House> getHouses(Player player);
+
     Collection<House> getHouses();
 
     /**
@@ -103,8 +103,12 @@ public interface HouseService {
     void setMieterSlot(int houseNumber, int mieter);
 
     void deleteHouse(int houseNumber);
+
     void refundHouse(int houseNumber);
+
     void setHousePrice(int houseNumber, int price);
+
     void updateSign(House house);
+
     void updateType(House house, HouseType houseType);
 }

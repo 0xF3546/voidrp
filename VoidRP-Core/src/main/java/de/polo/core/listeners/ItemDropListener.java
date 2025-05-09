@@ -1,11 +1,10 @@
 package de.polo.core.listeners;
 
-import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.utils.Event;
 import de.polo.core.utils.enums.PickaxeType;
 import de.polo.core.utils.enums.RoleplayItem;
 import de.polo.core.utils.enums.Weapon;
-import de.polo.core.utils.Event;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
