@@ -26,6 +26,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.sql.SQLException;
 
+import static de.polo.core.Main.factionManager;
+
 public class NachrichtenCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
 
@@ -93,10 +95,11 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
             }
             int price = event.getMessage().length() * ServerManager.getPayout("werbung");
             if (event.getPlayerData().getBargeld() >= price) {
-                player.sendMessage("§8[§2Werbung§8]§a Werbung erfolgreich geschalten. §c-" + price + "$");
-                Bukkit.broadcastMessage("§8[§2Werbung§8] §7" + player.getName() + "§8:§f " + event.getMessage());
+                NewsService newsService = VoidAPI.getService(NewsService.class);
+                newsService.addAdvertisementQueue(new CoreAdvertisement(VoidAPI.getPlayer(event.getPlayer()), event.getMessage()));
+                player.sendMessage("§8[§2Werbung§8]§a Werbung wird nun geprüft. §c-" + price + "$");
                 playerManager.removeMoney(player, price, "Werbung");
-                Main.getInstance().factionManager.addFactionMoney("News", price, "Werbung - " + player.getName());
+                factionManager.addFactionMoney("News", price, "Werbung - " + player.getName());
             } else {
                 player.sendMessage(Prefix.ERROR + "Du benötigst " + price + "$.");
             }
@@ -109,9 +112,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
                 return;
             }
             if (event.getPlayerData().getFaction().equals("News")) {
-                player.sendMessage("§8[§6News§8]§a Die Nachricht wird nun geprüft.");
-                NewsService newsService = VoidAPI.getService(NewsService.class);
-                newsService.addAdvertisementQueue(new CoreAdvertisement(VoidAPI.getPlayer(event.getPlayer()), event.getMessage()));
+                Bukkit.broadcast(Component.text("§8[§6News§8]§a " + player.getName() + ": " + event.getMessage()));
             }
             event.end();
         }
