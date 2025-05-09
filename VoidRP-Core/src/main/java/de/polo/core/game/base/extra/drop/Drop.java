@@ -14,6 +14,7 @@ import de.polo.core.utils.enums.RoleplayItem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -80,7 +81,7 @@ public class Drop {
     }
 
     private void broadcast(String message) {
-        Bukkit.broadcastMessage("§cDrop §8┃ §c" + message);
+        Bukkit.broadcast(Component.text("§cDrop §8┃ §c" + message));
     }
 
     private void broadcastLocationMessage(NaviData naviData, Location naviLocation) {
@@ -123,7 +124,7 @@ public class Drop {
 
     private void openDrop() {
         isDropOpen = true;
-        if (hologram != null) hologram.setCustomName("§6Kiste offen");
+        if (hologram != null) hologram.customName(Component.text("§6Kiste offen"));
         broadcast("Die von Schmugglern fallen gelassene Kiste ist nun offen.");
         this.minutes = OPEN_DURATION;
     }
@@ -140,7 +141,7 @@ public class Drop {
 
     private void updateHologramTimer() {
         if (hologram != null && !isDropOpen) {
-            hologram.setCustomName("§c" + minutes + " Minuten verbleibend");
+            hologram.customName(Component.text("§c" + minutes + " Minuten verbleibend"));
         }
     }
 
@@ -187,12 +188,10 @@ public class Drop {
 
                 tickCounter++;
 
-                // Alle 2 Minuten (120 Sekunden * 20 Ticks)
                 if (tickCounter % (BANDIT_SPAWN_INTERVAL_SECONDS * 20) == 0) {
                     spawnBandits();
                 }
 
-                // Banditen zurückholen, wenn sie zu weit laufen
                 for (Pillager bandit : new ObjectArrayList<>(bandits)) {
                     if (bandit.isDead()) {
                         bandits.remove(bandit);
@@ -227,14 +226,13 @@ public class Drop {
             spawnLoc.setY(world.getHighestBlockYAt(spawnLoc));
 
             Pillager bandit = (Pillager) world.spawnEntity(spawnLoc, EntityType.PILLAGER);
-            bandit.setCustomName("§cBandit");
+            bandit.customName(Component.text("§cBandit"));
             bandit.setCustomNameVisible(true);
             bandit.setPersistent(true);
             bandit.setCanPickupItems(false);
+            bandit.setLootTable(null);
             bandits.add(bandit);
         }
-
-        broadcast("Banditen sind aufgetaucht, um die Kiste zu beschützen!");
     }
 
 
