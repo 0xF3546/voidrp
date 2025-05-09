@@ -37,9 +37,7 @@ public interface VoidPlayer {
     Job getActiveJob();
     void setActiveJob(Job job);
     void setMiniJob(MiniJob miniJob);
-    default UUID getUuid() {
-        return getPlayer().getUniqueId();
-    }
+    UUID getUuid();
     default String getName() {
         return getPlayer().getName();
     }

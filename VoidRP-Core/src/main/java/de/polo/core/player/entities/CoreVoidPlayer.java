@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mayson1337
@@ -55,8 +56,12 @@ public class CoreVoidPlayer implements VoidPlayer {
     @Getter
     private final PlayerRuntimeStatistic runtimeStatistic;
 
+    @Getter
+    private final UUID uuid;
+
     public CoreVoidPlayer(Player player) {
         this.player = player;
+        this.uuid = player.getUniqueId();
         this.runtimeStatistic = new PlayerRuntimeStatistic(Utils.getTime());
 
         List<String> addonsToRequest = new ArrayList<>();
