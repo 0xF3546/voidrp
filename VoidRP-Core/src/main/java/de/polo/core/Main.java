@@ -153,7 +153,7 @@ public final class Main extends JavaPlugin implements Server {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        
+
         coreDatabase = new CoreDatabase();
         database = coreDatabase;
 
