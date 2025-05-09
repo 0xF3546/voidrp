@@ -38,7 +38,7 @@ public class TabCompletion {
 
     public TabCompletion addAtIndexIf(int targetIndex, int conditionIndex, String expectedValue, List<String> options) {
         return addAtIndex(targetIndex, () -> {
-            if (args.length > conditionIndex && args[conditionIndex].equalsIgnoreCase(expectedValue)) {
+            if (args.length > conditionIndex && args[conditionIndex + 1].equalsIgnoreCase(expectedValue)) {
                 return options;
             }
             return Collections.emptyList();
