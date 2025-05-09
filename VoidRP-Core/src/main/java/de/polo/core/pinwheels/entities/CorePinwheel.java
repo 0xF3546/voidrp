@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 
-import java.util.Objects;
-
 /**
  * @author Mayson1337
  * @version 1.0.0

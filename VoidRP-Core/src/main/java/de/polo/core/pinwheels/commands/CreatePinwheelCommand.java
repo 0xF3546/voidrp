@@ -5,7 +5,6 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.pinwheels.dto.CreatePinwheelDto;
-import de.polo.core.pinwheels.entities.CorePinwheel;
 import de.polo.core.pinwheels.services.PinwheelService;
 import de.polo.core.player.entities.PlayerData;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
         permissionLevel = 100,
         adminDuty = true
 )
-public class CreatePinwheelCommand extends CommandBase{
+public class CreatePinwheelCommand extends CommandBase {
     public CreatePinwheelCommand(@NotNull CommandMeta meta) {
         super(meta);
     }

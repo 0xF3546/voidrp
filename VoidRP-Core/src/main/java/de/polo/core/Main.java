@@ -13,15 +13,10 @@ import de.polo.core.agreement.commands.AnnehmenCommand;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.base.commands.*;
 import de.polo.core.commands.*;
-import de.polo.core.commands.BizInviteCommand;
-import de.polo.core.commands.BusinessChatCommand;
-import de.polo.core.commands.BusinessCommand;
-import de.polo.core.commands.GeworbenCommand;
-import de.polo.core.commands.JailtimeCommand;
 import de.polo.core.database.Database;
 import de.polo.core.database.impl.CoreDatabase;
-import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.faction.commands.*;
+import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.game.base.CustomTabAPI;
 import de.polo.core.game.base.extra.beginnerpass.Beginnerpass;
 import de.polo.core.game.base.extra.seasonpass.Seasonpass;
@@ -31,23 +26,22 @@ import de.polo.core.handler.CommandBase;
 import de.polo.core.housing.commands.AusziehenCommand;
 import de.polo.core.housing.commands.RentCommand;
 import de.polo.core.jobs.commands.*;
-import de.polo.core.listeners.*;
+import de.polo.core.listeners.PacketSendListener;
 import de.polo.core.manager.*;
 import de.polo.core.news.services.impl.NewsManager;
 import de.polo.core.phone.commands.AuflegenCommand;
 import de.polo.core.phone.commands.CallCommand;
-import de.polo.core.player.commands.*;
+import de.polo.core.player.commands.JailCommand;
+import de.polo.core.player.commands.OOCCommand;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.*;
 import de.polo.core.utils.gameplay.GamePlay;
-import de.polo.core.utils.Event;
 import de.polo.core.utils.player.ScoreboardAPI;
 import de.polo.core.utils.player.ScoreboardManager;
 import dev.vansen.singleline.SingleLineOptions;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.labymod.serverapi.server.bukkit.LabyModProtocolService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
@@ -69,28 +63,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class Main extends JavaPlugin implements Server {
-    private final Map<Class<? extends CommandBase>, CommandBase> commandInstances = new HashMap<>();
-    private final Map<Class<?>, Object> eventInstances = new ConcurrentHashMap<>();
-    private final Map<Class<?>, Object> services = new ConcurrentHashMap<>();
-
-    private ConfigurableApplicationContext springContext;
-
-    @Getter
-    private static Main instance;
-
-    @Getter
-    public CoreDatabase coreDatabase;
-
     public static Database database;
-
-    @Getter
-    public CooldownManager cooldownManager;
-    public TeamSpeak teamSpeak;
     @Getter
     public static PlayerManager playerManager;
     @Getter
     public static Utils utils;
-    public Commands commands;
     public static FactionManager factionManager;
     public static ServerManager serverManager;
     public static VertragUtil vertragUtil;
@@ -107,15 +84,24 @@ public final class Main extends JavaPlugin implements Server {
     public static CompanyManager companyManager;
     public static Seasonpass seasonpass;
     public static Beginnerpass beginnerpass;
-
     @Getter
     public static ScoreboardAPI scoreboardAPI;
-
-    private ScoreboardManager scoreboardManager;
     public static INameTagProvider nameTagProvider;
     public static CustomTabAPI customTabAPI;
-
     public static NewsManager newsManager;
+    @Getter
+    private static Main instance;
+    private final Map<Class<? extends CommandBase>, CommandBase> commandInstances = new HashMap<>();
+    private final Map<Class<?>, Object> eventInstances = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Object> services = new ConcurrentHashMap<>();
+    @Getter
+    public CoreDatabase coreDatabase;
+    @Getter
+    public CooldownManager cooldownManager;
+    public TeamSpeak teamSpeak;
+    public Commands commands;
+    private ConfigurableApplicationContext springContext;
+    private ScoreboardManager scoreboardManager;
 
     public static void registerCommand(String command, CommandExecutor c) {
         org.bukkit.command.PluginCommand cmd = instance.getCommand(command);
@@ -280,12 +266,93 @@ public final class Main extends JavaPlugin implements Server {
     }
 
 
-
-
     public <T extends CommandBase> T getCommandInstance(Class<T> commandClass) {
         return commandClass.cast(commandInstances.get(commandClass));
     }
 
+    private void registerAnnotatedEvents() {
+        // Suche nach Klassen mit der @Event Annotation
+        Set<Class<?>> eventClasses = ClassScanner.findClassesWithAnnotation("de.polo.core", Event.class);
+
+        for (Class<?> clazz : eventClasses) {
+            // Überprüfen, ob die Klasse von Listener erbt (und somit ein Event-Listener ist)
+            if (!Listener.class.isAssignableFrom(clazz)) {
+                getLogger().warning(clazz.getName() + " ist kein Listener.");
+                continue;
+            }
+
+            if (eventInstances.containsKey(clazz)) {
+                getLogger().warning(clazz.getName() + " ist bereits registriert.");
+                continue;
+            }
+
+            try {
+                // Instanziiere den Event-Listener
+                Object eventInstance = clazz.getDeclaredConstructor().newInstance();
+
+                // Wenn der Listener instanziiert ist, registriere ihn
+                if (eventInstance instanceof Listener) {
+                    Main.getInstance().getServer().getPluginManager().registerEvents((Listener) eventInstance, Main.getInstance());
+                    eventInstances.put(clazz, eventInstance);
+                    getLogger().info("Event registriert: " + clazz.getName());
+                }
+
+            } catch (Exception e) {
+                getLogger().severe("Fehler beim Registrieren des Events " + clazz.getName() + ": " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public <T> T getEvent(Class<T> eventClass) {
+        return (T) eventInstances.get(eventClass);
+    }
+
+    @Override
+    public @Nullable <T> T getBean(@NotNull final Class<T> clazz) {
+        if (springContext == null) {
+            return null;
+        }
+        return springContext.getBean(clazz);
+    }
+
+    public void initServices(String basePackage) {
+        Set<Class<?>> classes = ClassScanner.findClassesWithAnnotation(basePackage, Service.class);
+
+        for (Class<?> implClass : classes) {
+            try {
+                if (!Modifier.isAbstract(implClass.getModifiers())) {
+                    if (services.containsKey(implClass)) {
+                        System.out.println("Service " + implClass.getName() + " ist bereits registriert.");
+                        continue;
+                    }
+                    Object instance = implClass.getDeclaredConstructor().newInstance();
+
+                    Class<?>[] interfaces = implClass.getInterfaces();
+                    if (interfaces.length == 0) {
+                        services.put(implClass, instance);
+                    } else {
+                        for (Class<?> iface : interfaces) {
+                            services.put(iface, instance);
+                        }
+                    }
+
+                    System.out.println("Service registriert: " + implClass.getName());
+
+                    services.put(implClass, instance);
+                }
+            } catch (Exception e) {
+                System.err.println("Fehler beim Instanziieren von Service: " + implClass.getName());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getService(@NotNull Class<T> clazz) {
+        return (T) services.get(clazz);
+    }
 
     public class Commands {
         private final Main voidAPI;
@@ -670,91 +737,5 @@ public final class Main extends JavaPlugin implements Server {
             gwdCommand = new GwdCommand(playerManager, factionManager);
             zdCommand = new ZDCommand(playerManager, factionManager);
         }
-    }
-
-    private void registerAnnotatedEvents() {
-        // Suche nach Klassen mit der @Event Annotation
-        Set<Class<?>> eventClasses = ClassScanner.findClassesWithAnnotation("de.polo.core", Event.class);
-
-        for (Class<?> clazz : eventClasses) {
-            // Überprüfen, ob die Klasse von Listener erbt (und somit ein Event-Listener ist)
-            if (!Listener.class.isAssignableFrom(clazz)) {
-                getLogger().warning(clazz.getName() + " ist kein Listener.");
-                continue;
-            }
-
-            if (eventInstances.containsKey(clazz)) {
-                getLogger().warning(clazz.getName() + " ist bereits registriert.");
-                continue;
-            }
-
-            try {
-                // Instanziiere den Event-Listener
-                Object eventInstance = clazz.getDeclaredConstructor().newInstance();
-
-                // Wenn der Listener instanziiert ist, registriere ihn
-                if (eventInstance instanceof Listener) {
-                    Main.getInstance().getServer().getPluginManager().registerEvents((Listener) eventInstance, Main.getInstance());
-                    eventInstances.put(clazz, eventInstance);
-                    getLogger().info("Event registriert: " + clazz.getName());
-                }
-
-            } catch (Exception e) {
-                getLogger().severe("Fehler beim Registrieren des Events " + clazz.getName() + ": " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    public <T> T getEvent(Class<T> eventClass) {
-        return (T) eventInstances.get(eventClass);
-    }
-
-
-    @Override
-    public @Nullable <T> T getBean(@NotNull final Class<T> clazz) {
-        if (springContext == null) {
-            return null;
-        }
-        return springContext.getBean(clazz);
-    }
-
-    public void initServices(String basePackage) {
-        Set<Class<?>> classes = ClassScanner.findClassesWithAnnotation(basePackage, Service.class);
-
-        for (Class<?> implClass : classes) {
-            try {
-                if (!Modifier.isAbstract(implClass.getModifiers())) {
-                    if (services.containsKey(implClass)) {
-                        System.out.println("Service " + implClass.getName() + " ist bereits registriert.");
-                        continue;
-                    }
-                    Object instance = implClass.getDeclaredConstructor().newInstance();
-
-                    Class<?>[] interfaces = implClass.getInterfaces();
-                    if (interfaces.length == 0) {
-                        services.put(implClass, instance);
-                    } else {
-                        for (Class<?> iface : interfaces) {
-                            services.put(iface, instance);
-                        }
-                    }
-
-                    System.out.println("Service registriert: " + implClass.getName());
-
-                    services.put(implClass, instance);
-                }
-            } catch (Exception e) {
-                System.err.println("Fehler beim Instanziieren von Service: " + implClass.getName());
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getService(@NotNull Class<T> clazz) {
-        return (T) services.get(clazz);
     }
 }

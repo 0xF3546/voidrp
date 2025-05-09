@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface PinwheelService {
     List<Pinwheel> getPinwheels();
+
     Pinwheel getNearestPinwheel(Location location, int range);
+
     int addPinwheel(CreatePinwheelDto pinwheel);
 }

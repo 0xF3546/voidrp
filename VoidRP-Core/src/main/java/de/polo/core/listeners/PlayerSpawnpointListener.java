@@ -1,8 +1,8 @@
 package de.polo.core.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerSetSpawnEvent;
-import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Event;
+import de.polo.core.utils.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
