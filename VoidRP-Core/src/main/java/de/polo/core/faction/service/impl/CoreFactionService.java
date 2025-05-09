@@ -34,6 +34,14 @@ public class CoreFactionService implements FactionService {
     }
 
     @Override
+    public Faction getById(int id) {
+        return factionManager.getFactions().stream()
+                .filter(faction -> faction.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public String getPlayerFaction(Player player) {
         return factionManager.faction(player);
     }
