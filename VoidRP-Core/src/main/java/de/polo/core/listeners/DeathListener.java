@@ -48,10 +48,6 @@ public class DeathListener implements Listener {
     private final HashMap<UUID, Long> playerKillTimestamps = new HashMap<>();
     private final HashMap<UUID, Integer> killStreak = new HashMap<>();
 
-    public DeathListener( ) {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @SneakyThrows
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {

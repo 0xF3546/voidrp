@@ -26,11 +26,6 @@ import static de.polo.core.Main.*;
 
 @Event
 public class InventoryClickListener implements Listener {
-
-    public InventoryClickListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onClick(InventoryClickEvent event) throws SQLException {
         if (event.getWhoClicked().getOpenInventory().getTopInventory().getType().equals(InventoryType.CHEST) && event.getView().getTitle().equalsIgnoreCase("§7Lager")) {

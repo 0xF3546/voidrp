@@ -24,10 +24,6 @@ import static de.polo.core.Main.weaponManager;
 @Event
 public class ItemDropListener implements Listener {
 
-    public ItemDropListener() {
-        Main.getInstance().getServer().getPluginManager().registerEvents(this, Main.getInstance());
-    }
-
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         ItemStack droppedItem = event.getItemDrop().getItemStack();
