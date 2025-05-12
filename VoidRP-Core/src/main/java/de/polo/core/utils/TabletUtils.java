@@ -23,7 +23,7 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.shop.services.ShopService;
 import de.polo.core.storage.CompanyRole;
 import de.polo.core.storage.GasStationData;
-import de.polo.core.storage.JailData;
+import de.polo.core.storage.JailInfo;
 import de.polo.core.storage.WantedReason;
 import de.polo.core.vehicles.services.VehicleService;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -453,13 +453,13 @@ public class TabletUtils implements Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §6Gefängnis §8- §6Seite§8:§7 " + page), true, true);
         int i = 0;
         int j = 0;
-        for (JailData jailData : StaatUtil.jailDataMap.values()) {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(jailData.getUuid()));
+        for (JailInfo jailInfo : StaatUtil.jailDataMap.values()) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(jailInfo.getUuid()));
             if (offlinePlayer.isOnline()) {
                 if (i == 26 && i == 18 && i == 22) {
                     i++;
                 } else if (j >= (25 * (page - 1)) && j <= (25 * page)) {
-                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(jailData.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName())) {
+                    inventoryManager.setItem(new CustomItem(i, ItemManager.createItemHead(jailInfo.getUuid(), 1, 0, "§8» §6" + offlinePlayer.getName())) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
                             editPlayerAkte(player, offlinePlayer.getUniqueId());

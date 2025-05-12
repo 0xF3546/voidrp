@@ -6,9 +6,12 @@ import de.polo.api.player.PlayerWanted;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.location.services.LocationService;
-import de.polo.core.storage.CorePlayerWanted;
+import de.polo.core.storage.JailInfo;
+import de.polo.core.storage.WantedReason;
 import de.polo.core.utils.Service;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -38,6 +41,9 @@ public class CoreLawEnforcementService implements LawEnforcementService {
     public boolean arrestPlayer(VoidPlayer player, VoidPlayer target, boolean isDeathArrest) {
         LocationService locationService = VoidAPI.getService(LocationService.class);
         if (target.getData().getWanted() == null) return false;
+        target.getPlayer().teleport(locationService.getLocation("gefaengnis"));
+        JailInfo jailInfo = new JailInfo();
+        PlayerWanted wanted = target.getData().getWanted();
         return false;
     }
 }
