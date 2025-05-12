@@ -22,6 +22,10 @@ public interface AdminService {
      * Sends a message to all guides
      */
     void sendGuideMessage(String msg, Color color);
+    /**
+     * Sends a message to all guides
+     */
+    void sendGuideMessage(Component msg, Color color);
 
     void sendMessage(Component msg, Color color);
 

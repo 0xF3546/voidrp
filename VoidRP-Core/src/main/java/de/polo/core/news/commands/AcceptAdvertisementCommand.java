@@ -47,9 +47,16 @@ public class AcceptAdvertisementCommand extends CommandBase {
             player.sendMessage("Werbung nicht gefunden.", Prefix.ERROR);
             return;
         }
-        newsService.acceptAdvertisement(advertisement);
-        player.sendMessage("Werbung akzeptiert.", Prefix.ADMIN);
-        AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.sendGuideMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " angenommen.", Color.GREEN);
+        newsService.getAdvertisementQueue().stream()
+                .filter(ad -> ad.getUuid().equals(uuid))
+                .findFirst()
+                .ifPresentOrElse(ad -> {
+                    newsService.acceptAdvertisement(advertisement);
+                    player.sendMessage("Werbung akzeptiert.", Prefix.ADMIN);
+                    AdminService adminService = VoidAPI.getService(AdminService.class);
+                    adminService.sendGuideMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " angenommen.", Color.GREEN);
+                }, () -> {
+                    player.sendMessage("Die Werbung ist nicht in der Warteschlange.", Prefix.ERROR);
+                });
     }
 }

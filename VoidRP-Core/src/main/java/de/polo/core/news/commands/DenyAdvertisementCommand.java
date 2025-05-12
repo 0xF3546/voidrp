@@ -47,9 +47,15 @@ public class DenyAdvertisementCommand extends CommandBase {
             player.sendMessage("Werbung nicht gefunden.", Prefix.ERROR);
             return;
         }
-        newsService.denyAdvertisement(advertisement);
-        player.sendMessage("Werbung abgelehnt.", Prefix.ADMIN);
-        AdminService adminService = VoidAPI.getService(AdminService.class);
-        adminService.sendGuideMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " abgelehnt.", Color.RED);
-    }
+        newsService.getAdvertisementQueue().stream()
+                .filter(ad -> ad.getUuid().equals(uuid))
+                .findFirst()
+                .ifPresentOrElse(ad -> {
+                    newsService.denyAdvertisement(advertisement);
+                    player.sendMessage("Werbung abgelehnt.", Prefix.ADMIN);
+                    AdminService adminService = VoidAPI.getService(AdminService.class);
+                    adminService.sendGuideMessage(player.getName() + " hat die Werbung von " + advertisement.getPublisher().getName() + " abgelehnt.", Color.GREEN);
+                }, () -> {
+                    player.sendMessage("Die Werbung ist nicht in der Warteschlange.", Prefix.ERROR);
+                });    }
 }

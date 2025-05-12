@@ -9,6 +9,7 @@ import de.polo.core.admin.services.AdminService;
 import de.polo.core.utils.Service;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
 
 import java.sql.Connection;
@@ -42,6 +43,19 @@ public class CoreAdminService implements AdminService {
         for (VoidPlayer player : VoidAPI.getPlayers()) {
             if (player.getData().getPermlevel() >= 40) {
                 player.sendMessage("§eGuide §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ " + msg);
+            }
+        }
+    }
+
+    @Override
+    public void sendGuideMessage(Component msg, Color color) {
+        if (color == null) {
+            color = Color.AQUA;
+        }
+        msg = msg.color(TextColor.color(color.asRGB()));
+        for (VoidPlayer player : VoidAPI.getPlayers()) {
+            if (player.getData().getPermlevel() >= 40) {
+                player.sendMessage(Component.text("§eGuide §8┃ " + ApiUtils.colorToLegacyCode(color) + "➜ ").append(msg));
             }
         }
     }

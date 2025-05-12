@@ -7,6 +7,7 @@ import de.polo.core.news.services.NewsService;
 import de.polo.core.storage.ShopBook;
 import de.polo.core.utils.Service;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -31,6 +32,7 @@ import static net.kyori.adventure.text.Component.text;
 @Service
 public class CoreNewsService implements NewsService {
     private final List<Advertisement> advertisements = new ObjectArrayList<>();
+    @Getter
     private final List<Advertisement> advertisementQueue = new ObjectArrayList<>();
 
     @Override
@@ -82,7 +84,7 @@ public class CoreNewsService implements NewsService {
                 .append(text(" "))
                 .append(denyButton);
 
-        adminService.sendMessage(combined, Color.ORANGE);
+        adminService.sendGuideMessage(combined, Color.ORANGE);
 
     }
 
@@ -96,6 +98,7 @@ public class CoreNewsService implements NewsService {
         if (advertisementQueue.contains(advertisement)) {
             advertisementQueue.remove(advertisement);
             advertisements.add(advertisement);
+            DisplayAdvertisement(advertisement);
         }
     }
 
@@ -125,6 +128,6 @@ public class CoreNewsService implements NewsService {
     }
 
     private void DisplayAdvertisement(Advertisement advertisement) {
-        Bukkit.broadcast(Component.text("§8[§6News§8] §7" + advertisement.getPublisher().getName() + "§8:§f " + advertisement.getContent()));
+        Bukkit.broadcast(Component.text("§2Werbung §8┃ §7➜ §7" + advertisement.getPublisher().getName() + "§8:§f " + advertisement.getContent()));
     }
 }
