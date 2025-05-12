@@ -1,6 +1,7 @@
 package de.polo.core.faction.service.impl;
 
 import de.polo.api.faction.CharacterRecord;
+import de.polo.api.player.PlayerWanted;
 import de.polo.core.faction.entity.CoreCharacterRecord;
 import de.polo.core.storage.CorePlayerWanted;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -55,8 +56,8 @@ public class LawEnforcementRepository {
                 target.toString(), record.getInfoText(), record.getLastEditor().toString(), record.getLastEdit().toString());
     }
 
-    public void addWantedLog(UUID criminal, CorePlayerWanted corePlayerWanted) {
+    public void addWantedLog(UUID criminal, PlayerWanted playerWanted) {
         database.insertAsync("INSERT INTO player_wanted_logs (uuid, wantedId, issuer) VALUES (?, ?, ?)",
-                criminal.toString(), corePlayerWanted.getWantedId(), corePlayerWanted.getIssuer().toString());
+                criminal.toString(), playerWanted.getWantedId(), playerWanted.getIssuer().toString());
     }
 }

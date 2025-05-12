@@ -1,6 +1,7 @@
 package de.polo.core.utils;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.player.PlayerWanted;
 import de.polo.core.Main;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.faction.service.LawEnforcementService;
@@ -114,7 +115,7 @@ public class StaatUtil {
                 });
     }
 
-    private String calculateManhuntTime(CorePlayerWanted wanted) {
+    private String calculateManhuntTime(PlayerWanted wanted) {
         LocalDateTime now = Utils.getTime();
         Duration diff = Duration.between(wanted.getIssued(), now);
 

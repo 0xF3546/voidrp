@@ -2,6 +2,7 @@ package de.polo.core.faction.service.impl;
 
 import de.polo.api.VoidAPI;
 import de.polo.api.faction.CharacterRecord;
+import de.polo.api.player.PlayerWanted;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.location.services.LocationService;
@@ -29,14 +30,14 @@ public class CoreLawEnforcementService implements LawEnforcementService {
     }
 
     @Override
-    public void addWantedLog(UUID criminal, CorePlayerWanted corePlayerWanted) {
-        repository.addWantedLog(criminal, corePlayerWanted);
+    public void addWantedLog(UUID criminal, PlayerWanted playerWanted) {
+        repository.addWantedLog(criminal, playerWanted);
     }
 
     @Override
     public boolean arrestPlayer(VoidPlayer player, VoidPlayer target, boolean isDeathArrest) {
         LocationService locationService = VoidAPI.getService(LocationService.class);
-        if (target.getData().getW)
+        if (target.getData().getWanted() == null) return false;
         return false;
     }
 }
