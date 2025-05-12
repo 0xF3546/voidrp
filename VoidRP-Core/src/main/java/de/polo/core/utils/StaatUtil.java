@@ -11,10 +11,10 @@ import de.polo.core.manager.ServerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.JailData;
-import de.polo.core.storage.PlayerWanted;
+import de.polo.core.storage.CorePlayerWanted;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.storage.WantedReason;
-import de.polo.core.utils.enums.WantedVariation;
+import de.polo.api.player.enums.WantedVariation;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -114,7 +114,7 @@ public class StaatUtil {
                 });
     }
 
-    private String calculateManhuntTime(PlayerWanted wanted) {
+    private String calculateManhuntTime(CorePlayerWanted wanted) {
         LocalDateTime now = Utils.getTime();
         Duration diff = Duration.between(wanted.getIssued(), now);
 

@@ -7,6 +7,7 @@ import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.JobSkill;
 import de.polo.api.player.PlayerCharacter;
+import de.polo.api.player.PlayerWanted;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.player.enums.Gender;
 import de.polo.api.player.enums.HealthInsurance;
@@ -476,7 +477,7 @@ public class PlayerData implements PlayerCharacter {
             statement.setString(1, player.getUniqueId().toString());
             try (ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    wanted = new PlayerWanted(
+                    wanted = new CorePlayerWanted(
                             result.getInt("id"),
                             result.getInt("wantedId"),
                             UUID.fromString(result.getString("issuer")),
@@ -873,13 +874,13 @@ public class PlayerData implements PlayerCharacter {
         return beginnerQuests;
     }
 
-    public CompletableFuture<Boolean> setWanted(PlayerWanted playerWanted, boolean silent) {
+    public CompletableFuture<Boolean> setWanted(PlayerWanted corePlayerWanted) {
         System.out.println("MOIN");
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("www");
             if (getWanted() != null) {
                 WantedReason reason = Main.utils.getStaatUtil().getWantedReason(getWanted().getWantedId());
-                WantedReason newReason = Main.utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
+                WantedReason newReason = Main.utils.getStaatUtil().getWantedReason(corePlayerWanted.getWantedId());
                 return reason.getWanted() <= newReason.getWanted();
             }
             System.out.println("yo");
@@ -888,7 +889,7 @@ public class PlayerData implements PlayerCharacter {
             System.out.println("hhh");
             if (!result) return CompletableFuture.completedFuture(false);
             System.out.println("h#ä");
-            WantedReason wantedReason = Main.utils.getStaatUtil().getWantedReason(playerWanted.getWantedId());
+            WantedReason wantedReason = Main.utils.getStaatUtil().getWantedReason(corePlayerWanted.getWantedId());
 
             System.out.println("Executing DELETE query...");
             String deleteQuery = "DELETE FROM player_wanteds WHERE uuid = ?";
@@ -900,14 +901,14 @@ public class PlayerData implements PlayerCharacter {
                         System.out.println("Preparing to execute INSERT query...");
                         return Main.getInstance().getCoreDatabase().insertAndGetKeyAsync(insertQuery,
                                 player.getUniqueId().toString(),
-                                playerWanted.getIssuer().toString(),
-                                playerWanted.getWantedId());
+                                corePlayerWanted.getIssuer().toString(),
+                                corePlayerWanted.getWantedId());
                     })
                     .thenApply(generatedKey -> {
                         System.out.println("INSERT query completed: Key = " + generatedKey);
                         if (generatedKey.isPresent()) {
-                            playerWanted.setId(generatedKey.get());
-                            this.wanted = playerWanted;
+                            corePlayerWanted.setId(generatedKey.get());
+                            this.wanted = corePlayerWanted;
                             OfflinePlayer issuer = Bukkit.getOfflinePlayer(wanted.getIssuer());
                             player.sendMessage("§cDu hast ein Verbrechen begangen ( " + wantedReason.getReason() + " ). Beamter: " + issuer.getName());
                             player.sendMessage("§eDeine momentanen Wantedpunkte: " + wantedReason.getWanted());

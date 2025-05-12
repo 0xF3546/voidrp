@@ -5,6 +5,7 @@ import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.MiniJob;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Mayson1337
@@ -39,4 +40,6 @@ public interface PlayerCharacter {
     int getPermlevel();
 
     boolean isLeader();
+    PlayerWanted getWanted();
+    CompletableFuture<Boolean> setWanted(PlayerWanted wanted);
 }
