@@ -128,6 +128,7 @@ public class CoreNewsService implements NewsService {
     }
 
     private void DisplayAdvertisement(Advertisement advertisement) {
+        if (advertisement.getPublisher() == null) return;
         Bukkit.broadcast(Component.text("§2Werbung §8┃ §7➜ §7" + advertisement.getPublisher().getName() + "§8:§f " + advertisement.getContent()));
     }
 }
