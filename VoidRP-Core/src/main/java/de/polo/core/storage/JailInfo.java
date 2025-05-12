@@ -1,6 +1,6 @@
 package de.polo.core.storage;
 
-public class JailData {
+public class JailInfo {
     private String uuid;
     private int id;
     private int hafteinheiten;

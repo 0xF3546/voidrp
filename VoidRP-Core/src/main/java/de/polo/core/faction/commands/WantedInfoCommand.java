@@ -6,7 +6,7 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.WantedReason;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
-import de.polo.core.utils.enums.WantedVariation;
+import de.polo.api.player.enums.WantedVariation;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

@@ -1,10 +1,11 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.player.PlayerWanted;
 import de.polo.core.Main;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.storage.PlayerWanted;
+import de.polo.core.storage.CorePlayerWanted;
 import de.polo.core.storage.WantedReason;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
@@ -66,8 +67,8 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
             return false;
         }
         PlayerData targetData = playerManager.getPlayerData(target);
-        PlayerWanted playerWanted = new PlayerWanted(reason.getId(), player.getUniqueId(), Utils.getTime(), new ObjectArrayList<>());
-        targetData.setWanted(playerWanted, false).thenAccept(success -> {
+        PlayerWanted corePlayerWanted = new CorePlayerWanted(reason.getId(), player.getUniqueId(), Utils.getTime(), new ObjectArrayList<>());
+        targetData.setWanted(corePlayerWanted).thenAccept(success -> {
             System.out.println("END");
             if (!success) {
                 player.sendMessage(Prefix.ERROR + "Der Spieler hat bereits eine höhere Fahndung.");

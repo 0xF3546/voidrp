@@ -1,7 +1,9 @@
 package de.polo.core.faction.service;
 
 import de.polo.api.faction.CharacterRecord;
-import de.polo.core.storage.PlayerWanted;
+import de.polo.api.player.PlayerWanted;
+import de.polo.api.player.VoidPlayer;
+import de.polo.core.storage.CorePlayerWanted;
 
 import java.util.UUID;
 
@@ -11,4 +13,5 @@ public interface LawEnforcementService {
     void setCharacterRecord(UUID target, CharacterRecord record);
 
     void addWantedLog(UUID criminal, PlayerWanted playerWanted);
+    boolean arrestPlayer(VoidPlayer player, VoidPlayer target, boolean isDeathArrest);
 }

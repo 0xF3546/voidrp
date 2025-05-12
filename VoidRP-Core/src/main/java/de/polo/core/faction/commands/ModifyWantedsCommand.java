@@ -5,7 +5,7 @@ import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
-import de.polo.core.utils.enums.WantedVariation;
+import de.polo.api.player.enums.WantedVariation;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

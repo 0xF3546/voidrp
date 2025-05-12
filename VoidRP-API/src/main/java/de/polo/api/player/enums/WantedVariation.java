@@ -1,4 +1,4 @@
-package de.polo.core.utils.enums;
+package de.polo.api.player.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

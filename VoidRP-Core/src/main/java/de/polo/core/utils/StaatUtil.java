@@ -1,6 +1,7 @@
 package de.polo.core.utils;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.player.PlayerWanted;
 import de.polo.core.Main;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.faction.service.LawEnforcementService;
@@ -10,11 +11,10 @@ import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.storage.JailData;
-import de.polo.core.storage.PlayerWanted;
+import de.polo.core.storage.JailInfo;
 import de.polo.core.storage.ServiceData;
 import de.polo.core.storage.WantedReason;
-import de.polo.core.utils.enums.WantedVariation;
+import de.polo.api.player.enums.WantedVariation;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -33,7 +33,7 @@ import java.util.*;
 import static de.polo.core.Main.database;
 
 public class StaatUtil {
-    public static final Map<String, JailData> jailDataMap = new HashMap<>();
+    public static final Map<String, JailInfo> jailDataMap = new HashMap<>();
     public static final Map<String, ServiceData> serviceDataMap = new HashMap<>();
     public static EvidenceChamber Asservatemkammer;
     private final List<WantedReason> wantedReasons = new ObjectArrayList<>();
@@ -99,12 +99,12 @@ public class StaatUtil {
                 .thenAcceptAsync(result -> {
                     try {
                         while (result.next()) {
-                            JailData jailData = new JailData();
-                            jailData.setId(result.resultSet().getInt("id"));
-                            jailData.setUuid(result.resultSet().getString("uuid"));
-                            jailData.setHafteinheiten(result.resultSet().getInt("wps"));
-                            jailData.setReason(result.resultSet().getString("wantedId"));
-                            jailDataMap.put(result.resultSet().getString("uuid"), jailData);
+                            JailInfo jailInfo = new JailInfo();
+                            jailInfo.setId(result.resultSet().getInt("id"));
+                            jailInfo.setUuid(result.resultSet().getString("uuid"));
+                            jailInfo.setHafteinheiten(result.resultSet().getInt("wps"));
+                            jailInfo.setReason(result.resultSet().getString("wantedId"));
+                            jailDataMap.put(result.resultSet().getString("uuid"), jailInfo);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -143,7 +143,7 @@ public class StaatUtil {
         PlayerData arresterData = playerManager.getPlayerData(arrester.getUniqueId());
         WantedReason wantedReason = getWantedReason(playerData.getWanted().getWantedId());
         if (playerData.getWanted() != null) {
-            JailData jailData = new JailData();
+            JailInfo jailInfo = new JailInfo();
             int wanteds = wantedReason.getWanted();
             LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
             lawEnforcementService.addWantedLog(player.getUniqueId(), playerData.getWanted());
@@ -176,11 +176,11 @@ public class StaatUtil {
                     players.sendMessage("§9HQ: Fahndungsgrund: " + wantedReason.getReason() + " | Fahndungszeit: " + calculateManhuntTime(playerData.getWanted()));
                 }
             }
-            jailData.setHafteinheiten(playerData.getHafteinheiten());
-            Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailData.getHafteinheiten(), arrester.getUniqueId().toString());
-            jailData.setUuid(player.getUniqueId().toString());
-            jailData.setReason(String.valueOf(reason));
-            jailDataMap.put(player.getUniqueId().toString(), jailData);
+            jailInfo.setHafteinheiten(playerData.getHafteinheiten());
+            Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO `Jail` (`uuid`, `wantedId`, `wps`, `arrester`) VALUES (?, ?, ?, ?)", player.getUniqueId().toString(), wantedReason.getId(), jailInfo.getHafteinheiten(), arrester.getUniqueId().toString());
+            jailInfo.setUuid(player.getUniqueId().toString());
+            jailInfo.setReason(String.valueOf(reason));
+            jailDataMap.put(player.getUniqueId().toString(), jailInfo);
             playerData.clearWanted();
             return true;
         } else {

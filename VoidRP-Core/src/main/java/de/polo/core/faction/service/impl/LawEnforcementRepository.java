@@ -1,10 +1,16 @@
 package de.polo.core.faction.service.impl;
 
 import de.polo.api.faction.CharacterRecord;
+import de.polo.api.player.PlayerWanted;
+import de.polo.core.Main;
 import de.polo.core.faction.entity.CoreCharacterRecord;
-import de.polo.core.storage.PlayerWanted;
+import de.polo.core.storage.CorePlayerWanted;
+import de.polo.core.storage.WantedReason;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import lombok.SneakyThrows;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +19,30 @@ import java.util.UUID;
 import static de.polo.core.Main.database;
 
 public class LawEnforcementRepository {
+    @Getter
     private final List<CharacterRecord> characterRecords = new ObjectArrayList<>();
+    @Getter
+    private final List<WantedReason> wantedReasons = new ObjectArrayList<>();
 
-    public List<CharacterRecord> getCharacterRecords() {
-        return characterRecords;
+    public LawEnforcementRepository() {
+        loadWantedReasons();
+    }
+
+    @SneakyThrows
+    private void loadWantedReasons() {
+        Main.getInstance().getCoreDatabase().queryThreaded("SELECT * FROM wantedreasons")
+                .thenAccept(result -> {
+                    try {
+                        while (result.next()) {
+                            WantedReason reason = new WantedReason(result.resultSet().getInt("id"), result.resultSet().getString("reason"), result.resultSet().getInt("wanted"));
+                            wantedReasons.add(reason);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } finally {
+                        result.close();
+                    }
+                });
     }
 
     public CharacterRecord getCharacterRecord(UUID target) {

@@ -43,4 +43,5 @@ public interface NewsService {
     void denyAdvertisement(Advertisement advertisement);
 
     Advertisement getAdvertisement(UUID uuid);
+    List<Advertisement> getAdvertisementQueue();
 }
