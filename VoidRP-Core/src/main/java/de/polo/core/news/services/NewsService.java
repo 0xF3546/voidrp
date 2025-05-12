@@ -34,7 +34,7 @@ public interface NewsService {
      */
     void removeBook(ShopBook shopBook);
 
-    void QueueAdvertisement(Advertisement advertisement);
+    void queueAdvertisement(Advertisement advertisement);
 
     void addAdvertisementQueue(Advertisement advertisement);
 

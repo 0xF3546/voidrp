@@ -54,7 +54,7 @@ public class CoreNewsService implements NewsService {
     }
 
     @Override
-    public void QueueAdvertisement(Advertisement advertisement) {
+    public void queueAdvertisement(Advertisement advertisement) {
         AdminService adminService = VoidAPI.getService(AdminService.class);
         int adminCount = adminService.getActiveAdmins().size() + adminService.getActiveGuides().size();
         if (adminCount == 0) {

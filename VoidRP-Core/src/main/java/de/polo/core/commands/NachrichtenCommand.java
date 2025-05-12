@@ -96,7 +96,7 @@ public class NachrichtenCommand implements CommandExecutor, Listener {
             int price = event.getMessage().length() * ServerManager.getPayout("werbung");
             if (event.getPlayerData().getBargeld() >= price) {
                 NewsService newsService = VoidAPI.getService(NewsService.class);
-                newsService.addAdvertisementQueue(new CoreAdvertisement(VoidAPI.getPlayer(event.getPlayer()), event.getMessage()));
+                newsService.queueAdvertisement(new CoreAdvertisement(VoidAPI.getPlayer(event.getPlayer()), event.getMessage()));
                 player.sendMessage("§8[§2Werbung§8]§a Werbung wird nun geprüft. §c-" + price + "$");
                 playerManager.removeMoney(player, price, "Werbung");
                 factionManager.addFactionMoney("News", price, "Werbung - " + player.getName());
